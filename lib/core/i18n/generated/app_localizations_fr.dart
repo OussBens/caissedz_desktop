@@ -1924,4 +1924,311 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get smartScanErreurFichier => 'Fichier invalide.';
+
+  @override
+  String get gestionCaisseTitre => 'Gestion de caisse';
+
+  @override
+  String get gestionCaisseOngletCaisses => 'Caisses';
+
+  @override
+  String get gestionCaisseOngletMouvements => 'Mouvements';
+
+  @override
+  String get gestionCaisseOngletTransferts => 'Transferts entre caisses';
+
+  @override
+  String get caisseNouvelle => 'Nouvelle caisse';
+
+  @override
+  String get caisseModifier => 'Modifier la caisse';
+
+  @override
+  String get caisseNom => 'Nom';
+
+  @override
+  String get caisseType => 'Type';
+
+  @override
+  String get caisseMagasin => 'Magasin';
+
+  @override
+  String get caisseSansMagasin => 'Sans magasin';
+
+  @override
+  String get caisseActive => 'Active';
+
+  @override
+  String get caisseInactive => 'Inactive';
+
+  @override
+  String get caisseSoldeEspeces => 'Solde espèces';
+
+  @override
+  String get caisseSoldeTotal => 'Solde total';
+
+  @override
+  String get caisseTypePhysique => 'Physique';
+
+  @override
+  String get caisseTypeCompte => 'Compte';
+
+  @override
+  String get caisseAucune => 'Aucune caisse.';
+
+  @override
+  String get caisseDesactiver => 'Désactiver';
+
+  @override
+  String get caisseActiver => 'Activer';
+
+  @override
+  String get mouvementApport => 'Apport';
+
+  @override
+  String get mouvementDepense => 'Dépense';
+
+  @override
+  String get mouvementColType => 'Type';
+
+  @override
+  String get mouvementColSens => 'Sens';
+
+  @override
+  String get mouvementColMontant => 'Montant';
+
+  @override
+  String get mouvementColMode => 'Mode';
+
+  @override
+  String get mouvementColReference => 'Référence';
+
+  @override
+  String get mouvementAucun => 'Aucun mouvement.';
+
+  @override
+  String get mouvementToutesCaisses => 'Toutes les caisses';
+
+  @override
+  String get mouvementCaisse => 'Caisse';
+
+  @override
+  String get mvtVente => 'Vente';
+
+  @override
+  String get mvtAnnulation => 'Annulation';
+
+  @override
+  String get mvtRemboursement => 'Remboursement';
+
+  @override
+  String get mvtEncaissement => 'Encaissement';
+
+  @override
+  String get mvtDecaissement => 'Décaissement';
+
+  @override
+  String get mvtApport => 'Apport';
+
+  @override
+  String get mvtDepense => 'Dépense';
+
+  @override
+  String get mvtTransfert => 'Transfert';
+
+  @override
+  String get mvtFondInitial => 'Fond initial';
+
+  @override
+  String get mvtRetrait => 'Retrait';
+
+  @override
+  String get mvtEcart => 'Écart';
+
+  @override
+  String get sensEntree => 'Entrée';
+
+  @override
+  String get sensSortie => 'Sortie';
+
+  @override
+  String get transfertCaisseNouveau => 'Nouveau transfert';
+
+  @override
+  String get transfertCaisseSource => 'Caisse source';
+
+  @override
+  String get transfertCaisseDestination => 'Caisse destination';
+
+  @override
+  String get transfertCaisseAucun => 'Aucun transfert.';
+
+  @override
+  String transfertCaisseCree(String code) {
+    return 'Transfert $code enregistré (2 mouvements).';
+  }
+
+  @override
+  String get caisseErreurNom => 'Le nom est obligatoire.';
+
+  @override
+  String get caisseErreurType => 'Type de caisse invalide.';
+
+  @override
+  String get caisseErreurMagasin => 'Magasin inconnu.';
+
+  @override
+  String get caisseErreurInconnue => 'Caisse introuvable.';
+
+  @override
+  String get caisseErreurInactive => 'Caisse inactive.';
+
+  @override
+  String get caisseErreurSysteme => 'La caisse principale ne peut pas être désactivée.';
+
+  @override
+  String get caisseErreurMontant => 'Montant invalide.';
+
+  @override
+  String get caisseErreurMode => 'Mode de paiement invalide.';
+
+  @override
+  String get caisseErreurMemeCaisse => 'Choisissez deux caisses différentes.';
+
+  @override
+  String get caisseErreurSolde => 'Solde insuffisant dans la caisse source.';
+
+  @override
+  String get caisseErreurSessionOuverte => 'Une session est ouverte sur cette caisse.';
+
+  @override
+  String get cloturesTitre => 'Clôtures Z';
+
+  @override
+  String get clotureNouvelle => 'Clôturer (Z)';
+
+  @override
+  String get clotureApercuTitre => 'Clôture Z — aperçu de la période';
+
+  @override
+  String get cloturePeriode => 'Période';
+
+  @override
+  String get clotureDebut => 'Début';
+
+  @override
+  String get clotureFin => 'Fin';
+
+  @override
+  String get clotureColVentes => 'Ventes';
+
+  @override
+  String get clotureColAnnulations => 'Annulations';
+
+  @override
+  String get clotureColTotalVentes => 'Total ventes';
+
+  @override
+  String get clotureColRemises => 'Remises';
+
+  @override
+  String get clotureColRetours => 'Retours';
+
+  @override
+  String get clotureColEncaissements => 'Encaissements';
+
+  @override
+  String get clotureColDecaissements => 'Décaissements';
+
+  @override
+  String get clotureColHash => 'Scellement';
+
+  @override
+  String get clotureColUtilisateur => 'Utilisateur';
+
+  @override
+  String get clotureAucune => 'Aucune clôture.';
+
+  @override
+  String get clotureConfirmer => 'Sceller la clôture';
+
+  @override
+  String clotureCreee(String code, String hash) {
+    return 'Clôture $code scellée. Hash : $hash';
+  }
+
+  @override
+  String get clotureDetail => 'Détail de la clôture';
+
+  @override
+  String get clotureParMode => 'Encaissements par mode';
+
+  @override
+  String get clotureSoldes => 'Soldes des caisses';
+
+  @override
+  String get clotureDerniereVente => 'Dernier ticket';
+
+  @override
+  String get clotureHashPrecedent => 'Hash précédent';
+
+  @override
+  String get clotureHash => 'Hash';
+
+  @override
+  String get clotureVerifier => 'Vérifier la chaîne';
+
+  @override
+  String get clotureChaineOk => 'Chaîne des clôtures intacte.';
+
+  @override
+  String clotureChaineKo(String code) {
+    return 'Chaîne altérée à partir de la clôture $code.';
+  }
+
+  @override
+  String get clotureErreurSession => 'Fermez toutes les sessions de caisse avant de clôturer.';
+
+  @override
+  String get clotureErreurRien => 'Rien à clôturer depuis la dernière clôture.';
+
+  @override
+  String get clotureAvertissementImmuable =>
+      'Une clôture est définitive : elle ne peut être ni modifiée ni supprimée, et les documents de la période ne pourront plus être annulés.';
+
+  @override
+  String get exportFiscalTitre => 'Export fiscal';
+
+  @override
+  String get exportFiscalDebut => 'Du (jj/mm/aaaa)';
+
+  @override
+  String get exportFiscalFin => 'Au (jj/mm/aaaa)';
+
+  @override
+  String get exportFiscalGenerer => 'Générer l\'archive';
+
+  @override
+  String exportFiscalOk(String chemin, int ventes, int clotures) {
+    return 'Archive enregistrée : $chemin ($ventes ventes, $clotures clôtures, empreinte vérifiée).';
+  }
+
+  @override
+  String get exportFiscalErreurDates => 'Dates invalides.';
+
+  @override
+  String get exportFiscalVerifier => 'Vérifier une archive';
+
+  @override
+  String exportFiscalVerifOk(int ventes, int clotures) {
+    return 'Archive valide : $ventes ventes, $clotures clôtures.';
+  }
+
+  @override
+  String exportFiscalVerifKo(String erreurs) {
+    return 'Archive invalide : $erreurs';
+  }
+
+  @override
+  String get exportFiscalPermission => 'Permission « exporter les données » requise.';
 }

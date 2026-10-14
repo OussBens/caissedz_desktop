@@ -1,11 +1,15 @@
 import 'package:sqflite_common/sqlite_api.dart';
 
+import '../data/caisse_repository.dart';
 import '../data/historique_repository.dart';
 import '../data/tiers_repository.dart';
 import '../domain/calculs_prix.dart';
 import '../domain/code_generator.dart';
+import '../domain/models/caisse.dart';
 import '../domain/models/retour.dart';
 import '../domain/referentiel/referentiel.dart';
+
+import 'caisse_service.dart';
 
 enum ErreurVersement { montantInvalide, modeInvalide, tiersSysteme, verrouille, inconnu, tiersInvalide }
 
@@ -68,6 +72,7 @@ class VersementService {
           ? await repo.documentsOuvertsClient(tiersCode)
           : await repo.documentsOuvertsFournisseur(tiersCode);
       final imputations = repartir(code, montant, docs);
+      final caisse = caisseCode ?? await CaisseRepository(txn).caisseParDefaut(utilisateurCode);
       final v = Versement(
         code: code,
         date: date ?? DateTime.now(),
@@ -77,12 +82,13 @@ class VersementService {
         montant: CalculsPrix.arrondir(montant),
         mode: mode,
         utilisateurCode: utilisateurCode,
-        caisseCode: caisseCode,
+        caisseCode: caisse,
         reference: reference,
         commentaire: commentaire,
         imputations: imputations,
       );
       await repo.insererVersement(v);
+      await journaliserVersement(txn, v);
       await HistoriqueRepository(txn).journaliser(
         utilisateurCode: utilisateurCode,
         action: 'Versement',
@@ -113,13 +119,14 @@ class VersementService {
       montant: CalculsPrix.arrondir(montant),
       mode: mode,
       utilisateurCode: utilisateurCode,
-      caisseCode: caisseCode,
+      caisseCode: caisseCode ?? await CaisseRepository(txn).caisseParDefaut(utilisateurCode),
       commentaire: 'Remboursement ${retour.code}',
       retourCode: retour.code,
       verrouille: true,
     );
     await repo.insererVersement(v);
     await repo.lierVersementRetour(retour.code, code);
+    await journaliserVersement(txn, v, type: TypesMouvementCaisse.remboursement);
     return v;
   }
 
@@ -131,8 +138,28 @@ class VersementService {
       if (v == null) throw const VersementException(ErreurVersement.inconnu);
       if (v.verrouille) throw const VersementException(ErreurVersement.verrouille);
       await repo.supprimerVersement(code);
+      await CaisseRepository(txn).supprimerMouvementsReference('versement', code);
       await HistoriqueRepository(txn)
           .journaliser(utilisateurCode: utilisateurCode, action: 'Suppression', entite: 'versement', entiteCode: code);
     });
+  }
+
+  /// Journal de caisse : entrée (encaissement) ou sortie (décaissement) sur la caisse du versement.
+  static Future<void> journaliserVersement(Transaction txn, Versement v, {String? type}) async {
+    if (v.mode == 'Avoir' || v.mode == 'Points' || v.caisseCode == null) return;
+    final encaissement = v.sens == SensVersement.encaissement;
+    await CaisseService.journaliser(
+      txn,
+      caisseCode: v.caisseCode!,
+      type: type ?? (encaissement ? TypesMouvementCaisse.encaissement : TypesMouvementCaisse.decaissement),
+      sens: encaissement ? SensMouvementCaisse.entree : SensMouvementCaisse.sortie,
+      montant: v.montant,
+      mode: v.mode,
+      referenceType: 'versement',
+      referenceCode: v.code,
+      utilisateurCode: v.utilisateurCode,
+      commentaire: v.commentaire,
+      date: v.date,
+    );
   }
 }

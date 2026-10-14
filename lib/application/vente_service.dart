@@ -1,17 +1,20 @@
 import 'package:sqflite_common/sqlite_api.dart';
 
+import '../data/caisse_repository.dart';
 import '../data/catalogue_repository.dart';
 import '../data/historique_repository.dart';
 import '../data/stock_repository.dart';
 import '../data/vente_repository.dart';
 import '../domain/calculs_prix.dart';
 import '../domain/code_generator.dart';
+import '../domain/models/caisse.dart';
 import '../domain/models/panier.dart';
 import '../domain/models/parametres_vente.dart';
 import '../domain/models/stock.dart';
 import '../domain/models/vente.dart';
 import '../domain/referentiel/referentiel.dart';
 import '../domain/scellement.dart';
+import 'caisse_service.dart';
 import 'stock_service.dart';
 
 enum ErreurVente {
@@ -173,6 +176,29 @@ class VenteService {
       final hash = Scellement.hacher(vente.versCanonique(), hashPrecedent);
       vente = Vente.depuisLigne({...vente.versLigne(), 'hash': hash}, lignes: lignes, paiements: panier.paiements);
       await repo.insererVente(vente);
+      // Journal de caisse : une entrée par paiement (hors points), espèces nettes de la monnaie rendue.
+      var monnaie = vente.monnaie;
+      for (final p in panier.paiements) {
+        if (p.mode == 'Points') continue;
+        var montant = p.montant;
+        if (p.mode == 'Espèces' && monnaie > 0) {
+          final m = monnaie > montant ? montant : monnaie;
+          montant -= m;
+          monnaie -= m;
+        }
+        await CaisseService.journaliser(
+          txn,
+          caisseCode: session.caisseCode,
+          type: TypesMouvementCaisse.vente,
+          sens: SensMouvementCaisse.entree,
+          montant: montant,
+          mode: p.mode,
+          referenceType: 'vente',
+          referenceCode: code,
+          utilisateurCode: utilisateurCode,
+          date: d,
+        );
+      }
       if (pointsGagnes - pointsUtilises != 0) {
         await repo.ajusterPoints(panier.clientCode, pointsGagnes - pointsUtilises);
       }
@@ -232,6 +258,21 @@ class VenteService {
       }
       if (v.pointsGagnes - v.pointsUtilises != 0) {
         await repo.ajusterPoints(v.clientCode, -(v.pointsGagnes - v.pointsUtilises));
+      }
+      // Journal de caisse : sortie égale aux entrées de la vente (remboursement au client).
+      for (final m in await CaisseRepository(txn).mouvements(referenceType: 'vente', referenceCode: code)) {
+        if (m.sens != SensMouvementCaisse.entree) continue;
+        await CaisseService.journaliser(
+          txn,
+          caisseCode: m.caisseCode,
+          type: TypesMouvementCaisse.annulation,
+          sens: SensMouvementCaisse.sortie,
+          montant: m.montant,
+          mode: m.mode,
+          referenceType: 'annulation',
+          referenceCode: code,
+          utilisateurCode: utilisateurCode,
+        );
       }
       await repo.annulerVente(code, par: utilisateurCode, le: DateTime.now());
       await HistoriqueRepository(txn).journaliser(

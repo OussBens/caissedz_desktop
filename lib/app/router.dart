@@ -6,10 +6,12 @@ import '../domain/modules.dart';
 import '../features/achats/achats_page.dart';
 import '../features/activation/activation_page.dart';
 import '../features/caisse/pos_page.dart';
+import '../features/clotures/clotures_page.dart';
 import '../features/compte/mon_compte_page.dart';
 import '../features/configuration/configuration_page.dart';
 import '../features/connexion/connexion_page.dart';
 import '../features/galerie/galerie_page.dart';
+import '../features/gestion_caisse/gestion_caisse_page.dart';
 import '../features/produits/produits_page.dart';
 import '../features/roles/roles_page.dart';
 import '../features/shell/app_shell.dart';
@@ -108,6 +110,8 @@ Widget pageModule(ModuleApp module) => switch (module.id) {
   'parametres' => const ParametresAccueilPage(),
   'caisse' => const PosPage(),
   'entrees' => const AchatsPage(),
+  'gestion_caisse' => const GestionCaissePage(),
+  'clotures' => const CloturesPage(),
   'ventes' => const VentesPage(),
   'retours' => const RetoursPage(),
   'clients' => const ClientsPage(),

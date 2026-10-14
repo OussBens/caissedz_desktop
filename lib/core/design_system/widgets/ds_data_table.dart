@@ -48,11 +48,20 @@ class DsColonne<T> {
 
 /// Action du menu contextuel d'une ligne.
 class DsActionContextuelle<T> {
-  const DsActionContextuelle({required this.libelle, required this.onSelected, this.icone, this.destructif = false});
+  const DsActionContextuelle({
+    required this.libelle,
+    required this.onSelected,
+    this.icone,
+    this.destructif = false,
+    this.visible,
+  });
   final String libelle;
   final IconData? icone;
   final bool destructif;
   final void Function(T ligne) onSelected;
+
+  /// Condition d'affichage dans le menu (toujours visible si `null`).
+  final bool Function(T ligne)? visible;
 }
 
 /// Tableau de données unique du design system.
@@ -209,7 +218,11 @@ class _DsDataTableState<T> extends State<DsDataTable<T>> {
   }
 
   Future<void> _menuContextuel(BuildContext ctx, T ligne, Offset position) async {
-    if (widget.actionsContextuelles.isEmpty) return;
+    final actions = [
+      for (final a in widget.actionsContextuelles)
+        if (a.visible == null || a.visible!(ligne)) a,
+    ];
+    if (actions.isEmpty) return;
     final c = ctx.ds.colors;
     final t = ctx.ds.typo;
     final overlay = Overlay.of(ctx).context.findRenderObject()! as RenderBox;
@@ -217,30 +230,33 @@ class _DsDataTableState<T> extends State<DsDataTable<T>> {
       context: ctx,
       position: RelativeRect.fromRect(position & const Size(1, 1), Offset.zero & overlay.size),
       items: [
-        for (var i = 0; i < widget.actionsContextuelles.length; i++)
+        for (var i = 0; i < actions.length; i++)
           PopupMenuItem<int>(
             value: i,
             height: 36,
             child: Row(
               children: [
-                if (widget.actionsContextuelles[i].icone != null) ...[
+                if (actions[i].icone != null) ...[
                   Icon(
-                    widget.actionsContextuelles[i].icone,
+                    actions[i].icone,
                     size: DsTailles.iconeSm,
-                    color: widget.actionsContextuelles[i].destructif ? c.danger : c.texteSecondaire,
+                    color: actions[i].destructif ? c.danger : c.texteSecondaire,
                   ),
                   const SizedBox(width: DsSpacing.sm),
                 ],
-                Text(
-                  widget.actionsContextuelles[i].libelle,
-                  style: t.corps.copyWith(color: widget.actionsContextuelles[i].destructif ? c.danger : c.texte),
+                Flexible(
+                  child: Text(
+                    actions[i].libelle,
+                    style: t.corps.copyWith(color: actions[i].destructif ? c.danger : c.texte),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               ],
             ),
           ),
       ],
     );
-    if (choix != null) widget.actionsContextuelles[choix].onSelected(ligne);
+    if (choix != null) actions[choix].onSelected(ligne);
   }
 
   Future<void> _menuColonnes(BuildContext ctx) async {

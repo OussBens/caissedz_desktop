@@ -944,5 +944,157 @@
       }
     }
   },
-  "smartScanErreurFichier": "Invalid file."
+  "smartScanErreurFichier": "Invalid file.",
+  "gestionCaisseTitre": "Cash management",
+  "gestionCaisseOngletCaisses": "Registers",
+  "gestionCaisseOngletMouvements": "Movements",
+  "gestionCaisseOngletTransferts": "Register transfers",
+  "caisseNouvelle": "New register",
+  "caisseModifier": "Edit register",
+  "caisseNom": "Name",
+  "caisseType": "Type",
+  "caisseMagasin": "Store",
+  "caisseSansMagasin": "No store",
+  "caisseActive": "Active",
+  "caisseInactive": "Inactive",
+  "caisseSoldeEspeces": "Cash balance",
+  "caisseSoldeTotal": "Total balance",
+  "caisseTypePhysique": "Physical",
+  "caisseTypeCompte": "Account",
+  "caisseAucune": "No register.",
+  "caisseDesactiver": "Deactivate",
+  "caisseActiver": "Activate",
+  "mouvementApport": "Cash in",
+  "mouvementDepense": "Expense",
+  "mouvementColType": "Type",
+  "mouvementColSens": "Direction",
+  "mouvementColMontant": "Amount",
+  "mouvementColMode": "Method",
+  "mouvementColReference": "Reference",
+  "mouvementAucun": "No movement.",
+  "mouvementToutesCaisses": "All registers",
+  "mouvementCaisse": "Register",
+  "mvtVente": "Sale",
+  "mvtAnnulation": "Cancellation",
+  "mvtRemboursement": "Refund",
+  "mvtEncaissement": "Receipt",
+  "mvtDecaissement": "Payment",
+  "mvtApport": "Cash in",
+  "mvtDepense": "Expense",
+  "mvtTransfert": "Transfer",
+  "mvtFondInitial": "Opening float",
+  "mvtRetrait": "Withdrawal",
+  "mvtEcart": "Variance",
+  "sensEntree": "In",
+  "sensSortie": "Out",
+  "transfertCaisseNouveau": "New transfer",
+  "transfertCaisseSource": "Source register",
+  "transfertCaisseDestination": "Destination register",
+  "transfertCaisseAucun": "No transfer.",
+  "transfertCaisseCree": "Transfer {code} recorded (2 movements).",
+  "@transfertCaisseCree": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "caisseErreurNom": "Name is required.",
+  "caisseErreurType": "Invalid register type.",
+  "caisseErreurMagasin": "Unknown store.",
+  "caisseErreurInconnue": "Register not found.",
+  "caisseErreurInactive": "Inactive register.",
+  "caisseErreurSysteme": "The main register cannot be deactivated.",
+  "caisseErreurMontant": "Invalid amount.",
+  "caisseErreurMode": "Invalid payment method.",
+  "caisseErreurMemeCaisse": "Choose two different registers.",
+  "caisseErreurSolde": "Insufficient balance in the source register.",
+  "caisseErreurSessionOuverte": "A session is open on this register.",
+  "cloturesTitre": "Z closures",
+  "clotureNouvelle": "Close (Z)",
+  "clotureApercuTitre": "Z closure — period preview",
+  "cloturePeriode": "Period",
+  "clotureDebut": "Start",
+  "clotureFin": "End",
+  "clotureColVentes": "Sales",
+  "clotureColAnnulations": "Cancellations",
+  "clotureColTotalVentes": "Sales total",
+  "clotureColRemises": "Discounts",
+  "clotureColRetours": "Returns",
+  "clotureColEncaissements": "Receipts",
+  "clotureColDecaissements": "Payments",
+  "clotureColHash": "Seal",
+  "clotureColUtilisateur": "User",
+  "clotureAucune": "No closure.",
+  "clotureConfirmer": "Seal the closure",
+  "clotureCreee": "Closure {code} sealed. Hash: {hash}",
+  "@clotureCreee": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "hash": {
+        "type": "String"
+      }
+    }
+  },
+  "clotureDetail": "Closure details",
+  "clotureParMode": "Receipts by method",
+  "clotureSoldes": "Register balances",
+  "clotureDerniereVente": "Last receipt",
+  "clotureHashPrecedent": "Previous hash",
+  "clotureHash": "Hash",
+  "clotureVerifier": "Verify chain",
+  "clotureChaineOk": "Closure chain intact.",
+  "clotureChaineKo": "Chain altered from closure {code}.",
+  "@clotureChaineKo": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "clotureErreurSession": "Close all register sessions before closing.",
+  "clotureErreurRien": "Nothing to close since the last closure.",
+  "clotureAvertissementImmuable": "A closure is final: it can neither be modified nor deleted, and documents of the period can no longer be cancelled.",
+  "exportFiscalTitre": "Fiscal export",
+  "exportFiscalDebut": "From (dd/mm/yyyy)",
+  "exportFiscalFin": "To (dd/mm/yyyy)",
+  "exportFiscalGenerer": "Generate archive",
+  "exportFiscalOk": "Archive saved: {chemin} ({ventes} sales, {clotures} closures, fingerprint verified).",
+  "@exportFiscalOk": {
+    "placeholders": {
+      "chemin": {
+        "type": "String"
+      },
+      "ventes": {
+        "type": "int"
+      },
+      "clotures": {
+        "type": "int"
+      }
+    }
+  },
+  "exportFiscalErreurDates": "Invalid dates.",
+  "exportFiscalVerifier": "Verify an archive",
+  "exportFiscalVerifOk": "Valid archive: {ventes} sales, {clotures} closures.",
+  "@exportFiscalVerifOk": {
+    "placeholders": {
+      "ventes": {
+        "type": "int"
+      },
+      "clotures": {
+        "type": "int"
+      }
+    }
+  },
+  "exportFiscalVerifKo": "Invalid archive: {erreurs}",
+  "@exportFiscalVerifKo": {
+    "placeholders": {
+      "erreurs": {
+        "type": "String"
+      }
+    }
+  },
+  "exportFiscalPermission": "Permission “export data” required."
 }

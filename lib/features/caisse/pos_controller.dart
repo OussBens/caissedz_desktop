@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/providers.dart';
+import '../../application/cloture_service.dart';
 import '../../application/session_caisse_service.dart';
 import '../../application/vente_service.dart';
 import '../../data/catalogue_repository.dart';
@@ -81,6 +82,7 @@ final venteServiceProvider = Provider<VenteService>(
     ref.watch(appDatabaseProvider).db,
     utilisateurCode: ref.watch(utilisateurCourantCodeProvider),
     parametres: ref.watch(parametresVenteProvider).value ?? const ParametresVente(),
+    periodeCloturee: ClotureService.periodeCloturee,
   ),
 );
 

@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/providers.dart';
+import '../../application/cloture_service.dart';
 import '../../application/retour_service.dart';
 import '../../application/tiers_service.dart';
 import '../../application/versement_service.dart';
@@ -27,7 +28,11 @@ final versementServiceProvider = Provider<VersementService>(
       VersementService(ref.watch(appDatabaseProvider).db, utilisateurCode: ref.watch(utilisateurCourantCodeProvider)),
 );
 final retourServiceProvider = Provider<RetourService>(
-  (ref) => RetourService(ref.watch(appDatabaseProvider).db, utilisateurCode: ref.watch(utilisateurCourantCodeProvider)),
+  (ref) => RetourService(
+    ref.watch(appDatabaseProvider).db,
+    utilisateurCode: ref.watch(utilisateurCourantCodeProvider),
+    periodeCloturee: ClotureService.periodeCloturee,
+  ),
 );
 
 /// Version des données commerciales (ventes, retours, versements, tiers).

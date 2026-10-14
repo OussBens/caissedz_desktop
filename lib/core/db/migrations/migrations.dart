@@ -5,6 +5,7 @@ import 'v003_catalogue.dart';
 import 'v004_stock.dart';
 import 'v005_caisse.dart';
 import 'v006_tiers.dart';
+import 'v007_gestion_caisse.dart';
 
 export 'migration.dart';
 
@@ -16,4 +17,5 @@ const List<Migration> toutesLesMigrations = [
   MigrationV004Stock(),
   MigrationV005Caisse(),
   MigrationV006Tiers(),
+  MigrationV007GestionCaisse(),
 ];

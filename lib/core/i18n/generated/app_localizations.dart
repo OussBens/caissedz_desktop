@@ -3734,6 +3734,594 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Fichier invalide.'**
   String get smartScanErreurFichier;
+
+  /// No description provided for @gestionCaisseTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Gestion de caisse'**
+  String get gestionCaisseTitre;
+
+  /// No description provided for @gestionCaisseOngletCaisses.
+  ///
+  /// In fr, this message translates to:
+  /// **'Caisses'**
+  String get gestionCaisseOngletCaisses;
+
+  /// No description provided for @gestionCaisseOngletMouvements.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mouvements'**
+  String get gestionCaisseOngletMouvements;
+
+  /// No description provided for @gestionCaisseOngletTransferts.
+  ///
+  /// In fr, this message translates to:
+  /// **'Transferts entre caisses'**
+  String get gestionCaisseOngletTransferts;
+
+  /// No description provided for @caisseNouvelle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouvelle caisse'**
+  String get caisseNouvelle;
+
+  /// No description provided for @caisseModifier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier la caisse'**
+  String get caisseModifier;
+
+  /// No description provided for @caisseNom.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom'**
+  String get caisseNom;
+
+  /// No description provided for @caisseType.
+  ///
+  /// In fr, this message translates to:
+  /// **'Type'**
+  String get caisseType;
+
+  /// No description provided for @caisseMagasin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Magasin'**
+  String get caisseMagasin;
+
+  /// No description provided for @caisseSansMagasin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sans magasin'**
+  String get caisseSansMagasin;
+
+  /// No description provided for @caisseActive.
+  ///
+  /// In fr, this message translates to:
+  /// **'Active'**
+  String get caisseActive;
+
+  /// No description provided for @caisseInactive.
+  ///
+  /// In fr, this message translates to:
+  /// **'Inactive'**
+  String get caisseInactive;
+
+  /// No description provided for @caisseSoldeEspeces.
+  ///
+  /// In fr, this message translates to:
+  /// **'Solde espèces'**
+  String get caisseSoldeEspeces;
+
+  /// No description provided for @caisseSoldeTotal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Solde total'**
+  String get caisseSoldeTotal;
+
+  /// No description provided for @caisseTypePhysique.
+  ///
+  /// In fr, this message translates to:
+  /// **'Physique'**
+  String get caisseTypePhysique;
+
+  /// No description provided for @caisseTypeCompte.
+  ///
+  /// In fr, this message translates to:
+  /// **'Compte'**
+  String get caisseTypeCompte;
+
+  /// No description provided for @caisseAucune.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune caisse.'**
+  String get caisseAucune;
+
+  /// No description provided for @caisseDesactiver.
+  ///
+  /// In fr, this message translates to:
+  /// **'Désactiver'**
+  String get caisseDesactiver;
+
+  /// No description provided for @caisseActiver.
+  ///
+  /// In fr, this message translates to:
+  /// **'Activer'**
+  String get caisseActiver;
+
+  /// No description provided for @mouvementApport.
+  ///
+  /// In fr, this message translates to:
+  /// **'Apport'**
+  String get mouvementApport;
+
+  /// No description provided for @mouvementDepense.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dépense'**
+  String get mouvementDepense;
+
+  /// No description provided for @mouvementColType.
+  ///
+  /// In fr, this message translates to:
+  /// **'Type'**
+  String get mouvementColType;
+
+  /// No description provided for @mouvementColSens.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sens'**
+  String get mouvementColSens;
+
+  /// No description provided for @mouvementColMontant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montant'**
+  String get mouvementColMontant;
+
+  /// No description provided for @mouvementColMode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mode'**
+  String get mouvementColMode;
+
+  /// No description provided for @mouvementColReference.
+  ///
+  /// In fr, this message translates to:
+  /// **'Référence'**
+  String get mouvementColReference;
+
+  /// No description provided for @mouvementAucun.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun mouvement.'**
+  String get mouvementAucun;
+
+  /// No description provided for @mouvementToutesCaisses.
+  ///
+  /// In fr, this message translates to:
+  /// **'Toutes les caisses'**
+  String get mouvementToutesCaisses;
+
+  /// No description provided for @mouvementCaisse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Caisse'**
+  String get mouvementCaisse;
+
+  /// No description provided for @mvtVente.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vente'**
+  String get mvtVente;
+
+  /// No description provided for @mvtAnnulation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annulation'**
+  String get mvtAnnulation;
+
+  /// No description provided for @mvtRemboursement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Remboursement'**
+  String get mvtRemboursement;
+
+  /// No description provided for @mvtEncaissement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Encaissement'**
+  String get mvtEncaissement;
+
+  /// No description provided for @mvtDecaissement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Décaissement'**
+  String get mvtDecaissement;
+
+  /// No description provided for @mvtApport.
+  ///
+  /// In fr, this message translates to:
+  /// **'Apport'**
+  String get mvtApport;
+
+  /// No description provided for @mvtDepense.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dépense'**
+  String get mvtDepense;
+
+  /// No description provided for @mvtTransfert.
+  ///
+  /// In fr, this message translates to:
+  /// **'Transfert'**
+  String get mvtTransfert;
+
+  /// No description provided for @mvtFondInitial.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fond initial'**
+  String get mvtFondInitial;
+
+  /// No description provided for @mvtRetrait.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retrait'**
+  String get mvtRetrait;
+
+  /// No description provided for @mvtEcart.
+  ///
+  /// In fr, this message translates to:
+  /// **'Écart'**
+  String get mvtEcart;
+
+  /// No description provided for @sensEntree.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrée'**
+  String get sensEntree;
+
+  /// No description provided for @sensSortie.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sortie'**
+  String get sensSortie;
+
+  /// No description provided for @transfertCaisseNouveau.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau transfert'**
+  String get transfertCaisseNouveau;
+
+  /// No description provided for @transfertCaisseSource.
+  ///
+  /// In fr, this message translates to:
+  /// **'Caisse source'**
+  String get transfertCaisseSource;
+
+  /// No description provided for @transfertCaisseDestination.
+  ///
+  /// In fr, this message translates to:
+  /// **'Caisse destination'**
+  String get transfertCaisseDestination;
+
+  /// No description provided for @transfertCaisseAucun.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun transfert.'**
+  String get transfertCaisseAucun;
+
+  /// No description provided for @transfertCaisseCree.
+  ///
+  /// In fr, this message translates to:
+  /// **'Transfert {code} enregistré (2 mouvements).'**
+  String transfertCaisseCree(String code);
+
+  /// No description provided for @caisseErreurNom.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le nom est obligatoire.'**
+  String get caisseErreurNom;
+
+  /// No description provided for @caisseErreurType.
+  ///
+  /// In fr, this message translates to:
+  /// **'Type de caisse invalide.'**
+  String get caisseErreurType;
+
+  /// No description provided for @caisseErreurMagasin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Magasin inconnu.'**
+  String get caisseErreurMagasin;
+
+  /// No description provided for @caisseErreurInconnue.
+  ///
+  /// In fr, this message translates to:
+  /// **'Caisse introuvable.'**
+  String get caisseErreurInconnue;
+
+  /// No description provided for @caisseErreurInactive.
+  ///
+  /// In fr, this message translates to:
+  /// **'Caisse inactive.'**
+  String get caisseErreurInactive;
+
+  /// No description provided for @caisseErreurSysteme.
+  ///
+  /// In fr, this message translates to:
+  /// **'La caisse principale ne peut pas être désactivée.'**
+  String get caisseErreurSysteme;
+
+  /// No description provided for @caisseErreurMontant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montant invalide.'**
+  String get caisseErreurMontant;
+
+  /// No description provided for @caisseErreurMode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mode de paiement invalide.'**
+  String get caisseErreurMode;
+
+  /// No description provided for @caisseErreurMemeCaisse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisissez deux caisses différentes.'**
+  String get caisseErreurMemeCaisse;
+
+  /// No description provided for @caisseErreurSolde.
+  ///
+  /// In fr, this message translates to:
+  /// **'Solde insuffisant dans la caisse source.'**
+  String get caisseErreurSolde;
+
+  /// No description provided for @caisseErreurSessionOuverte.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une session est ouverte sur cette caisse.'**
+  String get caisseErreurSessionOuverte;
+
+  /// No description provided for @cloturesTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Clôtures Z'**
+  String get cloturesTitre;
+
+  /// No description provided for @clotureNouvelle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Clôturer (Z)'**
+  String get clotureNouvelle;
+
+  /// No description provided for @clotureApercuTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Clôture Z — aperçu de la période'**
+  String get clotureApercuTitre;
+
+  /// No description provided for @cloturePeriode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Période'**
+  String get cloturePeriode;
+
+  /// No description provided for @clotureDebut.
+  ///
+  /// In fr, this message translates to:
+  /// **'Début'**
+  String get clotureDebut;
+
+  /// No description provided for @clotureFin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fin'**
+  String get clotureFin;
+
+  /// No description provided for @clotureColVentes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ventes'**
+  String get clotureColVentes;
+
+  /// No description provided for @clotureColAnnulations.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annulations'**
+  String get clotureColAnnulations;
+
+  /// No description provided for @clotureColTotalVentes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Total ventes'**
+  String get clotureColTotalVentes;
+
+  /// No description provided for @clotureColRemises.
+  ///
+  /// In fr, this message translates to:
+  /// **'Remises'**
+  String get clotureColRemises;
+
+  /// No description provided for @clotureColRetours.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retours'**
+  String get clotureColRetours;
+
+  /// No description provided for @clotureColEncaissements.
+  ///
+  /// In fr, this message translates to:
+  /// **'Encaissements'**
+  String get clotureColEncaissements;
+
+  /// No description provided for @clotureColDecaissements.
+  ///
+  /// In fr, this message translates to:
+  /// **'Décaissements'**
+  String get clotureColDecaissements;
+
+  /// No description provided for @clotureColHash.
+  ///
+  /// In fr, this message translates to:
+  /// **'Scellement'**
+  String get clotureColHash;
+
+  /// No description provided for @clotureColUtilisateur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Utilisateur'**
+  String get clotureColUtilisateur;
+
+  /// No description provided for @clotureAucune.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune clôture.'**
+  String get clotureAucune;
+
+  /// No description provided for @clotureConfirmer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sceller la clôture'**
+  String get clotureConfirmer;
+
+  /// No description provided for @clotureCreee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Clôture {code} scellée. Hash : {hash}'**
+  String clotureCreee(String code, String hash);
+
+  /// No description provided for @clotureDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Détail de la clôture'**
+  String get clotureDetail;
+
+  /// No description provided for @clotureParMode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Encaissements par mode'**
+  String get clotureParMode;
+
+  /// No description provided for @clotureSoldes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Soldes des caisses'**
+  String get clotureSoldes;
+
+  /// No description provided for @clotureDerniereVente.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dernier ticket'**
+  String get clotureDerniereVente;
+
+  /// No description provided for @clotureHashPrecedent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Hash précédent'**
+  String get clotureHashPrecedent;
+
+  /// No description provided for @clotureHash.
+  ///
+  /// In fr, this message translates to:
+  /// **'Hash'**
+  String get clotureHash;
+
+  /// No description provided for @clotureVerifier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vérifier la chaîne'**
+  String get clotureVerifier;
+
+  /// No description provided for @clotureChaineOk.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chaîne des clôtures intacte.'**
+  String get clotureChaineOk;
+
+  /// No description provided for @clotureChaineKo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chaîne altérée à partir de la clôture {code}.'**
+  String clotureChaineKo(String code);
+
+  /// No description provided for @clotureErreurSession.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fermez toutes les sessions de caisse avant de clôturer.'**
+  String get clotureErreurSession;
+
+  /// No description provided for @clotureErreurRien.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rien à clôturer depuis la dernière clôture.'**
+  String get clotureErreurRien;
+
+  /// No description provided for @clotureAvertissementImmuable.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une clôture est définitive : elle ne peut être ni modifiée ni supprimée, et les documents de la période ne pourront plus être annulés.'**
+  String get clotureAvertissementImmuable;
+
+  /// No description provided for @exportFiscalTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Export fiscal'**
+  String get exportFiscalTitre;
+
+  /// No description provided for @exportFiscalDebut.
+  ///
+  /// In fr, this message translates to:
+  /// **'Du (jj/mm/aaaa)'**
+  String get exportFiscalDebut;
+
+  /// No description provided for @exportFiscalFin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Au (jj/mm/aaaa)'**
+  String get exportFiscalFin;
+
+  /// No description provided for @exportFiscalGenerer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Générer l\'archive'**
+  String get exportFiscalGenerer;
+
+  /// No description provided for @exportFiscalOk.
+  ///
+  /// In fr, this message translates to:
+  /// **'Archive enregistrée : {chemin} ({ventes} ventes, {clotures} clôtures, empreinte vérifiée).'**
+  String exportFiscalOk(String chemin, int ventes, int clotures);
+
+  /// No description provided for @exportFiscalErreurDates.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dates invalides.'**
+  String get exportFiscalErreurDates;
+
+  /// No description provided for @exportFiscalVerifier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vérifier une archive'**
+  String get exportFiscalVerifier;
+
+  /// No description provided for @exportFiscalVerifOk.
+  ///
+  /// In fr, this message translates to:
+  /// **'Archive valide : {ventes} ventes, {clotures} clôtures.'**
+  String exportFiscalVerifOk(int ventes, int clotures);
+
+  /// No description provided for @exportFiscalVerifKo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Archive invalide : {erreurs}'**
+  String exportFiscalVerifKo(String erreurs);
+
+  /// No description provided for @exportFiscalPermission.
+  ///
+  /// In fr, this message translates to:
+  /// **'Permission « exporter les données » requise.'**
+  String get exportFiscalPermission;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

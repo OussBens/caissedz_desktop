@@ -63,8 +63,9 @@
 - [x] Smart Scan IA : quota serveur, quota atteint, demande d'offre
 
 ## Gestion caisse et fiscal (lot 7)
-- [ ] Clôtures Z chaînées immuables ; annulation refusée en période clôturée
-- [ ] Export fiscal : archive + JSON vérifiable
+- [x] Caisses Physique / Compte, caisse sans magasin ; journal des mouvements ; transferts TRF = 2 mouvements
+- [x] Clôtures Z chaînées immuables ; annulation refusée en période clôturée
+- [x] Export fiscal : archive + JSON vérifiable
 
 ## Rapports et paramètres (lot 8)
 - [ ] Tableau de bord 6 KPI / 5 graphiques ; Situation 10 rapports ; Zakat

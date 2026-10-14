@@ -944,5 +944,157 @@
       }
     }
   },
-  "smartScanErreurFichier": "ملف غير صالح."
+  "smartScanErreurFichier": "ملف غير صالح.",
+  "gestionCaisseTitre": "إدارة الصندوق",
+  "gestionCaisseOngletCaisses": "الصناديق",
+  "gestionCaisseOngletMouvements": "الحركات",
+  "gestionCaisseOngletTransferts": "التحويلات بين الصناديق",
+  "caisseNouvelle": "صندوق جديد",
+  "caisseModifier": "تعديل الصندوق",
+  "caisseNom": "الاسم",
+  "caisseType": "النوع",
+  "caisseMagasin": "المخزن",
+  "caisseSansMagasin": "بدون مخزن",
+  "caisseActive": "نشط",
+  "caisseInactive": "غير نشط",
+  "caisseSoldeEspeces": "رصيد نقدي",
+  "caisseSoldeTotal": "الرصيد الإجمالي",
+  "caisseTypePhysique": "مادي",
+  "caisseTypeCompte": "حساب",
+  "caisseAucune": "لا يوجد صندوق.",
+  "caisseDesactiver": "تعطيل",
+  "caisseActiver": "تفعيل",
+  "mouvementApport": "إيداع",
+  "mouvementDepense": "مصروف",
+  "mouvementColType": "النوع",
+  "mouvementColSens": "الاتجاه",
+  "mouvementColMontant": "المبلغ",
+  "mouvementColMode": "الوسيلة",
+  "mouvementColReference": "المرجع",
+  "mouvementAucun": "لا توجد حركات.",
+  "mouvementToutesCaisses": "كل الصناديق",
+  "mouvementCaisse": "الصندوق",
+  "mvtVente": "بيع",
+  "mvtAnnulation": "إلغاء",
+  "mvtRemboursement": "استرجاع",
+  "mvtEncaissement": "تحصيل",
+  "mvtDecaissement": "صرف",
+  "mvtApport": "إيداع",
+  "mvtDepense": "مصروف",
+  "mvtTransfert": "تحويل",
+  "mvtFondInitial": "رصيد افتتاحي",
+  "mvtRetrait": "سحب",
+  "mvtEcart": "فرق",
+  "sensEntree": "دخول",
+  "sensSortie": "خروج",
+  "transfertCaisseNouveau": "تحويل جديد",
+  "transfertCaisseSource": "الصندوق المصدر",
+  "transfertCaisseDestination": "الصندوق الوجهة",
+  "transfertCaisseAucun": "لا توجد تحويلات.",
+  "transfertCaisseCree": "تم تسجيل التحويل {code} (حركتان).",
+  "@transfertCaisseCree": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "caisseErreurNom": "الاسم إلزامي.",
+  "caisseErreurType": "نوع الصندوق غير صالح.",
+  "caisseErreurMagasin": "مخزن غير معروف.",
+  "caisseErreurInconnue": "الصندوق غير موجود.",
+  "caisseErreurInactive": "الصندوق غير نشط.",
+  "caisseErreurSysteme": "لا يمكن تعطيل الصندوق الرئيسي.",
+  "caisseErreurMontant": "مبلغ غير صالح.",
+  "caisseErreurMode": "وسيلة دفع غير صالحة.",
+  "caisseErreurMemeCaisse": "اختر صندوقين مختلفين.",
+  "caisseErreurSolde": "الرصيد غير كافٍ في الصندوق المصدر.",
+  "caisseErreurSessionOuverte": "توجد جلسة مفتوحة على هذا الصندوق.",
+  "cloturesTitre": "إقفالات Z",
+  "clotureNouvelle": "إقفال (Z)",
+  "clotureApercuTitre": "إقفال Z — معاينة الفترة",
+  "cloturePeriode": "الفترة",
+  "clotureDebut": "البداية",
+  "clotureFin": "النهاية",
+  "clotureColVentes": "المبيعات",
+  "clotureColAnnulations": "الإلغاءات",
+  "clotureColTotalVentes": "إجمالي المبيعات",
+  "clotureColRemises": "الخصومات",
+  "clotureColRetours": "المرتجعات",
+  "clotureColEncaissements": "التحصيلات",
+  "clotureColDecaissements": "المصروفات",
+  "clotureColHash": "الختم",
+  "clotureColUtilisateur": "المستخدم",
+  "clotureAucune": "لا يوجد إقفال.",
+  "clotureConfirmer": "ختم الإقفال",
+  "clotureCreee": "تم ختم الإقفال {code}. البصمة: {hash}",
+  "@clotureCreee": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "hash": {
+        "type": "String"
+      }
+    }
+  },
+  "clotureDetail": "تفاصيل الإقفال",
+  "clotureParMode": "التحصيلات حسب الوسيلة",
+  "clotureSoldes": "أرصدة الصناديق",
+  "clotureDerniereVente": "آخر تذكرة",
+  "clotureHashPrecedent": "البصمة السابقة",
+  "clotureHash": "البصمة",
+  "clotureVerifier": "التحقق من السلسلة",
+  "clotureChaineOk": "سلسلة الإقفالات سليمة.",
+  "clotureChaineKo": "سلسلة معدّلة ابتداءً من الإقفال {code}.",
+  "@clotureChaineKo": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "clotureErreurSession": "أغلق جميع جلسات الصندوق قبل الإقفال.",
+  "clotureErreurRien": "لا شيء للإقفال منذ آخر إقفال.",
+  "clotureAvertissementImmuable": "الإقفال نهائي: لا يمكن تعديله أو حذفه، ولن يمكن إلغاء مستندات الفترة بعد ذلك.",
+  "exportFiscalTitre": "التصدير الجبائي",
+  "exportFiscalDebut": "من (يوم/شهر/سنة)",
+  "exportFiscalFin": "إلى (يوم/شهر/سنة)",
+  "exportFiscalGenerer": "إنشاء الأرشيف",
+  "exportFiscalOk": "تم حفظ الأرشيف: {chemin} ({ventes} مبيعات، {clotures} إقفالات، تم التحقق من البصمة).",
+  "@exportFiscalOk": {
+    "placeholders": {
+      "chemin": {
+        "type": "String"
+      },
+      "ventes": {
+        "type": "int"
+      },
+      "clotures": {
+        "type": "int"
+      }
+    }
+  },
+  "exportFiscalErreurDates": "تواريخ غير صالحة.",
+  "exportFiscalVerifier": "التحقق من أرشيف",
+  "exportFiscalVerifOk": "أرشيف صالح: {ventes} مبيعات، {clotures} إقفالات.",
+  "@exportFiscalVerifOk": {
+    "placeholders": {
+      "ventes": {
+        "type": "int"
+      },
+      "clotures": {
+        "type": "int"
+      }
+    }
+  },
+  "exportFiscalVerifKo": "أرشيف غير صالح: {erreurs}",
+  "@exportFiscalVerifKo": {
+    "placeholders": {
+      "erreurs": {
+        "type": "String"
+      }
+    }
+  },
+  "exportFiscalPermission": "مطلوب إذن « تصدير البيانات »."
 }

@@ -1915,4 +1915,311 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get smartScanErreurFichier => 'ملف غير صالح.';
+
+  @override
+  String get gestionCaisseTitre => 'إدارة الصندوق';
+
+  @override
+  String get gestionCaisseOngletCaisses => 'الصناديق';
+
+  @override
+  String get gestionCaisseOngletMouvements => 'الحركات';
+
+  @override
+  String get gestionCaisseOngletTransferts => 'التحويلات بين الصناديق';
+
+  @override
+  String get caisseNouvelle => 'صندوق جديد';
+
+  @override
+  String get caisseModifier => 'تعديل الصندوق';
+
+  @override
+  String get caisseNom => 'الاسم';
+
+  @override
+  String get caisseType => 'النوع';
+
+  @override
+  String get caisseMagasin => 'المخزن';
+
+  @override
+  String get caisseSansMagasin => 'بدون مخزن';
+
+  @override
+  String get caisseActive => 'نشط';
+
+  @override
+  String get caisseInactive => 'غير نشط';
+
+  @override
+  String get caisseSoldeEspeces => 'رصيد نقدي';
+
+  @override
+  String get caisseSoldeTotal => 'الرصيد الإجمالي';
+
+  @override
+  String get caisseTypePhysique => 'مادي';
+
+  @override
+  String get caisseTypeCompte => 'حساب';
+
+  @override
+  String get caisseAucune => 'لا يوجد صندوق.';
+
+  @override
+  String get caisseDesactiver => 'تعطيل';
+
+  @override
+  String get caisseActiver => 'تفعيل';
+
+  @override
+  String get mouvementApport => 'إيداع';
+
+  @override
+  String get mouvementDepense => 'مصروف';
+
+  @override
+  String get mouvementColType => 'النوع';
+
+  @override
+  String get mouvementColSens => 'الاتجاه';
+
+  @override
+  String get mouvementColMontant => 'المبلغ';
+
+  @override
+  String get mouvementColMode => 'الوسيلة';
+
+  @override
+  String get mouvementColReference => 'المرجع';
+
+  @override
+  String get mouvementAucun => 'لا توجد حركات.';
+
+  @override
+  String get mouvementToutesCaisses => 'كل الصناديق';
+
+  @override
+  String get mouvementCaisse => 'الصندوق';
+
+  @override
+  String get mvtVente => 'بيع';
+
+  @override
+  String get mvtAnnulation => 'إلغاء';
+
+  @override
+  String get mvtRemboursement => 'استرجاع';
+
+  @override
+  String get mvtEncaissement => 'تحصيل';
+
+  @override
+  String get mvtDecaissement => 'صرف';
+
+  @override
+  String get mvtApport => 'إيداع';
+
+  @override
+  String get mvtDepense => 'مصروف';
+
+  @override
+  String get mvtTransfert => 'تحويل';
+
+  @override
+  String get mvtFondInitial => 'رصيد افتتاحي';
+
+  @override
+  String get mvtRetrait => 'سحب';
+
+  @override
+  String get mvtEcart => 'فرق';
+
+  @override
+  String get sensEntree => 'دخول';
+
+  @override
+  String get sensSortie => 'خروج';
+
+  @override
+  String get transfertCaisseNouveau => 'تحويل جديد';
+
+  @override
+  String get transfertCaisseSource => 'الصندوق المصدر';
+
+  @override
+  String get transfertCaisseDestination => 'الصندوق الوجهة';
+
+  @override
+  String get transfertCaisseAucun => 'لا توجد تحويلات.';
+
+  @override
+  String transfertCaisseCree(String code) {
+    return 'تم تسجيل التحويل $code (حركتان).';
+  }
+
+  @override
+  String get caisseErreurNom => 'الاسم إلزامي.';
+
+  @override
+  String get caisseErreurType => 'نوع الصندوق غير صالح.';
+
+  @override
+  String get caisseErreurMagasin => 'مخزن غير معروف.';
+
+  @override
+  String get caisseErreurInconnue => 'الصندوق غير موجود.';
+
+  @override
+  String get caisseErreurInactive => 'الصندوق غير نشط.';
+
+  @override
+  String get caisseErreurSysteme => 'لا يمكن تعطيل الصندوق الرئيسي.';
+
+  @override
+  String get caisseErreurMontant => 'مبلغ غير صالح.';
+
+  @override
+  String get caisseErreurMode => 'وسيلة دفع غير صالحة.';
+
+  @override
+  String get caisseErreurMemeCaisse => 'اختر صندوقين مختلفين.';
+
+  @override
+  String get caisseErreurSolde => 'الرصيد غير كافٍ في الصندوق المصدر.';
+
+  @override
+  String get caisseErreurSessionOuverte => 'توجد جلسة مفتوحة على هذا الصندوق.';
+
+  @override
+  String get cloturesTitre => 'إقفالات Z';
+
+  @override
+  String get clotureNouvelle => 'إقفال (Z)';
+
+  @override
+  String get clotureApercuTitre => 'إقفال Z — معاينة الفترة';
+
+  @override
+  String get cloturePeriode => 'الفترة';
+
+  @override
+  String get clotureDebut => 'البداية';
+
+  @override
+  String get clotureFin => 'النهاية';
+
+  @override
+  String get clotureColVentes => 'المبيعات';
+
+  @override
+  String get clotureColAnnulations => 'الإلغاءات';
+
+  @override
+  String get clotureColTotalVentes => 'إجمالي المبيعات';
+
+  @override
+  String get clotureColRemises => 'الخصومات';
+
+  @override
+  String get clotureColRetours => 'المرتجعات';
+
+  @override
+  String get clotureColEncaissements => 'التحصيلات';
+
+  @override
+  String get clotureColDecaissements => 'المصروفات';
+
+  @override
+  String get clotureColHash => 'الختم';
+
+  @override
+  String get clotureColUtilisateur => 'المستخدم';
+
+  @override
+  String get clotureAucune => 'لا يوجد إقفال.';
+
+  @override
+  String get clotureConfirmer => 'ختم الإقفال';
+
+  @override
+  String clotureCreee(String code, String hash) {
+    return 'تم ختم الإقفال $code. البصمة: $hash';
+  }
+
+  @override
+  String get clotureDetail => 'تفاصيل الإقفال';
+
+  @override
+  String get clotureParMode => 'التحصيلات حسب الوسيلة';
+
+  @override
+  String get clotureSoldes => 'أرصدة الصناديق';
+
+  @override
+  String get clotureDerniereVente => 'آخر تذكرة';
+
+  @override
+  String get clotureHashPrecedent => 'البصمة السابقة';
+
+  @override
+  String get clotureHash => 'البصمة';
+
+  @override
+  String get clotureVerifier => 'التحقق من السلسلة';
+
+  @override
+  String get clotureChaineOk => 'سلسلة الإقفالات سليمة.';
+
+  @override
+  String clotureChaineKo(String code) {
+    return 'سلسلة معدّلة ابتداءً من الإقفال $code.';
+  }
+
+  @override
+  String get clotureErreurSession => 'أغلق جميع جلسات الصندوق قبل الإقفال.';
+
+  @override
+  String get clotureErreurRien => 'لا شيء للإقفال منذ آخر إقفال.';
+
+  @override
+  String get clotureAvertissementImmuable =>
+      'الإقفال نهائي: لا يمكن تعديله أو حذفه، ولن يمكن إلغاء مستندات الفترة بعد ذلك.';
+
+  @override
+  String get exportFiscalTitre => 'التصدير الجبائي';
+
+  @override
+  String get exportFiscalDebut => 'من (يوم/شهر/سنة)';
+
+  @override
+  String get exportFiscalFin => 'إلى (يوم/شهر/سنة)';
+
+  @override
+  String get exportFiscalGenerer => 'إنشاء الأرشيف';
+
+  @override
+  String exportFiscalOk(String chemin, int ventes, int clotures) {
+    return 'تم حفظ الأرشيف: $chemin ($ventes مبيعات، $clotures إقفالات، تم التحقق من البصمة).';
+  }
+
+  @override
+  String get exportFiscalErreurDates => 'تواريخ غير صالحة.';
+
+  @override
+  String get exportFiscalVerifier => 'التحقق من أرشيف';
+
+  @override
+  String exportFiscalVerifOk(int ventes, int clotures) {
+    return 'أرشيف صالح: $ventes مبيعات، $clotures إقفالات.';
+  }
+
+  @override
+  String exportFiscalVerifKo(String erreurs) {
+    return 'أرشيف غير صالح: $erreurs';
+  }
+
+  @override
+  String get exportFiscalPermission => 'مطلوب إذن « تصدير البيانات ».';
 }

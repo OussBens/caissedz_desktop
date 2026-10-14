@@ -8,6 +8,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../app/demarrage_providers.dart';
 import '../../app/providers.dart';
 import '../../application/achat_service.dart';
+import '../../application/cloture_service.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
 import '../../domain/models/achat.dart';
@@ -20,7 +21,11 @@ import '../tiers/tiers_providers.dart';
 import 'smart_scan_dialog.dart';
 
 final achatServiceProvider = Provider<AchatService>(
-  (ref) => AchatService(ref.watch(appDatabaseProvider).db, utilisateurCode: ref.watch(utilisateurCourantCodeProvider)),
+  (ref) => AchatService(
+    ref.watch(appDatabaseProvider).db,
+    utilisateurCode: ref.watch(utilisateurCourantCodeProvider),
+    periodeCloturee: ClotureService.periodeCloturee,
+  ),
 );
 
 final achatsProvider = FutureProvider<List<Achat>>((ref) {

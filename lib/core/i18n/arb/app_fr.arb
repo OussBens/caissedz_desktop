@@ -944,5 +944,157 @@
       }
     }
   },
-  "smartScanErreurFichier": "Fichier invalide."
+  "smartScanErreurFichier": "Fichier invalide.",
+  "gestionCaisseTitre": "Gestion de caisse",
+  "gestionCaisseOngletCaisses": "Caisses",
+  "gestionCaisseOngletMouvements": "Mouvements",
+  "gestionCaisseOngletTransferts": "Transferts entre caisses",
+  "caisseNouvelle": "Nouvelle caisse",
+  "caisseModifier": "Modifier la caisse",
+  "caisseNom": "Nom",
+  "caisseType": "Type",
+  "caisseMagasin": "Magasin",
+  "caisseSansMagasin": "Sans magasin",
+  "caisseActive": "Active",
+  "caisseInactive": "Inactive",
+  "caisseSoldeEspeces": "Solde espèces",
+  "caisseSoldeTotal": "Solde total",
+  "caisseTypePhysique": "Physique",
+  "caisseTypeCompte": "Compte",
+  "caisseAucune": "Aucune caisse.",
+  "caisseDesactiver": "Désactiver",
+  "caisseActiver": "Activer",
+  "mouvementApport": "Apport",
+  "mouvementDepense": "Dépense",
+  "mouvementColType": "Type",
+  "mouvementColSens": "Sens",
+  "mouvementColMontant": "Montant",
+  "mouvementColMode": "Mode",
+  "mouvementColReference": "Référence",
+  "mouvementAucun": "Aucun mouvement.",
+  "mouvementToutesCaisses": "Toutes les caisses",
+  "mouvementCaisse": "Caisse",
+  "mvtVente": "Vente",
+  "mvtAnnulation": "Annulation",
+  "mvtRemboursement": "Remboursement",
+  "mvtEncaissement": "Encaissement",
+  "mvtDecaissement": "Décaissement",
+  "mvtApport": "Apport",
+  "mvtDepense": "Dépense",
+  "mvtTransfert": "Transfert",
+  "mvtFondInitial": "Fond initial",
+  "mvtRetrait": "Retrait",
+  "mvtEcart": "Écart",
+  "sensEntree": "Entrée",
+  "sensSortie": "Sortie",
+  "transfertCaisseNouveau": "Nouveau transfert",
+  "transfertCaisseSource": "Caisse source",
+  "transfertCaisseDestination": "Caisse destination",
+  "transfertCaisseAucun": "Aucun transfert.",
+  "transfertCaisseCree": "Transfert {code} enregistré (2 mouvements).",
+  "@transfertCaisseCree": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "caisseErreurNom": "Le nom est obligatoire.",
+  "caisseErreurType": "Type de caisse invalide.",
+  "caisseErreurMagasin": "Magasin inconnu.",
+  "caisseErreurInconnue": "Caisse introuvable.",
+  "caisseErreurInactive": "Caisse inactive.",
+  "caisseErreurSysteme": "La caisse principale ne peut pas être désactivée.",
+  "caisseErreurMontant": "Montant invalide.",
+  "caisseErreurMode": "Mode de paiement invalide.",
+  "caisseErreurMemeCaisse": "Choisissez deux caisses différentes.",
+  "caisseErreurSolde": "Solde insuffisant dans la caisse source.",
+  "caisseErreurSessionOuverte": "Une session est ouverte sur cette caisse.",
+  "cloturesTitre": "Clôtures Z",
+  "clotureNouvelle": "Clôturer (Z)",
+  "clotureApercuTitre": "Clôture Z — aperçu de la période",
+  "cloturePeriode": "Période",
+  "clotureDebut": "Début",
+  "clotureFin": "Fin",
+  "clotureColVentes": "Ventes",
+  "clotureColAnnulations": "Annulations",
+  "clotureColTotalVentes": "Total ventes",
+  "clotureColRemises": "Remises",
+  "clotureColRetours": "Retours",
+  "clotureColEncaissements": "Encaissements",
+  "clotureColDecaissements": "Décaissements",
+  "clotureColHash": "Scellement",
+  "clotureColUtilisateur": "Utilisateur",
+  "clotureAucune": "Aucune clôture.",
+  "clotureConfirmer": "Sceller la clôture",
+  "clotureCreee": "Clôture {code} scellée. Hash : {hash}",
+  "@clotureCreee": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "hash": {
+        "type": "String"
+      }
+    }
+  },
+  "clotureDetail": "Détail de la clôture",
+  "clotureParMode": "Encaissements par mode",
+  "clotureSoldes": "Soldes des caisses",
+  "clotureDerniereVente": "Dernier ticket",
+  "clotureHashPrecedent": "Hash précédent",
+  "clotureHash": "Hash",
+  "clotureVerifier": "Vérifier la chaîne",
+  "clotureChaineOk": "Chaîne des clôtures intacte.",
+  "clotureChaineKo": "Chaîne altérée à partir de la clôture {code}.",
+  "@clotureChaineKo": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "clotureErreurSession": "Fermez toutes les sessions de caisse avant de clôturer.",
+  "clotureErreurRien": "Rien à clôturer depuis la dernière clôture.",
+  "clotureAvertissementImmuable": "Une clôture est définitive : elle ne peut être ni modifiée ni supprimée, et les documents de la période ne pourront plus être annulés.",
+  "exportFiscalTitre": "Export fiscal",
+  "exportFiscalDebut": "Du (jj/mm/aaaa)",
+  "exportFiscalFin": "Au (jj/mm/aaaa)",
+  "exportFiscalGenerer": "Générer l'archive",
+  "exportFiscalOk": "Archive enregistrée : {chemin} ({ventes} ventes, {clotures} clôtures, empreinte vérifiée).",
+  "@exportFiscalOk": {
+    "placeholders": {
+      "chemin": {
+        "type": "String"
+      },
+      "ventes": {
+        "type": "int"
+      },
+      "clotures": {
+        "type": "int"
+      }
+    }
+  },
+  "exportFiscalErreurDates": "Dates invalides.",
+  "exportFiscalVerifier": "Vérifier une archive",
+  "exportFiscalVerifOk": "Archive valide : {ventes} ventes, {clotures} clôtures.",
+  "@exportFiscalVerifOk": {
+    "placeholders": {
+      "ventes": {
+        "type": "int"
+      },
+      "clotures": {
+        "type": "int"
+      }
+    }
+  },
+  "exportFiscalVerifKo": "Archive invalide : {erreurs}",
+  "@exportFiscalVerifKo": {
+    "placeholders": {
+      "erreurs": {
+        "type": "String"
+      }
+    }
+  },
+  "exportFiscalPermission": "Permission « exporter les données » requise."
 }

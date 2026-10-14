@@ -1,5 +1,6 @@
 import 'package:sqflite_common/sqlite_api.dart';
 
+import '../data/caisse_repository.dart';
 import '../data/catalogue_repository.dart';
 import '../data/historique_repository.dart';
 import '../data/tiers_repository.dart';
@@ -10,6 +11,7 @@ import '../domain/models/retour.dart';
 import '../domain/models/stock.dart';
 import 'stock_service.dart';
 import 'vente_service.dart';
+import 'versement_service.dart';
 
 enum ErreurAchat {
   lignesVides,
@@ -47,6 +49,7 @@ class AchatService {
     String? reference,
     double verse = 0,
     String modePaiement = 'Espèces',
+    String? caisseCode,
     String source = 'Manuel',
     String? commentaire,
     DateTime? date,
@@ -136,20 +139,21 @@ class AchatService {
       // Paiement immédiat : versement fournisseur imputé à cet achat (le reste lu = total − imputations).
       if (paye > 0 && fournisseurCode != CodeGenerator.systeme(CodeGenerator.fournisseur)) {
         final codeV = await tiers.prochainCode('versement', CodeGenerator.versement);
-        await tiers.insererVersement(
-          Versement(
-            code: codeV,
-            date: d,
-            tiersType: TypesTiers.fournisseur,
-            tiersCode: fournisseurCode,
-            sens: SensVersement.decaissement,
-            montant: paye,
-            mode: modePaiement,
-            utilisateurCode: utilisateurCode,
-            commentaire: 'Paiement $code',
-            imputations: [Imputation(versementCode: codeV, documentType: 'achat', documentCode: code, montant: paye)],
-          ),
+        final v = Versement(
+          code: codeV,
+          date: d,
+          tiersType: TypesTiers.fournisseur,
+          tiersCode: fournisseurCode,
+          sens: SensVersement.decaissement,
+          montant: paye,
+          mode: modePaiement,
+          utilisateurCode: utilisateurCode,
+          caisseCode: caisseCode ?? await CaisseRepository(txn).caisseParDefaut(utilisateurCode),
+          commentaire: 'Paiement $code',
+          imputations: [Imputation(versementCode: codeV, documentType: 'achat', documentCode: code, montant: paye)],
         );
+        await tiers.insererVersement(v);
+        await VersementService.journaliserVersement(txn, v);
       }
       await HistoriqueRepository(txn).journaliser(
         utilisateurCode: utilisateurCode,

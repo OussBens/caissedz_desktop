@@ -228,12 +228,45 @@ en-tête `X-Api-Key`) ; le paiement immédiat d'un achat est un versement fourni
 vente n'est modifié que si un nouveau prix est saisi ; les achats sur `FOR0000` (fournisseur divers) ne créent
 pas de versement.
 
-## Lot 7 — Gestion caisse, clôtures Z, export fiscal ⬜
+## Lot 7 — Gestion caisse, clôtures Z, export fiscal ✅ (sous hypothèses ⚠️)
 Écrans : caisses (types Physique/Compte, caisse sans magasin), transferts TRF (2 mouvements), clôtures Z chaînées
 immuables, annulation refusée en période clôturée, export fiscal (archive + JSON vérifiable).
 Règles : §8, §12 (conformité fiscale), §8.10 (TRF).
 Tests : chaînage SHA-256 des clôtures, immuabilité, refus d'annulation, vérification du JSON exporté.
 Checklist §15 : clôtures / fiscal.
+
+**Livré**
+- Migration v7 : `mouvement_caisse` (journal, jamais un solde modifié à la main), `transfert_caisse` (TRF),
+  `cloture` (Z) protégée par des déclencheurs SQL `RAISE(ABORT)` sur UPDATE et DELETE (immuabilité garantie par
+  le moteur).
+- Journal de caisse alimenté par les services existants, dans leur transaction : ouverture de session (fond
+  initial), ventes (une entrée par paiement hors points, espèces nettes de la monnaie rendue), annulation de
+  vente (sortie miroir), versements (encaissement / décaissement), remboursement de retour, paiement immédiat
+  d'achat, fermeture de session (écart puis retrait des espèces comptées). Suppression d'un versement = retrait
+  de ses mouvements.
+- `CaisseService` : caisses Physique / Compte avec ou sans magasin, activation, apport / dépense, `transferer`
+  (TRF, UNE transaction, 2 mouvements sortie + entrée, solde insuffisant refusé, caisse inactive refusée).
+- `ClotureService` : aperçu puis `cloturer` (UNE transaction) sur la période écoulée depuis la clôture
+  précédente : nb ventes / annulations, totaux ventes / remises / retours / encaissements / décaissements,
+  encaissements par mode, soldes des caisses, dernier ticket et son hash, hash SHA-256 chaîné au Z précédent ;
+  refus si une session est ouverte ou si rien n'est à clôturer ; `verifierChaine` ; `periodeCloturee` branché
+  sur `VenteService.annuler`, `RetourService.creer` et `AchatService.annuler`.
+- `ExportFiscal` (§12) : archive ZIP `export.json` (ventes scellées avec lignes / paiements, clôtures chaînées,
+  empreinte SHA-256 globale, boutique, logiciel, période), `ventes.csv`, `clotures.csv`, `LISEZMOI.txt` ;
+  `verifier` recalcule l'empreinte et les deux chaînes depuis l'archive ou le JSON brut.
+- Écrans : Gestion de caisse (onglets Caisses avec soldes espèces / total, Mouvements filtrables avec totaux,
+  Transferts entre caisses), Clôtures Z (cartes du dernier Z, liste, aperçu avant scellement, détail, vérification
+  de la chaîne, export fiscal avec choix de période, vérification d'une archive ; export soumis à la permission
+  `exporterDonnees`).
+- DS : `DsActionContextuelle.visible`, libellés du menu contextuel tronqués proprement.
+- Tests : 7 unitaires (caisses, journal alimenté par les services, TRF, chaînage Z, immuabilité SQL + altération
+  détectée, refus d'annulation en période clôturée, export vérifié / altéré) + 3 widget.
+
+**Hypothèses (⚠️)** : clôture Z globale (toutes caisses) par période, exigeant la fermeture de toutes les sessions ;
+à la fermeture d'une session la caisse physique est vidée (retrait du montant compté, écart journalisé) ; les
+paiements carte / chèque / virement sont journalisés sur la caisse de la session avec leur mode ; caisse par
+défaut d'un versement = caisse de la session ouverte de l'utilisateur, sinon `CIS0000` ; format de l'export
+fiscal déduit de la commande.
 
 ## Lot 8 — Tableau de bord, Situation, Zakat, Historique, Paramètres, sauvegarde, exports ⬜
 Écrans : tableau de bord (6 KPI, 5 graphiques), Situation (10 rapports), Zakat (nissab, taux), Historique,

@@ -1918,4 +1918,311 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get smartScanErreurFichier => 'Invalid file.';
+
+  @override
+  String get gestionCaisseTitre => 'Cash management';
+
+  @override
+  String get gestionCaisseOngletCaisses => 'Registers';
+
+  @override
+  String get gestionCaisseOngletMouvements => 'Movements';
+
+  @override
+  String get gestionCaisseOngletTransferts => 'Register transfers';
+
+  @override
+  String get caisseNouvelle => 'New register';
+
+  @override
+  String get caisseModifier => 'Edit register';
+
+  @override
+  String get caisseNom => 'Name';
+
+  @override
+  String get caisseType => 'Type';
+
+  @override
+  String get caisseMagasin => 'Store';
+
+  @override
+  String get caisseSansMagasin => 'No store';
+
+  @override
+  String get caisseActive => 'Active';
+
+  @override
+  String get caisseInactive => 'Inactive';
+
+  @override
+  String get caisseSoldeEspeces => 'Cash balance';
+
+  @override
+  String get caisseSoldeTotal => 'Total balance';
+
+  @override
+  String get caisseTypePhysique => 'Physical';
+
+  @override
+  String get caisseTypeCompte => 'Account';
+
+  @override
+  String get caisseAucune => 'No register.';
+
+  @override
+  String get caisseDesactiver => 'Deactivate';
+
+  @override
+  String get caisseActiver => 'Activate';
+
+  @override
+  String get mouvementApport => 'Cash in';
+
+  @override
+  String get mouvementDepense => 'Expense';
+
+  @override
+  String get mouvementColType => 'Type';
+
+  @override
+  String get mouvementColSens => 'Direction';
+
+  @override
+  String get mouvementColMontant => 'Amount';
+
+  @override
+  String get mouvementColMode => 'Method';
+
+  @override
+  String get mouvementColReference => 'Reference';
+
+  @override
+  String get mouvementAucun => 'No movement.';
+
+  @override
+  String get mouvementToutesCaisses => 'All registers';
+
+  @override
+  String get mouvementCaisse => 'Register';
+
+  @override
+  String get mvtVente => 'Sale';
+
+  @override
+  String get mvtAnnulation => 'Cancellation';
+
+  @override
+  String get mvtRemboursement => 'Refund';
+
+  @override
+  String get mvtEncaissement => 'Receipt';
+
+  @override
+  String get mvtDecaissement => 'Payment';
+
+  @override
+  String get mvtApport => 'Cash in';
+
+  @override
+  String get mvtDepense => 'Expense';
+
+  @override
+  String get mvtTransfert => 'Transfer';
+
+  @override
+  String get mvtFondInitial => 'Opening float';
+
+  @override
+  String get mvtRetrait => 'Withdrawal';
+
+  @override
+  String get mvtEcart => 'Variance';
+
+  @override
+  String get sensEntree => 'In';
+
+  @override
+  String get sensSortie => 'Out';
+
+  @override
+  String get transfertCaisseNouveau => 'New transfer';
+
+  @override
+  String get transfertCaisseSource => 'Source register';
+
+  @override
+  String get transfertCaisseDestination => 'Destination register';
+
+  @override
+  String get transfertCaisseAucun => 'No transfer.';
+
+  @override
+  String transfertCaisseCree(String code) {
+    return 'Transfer $code recorded (2 movements).';
+  }
+
+  @override
+  String get caisseErreurNom => 'Name is required.';
+
+  @override
+  String get caisseErreurType => 'Invalid register type.';
+
+  @override
+  String get caisseErreurMagasin => 'Unknown store.';
+
+  @override
+  String get caisseErreurInconnue => 'Register not found.';
+
+  @override
+  String get caisseErreurInactive => 'Inactive register.';
+
+  @override
+  String get caisseErreurSysteme => 'The main register cannot be deactivated.';
+
+  @override
+  String get caisseErreurMontant => 'Invalid amount.';
+
+  @override
+  String get caisseErreurMode => 'Invalid payment method.';
+
+  @override
+  String get caisseErreurMemeCaisse => 'Choose two different registers.';
+
+  @override
+  String get caisseErreurSolde => 'Insufficient balance in the source register.';
+
+  @override
+  String get caisseErreurSessionOuverte => 'A session is open on this register.';
+
+  @override
+  String get cloturesTitre => 'Z closures';
+
+  @override
+  String get clotureNouvelle => 'Close (Z)';
+
+  @override
+  String get clotureApercuTitre => 'Z closure — period preview';
+
+  @override
+  String get cloturePeriode => 'Period';
+
+  @override
+  String get clotureDebut => 'Start';
+
+  @override
+  String get clotureFin => 'End';
+
+  @override
+  String get clotureColVentes => 'Sales';
+
+  @override
+  String get clotureColAnnulations => 'Cancellations';
+
+  @override
+  String get clotureColTotalVentes => 'Sales total';
+
+  @override
+  String get clotureColRemises => 'Discounts';
+
+  @override
+  String get clotureColRetours => 'Returns';
+
+  @override
+  String get clotureColEncaissements => 'Receipts';
+
+  @override
+  String get clotureColDecaissements => 'Payments';
+
+  @override
+  String get clotureColHash => 'Seal';
+
+  @override
+  String get clotureColUtilisateur => 'User';
+
+  @override
+  String get clotureAucune => 'No closure.';
+
+  @override
+  String get clotureConfirmer => 'Seal the closure';
+
+  @override
+  String clotureCreee(String code, String hash) {
+    return 'Closure $code sealed. Hash: $hash';
+  }
+
+  @override
+  String get clotureDetail => 'Closure details';
+
+  @override
+  String get clotureParMode => 'Receipts by method';
+
+  @override
+  String get clotureSoldes => 'Register balances';
+
+  @override
+  String get clotureDerniereVente => 'Last receipt';
+
+  @override
+  String get clotureHashPrecedent => 'Previous hash';
+
+  @override
+  String get clotureHash => 'Hash';
+
+  @override
+  String get clotureVerifier => 'Verify chain';
+
+  @override
+  String get clotureChaineOk => 'Closure chain intact.';
+
+  @override
+  String clotureChaineKo(String code) {
+    return 'Chain altered from closure $code.';
+  }
+
+  @override
+  String get clotureErreurSession => 'Close all register sessions before closing.';
+
+  @override
+  String get clotureErreurRien => 'Nothing to close since the last closure.';
+
+  @override
+  String get clotureAvertissementImmuable =>
+      'A closure is final: it can neither be modified nor deleted, and documents of the period can no longer be cancelled.';
+
+  @override
+  String get exportFiscalTitre => 'Fiscal export';
+
+  @override
+  String get exportFiscalDebut => 'From (dd/mm/yyyy)';
+
+  @override
+  String get exportFiscalFin => 'To (dd/mm/yyyy)';
+
+  @override
+  String get exportFiscalGenerer => 'Generate archive';
+
+  @override
+  String exportFiscalOk(String chemin, int ventes, int clotures) {
+    return 'Archive saved: $chemin ($ventes sales, $clotures closures, fingerprint verified).';
+  }
+
+  @override
+  String get exportFiscalErreurDates => 'Invalid dates.';
+
+  @override
+  String get exportFiscalVerifier => 'Verify an archive';
+
+  @override
+  String exportFiscalVerifOk(int ventes, int clotures) {
+    return 'Valid archive: $ventes sales, $clotures closures.';
+  }
+
+  @override
+  String exportFiscalVerifKo(String erreurs) {
+    return 'Invalid archive: $erreurs';
+  }
+
+  @override
+  String get exportFiscalPermission => 'Permission “export data” required.';
 }

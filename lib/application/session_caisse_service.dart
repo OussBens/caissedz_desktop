@@ -3,7 +3,9 @@ import 'package:sqflite_common/sqlite_api.dart';
 import '../data/historique_repository.dart';
 import '../data/vente_repository.dart';
 import '../domain/code_generator.dart';
+import '../domain/models/caisse.dart';
 import '../domain/models/vente.dart';
+import 'caisse_service.dart';
 
 enum ErreurSession { dejaOuverte, aucuneOuverte, caisseInconnue, montantInvalide }
 
@@ -46,6 +48,17 @@ class SessionCaisseService {
         fondInitial: fondInitial,
       );
       await repo.insererSession(s);
+      await CaisseService.journaliser(
+        txn,
+        caisseCode: caisseCode,
+        type: TypesMouvementCaisse.fondInitial,
+        sens: SensMouvementCaisse.entree,
+        montant: fondInitial,
+        referenceType: 'session_caisse',
+        referenceCode: code,
+        utilisateurCode: utilisateurCode,
+        date: s.ouverteLe,
+      );
       await HistoriqueRepository(txn).journaliser(
         utilisateurCode: utilisateurCode,
         action: 'Ouverture',
@@ -67,7 +80,31 @@ class SessionCaisseService {
       final especes = (await repo.encaissementsSession(s.code))['Espèces'] ?? 0;
       final attendu = s.fondInitial + especes - await repo.monnaieRendueSession(s.code);
       final ecart = montantCompte - attendu;
-      await repo.fermerSession(s.code, fermeeLe: DateTime.now(), montant: montantCompte, ecart: ecart);
+      final fermeeLe = DateTime.now();
+      await repo.fermerSession(s.code, fermeeLe: fermeeLe, montant: montantCompte, ecart: ecart);
+      // Journal de caisse : l'écart constaté puis le retrait des espèces comptées (la caisse physique est vidée).
+      await CaisseService.journaliser(
+        txn,
+        caisseCode: s.caisseCode,
+        type: TypesMouvementCaisse.ecart,
+        sens: ecart > 0 ? SensMouvementCaisse.entree : SensMouvementCaisse.sortie,
+        montant: ecart.abs(),
+        referenceType: 'session_caisse',
+        referenceCode: s.code,
+        utilisateurCode: utilisateurCode,
+        date: fermeeLe,
+      );
+      await CaisseService.journaliser(
+        txn,
+        caisseCode: s.caisseCode,
+        type: TypesMouvementCaisse.retrait,
+        sens: SensMouvementCaisse.sortie,
+        montant: montantCompte,
+        referenceType: 'session_caisse',
+        referenceCode: s.code,
+        utilisateurCode: utilisateurCode,
+        date: fermeeLe,
+      );
       await HistoriqueRepository(txn).journaliser(
         utilisateurCode: utilisateurCode,
         action: 'Fermeture',
