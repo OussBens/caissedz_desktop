@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
+import '../../app/demarrage_providers.dart';
 import '../../app/providers.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
@@ -22,12 +23,17 @@ class Sidebar extends ConsumerWidget {
     final reduite = ref.watch(sidebarReduiteProvider);
     final favoris = ref.watch(favorisModulesProvider);
     final routeCourante = GoRouterState.of(context).uri.path;
+    final licence = ref.watch(licenceProvider);
+    final session = ref.watch(sessionProvider);
 
     Widget entreeModule(ModuleApp m, {bool favori = false}) => _EntreeSidebar(
           icone: m.icone,
           libelle: m.libelle(l10n),
           actif: routeCourante == m.route,
           reduite: reduite,
+          verrou: !licence.couvre(m.niveauRequis)
+              ? l10n.shellVerrouille
+              : (session != null && !session.peutAcceder(m.id) ? l10n.shellAccesRestreint : null),
           onTap: () => context.go(m.route),
           onSecondaryTap: () => _menuContextuel(context, ref, m, favori: ref.read(favorisProvider).contains(m.id)),
         );
@@ -176,11 +182,15 @@ class _EntreeSidebar extends StatefulWidget {
     required this.onTap,
     this.onSecondaryTap,
     this.actif = false,
+    this.verrou,
   });
   final IconData icone;
   final String libelle;
   final bool reduite;
   final bool actif;
+
+  /// Motif de verrouillage affiché en infobulle (licence, rôle) ; `null` = accessible.
+  final String? verrou;
   final VoidCallback onTap;
   final VoidCallback? onSecondaryTap;
 
@@ -195,7 +205,9 @@ class _EntreeSidebarState extends State<_EntreeSidebar> {
   Widget build(BuildContext context) {
     final c = context.ds.colors;
     final t = context.ds.typo;
-    final couleurTexte = widget.actif ? c.sidebarTexteActif : c.sidebarTexte;
+    final couleurTexte = widget.verrou != null
+        ? c.sidebarTexte.withValues(alpha: 0.55)
+        : (widget.actif ? c.sidebarTexteActif : c.sidebarTexte);
     final contenu = MouseRegion(
       cursor: SystemMouseCursors.click,
       onEnter: (_) => setState(() => _survol = true),
@@ -228,13 +240,14 @@ class _EntreeSidebarState extends State<_EntreeSidebar> {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
+                if (widget.verrou != null) Icon(LucideIcons.lock, size: 12, color: couleurTexte),
               ],
             ],
           ),
         ),
       ),
     );
-    if (!widget.reduite) return contenu;
-    return Tooltip(message: widget.libelle, child: contenu);
+    if (!widget.reduite && widget.verrou == null) return contenu;
+    return Tooltip(message: widget.verrou ?? widget.libelle, child: contenu);
   }
 }

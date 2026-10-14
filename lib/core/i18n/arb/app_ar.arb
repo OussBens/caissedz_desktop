@@ -26,7 +26,13 @@
   "shellEtendreSidebar": "توسيع القائمة",
   "shellGalerie": "معرض نظام التصميم",
   "modulePlaceholder": "الوحدة « {nom} » : متاحة في دفعة قادمة.",
-  "@modulePlaceholder": {"placeholders": {"nom": {"type": "String"}}},
+  "@modulePlaceholder": {
+    "placeholders": {
+      "nom": {
+        "type": "String"
+      }
+    }
+  },
   "moduleTableauBord": "لوحة القيادة",
   "moduleCaisse": "الصندوق",
   "moduleVentes": "المبيعات",
@@ -62,14 +68,176 @@
   "communToutSelectionner": "تحديد الكل",
   "communLignesParPage": "أسطر في الصفحة",
   "communPagination": "{debut}–{fin} من {total}",
-  "@communPagination": {"placeholders": {"debut": {"type": "int"}, "fin": {"type": "int"}, "total": {"type": "int"}}},
+  "@communPagination": {
+    "placeholders": {
+      "debut": {
+        "type": "int"
+      },
+      "fin": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "communPagePrecedente": "الصفحة السابقة",
   "communPageSuivante": "الصفحة التالية",
   "communSelectionnes": "{n} محدد",
-  "@communSelectionnes": {"placeholders": {"n": {"type": "int"}}},
+  "@communSelectionnes": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "galerieTitre": "معرض نظام التصميم",
   "galerieTheme": "المظهر",
   "galerieLangue": "اللغة",
   "galerieClair": "فاتح",
-  "galerieSombre": "داكن"
+  "galerieSombre": "داكن",
+  "activationTitre": "تفعيل CaisseDZ",
+  "activationIntro": "أدخل مفتاح التفعيل الخاص بهذا الجهاز، أو جرّب الوضع التجريبي.",
+  "activationIdentifiantMachine": "معرّف هذا الجهاز",
+  "activationCopierIdentifiant": "نسخ المعرّف",
+  "activationIdentifiantCopie": "تم نسخ المعرّف",
+  "activationCle": "مفتاح التفعيل (64 حرفًا)",
+  "activationCleIndice": "مفتاح SHA-256 من 64 حرفًا سداسيًا عشريًا",
+  "activationBouton": "تفعيل",
+  "activationDemo": "تجربة الوضع التجريبي",
+  "activationDemoAide": "يفتح الوضع التجريبي كل الوظائف (رخصة متقدم) بالحساب demo / demo. البيانات المدخلة ليست للاستعمال الفعلي.",
+  "activationErreurFormat": "يجب أن يحتوي المفتاح على 64 حرفًا سداسيًا عشريًا بالضبط (0-9، a-f).",
+  "activationErreurInconnue": "هذا المفتاح لا يطابق هذا الجهاز. تحقق من المفتاح أو اتصل بالموزع.",
+  "activationReussie": "تم تفعيل رخصة {niveau}.",
+  "@activationReussie": {
+    "placeholders": {
+      "niveau": {
+        "type": "String"
+      }
+    }
+  },
+  "licenceBasic": "أساسي",
+  "licenceAvance": "متقدم",
+  "licenceDemo": "وضع تجريبي",
+  "licenceNiveau": "رخصة {niveau}",
+  "@licenceNiveau": {
+    "placeholders": {
+      "niveau": {
+        "type": "String"
+      }
+    }
+  },
+  "licenceRequise": "وظيفة متاحة مع الرخصة المتقدمة",
+  "licenceRequiseDetail": "رخصتك الحالية أساسية. فعّل رخصة متقدمة للوصول إلى هذه الوحدة.",
+  "licenceGererCle": "تفعيل مفتاح آخر",
+  "connexionTitre": "تسجيل الدخول",
+  "connexionIdentifiant": "المعرّف",
+  "connexionMotDePasse": "كلمة المرور",
+  "connexionBouton": "دخول",
+  "connexionErreurIdentifiants": "المعرّف أو كلمة المرور غير صحيحة.",
+  "connexionErreurInactif": "هذا الحساب معطّل.",
+  "connexionErreurNonConfigure": "ليس لهذا الحساب كلمة مرور بعد: أكمل الإعداد الأولي.",
+  "connexionErreurDemo": "الحساب demo/demo متاح فقط في الوضع التجريبي.",
+  "connexionDemoIndice": "الوضع التجريبي: المعرّف demo، كلمة المرور demo",
+  "connexionDeconnecter": "تسجيل الخروج",
+  "configTitre": "الإعداد الأولي",
+  "configEtape": "الخطوة {n} من {total}",
+  "@configEtape": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "configEtapeBoutique": "المتجر",
+  "configEtapeAdmin": "المدير",
+  "configEtapeVente": "الهامش والبيع",
+  "configEtapeRecap": "الملخص",
+  "configBoutiqueNom": "اسم المتجر",
+  "configBoutiqueRc": "السجل التجاري",
+  "configBoutiqueNif": "رقم التعريف الجبائي",
+  "configBoutiqueAdresse": "العنوان",
+  "configBoutiqueTelephone": "الهاتف",
+  "configBoutiqueEmail": "البريد الإلكتروني",
+  "configAdminIntro": "سيملك حساب المدير هذا كل الصلاحيات. اختر معرّفًا وكلمة مرور.",
+  "configAdminNom": "الاسم المعروض",
+  "configAdminMotDePasseConfirmation": "تأكيد كلمة المرور",
+  "configMarge": "الهامش الافتراضي (%)",
+  "configMargeAide": "يُطبّق لحساب سعر البيع من سعر الشراء للمنتجات الجديدة.",
+  "configSeuil": "حد تنبيه المخزون (عام)",
+  "configFidelite": "تفعيل الولاء (نقاط)",
+  "configPointsParDinar": "النقاط المكتسبة لكل دينار",
+  "configDevise": "العملة",
+  "configLangue": "لغة التطبيق",
+  "configRecapIntro": "تحقق من المعلومات قبل الإنهاء. يمكنك تعديلها لاحقًا في الإعدادات.",
+  "configPrecedent": "السابق",
+  "configSuivant": "التالي",
+  "configTerminer": "إنهاء",
+  "configErreurObligatoire": "حقل إلزامي",
+  "configErreurIdentifiant": "من 3 إلى 32 حرفًا: أحرف، أرقام، نقطة، شرطة، شرطة سفلية.",
+  "configErreurMotDePasseCourt": "4 أحرف على الأقل.",
+  "configErreurConfirmation": "كلمتا المرور غير متطابقتين.",
+  "configErreurIdentifiantPris": "هذا المعرّف مستعمل بالفعل.",
+  "configErreurMarge": "قيمة بين 0 و 1000.",
+  "configErreurNombre": "رقم غير صالح.",
+  "configReussie": "اكتمل الإعداد. سجّل الدخول بحساب المدير.",
+  "compteTitre": "حسابي",
+  "compteRole": "الدور",
+  "compteIdentifiantActuel": "المعرّف الحالي",
+  "compteNouvelIdentifiant": "المعرّف الجديد",
+  "compteMotDePasseActuel": "كلمة المرور الحالية",
+  "compteNouveauMotDePasse": "كلمة المرور الجديدة",
+  "compteChangerIdentifiant": "تغيير المعرّف",
+  "compteChangerMotDePasse": "تغيير كلمة المرور",
+  "compteIdentifiantChange": "تم تغيير المعرّف: سجّل الدخول من الآن بـ « {identifiant} ».",
+  "@compteIdentifiantChange": {
+    "placeholders": {
+      "identifiant": {
+        "type": "String"
+      }
+    }
+  },
+  "compteMotDePasseChange": "تم تغيير كلمة المرور.",
+  "compteErreurMotDePasseActuel": "كلمة المرور الحالية غير صحيحة.",
+  "comptePreferences": "التفضيلات",
+  "compteDemoLectureSeule": "لا يمكن تعديل الحساب التجريبي.",
+  "accesRefuseTitre": "الوصول مرفوض",
+  "accesRefuseMessage": "دورك « {role} » لا يملك صلاحية الوصول إلى الوحدة « {module} ». اطلب من مدير.",
+  "@accesRefuseMessage": {
+    "placeholders": {
+      "role": {
+        "type": "String"
+      },
+      "module": {
+        "type": "String"
+      }
+    }
+  },
+  "accesRefuseRetour": "العودة إلى لوحة القيادة",
+  "rolesTitre": "الأدوار والصلاحيات",
+  "rolesIntro": "حدد صلاحيات الإجراءات والوحدات المتاحة لكل دور. يحتفظ المدير دائمًا بكل الصلاحيات.",
+  "rolesPermissions": "صلاحيات الإجراءات",
+  "rolesModules": "الوحدات المتاحة",
+  "rolesEnregistre": "تم حفظ شبكة الأدوار.",
+  "rolesAdminTotal": "كل الصلاحيات",
+  "permVoirPrixAchat": "عرض سعر الشراء",
+  "permModifierPrix": "تعديل السعر في الصندوق",
+  "permAppliquerRemise": "تطبيق تخفيض",
+  "permAnnulerVente": "إلغاء بيع",
+  "permSupprimerDocument": "حذف مستند",
+  "permExporterDonnees": "تصدير البيانات",
+  "permGererUtilisateurs": "إدارة المستخدمين",
+  "roleAdmin": "مدير",
+  "roleCaissier": "أمين الصندوق",
+  "roleMagasinier": "أمين المخزن",
+  "parametresRolesCarte": "الأدوار والصلاحيات",
+  "parametresRolesCarteDetail": "صلاحيات الإجراءات والوحدات المتاحة حسب الدور.",
+  "parametresLicenceCarte": "الرخصة",
+  "shellBandeauDemo": "وضع تجريبي — البيانات ليست للاستعمال الفعلي",
+  "shellMenuUtilisateur": "قائمة المستخدم",
+  "shellVerrouille": "مخصص للرخصة المتقدمة",
+  "shellAccesRestreint": "وصول غير مسموح لدورك"
 }

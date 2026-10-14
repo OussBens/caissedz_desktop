@@ -26,7 +26,13 @@
   "shellEtendreSidebar": "Étendre le menu",
   "shellGalerie": "Galerie du design system",
   "modulePlaceholder": "Module « {nom} » : disponible dans un prochain lot.",
-  "@modulePlaceholder": {"placeholders": {"nom": {"type": "String"}}},
+  "@modulePlaceholder": {
+    "placeholders": {
+      "nom": {
+        "type": "String"
+      }
+    }
+  },
   "moduleTableauBord": "Tableau de bord",
   "moduleCaisse": "Caisse",
   "moduleVentes": "Ventes",
@@ -62,14 +68,176 @@
   "communToutSelectionner": "Tout sélectionner",
   "communLignesParPage": "Lignes par page",
   "communPagination": "{debut}–{fin} sur {total}",
-  "@communPagination": {"placeholders": {"debut": {"type": "int"}, "fin": {"type": "int"}, "total": {"type": "int"}}},
+  "@communPagination": {
+    "placeholders": {
+      "debut": {
+        "type": "int"
+      },
+      "fin": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "communPagePrecedente": "Page précédente",
   "communPageSuivante": "Page suivante",
   "communSelectionnes": "{n} sélectionné(s)",
-  "@communSelectionnes": {"placeholders": {"n": {"type": "int"}}},
+  "@communSelectionnes": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "galerieTitre": "Galerie du design system",
   "galerieTheme": "Thème",
   "galerieLangue": "Langue",
   "galerieClair": "Clair",
-  "galerieSombre": "Sombre"
+  "galerieSombre": "Sombre",
+  "activationTitre": "Activation de CaisseDZ",
+  "activationIntro": "Saisissez la clé d'activation fournie pour cette machine, ou essayez le mode démo.",
+  "activationIdentifiantMachine": "Identifiant de cette machine",
+  "activationCopierIdentifiant": "Copier l'identifiant",
+  "activationIdentifiantCopie": "Identifiant copié",
+  "activationCle": "Clé d'activation (64 caractères)",
+  "activationCleIndice": "Clé SHA-256 de 64 caractères hexadécimaux",
+  "activationBouton": "Activer",
+  "activationDemo": "Essayer en mode démo",
+  "activationDemoAide": "Le mode démo ouvre toutes les fonctions (licence Avancé) avec le compte demo / demo. Les données saisies ne sont pas destinées à la production.",
+  "activationErreurFormat": "La clé doit contenir exactement 64 caractères hexadécimaux (0-9, a-f).",
+  "activationErreurInconnue": "Cette clé ne correspond pas à cette machine. Vérifiez la clé ou contactez votre revendeur.",
+  "activationReussie": "Licence {niveau} activée.",
+  "@activationReussie": {
+    "placeholders": {
+      "niveau": {
+        "type": "String"
+      }
+    }
+  },
+  "licenceBasic": "Basic",
+  "licenceAvance": "Avancé",
+  "licenceDemo": "Mode démo",
+  "licenceNiveau": "Licence {niveau}",
+  "@licenceNiveau": {
+    "placeholders": {
+      "niveau": {
+        "type": "String"
+      }
+    }
+  },
+  "licenceRequise": "Fonction disponible avec la licence Avancé",
+  "licenceRequiseDetail": "Votre licence actuelle est Basic. Activez une licence Avancé pour accéder à ce module.",
+  "licenceGererCle": "Activer une autre clé",
+  "connexionTitre": "Connexion",
+  "connexionIdentifiant": "Identifiant",
+  "connexionMotDePasse": "Mot de passe",
+  "connexionBouton": "Se connecter",
+  "connexionErreurIdentifiants": "Identifiant ou mot de passe incorrect.",
+  "connexionErreurInactif": "Ce compte est désactivé.",
+  "connexionErreurNonConfigure": "Ce compte n'a pas encore de mot de passe : terminez la configuration initiale.",
+  "connexionErreurDemo": "Le compte demo/demo n'est disponible qu'en mode démo.",
+  "connexionDemoIndice": "Mode démo : identifiant demo, mot de passe demo",
+  "connexionDeconnecter": "Se déconnecter",
+  "configTitre": "Configuration initiale",
+  "configEtape": "Étape {n} sur {total}",
+  "@configEtape": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "configEtapeBoutique": "Boutique",
+  "configEtapeAdmin": "Administrateur",
+  "configEtapeVente": "Marge et vente",
+  "configEtapeRecap": "Récapitulatif",
+  "configBoutiqueNom": "Nom de la boutique",
+  "configBoutiqueRc": "Registre de commerce (RC)",
+  "configBoutiqueNif": "NIF",
+  "configBoutiqueAdresse": "Adresse",
+  "configBoutiqueTelephone": "Téléphone",
+  "configBoutiqueEmail": "E-mail",
+  "configAdminIntro": "Ce compte administrateur aura tous les droits. Choisissez un identifiant et un mot de passe.",
+  "configAdminNom": "Nom affiché",
+  "configAdminMotDePasseConfirmation": "Confirmer le mot de passe",
+  "configMarge": "Marge par défaut (%)",
+  "configMargeAide": "Appliquée au calcul du prix de vente à partir du prix d'achat des nouveaux produits.",
+  "configSeuil": "Seuil d'alerte de stock (global)",
+  "configFidelite": "Activer la fidélité (points)",
+  "configPointsParDinar": "Points gagnés par dinar",
+  "configDevise": "Devise",
+  "configLangue": "Langue de l'application",
+  "configRecapIntro": "Vérifiez les informations avant de terminer. Vous pourrez les modifier plus tard dans Paramètres.",
+  "configPrecedent": "Précédent",
+  "configSuivant": "Suivant",
+  "configTerminer": "Terminer",
+  "configErreurObligatoire": "Champ obligatoire",
+  "configErreurIdentifiant": "3 à 32 caractères : lettres, chiffres, point, tiret, tiret bas.",
+  "configErreurMotDePasseCourt": "Au moins 4 caractères.",
+  "configErreurConfirmation": "Les mots de passe ne correspondent pas.",
+  "configErreurIdentifiantPris": "Cet identifiant est déjà utilisé.",
+  "configErreurMarge": "Valeur entre 0 et 1000.",
+  "configErreurNombre": "Nombre invalide.",
+  "configReussie": "Configuration terminée. Connectez-vous avec votre compte administrateur.",
+  "compteTitre": "Mon compte",
+  "compteRole": "Rôle",
+  "compteIdentifiantActuel": "Identifiant actuel",
+  "compteNouvelIdentifiant": "Nouvel identifiant",
+  "compteMotDePasseActuel": "Mot de passe actuel",
+  "compteNouveauMotDePasse": "Nouveau mot de passe",
+  "compteChangerIdentifiant": "Changer l'identifiant",
+  "compteChangerMotDePasse": "Changer le mot de passe",
+  "compteIdentifiantChange": "Identifiant modifié : connectez-vous désormais avec « {identifiant} ».",
+  "@compteIdentifiantChange": {
+    "placeholders": {
+      "identifiant": {
+        "type": "String"
+      }
+    }
+  },
+  "compteMotDePasseChange": "Mot de passe modifié.",
+  "compteErreurMotDePasseActuel": "Mot de passe actuel incorrect.",
+  "comptePreferences": "Préférences",
+  "compteDemoLectureSeule": "Le compte de démonstration ne peut pas être modifié.",
+  "accesRefuseTitre": "Accès refusé",
+  "accesRefuseMessage": "Votre rôle « {role} » n'a pas accès au module « {module} ». Demandez à un administrateur.",
+  "@accesRefuseMessage": {
+    "placeholders": {
+      "role": {
+        "type": "String"
+      },
+      "module": {
+        "type": "String"
+      }
+    }
+  },
+  "accesRefuseRetour": "Retour au tableau de bord",
+  "rolesTitre": "Rôles et permissions",
+  "rolesIntro": "Cochez les permissions d'action et les modules accessibles pour chaque rôle. L'administrateur conserve toujours tous les droits.",
+  "rolesPermissions": "Permissions d'action",
+  "rolesModules": "Modules accessibles",
+  "rolesEnregistre": "Grille des rôles enregistrée.",
+  "rolesAdminTotal": "Tous les droits",
+  "permVoirPrixAchat": "Voir le prix d'achat",
+  "permModifierPrix": "Modifier le prix en caisse",
+  "permAppliquerRemise": "Appliquer une remise",
+  "permAnnulerVente": "Annuler une vente",
+  "permSupprimerDocument": "Supprimer un document",
+  "permExporterDonnees": "Exporter les données",
+  "permGererUtilisateurs": "Gérer les utilisateurs",
+  "roleAdmin": "Admin",
+  "roleCaissier": "Caissier",
+  "roleMagasinier": "Magasinier",
+  "parametresRolesCarte": "Rôles et permissions",
+  "parametresRolesCarteDetail": "Permissions d'action et modules accessibles par rôle.",
+  "parametresLicenceCarte": "Licence",
+  "shellBandeauDemo": "Mode démo — les données ne sont pas destinées à la production",
+  "shellMenuUtilisateur": "Menu utilisateur",
+  "shellVerrouille": "Réservé à la licence Avancé",
+  "shellAccesRestreint": "Accès non autorisé pour votre rôle"
 }

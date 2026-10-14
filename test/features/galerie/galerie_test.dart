@@ -1,12 +1,10 @@
-import 'package:caissedz_desktop/app/app.dart';
 import 'package:caissedz_desktop/app/providers.dart';
 import 'package:caissedz_desktop/core/design_system/design_system.dart';
 import 'package:caissedz_desktop/features/galerie/galerie_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../helpers/bases.dart';
+import '../../helpers/app_test_helper.dart';
 
 /// La galerie contient un bouton « Chargement » animé en continu : pumpAndSettle ne converge jamais.
 Future<void> pompe(WidgetTester tester) async {
@@ -17,21 +15,7 @@ Future<void> pompe(WidgetTester tester) async {
 
 void main() {
   testWidgets('galerie : bascule clair/sombre et langue', (tester) async {
-    final base = await ouvrirBaseEnMemoire();
-    const taille = Size(1400, 900);
-    await tester.binding.setSurfaceSize(taille);
-    tester.view.physicalSize = taille;
-    tester.view.devicePixelRatio = 1;
-    addTearDown(() => tester.view.reset());
-    final container = ProviderContainer(overrides: [
-      appDatabaseProvider.overrideWithValue(base),
-      controlesFenetreProvider.overrideWithValue(false),
-    ]);
-    addTearDown(container.dispose);
-    await tester.pumpWidget(UncontrolledProviderScope(
-      container: container,
-      child: const CaisseDzApp(routeInitiale: GaleriePage.route),
-    ));
+    final container = await pumpApp(tester, routeInitiale: GaleriePage.route, taille: const Size(1400, 900), settle: false);
     await pompe(tester);
 
     expect(find.text('Galerie du design system'), findsNWidgets(3)); // page + sidebar + barre de titre

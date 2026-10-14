@@ -1,33 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import '../core/design_system/design_system.dart';
 import '../core/i18n/generated/app_localizations.dart';
 import 'providers.dart';
 import 'router.dart';
 
-class CaisseDzApp extends ConsumerStatefulWidget {
-  const CaisseDzApp({super.key, this.routeInitiale = '/tableau-de-bord'});
-
-  final String routeInitiale;
+class CaisseDzApp extends ConsumerWidget {
+  const CaisseDzApp({super.key});
 
   @override
-  ConsumerState<CaisseDzApp> createState() => _CaisseDzAppState();
-}
-
-class _CaisseDzAppState extends ConsumerState<CaisseDzApp> {
-  late final GoRouter _router = construireRouter(routeInitiale: widget.routeInitiale);
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final locale = ref.watch(localeProvider);
     final mode = ref.watch(themeModeProvider);
+    final router = ref.watch(routerProvider);
     return MaterialApp.router(
       title: 'CaisseDZ',
       debugShowCheckedModeBanner: false,
-      routerConfig: _router,
+      routerConfig: router,
       locale: locale,
       supportedLocales: localesSupportees,
       localizationsDelegates: const [

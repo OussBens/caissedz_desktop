@@ -26,7 +26,13 @@
   "shellEtendreSidebar": "Expand menu",
   "shellGalerie": "Design system gallery",
   "modulePlaceholder": "Module \"{nom}\": available in a later batch.",
-  "@modulePlaceholder": {"placeholders": {"nom": {"type": "String"}}},
+  "@modulePlaceholder": {
+    "placeholders": {
+      "nom": {
+        "type": "String"
+      }
+    }
+  },
   "moduleTableauBord": "Dashboard",
   "moduleCaisse": "Point of sale",
   "moduleVentes": "Sales",
@@ -62,14 +68,176 @@
   "communToutSelectionner": "Select all",
   "communLignesParPage": "Rows per page",
   "communPagination": "{debut}–{fin} of {total}",
-  "@communPagination": {"placeholders": {"debut": {"type": "int"}, "fin": {"type": "int"}, "total": {"type": "int"}}},
+  "@communPagination": {
+    "placeholders": {
+      "debut": {
+        "type": "int"
+      },
+      "fin": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "communPagePrecedente": "Previous page",
   "communPageSuivante": "Next page",
   "communSelectionnes": "{n} selected",
-  "@communSelectionnes": {"placeholders": {"n": {"type": "int"}}},
+  "@communSelectionnes": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "galerieTitre": "Design system gallery",
   "galerieTheme": "Theme",
   "galerieLangue": "Language",
   "galerieClair": "Light",
-  "galerieSombre": "Dark"
+  "galerieSombre": "Dark",
+  "activationTitre": "Activate CaisseDZ",
+  "activationIntro": "Enter the activation key issued for this machine, or try the demo mode.",
+  "activationIdentifiantMachine": "This machine's identifier",
+  "activationCopierIdentifiant": "Copy identifier",
+  "activationIdentifiantCopie": "Identifier copied",
+  "activationCle": "Activation key (64 characters)",
+  "activationCleIndice": "64-character hexadecimal SHA-256 key",
+  "activationBouton": "Activate",
+  "activationDemo": "Try the demo mode",
+  "activationDemoAide": "Demo mode unlocks every feature (Advanced licence) with the demo / demo account. Data entered is not meant for production.",
+  "activationErreurFormat": "The key must contain exactly 64 hexadecimal characters (0-9, a-f).",
+  "activationErreurInconnue": "This key does not match this machine. Check the key or contact your reseller.",
+  "activationReussie": "{niveau} licence activated.",
+  "@activationReussie": {
+    "placeholders": {
+      "niveau": {
+        "type": "String"
+      }
+    }
+  },
+  "licenceBasic": "Basic",
+  "licenceAvance": "Advanced",
+  "licenceDemo": "Demo mode",
+  "licenceNiveau": "{niveau} licence",
+  "@licenceNiveau": {
+    "placeholders": {
+      "niveau": {
+        "type": "String"
+      }
+    }
+  },
+  "licenceRequise": "Feature available with the Advanced licence",
+  "licenceRequiseDetail": "Your current licence is Basic. Activate an Advanced licence to access this module.",
+  "licenceGererCle": "Activate another key",
+  "connexionTitre": "Sign in",
+  "connexionIdentifiant": "Username",
+  "connexionMotDePasse": "Password",
+  "connexionBouton": "Sign in",
+  "connexionErreurIdentifiants": "Incorrect username or password.",
+  "connexionErreurInactif": "This account is disabled.",
+  "connexionErreurNonConfigure": "This account has no password yet: complete the initial setup.",
+  "connexionErreurDemo": "The demo/demo account is only available in demo mode.",
+  "connexionDemoIndice": "Demo mode: username demo, password demo",
+  "connexionDeconnecter": "Sign out",
+  "configTitre": "Initial setup",
+  "configEtape": "Step {n} of {total}",
+  "@configEtape": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "configEtapeBoutique": "Shop",
+  "configEtapeAdmin": "Administrator",
+  "configEtapeVente": "Margin and sales",
+  "configEtapeRecap": "Summary",
+  "configBoutiqueNom": "Shop name",
+  "configBoutiqueRc": "Trade register (RC)",
+  "configBoutiqueNif": "Tax ID (NIF)",
+  "configBoutiqueAdresse": "Address",
+  "configBoutiqueTelephone": "Phone",
+  "configBoutiqueEmail": "E-mail",
+  "configAdminIntro": "This administrator account will have every right. Choose a username and a password.",
+  "configAdminNom": "Display name",
+  "configAdminMotDePasseConfirmation": "Confirm password",
+  "configMarge": "Default margin (%)",
+  "configMargeAide": "Used to compute the selling price from the purchase price of new products.",
+  "configSeuil": "Stock alert threshold (global)",
+  "configFidelite": "Enable loyalty (points)",
+  "configPointsParDinar": "Points earned per dinar",
+  "configDevise": "Currency",
+  "configLangue": "Application language",
+  "configRecapIntro": "Check the information before finishing. You can change it later in Settings.",
+  "configPrecedent": "Back",
+  "configSuivant": "Next",
+  "configTerminer": "Finish",
+  "configErreurObligatoire": "Required field",
+  "configErreurIdentifiant": "3 to 32 characters: letters, digits, dot, dash, underscore.",
+  "configErreurMotDePasseCourt": "At least 4 characters.",
+  "configErreurConfirmation": "Passwords do not match.",
+  "configErreurIdentifiantPris": "This username is already in use.",
+  "configErreurMarge": "Value between 0 and 1000.",
+  "configErreurNombre": "Invalid number.",
+  "configReussie": "Setup complete. Sign in with your administrator account.",
+  "compteTitre": "My account",
+  "compteRole": "Role",
+  "compteIdentifiantActuel": "Current username",
+  "compteNouvelIdentifiant": "New username",
+  "compteMotDePasseActuel": "Current password",
+  "compteNouveauMotDePasse": "New password",
+  "compteChangerIdentifiant": "Change username",
+  "compteChangerMotDePasse": "Change password",
+  "compteIdentifiantChange": "Username changed: sign in from now on with \"{identifiant}\".",
+  "@compteIdentifiantChange": {
+    "placeholders": {
+      "identifiant": {
+        "type": "String"
+      }
+    }
+  },
+  "compteMotDePasseChange": "Password changed.",
+  "compteErreurMotDePasseActuel": "Current password is incorrect.",
+  "comptePreferences": "Preferences",
+  "compteDemoLectureSeule": "The demo account cannot be modified.",
+  "accesRefuseTitre": "Access denied",
+  "accesRefuseMessage": "Your role \"{role}\" cannot access the \"{module}\" module. Ask an administrator.",
+  "@accesRefuseMessage": {
+    "placeholders": {
+      "role": {
+        "type": "String"
+      },
+      "module": {
+        "type": "String"
+      }
+    }
+  },
+  "accesRefuseRetour": "Back to dashboard",
+  "rolesTitre": "Roles and permissions",
+  "rolesIntro": "Tick the action permissions and the accessible modules for each role. The administrator always keeps every right.",
+  "rolesPermissions": "Action permissions",
+  "rolesModules": "Accessible modules",
+  "rolesEnregistre": "Roles grid saved.",
+  "rolesAdminTotal": "All rights",
+  "permVoirPrixAchat": "View purchase price",
+  "permModifierPrix": "Change price at checkout",
+  "permAppliquerRemise": "Apply a discount",
+  "permAnnulerVente": "Cancel a sale",
+  "permSupprimerDocument": "Delete a document",
+  "permExporterDonnees": "Export data",
+  "permGererUtilisateurs": "Manage users",
+  "roleAdmin": "Admin",
+  "roleCaissier": "Cashier",
+  "roleMagasinier": "Storekeeper",
+  "parametresRolesCarte": "Roles and permissions",
+  "parametresRolesCarteDetail": "Action permissions and accessible modules per role.",
+  "parametresLicenceCarte": "Licence",
+  "shellBandeauDemo": "Demo mode — data is not meant for production",
+  "shellMenuUtilisateur": "User menu",
+  "shellVerrouille": "Advanced licence only",
+  "shellAccesRestreint": "Not allowed for your role"
 }

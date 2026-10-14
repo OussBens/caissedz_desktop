@@ -9,6 +9,7 @@ import '../core/db/app_database.dart';
 import '../data/favoris_repository.dart';
 import '../data/parametres_repository.dart';
 import '../domain/modules.dart';
+import 'demarrage_providers.dart';
 
 /// Base de données ouverte au démarrage (surchargée dans `main` et les tests).
 final appDatabaseProvider = Provider<AppDatabase>((ref) {
@@ -21,10 +22,8 @@ final parametresAppRepositoryProvider =
 final favorisServiceProvider =
     Provider<FavorisService>((ref) => FavorisService(FavorisRepository(ref.watch(appDatabaseProvider).db)));
 
-/// Utilisateur connecté (lot 1). En attendant : utilisateur système.
-///
-/// ⚠️ PROVISOIRE : remplacé par la session utilisateur au lot 1.
-final utilisateurCourantCodeProvider = Provider<String>((ref) => 'admin');
+/// Code de l'utilisateur connecté (vide sans session) : clé des favoris.
+final utilisateurCourantCodeProvider = Provider<String>((ref) => ref.watch(sessionProvider)?.utilisateur.code ?? '');
 
 /// Contrôles natifs de la fenêtre (window_manager). Désactivé dans les tests.
 final controlesFenetreProvider = Provider<bool>((ref) => true);
@@ -95,8 +94,11 @@ class FavorisNotifier extends Notifier<List<String>> {
   List<String> build() => const [];
 
   Future<void> charger() async {
-    state = await ref.read(favorisServiceProvider).charger(ref.read(utilisateurCourantCodeProvider));
+    final code = ref.read(utilisateurCourantCodeProvider);
+    state = code.isEmpty ? const [] : await ref.read(favorisServiceProvider).charger(code);
   }
+
+  void reinitialiser() => state = const [];
 
   /// Retourne `false` si le maximum est atteint.
   Future<bool> ajouter(String moduleId) async {

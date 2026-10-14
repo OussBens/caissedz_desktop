@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'app/app.dart';
+import 'app/demarrage_providers.dart';
 import 'app/providers.dart';
 import 'core/db/app_database.dart';
 import 'core/design_system/design_system.dart';
@@ -36,7 +37,7 @@ Future<void> main() async {
   await container.read(localeProvider.notifier).charger();
   await container.read(themeModeProvider.notifier).charger();
   await container.read(sidebarReduiteProvider.notifier).charger();
-  await container.read(favorisProvider.notifier).charger();
+  await chargerEtatDemarrage(container);
   container.read(internetProvider.notifier).demarrer();
 
   runApp(UncontrolledProviderScope(container: container, child: const CaisseDzApp()));

@@ -513,6 +513,624 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Sombre'**
   String get galerieSombre;
+
+  /// No description provided for @activationTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Activation de CaisseDZ'**
+  String get activationTitre;
+
+  /// No description provided for @activationIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Saisissez la clé d\'activation fournie pour cette machine, ou essayez le mode démo.'**
+  String get activationIntro;
+
+  /// No description provided for @activationIdentifiantMachine.
+  ///
+  /// In fr, this message translates to:
+  /// **'Identifiant de cette machine'**
+  String get activationIdentifiantMachine;
+
+  /// No description provided for @activationCopierIdentifiant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Copier l\'identifiant'**
+  String get activationCopierIdentifiant;
+
+  /// No description provided for @activationIdentifiantCopie.
+  ///
+  /// In fr, this message translates to:
+  /// **'Identifiant copié'**
+  String get activationIdentifiantCopie;
+
+  /// No description provided for @activationCle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Clé d\'activation (64 caractères)'**
+  String get activationCle;
+
+  /// No description provided for @activationCleIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Clé SHA-256 de 64 caractères hexadécimaux'**
+  String get activationCleIndice;
+
+  /// No description provided for @activationBouton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Activer'**
+  String get activationBouton;
+
+  /// No description provided for @activationDemo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Essayer en mode démo'**
+  String get activationDemo;
+
+  /// No description provided for @activationDemoAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le mode démo ouvre toutes les fonctions (licence Avancé) avec le compte demo / demo. Les données saisies ne sont pas destinées à la production.'**
+  String get activationDemoAide;
+
+  /// No description provided for @activationErreurFormat.
+  ///
+  /// In fr, this message translates to:
+  /// **'La clé doit contenir exactement 64 caractères hexadécimaux (0-9, a-f).'**
+  String get activationErreurFormat;
+
+  /// No description provided for @activationErreurInconnue.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette clé ne correspond pas à cette machine. Vérifiez la clé ou contactez votre revendeur.'**
+  String get activationErreurInconnue;
+
+  /// No description provided for @activationReussie.
+  ///
+  /// In fr, this message translates to:
+  /// **'Licence {niveau} activée.'**
+  String activationReussie(String niveau);
+
+  /// No description provided for @licenceBasic.
+  ///
+  /// In fr, this message translates to:
+  /// **'Basic'**
+  String get licenceBasic;
+
+  /// No description provided for @licenceAvance.
+  ///
+  /// In fr, this message translates to:
+  /// **'Avancé'**
+  String get licenceAvance;
+
+  /// No description provided for @licenceDemo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mode démo'**
+  String get licenceDemo;
+
+  /// No description provided for @licenceNiveau.
+  ///
+  /// In fr, this message translates to:
+  /// **'Licence {niveau}'**
+  String licenceNiveau(String niveau);
+
+  /// No description provided for @licenceRequise.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fonction disponible avec la licence Avancé'**
+  String get licenceRequise;
+
+  /// No description provided for @licenceRequiseDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre licence actuelle est Basic. Activez une licence Avancé pour accéder à ce module.'**
+  String get licenceRequiseDetail;
+
+  /// No description provided for @licenceGererCle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Activer une autre clé'**
+  String get licenceGererCle;
+
+  /// No description provided for @connexionTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Connexion'**
+  String get connexionTitre;
+
+  /// No description provided for @connexionIdentifiant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Identifiant'**
+  String get connexionIdentifiant;
+
+  /// No description provided for @connexionMotDePasse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mot de passe'**
+  String get connexionMotDePasse;
+
+  /// No description provided for @connexionBouton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Se connecter'**
+  String get connexionBouton;
+
+  /// No description provided for @connexionErreurIdentifiants.
+  ///
+  /// In fr, this message translates to:
+  /// **'Identifiant ou mot de passe incorrect.'**
+  String get connexionErreurIdentifiants;
+
+  /// No description provided for @connexionErreurInactif.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce compte est désactivé.'**
+  String get connexionErreurInactif;
+
+  /// No description provided for @connexionErreurNonConfigure.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce compte n\'a pas encore de mot de passe : terminez la configuration initiale.'**
+  String get connexionErreurNonConfigure;
+
+  /// No description provided for @connexionErreurDemo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le compte demo/demo n\'est disponible qu\'en mode démo.'**
+  String get connexionErreurDemo;
+
+  /// No description provided for @connexionDemoIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mode démo : identifiant demo, mot de passe demo'**
+  String get connexionDemoIndice;
+
+  /// No description provided for @connexionDeconnecter.
+  ///
+  /// In fr, this message translates to:
+  /// **'Se déconnecter'**
+  String get connexionDeconnecter;
+
+  /// No description provided for @configTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Configuration initiale'**
+  String get configTitre;
+
+  /// No description provided for @configEtape.
+  ///
+  /// In fr, this message translates to:
+  /// **'Étape {n} sur {total}'**
+  String configEtape(int n, int total);
+
+  /// No description provided for @configEtapeBoutique.
+  ///
+  /// In fr, this message translates to:
+  /// **'Boutique'**
+  String get configEtapeBoutique;
+
+  /// No description provided for @configEtapeAdmin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Administrateur'**
+  String get configEtapeAdmin;
+
+  /// No description provided for @configEtapeVente.
+  ///
+  /// In fr, this message translates to:
+  /// **'Marge et vente'**
+  String get configEtapeVente;
+
+  /// No description provided for @configEtapeRecap.
+  ///
+  /// In fr, this message translates to:
+  /// **'Récapitulatif'**
+  String get configEtapeRecap;
+
+  /// No description provided for @configBoutiqueNom.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom de la boutique'**
+  String get configBoutiqueNom;
+
+  /// No description provided for @configBoutiqueRc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Registre de commerce (RC)'**
+  String get configBoutiqueRc;
+
+  /// No description provided for @configBoutiqueNif.
+  ///
+  /// In fr, this message translates to:
+  /// **'NIF'**
+  String get configBoutiqueNif;
+
+  /// No description provided for @configBoutiqueAdresse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Adresse'**
+  String get configBoutiqueAdresse;
+
+  /// No description provided for @configBoutiqueTelephone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Téléphone'**
+  String get configBoutiqueTelephone;
+
+  /// No description provided for @configBoutiqueEmail.
+  ///
+  /// In fr, this message translates to:
+  /// **'E-mail'**
+  String get configBoutiqueEmail;
+
+  /// No description provided for @configAdminIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce compte administrateur aura tous les droits. Choisissez un identifiant et un mot de passe.'**
+  String get configAdminIntro;
+
+  /// No description provided for @configAdminNom.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom affiché'**
+  String get configAdminNom;
+
+  /// No description provided for @configAdminMotDePasseConfirmation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Confirmer le mot de passe'**
+  String get configAdminMotDePasseConfirmation;
+
+  /// No description provided for @configMarge.
+  ///
+  /// In fr, this message translates to:
+  /// **'Marge par défaut (%)'**
+  String get configMarge;
+
+  /// No description provided for @configMargeAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Appliquée au calcul du prix de vente à partir du prix d\'achat des nouveaux produits.'**
+  String get configMargeAide;
+
+  /// No description provided for @configSeuil.
+  ///
+  /// In fr, this message translates to:
+  /// **'Seuil d\'alerte de stock (global)'**
+  String get configSeuil;
+
+  /// No description provided for @configFidelite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Activer la fidélité (points)'**
+  String get configFidelite;
+
+  /// No description provided for @configPointsParDinar.
+  ///
+  /// In fr, this message translates to:
+  /// **'Points gagnés par dinar'**
+  String get configPointsParDinar;
+
+  /// No description provided for @configDevise.
+  ///
+  /// In fr, this message translates to:
+  /// **'Devise'**
+  String get configDevise;
+
+  /// No description provided for @configLangue.
+  ///
+  /// In fr, this message translates to:
+  /// **'Langue de l\'application'**
+  String get configLangue;
+
+  /// No description provided for @configRecapIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vérifiez les informations avant de terminer. Vous pourrez les modifier plus tard dans Paramètres.'**
+  String get configRecapIntro;
+
+  /// No description provided for @configPrecedent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Précédent'**
+  String get configPrecedent;
+
+  /// No description provided for @configSuivant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Suivant'**
+  String get configSuivant;
+
+  /// No description provided for @configTerminer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Terminer'**
+  String get configTerminer;
+
+  /// No description provided for @configErreurObligatoire.
+  ///
+  /// In fr, this message translates to:
+  /// **'Champ obligatoire'**
+  String get configErreurObligatoire;
+
+  /// No description provided for @configErreurIdentifiant.
+  ///
+  /// In fr, this message translates to:
+  /// **'3 à 32 caractères : lettres, chiffres, point, tiret, tiret bas.'**
+  String get configErreurIdentifiant;
+
+  /// No description provided for @configErreurMotDePasseCourt.
+  ///
+  /// In fr, this message translates to:
+  /// **'Au moins 4 caractères.'**
+  String get configErreurMotDePasseCourt;
+
+  /// No description provided for @configErreurConfirmation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les mots de passe ne correspondent pas.'**
+  String get configErreurConfirmation;
+
+  /// No description provided for @configErreurIdentifiantPris.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cet identifiant est déjà utilisé.'**
+  String get configErreurIdentifiantPris;
+
+  /// No description provided for @configErreurMarge.
+  ///
+  /// In fr, this message translates to:
+  /// **'Valeur entre 0 et 1000.'**
+  String get configErreurMarge;
+
+  /// No description provided for @configErreurNombre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nombre invalide.'**
+  String get configErreurNombre;
+
+  /// No description provided for @configReussie.
+  ///
+  /// In fr, this message translates to:
+  /// **'Configuration terminée. Connectez-vous avec votre compte administrateur.'**
+  String get configReussie;
+
+  /// No description provided for @compteTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mon compte'**
+  String get compteTitre;
+
+  /// No description provided for @compteRole.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rôle'**
+  String get compteRole;
+
+  /// No description provided for @compteIdentifiantActuel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Identifiant actuel'**
+  String get compteIdentifiantActuel;
+
+  /// No description provided for @compteNouvelIdentifiant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouvel identifiant'**
+  String get compteNouvelIdentifiant;
+
+  /// No description provided for @compteMotDePasseActuel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mot de passe actuel'**
+  String get compteMotDePasseActuel;
+
+  /// No description provided for @compteNouveauMotDePasse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau mot de passe'**
+  String get compteNouveauMotDePasse;
+
+  /// No description provided for @compteChangerIdentifiant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Changer l\'identifiant'**
+  String get compteChangerIdentifiant;
+
+  /// No description provided for @compteChangerMotDePasse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Changer le mot de passe'**
+  String get compteChangerMotDePasse;
+
+  /// No description provided for @compteIdentifiantChange.
+  ///
+  /// In fr, this message translates to:
+  /// **'Identifiant modifié : connectez-vous désormais avec « {identifiant} ».'**
+  String compteIdentifiantChange(String identifiant);
+
+  /// No description provided for @compteMotDePasseChange.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mot de passe modifié.'**
+  String get compteMotDePasseChange;
+
+  /// No description provided for @compteErreurMotDePasseActuel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mot de passe actuel incorrect.'**
+  String get compteErreurMotDePasseActuel;
+
+  /// No description provided for @comptePreferences.
+  ///
+  /// In fr, this message translates to:
+  /// **'Préférences'**
+  String get comptePreferences;
+
+  /// No description provided for @compteDemoLectureSeule.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le compte de démonstration ne peut pas être modifié.'**
+  String get compteDemoLectureSeule;
+
+  /// No description provided for @accesRefuseTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Accès refusé'**
+  String get accesRefuseTitre;
+
+  /// No description provided for @accesRefuseMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre rôle « {role} » n\'a pas accès au module « {module} ». Demandez à un administrateur.'**
+  String accesRefuseMessage(String role, String module);
+
+  /// No description provided for @accesRefuseRetour.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retour au tableau de bord'**
+  String get accesRefuseRetour;
+
+  /// No description provided for @rolesTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rôles et permissions'**
+  String get rolesTitre;
+
+  /// No description provided for @rolesIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cochez les permissions d\'action et les modules accessibles pour chaque rôle. L\'administrateur conserve toujours tous les droits.'**
+  String get rolesIntro;
+
+  /// No description provided for @rolesPermissions.
+  ///
+  /// In fr, this message translates to:
+  /// **'Permissions d\'action'**
+  String get rolesPermissions;
+
+  /// No description provided for @rolesModules.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modules accessibles'**
+  String get rolesModules;
+
+  /// No description provided for @rolesEnregistre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Grille des rôles enregistrée.'**
+  String get rolesEnregistre;
+
+  /// No description provided for @rolesAdminTotal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tous les droits'**
+  String get rolesAdminTotal;
+
+  /// No description provided for @permVoirPrixAchat.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir le prix d\'achat'**
+  String get permVoirPrixAchat;
+
+  /// No description provided for @permModifierPrix.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier le prix en caisse'**
+  String get permModifierPrix;
+
+  /// No description provided for @permAppliquerRemise.
+  ///
+  /// In fr, this message translates to:
+  /// **'Appliquer une remise'**
+  String get permAppliquerRemise;
+
+  /// No description provided for @permAnnulerVente.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annuler une vente'**
+  String get permAnnulerVente;
+
+  /// No description provided for @permSupprimerDocument.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer un document'**
+  String get permSupprimerDocument;
+
+  /// No description provided for @permExporterDonnees.
+  ///
+  /// In fr, this message translates to:
+  /// **'Exporter les données'**
+  String get permExporterDonnees;
+
+  /// No description provided for @permGererUtilisateurs.
+  ///
+  /// In fr, this message translates to:
+  /// **'Gérer les utilisateurs'**
+  String get permGererUtilisateurs;
+
+  /// No description provided for @roleAdmin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Admin'**
+  String get roleAdmin;
+
+  /// No description provided for @roleCaissier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Caissier'**
+  String get roleCaissier;
+
+  /// No description provided for @roleMagasinier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Magasinier'**
+  String get roleMagasinier;
+
+  /// No description provided for @parametresRolesCarte.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rôles et permissions'**
+  String get parametresRolesCarte;
+
+  /// No description provided for @parametresRolesCarteDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Permissions d\'action et modules accessibles par rôle.'**
+  String get parametresRolesCarteDetail;
+
+  /// No description provided for @parametresLicenceCarte.
+  ///
+  /// In fr, this message translates to:
+  /// **'Licence'**
+  String get parametresLicenceCarte;
+
+  /// No description provided for @shellBandeauDemo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mode démo — les données ne sont pas destinées à la production'**
+  String get shellBandeauDemo;
+
+  /// No description provided for @shellMenuUtilisateur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Menu utilisateur'**
+  String get shellMenuUtilisateur;
+
+  /// No description provided for @shellVerrouille.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réservé à la licence Avancé'**
+  String get shellVerrouille;
+
+  /// No description provided for @shellAccesRestreint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Accès non autorisé pour votre rôle'**
+  String get shellAccesRestreint;
 }
 
 class _AppLocalizationsDelegate

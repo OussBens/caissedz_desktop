@@ -1,4 +1,3 @@
-import 'package:caissedz_desktop/app/app.dart';
 import 'package:caissedz_desktop/app/providers.dart';
 import 'package:caissedz_desktop/features/shell/modules_menu.dart';
 import 'package:caissedz_desktop/features/shell/title_bar.dart';
@@ -7,25 +6,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../helpers/bases.dart';
+import '../../helpers/app_test_helper.dart';
 
-Future<ProviderContainer> _pumpApp(WidgetTester tester, {Locale locale = const Locale('fr')}) async {
-  final base = await ouvrirBaseEnMemoire();
-  const taille = Size(1280, 800);
-  await tester.binding.setSurfaceSize(taille);
-  tester.view.physicalSize = taille;
-  tester.view.devicePixelRatio = 1;
-  addTearDown(() => tester.view.reset());
-  final container = ProviderContainer(overrides: [
-    appDatabaseProvider.overrideWithValue(base),
-    controlesFenetreProvider.overrideWithValue(false),
-  ]);
-  addTearDown(container.dispose);
-  await container.read(localeProvider.notifier).changer(locale);
-  await tester.pumpWidget(UncontrolledProviderScope(container: container, child: const CaisseDzApp()));
-  await tester.pumpAndSettle();
-  return container;
-}
+Future<ProviderContainer> _pumpApp(WidgetTester tester, {Locale locale = const Locale('fr')}) =>
+    pumpApp(tester, locale: locale);
 
 void main() {
   group('AppShell', () {
@@ -84,7 +68,7 @@ void main() {
       expect(find.text('Caisse'), findsOneWidget);
       // Persistance : un nouveau chargement relit la base.
       final service = container.read(favorisServiceProvider);
-      expect(await service.charger('admin'), ids.where((i) => i != 'caisse').toList());
+      expect(await service.charger('USR0000'), ids.where((i) => i != 'caisse').toList());
     });
 
     testWidgets('alertes : badge sur la cloche et panneau', (tester) async {

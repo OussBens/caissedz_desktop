@@ -1,18 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:window_manager/window_manager.dart';
 
+import '../../app/demarrage_providers.dart';
 import '../../app/providers.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
+import '../../domain/referentiel/referentiel.dart';
+import '../compte/mon_compte_page.dart';
 import 'alertes_panel.dart';
 
 /// Barre de titre personnalisée : titre, alertes, témoin Internet, boutons fenêtre.
 class TitleBar extends ConsumerStatefulWidget {
-  const TitleBar({super.key, required this.titre, this.controlesFenetre = true});
+  const TitleBar({super.key, required this.titre, this.controlesFenetre = true, this.minimal = false});
 
   final String titre;
+
+  /// Écrans hors shell : sans alertes ni menu utilisateur.
+  final bool minimal;
 
   /// Désactivé dans les tests (pas de fenêtre native).
   final bool controlesFenetre;
@@ -53,6 +60,8 @@ class _TitleBarState extends ConsumerState<TitleBar> with WindowListener {
     final l10n = AppLocalizations.of(context);
     final internet = ref.watch(internetProvider);
     final alertes = ref.watch(alertesProvider);
+    final session = ref.watch(sessionProvider);
+    final locale = ref.watch(localeProvider);
 
     Widget zoneDeplacement(Widget enfant) =>
         widget.controlesFenetre ? DragToMoveArea(child: enfant) : enfant;
@@ -102,6 +111,7 @@ class _TitleBarState extends ConsumerState<TitleBar> with WindowListener {
             ),
           ),
           // Alertes
+          if (!widget.minimal)
           Stack(
             clipBehavior: Clip.none,
             children: [
@@ -133,6 +143,35 @@ class _TitleBarState extends ConsumerState<TitleBar> with WindowListener {
             ],
           ),
           const SizedBox(width: DsSpacing.sm),
+          // Menu utilisateur
+          if (!widget.minimal && session != null)
+            PopupMenuButton<String>(
+              tooltip: l10n.shellMenuUtilisateur,
+              offset: const Offset(0, DsTailles.barreTitre),
+              onSelected: (v) {
+                if (v == 'compte') context.go(MonComptePage.route);
+                if (v == 'deconnexion') ref.read(sessionProvider.notifier).deconnecter();
+              },
+              itemBuilder: (_) => [
+                PopupMenuItem(value: 'compte', height: 36, child: Row(children: [Icon(LucideIcons.userCog, size: DsTailles.iconeSm, color: c.texteSecondaire), const SizedBox(width: DsSpacing.sm), Text(l10n.compteTitre, style: t.corps)])),
+                PopupMenuItem(value: 'deconnexion', height: 36, child: Row(children: [Icon(LucideIcons.logOut, size: DsTailles.iconeSm, color: c.danger), const SizedBox(width: DsSpacing.sm), Text(l10n.connexionDeconnecter, style: t.corps.copyWith(color: c.danger))])),
+              ],
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: DsSpacing.sm),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CircleAvatar(radius: 12, backgroundColor: c.primaireDoux, child: Text(session.utilisateur.nom.isEmpty ? '?' : session.utilisateur.nom[0].toUpperCase(), style: t.legende.copyWith(color: c.primaire))),
+                    const SizedBox(width: DsSpacing.sm),
+                    Text(session.utilisateur.nom, style: t.petitFort),
+                    const SizedBox(width: DsSpacing.xs),
+                    Text('· ${Referentiel.roles.libelle(session.utilisateur.role, locale)}', style: t.petit.copyWith(color: c.texteAttenue)),
+                    const SizedBox(width: DsSpacing.xs),
+                    Icon(LucideIcons.chevronDown, size: 14, color: c.texteAttenue),
+                  ],
+                ),
+              ),
+            ),
           if (widget.controlesFenetre) ...[
             _BoutonFenetre(
               icone: LucideIcons.minus,
