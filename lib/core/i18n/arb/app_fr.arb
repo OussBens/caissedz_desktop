@@ -536,5 +536,159 @@
   "communCommentaire": "Commentaire",
   "communDate": "Date",
   "communQuantite": "Quantité",
-  "moduleMagasins": "Magasins"
+  "moduleMagasins": "Magasins",
+  "posTitre": "Caisse",
+  "posScan": "Scanner ou rechercher un produit (F1)",
+  "posPanier": "Panier {n}",
+  "@posPanier": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "posNouveauPanier": "Nouveau panier (Ctrl+N)",
+  "posMaxPaniers": "5 ventes en parallèle au maximum.",
+  "posPanierVide": "Panier vide : scannez un code-barres ou cliquez sur un produit.",
+  "posSousTotal": "Sous-total",
+  "posRemise": "Remise",
+  "posTotal": "Total",
+  "posVerse": "Versé",
+  "posReste": "Reste",
+  "posMonnaie": "Monnaie à rendre",
+  "posPointsGagnes": "Points gagnés",
+  "posClient": "Client (F2)",
+  "posClientPassage": "Client de passage",
+  "posChoisirClient": "Choisir un client",
+  "posRemiseGlobale": "Remise globale (F3)",
+  "posRemisePct": "Remise (%)",
+  "posPaiement": "Paiement",
+  "posMontant": "Montant",
+  "posEncaisser": "Encaisser (F12)",
+  "posVider": "Vider (F10)",
+  "posCalculatrice": "Calculatrice (F9)",
+  "posAide": "Aide (F11)",
+  "posSessionOuvrir": "Ouvrir la session",
+  "posSessionFermer": "Fermer la session",
+  "posSessionAucune": "Aucune session de caisse ouverte : ouvrez une session pour encaisser.",
+  "posSessionOuverte": "Session {code} · {caisse}",
+  "@posSessionOuverte": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "caisse": {
+        "type": "String"
+      }
+    }
+  },
+  "posSessionCaisse": "Caisse",
+  "posSessionFond": "Fond de caisse initial",
+  "posSessionMontantCompte": "Montant compté",
+  "posSessionAttendu": "Espèces attendues",
+  "posSessionEcart": "Écart",
+  "posSessionFermee": "Session {code} fermée. Écart : {ecart}.",
+  "@posSessionFermee": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "ecart": {
+        "type": "String"
+      }
+    }
+  },
+  "posErreurSessionDejaOuverte": "Une session est déjà ouverte (utilisateur ou caisse).",
+  "posErreurSessionAucune": "Aucune session ouverte.",
+  "posErreurCaisse": "Caisse inconnue ou inactive.",
+  "posErreurMontant": "Montant invalide.",
+  "posErreurStock": "Stock insuffisant (réservé par les paniers ouverts) : {detail}",
+  "@posErreurStock": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "posErreurProduitInconnu": "Code inconnu : {code}",
+  "@posErreurProduitInconnu": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "posErreurPanierVide": "Le panier est vide.",
+  "posErreurPaiementInsuffisant": "Paiement insuffisant. Reste : {reste}",
+  "@posErreurPaiementInsuffisant": {
+    "placeholders": {
+      "reste": {
+        "type": "String"
+      }
+    }
+  },
+  "posErreurModePaiement": "Mode de paiement invalide.",
+  "posErreurPoints": "Points insuffisants.",
+  "posErreurCredit": "Vente à crédit non autorisée pour ce client.",
+  "posErreurQuantite": "Quantité invalide.",
+  "posErreurPeriodeCloturee": "Opération refusée : période clôturée.",
+  "posVenteEnregistree": "Vente {code} encaissée. Monnaie à rendre : {monnaie}",
+  "@posVenteEnregistree": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "monnaie": {
+        "type": "String"
+      }
+    }
+  },
+  "posImprimerTicket": "Imprimer le ticket",
+  "posImprimerFacture": "Facture A4",
+  "posTicket58": "Ticket 58 mm",
+  "posTicket80": "Ticket 80 mm",
+  "posApercuTicket": "Aperçu du ticket",
+  "posImpressionOk": "Ticket envoyé à l'imprimante.",
+  "posImpressionErreur": "Impression impossible : {detail}",
+  "@posImpressionErreur": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "posCreditAutoriser": "Vendre à crédit (reste dû)",
+  "posRaccourcisTitre": "Raccourcis clavier",
+  "posRaccourciF1": "Rechercher / scanner",
+  "posRaccourciF2": "Choisir le client",
+  "posRaccourciF3": "Remise globale",
+  "posRaccourciF4": "Espèces : montant exact",
+  "posRaccourciF5": "Carte : montant exact",
+  "posRaccourciF6": "Chèque : montant exact",
+  "posRaccourciF7": "Virement : montant exact",
+  "posRaccourciF8": "Points de fidélité",
+  "posRaccourciF9": "Calculatrice",
+  "posRaccourciF10": "Vider le panier",
+  "posRaccourciF11": "Cette aide",
+  "posRaccourciF12": "Encaisser",
+  "posRaccourciCtrlN": "Nouveau panier",
+  "posRaccourciCtrlTab": "Panier suivant",
+  "posRaccourciSuppr": "Retirer la ligne sélectionnée",
+  "posRaccourciPlusMoins": "Quantité +1 / −1 sur la ligne sélectionnée",
+  "posLigneQuantite": "Qté",
+  "posLignePrix": "P.U.",
+  "posLigneRemise": "Rem.",
+  "posLigneTotal": "Total",
+  "posVendreNombre": "Vendre à la pièce",
+  "posColis": "Colis",
+  "posPack": "Pack",
+  "posCategoriesToutes": "Toutes",
+  "posAucunProduit": "Aucun produit actif.",
+  "calcTitre": "Calculatrice",
+  "calcUtiliser": "Utiliser comme montant",
+  "modePaiementEspeces": "Espèces",
+  "modePaiementCarte": "Carte",
+  "modePaiementCheque": "Chèque",
+  "modePaiementVirement": "Virement",
+  "modePaiementPoints": "Points"
 }

@@ -140,7 +140,7 @@ Checklist §15 : stock.
 `utilisateur_magasin`), génération des besoins (quantité = 2 × seuil − stock), module « Magasins » séparé dans
 le groupe Stock.
 
-## Lot 4 — Caisse POS ⬜
+## Lot 4 — Caisse POS ✅ (sous hypothèses ⚠️)
 Écrans : sessions obligatoires, 5 ventes en parallèle, scan, colis, nombre, réservation de stock entre paniers,
 remises, paiements (Espèces, Carte, Chèque, Virement, Points), versé/reste, points gagnés, 16 raccourcis + aide,
 calculatrice, ticket scellé, impression ticket 58/80 mm FR/AR et facture A4.
@@ -149,6 +149,31 @@ LISEZ-MOI (K7, T12…).
 Tests : VenteService.encaisser (transaction unique), versé/reste, points, réservation entre paniers,
 scellement chaîné, rendu ticket.
 Checklist §15 : caisse / ticket / scellement.
+
+**Livré**
+- Migration v5 : `session_caisse`, `vente` (scellée : `hash`, `hash_precedent`), `vente_ligne`, `vente_paiement`,
+  points / plafond de crédit sur `client`.
+- Domaine : `Panier` immuable (agrégation, remises ligne et globale, versé / reste / monnaie, réservations),
+  `Fidelite`, `Scellement` (SHA-256 chaîné sur forme canonique, vérification de chaîne).
+- `SessionCaisseService` (session obligatoire, unique par utilisateur et par caisse, écart à la fermeture =
+  compté − (fond + espèces − monnaie rendue)), `VenteService.encaisser` en UNE transaction (vente, lignes,
+  paiements, mouvements de stock avec garde, points, scellement), `annuler` (stock et points restitués, ticket
+  conservé, crochet « période clôturée » pour le lot 7), `verifierChaine`.
+- Impression : `TicketEscPos` 58 / 80 mm (CP1252 / CP1256 pour l'arabe, CODE128 du ticket, tiroir, coupe),
+  `DocumentsPdf` (ticket rouleau et facture A4, police Cairo en arabe), transports réseau IP:port, USB via le
+  spouleur Windows (winspool par FFI), Bluetooth via la file d'impression Windows, `ImprimanteMemoire` (tests).
+- Écran Caisse : barre de session (ouvrir / fermer), grille de produits avec scan / recherche / catégories,
+  5 paniers en onglets, lignes `CartLine`, client, remise globale (permission), `PaymentPanel` (5 modes, pavé,
+  billets rapides, versé / reste / monnaie), vente à crédit pour client identifié, 16 raccourcis (F1–F12,
+  Ctrl+N, Ctrl+Tab, Suppr, +/−) et aide, calculatrice, dialogue de résultat avec ticket 58 / 80 mm et facture A4.
+- Widgets DS : `CartLine`, `Numpad`, `Calculator`, `PaymentPanel`.
+- Tests : 11 unitaires (panier, scellement, sessions, encaissement, annulation, altération détectée,
+  impression) + 4 contrôleur + 4 widget.
+
+**Hypothèses (⚠️)** : 1 point = 1 DA à l'utilisation, points gagnés = ⌊net × points/dinar⌋ (client identifié
+seulement), chaîne de scellement globale ordonnée par code de vente, forme canonique JSON des tickets, liste des
+16 raccourcis, prix à la pièce = prix de vente / pièces par unité, écart de caisse calculé sur les espèces,
+Bluetooth via file d'impression Windows (écart : pas d'accès série direct).
 
 ## Lot 5 — Ventes, retours, tiers, versements ⬜
 Écrans : ventes, retours, clients, fournisseurs, versements imputés aux documents ouverts (plus ancien d'abord),

@@ -1182,4 +1182,287 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get moduleMagasins => 'Stores';
+
+  @override
+  String get posTitre => 'Point of sale';
+
+  @override
+  String get posScan => 'Scan or search a product (F1)';
+
+  @override
+  String posPanier(int n) {
+    return 'Cart $n';
+  }
+
+  @override
+  String get posNouveauPanier => 'New cart (Ctrl+N)';
+
+  @override
+  String get posMaxPaniers => 'At most 5 parallel sales.';
+
+  @override
+  String get posPanierVide => 'Empty cart: scan a barcode or click a product.';
+
+  @override
+  String get posSousTotal => 'Subtotal';
+
+  @override
+  String get posRemise => 'Discount';
+
+  @override
+  String get posTotal => 'Total';
+
+  @override
+  String get posVerse => 'Paid';
+
+  @override
+  String get posReste => 'Due';
+
+  @override
+  String get posMonnaie => 'Change';
+
+  @override
+  String get posPointsGagnes => 'Points earned';
+
+  @override
+  String get posClient => 'Customer (F2)';
+
+  @override
+  String get posClientPassage => 'Walk-in customer';
+
+  @override
+  String get posChoisirClient => 'Choose a customer';
+
+  @override
+  String get posRemiseGlobale => 'Global discount (F3)';
+
+  @override
+  String get posRemisePct => 'Discount (%)';
+
+  @override
+  String get posPaiement => 'Payment';
+
+  @override
+  String get posMontant => 'Amount';
+
+  @override
+  String get posEncaisser => 'Checkout (F12)';
+
+  @override
+  String get posVider => 'Clear (F10)';
+
+  @override
+  String get posCalculatrice => 'Calculator (F9)';
+
+  @override
+  String get posAide => 'Help (F11)';
+
+  @override
+  String get posSessionOuvrir => 'Open session';
+
+  @override
+  String get posSessionFermer => 'Close session';
+
+  @override
+  String get posSessionAucune => 'No open cash session: open one to sell.';
+
+  @override
+  String posSessionOuverte(String code, String caisse) {
+    return 'Session $code · $caisse';
+  }
+
+  @override
+  String get posSessionCaisse => 'Register';
+
+  @override
+  String get posSessionFond => 'Opening float';
+
+  @override
+  String get posSessionMontantCompte => 'Counted amount';
+
+  @override
+  String get posSessionAttendu => 'Expected cash';
+
+  @override
+  String get posSessionEcart => 'Difference';
+
+  @override
+  String posSessionFermee(String code, String ecart) {
+    return 'Session $code closed. Difference: $ecart.';
+  }
+
+  @override
+  String get posErreurSessionDejaOuverte => 'A session is already open (user or register).';
+
+  @override
+  String get posErreurSessionAucune => 'No open session.';
+
+  @override
+  String get posErreurCaisse => 'Unknown or inactive register.';
+
+  @override
+  String get posErreurMontant => 'Invalid amount.';
+
+  @override
+  String posErreurStock(String detail) {
+    return 'Insufficient stock (reserved by open carts): $detail';
+  }
+
+  @override
+  String posErreurProduitInconnu(String code) {
+    return 'Unknown code: $code';
+  }
+
+  @override
+  String get posErreurPanierVide => 'The cart is empty.';
+
+  @override
+  String posErreurPaiementInsuffisant(String reste) {
+    return 'Insufficient payment. Due: $reste';
+  }
+
+  @override
+  String get posErreurModePaiement => 'Invalid payment method.';
+
+  @override
+  String get posErreurPoints => 'Not enough points.';
+
+  @override
+  String get posErreurCredit => 'Credit sale not allowed for this customer.';
+
+  @override
+  String get posErreurQuantite => 'Invalid quantity.';
+
+  @override
+  String get posErreurPeriodeCloturee => 'Refused: closed period.';
+
+  @override
+  String posVenteEnregistree(String code, String monnaie) {
+    return 'Sale $code completed. Change: $monnaie';
+  }
+
+  @override
+  String get posImprimerTicket => 'Print receipt';
+
+  @override
+  String get posImprimerFacture => 'A4 invoice';
+
+  @override
+  String get posTicket58 => '58 mm receipt';
+
+  @override
+  String get posTicket80 => '80 mm receipt';
+
+  @override
+  String get posApercuTicket => 'Receipt preview';
+
+  @override
+  String get posImpressionOk => 'Receipt sent to the printer.';
+
+  @override
+  String posImpressionErreur(String detail) {
+    return 'Printing failed: $detail';
+  }
+
+  @override
+  String get posCreditAutoriser => 'Sell on credit (amount due)';
+
+  @override
+  String get posRaccourcisTitre => 'Keyboard shortcuts';
+
+  @override
+  String get posRaccourciF1 => 'Search / scan';
+
+  @override
+  String get posRaccourciF2 => 'Choose customer';
+
+  @override
+  String get posRaccourciF3 => 'Global discount';
+
+  @override
+  String get posRaccourciF4 => 'Cash: exact amount';
+
+  @override
+  String get posRaccourciF5 => 'Card: exact amount';
+
+  @override
+  String get posRaccourciF6 => 'Cheque: exact amount';
+
+  @override
+  String get posRaccourciF7 => 'Transfer: exact amount';
+
+  @override
+  String get posRaccourciF8 => 'Loyalty points';
+
+  @override
+  String get posRaccourciF9 => 'Calculator';
+
+  @override
+  String get posRaccourciF10 => 'Clear cart';
+
+  @override
+  String get posRaccourciF11 => 'This help';
+
+  @override
+  String get posRaccourciF12 => 'Checkout';
+
+  @override
+  String get posRaccourciCtrlN => 'New cart';
+
+  @override
+  String get posRaccourciCtrlTab => 'Next cart';
+
+  @override
+  String get posRaccourciSuppr => 'Remove selected line';
+
+  @override
+  String get posRaccourciPlusMoins => 'Quantity +1 / −1 on the selected line';
+
+  @override
+  String get posLigneQuantite => 'Qty';
+
+  @override
+  String get posLignePrix => 'Unit';
+
+  @override
+  String get posLigneRemise => 'Disc.';
+
+  @override
+  String get posLigneTotal => 'Total';
+
+  @override
+  String get posVendreNombre => 'Sell by piece';
+
+  @override
+  String get posColis => 'Case';
+
+  @override
+  String get posPack => 'Bundle';
+
+  @override
+  String get posCategoriesToutes => 'All';
+
+  @override
+  String get posAucunProduit => 'No active product.';
+
+  @override
+  String get calcTitre => 'Calculator';
+
+  @override
+  String get calcUtiliser => 'Use as amount';
+
+  @override
+  String get modePaiementEspeces => 'Cash';
+
+  @override
+  String get modePaiementCarte => 'Card';
+
+  @override
+  String get modePaiementCheque => 'Cheque';
+
+  @override
+  String get modePaiementVirement => 'Transfer';
+
+  @override
+  String get modePaiementPoints => 'Points';
 }

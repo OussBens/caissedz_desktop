@@ -10,3 +10,4 @@ export 'widgets/ds_primitives.dart';
 export 'widgets/ds_stepper.dart';
 export 'widgets/licence_gate.dart';
 export 'widgets/permission_grid.dart';
+export 'widgets/pos_widgets.dart';

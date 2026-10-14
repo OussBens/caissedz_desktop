@@ -247,18 +247,20 @@ class DsVide extends StatelessWidget {
     final c = context.ds.colors;
     final t = context.ds.typo;
     return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icone, size: 40, color: c.texteAttenue),
-          const SizedBox(height: DsSpacing.md),
-          Text(
-            message,
-            style: t.corps.copyWith(color: c.texteSecondaire),
-            textAlign: TextAlign.center,
-          ),
-          if (action != null) ...[const SizedBox(height: DsSpacing.lg), action!],
-        ],
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icone, size: 40, color: c.texteAttenue),
+            const SizedBox(height: DsSpacing.md),
+            Text(
+              message,
+              style: t.corps.copyWith(color: c.texteSecondaire),
+              textAlign: TextAlign.center,
+            ),
+            if (action != null) ...[const SizedBox(height: DsSpacing.lg), action!],
+          ],
+        ),
       ),
     );
   }

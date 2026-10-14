@@ -65,7 +65,10 @@ void main() {
       await clic(tester, find.text('Entrée manuelle').first);
       await tester.enterText(_champ('Quantité'), '8');
       await clic(tester, find.text('Enregistrer'));
-      expect((await StockRepository(c.read(appDatabaseProvider).db).niveau('PRD0002', 'MAG0000')).quantite, 8); // Eau (premier par désignation)
+      expect(
+        (await StockRepository(c.read(appDatabaseProvider).db).niveau('PRD0002', 'MAG0000')).quantite,
+        8,
+      ); // Eau (premier par désignation)
       await clic(tester, find.text('Journal des mouvements'));
       expect(find.text('Stock initial'), findsOneWidget);
       expect(find.text('Entrée'), findsOneWidget);

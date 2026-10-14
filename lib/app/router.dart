@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../domain/modules.dart';
 import '../features/activation/activation_page.dart';
+import '../features/caisse/pos_page.dart';
 import '../features/compte/mon_compte_page.dart';
 import '../features/configuration/configuration_page.dart';
 import '../features/connexion/connexion_page.dart';
@@ -99,6 +100,7 @@ GoRouter construireRouter(Ref ref, {String routeInitiale = routeAccueil}) {
 /// Page d'un module : écrans livrés par lot, sinon page provisoire.
 Widget pageModule(ModuleApp module) => switch (module.id) {
   'parametres' => const ParametresAccueilPage(),
+  'caisse' => const PosPage(),
   'produits' => const ProduitsPage(),
   'stock' => const StockPage(),
   'magasins' => const MagasinsPage(),

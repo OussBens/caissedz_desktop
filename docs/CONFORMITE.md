@@ -44,9 +44,12 @@
       sorties avec motifs §13 + onglet Ventes
 
 ## Caisse (lot 4)
-- [ ] Sessions obligatoires, 5 ventes en parallèle, réservation de stock entre paniers
-- [ ] Paiements Espèces / Carte / Chèque / Virement / Points, versé/reste, points gagnés
-- [ ] Ticket scellé (SHA-256 chaîné), impression 58/80 mm FR/AR et facture A4
+- [x] Sessions obligatoires, 5 ventes en parallèle, réservation de stock entre paniers
+- [x] Scan (EAN-13, interne, QR), colis, vente à la pièce (« nombre »), remises ligne / globale
+- [x] Paiements Espèces / Carte / Chèque / Virement / Points, versé/reste, points gagnés
+- [x] 16 raccourcis + aide, calculatrice
+- [x] Ticket scellé (SHA-256 chaîné), impression 58/80 mm FR/AR (ESC/POS et PDF) et facture A4 — Bluetooth via
+      file d'impression Windows (écart)
 
 ## Ventes, retours, tiers (lot 5)
 - [ ] Versements imputés aux documents ouverts, plus ancien d'abord

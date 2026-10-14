@@ -8,6 +8,7 @@ import 'package:caissedz_desktop/application/auth_service.dart';
 import 'package:caissedz_desktop/application/configuration_initiale_service.dart';
 import 'package:caissedz_desktop/application/import_produits_service.dart';
 import 'package:caissedz_desktop/application/licence_service.dart';
+import 'package:caissedz_desktop/core/db/app_database.dart';
 import 'package:caissedz_desktop/core/db/machine_key.dart';
 import 'package:caissedz_desktop/core/licence/cle_activation.dart';
 import 'package:caissedz_desktop/core/securite/mot_de_passe.dart';
@@ -130,3 +131,9 @@ ConfigurationInitiale configurationTest() => const ConfigurationInitiale(
 
 /// Modèle Excel d'import (raccourci de test).
 Uint8List importModele() => ImportProduitsService.modele();
+
+/// Services de test (hachage rapide, machine fixe) sur une base donnée.
+LicenceService licenceServiceTest(AppDatabase base) => LicenceService(base.db, identifiant: const MachineTest());
+AuthService authServiceTest(AppDatabase base) => AuthService(base.db, hachage: hachageTest);
+ConfigurationInitialeService configurationServiceTest(AppDatabase base) =>
+    ConfigurationInitialeService(base.db, hachage: hachageTest);

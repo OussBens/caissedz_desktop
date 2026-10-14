@@ -15,7 +15,7 @@ void main() {
       await clic(tester, find.text('Retour au tableau de bord'));
       expect(find.byType(AccesRefusePage), findsNothing);
       await clic(tester, find.text('Caisse'));
-      expect(find.textContaining('Module « Caisse »'), findsOneWidget);
+      expect(find.textContaining('Aucune session de caisse ouverte'), findsOneWidget);
     });
 
     testWidgets('caissier : page Rôles interdite (permission gererUtilisateurs)', (tester) async {

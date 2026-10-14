@@ -536,5 +536,159 @@
   "communCommentaire": "Comment",
   "communDate": "Date",
   "communQuantite": "Quantity",
-  "moduleMagasins": "Stores"
+  "moduleMagasins": "Stores",
+  "posTitre": "Point of sale",
+  "posScan": "Scan or search a product (F1)",
+  "posPanier": "Cart {n}",
+  "@posPanier": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "posNouveauPanier": "New cart (Ctrl+N)",
+  "posMaxPaniers": "At most 5 parallel sales.",
+  "posPanierVide": "Empty cart: scan a barcode or click a product.",
+  "posSousTotal": "Subtotal",
+  "posRemise": "Discount",
+  "posTotal": "Total",
+  "posVerse": "Paid",
+  "posReste": "Due",
+  "posMonnaie": "Change",
+  "posPointsGagnes": "Points earned",
+  "posClient": "Customer (F2)",
+  "posClientPassage": "Walk-in customer",
+  "posChoisirClient": "Choose a customer",
+  "posRemiseGlobale": "Global discount (F3)",
+  "posRemisePct": "Discount (%)",
+  "posPaiement": "Payment",
+  "posMontant": "Amount",
+  "posEncaisser": "Checkout (F12)",
+  "posVider": "Clear (F10)",
+  "posCalculatrice": "Calculator (F9)",
+  "posAide": "Help (F11)",
+  "posSessionOuvrir": "Open session",
+  "posSessionFermer": "Close session",
+  "posSessionAucune": "No open cash session: open one to sell.",
+  "posSessionOuverte": "Session {code} · {caisse}",
+  "@posSessionOuverte": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "caisse": {
+        "type": "String"
+      }
+    }
+  },
+  "posSessionCaisse": "Register",
+  "posSessionFond": "Opening float",
+  "posSessionMontantCompte": "Counted amount",
+  "posSessionAttendu": "Expected cash",
+  "posSessionEcart": "Difference",
+  "posSessionFermee": "Session {code} closed. Difference: {ecart}.",
+  "@posSessionFermee": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "ecart": {
+        "type": "String"
+      }
+    }
+  },
+  "posErreurSessionDejaOuverte": "A session is already open (user or register).",
+  "posErreurSessionAucune": "No open session.",
+  "posErreurCaisse": "Unknown or inactive register.",
+  "posErreurMontant": "Invalid amount.",
+  "posErreurStock": "Insufficient stock (reserved by open carts): {detail}",
+  "@posErreurStock": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "posErreurProduitInconnu": "Unknown code: {code}",
+  "@posErreurProduitInconnu": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "posErreurPanierVide": "The cart is empty.",
+  "posErreurPaiementInsuffisant": "Insufficient payment. Due: {reste}",
+  "@posErreurPaiementInsuffisant": {
+    "placeholders": {
+      "reste": {
+        "type": "String"
+      }
+    }
+  },
+  "posErreurModePaiement": "Invalid payment method.",
+  "posErreurPoints": "Not enough points.",
+  "posErreurCredit": "Credit sale not allowed for this customer.",
+  "posErreurQuantite": "Invalid quantity.",
+  "posErreurPeriodeCloturee": "Refused: closed period.",
+  "posVenteEnregistree": "Sale {code} completed. Change: {monnaie}",
+  "@posVenteEnregistree": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "monnaie": {
+        "type": "String"
+      }
+    }
+  },
+  "posImprimerTicket": "Print receipt",
+  "posImprimerFacture": "A4 invoice",
+  "posTicket58": "58 mm receipt",
+  "posTicket80": "80 mm receipt",
+  "posApercuTicket": "Receipt preview",
+  "posImpressionOk": "Receipt sent to the printer.",
+  "posImpressionErreur": "Printing failed: {detail}",
+  "@posImpressionErreur": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "posCreditAutoriser": "Sell on credit (amount due)",
+  "posRaccourcisTitre": "Keyboard shortcuts",
+  "posRaccourciF1": "Search / scan",
+  "posRaccourciF2": "Choose customer",
+  "posRaccourciF3": "Global discount",
+  "posRaccourciF4": "Cash: exact amount",
+  "posRaccourciF5": "Card: exact amount",
+  "posRaccourciF6": "Cheque: exact amount",
+  "posRaccourciF7": "Transfer: exact amount",
+  "posRaccourciF8": "Loyalty points",
+  "posRaccourciF9": "Calculator",
+  "posRaccourciF10": "Clear cart",
+  "posRaccourciF11": "This help",
+  "posRaccourciF12": "Checkout",
+  "posRaccourciCtrlN": "New cart",
+  "posRaccourciCtrlTab": "Next cart",
+  "posRaccourciSuppr": "Remove selected line",
+  "posRaccourciPlusMoins": "Quantity +1 / −1 on the selected line",
+  "posLigneQuantite": "Qty",
+  "posLignePrix": "Unit",
+  "posLigneRemise": "Disc.",
+  "posLigneTotal": "Total",
+  "posVendreNombre": "Sell by piece",
+  "posColis": "Case",
+  "posPack": "Bundle",
+  "posCategoriesToutes": "All",
+  "posAucunProduit": "No active product.",
+  "calcTitre": "Calculator",
+  "calcUtiliser": "Use as amount",
+  "modePaiementEspeces": "Cash",
+  "modePaiementCarte": "Card",
+  "modePaiementCheque": "Cheque",
+  "modePaiementVirement": "Transfer",
+  "modePaiementPoints": "Points"
 }

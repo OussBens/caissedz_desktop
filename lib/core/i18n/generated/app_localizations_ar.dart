@@ -1179,4 +1179,287 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get moduleMagasins => 'المخازن';
+
+  @override
+  String get posTitre => 'الصندوق';
+
+  @override
+  String get posScan => 'امسح أو ابحث عن منتج (F1)';
+
+  @override
+  String posPanier(int n) {
+    return 'سلة $n';
+  }
+
+  @override
+  String get posNouveauPanier => 'سلة جديدة (Ctrl+N)';
+
+  @override
+  String get posMaxPaniers => '5 مبيعات متوازية كحد أقصى.';
+
+  @override
+  String get posPanierVide => 'السلة فارغة: امسح باركودًا أو انقر على منتج.';
+
+  @override
+  String get posSousTotal => 'المجموع الجزئي';
+
+  @override
+  String get posRemise => 'التخفيض';
+
+  @override
+  String get posTotal => 'المجموع';
+
+  @override
+  String get posVerse => 'المدفوع';
+
+  @override
+  String get posReste => 'المتبقي';
+
+  @override
+  String get posMonnaie => 'الباقي المسترجع';
+
+  @override
+  String get posPointsGagnes => 'النقاط المكتسبة';
+
+  @override
+  String get posClient => 'الزبون (F2)';
+
+  @override
+  String get posClientPassage => 'زبون عابر';
+
+  @override
+  String get posChoisirClient => 'اختيار زبون';
+
+  @override
+  String get posRemiseGlobale => 'تخفيض إجمالي (F3)';
+
+  @override
+  String get posRemisePct => 'التخفيض (%)';
+
+  @override
+  String get posPaiement => 'الدفع';
+
+  @override
+  String get posMontant => 'المبلغ';
+
+  @override
+  String get posEncaisser => 'تحصيل (F12)';
+
+  @override
+  String get posVider => 'إفراغ (F10)';
+
+  @override
+  String get posCalculatrice => 'الآلة الحاسبة (F9)';
+
+  @override
+  String get posAide => 'مساعدة (F11)';
+
+  @override
+  String get posSessionOuvrir => 'فتح الجلسة';
+
+  @override
+  String get posSessionFermer => 'إغلاق الجلسة';
+
+  @override
+  String get posSessionAucune => 'لا توجد جلسة صندوق مفتوحة: افتح جلسة للتحصيل.';
+
+  @override
+  String posSessionOuverte(String code, String caisse) {
+    return 'الجلسة $code · $caisse';
+  }
+
+  @override
+  String get posSessionCaisse => 'الصندوق';
+
+  @override
+  String get posSessionFond => 'رصيد الصندوق الأولي';
+
+  @override
+  String get posSessionMontantCompte => 'المبلغ المعدود';
+
+  @override
+  String get posSessionAttendu => 'النقد المتوقع';
+
+  @override
+  String get posSessionEcart => 'الفرق';
+
+  @override
+  String posSessionFermee(String code, String ecart) {
+    return 'أُغلقت الجلسة $code. الفرق: $ecart.';
+  }
+
+  @override
+  String get posErreurSessionDejaOuverte => 'توجد جلسة مفتوحة بالفعل (المستخدم أو الصندوق).';
+
+  @override
+  String get posErreurSessionAucune => 'لا توجد جلسة مفتوحة.';
+
+  @override
+  String get posErreurCaisse => 'صندوق غير معروف أو معطّل.';
+
+  @override
+  String get posErreurMontant => 'مبلغ غير صالح.';
+
+  @override
+  String posErreurStock(String detail) {
+    return 'مخزون غير كافٍ (محجوز في السلال المفتوحة): $detail';
+  }
+
+  @override
+  String posErreurProduitInconnu(String code) {
+    return 'رمز غير معروف: $code';
+  }
+
+  @override
+  String get posErreurPanierVide => 'السلة فارغة.';
+
+  @override
+  String posErreurPaiementInsuffisant(String reste) {
+    return 'الدفع غير كافٍ. المتبقي: $reste';
+  }
+
+  @override
+  String get posErreurModePaiement => 'طريقة دفع غير صالحة.';
+
+  @override
+  String get posErreurPoints => 'نقاط غير كافية.';
+
+  @override
+  String get posErreurCredit => 'البيع بالدين غير مسموح لهذا الزبون.';
+
+  @override
+  String get posErreurQuantite => 'كمية غير صالحة.';
+
+  @override
+  String get posErreurPeriodeCloturee => 'عملية مرفوضة: فترة مقفلة.';
+
+  @override
+  String posVenteEnregistree(String code, String monnaie) {
+    return 'تم تحصيل البيع $code. الباقي المسترجع: $monnaie';
+  }
+
+  @override
+  String get posImprimerTicket => 'طباعة التذكرة';
+
+  @override
+  String get posImprimerFacture => 'فاتورة A4';
+
+  @override
+  String get posTicket58 => 'تذكرة 58 مم';
+
+  @override
+  String get posTicket80 => 'تذكرة 80 مم';
+
+  @override
+  String get posApercuTicket => 'معاينة التذكرة';
+
+  @override
+  String get posImpressionOk => 'أُرسلت التذكرة إلى الطابعة.';
+
+  @override
+  String posImpressionErreur(String detail) {
+    return 'تعذرت الطباعة: $detail';
+  }
+
+  @override
+  String get posCreditAutoriser => 'البيع بالدين (متبقٍ مستحق)';
+
+  @override
+  String get posRaccourcisTitre => 'اختصارات لوحة المفاتيح';
+
+  @override
+  String get posRaccourciF1 => 'بحث / مسح';
+
+  @override
+  String get posRaccourciF2 => 'اختيار الزبون';
+
+  @override
+  String get posRaccourciF3 => 'تخفيض إجمالي';
+
+  @override
+  String get posRaccourciF4 => 'نقدًا: المبلغ بالضبط';
+
+  @override
+  String get posRaccourciF5 => 'بطاقة: المبلغ بالضبط';
+
+  @override
+  String get posRaccourciF6 => 'شيك: المبلغ بالضبط';
+
+  @override
+  String get posRaccourciF7 => 'تحويل: المبلغ بالضبط';
+
+  @override
+  String get posRaccourciF8 => 'نقاط الولاء';
+
+  @override
+  String get posRaccourciF9 => 'الآلة الحاسبة';
+
+  @override
+  String get posRaccourciF10 => 'إفراغ السلة';
+
+  @override
+  String get posRaccourciF11 => 'هذه المساعدة';
+
+  @override
+  String get posRaccourciF12 => 'تحصيل';
+
+  @override
+  String get posRaccourciCtrlN => 'سلة جديدة';
+
+  @override
+  String get posRaccourciCtrlTab => 'السلة التالية';
+
+  @override
+  String get posRaccourciSuppr => 'إزالة السطر المحدد';
+
+  @override
+  String get posRaccourciPlusMoins => 'الكمية +1 / −1 على السطر المحدد';
+
+  @override
+  String get posLigneQuantite => 'الكمية';
+
+  @override
+  String get posLignePrix => 'السعر';
+
+  @override
+  String get posLigneRemise => 'تخف.';
+
+  @override
+  String get posLigneTotal => 'المجموع';
+
+  @override
+  String get posVendreNombre => 'البيع بالقطعة';
+
+  @override
+  String get posColis => 'طرد';
+
+  @override
+  String get posPack => 'حزمة';
+
+  @override
+  String get posCategoriesToutes => 'الكل';
+
+  @override
+  String get posAucunProduit => 'لا يوجد منتج نشط.';
+
+  @override
+  String get calcTitre => 'الآلة الحاسبة';
+
+  @override
+  String get calcUtiliser => 'استعمال كمبلغ';
+
+  @override
+  String get modePaiementEspeces => 'نقدًا';
+
+  @override
+  String get modePaiementCarte => 'بطاقة';
+
+  @override
+  String get modePaiementCheque => 'شيك';
+
+  @override
+  String get modePaiementVirement => 'تحويل';
+
+  @override
+  String get modePaiementPoints => 'نقاط';
 }

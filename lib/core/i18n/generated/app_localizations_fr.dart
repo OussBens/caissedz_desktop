@@ -1187,4 +1187,287 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get moduleMagasins => 'Magasins';
+
+  @override
+  String get posTitre => 'Caisse';
+
+  @override
+  String get posScan => 'Scanner ou rechercher un produit (F1)';
+
+  @override
+  String posPanier(int n) {
+    return 'Panier $n';
+  }
+
+  @override
+  String get posNouveauPanier => 'Nouveau panier (Ctrl+N)';
+
+  @override
+  String get posMaxPaniers => '5 ventes en parallèle au maximum.';
+
+  @override
+  String get posPanierVide => 'Panier vide : scannez un code-barres ou cliquez sur un produit.';
+
+  @override
+  String get posSousTotal => 'Sous-total';
+
+  @override
+  String get posRemise => 'Remise';
+
+  @override
+  String get posTotal => 'Total';
+
+  @override
+  String get posVerse => 'Versé';
+
+  @override
+  String get posReste => 'Reste';
+
+  @override
+  String get posMonnaie => 'Monnaie à rendre';
+
+  @override
+  String get posPointsGagnes => 'Points gagnés';
+
+  @override
+  String get posClient => 'Client (F2)';
+
+  @override
+  String get posClientPassage => 'Client de passage';
+
+  @override
+  String get posChoisirClient => 'Choisir un client';
+
+  @override
+  String get posRemiseGlobale => 'Remise globale (F3)';
+
+  @override
+  String get posRemisePct => 'Remise (%)';
+
+  @override
+  String get posPaiement => 'Paiement';
+
+  @override
+  String get posMontant => 'Montant';
+
+  @override
+  String get posEncaisser => 'Encaisser (F12)';
+
+  @override
+  String get posVider => 'Vider (F10)';
+
+  @override
+  String get posCalculatrice => 'Calculatrice (F9)';
+
+  @override
+  String get posAide => 'Aide (F11)';
+
+  @override
+  String get posSessionOuvrir => 'Ouvrir la session';
+
+  @override
+  String get posSessionFermer => 'Fermer la session';
+
+  @override
+  String get posSessionAucune => 'Aucune session de caisse ouverte : ouvrez une session pour encaisser.';
+
+  @override
+  String posSessionOuverte(String code, String caisse) {
+    return 'Session $code · $caisse';
+  }
+
+  @override
+  String get posSessionCaisse => 'Caisse';
+
+  @override
+  String get posSessionFond => 'Fond de caisse initial';
+
+  @override
+  String get posSessionMontantCompte => 'Montant compté';
+
+  @override
+  String get posSessionAttendu => 'Espèces attendues';
+
+  @override
+  String get posSessionEcart => 'Écart';
+
+  @override
+  String posSessionFermee(String code, String ecart) {
+    return 'Session $code fermée. Écart : $ecart.';
+  }
+
+  @override
+  String get posErreurSessionDejaOuverte => 'Une session est déjà ouverte (utilisateur ou caisse).';
+
+  @override
+  String get posErreurSessionAucune => 'Aucune session ouverte.';
+
+  @override
+  String get posErreurCaisse => 'Caisse inconnue ou inactive.';
+
+  @override
+  String get posErreurMontant => 'Montant invalide.';
+
+  @override
+  String posErreurStock(String detail) {
+    return 'Stock insuffisant (réservé par les paniers ouverts) : $detail';
+  }
+
+  @override
+  String posErreurProduitInconnu(String code) {
+    return 'Code inconnu : $code';
+  }
+
+  @override
+  String get posErreurPanierVide => 'Le panier est vide.';
+
+  @override
+  String posErreurPaiementInsuffisant(String reste) {
+    return 'Paiement insuffisant. Reste : $reste';
+  }
+
+  @override
+  String get posErreurModePaiement => 'Mode de paiement invalide.';
+
+  @override
+  String get posErreurPoints => 'Points insuffisants.';
+
+  @override
+  String get posErreurCredit => 'Vente à crédit non autorisée pour ce client.';
+
+  @override
+  String get posErreurQuantite => 'Quantité invalide.';
+
+  @override
+  String get posErreurPeriodeCloturee => 'Opération refusée : période clôturée.';
+
+  @override
+  String posVenteEnregistree(String code, String monnaie) {
+    return 'Vente $code encaissée. Monnaie à rendre : $monnaie';
+  }
+
+  @override
+  String get posImprimerTicket => 'Imprimer le ticket';
+
+  @override
+  String get posImprimerFacture => 'Facture A4';
+
+  @override
+  String get posTicket58 => 'Ticket 58 mm';
+
+  @override
+  String get posTicket80 => 'Ticket 80 mm';
+
+  @override
+  String get posApercuTicket => 'Aperçu du ticket';
+
+  @override
+  String get posImpressionOk => 'Ticket envoyé à l\'imprimante.';
+
+  @override
+  String posImpressionErreur(String detail) {
+    return 'Impression impossible : $detail';
+  }
+
+  @override
+  String get posCreditAutoriser => 'Vendre à crédit (reste dû)';
+
+  @override
+  String get posRaccourcisTitre => 'Raccourcis clavier';
+
+  @override
+  String get posRaccourciF1 => 'Rechercher / scanner';
+
+  @override
+  String get posRaccourciF2 => 'Choisir le client';
+
+  @override
+  String get posRaccourciF3 => 'Remise globale';
+
+  @override
+  String get posRaccourciF4 => 'Espèces : montant exact';
+
+  @override
+  String get posRaccourciF5 => 'Carte : montant exact';
+
+  @override
+  String get posRaccourciF6 => 'Chèque : montant exact';
+
+  @override
+  String get posRaccourciF7 => 'Virement : montant exact';
+
+  @override
+  String get posRaccourciF8 => 'Points de fidélité';
+
+  @override
+  String get posRaccourciF9 => 'Calculatrice';
+
+  @override
+  String get posRaccourciF10 => 'Vider le panier';
+
+  @override
+  String get posRaccourciF11 => 'Cette aide';
+
+  @override
+  String get posRaccourciF12 => 'Encaisser';
+
+  @override
+  String get posRaccourciCtrlN => 'Nouveau panier';
+
+  @override
+  String get posRaccourciCtrlTab => 'Panier suivant';
+
+  @override
+  String get posRaccourciSuppr => 'Retirer la ligne sélectionnée';
+
+  @override
+  String get posRaccourciPlusMoins => 'Quantité +1 / −1 sur la ligne sélectionnée';
+
+  @override
+  String get posLigneQuantite => 'Qté';
+
+  @override
+  String get posLignePrix => 'P.U.';
+
+  @override
+  String get posLigneRemise => 'Rem.';
+
+  @override
+  String get posLigneTotal => 'Total';
+
+  @override
+  String get posVendreNombre => 'Vendre à la pièce';
+
+  @override
+  String get posColis => 'Colis';
+
+  @override
+  String get posPack => 'Pack';
+
+  @override
+  String get posCategoriesToutes => 'Toutes';
+
+  @override
+  String get posAucunProduit => 'Aucun produit actif.';
+
+  @override
+  String get calcTitre => 'Calculatrice';
+
+  @override
+  String get calcUtiliser => 'Utiliser comme montant';
+
+  @override
+  String get modePaiementEspeces => 'Espèces';
+
+  @override
+  String get modePaiementCarte => 'Carte';
+
+  @override
+  String get modePaiementCheque => 'Chèque';
+
+  @override
+  String get modePaiementVirement => 'Virement';
+
+  @override
+  String get modePaiementPoints => 'Points';
 }
