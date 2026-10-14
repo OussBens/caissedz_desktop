@@ -317,6 +317,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get connexionDemoIndice => 'Demo mode: username demo, password demo';
 
   @override
+  String get connexionSaisirCle => 'Enter an activation key';
+
+  @override
   String get connexionDeconnecter => 'Sign out';
 
   @override

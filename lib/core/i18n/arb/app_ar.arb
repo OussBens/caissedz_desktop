@@ -139,6 +139,7 @@
   "connexionErreurNonConfigure": "ليس لهذا الحساب كلمة مرور بعد: أكمل الإعداد الأولي.",
   "connexionErreurDemo": "الحساب demo/demo متاح فقط في الوضع التجريبي.",
   "connexionDemoIndice": "الوضع التجريبي: المعرّف demo، كلمة المرور demo",
+  "connexionSaisirCle": "إدخال مفتاح التفعيل",
   "connexionDeconnecter": "تسجيل الخروج",
   "configTitre": "الإعداد الأولي",
   "configEtape": "الخطوة {n} من {total}",

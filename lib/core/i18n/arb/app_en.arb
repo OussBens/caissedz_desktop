@@ -139,6 +139,7 @@
   "connexionErreurNonConfigure": "This account has no password yet: complete the initial setup.",
   "connexionErreurDemo": "The demo/demo account is only available in demo mode.",
   "connexionDemoIndice": "Demo mode: username demo, password demo",
+  "connexionSaisirCle": "Enter an activation key",
   "connexionDeconnecter": "Sign out",
   "configTitre": "Initial setup",
   "configEtape": "Step {n} of {total}",

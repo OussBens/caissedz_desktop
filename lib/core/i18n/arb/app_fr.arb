@@ -139,6 +139,7 @@
   "connexionErreurNonConfigure": "Ce compte n'a pas encore de mot de passe : terminez la configuration initiale.",
   "connexionErreurDemo": "Le compte demo/demo n'est disponible qu'en mode démo.",
   "connexionDemoIndice": "Mode démo : identifiant demo, mot de passe demo",
+  "connexionSaisirCle": "Saisir une clé d'activation",
   "connexionDeconnecter": "Se déconnecter",
   "configTitre": "Configuration initiale",
   "configEtape": "Étape {n} sur {total}",

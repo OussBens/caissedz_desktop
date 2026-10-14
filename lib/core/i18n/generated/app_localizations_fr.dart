@@ -318,6 +318,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get connexionDemoIndice => 'Mode démo : identifiant demo, mot de passe demo';
 
   @override
+  String get connexionSaisirCle => 'Saisir une clé d\'activation';
+
+  @override
   String get connexionDeconnecter => 'Se déconnecter';
 
   @override

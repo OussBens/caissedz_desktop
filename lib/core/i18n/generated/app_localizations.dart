@@ -681,6 +681,12 @@ abstract class AppLocalizations {
   /// **'Mode démo : identifiant demo, mot de passe demo'**
   String get connexionDemoIndice;
 
+  /// No description provided for @connexionSaisirCle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Saisir une clé d\'activation'**
+  String get connexionSaisirCle;
+
   /// No description provided for @connexionDeconnecter.
   ///
   /// In fr, this message translates to:

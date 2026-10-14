@@ -52,6 +52,9 @@ String? redirigerDemarrage({
 }) {
   if (!activee) return cible == ActivationPage.route ? null : ActivationPage.route;
   if (!configuree) return cible == ConfigurationPage.route ? null : ConfigurationPage.route;
+  // Une fois l'application activée, l'écran d'activation reste accessible pour saisir une clé
+  // (sortie du mode démo, passage de Basic à Avancé) depuis la connexion ou les Paramètres.
+  if (cible == ActivationPage.route) return null;
   if (!connecte) return cible == ConnexionPage.route ? null : ConnexionPage.route;
   if (routesDemarrage.contains(cible)) return routeAccueil;
   return null;

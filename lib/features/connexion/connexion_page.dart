@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../app/demarrage_providers.dart';
 import '../../application/auth_service.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
+import '../activation/activation_page.dart';
 import '../shell/cadre_demarrage.dart';
 
 /// Écran de connexion (identifiant + mot de passe).
@@ -104,6 +106,14 @@ class _ConnexionPageState extends ConsumerState<ConnexionPage> {
                   child: Text(l10n.connexionDemoIndice, style: t.petit.copyWith(color: c.texteSecondaire)),
                 ),
               ],
+            ),
+            const SizedBox(height: DsSpacing.sm),
+            DsButton(
+              libelle: l10n.connexionSaisirCle,
+              icone: LucideIcons.keyRound,
+              variante: DsButtonVariante.fantome,
+              pleineLargeur: true,
+              onPressed: () => context.push(ActivationPage.route),
             ),
           ],
         ],

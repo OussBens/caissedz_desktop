@@ -315,6 +315,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get connexionDemoIndice => 'الوضع التجريبي: المعرّف demo، كلمة المرور demo';
 
   @override
+  String get connexionSaisirCle => 'إدخال مفتاح التفعيل';
+
+  @override
   String get connexionDeconnecter => 'تسجيل الخروج';
 
   @override

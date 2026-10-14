@@ -29,9 +29,12 @@ class LicenceNotifier extends Notifier<Licence> {
 
   Future<void> charger() async => state = await ref.read(licenceServiceProvider).lire();
 
+  /// Active une clé. Une session ouverte en mode démo est fermée : le compte demo/demo
+  /// n'est plus utilisable une fois la vraie licence active.
   Future<Licence> activer(String cle) async {
     final l = await ref.read(licenceServiceProvider).activer(cle);
     state = l;
+    if (ref.read(sessionProvider)?.demo ?? false) ref.read(sessionProvider.notifier).deconnecter();
     return l;
   }
 
