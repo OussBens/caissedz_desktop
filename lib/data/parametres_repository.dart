@@ -17,10 +17,10 @@ class ParametresAppRepository {
   }
 
   Future<void> ecrire(String cle, String? valeur) async {
-    await db.insert(
-      'parametre_app',
-      {'cle': cle, 'valeur': valeur, 'modifie_le': DateTime.now().toUtc().toIso8601String()},
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    await db.insert('parametre_app', {
+      'cle': cle,
+      'valeur': valeur,
+      'modifie_le': DateTime.now().toUtc().toIso8601String(),
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 }

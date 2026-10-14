@@ -45,7 +45,11 @@ class PermissionGrid extends StatelessWidget {
     final t = context.ds.typo;
     const largeurColonne = 120.0;
     return Container(
-      decoration: BoxDecoration(color: c.surface, borderRadius: DsRadius.borderLg, border: Border.all(color: c.bordure)),
+      decoration: BoxDecoration(
+        color: c.surface,
+        borderRadius: DsRadius.borderLg,
+        border: Border.all(color: c.bordure),
+      ),
       clipBehavior: Clip.antiAlias,
       child: Column(
         children: [
@@ -62,9 +66,21 @@ class PermissionGrid extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(col.libelle, style: t.petitFort.copyWith(color: c.texteSecondaire, height: 1.2), textAlign: TextAlign.center, maxLines: 1, overflow: TextOverflow.ellipsis),
+                        Text(
+                          col.libelle,
+                          style: t.petitFort.copyWith(color: c.texteSecondaire, height: 1.2),
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                         if (col.verrouillee && col.infoVerrou != null)
-                          Text(col.infoVerrou!, style: t.legende.copyWith(color: c.texteAttenue, height: 1.2), textAlign: TextAlign.center, maxLines: 1, overflow: TextOverflow.ellipsis),
+                          Text(
+                            col.infoVerrou!,
+                            style: t.legende.copyWith(color: c.texteAttenue, height: 1.2),
+                            textAlign: TextAlign.center,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                       ],
                     ),
                   ),
@@ -89,7 +105,9 @@ class PermissionGrid extends StatelessWidget {
                             Icon(ligne.icone, size: DsTailles.iconeSm, color: c.texteSecondaire),
                             const SizedBox(width: DsSpacing.sm),
                           ],
-                          Expanded(child: Text(ligne.libelle, style: t.corps, overflow: TextOverflow.ellipsis)),
+                          Expanded(
+                            child: Text(ligne.libelle, style: t.corps, overflow: TextOverflow.ellipsis),
+                          ),
                         ],
                       ),
                     ),

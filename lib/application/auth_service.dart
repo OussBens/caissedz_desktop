@@ -12,6 +12,7 @@ enum ErreurConnexion {
   identifiantsInvalides,
   compteInactif,
   motDePasseNonDefini,
+
   /// Le compte demo/demo n'est disponible qu'en mode démo.
   demoIndisponible,
 }

@@ -28,34 +28,42 @@ class DsStepper extends StatelessWidget {
           Flexible(
             flex: 3,
             child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              AnimatedContainer(
-                duration: DsMotion.normal,
-                width: 28,
-                height: 28,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: i < courante ? c.primaire : (i == courante ? c.primaireDoux : c.surfaceAttenuee),
-                  border: Border.all(color: i <= courante ? c.primaire : c.bordureForte, width: i == courante ? 2 : 1),
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AnimatedContainer(
+                  duration: DsMotion.normal,
+                  width: 28,
+                  height: 28,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: i < courante ? c.primaire : (i == courante ? c.primaireDoux : c.surfaceAttenuee),
+                    border: Border.all(
+                      color: i <= courante ? c.primaire : c.bordureForte,
+                      width: i == courante ? 2 : 1,
+                    ),
+                  ),
+                  child: Center(
+                    child: i < courante
+                        ? Icon(LucideIcons.check, size: 14, color: c.surPrimaire)
+                        : Text(
+                            '${i + 1}',
+                            style: t.petitFort.copyWith(color: i == courante ? c.primaire : c.texteAttenue),
+                          ),
+                  ),
                 ),
-                child: Center(
-                  child: i < courante
-                      ? Icon(LucideIcons.check, size: 14, color: c.surPrimaire)
-                      : Text('${i + 1}', style: t.petitFort.copyWith(color: i == courante ? c.primaire : c.texteAttenue)),
+                const SizedBox(width: DsSpacing.sm),
+                Flexible(
+                  child: Text(
+                    e,
+                    style: (i == courante ? t.petitFort : t.petit).copyWith(
+                      color: i == courante ? c.texte : c.texteSecondaire,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-              ),
-              const SizedBox(width: DsSpacing.sm),
-              Flexible(
-                child: Text(
-                  e,
-                  style: (i == courante ? t.petitFort : t.petit).copyWith(color: i == courante ? c.texte : c.texteSecondaire),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
+              ],
+            ),
           ),
         ],
       ],

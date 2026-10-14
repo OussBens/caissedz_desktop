@@ -31,30 +31,29 @@ class ParametresVente {
     bool? fideliteActive,
     double? pointsParDinar,
     String? devise,
-  }) =>
-      ParametresVente(
-        margeDefautPct: margeDefautPct ?? this.margeDefautPct,
-        seuilStockGlobal: seuilStockGlobal ?? this.seuilStockGlobal,
-        fideliteActive: fideliteActive ?? this.fideliteActive,
-        pointsParDinar: pointsParDinar ?? this.pointsParDinar,
-        devise: devise ?? this.devise,
-      );
+  }) => ParametresVente(
+    margeDefautPct: margeDefautPct ?? this.margeDefautPct,
+    seuilStockGlobal: seuilStockGlobal ?? this.seuilStockGlobal,
+    fideliteActive: fideliteActive ?? this.fideliteActive,
+    pointsParDinar: pointsParDinar ?? this.pointsParDinar,
+    devise: devise ?? this.devise,
+  );
 
   Map<String, String> versCles() => {
-        cleMarge: margeDefautPct.toString(),
-        cleSeuil: seuilStockGlobal.toString(),
-        cleFidelite: fideliteActive ? '1' : '0',
-        clePoints: pointsParDinar.toString(),
-        cleDevise: devise,
-      };
+    cleMarge: margeDefautPct.toString(),
+    cleSeuil: seuilStockGlobal.toString(),
+    cleFidelite: fideliteActive ? '1' : '0',
+    clePoints: pointsParDinar.toString(),
+    cleDevise: devise,
+  };
 
   factory ParametresVente.depuisCles(Map<String, String?> m) => ParametresVente(
-        margeDefautPct: double.tryParse(m[cleMarge] ?? '') ?? 20,
-        seuilStockGlobal: int.tryParse(m[cleSeuil] ?? '') ?? 5,
-        fideliteActive: m[cleFidelite] == '1',
-        pointsParDinar: double.tryParse(m[clePoints] ?? '') ?? 0.01,
-        devise: m[cleDevise] ?? 'DA',
-      );
+    margeDefautPct: double.tryParse(m[cleMarge] ?? '') ?? 20,
+    seuilStockGlobal: int.tryParse(m[cleSeuil] ?? '') ?? 5,
+    fideliteActive: m[cleFidelite] == '1',
+    pointsParDinar: double.tryParse(m[clePoints] ?? '') ?? 0.01,
+    devise: m[cleDevise] ?? 'DA',
+  );
 
   @override
   bool operator ==(Object other) =>

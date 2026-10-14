@@ -63,8 +63,7 @@ import 'app_localizations_fr.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale)
-    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -72,8 +71,7 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate =
-      _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -85,20 +83,15 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
-      <LocalizationsDelegate<dynamic>>[
-        delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
+    delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+  ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[
-    Locale('ar'),
-    Locale('en'),
-    Locale('fr'),
-  ];
+  static const List<Locale> supportedLocales = <Locale>[Locale('ar'), Locale('en'), Locale('fr')];
 
   /// No description provided for @appTitle.
   ///
@@ -1131,10 +1124,729 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Accès non autorisé pour votre rôle'**
   String get shellAccesRestreint;
+
+  /// No description provided for @produitsTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produits'**
+  String get produitsTitre;
+
+  /// No description provided for @produitsOngletProduits.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produits'**
+  String get produitsOngletProduits;
+
+  /// No description provided for @produitsOngletCategories.
+  ///
+  /// In fr, this message translates to:
+  /// **'Catégories'**
+  String get produitsOngletCategories;
+
+  /// No description provided for @produitsOngletColis.
+  ///
+  /// In fr, this message translates to:
+  /// **'Colis'**
+  String get produitsOngletColis;
+
+  /// No description provided for @produitsOngletPacks.
+  ///
+  /// In fr, this message translates to:
+  /// **'Packs'**
+  String get produitsOngletPacks;
+
+  /// No description provided for @produitsOngletRemises.
+  ///
+  /// In fr, this message translates to:
+  /// **'Remises'**
+  String get produitsOngletRemises;
+
+  /// No description provided for @produitsNouveau.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau produit'**
+  String get produitsNouveau;
+
+  /// No description provided for @produitsModeIa.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mode IA'**
+  String get produitsModeIa;
+
+  /// No description provided for @produitsImporter.
+  ///
+  /// In fr, this message translates to:
+  /// **'Importer Excel'**
+  String get produitsImporter;
+
+  /// No description provided for @produitsEtiquettes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Étiquettes'**
+  String get produitsEtiquettes;
+
+  /// No description provided for @produitsSynchro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Synchro catalogue'**
+  String get produitsSynchro;
+
+  /// No description provided for @produitsRecherche.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher par désignation, code ou code-barres…'**
+  String get produitsRecherche;
+
+  /// No description provided for @produitsColCode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code'**
+  String get produitsColCode;
+
+  /// No description provided for @produitsColDesignation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Désignation'**
+  String get produitsColDesignation;
+
+  /// No description provided for @produitsColCodeBarres.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code-barres'**
+  String get produitsColCodeBarres;
+
+  /// No description provided for @produitsColCategorie.
+  ///
+  /// In fr, this message translates to:
+  /// **'Catégorie'**
+  String get produitsColCategorie;
+
+  /// No description provided for @produitsColPrixAchat.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix d\'achat'**
+  String get produitsColPrixAchat;
+
+  /// No description provided for @produitsColPrixVente.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix de vente'**
+  String get produitsColPrixVente;
+
+  /// No description provided for @produitsColMarge.
+  ///
+  /// In fr, this message translates to:
+  /// **'Marge %'**
+  String get produitsColMarge;
+
+  /// No description provided for @produitsColActif.
+  ///
+  /// In fr, this message translates to:
+  /// **'Actif'**
+  String get produitsColActif;
+
+  /// No description provided for @produitsColStock.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock'**
+  String get produitsColStock;
+
+  /// No description provided for @produitsAucun.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun produit. Créez-en un ou importez un fichier Excel.'**
+  String get produitsAucun;
+
+  /// No description provided for @produitModifier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier le produit'**
+  String get produitModifier;
+
+  /// No description provided for @produitDesactiver.
+  ///
+  /// In fr, this message translates to:
+  /// **'Désactiver'**
+  String get produitDesactiver;
+
+  /// No description provided for @produitActiver.
+  ///
+  /// In fr, this message translates to:
+  /// **'Activer'**
+  String get produitActiver;
+
+  /// No description provided for @produitGenererCodeBarres.
+  ///
+  /// In fr, this message translates to:
+  /// **'Générer un code-barres interne'**
+  String get produitGenererCodeBarres;
+
+  /// No description provided for @produitChampDesignation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Désignation'**
+  String get produitChampDesignation;
+
+  /// No description provided for @produitChampCodeBarres.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code-barres (EAN-13 ou interne)'**
+  String get produitChampCodeBarres;
+
+  /// No description provided for @produitChampCategorie.
+  ///
+  /// In fr, this message translates to:
+  /// **'Catégorie'**
+  String get produitChampCategorie;
+
+  /// No description provided for @produitChampSousCategorie.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sous-catégorie'**
+  String get produitChampSousCategorie;
+
+  /// No description provided for @produitChampPrixAchat.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix d\'achat'**
+  String get produitChampPrixAchat;
+
+  /// No description provided for @produitChampPrixVente.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix de vente'**
+  String get produitChampPrixVente;
+
+  /// No description provided for @produitChampMarge.
+  ///
+  /// In fr, this message translates to:
+  /// **'Marge (%)'**
+  String get produitChampMarge;
+
+  /// No description provided for @produitChampUnite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Unité'**
+  String get produitChampUnite;
+
+  /// No description provided for @produitChampTva.
+  ///
+  /// In fr, this message translates to:
+  /// **'TVA (%)'**
+  String get produitChampTva;
+
+  /// No description provided for @produitChampSeuil.
+  ///
+  /// In fr, this message translates to:
+  /// **'Seuil d\'alerte (vide = seuil global)'**
+  String get produitChampSeuil;
+
+  /// No description provided for @produitChampSuiviNombre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Suivre un 2ᵉ stock « nombre » (pièces)'**
+  String get produitChampSuiviNombre;
+
+  /// No description provided for @produitChampSuiviNombreAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le produit se vend à l\'unité ou à la pièce ; le stock est tenu dans les deux.'**
+  String get produitChampSuiviNombreAide;
+
+  /// No description provided for @produitChampNombreParUnite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pièces par unité'**
+  String get produitChampNombreParUnite;
+
+  /// No description provided for @produitPrixAuto.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le prix de vente est calculé depuis la marge si vous le laissez vide.'**
+  String get produitPrixAuto;
+
+  /// No description provided for @produitErreurDesignation.
+  ///
+  /// In fr, this message translates to:
+  /// **'La désignation est obligatoire.'**
+  String get produitErreurDesignation;
+
+  /// No description provided for @produitErreurCodeBarres.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code-barres invalide.'**
+  String get produitErreurCodeBarres;
+
+  /// No description provided for @produitErreurCodeBarresPris.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce code-barres est déjà utilisé.'**
+  String get produitErreurCodeBarresPris;
+
+  /// No description provided for @produitErreurPrix.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix invalide.'**
+  String get produitErreurPrix;
+
+  /// No description provided for @produitErreurQuantite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quantité invalide.'**
+  String get produitErreurQuantite;
+
+  /// No description provided for @produitCree.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produit « {nom} » créé ({code}).'**
+  String produitCree(String nom, String code);
+
+  /// No description provided for @iaTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau produit en mode IA'**
+  String get iaTitre;
+
+  /// No description provided for @iaIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Scannez ou saisissez un code-barres : la fiche est recherchée dans CaisseDZ, puis Mantouj, Open Food Facts et Open Beauty Facts.'**
+  String get iaIntro;
+
+  /// No description provided for @iaRechercher.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher'**
+  String get iaRechercher;
+
+  /// No description provided for @iaRechercheEnCours.
+  ///
+  /// In fr, this message translates to:
+  /// **'Recherche en cours…'**
+  String get iaRechercheEnCours;
+
+  /// No description provided for @iaAucun.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune fiche trouvée pour ce code-barres : passez en saisie détaillée.'**
+  String get iaAucun;
+
+  /// No description provided for @iaTrouve.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fiche trouvée via {source}'**
+  String iaTrouve(String source);
+
+  /// No description provided for @iaMarque.
+  ///
+  /// In fr, this message translates to:
+  /// **'Marque'**
+  String get iaMarque;
+
+  /// No description provided for @iaCreer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créer le produit'**
+  String get iaCreer;
+
+  /// No description provided for @iaSaisieDetaillee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Saisie détaillée'**
+  String get iaSaisieDetaillee;
+
+  /// No description provided for @importTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Importer des produits depuis Excel'**
+  String get importTitre;
+
+  /// No description provided for @importIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Colonnes attendues en ligne 1 : designation (obligatoire), code_barres, categorie, prix_achat, prix_vente.'**
+  String get importIntro;
+
+  /// No description provided for @importChoisirFichier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir un fichier .xlsx'**
+  String get importChoisirFichier;
+
+  /// No description provided for @importTelechargerModele.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrer le modèle'**
+  String get importTelechargerModele;
+
+  /// No description provided for @importLignesValides.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n} ligne(s) valide(s)'**
+  String importLignesValides(int n);
+
+  /// No description provided for @importLignesInvalides.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n} ligne(s) ignorée(s)'**
+  String importLignesInvalides(int n);
+
+  /// No description provided for @importColLigne.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ligne'**
+  String get importColLigne;
+
+  /// No description provided for @importColErreur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Erreur'**
+  String get importColErreur;
+
+  /// No description provided for @importLancer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Importer'**
+  String get importLancer;
+
+  /// No description provided for @importResultat.
+  ///
+  /// In fr, this message translates to:
+  /// **'{importees} produit(s) importé(s), {ignorees} ignoré(s).'**
+  String importResultat(int importees, int ignorees);
+
+  /// No description provided for @importErreurFichier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fichier illisible : {detail}'**
+  String importErreurFichier(String detail);
+
+  /// No description provided for @importErreurDesignationVide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Désignation vide'**
+  String get importErreurDesignationVide;
+
+  /// No description provided for @importErreurCodeBarresPris.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code-barres déjà utilisé'**
+  String get importErreurCodeBarresPris;
+
+  /// No description provided for @importErreurPrix.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix invalide'**
+  String get importErreurPrix;
+
+  /// No description provided for @etiquettesTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Imprimer des étiquettes'**
+  String get etiquettesTitre;
+
+  /// No description provided for @etiquettesQuantite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quantité'**
+  String get etiquettesQuantite;
+
+  /// No description provided for @etiquettesFormatA4.
+  ///
+  /// In fr, this message translates to:
+  /// **'Planche A4'**
+  String get etiquettesFormatA4;
+
+  /// No description provided for @etiquettesFormatRouleau.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rouleau'**
+  String get etiquettesFormatRouleau;
+
+  /// No description provided for @etiquettesAfficherPrix.
+  ///
+  /// In fr, this message translates to:
+  /// **'Afficher le prix'**
+  String get etiquettesAfficherPrix;
+
+  /// No description provided for @etiquettesQr.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code QR au lieu du code-barres'**
+  String get etiquettesQr;
+
+  /// No description provided for @etiquettesGenerer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Générer le PDF'**
+  String get etiquettesGenerer;
+
+  /// No description provided for @etiquettesAucuneSelection.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sélectionnez au moins un produit dans la liste.'**
+  String get etiquettesAucuneSelection;
+
+  /// No description provided for @synchroResultat.
+  ///
+  /// In fr, this message translates to:
+  /// **'Synchronisation : {envoyes} envoyé(s), {recus} mis à jour.'**
+  String synchroResultat(int envoyes, int recus);
+
+  /// No description provided for @synchroNonConfiguree.
+  ///
+  /// In fr, this message translates to:
+  /// **'Renseignez l\'URL du serveur CaisseDZ dans Paramètres pour synchroniser le catalogue.'**
+  String get synchroNonConfiguree;
+
+  /// No description provided for @synchroErreur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Échec de la synchronisation : {detail}'**
+  String synchroErreur(String detail);
+
+  /// No description provided for @categoriesNouvelle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouvelle catégorie'**
+  String get categoriesNouvelle;
+
+  /// No description provided for @categoriesNouvelleSous.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouvelle sous-catégorie'**
+  String get categoriesNouvelleSous;
+
+  /// No description provided for @categorieNom.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom'**
+  String get categorieNom;
+
+  /// No description provided for @categorieRenommer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Renommer'**
+  String get categorieRenommer;
+
+  /// No description provided for @categorieSupprimer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer'**
+  String get categorieSupprimer;
+
+  /// No description provided for @categorieSousCategories.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sous-catégories'**
+  String get categorieSousCategories;
+
+  /// No description provided for @categorieErreurSysteme.
+  ///
+  /// In fr, this message translates to:
+  /// **'La catégorie système ne peut pas être modifiée.'**
+  String get categorieErreurSysteme;
+
+  /// No description provided for @categorieErreurUtilisee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Des produits sont rattachés à cette catégorie.'**
+  String get categorieErreurUtilisee;
+
+  /// No description provided for @categorieConfirmerSuppression.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer la catégorie « {nom} » et ses sous-catégories ?'**
+  String categorieConfirmerSuppression(String nom);
+
+  /// No description provided for @colisNouveau.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau colis'**
+  String get colisNouveau;
+
+  /// No description provided for @colisProduit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produit'**
+  String get colisProduit;
+
+  /// No description provided for @colisQuantite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Unités par colis'**
+  String get colisQuantite;
+
+  /// No description provided for @colisAucun.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun colis.'**
+  String get colisAucun;
+
+  /// No description provided for @packNouveau.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau pack'**
+  String get packNouveau;
+
+  /// No description provided for @packLignes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Composition'**
+  String get packLignes;
+
+  /// No description provided for @packAjouterProduit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter un produit'**
+  String get packAjouterProduit;
+
+  /// No description provided for @packAucun.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun pack.'**
+  String get packAucun;
+
+  /// No description provided for @packErreurLignes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajoutez au moins un produit au pack.'**
+  String get packErreurLignes;
+
+  /// No description provided for @remiseNouvelle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouvelle remise'**
+  String get remiseNouvelle;
+
+  /// No description provided for @remiseType.
+  ///
+  /// In fr, this message translates to:
+  /// **'Type'**
+  String get remiseType;
+
+  /// No description provided for @remiseTypePourcentage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pourcentage'**
+  String get remiseTypePourcentage;
+
+  /// No description provided for @remiseTypeMontant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montant'**
+  String get remiseTypeMontant;
+
+  /// No description provided for @remiseValeur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Valeur'**
+  String get remiseValeur;
+
+  /// No description provided for @remisePortee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Portée'**
+  String get remisePortee;
+
+  /// No description provided for @remisePorteeGlobale.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tous les produits'**
+  String get remisePorteeGlobale;
+
+  /// No description provided for @remisePorteeCategorie.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une catégorie'**
+  String get remisePorteeCategorie;
+
+  /// No description provided for @remisePorteeProduit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Un produit'**
+  String get remisePorteeProduit;
+
+  /// No description provided for @remiseDebut.
+  ///
+  /// In fr, this message translates to:
+  /// **'Début'**
+  String get remiseDebut;
+
+  /// No description provided for @remiseFin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fin'**
+  String get remiseFin;
+
+  /// No description provided for @remiseAucune.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune remise.'**
+  String get remiseAucune;
+
+  /// No description provided for @communNouveau.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau'**
+  String get communNouveau;
+
+  /// No description provided for @communModifier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier'**
+  String get communModifier;
+
+  /// No description provided for @communActif.
+  ///
+  /// In fr, this message translates to:
+  /// **'Actif'**
+  String get communActif;
+
+  /// No description provided for @communInactif.
+  ///
+  /// In fr, this message translates to:
+  /// **'Inactif'**
+  String get communInactif;
+
+  /// No description provided for @communOui.
+  ///
+  /// In fr, this message translates to:
+  /// **'Oui'**
+  String get communOui;
+
+  /// No description provided for @communNon.
+  ///
+  /// In fr, this message translates to:
+  /// **'Non'**
+  String get communNon;
+
+  /// No description provided for @communValider.
+  ///
+  /// In fr, this message translates to:
+  /// **'Valider'**
+  String get communValider;
+
+  /// No description provided for @communApercu.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aperçu'**
+  String get communApercu;
+
+  /// No description provided for @communImprimer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Imprimer'**
+  String get communImprimer;
+
+  /// No description provided for @communAucune.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune'**
+  String get communAucune;
 }
 
-class _AppLocalizationsDelegate
-    extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -1143,8 +1855,7 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['ar', 'en', 'fr'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['ar', 'en', 'fr'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;

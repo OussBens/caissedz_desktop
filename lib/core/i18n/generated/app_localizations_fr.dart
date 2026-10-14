@@ -28,8 +28,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get shellFavoris => 'Favoris';
 
   @override
-  String get shellFavorisVide =>
-      'Aucun favori. Clic droit sur un module pour l\'ajouter.';
+  String get shellFavorisVide => 'Aucun favori. Clic droit sur un module pour l\'ajouter.';
 
   @override
   String get shellFavorisMax => '7 favoris maximum';
@@ -227,8 +226,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get activationTitre => 'Activation de CaisseDZ';
 
   @override
-  String get activationIntro =>
-      'Saisissez la clé d\'activation fournie pour cette machine, ou essayez le mode démo.';
+  String get activationIntro => 'Saisissez la clé d\'activation fournie pour cette machine, ou essayez le mode démo.';
 
   @override
   String get activationIdentifiantMachine => 'Identifiant de cette machine';
@@ -256,8 +254,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Le mode démo ouvre toutes les fonctions (licence Avancé) avec le compte demo / demo. Les données saisies ne sont pas destinées à la production.';
 
   @override
-  String get activationErreurFormat =>
-      'La clé doit contenir exactement 64 caractères hexadécimaux (0-9, a-f).';
+  String get activationErreurFormat => 'La clé doit contenir exactement 64 caractères hexadécimaux (0-9, a-f).';
 
   @override
   String get activationErreurInconnue =>
@@ -305,8 +302,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get connexionBouton => 'Se connecter';
 
   @override
-  String get connexionErreurIdentifiants =>
-      'Identifiant ou mot de passe incorrect.';
+  String get connexionErreurIdentifiants => 'Identifiant ou mot de passe incorrect.';
 
   @override
   String get connexionErreurInactif => 'Ce compte est désactivé.';
@@ -316,12 +312,10 @@ class AppLocalizationsFr extends AppLocalizations {
       'Ce compte n\'a pas encore de mot de passe : terminez la configuration initiale.';
 
   @override
-  String get connexionErreurDemo =>
-      'Le compte demo/demo n\'est disponible qu\'en mode démo.';
+  String get connexionErreurDemo => 'Le compte demo/demo n\'est disponible qu\'en mode démo.';
 
   @override
-  String get connexionDemoIndice =>
-      'Mode démo : identifiant demo, mot de passe demo';
+  String get connexionDemoIndice => 'Mode démo : identifiant demo, mot de passe demo';
 
   @override
   String get connexionDeconnecter => 'Se déconnecter';
@@ -378,8 +372,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get configMarge => 'Marge par défaut (%)';
 
   @override
-  String get configMargeAide =>
-      'Appliquée au calcul du prix de vente à partir du prix d\'achat des nouveaux produits.';
+  String get configMargeAide => 'Appliquée au calcul du prix de vente à partir du prix d\'achat des nouveaux produits.';
 
   @override
   String get configSeuil => 'Seuil d\'alerte de stock (global)';
@@ -413,15 +406,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get configErreurObligatoire => 'Champ obligatoire';
 
   @override
-  String get configErreurIdentifiant =>
-      '3 à 32 caractères : lettres, chiffres, point, tiret, tiret bas.';
+  String get configErreurIdentifiant => '3 à 32 caractères : lettres, chiffres, point, tiret, tiret bas.';
 
   @override
   String get configErreurMotDePasseCourt => 'Au moins 4 caractères.';
 
   @override
-  String get configErreurConfirmation =>
-      'Les mots de passe ne correspondent pas.';
+  String get configErreurConfirmation => 'Les mots de passe ne correspondent pas.';
 
   @override
   String get configErreurIdentifiantPris => 'Cet identifiant est déjà utilisé.';
@@ -433,8 +424,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get configErreurNombre => 'Nombre invalide.';
 
   @override
-  String get configReussie =>
-      'Configuration terminée. Connectez-vous avec votre compte administrateur.';
+  String get configReussie => 'Configuration terminée. Connectez-vous avec votre compte administrateur.';
 
   @override
   String get compteTitre => 'Mon compte';
@@ -475,8 +465,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get comptePreferences => 'Préférences';
 
   @override
-  String get compteDemoLectureSeule =>
-      'Le compte de démonstration ne peut pas être modifié.';
+  String get compteDemoLectureSeule => 'Le compte de démonstration ne peut pas être modifié.';
 
   @override
   String get accesRefuseTitre => 'Accès refusé';
@@ -542,15 +531,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get parametresRolesCarte => 'Rôles et permissions';
 
   @override
-  String get parametresRolesCarteDetail =>
-      'Permissions d\'action et modules accessibles par rôle.';
+  String get parametresRolesCarteDetail => 'Permissions d\'action et modules accessibles par rôle.';
 
   @override
   String get parametresLicenceCarte => 'Licence';
 
   @override
-  String get shellBandeauDemo =>
-      'Mode démo — les données ne sont pas destinées à la production';
+  String get shellBandeauDemo => 'Mode démo — les données ne sont pas destinées à la production';
 
   @override
   String get shellMenuUtilisateur => 'Menu utilisateur';
@@ -560,4 +547,386 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get shellAccesRestreint => 'Accès non autorisé pour votre rôle';
+
+  @override
+  String get produitsTitre => 'Produits';
+
+  @override
+  String get produitsOngletProduits => 'Produits';
+
+  @override
+  String get produitsOngletCategories => 'Catégories';
+
+  @override
+  String get produitsOngletColis => 'Colis';
+
+  @override
+  String get produitsOngletPacks => 'Packs';
+
+  @override
+  String get produitsOngletRemises => 'Remises';
+
+  @override
+  String get produitsNouveau => 'Nouveau produit';
+
+  @override
+  String get produitsModeIa => 'Mode IA';
+
+  @override
+  String get produitsImporter => 'Importer Excel';
+
+  @override
+  String get produitsEtiquettes => 'Étiquettes';
+
+  @override
+  String get produitsSynchro => 'Synchro catalogue';
+
+  @override
+  String get produitsRecherche => 'Rechercher par désignation, code ou code-barres…';
+
+  @override
+  String get produitsColCode => 'Code';
+
+  @override
+  String get produitsColDesignation => 'Désignation';
+
+  @override
+  String get produitsColCodeBarres => 'Code-barres';
+
+  @override
+  String get produitsColCategorie => 'Catégorie';
+
+  @override
+  String get produitsColPrixAchat => 'Prix d\'achat';
+
+  @override
+  String get produitsColPrixVente => 'Prix de vente';
+
+  @override
+  String get produitsColMarge => 'Marge %';
+
+  @override
+  String get produitsColActif => 'Actif';
+
+  @override
+  String get produitsColStock => 'Stock';
+
+  @override
+  String get produitsAucun => 'Aucun produit. Créez-en un ou importez un fichier Excel.';
+
+  @override
+  String get produitModifier => 'Modifier le produit';
+
+  @override
+  String get produitDesactiver => 'Désactiver';
+
+  @override
+  String get produitActiver => 'Activer';
+
+  @override
+  String get produitGenererCodeBarres => 'Générer un code-barres interne';
+
+  @override
+  String get produitChampDesignation => 'Désignation';
+
+  @override
+  String get produitChampCodeBarres => 'Code-barres (EAN-13 ou interne)';
+
+  @override
+  String get produitChampCategorie => 'Catégorie';
+
+  @override
+  String get produitChampSousCategorie => 'Sous-catégorie';
+
+  @override
+  String get produitChampPrixAchat => 'Prix d\'achat';
+
+  @override
+  String get produitChampPrixVente => 'Prix de vente';
+
+  @override
+  String get produitChampMarge => 'Marge (%)';
+
+  @override
+  String get produitChampUnite => 'Unité';
+
+  @override
+  String get produitChampTva => 'TVA (%)';
+
+  @override
+  String get produitChampSeuil => 'Seuil d\'alerte (vide = seuil global)';
+
+  @override
+  String get produitChampSuiviNombre => 'Suivre un 2ᵉ stock « nombre » (pièces)';
+
+  @override
+  String get produitChampSuiviNombreAide =>
+      'Le produit se vend à l\'unité ou à la pièce ; le stock est tenu dans les deux.';
+
+  @override
+  String get produitChampNombreParUnite => 'Pièces par unité';
+
+  @override
+  String get produitPrixAuto => 'Le prix de vente est calculé depuis la marge si vous le laissez vide.';
+
+  @override
+  String get produitErreurDesignation => 'La désignation est obligatoire.';
+
+  @override
+  String get produitErreurCodeBarres => 'Code-barres invalide.';
+
+  @override
+  String get produitErreurCodeBarresPris => 'Ce code-barres est déjà utilisé.';
+
+  @override
+  String get produitErreurPrix => 'Prix invalide.';
+
+  @override
+  String get produitErreurQuantite => 'Quantité invalide.';
+
+  @override
+  String produitCree(String nom, String code) {
+    return 'Produit « $nom » créé ($code).';
+  }
+
+  @override
+  String get iaTitre => 'Nouveau produit en mode IA';
+
+  @override
+  String get iaIntro =>
+      'Scannez ou saisissez un code-barres : la fiche est recherchée dans CaisseDZ, puis Mantouj, Open Food Facts et Open Beauty Facts.';
+
+  @override
+  String get iaRechercher => 'Rechercher';
+
+  @override
+  String get iaRechercheEnCours => 'Recherche en cours…';
+
+  @override
+  String get iaAucun => 'Aucune fiche trouvée pour ce code-barres : passez en saisie détaillée.';
+
+  @override
+  String iaTrouve(String source) {
+    return 'Fiche trouvée via $source';
+  }
+
+  @override
+  String get iaMarque => 'Marque';
+
+  @override
+  String get iaCreer => 'Créer le produit';
+
+  @override
+  String get iaSaisieDetaillee => 'Saisie détaillée';
+
+  @override
+  String get importTitre => 'Importer des produits depuis Excel';
+
+  @override
+  String get importIntro =>
+      'Colonnes attendues en ligne 1 : designation (obligatoire), code_barres, categorie, prix_achat, prix_vente.';
+
+  @override
+  String get importChoisirFichier => 'Choisir un fichier .xlsx';
+
+  @override
+  String get importTelechargerModele => 'Enregistrer le modèle';
+
+  @override
+  String importLignesValides(int n) {
+    return '$n ligne(s) valide(s)';
+  }
+
+  @override
+  String importLignesInvalides(int n) {
+    return '$n ligne(s) ignorée(s)';
+  }
+
+  @override
+  String get importColLigne => 'Ligne';
+
+  @override
+  String get importColErreur => 'Erreur';
+
+  @override
+  String get importLancer => 'Importer';
+
+  @override
+  String importResultat(int importees, int ignorees) {
+    return '$importees produit(s) importé(s), $ignorees ignoré(s).';
+  }
+
+  @override
+  String importErreurFichier(String detail) {
+    return 'Fichier illisible : $detail';
+  }
+
+  @override
+  String get importErreurDesignationVide => 'Désignation vide';
+
+  @override
+  String get importErreurCodeBarresPris => 'Code-barres déjà utilisé';
+
+  @override
+  String get importErreurPrix => 'Prix invalide';
+
+  @override
+  String get etiquettesTitre => 'Imprimer des étiquettes';
+
+  @override
+  String get etiquettesQuantite => 'Quantité';
+
+  @override
+  String get etiquettesFormatA4 => 'Planche A4';
+
+  @override
+  String get etiquettesFormatRouleau => 'Rouleau';
+
+  @override
+  String get etiquettesAfficherPrix => 'Afficher le prix';
+
+  @override
+  String get etiquettesQr => 'Code QR au lieu du code-barres';
+
+  @override
+  String get etiquettesGenerer => 'Générer le PDF';
+
+  @override
+  String get etiquettesAucuneSelection => 'Sélectionnez au moins un produit dans la liste.';
+
+  @override
+  String synchroResultat(int envoyes, int recus) {
+    return 'Synchronisation : $envoyes envoyé(s), $recus mis à jour.';
+  }
+
+  @override
+  String get synchroNonConfiguree =>
+      'Renseignez l\'URL du serveur CaisseDZ dans Paramètres pour synchroniser le catalogue.';
+
+  @override
+  String synchroErreur(String detail) {
+    return 'Échec de la synchronisation : $detail';
+  }
+
+  @override
+  String get categoriesNouvelle => 'Nouvelle catégorie';
+
+  @override
+  String get categoriesNouvelleSous => 'Nouvelle sous-catégorie';
+
+  @override
+  String get categorieNom => 'Nom';
+
+  @override
+  String get categorieRenommer => 'Renommer';
+
+  @override
+  String get categorieSupprimer => 'Supprimer';
+
+  @override
+  String get categorieSousCategories => 'Sous-catégories';
+
+  @override
+  String get categorieErreurSysteme => 'La catégorie système ne peut pas être modifiée.';
+
+  @override
+  String get categorieErreurUtilisee => 'Des produits sont rattachés à cette catégorie.';
+
+  @override
+  String categorieConfirmerSuppression(String nom) {
+    return 'Supprimer la catégorie « $nom » et ses sous-catégories ?';
+  }
+
+  @override
+  String get colisNouveau => 'Nouveau colis';
+
+  @override
+  String get colisProduit => 'Produit';
+
+  @override
+  String get colisQuantite => 'Unités par colis';
+
+  @override
+  String get colisAucun => 'Aucun colis.';
+
+  @override
+  String get packNouveau => 'Nouveau pack';
+
+  @override
+  String get packLignes => 'Composition';
+
+  @override
+  String get packAjouterProduit => 'Ajouter un produit';
+
+  @override
+  String get packAucun => 'Aucun pack.';
+
+  @override
+  String get packErreurLignes => 'Ajoutez au moins un produit au pack.';
+
+  @override
+  String get remiseNouvelle => 'Nouvelle remise';
+
+  @override
+  String get remiseType => 'Type';
+
+  @override
+  String get remiseTypePourcentage => 'Pourcentage';
+
+  @override
+  String get remiseTypeMontant => 'Montant';
+
+  @override
+  String get remiseValeur => 'Valeur';
+
+  @override
+  String get remisePortee => 'Portée';
+
+  @override
+  String get remisePorteeGlobale => 'Tous les produits';
+
+  @override
+  String get remisePorteeCategorie => 'Une catégorie';
+
+  @override
+  String get remisePorteeProduit => 'Un produit';
+
+  @override
+  String get remiseDebut => 'Début';
+
+  @override
+  String get remiseFin => 'Fin';
+
+  @override
+  String get remiseAucune => 'Aucune remise.';
+
+  @override
+  String get communNouveau => 'Nouveau';
+
+  @override
+  String get communModifier => 'Modifier';
+
+  @override
+  String get communActif => 'Actif';
+
+  @override
+  String get communInactif => 'Inactif';
+
+  @override
+  String get communOui => 'Oui';
+
+  @override
+  String get communNon => 'Non';
+
+  @override
+  String get communValider => 'Valider';
+
+  @override
+  String get communApercu => 'Aperçu';
+
+  @override
+  String get communImprimer => 'Imprimer';
+
+  @override
+  String get communAucune => 'Aucune';
 }

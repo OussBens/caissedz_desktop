@@ -41,7 +41,9 @@ class ConfigurationInitialeService {
   /// Valide puis enregistre toute la configuration. En cas d'échec, rien n'est écrit.
   Future<void> terminer(ConfigurationInitiale c) async {
     if (c.boutique.nom.trim().isEmpty) throw ArgumentError('Le nom de la boutique est obligatoire');
-    if (!AuthService.identifiantValide(c.adminIdentifiant)) throw const CompteException(ErreurCompte.identifiantInvalide);
+    if (!AuthService.identifiantValide(c.adminIdentifiant)) {
+      throw const CompteException(ErreurCompte.identifiantInvalide);
+    }
     if (c.adminMotDePasse.length < AuthService.longueurMinMotDePasse) {
       throw const CompteException(ErreurCompte.motDePasseTropCourt);
     }

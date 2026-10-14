@@ -23,7 +23,11 @@ class Referentiel {
     ValeurReferentiel(stocke: 'Périmé', fr: 'Périmé', ar: 'منتهي الصلاحية', en: 'Expired'),
     ValeurReferentiel(stocke: 'Perte/vol', fr: 'Perte/vol', ar: 'ضياع/سرقة', en: 'Loss/theft'),
     ValeurReferentiel(
-        stocke: 'Consommation interne', fr: 'Consommation interne', ar: 'استهلاك داخلي', en: 'Internal use'),
+      stocke: 'Consommation interne',
+      fr: 'Consommation interne',
+      ar: 'استهلاك داخلي',
+      en: 'Internal use',
+    ),
     ValeurReferentiel(stocke: 'Don', fr: 'Don', ar: 'هبة', en: 'Donation'),
     ValeurReferentiel(stocke: 'Échantillon', fr: 'Échantillon', ar: 'عينة', en: 'Sample'),
   ]);

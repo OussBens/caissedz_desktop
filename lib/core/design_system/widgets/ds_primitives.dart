@@ -67,11 +67,14 @@ class DsBadge extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (icone != null) ...[
-            Icon(icone, size: 12, color: texte),
-            const SizedBox(width: DsSpacing.xs),
-          ],
-          Text(libelle, style: t.legende.copyWith(color: texte)),
+          if (icone != null) ...[Icon(icone, size: 12, color: texte), const SizedBox(width: DsSpacing.xs)],
+          Flexible(
+            child: Text(
+              libelle,
+              style: t.legende.copyWith(color: texte),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
         ],
       ),
     );
@@ -124,9 +127,9 @@ class DsTextField extends StatelessWidget {
     final c = context.ds.colors;
     final t = context.ds.typo;
     OutlineInputBorder bord(Color couleur, [double largeur = 1]) => OutlineInputBorder(
-          borderRadius: DsRadius.borderMd,
-          borderSide: BorderSide(color: couleur, width: largeur),
-        );
+      borderRadius: DsRadius.borderMd,
+      borderSide: BorderSide(color: couleur, width: largeur),
+    );
     final champ = SizedBox(
       height: erreur == null ? taille : null,
       child: TextField(
@@ -149,9 +152,7 @@ class DsTextField extends StatelessWidget {
           hintStyle: t.corps.copyWith(color: c.texteAttenue),
           errorText: erreur,
           errorStyle: t.legende.copyWith(color: c.danger),
-          prefixIcon: iconePrefixe == null
-              ? null
-              : Icon(iconePrefixe, size: DsTailles.icone, color: c.texteAttenue),
+          prefixIcon: iconePrefixe == null ? null : Icon(iconePrefixe, size: DsTailles.icone, color: c.texteAttenue),
           suffixIcon: suffixe,
           filled: true,
           fillColor: actif ? c.surface : c.surfaceAttenuee,
@@ -243,8 +244,7 @@ class DsStatCard extends StatelessWidget {
 class DsDivider extends StatelessWidget {
   const DsDivider({super.key});
   @override
-  Widget build(BuildContext context) =>
-      Divider(height: 1, thickness: 1, color: context.ds.colors.bordure);
+  Widget build(BuildContext context) => Divider(height: 1, thickness: 1, color: context.ds.colors.bordure);
 }
 
 /// Titre de section.
@@ -259,7 +259,9 @@ class DsSectionTitre extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: DsSpacing.md),
       child: Row(
         children: [
-          Expanded(child: Text(texte, style: t.titreMd)),
+          Expanded(
+            child: Text(texte, style: t.titreMd, overflow: TextOverflow.ellipsis),
+          ),
           ?action,
         ],
       ),

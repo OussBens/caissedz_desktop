@@ -20,3 +20,6 @@ linter:
     always_declare_return_types: true
     directives_ordering: true
     sort_pub_dependencies: false
+
+formatter:
+  page_width: 120

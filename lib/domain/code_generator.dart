@@ -20,6 +20,20 @@ class CodeGenerator {
   static const String sousCategorie = 'SC';
   static const String transfertStock = 'TRM';
   static const String transfertCaisse = 'TRF';
+  static const String utilisateur = 'USR';
+  static const String produit = 'PRD';
+  static const String colis = 'COL';
+  static const String pack = 'PCK';
+  static const String remise = 'REM';
+  static const String besoin = 'BES';
+  static const String sortie = 'SOR';
+  static const String sessionCaisse = 'SES';
+  static const String vente = 'VTE';
+  static const String retour = 'RET';
+  static const String versement = 'VER';
+  static const String achat = 'ACH';
+  static const String cloture = 'CLZ';
+  static const String inventaire = 'INV';
 
   static final RegExp _format = RegExp(r'^([A-Z]+)(\d+)$');
 

@@ -20,8 +20,7 @@ extension DsContext on BuildContext {
     final theme = Theme.of(this);
     return DsTokens(
       theme.extension<DsColors>() ?? DsColors.clair,
-      theme.extension<DsTypography>() ??
-          DsTypography.pour(const Locale('fr'), DsColors.clair.texte),
+      theme.extension<DsTypography>() ?? DsTypography.pour(const Locale('fr'), DsColors.clair.texte),
     );
   }
 }
@@ -67,10 +66,7 @@ ThemeData construireTheme({required Brightness brightness, required Locale local
     ),
     tooltipTheme: TooltipThemeData(
       waitDuration: const Duration(milliseconds: 500),
-      decoration: BoxDecoration(
-        color: couleurs.texte,
-        borderRadius: DsRadius.borderSm,
-      ),
+      decoration: BoxDecoration(color: couleurs.texte, borderRadius: DsRadius.borderSm),
       textStyle: typo.petit.copyWith(color: couleurs.texteInverse),
     ),
     dialogTheme: DialogThemeData(

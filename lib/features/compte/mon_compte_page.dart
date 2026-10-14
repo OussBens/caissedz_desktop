@@ -49,12 +49,21 @@ class _MonComptePageState extends ConsumerState<MonComptePage> {
       _erreurMdpIdentifiant = null;
     });
     try {
-      final u = await ref.read(authServiceProvider).changerIdentifiant(session.utilisateur.code, _nouvelIdentifiant.text, _mdpPourIdentifiant.text);
+      final u = await ref
+          .read(authServiceProvider)
+          .changerIdentifiant(session.utilisateur.code, _nouvelIdentifiant.text, _mdpPourIdentifiant.text);
       ref.read(sessionProvider.notifier).mettreAJourUtilisateur(u);
       _nouvelIdentifiant.clear();
       _mdpPourIdentifiant.clear();
       if (!mounted) return;
-      unawaited(afficherResultat(context, type: DsResultatType.succes, titre: l10n.compteChangerIdentifiant, message: l10n.compteIdentifiantChange(u.identifiant)));
+      unawaited(
+        afficherResultat(
+          context,
+          type: DsResultatType.succes,
+          titre: l10n.compteChangerIdentifiant,
+          message: l10n.compteIdentifiantChange(u.identifiant),
+        ),
+      );
     } on CompteException catch (e) {
       setState(() {
         switch (e.erreur) {
@@ -82,12 +91,21 @@ class _MonComptePageState extends ConsumerState<MonComptePage> {
       return;
     }
     try {
-      await ref.read(authServiceProvider).changerMotDePasse(session.utilisateur.code, _mdpActuel.text, _mdpNouveau.text);
+      await ref
+          .read(authServiceProvider)
+          .changerMotDePasse(session.utilisateur.code, _mdpActuel.text, _mdpNouveau.text);
       for (final c in [_mdpActuel, _mdpNouveau, _mdpConfirmation]) {
         c.clear();
       }
       if (!mounted) return;
-      unawaited(afficherResultat(context, type: DsResultatType.succes, titre: l10n.compteChangerMotDePasse, message: l10n.compteMotDePasseChange));
+      unawaited(
+        afficherResultat(
+          context,
+          type: DsResultatType.succes,
+          titre: l10n.compteChangerMotDePasse,
+          message: l10n.compteMotDePasseChange,
+        ),
+      );
     } on CompteException catch (e) {
       setState(() {
         if (e.erreur == ErreurCompte.motDePasseActuelIncorrect) {
@@ -119,7 +137,11 @@ class _MonComptePageState extends ConsumerState<MonComptePage> {
         DsCard(
           child: Row(
             children: [
-              CircleAvatar(radius: 28, backgroundColor: c.primaireDoux, child: Text(u.nom.isEmpty ? '?' : u.nom[0].toUpperCase(), style: t.titreLg.copyWith(color: c.primaire))),
+              CircleAvatar(
+                radius: 28,
+                backgroundColor: c.primaireDoux,
+                child: Text(u.nom.isEmpty ? '?' : u.nom[0].toUpperCase(), style: t.titreLg.copyWith(color: c.primaire)),
+              ),
               const SizedBox(width: DsSpacing.lg),
               Expanded(
                 child: Column(
@@ -127,12 +149,24 @@ class _MonComptePageState extends ConsumerState<MonComptePage> {
                   children: [
                     Text(u.nom, style: t.titreMd),
                     const SizedBox(height: DsSpacing.xxs),
-                    Text('${l10n.compteIdentifiantActuel} : ${u.identifiant}', style: t.corps.copyWith(color: c.texteSecondaire)),
+                    Text(
+                      '${l10n.compteIdentifiantActuel} : ${u.identifiant}',
+                      style: t.corps.copyWith(color: c.texteSecondaire),
+                    ),
                     const SizedBox(height: DsSpacing.xs),
-                    Row(children: [
-                      DsBadge(libelle: '${l10n.compteRole} : ${Referentiel.roles.libelle(u.role, locale)}', ton: DsBadgeTon.primaire, icone: LucideIcons.shield),
-                      if (session.demo) ...[const SizedBox(width: DsSpacing.sm), DsBadge(libelle: l10n.licenceDemo, ton: DsBadgeTon.avertissement)],
-                    ]),
+                    Row(
+                      children: [
+                        DsBadge(
+                          libelle: '${l10n.compteRole} : ${Referentiel.roles.libelle(u.role, locale)}',
+                          ton: DsBadgeTon.primaire,
+                          icone: LucideIcons.shield,
+                        ),
+                        if (session.demo) ...[
+                          const SizedBox(width: DsSpacing.sm),
+                          DsBadge(libelle: l10n.licenceDemo, ton: DsBadgeTon.avertissement),
+                        ],
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -141,7 +175,9 @@ class _MonComptePageState extends ConsumerState<MonComptePage> {
         ),
         const SizedBox(height: DsSpacing.xl),
         if (demo)
-          DsCard(child: Text(l10n.compteDemoLectureSeule, style: t.corps.copyWith(color: c.texteSecondaire)))
+          DsCard(
+            child: Text(l10n.compteDemoLectureSeule, style: t.corps.copyWith(color: c.texteSecondaire)),
+          )
         else
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -152,11 +188,26 @@ class _MonComptePageState extends ConsumerState<MonComptePage> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       DsSectionTitre(l10n.compteChangerIdentifiant),
-                      DsTextField(controller: _nouvelIdentifiant, libelle: l10n.compteNouvelIdentifiant, erreur: _erreurIdentifiant, iconePrefixe: LucideIcons.user),
+                      DsTextField(
+                        controller: _nouvelIdentifiant,
+                        libelle: l10n.compteNouvelIdentifiant,
+                        erreur: _erreurIdentifiant,
+                        iconePrefixe: LucideIcons.user,
+                      ),
                       const SizedBox(height: DsSpacing.md),
-                      DsTextField(controller: _mdpPourIdentifiant, libelle: l10n.compteMotDePasseActuel, obscur: true, erreur: _erreurMdpIdentifiant, iconePrefixe: LucideIcons.lock),
+                      DsTextField(
+                        controller: _mdpPourIdentifiant,
+                        libelle: l10n.compteMotDePasseActuel,
+                        obscur: true,
+                        erreur: _erreurMdpIdentifiant,
+                        iconePrefixe: LucideIcons.lock,
+                      ),
                       const SizedBox(height: DsSpacing.lg),
-                      DsButton(libelle: l10n.compteChangerIdentifiant, icone: LucideIcons.check, onPressed: _changerIdentifiant),
+                      DsButton(
+                        libelle: l10n.compteChangerIdentifiant,
+                        icone: LucideIcons.check,
+                        onPressed: _changerIdentifiant,
+                      ),
                     ],
                   ),
                 ),
@@ -168,13 +219,35 @@ class _MonComptePageState extends ConsumerState<MonComptePage> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       DsSectionTitre(l10n.compteChangerMotDePasse),
-                      DsTextField(controller: _mdpActuel, libelle: l10n.compteMotDePasseActuel, obscur: true, erreur: _erreurMdpActuel, iconePrefixe: LucideIcons.lock),
+                      DsTextField(
+                        controller: _mdpActuel,
+                        libelle: l10n.compteMotDePasseActuel,
+                        obscur: true,
+                        erreur: _erreurMdpActuel,
+                        iconePrefixe: LucideIcons.lock,
+                      ),
                       const SizedBox(height: DsSpacing.md),
-                      DsTextField(controller: _mdpNouveau, libelle: l10n.compteNouveauMotDePasse, obscur: true, erreur: _erreurMdpNouveau, iconePrefixe: LucideIcons.lockKeyhole),
+                      DsTextField(
+                        controller: _mdpNouveau,
+                        libelle: l10n.compteNouveauMotDePasse,
+                        obscur: true,
+                        erreur: _erreurMdpNouveau,
+                        iconePrefixe: LucideIcons.lockKeyhole,
+                      ),
                       const SizedBox(height: DsSpacing.md),
-                      DsTextField(controller: _mdpConfirmation, libelle: l10n.configAdminMotDePasseConfirmation, obscur: true, erreur: _erreurConfirmation, iconePrefixe: LucideIcons.lockKeyhole),
+                      DsTextField(
+                        controller: _mdpConfirmation,
+                        libelle: l10n.configAdminMotDePasseConfirmation,
+                        obscur: true,
+                        erreur: _erreurConfirmation,
+                        iconePrefixe: LucideIcons.lockKeyhole,
+                      ),
                       const SizedBox(height: DsSpacing.lg),
-                      DsButton(libelle: l10n.compteChangerMotDePasse, icone: LucideIcons.check, onPressed: _changerMotDePasse),
+                      DsButton(
+                        libelle: l10n.compteChangerMotDePasse,
+                        icone: LucideIcons.check,
+                        onPressed: _changerMotDePasse,
+                      ),
                     ],
                   ),
                 ),
@@ -187,20 +260,47 @@ class _MonComptePageState extends ConsumerState<MonComptePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               DsSectionTitre(l10n.comptePreferences),
-              Row(children: [
-                SizedBox(width: 160, child: Text(l10n.galerieLangue, style: t.petitFort.copyWith(color: c.texteSecondaire))),
-                for (final l in localesSupportees) ...[
-                  DsButton(libelle: l.languageCode.toUpperCase(), taille: DsButtonTaille.sm, variante: locale == l ? DsButtonVariante.primaire : DsButtonVariante.secondaire, onPressed: () => ref.read(localeProvider.notifier).changer(l)),
-                  const SizedBox(width: DsSpacing.xs),
+              Row(
+                children: [
+                  SizedBox(
+                    width: 160,
+                    child: Text(l10n.galerieLangue, style: t.petitFort.copyWith(color: c.texteSecondaire)),
+                  ),
+                  for (final l in localesSupportees) ...[
+                    DsButton(
+                      libelle: l.languageCode.toUpperCase(),
+                      taille: DsButtonTaille.sm,
+                      variante: locale == l ? DsButtonVariante.primaire : DsButtonVariante.secondaire,
+                      onPressed: () => ref.read(localeProvider.notifier).changer(l),
+                    ),
+                    const SizedBox(width: DsSpacing.xs),
+                  ],
                 ],
-              ]),
+              ),
               const SizedBox(height: DsSpacing.md),
-              Row(children: [
-                SizedBox(width: 160, child: Text(l10n.galerieTheme, style: t.petitFort.copyWith(color: c.texteSecondaire))),
-                DsButton(libelle: l10n.galerieClair, taille: DsButtonTaille.sm, icone: LucideIcons.sun, variante: mode == ThemeMode.light ? DsButtonVariante.primaire : DsButtonVariante.secondaire, onPressed: () => ref.read(themeModeProvider.notifier).changer(ThemeMode.light)),
-                const SizedBox(width: DsSpacing.xs),
-                DsButton(libelle: l10n.galerieSombre, taille: DsButtonTaille.sm, icone: LucideIcons.moon, variante: mode == ThemeMode.dark ? DsButtonVariante.primaire : DsButtonVariante.secondaire, onPressed: () => ref.read(themeModeProvider.notifier).changer(ThemeMode.dark)),
-              ]),
+              Row(
+                children: [
+                  SizedBox(
+                    width: 160,
+                    child: Text(l10n.galerieTheme, style: t.petitFort.copyWith(color: c.texteSecondaire)),
+                  ),
+                  DsButton(
+                    libelle: l10n.galerieClair,
+                    taille: DsButtonTaille.sm,
+                    icone: LucideIcons.sun,
+                    variante: mode == ThemeMode.light ? DsButtonVariante.primaire : DsButtonVariante.secondaire,
+                    onPressed: () => ref.read(themeModeProvider.notifier).changer(ThemeMode.light),
+                  ),
+                  const SizedBox(width: DsSpacing.xs),
+                  DsButton(
+                    libelle: l10n.galerieSombre,
+                    taille: DsButtonTaille.sm,
+                    icone: LucideIcons.moon,
+                    variante: mode == ThemeMode.dark ? DsButtonVariante.primaire : DsButtonVariante.secondaire,
+                    onPressed: () => ref.read(themeModeProvider.notifier).changer(ThemeMode.dark),
+                  ),
+                ],
+              ),
             ],
           ),
         ),

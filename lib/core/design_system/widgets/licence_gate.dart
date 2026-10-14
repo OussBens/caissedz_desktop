@@ -8,13 +8,7 @@ import 'ds_primitives.dart';
 
 /// Garde de licence : affiche [child] si [autorise], sinon un écran « licence Avancé requise ».
 class LicenceGate extends StatelessWidget {
-  const LicenceGate({
-    super.key,
-    required this.autorise,
-    required this.child,
-    this.onActiverCle,
-    this.compact = false,
-  });
+  const LicenceGate({super.key, required this.autorise, required this.child, this.onActiverCle, this.compact = false});
 
   final bool autorise;
   final Widget child;
@@ -42,7 +36,11 @@ class LicenceGate extends StatelessWidget {
         SizedBox(height: compact ? DsSpacing.sm : DsSpacing.lg),
         Text(l10n.licenceRequise, style: compact ? t.titreSm : t.titreMd, textAlign: TextAlign.center),
         const SizedBox(height: DsSpacing.xs),
-        Text(l10n.licenceRequiseDetail, style: t.corps.copyWith(color: c.texteSecondaire), textAlign: TextAlign.center),
+        Text(
+          l10n.licenceRequiseDetail,
+          style: t.corps.copyWith(color: c.texteSecondaire),
+          textAlign: TextAlign.center,
+        ),
         if (onActiverCle != null) ...[
           const SizedBox(height: DsSpacing.lg),
           DsButton(libelle: l10n.licenceGererCle, icone: LucideIcons.keyRound, onPressed: onActiverCle),

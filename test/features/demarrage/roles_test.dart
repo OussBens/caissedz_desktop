@@ -8,7 +8,12 @@ import '../../helpers/app_test_helper.dart';
 
 void main() {
   testWidgets('Rôles : cocher une permission et un module puis enregistrer', (tester) async {
-    final c = await pumpApp(tester, etat: EtatApp.connecteeAdmin, routeInitiale: RolesPage.route, taille: const Size(1400, 1000));
+    final c = await pumpApp(
+      tester,
+      etat: EtatApp.connecteeAdmin,
+      routeInitiale: RolesPage.route,
+      taille: const Size(1400, 1000),
+    );
     expect(find.text('Rôles et permissions'), findsWidgets);
     final caseCaissier = find.byKey(const ValueKey('perm_Caissier_voirPrixAchat'));
     expect(tester.widget<Checkbox>(caseCaissier).value, isFalse);

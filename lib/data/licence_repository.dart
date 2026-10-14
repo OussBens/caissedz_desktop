@@ -21,16 +21,12 @@ class LicenceRepository {
   }
 
   Future<void> ecrire(Licence licence) async {
-    await db.insert(
-      'licence',
-      {
-        'id': 1,
-        'cle': licence.cle,
-        'niveau': licence.niveau!.stocke,
-        'demo': licence.demo ? 1 : 0,
-        'activee_le': DateTime.now().toUtc().toIso8601String(),
-      },
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    await db.insert('licence', {
+      'id': 1,
+      'cle': licence.cle,
+      'niveau': licence.niveau!.stocke,
+      'demo': licence.demo ? 1 : 0,
+      'activee_le': DateTime.now().toUtc().toIso8601String(),
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 }

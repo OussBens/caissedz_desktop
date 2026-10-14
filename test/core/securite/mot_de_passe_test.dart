@@ -24,10 +24,7 @@ void main() {
       // 120fb6cffcf8b32c43e7225256c4f837a86548c92ccc35480805987cb70be17b
       final e = const MotDePasse(iterations: 1).hacher('password', sel: Uint8List.fromList('salt'.codeUnits));
       final hash = e.split(r'$')[3];
-      expect(
-        Uri.decodeComponent(hash),
-        'Eg+2z/z4syxD5yJSVsT4N6hlSMkszDVICAWYfLcL4Xs=',
-      );
+      expect(Uri.decodeComponent(hash), 'Eg+2z/z4syxD5yJSVsT4N6hlSMkszDVICAWYfLcL4Xs=');
     });
 
     test('empreinte mal formée refusée', () {

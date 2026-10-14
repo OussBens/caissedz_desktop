@@ -43,7 +43,8 @@ class AppShell extends ConsumerWidget {
     final module = Modules.tous.where((m) => m.route == route).firstOrNull;
     final session = ref.watch(sessionProvider);
     final licence = ref.watch(licenceProvider);
-    final titre = module?.libelle(l10n) ??
+    final titre =
+        module?.libelle(l10n) ??
         switch (route) {
           GaleriePage.route => l10n.galerieTitre,
           MonComptePage.route => l10n.compteTitre,
@@ -65,9 +66,7 @@ class AppShell extends ConsumerWidget {
     }
 
     return Shortcuts(
-      shortcuts: const {
-        SingleActivator(LogicalKeyboardKey.keyM, control: true): OuvrirMenuModulesIntent(),
-      },
+      shortcuts: const {SingleActivator(LogicalKeyboardKey.keyM, control: true): OuvrirMenuModulesIntent()},
       child: Actions(
         actions: {
           OuvrirMenuModulesIntent: CallbackAction<OuvrirMenuModulesIntent>(

@@ -20,8 +20,7 @@ class FavorisService {
     return [...favoris, moduleId];
   }
 
-  static List<String> retirer(List<String> favoris, String moduleId) =>
-      favoris.where((id) => id != moduleId).toList();
+  static List<String> retirer(List<String> favoris, String moduleId) => favoris.where((id) => id != moduleId).toList();
 
   static List<String> basculer(List<String> favoris, String moduleId) =>
       favoris.contains(moduleId) ? retirer(favoris, moduleId) : (ajouter(favoris, moduleId) ?? favoris);

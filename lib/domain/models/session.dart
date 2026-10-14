@@ -27,9 +27,9 @@ class Session {
   bool peutAcceder(String moduleId) => modulesAutorises == null || modulesAutorises!.contains(moduleId);
 
   Session copyWith({Utilisateur? utilisateur}) => Session(
-        utilisateur: utilisateur ?? this.utilisateur,
-        permissions: permissions,
-        modulesAutorises: modulesAutorises,
-        demo: demo,
-      );
+    utilisateur: utilisateur ?? this.utilisateur,
+    permissions: permissions,
+    modulesAutorises: modulesAutorises,
+    demo: demo,
+  );
 }

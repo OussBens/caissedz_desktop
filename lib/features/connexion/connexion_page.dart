@@ -87,14 +87,22 @@ class _ConnexionPageState extends ConsumerState<ConnexionPage> {
             onSubmitted: (_) => _connecter(),
           ),
           const SizedBox(height: DsSpacing.xl),
-          DsButton(libelle: l10n.connexionBouton, icone: LucideIcons.logIn, taille: DsButtonTaille.lg, pleineLargeur: true, onPressed: _connecter),
+          DsButton(
+            libelle: l10n.connexionBouton,
+            icone: LucideIcons.logIn,
+            taille: DsButtonTaille.lg,
+            pleineLargeur: true,
+            onPressed: _connecter,
+          ),
           if (licence.demo) ...[
             const SizedBox(height: DsSpacing.lg),
             Row(
               children: [
                 Icon(LucideIcons.info, size: DsTailles.iconeSm, color: c.avertissement),
                 const SizedBox(width: DsSpacing.sm),
-                Expanded(child: Text(l10n.connexionDemoIndice, style: t.petit.copyWith(color: c.texteSecondaire))),
+                Expanded(
+                  child: Text(l10n.connexionDemoIndice, style: t.petit.copyWith(color: c.texteSecondaire)),
+                ),
               ],
             ),
           ],

@@ -29,7 +29,13 @@ void main() {
     });
 
     test('listes de la commande initiale présentes', () {
-      expect(Referentiel.modesPaiement.valeurs.map((v) => v.stocke), ['Espèces', 'Carte', 'Chèque', 'Virement', 'Points']);
+      expect(Referentiel.modesPaiement.valeurs.map((v) => v.stocke), [
+        'Espèces',
+        'Carte',
+        'Chèque',
+        'Virement',
+        'Points',
+      ]);
       expect(Referentiel.motifsSortie.valeurs.length, 6);
       expect(Referentiel.statutsBesoin.valeurs.map((v) => v.stocke), ['En attente', 'Commande', 'Disponible']);
       expect(Referentiel.typesCaisse.valeurs.map((v) => v.stocke), ['Physique', 'Compte']);

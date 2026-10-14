@@ -9,11 +9,7 @@ import '../../core/i18n/generated/app_localizations.dart';
 
 Future<void> afficherPanneauAlertes(BuildContext context) {
   final c = context.ds.colors;
-  return showDialog<void>(
-    context: context,
-    barrierColor: c.overlay,
-    builder: (_) => const _AlertesDialog(),
-  );
+  return showDialog<void>(context: context, barrierColor: c.overlay, builder: (_) => const _AlertesDialog());
 }
 
 class _AlertesDialog extends ConsumerWidget {
@@ -31,7 +27,9 @@ class _AlertesDialog extends ConsumerWidget {
       contenu: alertes.isEmpty
           ? Padding(
               padding: const EdgeInsets.symmetric(vertical: DsSpacing.xl),
-              child: Center(child: Text(l10n.shellAlertesAucune, style: t.corps.copyWith(color: c.texteAttenue))),
+              child: Center(
+                child: Text(l10n.shellAlertesAucune, style: t.corps.copyWith(color: c.texteAttenue)),
+              ),
             )
           : Column(
               mainAxisSize: MainAxisSize.min,
@@ -46,7 +44,9 @@ class _AlertesDialog extends ConsumerWidget {
                       size: DsTailles.icone,
                     ),
                     title: Text(a.titre, style: t.corpsFort),
-                    subtitle: a.detail == null ? null : Text(a.detail!, style: t.petit.copyWith(color: c.texteSecondaire)),
+                    subtitle: a.detail == null
+                        ? null
+                        : Text(a.detail!, style: t.petit.copyWith(color: c.texteSecondaire)),
                     trailing: DsIconButton(
                       icone: LucideIcons.x,
                       tooltip: l10n.communFermer,

@@ -18,12 +18,7 @@ class MachineIdentifiantSysteme implements MachineIdentifiant {
     final morceaux = <String>[Platform.localHostname];
     if (Platform.isWindows) {
       try {
-        final r = await Process.run('reg', [
-          'query',
-          r'HKLM\SOFTWARE\Microsoft\Cryptography',
-          '/v',
-          'MachineGuid',
-        ]);
+        final r = await Process.run('reg', ['query', r'HKLM\SOFTWARE\Microsoft\Cryptography', '/v', 'MachineGuid']);
         final m = RegExp(r'MachineGuid\s+REG_SZ\s+(\S+)').firstMatch(r.stdout.toString());
         if (m != null) morceaux.add(m.group(1)!);
       } on ProcessException {
@@ -53,6 +48,5 @@ class DerivationCle {
   }
 
   /// Fonction pure, testable : SHA-256(sel || '|' || identifiant) en hexadécimal.
-  static String deriver(String identifiant, String sel) =>
-      sha256.convert(utf8.encode('$sel|$identifiant')).toString();
+  static String deriver(String identifiant, String sel) => sha256.convert(utf8.encode('$sel|$identifiant')).toString();
 }

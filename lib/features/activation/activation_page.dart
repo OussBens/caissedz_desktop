@@ -49,9 +49,20 @@ class _ActivationPageState extends ConsumerState<ActivationPage> {
       final licence = await ref.read(licenceProvider.notifier).activer(_cle.text);
       if (!mounted) return;
       final niveau = licence.niveau == NiveauLicence.avance ? l10n.licenceAvance : l10n.licenceBasic;
-      unawaited(afficherResultat(context, type: DsResultatType.succes, titre: l10n.activationTitre, message: l10n.activationReussie(niveau)));
+      unawaited(
+        afficherResultat(
+          context,
+          type: DsResultatType.succes,
+          titre: l10n.activationTitre,
+          message: l10n.activationReussie(niveau),
+        ),
+      );
     } on ActivationException catch (e) {
-      setState(() => _erreur = e.erreur == ErreurActivation.formatInvalide ? l10n.activationErreurFormat : l10n.activationErreurInconnue);
+      setState(
+        () => _erreur = e.erreur == ErreurActivation.formatInvalide
+            ? l10n.activationErreurFormat
+            : l10n.activationErreurInconnue,
+      );
     }
   }
 
@@ -78,7 +89,11 @@ class _ActivationPageState extends ConsumerState<ActivationPage> {
           const SizedBox(height: DsSpacing.xs),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: DsSpacing.md, vertical: DsSpacing.sm),
-            decoration: BoxDecoration(color: c.surfaceAttenuee, borderRadius: DsRadius.borderMd, border: Border.all(color: c.bordure)),
+            decoration: BoxDecoration(
+              color: c.surfaceAttenuee,
+              borderRadius: DsRadius.borderMd,
+              border: Border.all(color: c.bordure),
+            ),
             child: Row(
               children: [
                 Expanded(child: SelectableText(_machine, style: t.mono)),
@@ -88,7 +103,8 @@ class _ActivationPageState extends ConsumerState<ActivationPage> {
                   onPressed: () async {
                     await Clipboard.setData(ClipboardData(text: _machine));
                     if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.activationIdentifiantCopie)));
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(SnackBar(content: Text(l10n.activationIdentifiantCopie)));
                     }
                   },
                 ),
@@ -106,7 +122,13 @@ class _ActivationPageState extends ConsumerState<ActivationPage> {
             onSubmitted: (_) => _activer(),
           ),
           const SizedBox(height: DsSpacing.lg),
-          DsButton(libelle: l10n.activationBouton, icone: LucideIcons.check, taille: DsButtonTaille.lg, pleineLargeur: true, onPressed: _activer),
+          DsButton(
+            libelle: l10n.activationBouton,
+            icone: LucideIcons.check,
+            taille: DsButtonTaille.lg,
+            pleineLargeur: true,
+            onPressed: _activer,
+          ),
           const SizedBox(height: DsSpacing.xl),
           const DsDivider(),
           const SizedBox(height: DsSpacing.lg),
@@ -124,13 +146,21 @@ class _ActivationPageState extends ConsumerState<ActivationPage> {
             Align(
               alignment: AlignmentDirectional.centerStart,
               child: DsBadge(
-                libelle: licence.demo ? l10n.licenceDemo : l10n.licenceNiveau(licence.niveau == NiveauLicence.avance ? l10n.licenceAvance : l10n.licenceBasic),
+                libelle: licence.demo
+                    ? l10n.licenceDemo
+                    : l10n.licenceNiveau(
+                        licence.niveau == NiveauLicence.avance ? l10n.licenceAvance : l10n.licenceBasic,
+                      ),
                 ton: licence.demo ? DsBadgeTon.avertissement : DsBadgeTon.succes,
                 icone: LucideIcons.badgeCheck,
               ),
             ),
             const SizedBox(height: DsSpacing.sm),
-            DsButton(libelle: l10n.communFermer, variante: DsButtonVariante.fantome, onPressed: () => context.canPop() ? context.pop() : context.go('/tableau-de-bord')),
+            DsButton(
+              libelle: l10n.communFermer,
+              variante: DsButtonVariante.fantome,
+              onPressed: () => context.canPop() ? context.pop() : context.go('/tableau-de-bord'),
+            ),
           ],
         ],
       ),

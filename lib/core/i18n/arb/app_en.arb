@@ -239,5 +239,197 @@
   "shellBandeauDemo": "Demo mode — data is not meant for production",
   "shellMenuUtilisateur": "User menu",
   "shellVerrouille": "Advanced licence only",
-  "shellAccesRestreint": "Not allowed for your role"
+  "shellAccesRestreint": "Not allowed for your role",
+  "produitsTitre": "Products",
+  "produitsOngletProduits": "Products",
+  "produitsOngletCategories": "Categories",
+  "produitsOngletColis": "Cases",
+  "produitsOngletPacks": "Bundles",
+  "produitsOngletRemises": "Discounts",
+  "produitsNouveau": "New product",
+  "produitsModeIa": "AI mode",
+  "produitsImporter": "Import Excel",
+  "produitsEtiquettes": "Labels",
+  "produitsSynchro": "Sync catalogue",
+  "produitsRecherche": "Search by name, code or barcode…",
+  "produitsColCode": "Code",
+  "produitsColDesignation": "Name",
+  "produitsColCodeBarres": "Barcode",
+  "produitsColCategorie": "Category",
+  "produitsColPrixAchat": "Purchase price",
+  "produitsColPrixVente": "Selling price",
+  "produitsColMarge": "Margin %",
+  "produitsColActif": "Active",
+  "produitsColStock": "Stock",
+  "produitsAucun": "No products. Create one or import an Excel file.",
+  "produitModifier": "Edit product",
+  "produitDesactiver": "Deactivate",
+  "produitActiver": "Activate",
+  "produitGenererCodeBarres": "Generate an internal barcode",
+  "produitChampDesignation": "Name",
+  "produitChampCodeBarres": "Barcode (EAN-13 or internal)",
+  "produitChampCategorie": "Category",
+  "produitChampSousCategorie": "Sub-category",
+  "produitChampPrixAchat": "Purchase price",
+  "produitChampPrixVente": "Selling price",
+  "produitChampMarge": "Margin (%)",
+  "produitChampUnite": "Unit",
+  "produitChampTva": "VAT (%)",
+  "produitChampSeuil": "Alert threshold (empty = global)",
+  "produitChampSuiviNombre": "Track a second \"count\" stock (pieces)",
+  "produitChampSuiviNombreAide": "The product sells by unit or by piece; stock is kept in both.",
+  "produitChampNombreParUnite": "Pieces per unit",
+  "produitPrixAuto": "The selling price is computed from the margin if left empty.",
+  "produitErreurDesignation": "Name is required.",
+  "produitErreurCodeBarres": "Invalid barcode.",
+  "produitErreurCodeBarresPris": "This barcode is already used.",
+  "produitErreurPrix": "Invalid price.",
+  "produitErreurQuantite": "Invalid quantity.",
+  "produitCree": "Product \"{nom}\" created ({code}).",
+  "@produitCree": {
+    "placeholders": {
+      "nom": {
+        "type": "String"
+      },
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "iaTitre": "New product in AI mode",
+  "iaIntro": "Scan or type a barcode: the product sheet is looked up in CaisseDZ, then Mantouj, Open Food Facts and Open Beauty Facts.",
+  "iaRechercher": "Search",
+  "iaRechercheEnCours": "Searching…",
+  "iaAucun": "No sheet found for this barcode: switch to detailed entry.",
+  "iaTrouve": "Sheet found via {source}",
+  "@iaTrouve": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "iaMarque": "Brand",
+  "iaCreer": "Create product",
+  "iaSaisieDetaillee": "Detailed entry",
+  "importTitre": "Import products from Excel",
+  "importIntro": "Expected columns on row 1: designation (required), code_barres, categorie, prix_achat, prix_vente.",
+  "importChoisirFichier": "Choose an .xlsx file",
+  "importTelechargerModele": "Save template",
+  "importLignesValides": "{n} valid row(s)",
+  "@importLignesValides": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "importLignesInvalides": "{n} skipped row(s)",
+  "@importLignesInvalides": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "importColLigne": "Row",
+  "importColErreur": "Error",
+  "importLancer": "Import",
+  "importResultat": "{importees} product(s) imported, {ignorees} skipped.",
+  "@importResultat": {
+    "placeholders": {
+      "importees": {
+        "type": "int"
+      },
+      "ignorees": {
+        "type": "int"
+      }
+    }
+  },
+  "importErreurFichier": "Unreadable file: {detail}",
+  "@importErreurFichier": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "importErreurDesignationVide": "Empty name",
+  "importErreurCodeBarresPris": "Barcode already used",
+  "importErreurPrix": "Invalid price",
+  "etiquettesTitre": "Print labels",
+  "etiquettesQuantite": "Quantity",
+  "etiquettesFormatA4": "A4 sheet",
+  "etiquettesFormatRouleau": "Roll",
+  "etiquettesAfficherPrix": "Show price",
+  "etiquettesQr": "QR code instead of barcode",
+  "etiquettesGenerer": "Generate PDF",
+  "etiquettesAucuneSelection": "Select at least one product in the list.",
+  "synchroResultat": "Sync: {envoyes} sent, {recus} updated.",
+  "@synchroResultat": {
+    "placeholders": {
+      "envoyes": {
+        "type": "int"
+      },
+      "recus": {
+        "type": "int"
+      }
+    }
+  },
+  "synchroNonConfiguree": "Set the CaisseDZ server URL in Settings to sync the catalogue.",
+  "synchroErreur": "Sync failed: {detail}",
+  "@synchroErreur": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "categoriesNouvelle": "New category",
+  "categoriesNouvelleSous": "New sub-category",
+  "categorieNom": "Name",
+  "categorieRenommer": "Rename",
+  "categorieSupprimer": "Delete",
+  "categorieSousCategories": "Sub-categories",
+  "categorieErreurSysteme": "The system category cannot be changed.",
+  "categorieErreurUtilisee": "Products are attached to this category.",
+  "categorieConfirmerSuppression": "Delete category \"{nom}\" and its sub-categories?",
+  "@categorieConfirmerSuppression": {
+    "placeholders": {
+      "nom": {
+        "type": "String"
+      }
+    }
+  },
+  "colisNouveau": "New case",
+  "colisProduit": "Product",
+  "colisQuantite": "Units per case",
+  "colisAucun": "No cases.",
+  "packNouveau": "New bundle",
+  "packLignes": "Contents",
+  "packAjouterProduit": "Add a product",
+  "packAucun": "No bundles.",
+  "packErreurLignes": "Add at least one product to the bundle.",
+  "remiseNouvelle": "New discount",
+  "remiseType": "Type",
+  "remiseTypePourcentage": "Percentage",
+  "remiseTypeMontant": "Amount",
+  "remiseValeur": "Value",
+  "remisePortee": "Scope",
+  "remisePorteeGlobale": "All products",
+  "remisePorteeCategorie": "A category",
+  "remisePorteeProduit": "A product",
+  "remiseDebut": "Start",
+  "remiseFin": "End",
+  "remiseAucune": "No discounts.",
+  "communNouveau": "New",
+  "communModifier": "Edit",
+  "communActif": "Active",
+  "communInactif": "Inactive",
+  "communOui": "Yes",
+  "communNon": "No",
+  "communValider": "Confirm",
+  "communApercu": "Preview",
+  "communImprimer": "Print",
+  "communAucune": "None"
 }

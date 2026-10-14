@@ -15,15 +15,30 @@ class _L {
 final _lignes = [for (var i = 1; i <= 30; i++) _L('C${i.toString().padLeft(3, '0')}', 'Article $i', (i * 7) % 11)];
 
 List<DsColonne<_L>> _colonnes() => [
-      DsColonne(id: 'code', libelle: 'Code', valeur: (l) => l.code),
-      DsColonne(id: 'nom', libelle: 'Nom', valeur: (l) => l.nom),
-      DsColonne(id: 'qte', libelle: 'Qté', valeur: (l) => l.qte, numerique: true, total: (ls) => '${ls.fold<int>(0, (s, l) => s + l.qte)}'),
-    ];
+  DsColonne(id: 'code', libelle: 'Code', valeur: (l) => l.code),
+  DsColonne(id: 'nom', libelle: 'Nom', valeur: (l) => l.nom),
+  DsColonne(
+    id: 'qte',
+    libelle: 'Qté',
+    valeur: (l) => l.qte,
+    numerique: true,
+    total: (ls) => '${ls.fold<int>(0, (s, l) => s + l.qte)}',
+  ),
+];
 
 void main() {
   group('DsDataTable', () {
     testWidgets('pagine, affiche les totaux et navigue entre pages', (tester) async {
-      await pumpDs(tester, DsDataTable<_L>(colonnes: _colonnes(), lignes: _lignes, cle: (l) => l.code, taillePage: 10, afficherTotaux: true));
+      await pumpDs(
+        tester,
+        DsDataTable<_L>(
+          colonnes: _colonnes(),
+          lignes: _lignes,
+          cle: (l) => l.code,
+          taillePage: 10,
+          afficherTotaux: true,
+        ),
+      );
       expect(find.text('C001'), findsOneWidget);
       expect(find.text('C011'), findsNothing);
       expect(find.text('1–10 sur 30'), findsOneWidget);
@@ -55,7 +70,13 @@ void main() {
       Set<Object> selection = {};
       await pumpDs(
         tester,
-        DsDataTable<_L>(colonnes: _colonnes(), lignes: _lignes, cle: (l) => l.code, taillePage: 10, onSelectionChanged: (s) => selection = s),
+        DsDataTable<_L>(
+          colonnes: _colonnes(),
+          lignes: _lignes,
+          cle: (l) => l.code,
+          taillePage: 10,
+          onSelectionChanged: (s) => selection = s,
+        ),
       );
       await tester.tap(find.text('C002'));
       await tester.pumpAndSettle();
@@ -74,10 +95,12 @@ void main() {
       expect(find.text('Article 1'), findsOneWidget);
       await tester.tap(find.byTooltip('Colonnes'));
       await tester.pumpAndSettle();
-      await tester.tap(find.descendant(
-        of: find.ancestor(of: find.text('Nom').last, matching: find.byType(Row)).first,
-        matching: find.byType(Checkbox),
-      ));
+      await tester.tap(
+        find.descendant(
+          of: find.ancestor(of: find.text('Nom').last, matching: find.byType(Row)).first,
+          matching: find.byType(Checkbox),
+        ),
+      );
       await tester.pumpAndSettle();
       await tester.tapAt(const Offset(5, 5)); // ferme le menu
       await tester.pumpAndSettle();
@@ -96,7 +119,11 @@ void main() {
           actionsContextuelles: [DsActionContextuelle(libelle: 'Ouvrir', onSelected: (l) => ouverte = l)],
         ),
       );
-      final gesture = await tester.startGesture(tester.getCenter(find.text('C003')), kind: PointerDeviceKind.mouse, buttons: kSecondaryMouseButton);
+      final gesture = await tester.startGesture(
+        tester.getCenter(find.text('C003')),
+        kind: PointerDeviceKind.mouse,
+        buttons: kSecondaryMouseButton,
+      );
       await gesture.up();
       await tester.pumpAndSettle();
       await tester.tap(find.text('Ouvrir'));

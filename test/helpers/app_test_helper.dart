@@ -1,9 +1,12 @@
+import 'dart:typed_data';
+
 import 'package:caissedz_desktop/app/app.dart';
 import 'package:caissedz_desktop/app/demarrage_providers.dart';
 import 'package:caissedz_desktop/app/providers.dart';
 import 'package:caissedz_desktop/app/router.dart';
 import 'package:caissedz_desktop/application/auth_service.dart';
 import 'package:caissedz_desktop/application/configuration_initiale_service.dart';
+import 'package:caissedz_desktop/application/import_produits_service.dart';
 import 'package:caissedz_desktop/application/licence_service.dart';
 import 'package:caissedz_desktop/core/db/machine_key.dart';
 import 'package:caissedz_desktop/core/licence/cle_activation.dart';
@@ -15,6 +18,7 @@ import 'package:caissedz_desktop/domain/models/utilisateur.dart';
 import 'package:caissedz_desktop/domain/permissions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'bases.dart';
@@ -53,20 +57,24 @@ Future<ProviderContainer> pumpApp(
   String? routeInitiale,
   Size taille = const Size(1280, 800),
   bool settle = true,
+  List<Override> overrides = const [],
 }) async {
   final base = await ouvrirBaseEnMemoire();
   await tester.binding.setSurfaceSize(taille);
   tester.view.physicalSize = taille;
   tester.view.devicePixelRatio = 1;
   addTearDown(() => tester.view.reset());
-  final container = ProviderContainer(overrides: [
-    appDatabaseProvider.overrideWithValue(base),
-    controlesFenetreProvider.overrideWithValue(false),
-    licenceServiceProvider.overrideWithValue(LicenceService(base.db, identifiant: const MachineTest())),
-    authServiceProvider.overrideWithValue(AuthService(base.db, hachage: hachageTest)),
-    configurationServiceProvider.overrideWithValue(ConfigurationInitialeService(base.db, hachage: hachageTest)),
-    if (routeInitiale != null) routeInitialeProvider.overrideWithValue(routeInitiale),
-  ]);
+  final container = ProviderContainer(
+    overrides: [
+      appDatabaseProvider.overrideWithValue(base),
+      controlesFenetreProvider.overrideWithValue(false),
+      licenceServiceProvider.overrideWithValue(LicenceService(base.db, identifiant: const MachineTest())),
+      authServiceProvider.overrideWithValue(AuthService(base.db, hachage: hachageTest)),
+      configurationServiceProvider.overrideWithValue(ConfigurationInitialeService(base.db, hachage: hachageTest)),
+      if (routeInitiale != null) routeInitialeProvider.overrideWithValue(routeInitiale),
+      ...overrides,
+    ],
+  );
   addTearDown(container.dispose);
   await container.read(localeProvider.notifier).changer(locale);
 
@@ -113,9 +121,12 @@ Future<ProviderContainer> pumpApp(
 }
 
 ConfigurationInitiale configurationTest() => const ConfigurationInitiale(
-      boutique: Boutique(nom: 'Superette El Baraka', rc: '16/00-123456'),
-      adminIdentifiant: 'gerant',
-      adminNom: 'Karim',
-      adminMotDePasse: 'azerty',
-      parametres: ParametresVente(margeDefautPct: 25),
-    );
+  boutique: Boutique(nom: 'Superette El Baraka', rc: '16/00-123456'),
+  adminIdentifiant: 'gerant',
+  adminNom: 'Karim',
+  adminMotDePasse: 'azerty',
+  parametres: ParametresVente(margeDefautPct: 25),
+);
+
+/// Modèle Excel d'import (raccourci de test).
+Uint8List importModele() => ImportProduitsService.modele();

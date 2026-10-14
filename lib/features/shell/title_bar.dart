@@ -63,8 +63,7 @@ class _TitleBarState extends ConsumerState<TitleBar> with WindowListener {
     final session = ref.watch(sessionProvider);
     final locale = ref.watch(localeProvider);
 
-    Widget zoneDeplacement(Widget enfant) =>
-        widget.controlesFenetre ? DragToMoveArea(child: enfant) : enfant;
+    Widget zoneDeplacement(Widget enfant) => widget.controlesFenetre ? DragToMoveArea(child: enfant) : enfant;
 
     return Container(
       height: DsTailles.barreTitre,
@@ -101,10 +100,7 @@ class _TitleBarState extends ConsumerState<TitleBar> with WindowListener {
                   Container(
                     width: 8,
                     height: 8,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: internet ? c.succes : c.danger,
-                    ),
+                    decoration: BoxDecoration(shape: BoxShape.circle, color: internet ? c.succes : c.danger),
                   ),
                 ],
               ),
@@ -112,36 +108,38 @@ class _TitleBarState extends ConsumerState<TitleBar> with WindowListener {
           ),
           // Alertes
           if (!widget.minimal)
-          Stack(
-            clipBehavior: Clip.none,
-            children: [
-              DsIconButton(
-                icone: LucideIcons.bell,
-                tooltip: l10n.shellAlertes,
-                onPressed: () => afficherPanneauAlertes(context),
-              ),
-              if (alertes.isNotEmpty)
-                PositionedDirectional(
-                  top: 4,
-                  end: 4,
-                  child: IgnorePointer(
-                    child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                    constraints: const BoxConstraints(minWidth: 14),
-                    decoration: BoxDecoration(
-                      color: alertes.any((a) => a.critique) ? c.danger : c.avertissement,
-                      borderRadius: BorderRadius.circular(DsRadius.pill),
-                    ),
-                    child: Text(
-                      '${alertes.length}',
-                      textAlign: TextAlign.center,
-                      style: t.legende.copyWith(color: c.texteInverse, fontSize: 9, height: 1.4),
-                    ),
-                  ),
-                  ),
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                DsIconButton(
+                  icone: LucideIcons.bell,
+                  tooltip: l10n.shellAlertes,
+                  onPressed: () {
+                    afficherPanneauAlertes(context);
+                  },
                 ),
-            ],
-          ),
+                if (alertes.isNotEmpty)
+                  PositionedDirectional(
+                    top: 4,
+                    end: 4,
+                    child: IgnorePointer(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        constraints: const BoxConstraints(minWidth: 14),
+                        decoration: BoxDecoration(
+                          color: alertes.any((a) => a.critique) ? c.danger : c.avertissement,
+                          borderRadius: BorderRadius.circular(DsRadius.pill),
+                        ),
+                        child: Text(
+                          '${alertes.length}',
+                          textAlign: TextAlign.center,
+                          style: t.legende.copyWith(color: c.texteInverse, fontSize: 9, height: 1.4),
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           const SizedBox(width: DsSpacing.sm),
           // Menu utilisateur
           if (!widget.minimal && session != null)
@@ -153,19 +151,49 @@ class _TitleBarState extends ConsumerState<TitleBar> with WindowListener {
                 if (v == 'deconnexion') ref.read(sessionProvider.notifier).deconnecter();
               },
               itemBuilder: (_) => [
-                PopupMenuItem(value: 'compte', height: 36, child: Row(children: [Icon(LucideIcons.userCog, size: DsTailles.iconeSm, color: c.texteSecondaire), const SizedBox(width: DsSpacing.sm), Text(l10n.compteTitre, style: t.corps)])),
-                PopupMenuItem(value: 'deconnexion', height: 36, child: Row(children: [Icon(LucideIcons.logOut, size: DsTailles.iconeSm, color: c.danger), const SizedBox(width: DsSpacing.sm), Text(l10n.connexionDeconnecter, style: t.corps.copyWith(color: c.danger))])),
+                PopupMenuItem(
+                  value: 'compte',
+                  height: 36,
+                  child: Row(
+                    children: [
+                      Icon(LucideIcons.userCog, size: DsTailles.iconeSm, color: c.texteSecondaire),
+                      const SizedBox(width: DsSpacing.sm),
+                      Text(l10n.compteTitre, style: t.corps),
+                    ],
+                  ),
+                ),
+                PopupMenuItem(
+                  value: 'deconnexion',
+                  height: 36,
+                  child: Row(
+                    children: [
+                      Icon(LucideIcons.logOut, size: DsTailles.iconeSm, color: c.danger),
+                      const SizedBox(width: DsSpacing.sm),
+                      Text(l10n.connexionDeconnecter, style: t.corps.copyWith(color: c.danger)),
+                    ],
+                  ),
+                ),
               ],
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: DsSpacing.sm),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    CircleAvatar(radius: 12, backgroundColor: c.primaireDoux, child: Text(session.utilisateur.nom.isEmpty ? '?' : session.utilisateur.nom[0].toUpperCase(), style: t.legende.copyWith(color: c.primaire))),
+                    CircleAvatar(
+                      radius: 12,
+                      backgroundColor: c.primaireDoux,
+                      child: Text(
+                        session.utilisateur.nom.isEmpty ? '?' : session.utilisateur.nom[0].toUpperCase(),
+                        style: t.legende.copyWith(color: c.primaire),
+                      ),
+                    ),
                     const SizedBox(width: DsSpacing.sm),
                     Text(session.utilisateur.nom, style: t.petitFort),
                     const SizedBox(width: DsSpacing.xs),
-                    Text('· ${Referentiel.roles.libelle(session.utilisateur.role, locale)}', style: t.petit.copyWith(color: c.texteAttenue)),
+                    Text(
+                      '· ${Referentiel.roles.libelle(session.utilisateur.role, locale)}',
+                      style: t.petit.copyWith(color: c.texteAttenue),
+                    ),
                     const SizedBox(width: DsSpacing.xs),
                     Icon(LucideIcons.chevronDown, size: 14, color: c.texteAttenue),
                   ],
@@ -203,12 +231,7 @@ class _TitleBarState extends ConsumerState<TitleBar> with WindowListener {
 }
 
 class _BoutonFenetre extends StatelessWidget {
-  const _BoutonFenetre({
-    required this.icone,
-    required this.tooltip,
-    required this.onPressed,
-    this.fermeture = false,
-  });
+  const _BoutonFenetre({required this.icone, required this.tooltip, required this.onPressed, this.fermeture = false});
   final IconData icone;
   final String tooltip;
   final VoidCallback onPressed;

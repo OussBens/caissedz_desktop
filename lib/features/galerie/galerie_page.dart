@@ -106,7 +106,12 @@ class GaleriePage extends ConsumerWidget {
               DsButton(libelle: 'Primaire', icone: LucideIcons.check, onPressed: () {}),
               DsButton(libelle: 'Secondaire', variante: DsButtonVariante.secondaire, onPressed: () {}),
               DsButton(libelle: 'Fantôme', variante: DsButtonVariante.fantome, onPressed: () {}),
-              DsButton(libelle: 'Danger', variante: DsButtonVariante.danger, icone: LucideIcons.trash2, onPressed: () {}),
+              DsButton(
+                libelle: 'Danger',
+                variante: DsButtonVariante.danger,
+                icone: LucideIcons.trash2,
+                onPressed: () {},
+              ),
               DsButton(libelle: 'Succès', variante: DsButtonVariante.succes, onPressed: () {}),
               const DsButton(libelle: 'Désactivé'),
               const DsButton(libelle: 'Chargement', chargement: true),
@@ -126,11 +131,17 @@ class GaleriePage extends ConsumerWidget {
           enfant: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(child: DsTextField(libelle: 'Libellé', indice: 'Saisir…', iconePrefixe: LucideIcons.search)),
+              Expanded(
+                child: DsTextField(libelle: 'Libellé', indice: 'Saisir…', iconePrefixe: LucideIcons.search),
+              ),
               SizedBox(width: DsSpacing.md),
-              Expanded(child: DsTextField(libelle: 'Erreur', erreur: 'Valeur obligatoire')),
+              Expanded(
+                child: DsTextField(libelle: 'Erreur', erreur: 'Valeur obligatoire'),
+              ),
               SizedBox(width: DsSpacing.md),
-              Expanded(child: DsTextField(libelle: 'Désactivé', actif: false, indice: 'Non modifiable')),
+              Expanded(
+                child: DsTextField(libelle: 'Désactivé', actif: false, indice: 'Non modifiable'),
+              ),
             ],
           ),
         ),
@@ -150,11 +161,27 @@ class GaleriePage extends ConsumerWidget {
           titre: 'Indicateurs',
           enfant: Row(
             children: [
-              Expanded(child: DsStatCard(libelle: 'Ventes du jour', valeur: '125 400,00 DA', icone: LucideIcons.receipt, sousTexte: '+12 % vs hier')),
+              Expanded(
+                child: DsStatCard(
+                  libelle: 'Ventes du jour',
+                  valeur: '125 400,00 DA',
+                  icone: LucideIcons.receipt,
+                  sousTexte: '+12 % vs hier',
+                ),
+              ),
               SizedBox(width: DsSpacing.md),
-              Expanded(child: DsStatCard(libelle: 'Tickets', valeur: '87', icone: LucideIcons.ticket, ton: DsBadgeTon.info)),
+              Expanded(
+                child: DsStatCard(libelle: 'Tickets', valeur: '87', icone: LucideIcons.ticket, ton: DsBadgeTon.info),
+              ),
               SizedBox(width: DsSpacing.md),
-              Expanded(child: DsStatCard(libelle: 'Stock sous seuil', valeur: '14', icone: LucideIcons.triangleAlert, ton: DsBadgeTon.avertissement)),
+              Expanded(
+                child: DsStatCard(
+                  libelle: 'Stock sous seuil',
+                  valeur: '14',
+                  icone: LucideIcons.triangleAlert,
+                  ton: DsBadgeTon.avertissement,
+                ),
+              ),
             ],
           ),
         ),
@@ -166,28 +193,46 @@ class GaleriePage extends ConsumerWidget {
               DsButton(
                 libelle: 'Confirmation',
                 variante: DsButtonVariante.secondaire,
-                onPressed: () => afficherConfirmation(context, titre: 'Supprimer ?', message: 'Cette action est irréversible.', destructif: true),
+                onPressed: () {
+                  afficherConfirmation(
+                    context,
+                    titre: 'Supprimer ?',
+                    message: 'Cette action est irréversible.',
+                    destructif: true,
+                  );
+                },
               ),
               DsButton(
                 libelle: 'Résultat succès',
                 variante: DsButtonVariante.secondaire,
-                onPressed: () => afficherResultat(context, type: DsResultatType.succes, titre: 'Enregistré', message: 'La vente a été encaissée.'),
+                onPressed: () {
+                  afficherResultat(
+                    context,
+                    type: DsResultatType.succes,
+                    titre: 'Enregistré',
+                    message: 'La vente a été encaissée.',
+                  );
+                },
               ),
               DsButton(
                 libelle: 'Résultat erreur',
                 variante: DsButtonVariante.secondaire,
-                onPressed: () => afficherResultat(context, type: DsResultatType.erreur, titre: 'Échec', message: 'Stock insuffisant.'),
+                onPressed: () {
+                  afficherResultat(context, type: DsResultatType.erreur, titre: 'Échec', message: 'Stock insuffisant.');
+                },
               ),
               DsButton(
                 libelle: 'Sélecteur',
                 variante: DsButtonVariante.secondaire,
-                onPressed: () => afficherSelecteur<ValeurReferentiel>(
-                  context,
-                  titre: 'Mode de paiement',
-                  elements: Referentiel.modesPaiement.valeurs,
-                  libelle: (v) => v.libelle(locale),
-                  sousLibelle: (v) => v.stocke,
-                ),
+                onPressed: () {
+                  afficherSelecteur<ValeurReferentiel>(
+                    context,
+                    titre: 'Mode de paiement',
+                    elements: Referentiel.modesPaiement.valeurs,
+                    libelle: (v) => v.libelle(locale),
+                    sousLibelle: (v) => v.stocke,
+                  );
+                },
               ),
             ],
           ),
@@ -203,8 +248,19 @@ class GaleriePage extends ConsumerWidget {
         _Section(
           titre: 'Grille des permissions',
           enfant: PermissionGrid(
-            lignes: [for (final p in Permission.values.take(3)) PermissionGridLigne(id: p.code, libelle: libellePermission(l10n, p), icone: LucideIcons.shieldCheck)],
-            colonnes: [for (final r in Roles.tous) PermissionGridColonne(id: r, libelle: libelleRole(l10n, r), verrouillee: r == Roles.admin, infoVerrou: l10n.rolesAdminTotal)],
+            lignes: [
+              for (final p in Permission.values.take(3))
+                PermissionGridLigne(id: p.code, libelle: libellePermission(l10n, p), icone: LucideIcons.shieldCheck),
+            ],
+            colonnes: [
+              for (final r in Roles.tous)
+                PermissionGridColonne(
+                  id: r,
+                  libelle: libelleRole(l10n, r),
+                  verrouillee: r == Roles.admin,
+                  infoVerrou: l10n.rolesAdminTotal,
+                ),
+            ],
             estCoche: (role, id) => Roles.permissionsParDefaut[role]?.contains(Permission.parCode(id)) ?? false,
             onBasculer: (_, _) {},
           ),
@@ -221,10 +277,24 @@ class GaleriePage extends ConsumerWidget {
                   id: 'statut',
                   libelle: 'Statut',
                   valeur: (l) => l.statut,
-                  cellule: (ctx, l) => DsBadge(libelle: Referentiel.statutsBesoin.libelle(l.statut, locale), ton: DsBadgeTon.primaire),
+                  cellule: (ctx, l) =>
+                      DsBadge(libelle: Referentiel.statutsBesoin.libelle(l.statut, locale), ton: DsBadgeTon.primaire),
                 ),
-                DsColonne(id: 'qte', libelle: 'Quantité', valeur: (l) => l.quantite, numerique: true, total: (ls) => ls.fold<int>(0, (s, l) => s + l.quantite).toString()),
-                DsColonne(id: 'prix', libelle: 'Prix', valeur: (l) => l.prix, numerique: true, visibleParDefaut: false, total: (ls) => '${ls.fold<double>(0, (s, l) => s + l.prix).toStringAsFixed(2)} DA'),
+                DsColonne(
+                  id: 'qte',
+                  libelle: 'Quantité',
+                  valeur: (l) => l.quantite,
+                  numerique: true,
+                  total: (ls) => ls.fold<int>(0, (s, l) => s + l.quantite).toString(),
+                ),
+                DsColonne(
+                  id: 'prix',
+                  libelle: 'Prix',
+                  valeur: (l) => l.prix,
+                  numerique: true,
+                  visibleParDefaut: false,
+                  total: (ls) => '${ls.fold<double>(0, (s, l) => s + l.prix).toStringAsFixed(2)} DA',
+                ),
               ],
               lignes: _LigneDemo.exemples,
               cle: (l) => l.code,
@@ -233,7 +303,12 @@ class GaleriePage extends ConsumerWidget {
               taillePage: 10,
               actionsContextuelles: [
                 DsActionContextuelle(libelle: 'Ouvrir', icone: LucideIcons.externalLink, onSelected: (_) {}),
-                DsActionContextuelle(libelle: 'Supprimer', icone: LucideIcons.trash2, destructif: true, onSelected: (_) {}),
+                DsActionContextuelle(
+                  libelle: 'Supprimer',
+                  icone: LucideIcons.trash2,
+                  destructif: true,
+                  onSelected: (_) {},
+                ),
               ],
             ),
           ),
@@ -277,7 +352,11 @@ class _Pastille extends StatelessWidget {
         Container(
           width: 72,
           height: 44,
-          decoration: BoxDecoration(color: couleur, borderRadius: DsRadius.borderMd, border: Border.all(color: c.bordure)),
+          decoration: BoxDecoration(
+            color: couleur,
+            borderRadius: DsRadius.borderMd,
+            border: Border.all(color: c.bordure),
+          ),
         ),
         const SizedBox(height: DsSpacing.xs),
         Text(nom, style: t.legende.copyWith(color: c.texteSecondaire)),

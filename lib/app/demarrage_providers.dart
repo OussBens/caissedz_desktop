@@ -15,9 +15,12 @@ import 'providers.dart';
 
 final licenceServiceProvider = Provider<LicenceService>((ref) => LicenceService(ref.watch(appDatabaseProvider).db));
 final authServiceProvider = Provider<AuthService>((ref) => AuthService(ref.watch(appDatabaseProvider).db));
-final configurationServiceProvider =
-    Provider<ConfigurationInitialeService>((ref) => ConfigurationInitialeService(ref.watch(appDatabaseProvider).db));
-final permissionServiceProvider = Provider<PermissionService>((ref) => PermissionService(ref.watch(appDatabaseProvider).db));
+final configurationServiceProvider = Provider<ConfigurationInitialeService>(
+  (ref) => ConfigurationInitialeService(ref.watch(appDatabaseProvider).db),
+);
+final permissionServiceProvider = Provider<PermissionService>(
+  (ref) => PermissionService(ref.watch(appDatabaseProvider).db),
+);
 
 /// Licence courante (chargée au démarrage).
 class LicenceNotifier extends Notifier<Licence> {
@@ -82,8 +85,9 @@ final sessionProvider = NotifierProvider<SessionNotifier, Session?>(SessionNotif
 final permissionProvider = Provider.family<bool, Permission>((ref, p) => ref.watch(sessionProvider)?.a(p) ?? false);
 
 /// Niveau de licence courant couvre-t-il [requis] ?
-final licenceCouvreProvider =
-    Provider.family<bool, NiveauLicence>((ref, requis) => ref.watch(licenceProvider).couvre(requis));
+final licenceCouvreProvider = Provider.family<bool, NiveauLicence>(
+  (ref, requis) => ref.watch(licenceProvider).couvre(requis),
+);
 
 /// Notifie le routeur quand l'état de démarrage change (licence, configuration, session).
 class DemarrageListenable extends ChangeNotifier {

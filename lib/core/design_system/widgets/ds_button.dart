@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../tokens/ds_theme.dart';
 
@@ -122,12 +123,14 @@ class _DsButtonState extends State<DsButton> {
       mainAxisSize: widget.pleineLargeur ? MainAxisSize.max : MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        if (enChargement)
+        if (widget.chargement)
           SizedBox(
             width: DsTailles.iconeSm,
             height: DsTailles.iconeSm,
             child: CircularProgressIndicator(strokeWidth: 2, color: texte),
           )
+        else if (_enCours)
+          Icon(LucideIcons.loader, size: DsTailles.icone, color: texte)
         else if (widget.icone != null)
           Icon(widget.icone, size: DsTailles.icone, color: texte),
         if (enChargement || widget.icone != null) const SizedBox(width: DsSpacing.sm),
@@ -155,9 +158,7 @@ class _DsButtonState extends State<DsButton> {
           SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
           SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
         },
-        actions: {
-          ActivateIntent: CallbackAction<ActivateIntent>(onInvoke: (_) => _declencher()),
-        },
+        actions: {ActivateIntent: CallbackAction<ActivateIntent>(onInvoke: (_) => _declencher())},
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTapDown: actif ? (_) => setState(() => _presse = true) : null,
@@ -172,10 +173,7 @@ class _DsButtonState extends State<DsButton> {
             decoration: BoxDecoration(
               color: fond,
               borderRadius: DsRadius.borderMd,
-              border: Border.all(
-                color: _focus ? c.focus : (bordure ?? const Color(0x00000000)),
-                width: _focus ? 2 : 1,
-              ),
+              border: Border.all(color: _focus ? c.focus : (bordure ?? const Color(0x00000000)), width: _focus ? 2 : 1),
             ),
             child: contenu,
           ),
@@ -228,9 +226,7 @@ class DsIconButton extends StatelessWidget {
             child: Icon(
               icone,
               size: DsTailles.icone,
-              color: onPressed == null
-                  ? c.texteAttenue
-                  : (actif ? c.primaire : (couleur ?? c.texteSecondaire)),
+              color: onPressed == null ? c.texteAttenue : (actif ? c.primaire : (couleur ?? c.texteSecondaire)),
             ),
           ),
         ),

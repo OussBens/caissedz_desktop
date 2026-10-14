@@ -21,8 +21,11 @@ class ParametresAccueilPage extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final licence = ref.watch(licenceProvider);
     final peutRoles = ref.watch(permissionProvider(Permission.gererUtilisateurs));
-    final niveau = licence.demo ? l10n.licenceDemo : (licence.niveau == NiveauLicence.avance ? l10n.licenceAvance : l10n.licenceBasic);
-    Widget carte({required IconData icone, required String titre, required String detail, VoidCallback? onTap}) => SizedBox(
+    final niveau = licence.demo
+        ? l10n.licenceDemo
+        : (licence.niveau == NiveauLicence.avance ? l10n.licenceAvance : l10n.licenceBasic);
+    Widget carte({required IconData icone, required String titre, required String detail, VoidCallback? onTap}) =>
+        SizedBox(
           width: 300,
           child: DsCard(
             onTap: onTap,

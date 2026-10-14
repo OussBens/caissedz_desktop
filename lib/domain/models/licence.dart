@@ -20,7 +20,8 @@ class Licence {
   bool couvre(NiveauLicence requis) => niveau?.couvre(requis) ?? false;
 
   @override
-  bool operator ==(Object other) => other is Licence && other.niveau == niveau && other.cle == cle && other.demo == demo;
+  bool operator ==(Object other) =>
+      other is Licence && other.niveau == niveau && other.cle == cle && other.demo == demo;
   @override
   int get hashCode => Object.hash(niveau, cle, demo);
 }

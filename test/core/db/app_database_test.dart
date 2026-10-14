@@ -50,11 +50,9 @@ void main() {
       final base = await ouvrirBaseDeTest();
       await base.db.execute('CREATE TABLE parent (code TEXT PRIMARY KEY)');
       await base.db.execute(
-          'CREATE TABLE enfant (id INTEGER PRIMARY KEY, parent_code TEXT NOT NULL REFERENCES parent(code))');
-      await expectLater(
-        base.db.insert('enfant', {'parent_code': 'INEXISTANT'}),
-        throwsA(anything),
+        'CREATE TABLE enfant (id INTEGER PRIMARY KEY, parent_code TEXT NOT NULL REFERENCES parent(code))',
       );
+      await expectLater(base.db.insert('enfant', {'parent_code': 'INEXISTANT'}), throwsA(anything));
     });
   });
 

@@ -90,13 +90,30 @@ Checklist §15 : activation / sécurité / rôles.
 7. Apparence des écrans : tokens provisoires du lot 0 (aucune comparaison avec `CaisseDZ-DS-v2.2.html`
    possible).
 
-## Lot 2 — Produits & catalogue ⬜
+## Lot 2 — Produits & catalogue ✅ (sous hypothèses ⚠️)
 Écrans : catégories, produits (modes détaillé et IA : cascade CaisseDZ → Mantouj → Open Food Facts → Open Beauty
 Facts, synchro catalogue), colis, packs, remises, codes-barres (EAN-13, CAISSEDZ+date, QR), 2ᵉ stock « nombre »,
 import Excel, étiquettes.
 Règles : §8 (prix, marge, codes-barres), §8.10, §13, §11 (étiquettes).
 Tests : EAN-13 (checksum), génération CAISSEDZ+date, calcul marge, import Excel, cascade IA (mocks).
 Checklist §15 : produits / codes-barres / import.
+
+**Livré**
+- Migration v3 : `produit`, `colis`, `pack` + `pack_ligne`, `remise`, `historique` (journal d'audit),
+  `sequence_code_barres`.
+- Module Produits (onglets Produits / Catégories / Colis / Packs / Remises) : tableau avec colonne prix d'achat
+  soumise à `voirPrixAchat`, formulaire détaillé (marge ↔ prix de vente, 2ᵉ stock « nombre »), mode IA
+  (cascade CaisseDZ → Mantouj → Open Food Facts → Open Beauty Facts, fiche pré-remplie), import Excel (analyse,
+  rapport, modèle), étiquettes PDF (planche A4 / rouleau, EAN-13, CODE128, QR), synchro catalogue.
+- `CatalogueService` (transactions, codes PRD/COL/PCK/REM, unicité des codes-barres sur produits + colis + packs,
+  meilleure remise applicable), `ImportProduitsService`, `CatalogueIaService`, `SynchroCatalogueService`,
+  `EtiquettesPdf`, `CodesBarres` (EAN-13, interne `CDZ` + AAAAMMJJ + séquence, QR `CDZ:PRD:<code>`).
+- Widgets DS ajoutés : `DsPage`, `DsOnglets`, `DsSelect`, `DsSwitch`, `DsVide`, `formaterMontant`.
+- Tests : 13 unitaires + 6 widget (FR/AR, mode IA avec client HTTP simulé, catégories, import).
+
+**Hypothèses (⚠️)** : format du code interne (`CDZ` + date + séquence), sens du 2ᵉ stock « nombre »
+(pièces par unité), colonnes Excel attendues, API CaisseDZ / Mantouj (`GET <base>/catalogue/produits/<ean>`),
+protocole de synchro, dimensions d'étiquettes 50×30 mm.
 
 ## Lot 3 — Stock ⬜
 Écrans : journal des mouvements, magasins (principal = premier magasin de l'utilisateur), transferts TRM, besoins

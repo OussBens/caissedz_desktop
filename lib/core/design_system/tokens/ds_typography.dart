@@ -38,23 +38,21 @@ class DsTypography extends ThemeExtension<DsTypography> {
   final TextStyle chiffreLg;
   final TextStyle mono;
 
-  static String familleParLocale(Locale locale) =>
-      locale.languageCode == 'ar' ? familleArabe : familleLatin;
+  static String familleParLocale(Locale locale) => locale.languageCode == 'ar' ? familleArabe : familleLatin;
 
   factory DsTypography.pour(Locale locale, Color couleurTexte) {
     final famille = familleParLocale(locale);
     final arabe = famille == familleArabe;
     // Cairo a une hauteur de ligne naturelle plus grande que Plus Jakarta Sans.
     final hauteur = arabe ? 1.6 : 1.4;
-    TextStyle s(double taille, FontWeight poids, {double? h, double? espacement}) =>
-        TextStyle(
-          fontFamily: famille,
-          fontSize: taille,
-          fontWeight: poids,
-          height: h ?? hauteur,
-          letterSpacing: espacement,
-          color: couleurTexte,
-        );
+    TextStyle s(double taille, FontWeight poids, {double? h, double? espacement}) => TextStyle(
+      fontFamily: famille,
+      fontSize: taille,
+      fontWeight: poids,
+      height: h ?? hauteur,
+      letterSpacing: espacement,
+      color: couleurTexte,
+    );
     return DsTypography(
       famille: famille,
       titreXl: s(28, FontWeight.w800, h: 1.2, espacement: -0.5),

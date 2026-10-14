@@ -31,9 +31,11 @@
 - [ ] Fidélité visuelle des écrans au DS v2.2 (FR/AR, clair/sombre) — impossible à vérifier, DS absent
 
 ## Produits (lot 2)
-- [ ] Codes-barres EAN-13, CAISSEDZ+date, QR
-- [ ] Mode IA avec cascade CaisseDZ → Mantouj → Open Food Facts → Open Beauty Facts
-- [ ] Import Excel, étiquettes
+- [x] Catégories / sous-catégories (système protégé), produits en mode détaillé avec marge, colis, packs, remises
+- [x] Codes-barres EAN-13, CAISSEDZ+date, QR — format interne provisoire
+- [x] Mode IA avec cascade CaisseDZ → Mantouj → Open Food Facts → Open Beauty Facts — API CaisseDZ/Mantouj provisoires
+- [x] 2ᵉ stock « nombre » (pièces par unité) — interprétation provisoire
+- [x] Import Excel, étiquettes (PDF A4 / rouleau), synchro catalogue (protocole provisoire)
 
 ## Stock (lot 3)
 - [ ] Stock = journal des mouvements

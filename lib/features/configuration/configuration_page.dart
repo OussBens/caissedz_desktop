@@ -51,7 +51,21 @@ class _ConfigurationPageState extends ConsumerState<ConfigurationPage> {
 
   @override
   void dispose() {
-    for (final c in [_nom, _rc, _nif, _adresse, _telephone, _email, _identifiant, _nomAdmin, _motDePasse, _confirmation, _marge, _seuil, _points]) {
+    for (final c in [
+      _nom,
+      _rc,
+      _nif,
+      _adresse,
+      _telephone,
+      _email,
+      _identifiant,
+      _nomAdmin,
+      _motDePasse,
+      _confirmation,
+      _marge,
+      _seuil,
+      _points,
+    ]) {
       c.dispose();
     }
     super.dispose();
@@ -64,7 +78,9 @@ class _ConfigurationPageState extends ConsumerState<ConfigurationPage> {
         if (_nom.text.trim().isEmpty) _erreurs['nom'] = l10n.configErreurObligatoire;
       case 1:
         if (!AuthService.identifiantValide(_identifiant.text)) _erreurs['identifiant'] = l10n.configErreurIdentifiant;
-        if (_motDePasse.text.length < AuthService.longueurMinMotDePasse) _erreurs['motDePasse'] = l10n.configErreurMotDePasseCourt;
+        if (_motDePasse.text.length < AuthService.longueurMinMotDePasse) {
+          _erreurs['motDePasse'] = l10n.configErreurMotDePasseCourt;
+        }
         if (_confirmation.text != _motDePasse.text) _erreurs['confirmation'] = l10n.configErreurConfirmation;
       case 2:
         final m = double.tryParse(_marge.text.replaceAll(',', '.'));
@@ -74,28 +90,30 @@ class _ConfigurationPageState extends ConsumerState<ConfigurationPage> {
           _erreurs['marge'] = l10n.configErreurMarge;
         }
         if (int.tryParse(_seuil.text) == null) _erreurs['seuil'] = l10n.configErreurNombre;
-        if (_fidelite && double.tryParse(_points.text.replaceAll(',', '.')) == null) _erreurs['points'] = l10n.configErreurNombre;
+        if (_fidelite && double.tryParse(_points.text.replaceAll(',', '.')) == null) {
+          _erreurs['points'] = l10n.configErreurNombre;
+        }
     }
     setState(() {});
     return _erreurs.isEmpty;
   }
 
   ParametresVente get _parametres => ParametresVente(
-        margeDefautPct: double.tryParse(_marge.text.replaceAll(',', '.')) ?? 20,
-        seuilStockGlobal: int.tryParse(_seuil.text) ?? 5,
-        fideliteActive: _fidelite,
-        pointsParDinar: double.tryParse(_points.text.replaceAll(',', '.')) ?? 0.01,
-        devise: _devise,
-      );
+    margeDefautPct: double.tryParse(_marge.text.replaceAll(',', '.')) ?? 20,
+    seuilStockGlobal: int.tryParse(_seuil.text) ?? 5,
+    fideliteActive: _fidelite,
+    pointsParDinar: double.tryParse(_points.text.replaceAll(',', '.')) ?? 0.01,
+    devise: _devise,
+  );
 
   Boutique get _boutique => Boutique(
-        nom: _nom.text.trim(),
-        rc: _rc.text.trim(),
-        nif: _nif.text.trim(),
-        adresse: _adresse.text.trim(),
-        telephone: _telephone.text.trim(),
-        email: _email.text.trim(),
-      );
+    nom: _nom.text.trim(),
+    rc: _rc.text.trim(),
+    nif: _nif.text.trim(),
+    adresse: _adresse.text.trim(),
+    telephone: _telephone.text.trim(),
+    email: _email.text.trim(),
+  );
 
   void _suivant() {
     final l10n = AppLocalizations.of(context);
@@ -106,20 +124,28 @@ class _ConfigurationPageState extends ConsumerState<ConfigurationPage> {
   Future<void> _terminer() async {
     final l10n = AppLocalizations.of(context);
     try {
-      await ref.read(configurationTermineeProvider.notifier).terminer(ConfigurationInitiale(
-            boutique: _boutique,
-            adminIdentifiant: _identifiant.text.trim(),
-            adminNom: _nomAdmin.text.trim(),
-            adminMotDePasse: _motDePasse.text,
-            parametres: _parametres,
-            langue: ref.read(localeProvider).languageCode,
-          ));
+      await ref
+          .read(configurationTermineeProvider.notifier)
+          .terminer(
+            ConfigurationInitiale(
+              boutique: _boutique,
+              adminIdentifiant: _identifiant.text.trim(),
+              adminNom: _nomAdmin.text.trim(),
+              adminMotDePasse: _motDePasse.text,
+              parametres: _parametres,
+              langue: ref.read(localeProvider).languageCode,
+            ),
+          );
       if (!mounted) return;
-      unawaited(afficherResultat(context, type: DsResultatType.succes, titre: l10n.configTitre, message: l10n.configReussie));
+      unawaited(
+        afficherResultat(context, type: DsResultatType.succes, titre: l10n.configTitre, message: l10n.configReussie),
+      );
     } on CompteException catch (e) {
       setState(() {
         _etape = 1;
-        _erreurs['identifiant'] = e.erreur == ErreurCompte.identifiantPris ? l10n.configErreurIdentifiantPris : l10n.configErreurIdentifiant;
+        _erreurs['identifiant'] = e.erreur == ErreurCompte.identifiantPris
+            ? l10n.configErreurIdentifiantPris
+            : l10n.configErreurIdentifiant;
       });
     }
   }
@@ -140,7 +166,10 @@ class _ConfigurationPageState extends ConsumerState<ConfigurationPage> {
         children: [
           DsStepper(etapes: etapes, courante: _etape),
           const SizedBox(height: DsSpacing.sm),
-          Text(l10n.configEtape(_etape + 1, ConfigurationPage.nbEtapes), style: t.legende.copyWith(color: c.texteAttenue)),
+          Text(
+            l10n.configEtape(_etape + 1, ConfigurationPage.nbEtapes),
+            style: t.legende.copyWith(color: c.texteAttenue),
+          ),
           const SizedBox(height: DsSpacing.xl),
           switch (_etape) {
             0 => _etapeBoutique(l10n),
@@ -152,12 +181,22 @@ class _ConfigurationPageState extends ConsumerState<ConfigurationPage> {
           Row(
             children: [
               if (_etape > 0)
-                DsButton(libelle: l10n.configPrecedent, icone: LucideIcons.chevronLeft, variante: DsButtonVariante.secondaire, onPressed: () => setState(() => _etape--)),
+                DsButton(
+                  libelle: l10n.configPrecedent,
+                  icone: LucideIcons.chevronLeft,
+                  variante: DsButtonVariante.secondaire,
+                  onPressed: () => setState(() => _etape--),
+                ),
               const Spacer(),
               if (_etape < ConfigurationPage.nbEtapes - 1)
                 DsButton(libelle: l10n.configSuivant, icone: LucideIcons.chevronRight, onPressed: _suivant)
               else
-                DsButton(libelle: l10n.configTerminer, icone: LucideIcons.check, variante: DsButtonVariante.succes, onPressed: _terminer),
+                DsButton(
+                  libelle: l10n.configTerminer,
+                  icone: LucideIcons.check,
+                  variante: DsButtonVariante.succes,
+                  onPressed: _terminer,
+                ),
             ],
           ),
         ],
@@ -166,24 +205,50 @@ class _ConfigurationPageState extends ConsumerState<ConfigurationPage> {
   }
 
   Widget _etapeBoutique(AppLocalizations l10n) => Column(
+    children: [
+      DsTextField(
+        controller: _nom,
+        libelle: l10n.configBoutiqueNom,
+        erreur: _erreurs['nom'],
+        autofocus: true,
+        iconePrefixe: LucideIcons.store,
+      ),
+      const SizedBox(height: DsSpacing.md),
+      Row(
         children: [
-          DsTextField(controller: _nom, libelle: l10n.configBoutiqueNom, erreur: _erreurs['nom'], autofocus: true, iconePrefixe: LucideIcons.store),
-          const SizedBox(height: DsSpacing.md),
-          Row(children: [
-            Expanded(child: DsTextField(controller: _rc, libelle: l10n.configBoutiqueRc)),
-            const SizedBox(width: DsSpacing.md),
-            Expanded(child: DsTextField(controller: _nif, libelle: l10n.configBoutiqueNif)),
-          ]),
-          const SizedBox(height: DsSpacing.md),
-          DsTextField(controller: _adresse, libelle: l10n.configBoutiqueAdresse),
-          const SizedBox(height: DsSpacing.md),
-          Row(children: [
-            Expanded(child: DsTextField(controller: _telephone, libelle: l10n.configBoutiqueTelephone, typeClavier: TextInputType.phone)),
-            const SizedBox(width: DsSpacing.md),
-            Expanded(child: DsTextField(controller: _email, libelle: l10n.configBoutiqueEmail, typeClavier: TextInputType.emailAddress)),
-          ]),
+          Expanded(
+            child: DsTextField(controller: _rc, libelle: l10n.configBoutiqueRc),
+          ),
+          const SizedBox(width: DsSpacing.md),
+          Expanded(
+            child: DsTextField(controller: _nif, libelle: l10n.configBoutiqueNif),
+          ),
         ],
-      );
+      ),
+      const SizedBox(height: DsSpacing.md),
+      DsTextField(controller: _adresse, libelle: l10n.configBoutiqueAdresse),
+      const SizedBox(height: DsSpacing.md),
+      Row(
+        children: [
+          Expanded(
+            child: DsTextField(
+              controller: _telephone,
+              libelle: l10n.configBoutiqueTelephone,
+              typeClavier: TextInputType.phone,
+            ),
+          ),
+          const SizedBox(width: DsSpacing.md),
+          Expanded(
+            child: DsTextField(
+              controller: _email,
+              libelle: l10n.configBoutiqueEmail,
+              typeClavier: TextInputType.emailAddress,
+            ),
+          ),
+        ],
+      ),
+    ],
+  );
 
   Widget _etapeAdmin(AppLocalizations l10n) {
     final c = context.ds.colors;
@@ -193,17 +258,46 @@ class _ConfigurationPageState extends ConsumerState<ConfigurationPage> {
       children: [
         Text(l10n.configAdminIntro, style: t.corps.copyWith(color: c.texteSecondaire)),
         const SizedBox(height: DsSpacing.lg),
-        Row(children: [
-          Expanded(child: DsTextField(controller: _identifiant, libelle: l10n.connexionIdentifiant, erreur: _erreurs['identifiant'], iconePrefixe: LucideIcons.user)),
-          const SizedBox(width: DsSpacing.md),
-          Expanded(child: DsTextField(controller: _nomAdmin, libelle: l10n.configAdminNom)),
-        ]),
+        Row(
+          children: [
+            Expanded(
+              child: DsTextField(
+                controller: _identifiant,
+                libelle: l10n.connexionIdentifiant,
+                erreur: _erreurs['identifiant'],
+                iconePrefixe: LucideIcons.user,
+              ),
+            ),
+            const SizedBox(width: DsSpacing.md),
+            Expanded(
+              child: DsTextField(controller: _nomAdmin, libelle: l10n.configAdminNom),
+            ),
+          ],
+        ),
         const SizedBox(height: DsSpacing.md),
-        Row(children: [
-          Expanded(child: DsTextField(controller: _motDePasse, libelle: l10n.connexionMotDePasse, obscur: true, erreur: _erreurs['motDePasse'], iconePrefixe: LucideIcons.lock)),
-          const SizedBox(width: DsSpacing.md),
-          Expanded(child: DsTextField(controller: _confirmation, libelle: l10n.configAdminMotDePasseConfirmation, obscur: true, erreur: _erreurs['confirmation'], iconePrefixe: LucideIcons.lock)),
-        ]),
+        Row(
+          children: [
+            Expanded(
+              child: DsTextField(
+                controller: _motDePasse,
+                libelle: l10n.connexionMotDePasse,
+                obscur: true,
+                erreur: _erreurs['motDePasse'],
+                iconePrefixe: LucideIcons.lock,
+              ),
+            ),
+            const SizedBox(width: DsSpacing.md),
+            Expanded(
+              child: DsTextField(
+                controller: _confirmation,
+                libelle: l10n.configAdminMotDePasseConfirmation,
+                obscur: true,
+                erreur: _erreurs['confirmation'],
+                iconePrefixe: LucideIcons.lock,
+              ),
+            ),
+          ],
+        ),
       ],
     );
   }
@@ -214,31 +308,67 @@ class _ConfigurationPageState extends ConsumerState<ConfigurationPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(children: [
-          Expanded(child: DsTextField(controller: _marge, libelle: l10n.configMarge, erreur: _erreurs['marge'], iconePrefixe: LucideIcons.percent, typeClavier: TextInputType.number)),
-          const SizedBox(width: DsSpacing.md),
-          Expanded(child: DsTextField(controller: _seuil, libelle: l10n.configSeuil, erreur: _erreurs['seuil'], iconePrefixe: LucideIcons.triangleAlert, typeClavier: TextInputType.number)),
-        ]),
+        Row(
+          children: [
+            Expanded(
+              child: DsTextField(
+                controller: _marge,
+                libelle: l10n.configMarge,
+                erreur: _erreurs['marge'],
+                iconePrefixe: LucideIcons.percent,
+                typeClavier: TextInputType.number,
+              ),
+            ),
+            const SizedBox(width: DsSpacing.md),
+            Expanded(
+              child: DsTextField(
+                controller: _seuil,
+                libelle: l10n.configSeuil,
+                erreur: _erreurs['seuil'],
+                iconePrefixe: LucideIcons.triangleAlert,
+                typeClavier: TextInputType.number,
+              ),
+            ),
+          ],
+        ),
         const SizedBox(height: DsSpacing.xs),
         Text(l10n.configMargeAide, style: t.petit.copyWith(color: c.texteAttenue)),
         const SizedBox(height: DsSpacing.lg),
-        Row(children: [
-          Checkbox(value: _fidelite, activeColor: c.primaire, onChanged: (v) => setState(() => _fidelite = v ?? false)),
-          Text(l10n.configFidelite, style: t.corps),
-        ]),
+        Row(
+          children: [
+            Checkbox(
+              value: _fidelite,
+              activeColor: c.primaire,
+              onChanged: (v) => setState(() => _fidelite = v ?? false),
+            ),
+            Text(l10n.configFidelite, style: t.corps),
+          ],
+        ),
         if (_fidelite) ...[
           const SizedBox(height: DsSpacing.sm),
-          DsTextField(controller: _points, libelle: l10n.configPointsParDinar, erreur: _erreurs['points'], typeClavier: TextInputType.number),
+          DsTextField(
+            controller: _points,
+            libelle: l10n.configPointsParDinar,
+            erreur: _erreurs['points'],
+            typeClavier: TextInputType.number,
+          ),
         ],
         const SizedBox(height: DsSpacing.lg),
         Text(l10n.configDevise, style: t.petitFort.copyWith(color: c.texteSecondaire)),
         const SizedBox(height: DsSpacing.xs),
-        Row(children: [
-          for (final d in const ['DA', 'EUR', 'USD']) ...[
-            DsButton(libelle: d, taille: DsButtonTaille.sm, variante: _devise == d ? DsButtonVariante.primaire : DsButtonVariante.secondaire, onPressed: () => setState(() => _devise = d)),
-            const SizedBox(width: DsSpacing.xs),
+        Row(
+          children: [
+            for (final d in const ['DA', 'EUR', 'USD']) ...[
+              DsButton(
+                libelle: d,
+                taille: DsButtonTaille.sm,
+                variante: _devise == d ? DsButtonVariante.primaire : DsButtonVariante.secondaire,
+                onPressed: () => setState(() => _devise = d),
+              ),
+              const SizedBox(width: DsSpacing.xs),
+            ],
           ],
-        ]),
+        ),
       ],
     );
   }
@@ -247,15 +377,18 @@ class _ConfigurationPageState extends ConsumerState<ConfigurationPage> {
     final c = context.ds.colors;
     final t = context.ds.typo;
     Widget ligne(String libelle, String valeur) => Padding(
-          padding: const EdgeInsets.symmetric(vertical: DsSpacing.xs),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(width: 220, child: Text(libelle, style: t.petit.copyWith(color: c.texteSecondaire))),
-              Expanded(child: Text(valeur.isEmpty ? '—' : valeur, style: t.corpsFort)),
-            ],
+      padding: const EdgeInsets.symmetric(vertical: DsSpacing.xs),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 220,
+            child: Text(libelle, style: t.petit.copyWith(color: c.texteSecondaire)),
           ),
-        );
+          Expanded(child: Text(valeur.isEmpty ? '—' : valeur, style: t.corpsFort)),
+        ],
+      ),
+    );
     final p = _parametres;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -275,7 +408,14 @@ class _ConfigurationPageState extends ConsumerState<ConfigurationPage> {
         DsSectionTitre(l10n.configEtapeVente),
         ligne(l10n.configMarge, '${p.margeDefautPct} %'),
         ligne(l10n.configSeuil, '${p.seuilStockGlobal}'),
-        ligne(l10n.configFidelite, p.fideliteActive ? '${p.pointsParDinar} / 1 ${p.devise}' : l10n.communAnnuler.toLowerCase() == 'annuler' ? 'Non' : 'No'),
+        ligne(
+          l10n.configFidelite,
+          p.fideliteActive
+              ? '${p.pointsParDinar} / 1 ${p.devise}'
+              : l10n.communAnnuler.toLowerCase() == 'annuler'
+              ? 'Non'
+              : 'No',
+        ),
         ligne(l10n.configDevise, p.devise),
       ],
     );

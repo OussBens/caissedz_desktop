@@ -239,5 +239,197 @@
   "shellBandeauDemo": "وضع تجريبي — البيانات ليست للاستعمال الفعلي",
   "shellMenuUtilisateur": "قائمة المستخدم",
   "shellVerrouille": "مخصص للرخصة المتقدمة",
-  "shellAccesRestreint": "وصول غير مسموح لدورك"
+  "shellAccesRestreint": "وصول غير مسموح لدورك",
+  "produitsTitre": "المنتجات",
+  "produitsOngletProduits": "المنتجات",
+  "produitsOngletCategories": "الفئات",
+  "produitsOngletColis": "الطرود",
+  "produitsOngletPacks": "الحزم",
+  "produitsOngletRemises": "التخفيضات",
+  "produitsNouveau": "منتج جديد",
+  "produitsModeIa": "وضع الذكاء الاصطناعي",
+  "produitsImporter": "استيراد Excel",
+  "produitsEtiquettes": "الملصقات",
+  "produitsSynchro": "مزامنة الكتالوج",
+  "produitsRecherche": "البحث بالاسم أو الرمز أو الباركود…",
+  "produitsColCode": "الرمز",
+  "produitsColDesignation": "التسمية",
+  "produitsColCodeBarres": "الباركود",
+  "produitsColCategorie": "الفئة",
+  "produitsColPrixAchat": "سعر الشراء",
+  "produitsColPrixVente": "سعر البيع",
+  "produitsColMarge": "الهامش %",
+  "produitsColActif": "نشط",
+  "produitsColStock": "المخزون",
+  "produitsAucun": "لا توجد منتجات. أنشئ منتجًا أو استورد ملف Excel.",
+  "produitModifier": "تعديل المنتج",
+  "produitDesactiver": "تعطيل",
+  "produitActiver": "تفعيل",
+  "produitGenererCodeBarres": "توليد باركود داخلي",
+  "produitChampDesignation": "التسمية",
+  "produitChampCodeBarres": "الباركود (EAN-13 أو داخلي)",
+  "produitChampCategorie": "الفئة",
+  "produitChampSousCategorie": "الفئة الفرعية",
+  "produitChampPrixAchat": "سعر الشراء",
+  "produitChampPrixVente": "سعر البيع",
+  "produitChampMarge": "الهامش (%)",
+  "produitChampUnite": "الوحدة",
+  "produitChampTva": "الضريبة (%)",
+  "produitChampSeuil": "حد التنبيه (فارغ = الحد العام)",
+  "produitChampSuiviNombre": "تتبع مخزون ثانٍ « بالعدد » (قطع)",
+  "produitChampSuiviNombreAide": "يُباع المنتج بالوحدة أو بالقطعة؛ يُحفظ المخزون في الاثنين.",
+  "produitChampNombreParUnite": "قطع لكل وحدة",
+  "produitPrixAuto": "يُحسب سعر البيع من الهامش إذا تركته فارغًا.",
+  "produitErreurDesignation": "التسمية إلزامية.",
+  "produitErreurCodeBarres": "باركود غير صالح.",
+  "produitErreurCodeBarresPris": "هذا الباركود مستعمل بالفعل.",
+  "produitErreurPrix": "سعر غير صالح.",
+  "produitErreurQuantite": "كمية غير صالحة.",
+  "produitCree": "تم إنشاء المنتج « {nom} » ({code}).",
+  "@produitCree": {
+    "placeholders": {
+      "nom": {
+        "type": "String"
+      },
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "iaTitre": "منتج جديد بالذكاء الاصطناعي",
+  "iaIntro": "امسح أو أدخل باركودًا: يُبحث عن البطاقة في CaisseDZ ثم Mantouj ثم Open Food Facts ثم Open Beauty Facts.",
+  "iaRechercher": "بحث",
+  "iaRechercheEnCours": "جارٍ البحث…",
+  "iaAucun": "لم يُعثر على بطاقة لهذا الباركود: انتقل إلى الإدخال التفصيلي.",
+  "iaTrouve": "بطاقة موجودة عبر {source}",
+  "@iaTrouve": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "iaMarque": "العلامة",
+  "iaCreer": "إنشاء المنتج",
+  "iaSaisieDetaillee": "إدخال تفصيلي",
+  "importTitre": "استيراد منتجات من Excel",
+  "importIntro": "الأعمدة المتوقعة في السطر 1: designation (إلزامي)، code_barres، categorie، prix_achat، prix_vente.",
+  "importChoisirFichier": "اختيار ملف .xlsx",
+  "importTelechargerModele": "حفظ النموذج",
+  "importLignesValides": "{n} سطر صالح",
+  "@importLignesValides": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "importLignesInvalides": "{n} سطر متجاهل",
+  "@importLignesInvalides": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "importColLigne": "السطر",
+  "importColErreur": "الخطأ",
+  "importLancer": "استيراد",
+  "importResultat": "{importees} منتج مستورد، {ignorees} متجاهل.",
+  "@importResultat": {
+    "placeholders": {
+      "importees": {
+        "type": "int"
+      },
+      "ignorees": {
+        "type": "int"
+      }
+    }
+  },
+  "importErreurFichier": "ملف غير قابل للقراءة: {detail}",
+  "@importErreurFichier": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "importErreurDesignationVide": "تسمية فارغة",
+  "importErreurCodeBarresPris": "باركود مستعمل بالفعل",
+  "importErreurPrix": "سعر غير صالح",
+  "etiquettesTitre": "طباعة الملصقات",
+  "etiquettesQuantite": "الكمية",
+  "etiquettesFormatA4": "ورقة A4",
+  "etiquettesFormatRouleau": "لفافة",
+  "etiquettesAfficherPrix": "إظهار السعر",
+  "etiquettesQr": "رمز QR بدل الباركود",
+  "etiquettesGenerer": "توليد PDF",
+  "etiquettesAucuneSelection": "اختر منتجًا واحدًا على الأقل من القائمة.",
+  "synchroResultat": "المزامنة: {envoyes} مرسل، {recus} محدّث.",
+  "@synchroResultat": {
+    "placeholders": {
+      "envoyes": {
+        "type": "int"
+      },
+      "recus": {
+        "type": "int"
+      }
+    }
+  },
+  "synchroNonConfiguree": "أدخل عنوان خادم CaisseDZ في الإعدادات لمزامنة الكتالوج.",
+  "synchroErreur": "فشلت المزامنة: {detail}",
+  "@synchroErreur": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "categoriesNouvelle": "فئة جديدة",
+  "categoriesNouvelleSous": "فئة فرعية جديدة",
+  "categorieNom": "الاسم",
+  "categorieRenommer": "إعادة التسمية",
+  "categorieSupprimer": "حذف",
+  "categorieSousCategories": "الفئات الفرعية",
+  "categorieErreurSysteme": "لا يمكن تعديل فئة النظام.",
+  "categorieErreurUtilisee": "توجد منتجات مرتبطة بهذه الفئة.",
+  "categorieConfirmerSuppression": "حذف الفئة « {nom} » وفئاتها الفرعية؟",
+  "@categorieConfirmerSuppression": {
+    "placeholders": {
+      "nom": {
+        "type": "String"
+      }
+    }
+  },
+  "colisNouveau": "طرد جديد",
+  "colisProduit": "المنتج",
+  "colisQuantite": "وحدات لكل طرد",
+  "colisAucun": "لا توجد طرود.",
+  "packNouveau": "حزمة جديدة",
+  "packLignes": "التركيبة",
+  "packAjouterProduit": "إضافة منتج",
+  "packAucun": "لا توجد حزم.",
+  "packErreurLignes": "أضف منتجًا واحدًا على الأقل إلى الحزمة.",
+  "remiseNouvelle": "تخفيض جديد",
+  "remiseType": "النوع",
+  "remiseTypePourcentage": "نسبة مئوية",
+  "remiseTypeMontant": "مبلغ",
+  "remiseValeur": "القيمة",
+  "remisePortee": "النطاق",
+  "remisePorteeGlobale": "كل المنتجات",
+  "remisePorteeCategorie": "فئة",
+  "remisePorteeProduit": "منتج",
+  "remiseDebut": "البداية",
+  "remiseFin": "النهاية",
+  "remiseAucune": "لا توجد تخفيضات.",
+  "communNouveau": "جديد",
+  "communModifier": "تعديل",
+  "communActif": "نشط",
+  "communInactif": "غير نشط",
+  "communOui": "نعم",
+  "communNon": "لا",
+  "communValider": "تأكيد",
+  "communApercu": "معاينة",
+  "communImprimer": "طباعة",
+  "communAucune": "لا شيء"
 }

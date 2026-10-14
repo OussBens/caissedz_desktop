@@ -39,7 +39,14 @@ void main() {
   group('Seed de la migration v2', () {
     test('éléments système, admin sans mot de passe, démo, rôles', () async {
       final base = await ouvrirBaseDeTest();
-      for (final (table, code) in [('magasin', 'MAG0000'), ('caisse', 'CIS0000'), ('client', 'CLN0000'), ('fournisseur', 'FOR0000'), ('categorie', 'CATE0000'), ('sous_categorie', 'SC0000')]) {
+      for (final (table, code) in [
+        ('magasin', 'MAG0000'),
+        ('caisse', 'CIS0000'),
+        ('client', 'CLN0000'),
+        ('fournisseur', 'FOR0000'),
+        ('categorie', 'CATE0000'),
+        ('sous_categorie', 'SC0000'),
+      ]) {
         final rows = await base.db.query(table, where: 'code = ? AND systeme = 1', whereArgs: [code]);
         expect(rows.length, 1, reason: '$table/$code');
       }
@@ -60,9 +67,18 @@ void main() {
       final base = await ouvrirBaseDeTest();
       final s = LicenceService(base.db, identifiant: const _Machine('POSTE-A'));
       expect((await s.lire()).estActivee, isFalse);
-      await expectLater(s.activer('abc'), throwsA(isA<ActivationException>().having((e) => e.erreur, 'erreur', ErreurActivation.formatInvalide)));
-      await expectLater(s.activer('1' * 64), throwsA(isA<ActivationException>().having((e) => e.erreur, 'erreur', ErreurActivation.cleInconnue)));
-      await expectLater(s.activer(CleActivation.cleAttendue(NiveauLicence.basic, 'POSTE-B')), throwsA(isA<ActivationException>()));
+      await expectLater(
+        s.activer('abc'),
+        throwsA(isA<ActivationException>().having((e) => e.erreur, 'erreur', ErreurActivation.formatInvalide)),
+      );
+      await expectLater(
+        s.activer('1' * 64),
+        throwsA(isA<ActivationException>().having((e) => e.erreur, 'erreur', ErreurActivation.cleInconnue)),
+      );
+      await expectLater(
+        s.activer(CleActivation.cleAttendue(NiveauLicence.basic, 'POSTE-B')),
+        throwsA(isA<ActivationException>()),
+      );
       final l = await s.activer(CleActivation.cleAttendue(NiveauLicence.basic, 'POSTE-A').toUpperCase());
       expect(l.niveau, NiveauLicence.basic);
       expect((await s.lire()).niveau, NiveauLicence.basic);
@@ -95,7 +111,10 @@ void main() {
       final admin = await UtilisateurRepository(base.db).parIdentifiant('gerant');
       expect(admin!.code, MigrationV002Demarrage.codeAdmin);
       expect(admin.nom, 'Karim');
-      final p = ParametresVente.depuisCles(await ParametreRepository(base.db).lirePlusieurs([ParametresVente.cleMarge, ParametresVente.cleSeuil, ParametresVente.cleDevise]));
+      final p = ParametresVente.depuisCles(
+        await ParametreRepository(base.db)
+            .lirePlusieurs([ParametresVente.cleMarge, ParametresVente.cleSeuil, ParametresVente.cleDevise]),
+      );
       expect(p.margeDefautPct, 25);
       expect(p.seuilStockGlobal, 10);
       expect(p.devise, 'DA');
@@ -104,7 +123,10 @@ void main() {
     test('transaction : un identifiant déjà pris n’écrit rien', () async {
       final base = await ouvrirBaseDeTest();
       final s = ConfigurationInitialeService(base.db, hachage: _hachage);
-      await expectLater(s.terminer(_config(identifiant: 'demo')), throwsA(isA<CompteException>().having((e) => e.erreur, 'erreur', ErreurCompte.identifiantPris)));
+      await expectLater(
+        s.terminer(_config(identifiant: 'demo')),
+        throwsA(isA<CompteException>().having((e) => e.erreur, 'erreur', ErreurCompte.identifiantPris)),
+      );
       expect(await BoutiqueRepository(base.db).lire(), isNull);
       expect(await s.estTerminee(), isFalse);
       expect(await UtilisateurRepository(base.db).empreinte(MigrationV002Demarrage.codeAdmin), isNull);
@@ -131,25 +153,37 @@ void main() {
       expect(session.peutAcceder('zakat'), isTrue);
       expect(session.a(Permission.voirPrixAchat), isTrue);
       expect(session.demo, isFalse);
-      await expectLater(auth.connecter('gerant', 'faux'), throwsA(isA<ConnexionException>().having((e) => e.erreur, 'erreur', ErreurConnexion.identifiantsInvalides)));
+      await expectLater(
+        auth.connecter('gerant', 'faux'),
+        throwsA(isA<ConnexionException>().having((e) => e.erreur, 'erreur', ErreurConnexion.identifiantsInvalides)),
+      );
       await expectLater(auth.connecter('inconnu', 'x'), throwsA(isA<ConnexionException>()));
     });
 
     test('admin non configuré : mot de passe non défini', () async {
       final base = await ouvrirBaseDeTest();
       final auth = AuthService(base.db, hachage: _hachage);
-      await expectLater(auth.connecter('admin', ''), throwsA(isA<ConnexionException>().having((e) => e.erreur, 'erreur', ErreurConnexion.motDePasseNonDefini)));
+      await expectLater(
+        auth.connecter('admin', ''),
+        throwsA(isA<ConnexionException>().having((e) => e.erreur, 'erreur', ErreurConnexion.motDePasseNonDefini)),
+      );
     });
 
     test('demo/demo disponible uniquement en mode démo', () async {
       final base = await ouvrirBaseDeTest();
       final auth = AuthService(base.db, hachage: _hachage);
-      await expectLater(auth.connecter('demo', 'demo'), throwsA(isA<ConnexionException>().having((e) => e.erreur, 'erreur', ErreurConnexion.demoIndisponible)));
+      await expectLater(
+        auth.connecter('demo', 'demo'),
+        throwsA(isA<ConnexionException>().having((e) => e.erreur, 'erreur', ErreurConnexion.demoIndisponible)),
+      );
       await LicenceService(base.db, identifiant: const _Machine('P')).activerDemo();
       final s = await auth.connecter('demo', 'demo');
       expect(s.demo, isTrue);
       expect(s.estAdmin, isTrue);
-      await LicenceService(base.db, identifiant: const _Machine('P')).activer(CleActivation.cleAttendue(NiveauLicence.basic, 'P'));
+      await LicenceService(
+        base.db,
+        identifiant: const _Machine('P'),
+      ).activer(CleActivation.cleAttendue(NiveauLicence.basic, 'P'));
       await expectLater(auth.connecter('demo', 'demo'), throwsA(isA<ConnexionException>()));
     });
 
@@ -166,7 +200,10 @@ void main() {
       expect(s.peutAcceder('caisse'), isTrue);
       expect(s.peutAcceder('clotures'), isFalse);
       await UtilisateurRepository(base.db).mettreAJour('USR0002', {'actif': 0});
-      await expectLater(auth.connecter('amina', '1234'), throwsA(isA<ConnexionException>().having((e) => e.erreur, 'erreur', ErreurConnexion.compteInactif)));
+      await expectLater(
+        auth.connecter('amina', '1234'),
+        throwsA(isA<ConnexionException>().having((e) => e.erreur, 'erreur', ErreurConnexion.compteInactif)),
+      );
     });
 
     test('Mon compte : changement d’identifiant et de mot de passe', () async {
@@ -174,9 +211,18 @@ void main() {
       await ConfigurationInitialeService(base.db, hachage: _hachage).terminer(_config());
       final auth = AuthService(base.db, hachage: _hachage);
       const code = MigrationV002Demarrage.codeAdmin;
-      await expectLater(auth.changerIdentifiant(code, 'karim', 'faux'), throwsA(isA<CompteException>().having((e) => e.erreur, 'erreur', ErreurCompte.motDePasseActuelIncorrect)));
-      await expectLater(auth.changerIdentifiant(code, 'DEMO', 'azerty'), throwsA(isA<CompteException>().having((e) => e.erreur, 'erreur', ErreurCompte.identifiantPris)));
-      await expectLater(auth.changerIdentifiant(code, 'k', 'azerty'), throwsA(isA<CompteException>().having((e) => e.erreur, 'erreur', ErreurCompte.identifiantInvalide)));
+      await expectLater(
+        auth.changerIdentifiant(code, 'karim', 'faux'),
+        throwsA(isA<CompteException>().having((e) => e.erreur, 'erreur', ErreurCompte.motDePasseActuelIncorrect)),
+      );
+      await expectLater(
+        auth.changerIdentifiant(code, 'DEMO', 'azerty'),
+        throwsA(isA<CompteException>().having((e) => e.erreur, 'erreur', ErreurCompte.identifiantPris)),
+      );
+      await expectLater(
+        auth.changerIdentifiant(code, 'k', 'azerty'),
+        throwsA(isA<CompteException>().having((e) => e.erreur, 'erreur', ErreurCompte.identifiantInvalide)),
+      );
       final u = await auth.changerIdentifiant(code, 'karim.b', 'azerty');
       expect(u.identifiant, 'karim.b');
       // Garder son propre identifiant (changement de casse) est autorisé.
@@ -192,7 +238,10 @@ void main() {
       final base = await ouvrirBaseDeTest();
       final s = PermissionService(base.db);
       var g = await s.lireGrille();
-      g = g.basculerPermission(Roles.caissier, Permission.voirPrixAchat).basculerModule(Roles.caissier, 'clotures').basculerPermission(Roles.admin, Permission.voirPrixAchat);
+      g = g
+          .basculerPermission(Roles.caissier, Permission.voirPrixAchat)
+          .basculerModule(Roles.caissier, 'clotures')
+          .basculerPermission(Roles.admin, Permission.voirPrixAchat);
       await s.enregistrerGrille(g);
       final relu = await s.lireGrille();
       expect(relu.permissions[Roles.caissier], {Permission.appliquerRemise, Permission.voirPrixAchat});

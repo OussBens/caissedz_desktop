@@ -11,11 +11,7 @@ import '../../domain/modules.dart';
 /// Menu des modules (Ctrl+M) : grille de tous les modules avec recherche.
 Future<void> afficherMenuModules(BuildContext context) {
   final c = context.ds.colors;
-  return showDialog<void>(
-    context: context,
-    barrierColor: c.overlay,
-    builder: (_) => const ModulesMenuDialog(),
-  );
+  return showDialog<void>(context: context, barrierColor: c.overlay, builder: (_) => const ModulesMenuDialog());
 }
 
 class ModulesMenuDialog extends ConsumerStatefulWidget {
@@ -35,14 +31,16 @@ class _ModulesMenuDialogState extends ConsumerState<ModulesMenuDialog> {
     final l10n = AppLocalizations.of(context);
     final favoris = ref.watch(favorisProvider);
     final filtre = _filtre.trim().toLowerCase();
-    final modules = Modules.tous.where((m) => filtre.isEmpty || m.libelle(l10n).toLowerCase().contains(filtre)).toList();
+    final modules = Modules.tous
+        .where((m) => filtre.isEmpty || m.libelle(l10n).toLowerCase().contains(filtre))
+        .toList();
 
     String nomGroupe(GroupeModule g) => switch (g) {
-          GroupeModule.general => l10n.shellNavGeneral,
-          GroupeModule.stock => l10n.shellNavStock,
-          GroupeModule.tiers => l10n.shellNavTiers,
-          GroupeModule.gestion => l10n.shellNavGestion,
-        };
+      GroupeModule.general => l10n.shellNavGeneral,
+      GroupeModule.stock => l10n.shellNavStock,
+      GroupeModule.tiers => l10n.shellNavTiers,
+      GroupeModule.gestion => l10n.shellNavGestion,
+    };
 
     return DsDialog(
       titre: l10n.shellMenuModules,
@@ -68,7 +66,9 @@ class _ModulesMenuDialogState extends ConsumerState<ModulesMenuDialog> {
           if (modules.isEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: DsSpacing.xl),
-              child: Center(child: Text(l10n.shellMenuModulesAucun, style: t.corps.copyWith(color: c.texteAttenue))),
+              child: Center(
+                child: Text(l10n.shellMenuModulesAucun, style: t.corps.copyWith(color: c.texteAttenue)),
+              ),
             )
           else
             for (final g in GroupeModule.values)
@@ -125,7 +125,9 @@ class _TuileModule extends StatelessWidget {
           children: [
             Icon(module.icone, size: DsTailles.iconeLg, color: c.primaire),
             const SizedBox(width: DsSpacing.sm),
-            Expanded(child: Text(module.libelle(l10n), style: t.petitFort, maxLines: 2, overflow: TextOverflow.ellipsis)),
+            Expanded(
+              child: Text(module.libelle(l10n), style: t.petitFort, maxLines: 2, overflow: TextOverflow.ellipsis),
+            ),
             DsIconButton(
               icone: favori ? LucideIcons.star : LucideIcons.star,
               tooltip: favori ? l10n.shellFavorisRetirer : l10n.shellFavorisAjouter,

@@ -1,8 +1,8 @@
 import 'dart:ui' show Tristate;
 
 import 'package:caissedz_desktop/core/design_system/design_system.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../helpers/pump_app.dart';
 
@@ -37,14 +37,14 @@ void main() {
       );
       await tester.tap(find.text('Encaisser'));
       await tester.pump();
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(find.byIcon(LucideIcons.loader), findsOneWidget);
       await tester.tap(find.text('Encaisser'));
       await tester.pump(const Duration(milliseconds: 500));
       await tester.tap(find.text('Encaisser'));
       expect(clics, 1);
       await tester.pump(const Duration(seconds: 2));
       await tester.pumpAndSettle();
-      expect(find.byType(CircularProgressIndicator), findsNothing);
+      expect(find.byIcon(LucideIcons.loader), findsNothing);
       await tester.tap(find.text('Encaisser'));
       expect(clics, 2);
       await tester.pump(const Duration(seconds: 3));

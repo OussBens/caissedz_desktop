@@ -14,14 +14,18 @@ class GrilleRoles {
   final Map<String, Set<String>> modules;
 
   GrilleRoles basculerPermission(String role, Permission p) {
-    final copie = {for (final e in permissions.entries) e.key: {...e.value}};
+    final copie = {
+      for (final e in permissions.entries) e.key: {...e.value},
+    };
     final s = copie.putIfAbsent(role, () => {});
     s.contains(p) ? s.remove(p) : s.add(p);
     return GrilleRoles(permissions: copie, modules: modules);
   }
 
   GrilleRoles basculerModule(String role, String moduleId) {
-    final copie = {for (final e in modules.entries) e.key: {...e.value}};
+    final copie = {
+      for (final e in modules.entries) e.key: {...e.value},
+    };
     final s = copie.putIfAbsent(role, () => {});
     s.contains(moduleId) ? s.remove(moduleId) : s.add(moduleId);
     return GrilleRoles(permissions: permissions, modules: copie);

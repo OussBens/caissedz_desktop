@@ -24,11 +24,11 @@ class ParametreRepository {
     return {for (final r in rows) r['cle'] as String: r['valeur'] as String?};
   }
 
-  Future<void> ecrire(String cle, String? valeur) => db.insert(
-        'parametre',
-        {'cle': cle, 'valeur': valeur, 'modifie_le': DateTime.now().toUtc().toIso8601String()},
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
+  Future<void> ecrire(String cle, String? valeur) => db.insert('parametre', {
+    'cle': cle,
+    'valeur': valeur,
+    'modifie_le': DateTime.now().toUtc().toIso8601String(),
+  }, conflictAlgorithm: ConflictAlgorithm.replace);
 
   Future<void> ecrirePlusieurs(Map<String, String?> valeurs) async {
     for (final e in valeurs.entries) {

@@ -10,10 +10,12 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../../helpers/app_test_helper.dart';
 
-Finder _champ(String libelle) => find.descendant(
+Finder _champ(String libelle) => find
+    .descendant(
       of: find.ancestor(of: find.text(libelle), matching: find.byType(Column)).first,
       matching: find.byType(TextField),
-    ).first;
+    )
+    .first;
 
 void main() {
   group('Configuration initiale (4 étapes)', () {
@@ -68,7 +70,9 @@ void main() {
       expect(find.byType(ConnexionPage), findsOneWidget);
       final db = c.read(appDatabaseProvider).db;
       expect((await BoutiqueRepository(db).lire())!.email, 'contact@baraka.dz');
-      final p = ParametresVente.depuisCles(await ParametreRepository(db).lirePlusieurs([ParametresVente.cleMarge, ParametresVente.cleSeuil]));
+      final p = ParametresVente.depuisCles(
+        await ParametreRepository(db).lirePlusieurs([ParametresVente.cleMarge, ParametresVente.cleSeuil]),
+      );
       expect(p.margeDefautPct, 30);
       expect(p.seuilStockGlobal, 8);
 

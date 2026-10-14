@@ -10,21 +10,21 @@ import '../../domain/modules.dart';
 import '../../domain/permissions.dart';
 
 String libellePermission(AppLocalizations l10n, Permission p) => switch (p) {
-      Permission.voirPrixAchat => l10n.permVoirPrixAchat,
-      Permission.modifierPrix => l10n.permModifierPrix,
-      Permission.appliquerRemise => l10n.permAppliquerRemise,
-      Permission.annulerVente => l10n.permAnnulerVente,
-      Permission.supprimerDocument => l10n.permSupprimerDocument,
-      Permission.exporterDonnees => l10n.permExporterDonnees,
-      Permission.gererUtilisateurs => l10n.permGererUtilisateurs,
-    };
+  Permission.voirPrixAchat => l10n.permVoirPrixAchat,
+  Permission.modifierPrix => l10n.permModifierPrix,
+  Permission.appliquerRemise => l10n.permAppliquerRemise,
+  Permission.annulerVente => l10n.permAnnulerVente,
+  Permission.supprimerDocument => l10n.permSupprimerDocument,
+  Permission.exporterDonnees => l10n.permExporterDonnees,
+  Permission.gererUtilisateurs => l10n.permGererUtilisateurs,
+};
 
 String libelleRole(AppLocalizations l10n, String role) => switch (role) {
-      Roles.admin => l10n.roleAdmin,
-      Roles.caissier => l10n.roleCaissier,
-      Roles.magasinier => l10n.roleMagasinier,
-      _ => role,
-    };
+  Roles.admin => l10n.roleAdmin,
+  Roles.caissier => l10n.roleCaissier,
+  Roles.magasinier => l10n.roleMagasinier,
+  _ => role,
+};
 
 /// Paramètres › Rôles et permissions (Admin, permission gererUtilisateurs).
 class RolesPage extends ConsumerStatefulWidget {
@@ -65,7 +65,12 @@ class _RolesPageState extends ConsumerState<RolesPage> {
     final grille = _grille;
     final colonnes = [
       for (final r in Roles.tous)
-        PermissionGridColonne(id: r, libelle: libelleRole(l10n, r), verrouillee: r == Roles.admin, infoVerrou: l10n.rolesAdminTotal),
+        PermissionGridColonne(
+          id: r,
+          libelle: libelleRole(l10n, r),
+          verrouillee: r == Roles.admin,
+          infoVerrou: l10n.rolesAdminTotal,
+        ),
     ];
     return ListView(
       padding: const EdgeInsets.all(DsSpacing.xl),
@@ -73,18 +78,27 @@ class _RolesPageState extends ConsumerState<RolesPage> {
         Row(
           children: [
             Expanded(child: Text(l10n.rolesTitre, style: t.titreLg)),
-            DsButton(libelle: l10n.communEnregistrer, icone: LucideIcons.save, onPressed: peut && _modifiee && grille != null ? _enregistrer : null),
+            DsButton(
+              libelle: l10n.communEnregistrer,
+              icone: LucideIcons.save,
+              onPressed: peut && _modifiee && grille != null ? _enregistrer : null,
+            ),
           ],
         ),
         const SizedBox(height: DsSpacing.xs),
         Text(l10n.rolesIntro, style: t.corps.copyWith(color: c.texteSecondaire)),
         const SizedBox(height: DsSpacing.xl),
         if (grille == null)
-          Center(child: Text(l10n.communChargement, style: t.corps.copyWith(color: c.texteAttenue)))
+          Center(
+            child: Text(l10n.communChargement, style: t.corps.copyWith(color: c.texteAttenue)),
+          )
         else ...[
           DsSectionTitre(l10n.rolesPermissions),
           PermissionGrid(
-            lignes: [for (final p in Permission.values) PermissionGridLigne(id: p.code, libelle: libellePermission(l10n, p), icone: LucideIcons.shieldCheck)],
+            lignes: [
+              for (final p in Permission.values)
+                PermissionGridLigne(id: p.code, libelle: libellePermission(l10n, p), icone: LucideIcons.shieldCheck),
+            ],
             colonnes: colonnes,
             lectureSeule: !peut,
             estCoche: (role, id) => grille.permissions[role]?.contains(Permission.parCode(id)) ?? false,
@@ -96,7 +110,9 @@ class _RolesPageState extends ConsumerState<RolesPage> {
           const SizedBox(height: DsSpacing.xl),
           DsSectionTitre(l10n.rolesModules),
           PermissionGrid(
-            lignes: [for (final m in Modules.tous) PermissionGridLigne(id: m.id, libelle: m.libelle(l10n), icone: m.icone)],
+            lignes: [
+              for (final m in Modules.tous) PermissionGridLigne(id: m.id, libelle: m.libelle(l10n), icone: m.icone),
+            ],
             colonnes: colonnes,
             lectureSeule: !peut,
             estCoche: (role, id) => grille.modules[role]?.contains(id) ?? false,

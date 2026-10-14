@@ -16,11 +16,13 @@ final appDatabaseProvider = Provider<AppDatabase>((ref) {
   throw UnimplementedError('appDatabaseProvider doit être surchargé au démarrage');
 });
 
-final parametresAppRepositoryProvider =
-    Provider<ParametresAppRepository>((ref) => ParametresAppRepository(ref.watch(appDatabaseProvider).db));
+final parametresAppRepositoryProvider = Provider<ParametresAppRepository>(
+  (ref) => ParametresAppRepository(ref.watch(appDatabaseProvider).db),
+);
 
-final favorisServiceProvider =
-    Provider<FavorisService>((ref) => FavorisService(FavorisRepository(ref.watch(appDatabaseProvider).db)));
+final favorisServiceProvider = Provider<FavorisService>(
+  (ref) => FavorisService(FavorisRepository(ref.watch(appDatabaseProvider).db)),
+);
 
 /// Code de l'utilisateur connecté (vide sans session) : clé des favoris.
 final utilisateurCourantCodeProvider = Provider<String>((ref) => ref.watch(sessionProvider)?.utilisateur.code ?? '');
@@ -82,7 +84,9 @@ class SidebarReduiteNotifier extends Notifier<bool> {
 
   Future<void> basculer() async {
     state = !state;
-    await ref.read(parametresAppRepositoryProvider).ecrire(ParametresAppRepository.cleSidebarReduite, state ? '1' : '0');
+    await ref
+        .read(parametresAppRepositoryProvider)
+        .ecrire(ParametresAppRepository.cleSidebarReduite, state ? '1' : '0');
   }
 }
 

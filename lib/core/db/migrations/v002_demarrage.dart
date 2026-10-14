@@ -135,7 +135,11 @@ class MigrationV002Demarrage extends Migration {
     ''');
 
     // Seed des éléments système (§8.10) — relations toujours par code.
-    await txn.insert('magasin', {'code': CodeGenerator.systeme(CodeGenerator.magasin), 'nom': 'Magasin principal', 'systeme': 1});
+    await txn.insert('magasin', {
+      'code': CodeGenerator.systeme(CodeGenerator.magasin),
+      'nom': 'Magasin principal',
+      'systeme': 1,
+    });
     await txn.insert('caisse', {
       'code': CodeGenerator.systeme(CodeGenerator.caisse),
       'nom': 'Caisse principale',
@@ -143,15 +147,27 @@ class MigrationV002Demarrage extends Migration {
       'magasin_code': CodeGenerator.systeme(CodeGenerator.magasin),
       'systeme': 1,
     });
-    await txn.insert('categorie', {'code': CodeGenerator.systeme(CodeGenerator.categorie), 'nom': 'Sans catégorie', 'systeme': 1});
+    await txn.insert('categorie', {
+      'code': CodeGenerator.systeme(CodeGenerator.categorie),
+      'nom': 'Sans catégorie',
+      'systeme': 1,
+    });
     await txn.insert('sous_categorie', {
       'code': CodeGenerator.systeme(CodeGenerator.sousCategorie),
       'categorie_code': CodeGenerator.systeme(CodeGenerator.categorie),
       'nom': 'Sans sous-catégorie',
       'systeme': 1,
     });
-    await txn.insert('client', {'code': CodeGenerator.systeme(CodeGenerator.client), 'nom': 'Client de passage', 'systeme': 1});
-    await txn.insert('fournisseur', {'code': CodeGenerator.systeme(CodeGenerator.fournisseur), 'nom': 'Fournisseur divers', 'systeme': 1});
+    await txn.insert('client', {
+      'code': CodeGenerator.systeme(CodeGenerator.client),
+      'nom': 'Client de passage',
+      'systeme': 1,
+    });
+    await txn.insert('fournisseur', {
+      'code': CodeGenerator.systeme(CodeGenerator.fournisseur),
+      'nom': 'Fournisseur divers',
+      'systeme': 1,
+    });
 
     // Administrateur système : mot de passe défini lors de la configuration initiale.
     await txn.insert('utilisateur', {

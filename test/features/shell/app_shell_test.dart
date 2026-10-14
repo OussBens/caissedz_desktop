@@ -73,7 +73,9 @@ void main() {
 
     testWidgets('alertes : badge sur la cloche et panneau', (tester) async {
       final container = await _pumpApp(tester);
-      container.read(alertesProvider.notifier).publier(const Alerte(id: 'a1', titre: 'Stock sous seuil', critique: true));
+      container
+          .read(alertesProvider.notifier)
+          .publier(const Alerte(id: 'a1', titre: 'Stock sous seuil', critique: true));
       await tester.pumpAndSettle();
       expect(find.text('1'), findsOneWidget);
       await tester.tap(find.byTooltip('Alertes'));

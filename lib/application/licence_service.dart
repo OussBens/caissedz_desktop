@@ -17,7 +17,11 @@ class ActivationException implements Exception {
 
 /// Activation et lecture de la licence.
 class LicenceService {
-  const LicenceService(this.db, {this.identifiant = const MachineIdentifiantSysteme(), this.cles = const CleActivation()});
+  const LicenceService(
+    this.db, {
+    this.identifiant = const MachineIdentifiantSysteme(),
+    this.cles = const CleActivation(),
+  });
 
   final Database db;
   final MachineIdentifiant identifiant;

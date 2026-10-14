@@ -27,16 +27,16 @@ class Sidebar extends ConsumerWidget {
     final session = ref.watch(sessionProvider);
 
     Widget entreeModule(ModuleApp m, {bool favori = false}) => _EntreeSidebar(
-          icone: m.icone,
-          libelle: m.libelle(l10n),
-          actif: routeCourante == m.route,
-          reduite: reduite,
-          verrou: !licence.couvre(m.niveauRequis)
-              ? l10n.shellVerrouille
-              : (session != null && !session.peutAcceder(m.id) ? l10n.shellAccesRestreint : null),
-          onTap: () => context.go(m.route),
-          onSecondaryTap: () => _menuContextuel(context, ref, m, favori: ref.read(favorisProvider).contains(m.id)),
-        );
+      icone: m.icone,
+      libelle: m.libelle(l10n),
+      actif: routeCourante == m.route,
+      reduite: reduite,
+      verrou: !licence.couvre(m.niveauRequis)
+          ? l10n.shellVerrouille
+          : (session != null && !session.peutAcceder(m.id) ? l10n.shellAccesRestreint : null),
+      onTap: () => context.go(m.route),
+      onSecondaryTap: () => _menuContextuel(context, ref, m, favori: ref.read(favorisProvider).contains(m.id)),
+    );
 
     Widget titreGroupe(String texte) => reduite
         ? Padding(
@@ -45,10 +45,7 @@ class Sidebar extends ConsumerWidget {
           )
         : Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(DsSpacing.lg, DsSpacing.lg, DsSpacing.lg, DsSpacing.xs),
-            child: Text(
-              texte.toUpperCase(),
-              style: t.legende.copyWith(color: c.sidebarTexte.withValues(alpha: 0.7)),
-            ),
+            child: Text(texte.toUpperCase(), style: t.legende.copyWith(color: c.sidebarTexte.withValues(alpha: 0.7))),
           );
 
     return AnimatedContainer(

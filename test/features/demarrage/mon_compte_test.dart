@@ -8,7 +8,12 @@ import '../../helpers/app_test_helper.dart';
 void main() {
   group('Mon compte', () {
     testWidgets('changement d’identifiant : mot de passe exigé, puis session mise à jour', (tester) async {
-      final c = await pumpApp(tester, etat: EtatApp.connecteeAdmin, routeInitiale: MonComptePage.route, taille: const Size(1400, 900));
+      final c = await pumpApp(
+        tester,
+        etat: EtatApp.connecteeAdmin,
+        routeInitiale: MonComptePage.route,
+        taille: const Size(1400, 900),
+      );
       expect(find.text('Identifiant actuel : gerant'), findsOneWidget);
       final champs = find.byType(TextField);
       await tester.enterText(champs.at(0), 'karim.b');

@@ -65,14 +65,11 @@ class DsDialog extends StatelessWidget {
             if (actions.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.all(DsSpacing.lg),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    for (var i = 0; i < actions.length; i++) ...[
-                      if (i > 0) const SizedBox(width: DsSpacing.sm),
-                      actions[i],
-                    ],
-                  ],
+                child: Wrap(
+                  alignment: WrapAlignment.end,
+                  spacing: DsSpacing.sm,
+                  runSpacing: DsSpacing.sm,
+                  children: actions,
                 ),
               )
             else
@@ -147,9 +144,7 @@ Future<void> afficherResultat(
       titre: titre,
       icone: Icon(icone, color: couleur),
       contenu: Text(message, style: ctx.ds.typo.corps),
-      actions: [
-        DsButton(libelle: l10n.communOk, autofocus: true, onPressed: () => Navigator.of(ctx).pop()),
-      ],
+      actions: [DsButton(libelle: l10n.communOk, autofocus: true, onPressed: () => Navigator.of(ctx).pop())],
     ),
   );
 }
@@ -226,7 +221,9 @@ class _SelecteurDialogState<T> extends State<_SelecteurDialog<T>> {
           SizedBox(
             height: 320,
             child: filtres.isEmpty
-                ? Center(child: Text(l10n.communAucunResultat, style: t.corps.copyWith(color: c.texteAttenue)))
+                ? Center(
+                    child: Text(l10n.communAucunResultat, style: t.corps.copyWith(color: c.texteAttenue)),
+                  )
                 : ListView.builder(
                     itemCount: filtres.length,
                     itemBuilder: (ctx, i) {

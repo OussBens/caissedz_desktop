@@ -48,12 +48,7 @@ class DsColonne<T> {
 
 /// Action du menu contextuel d'une ligne.
 class DsActionContextuelle<T> {
-  const DsActionContextuelle({
-    required this.libelle,
-    required this.onSelected,
-    this.icone,
-    this.destructif = false,
-  });
+  const DsActionContextuelle({required this.libelle, required this.onSelected, this.icone, this.destructif = false});
   final String libelle;
   final IconData? icone;
   final bool destructif;
@@ -125,8 +120,7 @@ class DsTri {
   final bool ascendant;
 
   @override
-  bool operator ==(Object other) =>
-      other is DsTri && other.colonneId == colonneId && other.ascendant == ascendant;
+  bool operator ==(Object other) => other is DsTri && other.colonneId == colonneId && other.ascendant == ascendant;
   @override
   int get hashCode => Object.hash(colonneId, ascendant);
 }
@@ -145,8 +139,7 @@ class _DsDataTableState<T> extends State<DsDataTable<T>> {
     _tri = widget.triInitial;
     _taillePage = widget.taillePage;
     _selection = {...?widget.selection};
-    _masquees = widget.colonnesMasquees ??
-        widget.colonnes.where((c) => !c.visibleParDefaut).map((c) => c.id).toSet();
+    _masquees = widget.colonnesMasquees ?? widget.colonnes.where((c) => !c.visibleParDefaut).map((c) => c.id).toSet();
   }
 
   @override
@@ -240,9 +233,7 @@ class _DsDataTableState<T> extends State<DsDataTable<T>> {
                 ],
                 Text(
                   widget.actionsContextuelles[i].libelle,
-                  style: t.corps.copyWith(
-                    color: widget.actionsContextuelles[i].destructif ? c.danger : c.texte,
-                  ),
+                  style: t.corps.copyWith(color: widget.actionsContextuelles[i].destructif ? c.danger : c.texte),
                 ),
               ],
             ),
@@ -374,11 +365,7 @@ class _DsDataTableState<T> extends State<DsDataTable<T>> {
                     ),
                     if (_tri?.colonneId == col.id) ...[
                       const SizedBox(width: DsSpacing.xs),
-                      Icon(
-                        _tri!.ascendant ? LucideIcons.arrowUp : LucideIcons.arrowDown,
-                        size: 14,
-                        color: c.primaire,
-                      ),
+                      Icon(_tri!.ascendant ? LucideIcons.arrowUp : LucideIcons.arrowDown, size: 14, color: c.primaire),
                     ],
                   ],
                 ),
@@ -388,7 +375,9 @@ class _DsDataTableState<T> extends State<DsDataTable<T>> {
             builder: (ctx) => DsIconButton(
               icone: LucideIcons.columns3,
               tooltip: l10n.communColonnes,
-              onPressed: () => _menuColonnes(ctx),
+              onPressed: () {
+                _menuColonnes(ctx);
+              },
             ),
           ),
           const SizedBox(width: DsSpacing.xs),
@@ -450,7 +439,9 @@ class _DsDataTableState<T> extends State<DsDataTable<T>> {
                         ? col.cellule!(context, ligne)
                         : Text(
                             col.valeur(ligne)?.toString() ?? '',
-                            style: col.numerique ? t.corps.copyWith(fontFeatures: const [FontFeature.tabularFigures()]) : t.corps,
+                            style: col.numerique
+                                ? t.corps.copyWith(fontFeatures: const [FontFeature.tabularFigures()])
+                                : t.corps,
                             overflow: TextOverflow.ellipsis,
                           ),
                   ),
@@ -476,9 +467,7 @@ class _DsDataTableState<T> extends State<DsDataTable<T>> {
                   cellule(
                     visibles[i],
                     Text(
-                      visibles[i].total != null
-                          ? visibles[i].total!(widget.lignes)
-                          : (i == 0 ? l10n.communTotal : ''),
+                      visibles[i].total != null ? visibles[i].total!(widget.lignes) : (i == 0 ? l10n.communTotal : ''),
                       style: t.corpsFort.copyWith(fontFeatures: const [FontFeature.tabularFigures()]),
                     ),
                   ),
@@ -495,7 +484,9 @@ class _DsDataTableState<T> extends State<DsDataTable<T>> {
         ? Container(
             height: DsTailles.enTeteTable,
             padding: const EdgeInsetsDirectional.only(start: DsSpacing.md, end: DsSpacing.sm),
-            decoration: BoxDecoration(border: Border(top: BorderSide(color: c.bordure))),
+            decoration: BoxDecoration(
+              border: Border(top: BorderSide(color: c.bordure)),
+            ),
             child: Row(
               children: [
                 if (_selection.isNotEmpty)
@@ -507,9 +498,7 @@ class _DsDataTableState<T> extends State<DsDataTable<T>> {
                   value: widget.taillesPage.contains(_taillePage) ? _taillePage : null,
                   underline: const SizedBox.shrink(),
                   style: t.petit.copyWith(color: c.texte),
-                  items: [
-                    for (final n in widget.taillesPage) DropdownMenuItem(value: n, child: Text('$n')),
-                  ],
+                  items: [for (final n in widget.taillesPage) DropdownMenuItem(value: n, child: Text('$n'))],
                   onChanged: (v) => setState(() {
                     _taillePage = v ?? _taillePage;
                     _page = 0;

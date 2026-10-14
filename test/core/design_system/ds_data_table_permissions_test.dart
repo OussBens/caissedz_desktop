@@ -11,10 +11,16 @@ class _P {
 }
 
 List<DsColonne<_P>> _colonnes() => [
-      DsColonne(id: 'code', libelle: 'Code', valeur: (p) => p.code),
-      DsColonne(id: 'pa', libelle: "Prix d'achat", valeur: (p) => p.prixAchat, numerique: true, permission: 'voirPrixAchat'),
-      DsColonne(id: 'pv', libelle: 'Prix de vente', valeur: (p) => p.prixVente, numerique: true),
-    ];
+  DsColonne(id: 'code', libelle: 'Code', valeur: (p) => p.code),
+  DsColonne(
+    id: 'pa',
+    libelle: "Prix d'achat",
+    valeur: (p) => p.prixAchat,
+    numerique: true,
+    permission: 'voirPrixAchat',
+  ),
+  DsColonne(id: 'pv', libelle: 'Prix de vente', valeur: (p) => p.prixVente, numerique: true),
+];
 
 const _lignes = [_P('P1', 100, 150), _P('P2', 200, 260)];
 
@@ -31,7 +37,16 @@ void main() {
   });
 
   testWidgets('colonne visible avec la permission', (tester) async {
-    await pumpDs(tester, DsDataTable<_P>(colonnes: _colonnes(), lignes: _lignes, cle: (p) => p.code, pagine: false, permissions: const {'voirPrixAchat'}));
+    await pumpDs(
+      tester,
+      DsDataTable<_P>(
+        colonnes: _colonnes(),
+        lignes: _lignes,
+        cle: (p) => p.code,
+        pagine: false,
+        permissions: const {'voirPrixAchat'},
+      ),
+    );
     expect(find.text("Prix d'achat"), findsOneWidget);
     expect(find.text('100.0'), findsOneWidget);
   });

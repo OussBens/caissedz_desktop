@@ -22,11 +22,7 @@ class FavorisRepository {
     await db.transaction((txn) async {
       await txn.delete('favori_module', where: 'utilisateur_code = ?', whereArgs: [utilisateurCode]);
       for (var i = 0; i < moduleIds.length; i++) {
-        await txn.insert('favori_module', {
-          'utilisateur_code': utilisateurCode,
-          'module_id': moduleIds[i],
-          'ordre': i,
-        });
+        await txn.insert('favori_module', {'utilisateur_code': utilisateurCode, 'module_id': moduleIds[i], 'ordre': i});
       }
     });
   }

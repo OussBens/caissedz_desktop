@@ -28,7 +28,9 @@ class ModulePlaceholderPage extends StatelessWidget {
               children: [
                 Icon(module.icone, size: 32, color: c.texteAttenue),
                 const SizedBox(width: DsSpacing.lg),
-                Expanded(child: Text(l10n.modulePlaceholder(nom), style: t.corps.copyWith(color: c.texteSecondaire))),
+                Expanded(
+                  child: Text(l10n.modulePlaceholder(nom), style: t.corps.copyWith(color: c.texteSecondaire)),
+                ),
               ],
             ),
           ),

@@ -12,6 +12,5 @@ class BoutiqueRepository {
     return rows.isEmpty ? null : Boutique.depuisLigne(rows.first);
   }
 
-  Future<void> ecrire(Boutique b) =>
-      db.insert('boutique', b.versLigne(), conflictAlgorithm: ConflictAlgorithm.replace);
+  Future<void> ecrire(Boutique b) => db.insert('boutique', b.versLigne(), conflictAlgorithm: ConflictAlgorithm.replace);
 }

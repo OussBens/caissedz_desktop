@@ -11,7 +11,11 @@ class UtilisateurRepository {
   static const String prefixe = 'USR';
 
   Future<Utilisateur?> parIdentifiant(String identifiant) async {
-    final rows = await db.query('utilisateur', where: 'identifiant = ? COLLATE NOCASE', whereArgs: [identifiant.trim()]);
+    final rows = await db.query(
+      'utilisateur',
+      where: 'identifiant = ? COLLATE NOCASE',
+      whereArgs: [identifiant.trim()],
+    );
     return rows.isEmpty ? null : Utilisateur.depuisLigne(rows.first);
   }
 
@@ -29,7 +33,12 @@ class UtilisateurRepository {
   }
 
   Future<bool> identifiantDisponible(String identifiant, {String? saufCode}) async {
-    final rows = await db.query('utilisateur', columns: ['code'], where: 'identifiant = ? COLLATE NOCASE', whereArgs: [identifiant.trim()]);
+    final rows = await db.query(
+      'utilisateur',
+      columns: ['code'],
+      where: 'identifiant = ? COLLATE NOCASE',
+      whereArgs: [identifiant.trim()],
+    );
     return rows.isEmpty || (saufCode != null && rows.first['code'] == saufCode);
   }
 

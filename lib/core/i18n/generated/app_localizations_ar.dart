@@ -28,8 +28,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get shellFavoris => 'المفضلة';
 
   @override
-  String get shellFavorisVide =>
-      'لا توجد مفضلة. انقر بالزر الأيمن على وحدة لإضافتها.';
+  String get shellFavorisVide => 'لا توجد مفضلة. انقر بالزر الأيمن على وحدة لإضافتها.';
 
   @override
   String get shellFavorisMax => '7 مفضلات كحد أقصى';
@@ -227,8 +226,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get activationTitre => 'تفعيل CaisseDZ';
 
   @override
-  String get activationIntro =>
-      'أدخل مفتاح التفعيل الخاص بهذا الجهاز، أو جرّب الوضع التجريبي.';
+  String get activationIntro => 'أدخل مفتاح التفعيل الخاص بهذا الجهاز، أو جرّب الوضع التجريبي.';
 
   @override
   String get activationIdentifiantMachine => 'معرّف هذا الجهاز';
@@ -256,12 +254,10 @@ class AppLocalizationsAr extends AppLocalizations {
       'يفتح الوضع التجريبي كل الوظائف (رخصة متقدم) بالحساب demo / demo. البيانات المدخلة ليست للاستعمال الفعلي.';
 
   @override
-  String get activationErreurFormat =>
-      'يجب أن يحتوي المفتاح على 64 حرفًا سداسيًا عشريًا بالضبط (0-9، a-f).';
+  String get activationErreurFormat => 'يجب أن يحتوي المفتاح على 64 حرفًا سداسيًا عشريًا بالضبط (0-9، a-f).';
 
   @override
-  String get activationErreurInconnue =>
-      'هذا المفتاح لا يطابق هذا الجهاز. تحقق من المفتاح أو اتصل بالموزع.';
+  String get activationErreurInconnue => 'هذا المفتاح لا يطابق هذا الجهاز. تحقق من المفتاح أو اتصل بالموزع.';
 
   @override
   String activationReussie(String niveau) {
@@ -286,8 +282,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get licenceRequise => 'وظيفة متاحة مع الرخصة المتقدمة';
 
   @override
-  String get licenceRequiseDetail =>
-      'رخصتك الحالية أساسية. فعّل رخصة متقدمة للوصول إلى هذه الوحدة.';
+  String get licenceRequiseDetail => 'رخصتك الحالية أساسية. فعّل رخصة متقدمة للوصول إلى هذه الوحدة.';
 
   @override
   String get licenceGererCle => 'تفعيل مفتاح آخر';
@@ -311,16 +306,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get connexionErreurInactif => 'هذا الحساب معطّل.';
 
   @override
-  String get connexionErreurNonConfigure =>
-      'ليس لهذا الحساب كلمة مرور بعد: أكمل الإعداد الأولي.';
+  String get connexionErreurNonConfigure => 'ليس لهذا الحساب كلمة مرور بعد: أكمل الإعداد الأولي.';
 
   @override
-  String get connexionErreurDemo =>
-      'الحساب demo/demo متاح فقط في الوضع التجريبي.';
+  String get connexionErreurDemo => 'الحساب demo/demo متاح فقط في الوضع التجريبي.';
 
   @override
-  String get connexionDemoIndice =>
-      'الوضع التجريبي: المعرّف demo، كلمة المرور demo';
+  String get connexionDemoIndice => 'الوضع التجريبي: المعرّف demo، كلمة المرور demo';
 
   @override
   String get connexionDeconnecter => 'تسجيل الخروج';
@@ -364,8 +356,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get configBoutiqueEmail => 'البريد الإلكتروني';
 
   @override
-  String get configAdminIntro =>
-      'سيملك حساب المدير هذا كل الصلاحيات. اختر معرّفًا وكلمة مرور.';
+  String get configAdminIntro => 'سيملك حساب المدير هذا كل الصلاحيات. اختر معرّفًا وكلمة مرور.';
 
   @override
   String get configAdminNom => 'الاسم المعروض';
@@ -377,8 +368,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get configMarge => 'الهامش الافتراضي (%)';
 
   @override
-  String get configMargeAide =>
-      'يُطبّق لحساب سعر البيع من سعر الشراء للمنتجات الجديدة.';
+  String get configMargeAide => 'يُطبّق لحساب سعر البيع من سعر الشراء للمنتجات الجديدة.';
 
   @override
   String get configSeuil => 'حد تنبيه المخزون (عام)';
@@ -396,8 +386,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get configLangue => 'لغة التطبيق';
 
   @override
-  String get configRecapIntro =>
-      'تحقق من المعلومات قبل الإنهاء. يمكنك تعديلها لاحقًا في الإعدادات.';
+  String get configRecapIntro => 'تحقق من المعلومات قبل الإنهاء. يمكنك تعديلها لاحقًا في الإعدادات.';
 
   @override
   String get configPrecedent => 'السابق';
@@ -412,8 +401,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get configErreurObligatoire => 'حقل إلزامي';
 
   @override
-  String get configErreurIdentifiant =>
-      'من 3 إلى 32 حرفًا: أحرف، أرقام، نقطة، شرطة، شرطة سفلية.';
+  String get configErreurIdentifiant => 'من 3 إلى 32 حرفًا: أحرف، أرقام، نقطة، شرطة، شرطة سفلية.';
 
   @override
   String get configErreurMotDePasseCourt => '4 أحرف على الأقل.';
@@ -489,8 +477,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get rolesTitre => 'الأدوار والصلاحيات';
 
   @override
-  String get rolesIntro =>
-      'حدد صلاحيات الإجراءات والوحدات المتاحة لكل دور. يحتفظ المدير دائمًا بكل الصلاحيات.';
+  String get rolesIntro => 'حدد صلاحيات الإجراءات والوحدات المتاحة لكل دور. يحتفظ المدير دائمًا بكل الصلاحيات.';
 
   @override
   String get rolesPermissions => 'صلاحيات الإجراءات';
@@ -538,8 +525,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get parametresRolesCarte => 'الأدوار والصلاحيات';
 
   @override
-  String get parametresRolesCarteDetail =>
-      'صلاحيات الإجراءات والوحدات المتاحة حسب الدور.';
+  String get parametresRolesCarteDetail => 'صلاحيات الإجراءات والوحدات المتاحة حسب الدور.';
 
   @override
   String get parametresLicenceCarte => 'الرخصة';
@@ -555,4 +541,384 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get shellAccesRestreint => 'وصول غير مسموح لدورك';
+
+  @override
+  String get produitsTitre => 'المنتجات';
+
+  @override
+  String get produitsOngletProduits => 'المنتجات';
+
+  @override
+  String get produitsOngletCategories => 'الفئات';
+
+  @override
+  String get produitsOngletColis => 'الطرود';
+
+  @override
+  String get produitsOngletPacks => 'الحزم';
+
+  @override
+  String get produitsOngletRemises => 'التخفيضات';
+
+  @override
+  String get produitsNouveau => 'منتج جديد';
+
+  @override
+  String get produitsModeIa => 'وضع الذكاء الاصطناعي';
+
+  @override
+  String get produitsImporter => 'استيراد Excel';
+
+  @override
+  String get produitsEtiquettes => 'الملصقات';
+
+  @override
+  String get produitsSynchro => 'مزامنة الكتالوج';
+
+  @override
+  String get produitsRecherche => 'البحث بالاسم أو الرمز أو الباركود…';
+
+  @override
+  String get produitsColCode => 'الرمز';
+
+  @override
+  String get produitsColDesignation => 'التسمية';
+
+  @override
+  String get produitsColCodeBarres => 'الباركود';
+
+  @override
+  String get produitsColCategorie => 'الفئة';
+
+  @override
+  String get produitsColPrixAchat => 'سعر الشراء';
+
+  @override
+  String get produitsColPrixVente => 'سعر البيع';
+
+  @override
+  String get produitsColMarge => 'الهامش %';
+
+  @override
+  String get produitsColActif => 'نشط';
+
+  @override
+  String get produitsColStock => 'المخزون';
+
+  @override
+  String get produitsAucun => 'لا توجد منتجات. أنشئ منتجًا أو استورد ملف Excel.';
+
+  @override
+  String get produitModifier => 'تعديل المنتج';
+
+  @override
+  String get produitDesactiver => 'تعطيل';
+
+  @override
+  String get produitActiver => 'تفعيل';
+
+  @override
+  String get produitGenererCodeBarres => 'توليد باركود داخلي';
+
+  @override
+  String get produitChampDesignation => 'التسمية';
+
+  @override
+  String get produitChampCodeBarres => 'الباركود (EAN-13 أو داخلي)';
+
+  @override
+  String get produitChampCategorie => 'الفئة';
+
+  @override
+  String get produitChampSousCategorie => 'الفئة الفرعية';
+
+  @override
+  String get produitChampPrixAchat => 'سعر الشراء';
+
+  @override
+  String get produitChampPrixVente => 'سعر البيع';
+
+  @override
+  String get produitChampMarge => 'الهامش (%)';
+
+  @override
+  String get produitChampUnite => 'الوحدة';
+
+  @override
+  String get produitChampTva => 'الضريبة (%)';
+
+  @override
+  String get produitChampSeuil => 'حد التنبيه (فارغ = الحد العام)';
+
+  @override
+  String get produitChampSuiviNombre => 'تتبع مخزون ثانٍ « بالعدد » (قطع)';
+
+  @override
+  String get produitChampSuiviNombreAide => 'يُباع المنتج بالوحدة أو بالقطعة؛ يُحفظ المخزون في الاثنين.';
+
+  @override
+  String get produitChampNombreParUnite => 'قطع لكل وحدة';
+
+  @override
+  String get produitPrixAuto => 'يُحسب سعر البيع من الهامش إذا تركته فارغًا.';
+
+  @override
+  String get produitErreurDesignation => 'التسمية إلزامية.';
+
+  @override
+  String get produitErreurCodeBarres => 'باركود غير صالح.';
+
+  @override
+  String get produitErreurCodeBarresPris => 'هذا الباركود مستعمل بالفعل.';
+
+  @override
+  String get produitErreurPrix => 'سعر غير صالح.';
+
+  @override
+  String get produitErreurQuantite => 'كمية غير صالحة.';
+
+  @override
+  String produitCree(String nom, String code) {
+    return 'تم إنشاء المنتج « $nom » ($code).';
+  }
+
+  @override
+  String get iaTitre => 'منتج جديد بالذكاء الاصطناعي';
+
+  @override
+  String get iaIntro =>
+      'امسح أو أدخل باركودًا: يُبحث عن البطاقة في CaisseDZ ثم Mantouj ثم Open Food Facts ثم Open Beauty Facts.';
+
+  @override
+  String get iaRechercher => 'بحث';
+
+  @override
+  String get iaRechercheEnCours => 'جارٍ البحث…';
+
+  @override
+  String get iaAucun => 'لم يُعثر على بطاقة لهذا الباركود: انتقل إلى الإدخال التفصيلي.';
+
+  @override
+  String iaTrouve(String source) {
+    return 'بطاقة موجودة عبر $source';
+  }
+
+  @override
+  String get iaMarque => 'العلامة';
+
+  @override
+  String get iaCreer => 'إنشاء المنتج';
+
+  @override
+  String get iaSaisieDetaillee => 'إدخال تفصيلي';
+
+  @override
+  String get importTitre => 'استيراد منتجات من Excel';
+
+  @override
+  String get importIntro =>
+      'الأعمدة المتوقعة في السطر 1: designation (إلزامي)، code_barres، categorie، prix_achat، prix_vente.';
+
+  @override
+  String get importChoisirFichier => 'اختيار ملف .xlsx';
+
+  @override
+  String get importTelechargerModele => 'حفظ النموذج';
+
+  @override
+  String importLignesValides(int n) {
+    return '$n سطر صالح';
+  }
+
+  @override
+  String importLignesInvalides(int n) {
+    return '$n سطر متجاهل';
+  }
+
+  @override
+  String get importColLigne => 'السطر';
+
+  @override
+  String get importColErreur => 'الخطأ';
+
+  @override
+  String get importLancer => 'استيراد';
+
+  @override
+  String importResultat(int importees, int ignorees) {
+    return '$importees منتج مستورد، $ignorees متجاهل.';
+  }
+
+  @override
+  String importErreurFichier(String detail) {
+    return 'ملف غير قابل للقراءة: $detail';
+  }
+
+  @override
+  String get importErreurDesignationVide => 'تسمية فارغة';
+
+  @override
+  String get importErreurCodeBarresPris => 'باركود مستعمل بالفعل';
+
+  @override
+  String get importErreurPrix => 'سعر غير صالح';
+
+  @override
+  String get etiquettesTitre => 'طباعة الملصقات';
+
+  @override
+  String get etiquettesQuantite => 'الكمية';
+
+  @override
+  String get etiquettesFormatA4 => 'ورقة A4';
+
+  @override
+  String get etiquettesFormatRouleau => 'لفافة';
+
+  @override
+  String get etiquettesAfficherPrix => 'إظهار السعر';
+
+  @override
+  String get etiquettesQr => 'رمز QR بدل الباركود';
+
+  @override
+  String get etiquettesGenerer => 'توليد PDF';
+
+  @override
+  String get etiquettesAucuneSelection => 'اختر منتجًا واحدًا على الأقل من القائمة.';
+
+  @override
+  String synchroResultat(int envoyes, int recus) {
+    return 'المزامنة: $envoyes مرسل، $recus محدّث.';
+  }
+
+  @override
+  String get synchroNonConfiguree => 'أدخل عنوان خادم CaisseDZ في الإعدادات لمزامنة الكتالوج.';
+
+  @override
+  String synchroErreur(String detail) {
+    return 'فشلت المزامنة: $detail';
+  }
+
+  @override
+  String get categoriesNouvelle => 'فئة جديدة';
+
+  @override
+  String get categoriesNouvelleSous => 'فئة فرعية جديدة';
+
+  @override
+  String get categorieNom => 'الاسم';
+
+  @override
+  String get categorieRenommer => 'إعادة التسمية';
+
+  @override
+  String get categorieSupprimer => 'حذف';
+
+  @override
+  String get categorieSousCategories => 'الفئات الفرعية';
+
+  @override
+  String get categorieErreurSysteme => 'لا يمكن تعديل فئة النظام.';
+
+  @override
+  String get categorieErreurUtilisee => 'توجد منتجات مرتبطة بهذه الفئة.';
+
+  @override
+  String categorieConfirmerSuppression(String nom) {
+    return 'حذف الفئة « $nom » وفئاتها الفرعية؟';
+  }
+
+  @override
+  String get colisNouveau => 'طرد جديد';
+
+  @override
+  String get colisProduit => 'المنتج';
+
+  @override
+  String get colisQuantite => 'وحدات لكل طرد';
+
+  @override
+  String get colisAucun => 'لا توجد طرود.';
+
+  @override
+  String get packNouveau => 'حزمة جديدة';
+
+  @override
+  String get packLignes => 'التركيبة';
+
+  @override
+  String get packAjouterProduit => 'إضافة منتج';
+
+  @override
+  String get packAucun => 'لا توجد حزم.';
+
+  @override
+  String get packErreurLignes => 'أضف منتجًا واحدًا على الأقل إلى الحزمة.';
+
+  @override
+  String get remiseNouvelle => 'تخفيض جديد';
+
+  @override
+  String get remiseType => 'النوع';
+
+  @override
+  String get remiseTypePourcentage => 'نسبة مئوية';
+
+  @override
+  String get remiseTypeMontant => 'مبلغ';
+
+  @override
+  String get remiseValeur => 'القيمة';
+
+  @override
+  String get remisePortee => 'النطاق';
+
+  @override
+  String get remisePorteeGlobale => 'كل المنتجات';
+
+  @override
+  String get remisePorteeCategorie => 'فئة';
+
+  @override
+  String get remisePorteeProduit => 'منتج';
+
+  @override
+  String get remiseDebut => 'البداية';
+
+  @override
+  String get remiseFin => 'النهاية';
+
+  @override
+  String get remiseAucune => 'لا توجد تخفيضات.';
+
+  @override
+  String get communNouveau => 'جديد';
+
+  @override
+  String get communModifier => 'تعديل';
+
+  @override
+  String get communActif => 'نشط';
+
+  @override
+  String get communInactif => 'غير نشط';
+
+  @override
+  String get communOui => 'نعم';
+
+  @override
+  String get communNon => 'لا';
+
+  @override
+  String get communValider => 'تأكيد';
+
+  @override
+  String get communApercu => 'معاينة';
+
+  @override
+  String get communImprimer => 'طباعة';
+
+  @override
+  String get communAucune => 'لا شيء';
 }

@@ -29,17 +29,24 @@ class Boutique {
         email: email ?? this.email,
       );
 
-  Map<String, Object?> versLigne() =>
-      {'id': 1, 'nom': nom, 'rc': rc, 'nif': nif, 'adresse': adresse, 'telephone': telephone, 'email': email};
+  Map<String, Object?> versLigne() => {
+    'id': 1,
+    'nom': nom,
+    'rc': rc,
+    'nif': nif,
+    'adresse': adresse,
+    'telephone': telephone,
+    'email': email,
+  };
 
   factory Boutique.depuisLigne(Map<String, Object?> r) => Boutique(
-        nom: r['nom'] as String,
-        rc: (r['rc'] as String?) ?? '',
-        nif: (r['nif'] as String?) ?? '',
-        adresse: (r['adresse'] as String?) ?? '',
-        telephone: (r['telephone'] as String?) ?? '',
-        email: (r['email'] as String?) ?? '',
-      );
+    nom: r['nom'] as String,
+    rc: (r['rc'] as String?) ?? '',
+    nif: (r['nif'] as String?) ?? '',
+    adresse: (r['adresse'] as String?) ?? '',
+    telephone: (r['telephone'] as String?) ?? '',
+    email: (r['email'] as String?) ?? '',
+  );
 
   @override
   bool operator ==(Object other) =>

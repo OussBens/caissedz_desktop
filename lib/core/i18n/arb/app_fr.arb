@@ -239,5 +239,197 @@
   "shellBandeauDemo": "Mode démo — les données ne sont pas destinées à la production",
   "shellMenuUtilisateur": "Menu utilisateur",
   "shellVerrouille": "Réservé à la licence Avancé",
-  "shellAccesRestreint": "Accès non autorisé pour votre rôle"
+  "shellAccesRestreint": "Accès non autorisé pour votre rôle",
+  "produitsTitre": "Produits",
+  "produitsOngletProduits": "Produits",
+  "produitsOngletCategories": "Catégories",
+  "produitsOngletColis": "Colis",
+  "produitsOngletPacks": "Packs",
+  "produitsOngletRemises": "Remises",
+  "produitsNouveau": "Nouveau produit",
+  "produitsModeIa": "Mode IA",
+  "produitsImporter": "Importer Excel",
+  "produitsEtiquettes": "Étiquettes",
+  "produitsSynchro": "Synchro catalogue",
+  "produitsRecherche": "Rechercher par désignation, code ou code-barres…",
+  "produitsColCode": "Code",
+  "produitsColDesignation": "Désignation",
+  "produitsColCodeBarres": "Code-barres",
+  "produitsColCategorie": "Catégorie",
+  "produitsColPrixAchat": "Prix d'achat",
+  "produitsColPrixVente": "Prix de vente",
+  "produitsColMarge": "Marge %",
+  "produitsColActif": "Actif",
+  "produitsColStock": "Stock",
+  "produitsAucun": "Aucun produit. Créez-en un ou importez un fichier Excel.",
+  "produitModifier": "Modifier le produit",
+  "produitDesactiver": "Désactiver",
+  "produitActiver": "Activer",
+  "produitGenererCodeBarres": "Générer un code-barres interne",
+  "produitChampDesignation": "Désignation",
+  "produitChampCodeBarres": "Code-barres (EAN-13 ou interne)",
+  "produitChampCategorie": "Catégorie",
+  "produitChampSousCategorie": "Sous-catégorie",
+  "produitChampPrixAchat": "Prix d'achat",
+  "produitChampPrixVente": "Prix de vente",
+  "produitChampMarge": "Marge (%)",
+  "produitChampUnite": "Unité",
+  "produitChampTva": "TVA (%)",
+  "produitChampSeuil": "Seuil d'alerte (vide = seuil global)",
+  "produitChampSuiviNombre": "Suivre un 2ᵉ stock « nombre » (pièces)",
+  "produitChampSuiviNombreAide": "Le produit se vend à l'unité ou à la pièce ; le stock est tenu dans les deux.",
+  "produitChampNombreParUnite": "Pièces par unité",
+  "produitPrixAuto": "Le prix de vente est calculé depuis la marge si vous le laissez vide.",
+  "produitErreurDesignation": "La désignation est obligatoire.",
+  "produitErreurCodeBarres": "Code-barres invalide.",
+  "produitErreurCodeBarresPris": "Ce code-barres est déjà utilisé.",
+  "produitErreurPrix": "Prix invalide.",
+  "produitErreurQuantite": "Quantité invalide.",
+  "produitCree": "Produit « {nom} » créé ({code}).",
+  "@produitCree": {
+    "placeholders": {
+      "nom": {
+        "type": "String"
+      },
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "iaTitre": "Nouveau produit en mode IA",
+  "iaIntro": "Scannez ou saisissez un code-barres : la fiche est recherchée dans CaisseDZ, puis Mantouj, Open Food Facts et Open Beauty Facts.",
+  "iaRechercher": "Rechercher",
+  "iaRechercheEnCours": "Recherche en cours…",
+  "iaAucun": "Aucune fiche trouvée pour ce code-barres : passez en saisie détaillée.",
+  "iaTrouve": "Fiche trouvée via {source}",
+  "@iaTrouve": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "iaMarque": "Marque",
+  "iaCreer": "Créer le produit",
+  "iaSaisieDetaillee": "Saisie détaillée",
+  "importTitre": "Importer des produits depuis Excel",
+  "importIntro": "Colonnes attendues en ligne 1 : designation (obligatoire), code_barres, categorie, prix_achat, prix_vente.",
+  "importChoisirFichier": "Choisir un fichier .xlsx",
+  "importTelechargerModele": "Enregistrer le modèle",
+  "importLignesValides": "{n} ligne(s) valide(s)",
+  "@importLignesValides": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "importLignesInvalides": "{n} ligne(s) ignorée(s)",
+  "@importLignesInvalides": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "importColLigne": "Ligne",
+  "importColErreur": "Erreur",
+  "importLancer": "Importer",
+  "importResultat": "{importees} produit(s) importé(s), {ignorees} ignoré(s).",
+  "@importResultat": {
+    "placeholders": {
+      "importees": {
+        "type": "int"
+      },
+      "ignorees": {
+        "type": "int"
+      }
+    }
+  },
+  "importErreurFichier": "Fichier illisible : {detail}",
+  "@importErreurFichier": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "importErreurDesignationVide": "Désignation vide",
+  "importErreurCodeBarresPris": "Code-barres déjà utilisé",
+  "importErreurPrix": "Prix invalide",
+  "etiquettesTitre": "Imprimer des étiquettes",
+  "etiquettesQuantite": "Quantité",
+  "etiquettesFormatA4": "Planche A4",
+  "etiquettesFormatRouleau": "Rouleau",
+  "etiquettesAfficherPrix": "Afficher le prix",
+  "etiquettesQr": "Code QR au lieu du code-barres",
+  "etiquettesGenerer": "Générer le PDF",
+  "etiquettesAucuneSelection": "Sélectionnez au moins un produit dans la liste.",
+  "synchroResultat": "Synchronisation : {envoyes} envoyé(s), {recus} mis à jour.",
+  "@synchroResultat": {
+    "placeholders": {
+      "envoyes": {
+        "type": "int"
+      },
+      "recus": {
+        "type": "int"
+      }
+    }
+  },
+  "synchroNonConfiguree": "Renseignez l'URL du serveur CaisseDZ dans Paramètres pour synchroniser le catalogue.",
+  "synchroErreur": "Échec de la synchronisation : {detail}",
+  "@synchroErreur": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "categoriesNouvelle": "Nouvelle catégorie",
+  "categoriesNouvelleSous": "Nouvelle sous-catégorie",
+  "categorieNom": "Nom",
+  "categorieRenommer": "Renommer",
+  "categorieSupprimer": "Supprimer",
+  "categorieSousCategories": "Sous-catégories",
+  "categorieErreurSysteme": "La catégorie système ne peut pas être modifiée.",
+  "categorieErreurUtilisee": "Des produits sont rattachés à cette catégorie.",
+  "categorieConfirmerSuppression": "Supprimer la catégorie « {nom} » et ses sous-catégories ?",
+  "@categorieConfirmerSuppression": {
+    "placeholders": {
+      "nom": {
+        "type": "String"
+      }
+    }
+  },
+  "colisNouveau": "Nouveau colis",
+  "colisProduit": "Produit",
+  "colisQuantite": "Unités par colis",
+  "colisAucun": "Aucun colis.",
+  "packNouveau": "Nouveau pack",
+  "packLignes": "Composition",
+  "packAjouterProduit": "Ajouter un produit",
+  "packAucun": "Aucun pack.",
+  "packErreurLignes": "Ajoutez au moins un produit au pack.",
+  "remiseNouvelle": "Nouvelle remise",
+  "remiseType": "Type",
+  "remiseTypePourcentage": "Pourcentage",
+  "remiseTypeMontant": "Montant",
+  "remiseValeur": "Valeur",
+  "remisePortee": "Portée",
+  "remisePorteeGlobale": "Tous les produits",
+  "remisePorteeCategorie": "Une catégorie",
+  "remisePorteeProduit": "Un produit",
+  "remiseDebut": "Début",
+  "remiseFin": "Fin",
+  "remiseAucune": "Aucune remise.",
+  "communNouveau": "Nouveau",
+  "communModifier": "Modifier",
+  "communActif": "Actif",
+  "communInactif": "Inactif",
+  "communOui": "Oui",
+  "communNon": "Non",
+  "communValider": "Valider",
+  "communApercu": "Aperçu",
+  "communImprimer": "Imprimer",
+  "communAucune": "Aucune"
 }

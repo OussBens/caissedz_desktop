@@ -8,6 +8,7 @@ import '../features/compte/mon_compte_page.dart';
 import '../features/configuration/configuration_page.dart';
 import '../features/connexion/connexion_page.dart';
 import '../features/galerie/galerie_page.dart';
+import '../features/produits/produits_page.dart';
 import '../features/roles/roles_page.dart';
 import '../features/shell/app_shell.dart';
 import '../features/shell/module_placeholder_page.dart';
@@ -50,9 +51,18 @@ GoRouter construireRouter(Ref ref, {String routeInitiale = routeAccueil}) {
       cible: state.uri.path,
     ),
     routes: [
-      GoRoute(path: ActivationPage.route, pageBuilder: (c, s) => const NoTransitionPage(child: ActivationPage())),
-      GoRoute(path: ConfigurationPage.route, pageBuilder: (c, s) => const NoTransitionPage(child: ConfigurationPage())),
-      GoRoute(path: ConnexionPage.route, pageBuilder: (c, s) => const NoTransitionPage(child: ConnexionPage())),
+      GoRoute(
+        path: ActivationPage.route,
+        pageBuilder: (c, s) => const NoTransitionPage(child: ActivationPage()),
+      ),
+      GoRoute(
+        path: ConfigurationPage.route,
+        pageBuilder: (c, s) => const NoTransitionPage(child: ConfigurationPage()),
+      ),
+      GoRoute(
+        path: ConnexionPage.route,
+        pageBuilder: (c, s) => const NoTransitionPage(child: ConnexionPage()),
+      ),
       ShellRoute(
         builder: (context, state, child) => AppShell(child: child),
         routes: [
@@ -60,18 +70,34 @@ GoRouter construireRouter(Ref ref, {String routeInitiale = routeAccueil}) {
             GoRoute(
               path: module.route,
               name: module.id,
-              pageBuilder: (context, state) => NoTransitionPage(
-                key: ValueKey(module.id),
-                child: module.id == 'parametres' ? const ParametresAccueilPage() : ModulePlaceholderPage(module: module),
-              ),
+              pageBuilder: (context, state) => NoTransitionPage(key: ValueKey(module.id), child: pageModule(module)),
             ),
-          GoRoute(path: RolesPage.route, pageBuilder: (c, s) => const NoTransitionPage(child: RolesPage())),
-          GoRoute(path: MonComptePage.route, pageBuilder: (c, s) => const NoTransitionPage(child: MonComptePage())),
-          GoRoute(path: GaleriePage.route, name: 'galerie', pageBuilder: (c, s) => const NoTransitionPage(child: GaleriePage())),
+          GoRoute(
+            path: RolesPage.route,
+            pageBuilder: (c, s) => const NoTransitionPage(child: RolesPage()),
+          ),
+          GoRoute(
+            path: MonComptePage.route,
+            pageBuilder: (c, s) => const NoTransitionPage(child: MonComptePage()),
+          ),
+          GoRoute(
+            path: GaleriePage.route,
+            name: 'galerie',
+            pageBuilder: (c, s) => const NoTransitionPage(child: GaleriePage()),
+          ),
         ],
       ),
     ],
   );
 }
 
-final routerProvider = Provider<GoRouter>((ref) => construireRouter(ref, routeInitiale: ref.read(routeInitialeProvider)));
+/// Page d'un module : écrans livrés par lot, sinon page provisoire.
+Widget pageModule(ModuleApp module) => switch (module.id) {
+  'parametres' => const ParametresAccueilPage(),
+  'produits' => const ProduitsPage(),
+  _ => ModulePlaceholderPage(module: module),
+};
+
+final routerProvider = Provider<GoRouter>(
+  (ref) => construireRouter(ref, routeInitiale: ref.read(routeInitialeProvider)),
+);
