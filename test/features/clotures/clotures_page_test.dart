@@ -68,14 +68,14 @@ void main() {
       await clic(tester, find.text('Clôturer (Z)'));
       await clic(tester, find.text('Sceller la clôture'));
       expect(find.text('Fermez toutes les sessions de caisse avant de clôturer.'), findsOneWidget);
-      await clic(tester, find.text('OK'));
+      await clic(tester, find.text('Fermer').last);
       await sessions.fermer(montantCompte: 700);
       await clic(tester, find.text('Clôturer (Z)'));
       expect(find.text('Clôture Z — aperçu de la période'), findsOneWidget);
       expect(find.text('2'), findsWidgets); // 2 ventes
       await clic(tester, find.text('Sceller la clôture'));
       expect(find.textContaining('Clôture CLZ0001 scellée'), findsOneWidget);
-      await clic(tester, find.text('OK'));
+      await clic(tester, find.text('Fermer').last);
       expect(find.text('CLZ0001'), findsWidgets);
       // Détail par menu contextuel.
       await tester.tap(find.text('CLZ0001').last, buttons: 2);
@@ -87,12 +87,12 @@ void main() {
       // Vérification de la chaîne.
       await clic(tester, find.text('Vérifier la chaîne'));
       expect(find.text('Chaîne des clôtures intacte.'), findsOneWidget);
-      await clic(tester, find.text('OK'));
+      await clic(tester, find.text('Fermer').last);
       // Rien de nouveau → refus.
       await clic(tester, find.text('Clôturer (Z)'));
       await clic(tester, find.text('Sceller la clôture'));
       expect(find.text('Rien à clôturer depuis la dernière clôture.'), findsOneWidget);
-      await clic(tester, find.text('OK'));
+      await clic(tester, find.text('Fermer').last);
       expect((await CaisseRepository(c.read(appDatabaseProvider).db).clotures()).length, 1);
     });
 
@@ -115,14 +115,14 @@ void main() {
       await tester.pumpAndSettle();
       await clic(tester, find.text('Clôturer (Z)'));
       await clic(tester, find.text('Sceller la clôture'));
-      await clic(tester, find.text('OK'));
+      await clic(tester, find.text('Fermer').last);
       await clic(tester, find.text('Export fiscal'));
       await tester.enterText(_champ('Du (jj/mm/aaaa)'), '01/01/2000');
       await tester.pump();
       await clic(tester, find.text("Générer l'archive"));
       expect(find.textContaining('Archive enregistrée'), findsOneWidget);
       expect(find.textContaining('2 ventes, 1 clôtures'), findsOneWidget);
-      await clic(tester, find.text('OK'));
+      await clic(tester, find.text('Fermer').last);
       expect(cheminEcrit, startsWith('/exports/export_fiscal_20000101_'));
       final verif = ExportFiscal.verifier(ecrit!);
       expect(verif.valide, isTrue);

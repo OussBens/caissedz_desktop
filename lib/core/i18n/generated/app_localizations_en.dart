@@ -2555,4 +2555,466 @@ class AppLocalizationsEn extends AppLocalizations {
   String sauvegardeErreurChemin(String detail) {
     return 'Invalid location: $detail';
   }
+
+  @override
+  String get dsContinuer => 'Continue';
+
+  @override
+  String get dsCompris => 'Got it';
+
+  @override
+  String get dsLibelle => 'Label';
+
+  @override
+  String get dsCochezLignes => 'Tick one or more rows';
+
+  @override
+  String get dsCliquezLigne => 'Click a row · double-click to confirm';
+
+  @override
+  String get dsAjouter => 'Add';
+
+  @override
+  String get dsChoisir => 'Choose';
+
+  @override
+  String get dsAnnules => 'cancelled';
+
+  @override
+  String get dsSupprimes => 'deleted';
+
+  @override
+  String get dsActiver => 'Activate';
+
+  @override
+  String get dsActives => 'activated';
+
+  @override
+  String get dsDesactiver => 'Deactivate';
+
+  @override
+  String get dsDesactives => 'deactivated';
+
+  @override
+  String dsLotPartiel(String ok, int total, String participe) {
+    return '$ok of $total will be $participe.';
+  }
+
+  @override
+  String get dsLotVerifier => 'Check the selection before confirming.';
+
+  @override
+  String dsLotBloques(String n, String motif) {
+    return '$n cannot be processed: $motif.';
+  }
+
+  @override
+  String get dsMotifAnnulation => 'Cancellation reason';
+
+  @override
+  String get dsMotifIndice => 'E.g. input error, customer absent…';
+
+  @override
+  String get dsObligatoires => 'Required';
+
+  @override
+  String get dsToujoursAffichees => 'Always shown';
+
+  @override
+  String get dsColonnesParDefaut => 'Default columns';
+
+  @override
+  String get dsAutresColonnes => 'Other columns';
+
+  @override
+  String get dsColonnesTitre => 'Show / hide columns';
+
+  @override
+  String dsColonnesVisibles(int n, int total) {
+    return '$n of $total columns visible';
+  }
+
+  @override
+  String get dsAppliquer => 'Apply';
+
+  @override
+  String get dsRechercherColonne => 'Search a column…';
+
+  @override
+  String get dsAfficherTout => 'Show all';
+
+  @override
+  String get dsMasquerTout => 'Hide all';
+
+  @override
+  String get dsParDefaut => 'Default';
+
+  @override
+  String get dsAucuneColonne => 'No column found';
+
+  @override
+  String get dsGarderSelection => 'Keep my selection';
+
+  @override
+  String get dsGarderSelectionAide => 'Otherwise the default columns are restored next time';
+
+  @override
+  String get dsParPage => 'per page';
+
+  @override
+  String get dsToutDeselectionner => 'Clear selection';
+
+  @override
+  String dsSelectionneSur(int n, int total) {
+    return '$n / $total selected';
+  }
+
+  @override
+  String get dsSelectionnezUne => 'Select a single row';
+
+  @override
+  String get dsSelectionnezAuMoins => 'Select at least one row';
+
+  @override
+  String get dsAucunElement => 'No items';
+
+  @override
+  String get dsDoubleClicDetail => 'Double-click: show details';
+
+  @override
+  String dsColonnesMasquees(int n, int total) {
+    return 'Show / hide columns · $n/$total';
+  }
+
+  @override
+  String get dsFiltres => 'Filters';
+
+  @override
+  String get dsFiltrer => 'Filter';
+
+  @override
+  String get dsReinitialiser => 'Reset';
+
+  @override
+  String dsActifs(int n) {
+    return '$n active';
+  }
+
+  @override
+  String get dsExporter => 'Export';
+
+  @override
+  String get dsToutExporter => 'Export all';
+
+  @override
+  String get dsSelectionSeulement => 'Selection only';
+
+  @override
+  String get dsRetour => 'Back';
+
+  @override
+  String get dsEffacer => 'Clear';
+
+  @override
+  String get dsThemeClair => 'Light theme';
+
+  @override
+  String get dsThemeSombre => 'Dark theme';
+
+  @override
+  String get dsEnLigne => 'Online';
+
+  @override
+  String get dsHorsLigne => 'Offline';
+
+  @override
+  String get dsSynchronise => 'Synced';
+
+  @override
+  String get dsHorsLigneLocal => 'Offline — data stays local';
+
+  @override
+  String get dsAlertes => 'Alerts';
+
+  @override
+  String get dsMenuModules => 'Modules menu (Ctrl M)';
+
+  @override
+  String get dsReplier => 'Collapse';
+
+  @override
+  String get dsDeplier => 'Expand';
+
+  @override
+  String get dsFavori => 'Favourite';
+
+  @override
+  String get dsAjouterFavoris => 'Add to favourites';
+
+  @override
+  String get dsRetirerFavoris => 'Remove from favourites';
+
+  @override
+  String get dsFavorisComplets => 'Favourites full';
+
+  @override
+  String get dsAucunModule => 'No module';
+
+  @override
+  String get dsModules => 'Modules';
+
+  @override
+  String get dsRechercherModule => 'Search a module…';
+
+  @override
+  String get dsMagasin => 'Store';
+
+  @override
+  String get dsPagePrecedente => 'Previous page';
+
+  @override
+  String get dsPageSuivante => 'Next page';
+
+  @override
+  String get dsChoisirListe => 'Choose from the list';
+
+  @override
+  String get dsRechercher => 'Search';
+
+  @override
+  String get dsSelectionner => 'Select';
+
+  @override
+  String get dsAucunResultat => 'No results';
+
+  @override
+  String get dsGateLicenceTitre => 'Available with the Advanced tier';
+
+  @override
+  String get dsGateLicenceAction => 'Upgrade to Advanced';
+
+  @override
+  String get dsGateRoleTitre => 'Access not allowed';
+
+  @override
+  String get dsGateRoleAction => 'Request access';
+
+  @override
+  String get dsGateRefuseTitre => 'Access denied';
+
+  @override
+  String get dsGateRefuseAction => 'Back to dashboard';
+
+  @override
+  String get dsGateActivationTitre => 'Application not activated';
+
+  @override
+  String get dsGateActivationAction => 'Activate';
+
+  @override
+  String dsGateRefuseDetail(String module) {
+    return 'Your role does not grant access to the $module module. Ask the administrator to change your permissions.';
+  }
+
+  @override
+  String get dsPermTout => 'Select all';
+
+  @override
+  String get dsPermRien => 'Deselect all';
+
+  @override
+  String get dsPermReserve => 'Administrator only';
+
+  @override
+  String get dsPosProduit => 'Product';
+
+  @override
+  String get dsPosColis => 'Pack';
+
+  @override
+  String get dsPosQte => 'Qty';
+
+  @override
+  String get dsPosPieces => 'Pieces';
+
+  @override
+  String get dsPosMontant => 'Amount';
+
+  @override
+  String get dsPosMoins => 'Less';
+
+  @override
+  String get dsPosPlus => 'More';
+
+  @override
+  String get dsPosRetirer => 'Remove';
+
+  @override
+  String get dsPosChangerColis => 'Change pack';
+
+  @override
+  String get dsPosOuverte => 'Open';
+
+  @override
+  String get dsPosFermee => 'Closed';
+
+  @override
+  String get dsPosAucuneSession => 'No open session';
+
+  @override
+  String dsPosOuverteA(String heure) {
+    return 'Opened at $heure';
+  }
+
+  @override
+  String dsPosPar(String nom) {
+    return 'by $nom';
+  }
+
+  @override
+  String get dsPosSoldeCourant => 'Current balance';
+
+  @override
+  String get dsPosMouvement => 'Movement';
+
+  @override
+  String get dsPosCloturer => 'Close';
+
+  @override
+  String get dsPosOuvrir => 'Open';
+
+  @override
+  String get dsPosOuvrirCaisse => 'Open the register';
+
+  @override
+  String get dsPosEffacer => 'Delete';
+
+  @override
+  String get dsPosToutEffacer => 'Clear all';
+
+  @override
+  String get dsPosTotalAvantRemise => 'Total before discount';
+
+  @override
+  String get dsPosRemise => 'Discount';
+
+  @override
+  String get dsPosTotalAPayer => 'Total due';
+
+  @override
+  String get dsPosPaiementComplet => 'Full payment';
+
+  @override
+  String get dsPosMontantPaye => 'Amount paid';
+
+  @override
+  String get dsPosARendre => 'Change due';
+
+  @override
+  String get dsPosMontantExact => 'Exact amount';
+
+  @override
+  String get dsPosPartielImpossible => 'Partial payment not allowed for the walk-in customer';
+
+  @override
+  String get dsPosResteCredit => 'Remaining (customer credit)';
+
+  @override
+  String get dsPosRupture => 'Out of stock';
+
+  @override
+  String dsPosEnStock(String n) {
+    return '$n in stock';
+  }
+
+  @override
+  String get dsPosEntree => 'Entry';
+
+  @override
+  String get dsPosEntreeRapide => 'New quick entry for this product';
+
+  @override
+  String get dsPosSmartScan => 'Smart Scan';
+
+  @override
+  String dsPosScansMois(int n) {
+    return '/ $n scans this month';
+  }
+
+  @override
+  String dsPosRestants(int n) {
+    return '$n left';
+  }
+
+  @override
+  String dsPosRenouvellement(String date) {
+    return 'Renews $date';
+  }
+
+  @override
+  String get dsPosQuotaHorsLigne => 'Offline — quota unavailable, the register keeps working.';
+
+  @override
+  String get dsPosActualiser => 'Refresh';
+
+  @override
+  String get dsPosNouvelleVente => 'New sale';
+
+  @override
+  String get dsPosVentes => 'sales';
+
+  @override
+  String get dsPosFermerVente => 'Close this sale';
+
+  @override
+  String dsPosMaxVentes(int n) {
+    return 'Maximum $n parallel sales';
+  }
+
+  @override
+  String dsPosArticles(int n) {
+    return '$n item(s)';
+  }
+
+  @override
+  String get dsPosSousTotal => 'Subtotal';
+
+  @override
+  String get dsPosLigneArticles => 'Items';
+
+  @override
+  String get dsPosLigneQuantite => 'Quantity';
+
+  @override
+  String get dsPosLigneAjouter => 'Add products';
+
+  @override
+  String get dsPosLigneVide => 'No product — add some with the button below.';
+
+  @override
+  String get dsPosLigneRetirer => 'Remove line';
+
+  @override
+  String get dsPosCode => 'Code';
+
+  @override
+  String get dsPosPrix => 'Price';
+
+  @override
+  String get dsCalcUtiliser => 'Use the result';
+
+  @override
+  String get dsBarcodeAucun => 'This product has no barcode.';
+
+  @override
+  String get dsBarcodeGenerer => 'Generate';
+
+  @override
+  String get dsBarcodeFormatLibre => 'Free format (not EAN-13)';
+
+  @override
+  String get dsBarcodeCopier => 'Copy';
+
+  @override
+  String get dsBarcodeImprimer => 'Print label';
 }

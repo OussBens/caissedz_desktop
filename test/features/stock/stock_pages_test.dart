@@ -81,13 +81,15 @@ void main() {
       await clic(tester, find.text('Nouvelle sortie'));
       await clic(tester, find.text('Ajouter un produit'));
       await clic(tester, find.text('Lait 1 L').last);
+      await clic(tester, find.text('Choisir'));
       await tester.enterText(find.byKey(const ValueKey('qte_PRD0001')), '50');
       await clic(tester, find.text('Valider'));
       expect(find.textContaining('Stock insuffisant'), findsOneWidget);
-      await clic(tester, find.text('OK'));
+      await clic(tester, find.text('Fermer').last);
       await clic(tester, find.text('Nouvelle sortie'));
       await clic(tester, find.text('Ajouter un produit'));
       await clic(tester, find.text('Lait 1 L').last);
+      await clic(tester, find.text('Choisir'));
       await tester.enterText(find.byKey(const ValueKey('qte_PRD0001')), '2');
       await clic(tester, find.text('Valider'));
       expect(find.text('SOR0001'), findsOneWidget);
@@ -102,10 +104,11 @@ void main() {
       await clic(tester, find.text('Nouveau transfert'));
       await clic(tester, find.text('Ajouter un produit'));
       await clic(tester, find.text('Lait 1 L').last);
+      await clic(tester, find.text('Choisir'));
       await tester.enterText(find.byKey(const ValueKey('qte_PRD0001')), '5');
       await clic(tester, find.text('Valider'));
       expect(find.textContaining('TRM0001'), findsWidgets);
-      await clic(tester, find.text('OK'));
+      await clic(tester, find.text('Fermer').last);
       final repo = StockRepository(c.read(appDatabaseProvider).db);
       expect((await repo.niveau('PRD0001', 'MAG0000')).quantite, 7);
       expect((await repo.niveau('PRD0001', 'MAG0001')).quantite, 5);
@@ -117,7 +120,7 @@ void main() {
       await rafraichir(tester, c);
       await clic(tester, find.text('Générer sous seuil'));
       expect(find.text('1 besoin(s) généré(s).'), findsOneWidget); // l'eau est à 0
-      await clic(tester, find.text('OK'));
+      await clic(tester, find.text('Fermer').last);
       expect(find.text('BES0001'), findsOneWidget);
       expect(find.text('En attente'), findsWidgets);
     });

@@ -40,6 +40,7 @@ dependencies:
 
   # Impression et exports
   pdf: ^3.11.0
+  barcode: ^2.2.9
   printing: ^5.14.2
   excel: ^4.0.6
   archive: ^3.6.1

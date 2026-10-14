@@ -29,8 +29,6 @@ String messageErreurCatalogue(AppLocalizations l10n, ErreurCatalogue e) => switc
   ErreurCatalogue.lignesVides => l10n.packErreurLignes,
 };
 
-double? lireNombre(String s) => s.trim().isEmpty ? null : double.tryParse(s.trim().replaceAll(',', '.'));
-
 /// Formulaire détaillé de produit (création ou modification).
 Future<Produit?> afficherFormulaireProduit(BuildContext context, {Produit? produit, FicheProduitIa? fiche}) {
   return showDialog<Produit>(

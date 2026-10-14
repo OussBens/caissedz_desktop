@@ -86,6 +86,7 @@ void main() {
       await clic(tester, find.text('Grossiste').last);
       await clic(tester, find.text('Ajouter un produit'));
       await clic(tester, find.text('Lait 1 L').last);
+      await clic(tester, find.text('Choisir'));
       await tester.enterText(find.byKey(const ValueKey('aq_PRD0001')), '20');
       await tester.pump();
       await tester.enterText(find.byKey(const ValueKey('ap_PRD0001')), '85');
@@ -94,7 +95,7 @@ void main() {
       await tester.pump();
       await clic(tester, find.text('Valider'));
       expect(find.textContaining('ACH0001'), findsWidgets);
-      await clic(tester, find.text('OK'));
+      await clic(tester, find.text('Fermer').last);
       expect(find.text('ACH0001'), findsOneWidget);
       expect(find.text('Grossiste'), findsOneWidget);
       final db = c.read(appDatabaseProvider).db;
@@ -144,7 +145,7 @@ void main() {
       await clic(tester, find.text('Fournisseur divers'));
       await clic(tester, find.text('Grossiste').last);
       await clic(tester, find.text('Valider'));
-      await clic(tester, find.text('OK'));
+      await clic(tester, find.text('Fermer').last);
       expect(find.text('ACH0001'), findsOneWidget);
       expect(find.text('Smart Scan'), findsOneWidget);
       expect((await StockRepository(c.read(appDatabaseProvider).db).niveau('PRD0001', 'MAG0000')).quantite, 20);

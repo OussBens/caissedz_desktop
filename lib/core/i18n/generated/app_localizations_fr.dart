@@ -2565,4 +2565,466 @@ class AppLocalizationsFr extends AppLocalizations {
   String sauvegardeErreurChemin(String detail) {
     return 'Emplacement invalide : $detail';
   }
+
+  @override
+  String get dsContinuer => 'Continuer';
+
+  @override
+  String get dsCompris => 'Compris';
+
+  @override
+  String get dsLibelle => 'Libellé';
+
+  @override
+  String get dsCochezLignes => 'Cochez une ou plusieurs lignes';
+
+  @override
+  String get dsCliquezLigne => 'Cliquez une ligne · double-clic pour valider';
+
+  @override
+  String get dsAjouter => 'Ajouter';
+
+  @override
+  String get dsChoisir => 'Choisir';
+
+  @override
+  String get dsAnnules => 'annulés';
+
+  @override
+  String get dsSupprimes => 'supprimés';
+
+  @override
+  String get dsActiver => 'Activer';
+
+  @override
+  String get dsActives => 'activés';
+
+  @override
+  String get dsDesactiver => 'Désactiver';
+
+  @override
+  String get dsDesactives => 'désactivés';
+
+  @override
+  String dsLotPartiel(String ok, int total, String participe) {
+    return '$ok sur $total seront $participe.';
+  }
+
+  @override
+  String get dsLotVerifier => 'Vérifiez la sélection avant de confirmer.';
+
+  @override
+  String dsLotBloques(String n, String motif) {
+    return '$n ne peuvent pas être traités : $motif.';
+  }
+
+  @override
+  String get dsMotifAnnulation => 'Motif d\'annulation';
+
+  @override
+  String get dsMotifIndice => 'Ex. erreur de saisie, client absent…';
+
+  @override
+  String get dsObligatoires => 'Obligatoires';
+
+  @override
+  String get dsToujoursAffichees => 'Toujours affichées';
+
+  @override
+  String get dsColonnesParDefaut => 'Colonnes par défaut';
+
+  @override
+  String get dsAutresColonnes => 'Autres colonnes';
+
+  @override
+  String get dsColonnesTitre => 'Afficher / masquer les colonnes';
+
+  @override
+  String dsColonnesVisibles(int n, int total) {
+    return '$n sur $total colonnes visibles';
+  }
+
+  @override
+  String get dsAppliquer => 'Appliquer';
+
+  @override
+  String get dsRechercherColonne => 'Rechercher une colonne…';
+
+  @override
+  String get dsAfficherTout => 'Afficher tout';
+
+  @override
+  String get dsMasquerTout => 'Masquer tout';
+
+  @override
+  String get dsParDefaut => 'Par défaut';
+
+  @override
+  String get dsAucuneColonne => 'Aucune colonne trouvée';
+
+  @override
+  String get dsGarderSelection => 'Garder ma sélection';
+
+  @override
+  String get dsGarderSelectionAide => 'Sinon, les colonnes par défaut sont rétablies à la prochaine ouverture';
+
+  @override
+  String get dsParPage => 'par page';
+
+  @override
+  String get dsToutDeselectionner => 'Tout désélectionner';
+
+  @override
+  String dsSelectionneSur(int n, int total) {
+    return '$n / $total sélectionné(s)';
+  }
+
+  @override
+  String get dsSelectionnezUne => 'Sélectionnez une seule ligne';
+
+  @override
+  String get dsSelectionnezAuMoins => 'Sélectionnez au moins une ligne';
+
+  @override
+  String get dsAucunElement => 'Aucun élément';
+
+  @override
+  String get dsDoubleClicDetail => 'Double-clic : afficher le détail';
+
+  @override
+  String dsColonnesMasquees(int n, int total) {
+    return 'Afficher / masquer les colonnes · $n/$total';
+  }
+
+  @override
+  String get dsFiltres => 'Filtres';
+
+  @override
+  String get dsFiltrer => 'Filtrer';
+
+  @override
+  String get dsReinitialiser => 'Réinitialiser';
+
+  @override
+  String dsActifs(int n) {
+    return '$n actif(s)';
+  }
+
+  @override
+  String get dsExporter => 'Exporter';
+
+  @override
+  String get dsToutExporter => 'Tout exporter';
+
+  @override
+  String get dsSelectionSeulement => 'Sélection seulement';
+
+  @override
+  String get dsRetour => 'Retour';
+
+  @override
+  String get dsEffacer => 'Effacer';
+
+  @override
+  String get dsThemeClair => 'Thème clair';
+
+  @override
+  String get dsThemeSombre => 'Thème sombre';
+
+  @override
+  String get dsEnLigne => 'En ligne';
+
+  @override
+  String get dsHorsLigne => 'Hors ligne';
+
+  @override
+  String get dsSynchronise => 'Synchronisé';
+
+  @override
+  String get dsHorsLigneLocal => 'Hors ligne — les données restent locales';
+
+  @override
+  String get dsAlertes => 'Alertes';
+
+  @override
+  String get dsMenuModules => 'Menu des modules (Ctrl M)';
+
+  @override
+  String get dsReplier => 'Replier';
+
+  @override
+  String get dsDeplier => 'Déplier';
+
+  @override
+  String get dsFavori => 'Favori';
+
+  @override
+  String get dsAjouterFavoris => 'Ajouter aux favoris';
+
+  @override
+  String get dsRetirerFavoris => 'Retirer des favoris';
+
+  @override
+  String get dsFavorisComplets => 'Favoris complets';
+
+  @override
+  String get dsAucunModule => 'Aucun module';
+
+  @override
+  String get dsModules => 'Modules';
+
+  @override
+  String get dsRechercherModule => 'Rechercher un module…';
+
+  @override
+  String get dsMagasin => 'Magasin';
+
+  @override
+  String get dsPagePrecedente => 'Page précédente';
+
+  @override
+  String get dsPageSuivante => 'Page suivante';
+
+  @override
+  String get dsChoisirListe => 'Choisir dans la liste';
+
+  @override
+  String get dsRechercher => 'Rechercher';
+
+  @override
+  String get dsSelectionner => 'Sélectionner';
+
+  @override
+  String get dsAucunResultat => 'Aucun résultat';
+
+  @override
+  String get dsGateLicenceTitre => 'Disponible avec le palier Avancé';
+
+  @override
+  String get dsGateLicenceAction => 'Passer au palier Avancé';
+
+  @override
+  String get dsGateRoleTitre => 'Accès non autorisé';
+
+  @override
+  String get dsGateRoleAction => 'Demander l\'accès';
+
+  @override
+  String get dsGateRefuseTitre => 'Accès refusé';
+
+  @override
+  String get dsGateRefuseAction => 'Retour au tableau de bord';
+
+  @override
+  String get dsGateActivationTitre => 'Application non activée';
+
+  @override
+  String get dsGateActivationAction => 'Activer';
+
+  @override
+  String dsGateRefuseDetail(String module) {
+    return 'Votre rôle ne donne pas accès au module $module. Demandez à l\'administrateur de modifier vos permissions.';
+  }
+
+  @override
+  String get dsPermTout => 'Tout sélectionner';
+
+  @override
+  String get dsPermRien => 'Tout désélectionner';
+
+  @override
+  String get dsPermReserve => 'Réservé à l\'administrateur';
+
+  @override
+  String get dsPosProduit => 'Produit';
+
+  @override
+  String get dsPosColis => 'Colis';
+
+  @override
+  String get dsPosQte => 'Qté';
+
+  @override
+  String get dsPosPieces => 'Pièces';
+
+  @override
+  String get dsPosMontant => 'Montant';
+
+  @override
+  String get dsPosMoins => 'Moins';
+
+  @override
+  String get dsPosPlus => 'Plus';
+
+  @override
+  String get dsPosRetirer => 'Retirer';
+
+  @override
+  String get dsPosChangerColis => 'Changer le colis';
+
+  @override
+  String get dsPosOuverte => 'Ouverte';
+
+  @override
+  String get dsPosFermee => 'Fermée';
+
+  @override
+  String get dsPosAucuneSession => 'Aucune session ouverte';
+
+  @override
+  String dsPosOuverteA(String heure) {
+    return 'Ouverte à $heure';
+  }
+
+  @override
+  String dsPosPar(String nom) {
+    return 'par $nom';
+  }
+
+  @override
+  String get dsPosSoldeCourant => 'Solde courant';
+
+  @override
+  String get dsPosMouvement => 'Mouvement';
+
+  @override
+  String get dsPosCloturer => 'Clôturer';
+
+  @override
+  String get dsPosOuvrir => 'Ouvrir';
+
+  @override
+  String get dsPosOuvrirCaisse => 'Ouvrir la caisse';
+
+  @override
+  String get dsPosEffacer => 'Effacer';
+
+  @override
+  String get dsPosToutEffacer => 'Tout effacer';
+
+  @override
+  String get dsPosTotalAvantRemise => 'Total avant remise';
+
+  @override
+  String get dsPosRemise => 'Remise';
+
+  @override
+  String get dsPosTotalAPayer => 'Total à payer';
+
+  @override
+  String get dsPosPaiementComplet => 'Paiement complet';
+
+  @override
+  String get dsPosMontantPaye => 'Montant payé';
+
+  @override
+  String get dsPosARendre => 'À rendre';
+
+  @override
+  String get dsPosMontantExact => 'Montant exact';
+
+  @override
+  String get dsPosPartielImpossible => 'Paiement partiel impossible pour le client comptoir';
+
+  @override
+  String get dsPosResteCredit => 'Reste (crédit client)';
+
+  @override
+  String get dsPosRupture => 'Rupture';
+
+  @override
+  String dsPosEnStock(String n) {
+    return '$n en stock';
+  }
+
+  @override
+  String get dsPosEntree => 'Entrée';
+
+  @override
+  String get dsPosEntreeRapide => 'Nouvelle entrée rapide de ce produit';
+
+  @override
+  String get dsPosSmartScan => 'Smart Scan';
+
+  @override
+  String dsPosScansMois(int n) {
+    return '/ $n scans ce mois';
+  }
+
+  @override
+  String dsPosRestants(int n) {
+    return '$n restants';
+  }
+
+  @override
+  String dsPosRenouvellement(String date) {
+    return 'Renouvellement $date';
+  }
+
+  @override
+  String get dsPosQuotaHorsLigne => 'Hors ligne — quota indisponible, la caisse continue de fonctionner.';
+
+  @override
+  String get dsPosActualiser => 'Actualiser';
+
+  @override
+  String get dsPosNouvelleVente => 'Nouvelle vente';
+
+  @override
+  String get dsPosVentes => 'ventes';
+
+  @override
+  String get dsPosFermerVente => 'Fermer cette vente';
+
+  @override
+  String dsPosMaxVentes(int n) {
+    return 'Maximum $n ventes en parallèle';
+  }
+
+  @override
+  String dsPosArticles(int n) {
+    return '$n article(s)';
+  }
+
+  @override
+  String get dsPosSousTotal => 'Sous-total';
+
+  @override
+  String get dsPosLigneArticles => 'Articles';
+
+  @override
+  String get dsPosLigneQuantite => 'Quantité';
+
+  @override
+  String get dsPosLigneAjouter => 'Ajouter des produits';
+
+  @override
+  String get dsPosLigneVide => 'Aucun produit — ajoutez-en avec le bouton ci-dessous.';
+
+  @override
+  String get dsPosLigneRetirer => 'Retirer la ligne';
+
+  @override
+  String get dsPosCode => 'Code';
+
+  @override
+  String get dsPosPrix => 'Prix';
+
+  @override
+  String get dsCalcUtiliser => 'Utiliser le résultat';
+
+  @override
+  String get dsBarcodeAucun => 'Ce produit n\'a pas de code-barres.';
+
+  @override
+  String get dsBarcodeGenerer => 'Générer';
+
+  @override
+  String get dsBarcodeFormatLibre => 'Format libre (non EAN-13)';
+
+  @override
+  String get dsBarcodeCopier => 'Copier';
+
+  @override
+  String get dsBarcodeImprimer => 'Imprimer l\'étiquette';
 }

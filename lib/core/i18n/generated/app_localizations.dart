@@ -4958,6 +4958,870 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Emplacement invalide : {detail}'**
   String sauvegardeErreurChemin(String detail);
+
+  /// No description provided for @dsContinuer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Continuer'**
+  String get dsContinuer;
+
+  /// No description provided for @dsCompris.
+  ///
+  /// In fr, this message translates to:
+  /// **'Compris'**
+  String get dsCompris;
+
+  /// No description provided for @dsLibelle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Libellé'**
+  String get dsLibelle;
+
+  /// No description provided for @dsCochezLignes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cochez une ou plusieurs lignes'**
+  String get dsCochezLignes;
+
+  /// No description provided for @dsCliquezLigne.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cliquez une ligne · double-clic pour valider'**
+  String get dsCliquezLigne;
+
+  /// No description provided for @dsAjouter.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter'**
+  String get dsAjouter;
+
+  /// No description provided for @dsChoisir.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir'**
+  String get dsChoisir;
+
+  /// No description provided for @dsAnnules.
+  ///
+  /// In fr, this message translates to:
+  /// **'annulés'**
+  String get dsAnnules;
+
+  /// No description provided for @dsSupprimes.
+  ///
+  /// In fr, this message translates to:
+  /// **'supprimés'**
+  String get dsSupprimes;
+
+  /// No description provided for @dsActiver.
+  ///
+  /// In fr, this message translates to:
+  /// **'Activer'**
+  String get dsActiver;
+
+  /// No description provided for @dsActives.
+  ///
+  /// In fr, this message translates to:
+  /// **'activés'**
+  String get dsActives;
+
+  /// No description provided for @dsDesactiver.
+  ///
+  /// In fr, this message translates to:
+  /// **'Désactiver'**
+  String get dsDesactiver;
+
+  /// No description provided for @dsDesactives.
+  ///
+  /// In fr, this message translates to:
+  /// **'désactivés'**
+  String get dsDesactives;
+
+  /// No description provided for @dsLotPartiel.
+  ///
+  /// In fr, this message translates to:
+  /// **'{ok} sur {total} seront {participe}.'**
+  String dsLotPartiel(String ok, int total, String participe);
+
+  /// No description provided for @dsLotVerifier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vérifiez la sélection avant de confirmer.'**
+  String get dsLotVerifier;
+
+  /// No description provided for @dsLotBloques.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n} ne peuvent pas être traités : {motif}.'**
+  String dsLotBloques(String n, String motif);
+
+  /// No description provided for @dsMotifAnnulation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Motif d\'annulation'**
+  String get dsMotifAnnulation;
+
+  /// No description provided for @dsMotifIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex. erreur de saisie, client absent…'**
+  String get dsMotifIndice;
+
+  /// No description provided for @dsObligatoires.
+  ///
+  /// In fr, this message translates to:
+  /// **'Obligatoires'**
+  String get dsObligatoires;
+
+  /// No description provided for @dsToujoursAffichees.
+  ///
+  /// In fr, this message translates to:
+  /// **'Toujours affichées'**
+  String get dsToujoursAffichees;
+
+  /// No description provided for @dsColonnesParDefaut.
+  ///
+  /// In fr, this message translates to:
+  /// **'Colonnes par défaut'**
+  String get dsColonnesParDefaut;
+
+  /// No description provided for @dsAutresColonnes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Autres colonnes'**
+  String get dsAutresColonnes;
+
+  /// No description provided for @dsColonnesTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Afficher / masquer les colonnes'**
+  String get dsColonnesTitre;
+
+  /// No description provided for @dsColonnesVisibles.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n} sur {total} colonnes visibles'**
+  String dsColonnesVisibles(int n, int total);
+
+  /// No description provided for @dsAppliquer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Appliquer'**
+  String get dsAppliquer;
+
+  /// No description provided for @dsRechercherColonne.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher une colonne…'**
+  String get dsRechercherColonne;
+
+  /// No description provided for @dsAfficherTout.
+  ///
+  /// In fr, this message translates to:
+  /// **'Afficher tout'**
+  String get dsAfficherTout;
+
+  /// No description provided for @dsMasquerTout.
+  ///
+  /// In fr, this message translates to:
+  /// **'Masquer tout'**
+  String get dsMasquerTout;
+
+  /// No description provided for @dsParDefaut.
+  ///
+  /// In fr, this message translates to:
+  /// **'Par défaut'**
+  String get dsParDefaut;
+
+  /// No description provided for @dsAucuneColonne.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune colonne trouvée'**
+  String get dsAucuneColonne;
+
+  /// No description provided for @dsGarderSelection.
+  ///
+  /// In fr, this message translates to:
+  /// **'Garder ma sélection'**
+  String get dsGarderSelection;
+
+  /// No description provided for @dsGarderSelectionAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sinon, les colonnes par défaut sont rétablies à la prochaine ouverture'**
+  String get dsGarderSelectionAide;
+
+  /// No description provided for @dsParPage.
+  ///
+  /// In fr, this message translates to:
+  /// **'par page'**
+  String get dsParPage;
+
+  /// No description provided for @dsToutDeselectionner.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tout désélectionner'**
+  String get dsToutDeselectionner;
+
+  /// No description provided for @dsSelectionneSur.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n} / {total} sélectionné(s)'**
+  String dsSelectionneSur(int n, int total);
+
+  /// No description provided for @dsSelectionnezUne.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sélectionnez une seule ligne'**
+  String get dsSelectionnezUne;
+
+  /// No description provided for @dsSelectionnezAuMoins.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sélectionnez au moins une ligne'**
+  String get dsSelectionnezAuMoins;
+
+  /// No description provided for @dsAucunElement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun élément'**
+  String get dsAucunElement;
+
+  /// No description provided for @dsDoubleClicDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Double-clic : afficher le détail'**
+  String get dsDoubleClicDetail;
+
+  /// No description provided for @dsColonnesMasquees.
+  ///
+  /// In fr, this message translates to:
+  /// **'Afficher / masquer les colonnes · {n}/{total}'**
+  String dsColonnesMasquees(int n, int total);
+
+  /// No description provided for @dsFiltres.
+  ///
+  /// In fr, this message translates to:
+  /// **'Filtres'**
+  String get dsFiltres;
+
+  /// No description provided for @dsFiltrer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Filtrer'**
+  String get dsFiltrer;
+
+  /// No description provided for @dsReinitialiser.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réinitialiser'**
+  String get dsReinitialiser;
+
+  /// No description provided for @dsActifs.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n} actif(s)'**
+  String dsActifs(int n);
+
+  /// No description provided for @dsExporter.
+  ///
+  /// In fr, this message translates to:
+  /// **'Exporter'**
+  String get dsExporter;
+
+  /// No description provided for @dsToutExporter.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tout exporter'**
+  String get dsToutExporter;
+
+  /// No description provided for @dsSelectionSeulement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sélection seulement'**
+  String get dsSelectionSeulement;
+
+  /// No description provided for @dsRetour.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retour'**
+  String get dsRetour;
+
+  /// No description provided for @dsEffacer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Effacer'**
+  String get dsEffacer;
+
+  /// No description provided for @dsThemeClair.
+  ///
+  /// In fr, this message translates to:
+  /// **'Thème clair'**
+  String get dsThemeClair;
+
+  /// No description provided for @dsThemeSombre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Thème sombre'**
+  String get dsThemeSombre;
+
+  /// No description provided for @dsEnLigne.
+  ///
+  /// In fr, this message translates to:
+  /// **'En ligne'**
+  String get dsEnLigne;
+
+  /// No description provided for @dsHorsLigne.
+  ///
+  /// In fr, this message translates to:
+  /// **'Hors ligne'**
+  String get dsHorsLigne;
+
+  /// No description provided for @dsSynchronise.
+  ///
+  /// In fr, this message translates to:
+  /// **'Synchronisé'**
+  String get dsSynchronise;
+
+  /// No description provided for @dsHorsLigneLocal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Hors ligne — les données restent locales'**
+  String get dsHorsLigneLocal;
+
+  /// No description provided for @dsAlertes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Alertes'**
+  String get dsAlertes;
+
+  /// No description provided for @dsMenuModules.
+  ///
+  /// In fr, this message translates to:
+  /// **'Menu des modules (Ctrl M)'**
+  String get dsMenuModules;
+
+  /// No description provided for @dsReplier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Replier'**
+  String get dsReplier;
+
+  /// No description provided for @dsDeplier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déplier'**
+  String get dsDeplier;
+
+  /// No description provided for @dsFavori.
+  ///
+  /// In fr, this message translates to:
+  /// **'Favori'**
+  String get dsFavori;
+
+  /// No description provided for @dsAjouterFavoris.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter aux favoris'**
+  String get dsAjouterFavoris;
+
+  /// No description provided for @dsRetirerFavoris.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retirer des favoris'**
+  String get dsRetirerFavoris;
+
+  /// No description provided for @dsFavorisComplets.
+  ///
+  /// In fr, this message translates to:
+  /// **'Favoris complets'**
+  String get dsFavorisComplets;
+
+  /// No description provided for @dsAucunModule.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun module'**
+  String get dsAucunModule;
+
+  /// No description provided for @dsModules.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modules'**
+  String get dsModules;
+
+  /// No description provided for @dsRechercherModule.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher un module…'**
+  String get dsRechercherModule;
+
+  /// No description provided for @dsMagasin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Magasin'**
+  String get dsMagasin;
+
+  /// No description provided for @dsPagePrecedente.
+  ///
+  /// In fr, this message translates to:
+  /// **'Page précédente'**
+  String get dsPagePrecedente;
+
+  /// No description provided for @dsPageSuivante.
+  ///
+  /// In fr, this message translates to:
+  /// **'Page suivante'**
+  String get dsPageSuivante;
+
+  /// No description provided for @dsChoisirListe.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir dans la liste'**
+  String get dsChoisirListe;
+
+  /// No description provided for @dsRechercher.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher'**
+  String get dsRechercher;
+
+  /// No description provided for @dsSelectionner.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sélectionner'**
+  String get dsSelectionner;
+
+  /// No description provided for @dsAucunResultat.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun résultat'**
+  String get dsAucunResultat;
+
+  /// No description provided for @dsGateLicenceTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Disponible avec le palier Avancé'**
+  String get dsGateLicenceTitre;
+
+  /// No description provided for @dsGateLicenceAction.
+  ///
+  /// In fr, this message translates to:
+  /// **'Passer au palier Avancé'**
+  String get dsGateLicenceAction;
+
+  /// No description provided for @dsGateRoleTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Accès non autorisé'**
+  String get dsGateRoleTitre;
+
+  /// No description provided for @dsGateRoleAction.
+  ///
+  /// In fr, this message translates to:
+  /// **'Demander l\'accès'**
+  String get dsGateRoleAction;
+
+  /// No description provided for @dsGateRefuseTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Accès refusé'**
+  String get dsGateRefuseTitre;
+
+  /// No description provided for @dsGateRefuseAction.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retour au tableau de bord'**
+  String get dsGateRefuseAction;
+
+  /// No description provided for @dsGateActivationTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Application non activée'**
+  String get dsGateActivationTitre;
+
+  /// No description provided for @dsGateActivationAction.
+  ///
+  /// In fr, this message translates to:
+  /// **'Activer'**
+  String get dsGateActivationAction;
+
+  /// No description provided for @dsGateRefuseDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre rôle ne donne pas accès au module {module}. Demandez à l\'administrateur de modifier vos permissions.'**
+  String dsGateRefuseDetail(String module);
+
+  /// No description provided for @dsPermTout.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tout sélectionner'**
+  String get dsPermTout;
+
+  /// No description provided for @dsPermRien.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tout désélectionner'**
+  String get dsPermRien;
+
+  /// No description provided for @dsPermReserve.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réservé à l\'administrateur'**
+  String get dsPermReserve;
+
+  /// No description provided for @dsPosProduit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produit'**
+  String get dsPosProduit;
+
+  /// No description provided for @dsPosColis.
+  ///
+  /// In fr, this message translates to:
+  /// **'Colis'**
+  String get dsPosColis;
+
+  /// No description provided for @dsPosQte.
+  ///
+  /// In fr, this message translates to:
+  /// **'Qté'**
+  String get dsPosQte;
+
+  /// No description provided for @dsPosPieces.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pièces'**
+  String get dsPosPieces;
+
+  /// No description provided for @dsPosMontant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montant'**
+  String get dsPosMontant;
+
+  /// No description provided for @dsPosMoins.
+  ///
+  /// In fr, this message translates to:
+  /// **'Moins'**
+  String get dsPosMoins;
+
+  /// No description provided for @dsPosPlus.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plus'**
+  String get dsPosPlus;
+
+  /// No description provided for @dsPosRetirer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retirer'**
+  String get dsPosRetirer;
+
+  /// No description provided for @dsPosChangerColis.
+  ///
+  /// In fr, this message translates to:
+  /// **'Changer le colis'**
+  String get dsPosChangerColis;
+
+  /// No description provided for @dsPosOuverte.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouverte'**
+  String get dsPosOuverte;
+
+  /// No description provided for @dsPosFermee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fermée'**
+  String get dsPosFermee;
+
+  /// No description provided for @dsPosAucuneSession.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune session ouverte'**
+  String get dsPosAucuneSession;
+
+  /// No description provided for @dsPosOuverteA.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouverte à {heure}'**
+  String dsPosOuverteA(String heure);
+
+  /// No description provided for @dsPosPar.
+  ///
+  /// In fr, this message translates to:
+  /// **'par {nom}'**
+  String dsPosPar(String nom);
+
+  /// No description provided for @dsPosSoldeCourant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Solde courant'**
+  String get dsPosSoldeCourant;
+
+  /// No description provided for @dsPosMouvement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mouvement'**
+  String get dsPosMouvement;
+
+  /// No description provided for @dsPosCloturer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Clôturer'**
+  String get dsPosCloturer;
+
+  /// No description provided for @dsPosOuvrir.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouvrir'**
+  String get dsPosOuvrir;
+
+  /// No description provided for @dsPosOuvrirCaisse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouvrir la caisse'**
+  String get dsPosOuvrirCaisse;
+
+  /// No description provided for @dsPosEffacer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Effacer'**
+  String get dsPosEffacer;
+
+  /// No description provided for @dsPosToutEffacer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tout effacer'**
+  String get dsPosToutEffacer;
+
+  /// No description provided for @dsPosTotalAvantRemise.
+  ///
+  /// In fr, this message translates to:
+  /// **'Total avant remise'**
+  String get dsPosTotalAvantRemise;
+
+  /// No description provided for @dsPosRemise.
+  ///
+  /// In fr, this message translates to:
+  /// **'Remise'**
+  String get dsPosRemise;
+
+  /// No description provided for @dsPosTotalAPayer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Total à payer'**
+  String get dsPosTotalAPayer;
+
+  /// No description provided for @dsPosPaiementComplet.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paiement complet'**
+  String get dsPosPaiementComplet;
+
+  /// No description provided for @dsPosMontantPaye.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montant payé'**
+  String get dsPosMontantPaye;
+
+  /// No description provided for @dsPosARendre.
+  ///
+  /// In fr, this message translates to:
+  /// **'À rendre'**
+  String get dsPosARendre;
+
+  /// No description provided for @dsPosMontantExact.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montant exact'**
+  String get dsPosMontantExact;
+
+  /// No description provided for @dsPosPartielImpossible.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paiement partiel impossible pour le client comptoir'**
+  String get dsPosPartielImpossible;
+
+  /// No description provided for @dsPosResteCredit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Reste (crédit client)'**
+  String get dsPosResteCredit;
+
+  /// No description provided for @dsPosRupture.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rupture'**
+  String get dsPosRupture;
+
+  /// No description provided for @dsPosEnStock.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n} en stock'**
+  String dsPosEnStock(String n);
+
+  /// No description provided for @dsPosEntree.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrée'**
+  String get dsPosEntree;
+
+  /// No description provided for @dsPosEntreeRapide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouvelle entrée rapide de ce produit'**
+  String get dsPosEntreeRapide;
+
+  /// No description provided for @dsPosSmartScan.
+  ///
+  /// In fr, this message translates to:
+  /// **'Smart Scan'**
+  String get dsPosSmartScan;
+
+  /// No description provided for @dsPosScansMois.
+  ///
+  /// In fr, this message translates to:
+  /// **'/ {n} scans ce mois'**
+  String dsPosScansMois(int n);
+
+  /// No description provided for @dsPosRestants.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n} restants'**
+  String dsPosRestants(int n);
+
+  /// No description provided for @dsPosRenouvellement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Renouvellement {date}'**
+  String dsPosRenouvellement(String date);
+
+  /// No description provided for @dsPosQuotaHorsLigne.
+  ///
+  /// In fr, this message translates to:
+  /// **'Hors ligne — quota indisponible, la caisse continue de fonctionner.'**
+  String get dsPosQuotaHorsLigne;
+
+  /// No description provided for @dsPosActualiser.
+  ///
+  /// In fr, this message translates to:
+  /// **'Actualiser'**
+  String get dsPosActualiser;
+
+  /// No description provided for @dsPosNouvelleVente.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouvelle vente'**
+  String get dsPosNouvelleVente;
+
+  /// No description provided for @dsPosVentes.
+  ///
+  /// In fr, this message translates to:
+  /// **'ventes'**
+  String get dsPosVentes;
+
+  /// No description provided for @dsPosFermerVente.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fermer cette vente'**
+  String get dsPosFermerVente;
+
+  /// No description provided for @dsPosMaxVentes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Maximum {n} ventes en parallèle'**
+  String dsPosMaxVentes(int n);
+
+  /// No description provided for @dsPosArticles.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n} article(s)'**
+  String dsPosArticles(int n);
+
+  /// No description provided for @dsPosSousTotal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sous-total'**
+  String get dsPosSousTotal;
+
+  /// No description provided for @dsPosLigneArticles.
+  ///
+  /// In fr, this message translates to:
+  /// **'Articles'**
+  String get dsPosLigneArticles;
+
+  /// No description provided for @dsPosLigneQuantite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quantité'**
+  String get dsPosLigneQuantite;
+
+  /// No description provided for @dsPosLigneAjouter.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter des produits'**
+  String get dsPosLigneAjouter;
+
+  /// No description provided for @dsPosLigneVide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun produit — ajoutez-en avec le bouton ci-dessous.'**
+  String get dsPosLigneVide;
+
+  /// No description provided for @dsPosLigneRetirer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retirer la ligne'**
+  String get dsPosLigneRetirer;
+
+  /// No description provided for @dsPosCode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code'**
+  String get dsPosCode;
+
+  /// No description provided for @dsPosPrix.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix'**
+  String get dsPosPrix;
+
+  /// No description provided for @dsCalcUtiliser.
+  ///
+  /// In fr, this message translates to:
+  /// **'Utiliser le résultat'**
+  String get dsCalcUtiliser;
+
+  /// No description provided for @dsBarcodeAucun.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce produit n\'a pas de code-barres.'**
+  String get dsBarcodeAucun;
+
+  /// No description provided for @dsBarcodeGenerer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Générer'**
+  String get dsBarcodeGenerer;
+
+  /// No description provided for @dsBarcodeFormatLibre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Format libre (non EAN-13)'**
+  String get dsBarcodeFormatLibre;
+
+  /// No description provided for @dsBarcodeCopier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Copier'**
+  String get dsBarcodeCopier;
+
+  /// No description provided for @dsBarcodeImprimer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Imprimer l\'étiquette'**
+  String get dsBarcodeImprimer;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

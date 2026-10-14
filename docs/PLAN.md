@@ -4,10 +4,9 @@ Découpage en lots. Pour chaque lot : écrans, règles (n° de § de la spec 06 
 cases de la checklist §15 (`docs/CONFORMITE.md`). Statut : ⬜ à faire · 🟨 en cours · ✅ terminé · ⚠️ provisoire
 (dépend d'une source absente).
 
-> **Blocage connu (2026-10-14)** : `docs/spec/06_specification_reconstruction.md` et
-> `docs/design/CaisseDZ-DS-v2.2/` ne sont pas dans le dépôt. Les références de § ci-dessous reprennent celles
-> données dans la commande initiale ; le détail (écrans exacts, libellés, tokens, 45 tables, checklist §15) sera
-> complété dès réception des sources.
+> **Sources reçues (2026-10-14)** : `docs/spec/06_specification_reconstruction.md` et
+> `docs/design/CaisseDZ-DS-v2.2/` sont maintenant dans le dépôt. Les lots 0 à 9 avaient été livrés sous hypothèses ;
+> le réalignement sur les sources est mené en quatre phases (voir « Réalignement DS v2.2 » en fin de document).
 
 ## Lot 0 — Socle 🟨 (partie indépendante des sources livrée ; partie dépendante ⚠️)
 
@@ -324,3 +323,49 @@ entièrement cochée ; build Windows (msix ou installeur).
 
 **Reste (hors périmètre d'un poste Linux)** : exécuter `flutter build windows --release` puis `dart run
 msix:create` sur Windows ; recette manuelle de l'impression (USB / réseau / Bluetooth) et du lecteur de codes-barres.
+
+## Réalignement DS v2.2 (après réception des sources) 🟨
+
+Référence : `docs/design/CaisseDZ-DS-v2.2/CaisseDZ-DS-v2.2.html`, `bundle-v2.2/ds-bundle.v2.2.js` (66 composants,
+17 écrans), `nouveaux-composants/*.jsx`, `donnees/ref.js`, `LISEZ-MOI.md` ; règles : spec 06.
+
+- **Phase A — tokens ✅** : `ds_colors.dart` (clair / sombre exacts, primitives violet / ink / teal, chart-1..6,
+  teintes, dégradés brand / night / bar, ombres), `ds_typography.dart` (échelle `--type-*`, chiffres tabulaires,
+  Cairo), `ds_metrics.dart` (espacements, rayons, mouvement, dimensions shell / page / contrôles). Alias
+  historiques conservés pour les écrans des lots 0 à 9 (à supprimer en phase D).
+- **Phase B — composants ✅** : réécriture fidèle au bundle, mêmes APIs publiques (ou compatibles) :
+  - `ds_button.dart` : variantes primary / secondary / ghost / soft / danger / accent / inverse, tailles 32 / 36 /
+    44, puce `kbd`, garde 450 ms, `DsIconButton` (ghost / outline, badge), `DsKbd`, `DsIconBox`.
+  - `ds_primitives.dart` : `DsCard` (en-tête icône + actions + info), `DsBadge` (7 tons, point, sm),
+    `DsStatusBadge` + presets, `DsTrendBadge`, `DsStatCard`, `DsTextField`, `DsAvatar`, `DsLogo` (glyphe
+    panier), `DsProgressBar`, `DsKeyValueGrid`, `DsDetailSection`, `DsStatsStrip`, `DsToast`.
+  - `ds_forms.dart` : `DsCheckbox`, `DsSearchField`, `DsDateField`, `DsFormRow` (+ bouton ≡), `DsSegmentedControl`,
+    `DsChoiceCards`, `DsChipGroup` (+ couleurs produit), `DsKeyInput`, `DsOrderedMultiSelect`, `DsPeriodFilter`
+    (+ `DsPeriode.calculer`), `DsRangeFilter`, `DsSplitAllocator`, `DsPhotoUploader`.
+  - `ds_page.dart` : `DsPage` (PageHeader + zone 24 / 32), `DsOnglets` (compteurs), `DsSelect` (liste flottante
+    en route transparente), `DsSwitch`, `DsVide` (EmptyState), formatage `formaterNombre` / `formaterK` / `lireNombre`.
+  - `ds_dialog.dart` : `DsDialog` (icône tonale, description, pied), `afficherConfirmation` (genres confirm /
+    danger / warning / refuse), `afficherResultat`, `DsPickerDialog` (recherche, sélection simple ou multiple,
+    double-clic, « Nouveau »), `afficherActionLot` (BulkActionDialog), `afficherReglageColonnes`
+    (ColumnSettings : obligatoires / par défaut / autres, « Garder ma sélection »), `afficherMenuContextuel`.
+  - `ds_data_table.dart` : en-tête capitales 11 px, lignes 52 / 40, colonnes fortes / atténuées / mono,
+    verrous implicites (`code` + première colonne forte), dialog colonnes avec compteur, totaux, menu contextuel,
+    pagination DS.
+  - `ds_module.dart` : `DsFilterPanel`, `DsPagination`, `DsSelectionBar` (règles une / plusieurs), `DsExportMenu`.
+  - `ds_navigation.dart` : `DsSidebar` / `DsNavItem` (248 / 72, badges), `DsTopBar`, `DsTemoinLigne`,
+    `DsThemeToggle`, `DsStoreSwitcher`, `DsFavorisBar`, `DsModuleLauncher` (tuiles, favoris 7 max, verrous).
+  - `ds_charts.dart` : `DsLineChart` (séries, aire, grille pointillée, « k »), `DsBarChart`, `DsRankedBars`,
+    `DsDonutChart` ; enveloppes de compatibilité `DsGraphique*`.
+  - `ds_pos.dart` : `DsCartLineHeader` / `DsCartLine` (grille CART_COLS) / `DsCartLineQN`, `DsCashSessionCard`,
+    `DsNumpad`, `DsPaymentPanel` (bandeau nuit, paiement complet, à rendre / reste), `DsProductTile`,
+    `DsQuotaCard`, `DsSaleTabs`, `DsTotalPanel`, `DsCalculator` (parenthèses, %, clavier).
+  - `ds_barcode.dart` : `DsBarcode` (EAN-13, CODE128, QR via `barcode`), `DsBarcodeCard`, code auto §8.10.
+  - `ds_line_items.dart` : `DsLineItemsEditor`. `licence_gate.dart` : genres licence / role / refuse /
+    activation. `ds_stepper.dart`, `permission_grid.dart` (+ `DsPermissionTiles` = MODULES / SPECIAL du DS).
+  - Libellés des composants : clés ARB `ds*` (FR / AR / EN).
+  - Écarts assumés en attendant la phase D : les écrans des lots 0 à 9 utilisent encore les alias historiques ;
+    `pos_widgets.dart` (ancienne caisse) subsiste jusqu'à la réécriture de `CaisseScreen`.
+- **Phase C — shell et démarrage ⬜** : AppShell DS (sidebar 4 groupes, favoris, Ctrl+M, alertes, Mon compte,
+  sélecteur de magasin), 17 modules du DS, Login / Activation (KeyInput) / Mode démo / InitialSetup.
+- **Phase D — écrans ⬜** : les 17 écrans et leurs dialogs d'après les kits du bundle, listes de `ref.js`,
+  tests réécrits, suppression des alias.

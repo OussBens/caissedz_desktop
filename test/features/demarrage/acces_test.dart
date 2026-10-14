@@ -28,14 +28,14 @@ void main() {
       // Caissier n'a pas accès à produits → accès refusé prime ; testons un module accessible et Avancé :
       // 'retours' est accessible au caissier mais réservé à la licence Avancé.
       await clic(tester, find.text('Retours'));
-      expect(find.text('Fonction disponible avec la licence Avancé'), findsOneWidget);
+      expect(find.text('Disponible avec le palier Avancé'), findsOneWidget);
       expect(find.byType(LicenceGate), findsWidgets);
     });
 
     testWidgets('admin Avancé : Zakat accessible et grille des rôles modifiable', (tester) async {
       await pumpApp(tester, etat: EtatApp.connecteeAdmin, routeInitiale: '/zakat');
       expect(find.textContaining('Zakat sur les biens commerciaux'), findsOneWidget);
-      expect(find.text('Fonction disponible avec la licence Avancé'), findsNothing);
+      expect(find.text('Disponible avec le palier Avancé'), findsNothing);
     });
   });
 }

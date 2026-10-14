@@ -64,7 +64,7 @@ void main() {
       await clic(tester, find.text('Suivant'));
       await clic(tester, find.text('Terminer'));
       expect(find.textContaining('Configuration terminée'), findsOneWidget);
-      await clic(tester, find.text('OK'));
+      await clic(tester, find.text('Fermer').last);
 
       expect(c.read(configurationTermineeProvider), isTrue);
       expect(find.byType(ConnexionPage), findsOneWidget);

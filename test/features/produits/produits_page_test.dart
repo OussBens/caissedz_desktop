@@ -31,7 +31,7 @@ void main() {
       await clic(tester, find.text('Enregistrer'));
       expect(find.text('Lait 1 L'), findsOneWidget);
       expect(find.text('PRD0001'), findsOneWidget);
-      expect(find.text("Prix d'achat"), findsOneWidget); // colonne visible pour l'admin
+      expect(find.text("PRIX D'ACHAT"), findsOneWidget); // colonne visible pour l'admin
       final p = await CatalogueRepository(c.read(appDatabaseProvider).db).produitParCode('PRD0001');
       expect(p!.prixVente, 100);
       expect(p.margePct, 25);

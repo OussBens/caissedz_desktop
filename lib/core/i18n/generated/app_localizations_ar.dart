@@ -2552,4 +2552,466 @@ class AppLocalizationsAr extends AppLocalizations {
   String sauvegardeErreurChemin(String detail) {
     return 'موقع غير صالح: $detail';
   }
+
+  @override
+  String get dsContinuer => 'متابعة';
+
+  @override
+  String get dsCompris => 'فهمت';
+
+  @override
+  String get dsLibelle => 'التسمية';
+
+  @override
+  String get dsCochezLignes => 'حدّد سطرًا أو أكثر';
+
+  @override
+  String get dsCliquezLigne => 'انقر سطرًا · نقر مزدوج للتأكيد';
+
+  @override
+  String get dsAjouter => 'إضافة';
+
+  @override
+  String get dsChoisir => 'اختيار';
+
+  @override
+  String get dsAnnules => 'ملغاة';
+
+  @override
+  String get dsSupprimes => 'محذوفة';
+
+  @override
+  String get dsActiver => 'تفعيل';
+
+  @override
+  String get dsActives => 'مفعّلة';
+
+  @override
+  String get dsDesactiver => 'تعطيل';
+
+  @override
+  String get dsDesactives => 'معطّلة';
+
+  @override
+  String dsLotPartiel(String ok, int total, String participe) {
+    return '$ok من $total ستكون $participe.';
+  }
+
+  @override
+  String get dsLotVerifier => 'تحقّق من التحديد قبل التأكيد.';
+
+  @override
+  String dsLotBloques(String n, String motif) {
+    return '$n لا يمكن معالجتها: $motif.';
+  }
+
+  @override
+  String get dsMotifAnnulation => 'سبب الإلغاء';
+
+  @override
+  String get dsMotifIndice => 'مثال: خطأ في الإدخال، غياب العميل…';
+
+  @override
+  String get dsObligatoires => 'إلزامية';
+
+  @override
+  String get dsToujoursAffichees => 'تُعرض دائمًا';
+
+  @override
+  String get dsColonnesParDefaut => 'الأعمدة الافتراضية';
+
+  @override
+  String get dsAutresColonnes => 'أعمدة أخرى';
+
+  @override
+  String get dsColonnesTitre => 'إظهار / إخفاء الأعمدة';
+
+  @override
+  String dsColonnesVisibles(int n, int total) {
+    return '$n من $total أعمدة ظاهرة';
+  }
+
+  @override
+  String get dsAppliquer => 'تطبيق';
+
+  @override
+  String get dsRechercherColonne => 'البحث عن عمود…';
+
+  @override
+  String get dsAfficherTout => 'إظهار الكل';
+
+  @override
+  String get dsMasquerTout => 'إخفاء الكل';
+
+  @override
+  String get dsParDefaut => 'افتراضي';
+
+  @override
+  String get dsAucuneColonne => 'لم يُعثر على أي عمود';
+
+  @override
+  String get dsGarderSelection => 'الاحتفاظ بتحديدي';
+
+  @override
+  String get dsGarderSelectionAide => 'وإلا تُستعاد الأعمدة الافتراضية عند الفتح التالي';
+
+  @override
+  String get dsParPage => 'في الصفحة';
+
+  @override
+  String get dsToutDeselectionner => 'إلغاء تحديد الكل';
+
+  @override
+  String dsSelectionneSur(int n, int total) {
+    return '$n / $total محدّد';
+  }
+
+  @override
+  String get dsSelectionnezUne => 'حدّد سطرًا واحدًا فقط';
+
+  @override
+  String get dsSelectionnezAuMoins => 'حدّد سطرًا واحدًا على الأقل';
+
+  @override
+  String get dsAucunElement => 'لا عناصر';
+
+  @override
+  String get dsDoubleClicDetail => 'نقر مزدوج: عرض التفاصيل';
+
+  @override
+  String dsColonnesMasquees(int n, int total) {
+    return 'إظهار / إخفاء الأعمدة · $n/$total';
+  }
+
+  @override
+  String get dsFiltres => 'عوامل التصفية';
+
+  @override
+  String get dsFiltrer => 'تصفية';
+
+  @override
+  String get dsReinitialiser => 'إعادة التعيين';
+
+  @override
+  String dsActifs(int n) {
+    return '$n نشط';
+  }
+
+  @override
+  String get dsExporter => 'تصدير';
+
+  @override
+  String get dsToutExporter => 'تصدير الكل';
+
+  @override
+  String get dsSelectionSeulement => 'التحديد فقط';
+
+  @override
+  String get dsRetour => 'رجوع';
+
+  @override
+  String get dsEffacer => 'مسح';
+
+  @override
+  String get dsThemeClair => 'السمة الفاتحة';
+
+  @override
+  String get dsThemeSombre => 'السمة الداكنة';
+
+  @override
+  String get dsEnLigne => 'متصل';
+
+  @override
+  String get dsHorsLigne => 'غير متصل';
+
+  @override
+  String get dsSynchronise => 'متزامن';
+
+  @override
+  String get dsHorsLigneLocal => 'غير متصل — تبقى البيانات محلية';
+
+  @override
+  String get dsAlertes => 'التنبيهات';
+
+  @override
+  String get dsMenuModules => 'قائمة الوحدات (Ctrl M)';
+
+  @override
+  String get dsReplier => 'طيّ';
+
+  @override
+  String get dsDeplier => 'بسط';
+
+  @override
+  String get dsFavori => 'مفضّل';
+
+  @override
+  String get dsAjouterFavoris => 'إضافة إلى المفضلة';
+
+  @override
+  String get dsRetirerFavoris => 'إزالة من المفضلة';
+
+  @override
+  String get dsFavorisComplets => 'المفضلة ممتلئة';
+
+  @override
+  String get dsAucunModule => 'لا توجد وحدة';
+
+  @override
+  String get dsModules => 'الوحدات';
+
+  @override
+  String get dsRechercherModule => 'البحث عن وحدة…';
+
+  @override
+  String get dsMagasin => 'المتجر';
+
+  @override
+  String get dsPagePrecedente => 'الصفحة السابقة';
+
+  @override
+  String get dsPageSuivante => 'الصفحة التالية';
+
+  @override
+  String get dsChoisirListe => 'اختيار من القائمة';
+
+  @override
+  String get dsRechercher => 'بحث';
+
+  @override
+  String get dsSelectionner => 'تحديد';
+
+  @override
+  String get dsAucunResultat => 'لا نتائج';
+
+  @override
+  String get dsGateLicenceTitre => 'متاح مع الباقة المتقدمة';
+
+  @override
+  String get dsGateLicenceAction => 'الانتقال إلى الباقة المتقدمة';
+
+  @override
+  String get dsGateRoleTitre => 'وصول غير مصرّح به';
+
+  @override
+  String get dsGateRoleAction => 'طلب الوصول';
+
+  @override
+  String get dsGateRefuseTitre => 'تم رفض الوصول';
+
+  @override
+  String get dsGateRefuseAction => 'العودة إلى لوحة القيادة';
+
+  @override
+  String get dsGateActivationTitre => 'التطبيق غير مفعّل';
+
+  @override
+  String get dsGateActivationAction => 'تفعيل';
+
+  @override
+  String dsGateRefuseDetail(String module) {
+    return 'لا يمنحك دورك الوصول إلى وحدة $module. اطلب من المسؤول تعديل صلاحياتك.';
+  }
+
+  @override
+  String get dsPermTout => 'تحديد الكل';
+
+  @override
+  String get dsPermRien => 'إلغاء تحديد الكل';
+
+  @override
+  String get dsPermReserve => 'مخصّص للمسؤول';
+
+  @override
+  String get dsPosProduit => 'المنتج';
+
+  @override
+  String get dsPosColis => 'العبوة';
+
+  @override
+  String get dsPosQte => 'الكمية';
+
+  @override
+  String get dsPosPieces => 'القطع';
+
+  @override
+  String get dsPosMontant => 'المبلغ';
+
+  @override
+  String get dsPosMoins => 'أقل';
+
+  @override
+  String get dsPosPlus => 'أكثر';
+
+  @override
+  String get dsPosRetirer => 'إزالة';
+
+  @override
+  String get dsPosChangerColis => 'تغيير العبوة';
+
+  @override
+  String get dsPosOuverte => 'مفتوحة';
+
+  @override
+  String get dsPosFermee => 'مغلقة';
+
+  @override
+  String get dsPosAucuneSession => 'لا توجد جلسة مفتوحة';
+
+  @override
+  String dsPosOuverteA(String heure) {
+    return 'مفتوحة في $heure';
+  }
+
+  @override
+  String dsPosPar(String nom) {
+    return 'بواسطة $nom';
+  }
+
+  @override
+  String get dsPosSoldeCourant => 'الرصيد الحالي';
+
+  @override
+  String get dsPosMouvement => 'حركة';
+
+  @override
+  String get dsPosCloturer => 'إغلاق';
+
+  @override
+  String get dsPosOuvrir => 'فتح';
+
+  @override
+  String get dsPosOuvrirCaisse => 'فتح الصندوق';
+
+  @override
+  String get dsPosEffacer => 'مسح';
+
+  @override
+  String get dsPosToutEffacer => 'مسح الكل';
+
+  @override
+  String get dsPosTotalAvantRemise => 'الإجمالي قبل الخصم';
+
+  @override
+  String get dsPosRemise => 'الخصم';
+
+  @override
+  String get dsPosTotalAPayer => 'الإجمالي المستحق';
+
+  @override
+  String get dsPosPaiementComplet => 'دفع كامل';
+
+  @override
+  String get dsPosMontantPaye => 'المبلغ المدفوع';
+
+  @override
+  String get dsPosARendre => 'الباقي';
+
+  @override
+  String get dsPosMontantExact => 'المبلغ بالضبط';
+
+  @override
+  String get dsPosPartielImpossible => 'الدفع الجزئي غير ممكن لعميل الكاونتر';
+
+  @override
+  String get dsPosResteCredit => 'المتبقي (دين العميل)';
+
+  @override
+  String get dsPosRupture => 'نفد';
+
+  @override
+  String dsPosEnStock(String n) {
+    return '$n في المخزون';
+  }
+
+  @override
+  String get dsPosEntree => 'إدخال';
+
+  @override
+  String get dsPosEntreeRapide => 'إدخال سريع جديد لهذا المنتج';
+
+  @override
+  String get dsPosSmartScan => 'Smart Scan';
+
+  @override
+  String dsPosScansMois(int n) {
+    return '/ $n مسحًا هذا الشهر';
+  }
+
+  @override
+  String dsPosRestants(int n) {
+    return '$n متبقية';
+  }
+
+  @override
+  String dsPosRenouvellement(String date) {
+    return 'التجديد $date';
+  }
+
+  @override
+  String get dsPosQuotaHorsLigne => 'غير متصل — الحصة غير متاحة، يواصل الصندوق العمل.';
+
+  @override
+  String get dsPosActualiser => 'تحديث';
+
+  @override
+  String get dsPosNouvelleVente => 'بيع جديد';
+
+  @override
+  String get dsPosVentes => 'مبيعات';
+
+  @override
+  String get dsPosFermerVente => 'إغلاق هذا البيع';
+
+  @override
+  String dsPosMaxVentes(int n) {
+    return 'الحد الأقصى $n مبيعات بالتوازي';
+  }
+
+  @override
+  String dsPosArticles(int n) {
+    return '$n سلعة';
+  }
+
+  @override
+  String get dsPosSousTotal => 'المجموع الفرعي';
+
+  @override
+  String get dsPosLigneArticles => 'السلع';
+
+  @override
+  String get dsPosLigneQuantite => 'الكمية';
+
+  @override
+  String get dsPosLigneAjouter => 'إضافة منتجات';
+
+  @override
+  String get dsPosLigneVide => 'لا منتجات — أضف باستخدام الزر أدناه.';
+
+  @override
+  String get dsPosLigneRetirer => 'إزالة السطر';
+
+  @override
+  String get dsPosCode => 'الرمز';
+
+  @override
+  String get dsPosPrix => 'السعر';
+
+  @override
+  String get dsCalcUtiliser => 'استخدام النتيجة';
+
+  @override
+  String get dsBarcodeAucun => 'لا يملك هذا المنتج رمزًا شريطيًا.';
+
+  @override
+  String get dsBarcodeGenerer => 'توليد';
+
+  @override
+  String get dsBarcodeFormatLibre => 'تنسيق حر (ليس EAN-13)';
+
+  @override
+  String get dsBarcodeCopier => 'نسخ';
+
+  @override
+  String get dsBarcodeImprimer => 'طباعة الملصق';
 }

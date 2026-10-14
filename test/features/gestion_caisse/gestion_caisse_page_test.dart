@@ -52,7 +52,7 @@ void main() {
       await tester.pump();
       await clic(tester, find.text('Valider'));
       expect(find.textContaining('TRF0001'), findsWidgets);
-      await clic(tester, find.text('OK'));
+      await clic(tester, find.text('Fermer').last);
       expect(find.text('TRF0001'), findsOneWidget);
       final repo = CaisseRepository(c.read(appDatabaseProvider).db);
       expect((await repo.mouvements(referenceType: 'transfert_caisse', referenceCode: 'TRF0001')).length, 2);
@@ -68,7 +68,7 @@ void main() {
       await tester.pump();
       await clic(tester, find.text('Valider'));
       expect(find.text('Solde insuffisant dans la caisse source.'), findsOneWidget);
-      await clic(tester, find.text('OK'));
+      await clic(tester, find.text('Fermer').last);
       expect(
         (await CaisseService(c.read(appDatabaseProvider).db, utilisateurCode: 'USR0000').caisses()).last.type,
         TypesCaisse.compte,

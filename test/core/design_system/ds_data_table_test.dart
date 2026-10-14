@@ -52,16 +52,16 @@ void main() {
     testWidgets('trie par colonne (asc, desc, puis sans tri)', (tester) async {
       await pumpDs(tester, DsDataTable<_L>(colonnes: _colonnes(), lignes: _lignes, cle: (l) => l.code, taillePage: 5));
       Offset y(String texte) => tester.getTopLeft(find.text(texte));
-      await tester.tap(find.text('Qté'));
+      await tester.tap(find.text('QTÉ'));
       await tester.pumpAndSettle();
       // Tri ascendant : la plus petite quantité (0 pour i=11, 22) en premier.
       expect(find.text('C011'), findsOneWidget);
-      await tester.tap(find.text('Qté'));
+      await tester.tap(find.text('QTÉ'));
       await tester.pumpAndSettle();
       // Tri descendant : quantité 10 (i=3, 14, 25) en premier.
       expect(find.text('C003'), findsOneWidget);
       expect(y('C003').dy < y('C014').dy, isTrue);
-      await tester.tap(find.text('Qté'));
+      await tester.tap(find.text('QTÉ'));
       await tester.pumpAndSettle();
       expect(find.text('C001'), findsOneWidget);
     });
@@ -93,16 +93,11 @@ void main() {
     testWidgets('masque et réaffiche une colonne', (tester) async {
       await pumpDs(tester, DsDataTable<_L>(colonnes: _colonnes(), lignes: _lignes, cle: (l) => l.code, taillePage: 5));
       expect(find.text('Article 1'), findsOneWidget);
-      await tester.tap(find.byTooltip('Colonnes'));
+      await tester.tap(find.byKey(const ValueKey('table_colonnes')));
       await tester.pumpAndSettle();
-      await tester.tap(
-        find.descendant(
-          of: find.ancestor(of: find.text('Nom').last, matching: find.byType(Row)).first,
-          matching: find.byType(Checkbox),
-        ),
-      );
+      await tester.tap(find.byKey(const ValueKey('colonne_nom')));
       await tester.pumpAndSettle();
-      await tester.tapAt(const Offset(5, 5)); // ferme le menu
+      await tester.tap(find.text('Appliquer'));
       await tester.pumpAndSettle();
       expect(find.text('Article 1'), findsNothing);
     });
@@ -133,7 +128,7 @@ void main() {
 
     testWidgets('message vide', (tester) async {
       await pumpDs(tester, DsDataTable<_L>(colonnes: _colonnes(), lignes: const [], cle: (l) => l.code));
-      expect(find.text('Aucun résultat'), findsOneWidget);
+      expect(find.text('Aucun élément'), findsOneWidget);
     });
   });
 }

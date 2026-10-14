@@ -1256,5 +1256,272 @@
         "type": "String"
       }
     }
-  }
+  },
+  "dsContinuer": "Continuer",
+  "dsCompris": "Compris",
+  "dsLibelle": "Libellé",
+  "dsCochezLignes": "Cochez une ou plusieurs lignes",
+  "dsCliquezLigne": "Cliquez une ligne · double-clic pour valider",
+  "dsAjouter": "Ajouter",
+  "dsChoisir": "Choisir",
+  "dsAnnules": "annulés",
+  "dsSupprimes": "supprimés",
+  "dsActiver": "Activer",
+  "dsActives": "activés",
+  "dsDesactiver": "Désactiver",
+  "dsDesactives": "désactivés",
+  "dsLotPartiel": "{ok} sur {total} seront {participe}.",
+  "@dsLotPartiel": {
+    "placeholders": {
+      "ok": {
+        "type": "String"
+      },
+      "total": {
+        "type": "int"
+      },
+      "participe": {
+        "type": "String"
+      }
+    }
+  },
+  "dsLotVerifier": "Vérifiez la sélection avant de confirmer.",
+  "dsLotBloques": "{n} ne peuvent pas être traités : {motif}.",
+  "@dsLotBloques": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      },
+      "motif": {
+        "type": "String"
+      }
+    }
+  },
+  "dsMotifAnnulation": "Motif d'annulation",
+  "dsMotifIndice": "Ex. erreur de saisie, client absent…",
+  "dsObligatoires": "Obligatoires",
+  "dsToujoursAffichees": "Toujours affichées",
+  "dsColonnesParDefaut": "Colonnes par défaut",
+  "dsAutresColonnes": "Autres colonnes",
+  "dsColonnesTitre": "Afficher / masquer les colonnes",
+  "dsColonnesVisibles": "{n} sur {total} colonnes visibles",
+  "@dsColonnesVisibles": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "dsAppliquer": "Appliquer",
+  "dsRechercherColonne": "Rechercher une colonne…",
+  "dsAfficherTout": "Afficher tout",
+  "dsMasquerTout": "Masquer tout",
+  "dsParDefaut": "Par défaut",
+  "dsAucuneColonne": "Aucune colonne trouvée",
+  "dsGarderSelection": "Garder ma sélection",
+  "dsGarderSelectionAide": "Sinon, les colonnes par défaut sont rétablies à la prochaine ouverture",
+  "dsParPage": "par page",
+  "dsToutDeselectionner": "Tout désélectionner",
+  "dsSelectionneSur": "{n} / {total} sélectionné(s)",
+  "@dsSelectionneSur": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "dsSelectionnezUne": "Sélectionnez une seule ligne",
+  "dsSelectionnezAuMoins": "Sélectionnez au moins une ligne",
+  "dsAucunElement": "Aucun élément",
+  "dsDoubleClicDetail": "Double-clic : afficher le détail",
+  "dsColonnesMasquees": "Afficher / masquer les colonnes · {n}/{total}",
+  "@dsColonnesMasquees": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "dsFiltres": "Filtres",
+  "dsFiltrer": "Filtrer",
+  "dsReinitialiser": "Réinitialiser",
+  "dsActifs": "{n} actif(s)",
+  "@dsActifs": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "dsExporter": "Exporter",
+  "dsToutExporter": "Tout exporter",
+  "dsSelectionSeulement": "Sélection seulement",
+  "dsRetour": "Retour",
+  "dsEffacer": "Effacer",
+  "dsThemeClair": "Thème clair",
+  "dsThemeSombre": "Thème sombre",
+  "dsEnLigne": "En ligne",
+  "dsHorsLigne": "Hors ligne",
+  "dsSynchronise": "Synchronisé",
+  "dsHorsLigneLocal": "Hors ligne — les données restent locales",
+  "dsAlertes": "Alertes",
+  "dsMenuModules": "Menu des modules (Ctrl M)",
+  "dsReplier": "Replier",
+  "dsDeplier": "Déplier",
+  "dsFavori": "Favori",
+  "dsAjouterFavoris": "Ajouter aux favoris",
+  "dsRetirerFavoris": "Retirer des favoris",
+  "dsFavorisComplets": "Favoris complets",
+  "dsAucunModule": "Aucun module",
+  "dsModules": "Modules",
+  "dsRechercherModule": "Rechercher un module…",
+  "dsMagasin": "Magasin",
+  "dsPagePrecedente": "Page précédente",
+  "dsPageSuivante": "Page suivante",
+  "dsChoisirListe": "Choisir dans la liste",
+  "dsRechercher": "Rechercher",
+  "dsSelectionner": "Sélectionner",
+  "dsAucunResultat": "Aucun résultat",
+  "dsGateLicenceTitre": "Disponible avec le palier Avancé",
+  "dsGateLicenceAction": "Passer au palier Avancé",
+  "dsGateRoleTitre": "Accès non autorisé",
+  "dsGateRoleAction": "Demander l'accès",
+  "dsGateRefuseTitre": "Accès refusé",
+  "dsGateRefuseAction": "Retour au tableau de bord",
+  "dsGateActivationTitre": "Application non activée",
+  "dsGateActivationAction": "Activer",
+  "dsGateRefuseDetail": "Votre rôle ne donne pas accès au module {module}. Demandez à l'administrateur de modifier vos permissions.",
+  "@dsGateRefuseDetail": {
+    "placeholders": {
+      "module": {
+        "type": "String"
+      }
+    }
+  },
+  "dsPermTout": "Tout sélectionner",
+  "dsPermRien": "Tout désélectionner",
+  "dsPermReserve": "Réservé à l'administrateur",
+  "dsPosProduit": "Produit",
+  "dsPosColis": "Colis",
+  "dsPosQte": "Qté",
+  "dsPosPieces": "Pièces",
+  "dsPosMontant": "Montant",
+  "dsPosMoins": "Moins",
+  "dsPosPlus": "Plus",
+  "dsPosRetirer": "Retirer",
+  "dsPosChangerColis": "Changer le colis",
+  "dsPosOuverte": "Ouverte",
+  "dsPosFermee": "Fermée",
+  "dsPosAucuneSession": "Aucune session ouverte",
+  "dsPosOuverteA": "Ouverte à {heure}",
+  "@dsPosOuverteA": {
+    "placeholders": {
+      "heure": {
+        "type": "String"
+      }
+    }
+  },
+  "dsPosPar": "par {nom}",
+  "@dsPosPar": {
+    "placeholders": {
+      "nom": {
+        "type": "String"
+      }
+    }
+  },
+  "dsPosSoldeCourant": "Solde courant",
+  "dsPosMouvement": "Mouvement",
+  "dsPosCloturer": "Clôturer",
+  "dsPosOuvrir": "Ouvrir",
+  "dsPosOuvrirCaisse": "Ouvrir la caisse",
+  "dsPosEffacer": "Effacer",
+  "dsPosToutEffacer": "Tout effacer",
+  "dsPosTotalAvantRemise": "Total avant remise",
+  "dsPosRemise": "Remise",
+  "dsPosTotalAPayer": "Total à payer",
+  "dsPosPaiementComplet": "Paiement complet",
+  "dsPosMontantPaye": "Montant payé",
+  "dsPosARendre": "À rendre",
+  "dsPosMontantExact": "Montant exact",
+  "dsPosPartielImpossible": "Paiement partiel impossible pour le client comptoir",
+  "dsPosResteCredit": "Reste (crédit client)",
+  "dsPosRupture": "Rupture",
+  "dsPosEnStock": "{n} en stock",
+  "@dsPosEnStock": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "dsPosEntree": "Entrée",
+  "dsPosEntreeRapide": "Nouvelle entrée rapide de ce produit",
+  "dsPosSmartScan": "Smart Scan",
+  "dsPosScansMois": "/ {n} scans ce mois",
+  "@dsPosScansMois": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "dsPosRestants": "{n} restants",
+  "@dsPosRestants": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "dsPosRenouvellement": "Renouvellement {date}",
+  "@dsPosRenouvellement": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dsPosQuotaHorsLigne": "Hors ligne — quota indisponible, la caisse continue de fonctionner.",
+  "dsPosActualiser": "Actualiser",
+  "dsPosNouvelleVente": "Nouvelle vente",
+  "dsPosVentes": "ventes",
+  "dsPosFermerVente": "Fermer cette vente",
+  "dsPosMaxVentes": "Maximum {n} ventes en parallèle",
+  "@dsPosMaxVentes": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "dsPosArticles": "{n} article(s)",
+  "@dsPosArticles": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "dsPosSousTotal": "Sous-total",
+  "dsPosLigneArticles": "Articles",
+  "dsPosLigneQuantite": "Quantité",
+  "dsPosLigneAjouter": "Ajouter des produits",
+  "dsPosLigneVide": "Aucun produit — ajoutez-en avec le bouton ci-dessous.",
+  "dsPosLigneRetirer": "Retirer la ligne",
+  "dsPosCode": "Code",
+  "dsPosPrix": "Prix",
+  "dsCalcUtiliser": "Utiliser le résultat",
+  "dsBarcodeAucun": "Ce produit n'a pas de code-barres.",
+  "dsBarcodeGenerer": "Générer",
+  "dsBarcodeFormatLibre": "Format libre (non EAN-13)",
+  "dsBarcodeCopier": "Copier",
+  "dsBarcodeImprimer": "Imprimer l'étiquette"
 }

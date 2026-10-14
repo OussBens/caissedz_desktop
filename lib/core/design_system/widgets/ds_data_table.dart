@@ -4,6 +4,10 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../i18n/generated/app_localizations.dart';
 import '../tokens/ds_theme.dart';
 import 'ds_button.dart';
+import 'ds_dialog.dart';
+import 'ds_forms.dart';
+import 'ds_module.dart';
+import 'ds_page.dart';
 
 /// Description d'une colonne du [DsDataTable].
 class DsColonne<T> {
@@ -15,11 +19,15 @@ class DsColonne<T> {
     this.largeur,
     this.flex = 1,
     this.numerique = false,
+    this.centre = false,
     this.triable = true,
     this.masquable = true,
     this.visibleParDefaut = true,
     this.total,
     this.permission,
+    this.fort = false,
+    this.attenue = false,
+    this.mono = false,
   });
 
   /// Identifiant stable (utilisé pour le tri et la visibilité).
@@ -33,8 +41,13 @@ class DsColonne<T> {
   final Widget Function(BuildContext context, T ligne)? cellule;
   final double? largeur;
   final int flex;
+
+  /// Alignement à droite (montants, quantités).
   final bool numerique;
+  final bool centre;
   final bool triable;
+
+  /// `false` : colonne obligatoire, toujours affichée (verrouillée dans le dialog « colonnes »).
   final bool masquable;
   final bool visibleParDefaut;
 
@@ -44,6 +57,15 @@ class DsColonne<T> {
   /// Permission requise pour voir la colonne (ex. `voirPrixAchat`). Sans la
   /// permission, la colonne est masquée et absente du menu « Colonnes ».
   final String? permission;
+
+  /// Texte 600 couleur primaire (nom, désignation).
+  final bool fort;
+
+  /// Texte atténué (codes, dates secondaires).
+  final bool attenue;
+
+  /// Police monospace (codes-barres, empreintes).
+  final bool mono;
 }
 
 /// Action du menu contextuel d'une ligne.
@@ -54,6 +76,8 @@ class DsActionContextuelle<T> {
     this.icone,
     this.destructif = false,
     this.visible,
+    this.kbd,
+    this.separateurAvant = false,
   });
   final String libelle;
   final IconData? icone;
@@ -62,13 +86,15 @@ class DsActionContextuelle<T> {
 
   /// Condition d'affichage dans le menu (toujours visible si `null`).
   final bool Function(T ligne)? visible;
+  final String? kbd;
+  final bool separateurAvant;
 }
 
-/// Tableau de données unique du design system.
+/// Tableau de données unique du design system (`DataTable`).
 ///
-/// Fonctions : tri par colonne, sélection multiple (case à cocher), colonnes
-/// masquables (menu « Colonnes »), pagination, menu contextuel (clic droit),
-/// ligne de totaux, double-clic.
+/// Fonctions : tri par colonne, sélection multiple (case à cocher), colonnes masquables
+/// (dialog « Afficher / masquer les colonnes »), pagination DS, menu contextuel (clic droit),
+/// ligne de totaux, double-clic, mode dense (40 px).
 class DsDataTable<T> extends StatefulWidget {
   const DsDataTable({
     super.key,
@@ -79,16 +105,22 @@ class DsDataTable<T> extends StatefulWidget {
     this.onSelectionChanged,
     this.actionsContextuelles = const [],
     this.onDoubleClic,
+    this.onClic,
     this.taillePage = 25,
-    this.taillesPage = const [10, 25, 50, 100],
+    this.taillesPage = const [25, 50, 100],
     this.pagine = true,
     this.afficherTotaux = false,
     this.colonnesMasquees,
     this.onColonnesMasqueesChanged,
     this.triInitial,
     this.messageVide,
-    this.hauteurLigne = DsTailles.ligneTable,
+    this.iconeVide = LucideIcons.inbox,
+    this.hauteurLigne,
+    this.dense = false,
     this.permissions = const {},
+    this.reglageColonnes,
+    this.encadre = true,
+    this.hauteurMax,
   });
 
   final List<DsColonne<T>> colonnes;
@@ -100,6 +132,9 @@ class DsDataTable<T> extends StatefulWidget {
   final ValueChanged<Set<Object>>? onSelectionChanged;
   final List<DsActionContextuelle<T>> actionsContextuelles;
   final void Function(T ligne)? onDoubleClic;
+
+  /// Clic simple sur une ligne (sélection simple dans les pickers).
+  final void Function(T ligne)? onClic;
   final int taillePage;
   final List<int> taillesPage;
   final bool pagine;
@@ -108,17 +143,30 @@ class DsDataTable<T> extends StatefulWidget {
   final ValueChanged<Set<String>>? onColonnesMasqueesChanged;
   final DsTri? triInitial;
   final String? messageVide;
-  final double hauteurLigne;
+  final IconData iconeVide;
+
+  /// Hauteur de ligne explicite (sinon 52, ou 40 en [dense]).
+  final double? hauteurLigne;
+  final bool dense;
 
   /// Permissions de l'utilisateur connecté (codes) : filtrent les colonnes à permission.
   final Set<String> permissions;
+
+  /// Afficher le bouton « colonnes » (par défaut : oui sauf en mode dense).
+  final bool? reglageColonnes;
+
+  /// Bordure + rayon 12 autour du tableau.
+  final bool encadre;
+
+  /// Hauteur maximale (le corps défile au-delà).
+  final double? hauteurMax;
 
   /// Colonnes que l'utilisateur a le droit de voir.
   List<DsColonne<T>> get colonnesAutorisees =>
       colonnes.where((c) => c.permission == null || permissions.contains(c.permission)).toList();
 
   @override
-  State<DsDataTable<T>> createState() => _DsDataTableState<T>();
+  State<DsDataTable<T>> createState() => DsDataTableState<T>();
 }
 
 /// État de tri : colonne + sens.
@@ -134,7 +182,7 @@ class DsTri {
   int get hashCode => Object.hash(colonneId, ascendant);
 }
 
-class _DsDataTableState<T> extends State<DsDataTable<T>> {
+class DsDataTableState<T> extends State<DsDataTable<T>> {
   DsTri? _tri;
   int _page = 0;
   late int _taillePage;
@@ -152,22 +200,32 @@ class _DsDataTableState<T> extends State<DsDataTable<T>> {
   }
 
   @override
-  void didUpdateWidget(covariant DsDataTable<T> old) {
-    super.didUpdateWidget(old);
-    if (widget.selection != null && widget.selection != old.selection) {
+  void didUpdateWidget(covariant DsDataTable<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.selection != null && widget.selection != oldWidget.selection) {
       _selection = {...widget.selection!};
     }
-    if (widget.colonnesMasquees != null && widget.colonnesMasquees != old.colonnesMasquees) {
+    if (widget.colonnesMasquees != null && widget.colonnesMasquees != oldWidget.colonnesMasquees) {
       _masquees = {...widget.colonnesMasquees!};
     }
-    if (widget.lignes.length != old.lignes.length) {
+    if (widget.lignes.length != oldWidget.lignes.length) {
       _page = _page.clamp(0, _nbPages(widget.lignes.length) - 1);
     }
   }
 
   int _nbPages(int n) => widget.pagine ? (n / _taillePage).ceil().clamp(1, 1 << 30) : 1;
 
-  List<DsColonne<T>> get _visibles => widget.colonnesAutorisees.where((c) => !_masquees.contains(c.id)).toList();
+  /// Colonnes verrouillées (toujours visibles) : `masquable == false`, ou, à défaut de déclaration,
+  /// la colonne `code` et la première colonne forte (sinon la première).
+  bool _verrouillee(DsColonne<T> col) {
+    final autorisees = widget.colonnesAutorisees;
+    if (autorisees.any((c) => !c.masquable)) return !col.masquable;
+    final forte = autorisees.where((c) => c.fort).firstOrNull;
+    return col.id == 'code' || (forte != null ? identical(col, forte) : identical(col, autorisees.first));
+  }
+
+  List<DsColonne<T>> get _visibles =>
+      widget.colonnesAutorisees.where((c) => _verrouillee(c) || !_masquees.contains(c.id)).toList();
 
   List<T> get _triees {
     final tri = _tri;
@@ -223,92 +281,41 @@ class _DsDataTableState<T> extends State<DsDataTable<T>> {
         if (a.visible == null || a.visible!(ligne)) a,
     ];
     if (actions.isEmpty) return;
-    final c = ctx.ds.colors;
-    final t = ctx.ds.typo;
-    final overlay = Overlay.of(ctx).context.findRenderObject()! as RenderBox;
-    final choix = await showMenu<int>(
-      context: ctx,
-      position: RelativeRect.fromRect(position & const Size(1, 1), Offset.zero & overlay.size),
+    await afficherMenuContextuel(
+      ctx,
+      position: position,
       items: [
-        for (var i = 0; i < actions.length; i++)
-          PopupMenuItem<int>(
-            value: i,
-            height: 36,
-            child: Row(
-              children: [
-                if (actions[i].icone != null) ...[
-                  Icon(
-                    actions[i].icone,
-                    size: DsTailles.iconeSm,
-                    color: actions[i].destructif ? c.danger : c.texteSecondaire,
-                  ),
-                  const SizedBox(width: DsSpacing.sm),
-                ],
-                Flexible(
-                  child: Text(
-                    actions[i].libelle,
-                    style: t.corps.copyWith(color: actions[i].destructif ? c.danger : c.texte),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
+        for (final a in actions) ...[
+          if (a.separateurAvant) const DsMenuItem.separateur(),
+          DsMenuItem(
+            libelle: a.libelle,
+            icone: a.icone,
+            kbd: a.kbd,
+            danger: a.destructif,
+            onTap: () => a.onSelected(ligne),
           ),
+        ],
       ],
     );
-    if (choix != null) actions[choix].onSelected(ligne);
   }
 
-  Future<void> _menuColonnes(BuildContext ctx) async {
-    final l10n = AppLocalizations.of(ctx);
-    final c = ctx.ds.colors;
-    final t = ctx.ds.typo;
-    final bouton = ctx.findRenderObject()! as RenderBox;
-    final overlay = Overlay.of(ctx).context.findRenderObject()! as RenderBox;
-    final pos = RelativeRect.fromRect(
-      Rect.fromPoints(
-        bouton.localToGlobal(Offset.zero, ancestor: overlay),
-        bouton.localToGlobal(bouton.size.bottomRight(Offset.zero), ancestor: overlay),
-      ),
-      Offset.zero & overlay.size,
-    );
-    await showMenu<void>(
-      context: ctx,
-      position: pos,
-      items: [
-        PopupMenuItem<void>(
-          enabled: false,
-          height: 32,
-          child: Text(l10n.communColonnes, style: t.legende.copyWith(color: c.texteAttenue)),
-        ),
-        for (final col in widget.colonnesAutorisees.where((c) => c.masquable))
-          PopupMenuItem<void>(
-            height: 36,
-            child: StatefulBuilder(
-              builder: (ctx2, setMenu) => Row(
-                children: [
-                  Checkbox(
-                    value: !_masquees.contains(col.id),
-                    activeColor: c.primaire,
-                    onChanged: (v) {
-                      setState(() {
-                        if (v == true) {
-                          _masquees.remove(col.id);
-                        } else {
-                          _masquees.add(col.id);
-                        }
-                      });
-                      setMenu(() {});
-                      widget.onColonnesMasqueesChanged?.call({..._masquees});
-                    },
-                  ),
-                  Text(col.libelle, style: t.corps),
-                ],
-              ),
-            ),
+  Future<void> _reglerColonnes(BuildContext ctx) async {
+    final resultat = await afficherReglageColonnes(
+      ctx,
+      colonnes: [
+        for (final col in widget.colonnesAutorisees)
+          DsColonneReglage(
+            id: col.id,
+            libelle: col.libelle,
+            verrouillee: _verrouillee(col),
+            visible: !_masquees.contains(col.id),
+            parDefaut: col.visibleParDefaut,
           ),
       ],
     );
+    if (resultat == null || !mounted) return;
+    setState(() => _masquees = resultat.masquees);
+    widget.onColonnesMasqueesChanged?.call({..._masquees});
   }
 
   @override
@@ -320,83 +327,139 @@ class _DsDataTableState<T> extends State<DsDataTable<T>> {
     final lignesPage = _pageCourante;
     final total = widget.lignes.length;
     final selectionnable = widget.onSelectionChanged != null;
+    final afficherReglage = widget.reglageColonnes ?? !widget.dense;
+    final hauteurLigne = widget.hauteurLigne ?? (widget.dense ? DsTailles.ligneTableDense : DsTailles.ligneTable);
     final clesPage = lignesPage.map(widget.cle).toSet();
     final toutesSelectionnees = clesPage.isNotEmpty && clesPage.every(_selection.contains);
     final partiel = !toutesSelectionnees && clesPage.any(_selection.contains);
+    final nMasquees = widget.colonnesAutorisees.length - visibles.length;
+
+    AlignmentGeometry alignement(DsColonne<T> col) => col.numerique
+        ? AlignmentDirectional.centerEnd
+        : (col.centre ? Alignment.center : AlignmentDirectional.centerStart);
 
     Widget cellule(DsColonne<T> col, Widget enfant) {
-      final contenu = Align(
-        alignment: col.numerique ? AlignmentDirectional.centerEnd : AlignmentDirectional.centerStart,
-        child: enfant,
-      );
       final padded = Padding(
-        padding: const EdgeInsets.symmetric(horizontal: DsSpacing.md),
-        child: contenu,
+        padding: const EdgeInsets.symmetric(horizontal: DsSpacing.s4),
+        child: Align(alignment: alignement(col), child: enfant),
       );
       if (col.largeur != null) return SizedBox(width: col.largeur, child: padded);
       return Expanded(flex: col.flex, child: padded);
     }
 
+    final styleEnTete = t.overline.copyWith(color: c.textMuted);
+
     final enTete = Container(
       height: DsTailles.enTeteTable,
       decoration: BoxDecoration(
-        color: c.surfaceAttenuee,
-        border: Border(bottom: BorderSide(color: c.bordure)),
+        color: c.surfaceSunken,
+        border: Border(bottom: BorderSide(color: c.borderDefault)),
       ),
       child: Row(
         children: [
           if (selectionnable)
             SizedBox(
-              width: 44,
-              child: Checkbox(
-                tristate: true,
-                value: toutesSelectionnees ? true : (partiel ? null : false),
-                activeColor: c.primaire,
-                semanticLabel: l10n.communToutSelectionner,
-                onChanged: (_) {
-                  final nouvelle = {..._selection};
-                  if (toutesSelectionnees) {
-                    nouvelle.removeAll(clesPage);
-                  } else {
-                    nouvelle.addAll(clesPage);
-                  }
-                  _changerSelection(nouvelle);
-                },
+              width: 48,
+              child: Center(
+                child: DsCheckbox(
+                  cle: const ValueKey('table_tout_selectionner'),
+                  semantique: l10n.communToutSelectionner,
+                  valeur: toutesSelectionnees,
+                  indetermine: partiel,
+                  onChanged: (_) {
+                    final nouvelle = {..._selection};
+                    if (toutesSelectionnees) {
+                      nouvelle.removeAll(clesPage);
+                    } else {
+                      nouvelle.addAll(clesPage);
+                    }
+                    _changerSelection(nouvelle);
+                  },
+                ),
               ),
             ),
           for (final col in visibles)
             cellule(
               col,
-              InkWell(
-                onTap: col.triable ? () => _basculerTri(col) : null,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Flexible(
-                      child: Text(
-                        col.libelle,
-                        style: t.petitFort.copyWith(color: c.texteSecondaire),
-                        overflow: TextOverflow.ellipsis,
+              MouseRegion(
+                cursor: col.triable ? SystemMouseCursors.click : SystemMouseCursors.basic,
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: col.triable ? () => _basculerTri(col) : null,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    spacing: 4,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          col.libelle.toUpperCase(),
+                          style: _tri?.colonneId == col.id ? styleEnTete.copyWith(color: c.textPrimary) : styleEnTete,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
-                    ),
-                    if (_tri?.colonneId == col.id) ...[
-                      const SizedBox(width: DsSpacing.xs),
-                      Icon(_tri!.ascendant ? LucideIcons.arrowUp : LucideIcons.arrowDown, size: 14, color: c.primaire),
+                      if (col.triable)
+                        Opacity(
+                          opacity: _tri?.colonneId == col.id ? 1 : .5,
+                          child: Icon(
+                            _tri?.colonneId == col.id
+                                ? (_tri!.ascendant ? LucideIcons.chevronUp : LucideIcons.chevronDown)
+                                : LucideIcons.chevronsUpDown,
+                            size: 12,
+                            color: _tri?.colonneId == col.id ? c.textPrimary : c.textMuted,
+                          ),
+                        ),
                     ],
+                  ),
+                ),
+              ),
+            ),
+          if (afficherReglage)
+            Container(
+              width: 44,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                border: BorderDirectional(start: BorderSide(color: c.borderSubtle)),
+              ),
+              child: Builder(
+                builder: (ctx) => Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    DsIconButton(
+                      key: const ValueKey('table_colonnes'),
+                      icone: LucideIcons.columns3,
+                      tooltip: l10n.dsColonnesMasquees(visibles.length, widget.colonnesAutorisees.length),
+                      taille: 30,
+                      couleur: c.textSecondary,
+                      onPressed: () => _reglerColonnes(ctx),
+                    ),
+                    if (nMasquees > 0)
+                      PositionedDirectional(
+                        top: 2,
+                        end: 1,
+                        child: IgnorePointer(
+                          child: Container(
+                            constraints: const BoxConstraints(minWidth: 14),
+                            height: 14,
+                            padding: const EdgeInsets.symmetric(horizontal: 3),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(color: c.primary, borderRadius: BorderRadius.circular(7)),
+                            child: Text(
+                              '$nMasquees',
+                              style: t.caption.copyWith(
+                                fontSize: 9,
+                                fontWeight: FontWeight.w700,
+                                height: 1,
+                                color: c.primaryFg,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),
             ),
-          Builder(
-            builder: (ctx) => DsIconButton(
-              icone: LucideIcons.columns3,
-              tooltip: l10n.communColonnes,
-              onPressed: () {
-                _menuColonnes(ctx);
-              },
-            ),
-          ),
-          const SizedBox(width: DsSpacing.xs),
         ],
       ),
     );
@@ -405,173 +468,173 @@ class _DsDataTableState<T> extends State<DsDataTable<T>> {
       final cle = widget.cle(ligne);
       final selectionnee = _selection.contains(cle);
       final survolee = _survol == cle;
+      final cliquable = widget.onDoubleClic != null || widget.onClic != null || selectionnable;
+      final contenu = Container(
+        height: hauteurLigne,
+        decoration: BoxDecoration(
+          color: selectionnee ? c.surfaceActive : (survolee ? c.surfaceHover : DsColors.transparent),
+          border: Border(bottom: BorderSide(color: c.borderSubtle)),
+        ),
+        child: Row(
+          children: [
+            if (selectionnable)
+              SizedBox(
+                width: 48,
+                child: Center(
+                  child: DsCheckbox(
+                    valeur: selectionnee,
+                    onChanged: (_) {
+                      final nouvelle = {..._selection};
+                      selectionnee ? nouvelle.remove(cle) : nouvelle.add(cle);
+                      _changerSelection(nouvelle);
+                    },
+                  ),
+                ),
+              ),
+            for (final col in visibles)
+              cellule(
+                col,
+                col.cellule != null
+                    ? col.cellule!(context, ligne)
+                    : Builder(
+                        builder: (context) {
+                          final v = col.valeur(ligne);
+                          final texte = v == null || v.toString().isEmpty ? '—' : v.toString();
+                          final vide = texte == '—';
+                          return Text(
+                            texte,
+                            style: (col.mono ? t.mono : t.bodySm).copyWith(
+                              fontWeight: col.fort ? FontWeight.w600 : FontWeight.w400,
+                              color: vide || col.attenue ? c.textMuted : (col.fort ? c.textPrimary : c.textBody),
+                              fontFeatures: DsTypography.tabular,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          );
+                        },
+                      ),
+              ),
+            if (afficherReglage) const SizedBox(width: 44),
+          ],
+        ),
+      );
       return MouseRegion(
+        cursor: cliquable ? SystemMouseCursors.click : SystemMouseCursors.basic,
         onEnter: (_) => setState(() => _survol = cle),
         onExit: (_) => setState(() => _survol = null),
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onDoubleTap: widget.onDoubleClic == null ? null : () => widget.onDoubleClic!(ligne),
           onSecondaryTapDown: (d) => _menuContextuel(context, ligne, d.globalPosition),
-          onTap: selectionnable
-              ? () {
-                  final nouvelle = {..._selection};
-                  if (selectionnee) {
-                    nouvelle.remove(cle);
-                  } else {
-                    nouvelle.add(cle);
-                  }
-                  _changerSelection(nouvelle);
-                }
-              : null,
-          child: Container(
-            height: widget.hauteurLigne,
-            decoration: BoxDecoration(
-              color: selectionnee ? c.selection : (survolee ? c.surfaceAttenuee : c.surface),
-              border: Border(bottom: BorderSide(color: c.bordure)),
-            ),
-            child: Row(
-              children: [
-                if (selectionnable)
-                  SizedBox(
-                    width: 44,
-                    child: Checkbox(
-                      value: selectionnee,
-                      activeColor: c.primaire,
-                      onChanged: (_) {
+          onTap: widget.onClic != null
+              ? () => widget.onClic!(ligne)
+              : (selectionnable
+                    ? () {
                         final nouvelle = {..._selection};
-                        if (selectionnee) {
-                          nouvelle.remove(cle);
-                        } else {
-                          nouvelle.add(cle);
-                        }
+                        selectionnee ? nouvelle.remove(cle) : nouvelle.add(cle);
                         _changerSelection(nouvelle);
-                      },
-                    ),
-                  ),
-                for (final col in visibles)
-                  cellule(
-                    col,
-                    col.cellule != null
-                        ? col.cellule!(context, ligne)
-                        : Text(
-                            col.valeur(ligne)?.toString() ?? '',
-                            style: col.numerique
-                                ? t.corps.copyWith(fontFeatures: const [FontFeature.tabularFigures()])
-                                : t.corps,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                  ),
-                const SizedBox(width: 44),
-              ],
-            ),
-          ),
+                      }
+                    : null),
+          child: widget.onDoubleClic != null
+              ? Tooltip(message: l10n.dsDoubleClicDetail, waitDuration: const Duration(seconds: 1), child: contenu)
+              : contenu,
         ),
       );
     }
 
-    final totaux = widget.afficherTotaux
+    final totaux = widget.afficherTotaux && lignesPage.isNotEmpty
         ? Container(
-            height: widget.hauteurLigne,
+            height: hauteurLigne,
             decoration: BoxDecoration(
-              color: c.surfaceAttenuee,
-              border: Border(top: BorderSide(color: c.bordureForte)),
+              color: c.surfaceSunken,
+              border: Border(top: BorderSide(color: c.borderDefault)),
             ),
             child: Row(
               children: [
-                if (selectionnable) const SizedBox(width: 44),
+                if (selectionnable) const SizedBox(width: 48),
                 for (var i = 0; i < visibles.length; i++)
                   cellule(
                     visibles[i],
                     Text(
                       visibles[i].total != null ? visibles[i].total!(widget.lignes) : (i == 0 ? l10n.communTotal : ''),
-                      style: t.corpsFort.copyWith(fontFeatures: const [FontFeature.tabularFigures()]),
+                      style: t.bodySmStrong.copyWith(color: c.textPrimary, fontFeatures: DsTypography.tabular),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                const SizedBox(width: 44),
+                if (afficherReglage) const SizedBox(width: 44),
               ],
             ),
           )
         : null;
 
     final nbPages = _nbPages(total);
-    final debut = total == 0 ? 0 : _page * _taillePage + 1;
-    final fin = total == 0 ? 0 : (debut + lignesPage.length - 1);
-    final piedDePage = widget.pagine
-        ? Container(
-            height: DsTailles.enTeteTable,
-            padding: const EdgeInsetsDirectional.only(start: DsSpacing.md, end: DsSpacing.sm),
-            decoration: BoxDecoration(
-              border: Border(top: BorderSide(color: c.bordure)),
-            ),
-            child: Row(
+
+    final Widget corps = lignesPage.isEmpty
+        ? Padding(
+            padding: const EdgeInsets.symmetric(horizontal: DsSpacing.s4, vertical: DsSpacing.s12),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              spacing: DsSpacing.s2,
               children: [
-                if (_selection.isNotEmpty)
-                  Text(l10n.communSelectionnes(_selection.length), style: t.petit.copyWith(color: c.primaire)),
-                const Spacer(),
-                Text(l10n.communLignesParPage, style: t.petit.copyWith(color: c.texteSecondaire)),
-                const SizedBox(width: DsSpacing.sm),
-                DropdownButton<int>(
-                  value: widget.taillesPage.contains(_taillePage) ? _taillePage : null,
-                  underline: const SizedBox.shrink(),
-                  style: t.petit.copyWith(color: c.texte),
-                  items: [for (final n in widget.taillesPage) DropdownMenuItem(value: n, child: Text('$n'))],
-                  onChanged: (v) => setState(() {
-                    _taillePage = v ?? _taillePage;
-                    _page = 0;
-                  }),
-                ),
-                const SizedBox(width: DsSpacing.lg),
-                Text(l10n.communPagination(debut, fin, total), style: t.petit.copyWith(color: c.texteSecondaire)),
-                const SizedBox(width: DsSpacing.sm),
-                DsIconButton(
-                  icone: LucideIcons.chevronLeft,
-                  tooltip: l10n.communPagePrecedente,
-                  onPressed: _page > 0 ? () => setState(() => _page--) : null,
-                ),
-                DsIconButton(
-                  icone: LucideIcons.chevronRight,
-                  tooltip: l10n.communPageSuivante,
-                  onPressed: _page < nbPages - 1 ? () => setState(() => _page++) : null,
+                Icon(widget.iconeVide, size: 28, color: c.iconMuted),
+                Text(
+                  widget.messageVide ?? l10n.dsAucunElement,
+                  style: t.bodySm.copyWith(color: c.textMuted),
+                  textAlign: TextAlign.center,
                 ),
               ],
             ),
           )
-        : null;
+        : ListView.builder(
+            shrinkWrap: true,
+            itemCount: lignesPage.length,
+            itemExtent: hauteurLigne,
+            itemBuilder: (_, i) => ligneWidget(lignesPage[i]),
+          );
 
-    return Container(
+    final tableau = Container(
+      constraints: widget.hauteurMax != null ? BoxConstraints(maxHeight: widget.hauteurMax!) : null,
       decoration: BoxDecoration(
-        color: c.surface,
-        borderRadius: DsRadius.borderLg,
-        border: Border.all(color: c.bordure),
+        color: c.surfaceCard,
+        borderRadius: widget.encadre ? DsRadius.borderLg : null,
+        border: widget.encadre ? Border.all(color: c.borderDefault) : null,
       ),
       clipBehavior: Clip.antiAlias,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           enTete,
-          if (lignesPage.isEmpty)
-            SizedBox(
-              height: widget.hauteurLigne * 3,
-              child: Center(
-                child: Text(
-                  widget.messageVide ?? l10n.communAucunResultat,
-                  style: t.corps.copyWith(color: c.texteAttenue),
-                ),
-              ),
-            )
-          else
-            Flexible(
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: lignesPage.length,
-                itemExtent: widget.hauteurLigne,
-                itemBuilder: (_, i) => ligneWidget(lignesPage[i]),
-              ),
-            ),
+          Flexible(child: corps),
           ?totaux,
-          ?piedDePage,
         ],
       ),
     );
+
+    if (!widget.pagine) return tableau;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      spacing: DsSpacing.s3,
+      children: [
+        Flexible(child: tableau),
+        DsPagination(
+          page: _page + 1,
+          nbPages: nbPages,
+          total: total,
+          taillePage: _taillePage,
+          taillesPage: widget.taillesPage,
+          nbSelection: _selection.length,
+          onChanged: (p) => setState(() => _page = p - 1),
+          onTaillePageChanged: (v) => setState(() {
+            _taillePage = v;
+            _page = 0;
+          }),
+        ),
+      ],
+    );
   }
 }
+
+/// Formate une valeur numérique de cellule (alias pratique pour les colonnes).
+String celluleMontant(double v, [String devise = 'DA']) => formaterMontant(v, devise);

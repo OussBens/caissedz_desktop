@@ -2,9 +2,12 @@
 
 À recopier intégralement depuis `docs/spec/06_specification_reconstruction.md` §15 et à cocher au fil des lots.
 
-> ⚠️ 2026-10-14 : la spécification n'est pas dans le dépôt ; la checklist §15 ne peut pas encore être recopiée.
-> En attendant, les cases ci-dessous reprennent les exigences explicites de la commande initiale, regroupées par lot.
-> Elles seront remplacées par le texte exact du §15 dès réception.
+> 2026-10-14 : les sources sont reçues ; le réalignement est en cours (voir `docs/PLAN.md`, « Réalignement DS
+> v2.2 »). Les cases ci-dessous reprennent les exigences de la commande initiale, regroupées par lot ; la recopie
+> intégrale du §15 et son pointage écran par écran sont faits en phase D.
+>
+> Phase A / B faites : tokens exacts du DS v2.2 (clair / sombre, typographie, espacements) et composants du
+> bundle (66 + v2.2) traduits en Flutter avec les libellés FR / AR / EN.
 
 ## Socle (lot 0)
 - [x] Fenêtre Windows minimale 1000×700, barre de titre personnalisée

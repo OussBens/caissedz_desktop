@@ -23,7 +23,7 @@ void main() {
       await tester.enterText(champs.at(1), 'azerty');
       await clic(tester, find.text("Changer l'identifiant").last);
       expect(find.textContaining('connectez-vous désormais avec « karim.b »'), findsOneWidget);
-      await clic(tester, find.text('OK'));
+      await clic(tester, find.text('Fermer').last);
       expect(c.read(sessionProvider)!.utilisateur.identifiant, 'karim.b');
       expect(find.text('Identifiant actuel : karim.b'), findsOneWidget);
     });

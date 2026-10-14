@@ -174,6 +174,7 @@ class DsColors extends ThemeExtension<DsColors> {
   static const Color teal600 = Color(0xFF0EA595);
   static const Color teal700 = Color(0xFF0B7F73);
   static const Color blanc = Color(0xFFFFFFFF);
+  static const Color transparent = Color(0x00000000);
   static const Color noirTicket = Color(0xFF111111);
 
   /// Palette des graphiques (`--chart-1` … `--chart-6`), identique clair / sombre.

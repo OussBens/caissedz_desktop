@@ -1,4 +1,5 @@
 import 'package:caissedz_desktop/core/design_system/design_system.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../helpers/pump_app.dart';
@@ -31,7 +32,7 @@ void main() {
     expect(find.text('100.0'), findsNothing);
     expect(find.text('150.0'), findsOneWidget);
     // Absente aussi du menu « Colonnes » : impossible de la réafficher.
-    await tester.tap(find.byTooltip('Colonnes'));
+    await tester.tap(find.byKey(const ValueKey('table_colonnes')));
     await tester.pumpAndSettle();
     expect(find.text("Prix d'achat"), findsNothing);
   });
@@ -47,7 +48,7 @@ void main() {
         permissions: const {'voirPrixAchat'},
       ),
     );
-    expect(find.text("Prix d'achat"), findsOneWidget);
+    expect(find.text("PRIX D'ACHAT"), findsOneWidget);
     expect(find.text('100.0'), findsOneWidget);
   });
 }

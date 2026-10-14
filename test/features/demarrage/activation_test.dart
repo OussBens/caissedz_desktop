@@ -33,7 +33,7 @@ void main() {
       await tester.enterText(find.byType(TextField), cleTest(NiveauLicence.avance).toUpperCase());
       await clic(tester, find.text('Activer'));
       expect(find.text('Licence Avancé activée.'), findsOneWidget);
-      await clic(tester, find.text('OK'));
+      await clic(tester, find.text('Fermer').last);
       expect(c.read(licenceProvider).niveau, NiveauLicence.avance);
       expect(find.byType(ConfigurationPage), findsOneWidget);
     });

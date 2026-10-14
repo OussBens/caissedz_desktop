@@ -60,7 +60,7 @@ void main() {
         await pumpApp(tester, etat: EtatApp.connecteeAdminBasic, routeInitiale: m.route, taille: taille);
         expect(tester.takeException(), isNull, reason: m.id);
         expect(
-          find.text('Fonction disponible avec la licence Avancé'),
+          find.text('Disponible avec le palier Avancé'),
           m.niveauRequis == NiveauLicence.avance ? findsOneWidget : findsNothing,
           reason: m.id,
         );
