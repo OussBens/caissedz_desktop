@@ -1,0 +1,1260 @@
+{
+  "@@locale": "en",
+  "appTitle": "CaisseDZ",
+  "shellNavGeneral": "General",
+  "shellNavStock": "Stock",
+  "shellNavTiers": "Partners",
+  "shellNavGestion": "Management",
+  "shellFavoris": "Favourites",
+  "shellFavorisVide": "No favourites. Right-click a module to add it.",
+  "shellFavorisMax": "7 favourites maximum",
+  "shellFavorisAjouter": "Add to favourites",
+  "shellFavorisRetirer": "Remove from favourites",
+  "shellMenuModules": "Modules",
+  "shellMenuModulesRaccourci": "Ctrl+M",
+  "shellMenuModulesRecherche": "Search a module…",
+  "shellMenuModulesAucun": "No matching module.",
+  "shellAlertes": "Alerts",
+  "shellAlertesAucune": "No alerts",
+  "shellInternetConnecte": "Internet: online",
+  "shellInternetDeconnecte": "Internet: offline",
+  "shellFenetreReduire": "Minimise",
+  "shellFenetreAgrandir": "Maximise",
+  "shellFenetreRestaurer": "Restore",
+  "shellFenetreFermer": "Close",
+  "shellReduireSidebar": "Collapse menu",
+  "shellEtendreSidebar": "Expand menu",
+  "shellGalerie": "Design system gallery",
+  "modulePlaceholder": "Module \"{nom}\": available in a later batch.",
+  "@modulePlaceholder": {
+    "placeholders": {
+      "nom": {
+        "type": "String"
+      }
+    }
+  },
+  "moduleTableauBord": "Dashboard",
+  "moduleCaisse": "Point of sale",
+  "moduleVentes": "Sales",
+  "moduleRetours": "Returns",
+  "moduleHistorique": "History",
+  "moduleProduits": "Products",
+  "moduleStock": "Stock",
+  "moduleEntrees": "Receipts / Purchases",
+  "moduleTransferts": "Transfers",
+  "moduleBesoins": "Needs",
+  "moduleSorties": "Outgoings",
+  "moduleClients": "Customers",
+  "moduleFournisseurs": "Suppliers",
+  "moduleVersements": "Payments",
+  "moduleGestionCaisse": "Cash management",
+  "moduleClotures": "Closings",
+  "moduleSituation": "Reports",
+  "moduleZakat": "Zakat",
+  "moduleParametres": "Settings",
+  "moduleMonCompte": "My account",
+  "communOk": "OK",
+  "communAnnuler": "Cancel",
+  "communConfirmer": "Confirm",
+  "communFermer": "Close",
+  "communEnregistrer": "Save",
+  "communSupprimer": "Delete",
+  "communRechercher": "Search",
+  "communChargement": "Loading…",
+  "communAucunResultat": "No results",
+  "communSelectionner": "Select",
+  "communTotal": "Total",
+  "communColonnes": "Columns",
+  "communToutSelectionner": "Select all",
+  "communLignesParPage": "Rows per page",
+  "communPagination": "{debut}–{fin} of {total}",
+  "@communPagination": {
+    "placeholders": {
+      "debut": {
+        "type": "int"
+      },
+      "fin": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "communPagePrecedente": "Previous page",
+  "communPageSuivante": "Next page",
+  "communSelectionnes": "{n} selected",
+  "@communSelectionnes": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "galerieTitre": "Design system gallery",
+  "galerieTheme": "Theme",
+  "galerieLangue": "Language",
+  "galerieClair": "Light",
+  "galerieSombre": "Dark",
+  "activationTitre": "Activate CaisseDZ",
+  "activationIntro": "Enter the activation key issued for this machine, or try the demo mode.",
+  "activationIdentifiantMachine": "This machine's identifier",
+  "activationCopierIdentifiant": "Copy identifier",
+  "activationIdentifiantCopie": "Identifier copied",
+  "activationCle": "Activation key (64 characters)",
+  "activationCleIndice": "64-character hexadecimal SHA-256 key",
+  "activationBouton": "Activate",
+  "activationDemo": "Try the demo mode",
+  "activationDemoAide": "Demo mode unlocks every feature (Advanced licence) with the demo / demo account. Data entered is not meant for production.",
+  "activationErreurFormat": "The key must contain exactly 64 hexadecimal characters (0-9, a-f).",
+  "activationErreurInconnue": "This key does not match this machine. Check the key or contact your reseller.",
+  "activationReussie": "{niveau} licence activated.",
+  "@activationReussie": {
+    "placeholders": {
+      "niveau": {
+        "type": "String"
+      }
+    }
+  },
+  "licenceBasic": "Basic",
+  "licenceAvance": "Advanced",
+  "licenceDemo": "Demo mode",
+  "licenceNiveau": "{niveau} licence",
+  "@licenceNiveau": {
+    "placeholders": {
+      "niveau": {
+        "type": "String"
+      }
+    }
+  },
+  "licenceRequise": "Feature available with the Advanced licence",
+  "licenceRequiseDetail": "Your current licence is Basic. Activate an Advanced licence to access this module.",
+  "licenceGererCle": "Activate another key",
+  "connexionTitre": "Sign in",
+  "connexionIdentifiant": "Username",
+  "connexionMotDePasse": "Password",
+  "connexionBouton": "Sign in",
+  "connexionErreurIdentifiants": "Incorrect username or password.",
+  "connexionErreurInactif": "This account is disabled.",
+  "connexionErreurNonConfigure": "This account has no password yet: complete the initial setup.",
+  "connexionErreurDemo": "The demo/demo account is only available in demo mode.",
+  "connexionDemoIndice": "Demo mode: username demo, password demo",
+  "connexionSaisirCle": "Enter an activation key",
+  "connexionDeconnecter": "Sign out",
+  "configTitre": "Initial setup",
+  "configEtape": "Step {n} of {total}",
+  "@configEtape": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "configEtapeBoutique": "Shop",
+  "configEtapeAdmin": "Administrator",
+  "configEtapeVente": "Margin and sales",
+  "configEtapeRecap": "Summary",
+  "configBoutiqueNom": "Shop name",
+  "configBoutiqueRc": "Trade register (RC)",
+  "configBoutiqueNif": "Tax ID (NIF)",
+  "configBoutiqueAdresse": "Address",
+  "configBoutiqueTelephone": "Phone",
+  "configBoutiqueEmail": "E-mail",
+  "configAdminIntro": "This administrator account will have every right. Choose a username and a password.",
+  "configAdminNom": "Display name",
+  "configAdminMotDePasseConfirmation": "Confirm password",
+  "configMarge": "Default margin (%)",
+  "configMargeAide": "Used to compute the selling price from the purchase price of new products.",
+  "configSeuil": "Stock alert threshold (global)",
+  "configFidelite": "Enable loyalty (points)",
+  "configPointsParDinar": "Points earned per dinar",
+  "configDevise": "Currency",
+  "configLangue": "Application language",
+  "configRecapIntro": "Check the information before finishing. You can change it later in Settings.",
+  "configPrecedent": "Back",
+  "configSuivant": "Next",
+  "configTerminer": "Finish",
+  "configErreurObligatoire": "Required field",
+  "configErreurIdentifiant": "3 to 32 characters: letters, digits, dot, dash, underscore.",
+  "configErreurMotDePasseCourt": "At least 4 characters.",
+  "configErreurConfirmation": "Passwords do not match.",
+  "configErreurIdentifiantPris": "This username is already in use.",
+  "configErreurMarge": "Value between 0 and 1000.",
+  "configErreurNombre": "Invalid number.",
+  "configReussie": "Setup complete. Sign in with your administrator account.",
+  "compteTitre": "My account",
+  "compteRole": "Role",
+  "compteIdentifiantActuel": "Current username",
+  "compteNouvelIdentifiant": "New username",
+  "compteMotDePasseActuel": "Current password",
+  "compteNouveauMotDePasse": "New password",
+  "compteChangerIdentifiant": "Change username",
+  "compteChangerMotDePasse": "Change password",
+  "compteIdentifiantChange": "Username changed: sign in from now on with \"{identifiant}\".",
+  "@compteIdentifiantChange": {
+    "placeholders": {
+      "identifiant": {
+        "type": "String"
+      }
+    }
+  },
+  "compteMotDePasseChange": "Password changed.",
+  "compteErreurMotDePasseActuel": "Current password is incorrect.",
+  "comptePreferences": "Preferences",
+  "compteDemoLectureSeule": "The demo account cannot be modified.",
+  "accesRefuseTitre": "Access denied",
+  "accesRefuseMessage": "Your role \"{role}\" cannot access the \"{module}\" module. Ask an administrator.",
+  "@accesRefuseMessage": {
+    "placeholders": {
+      "role": {
+        "type": "String"
+      },
+      "module": {
+        "type": "String"
+      }
+    }
+  },
+  "accesRefuseRetour": "Back to dashboard",
+  "rolesTitre": "Roles and permissions",
+  "rolesIntro": "Tick the action permissions and the accessible modules for each role. The administrator always keeps every right.",
+  "rolesPermissions": "Action permissions",
+  "rolesModules": "Accessible modules",
+  "rolesEnregistre": "Roles grid saved.",
+  "rolesAdminTotal": "All rights",
+  "permVoirPrixAchat": "View purchase price",
+  "permModifierPrix": "Change price at checkout",
+  "permAppliquerRemise": "Apply a discount",
+  "permAnnulerVente": "Cancel a sale",
+  "permSupprimerDocument": "Delete a document",
+  "permExporterDonnees": "Export data",
+  "permGererUtilisateurs": "Manage users",
+  "roleAdmin": "Admin",
+  "roleCaissier": "Cashier",
+  "roleMagasinier": "Storekeeper",
+  "parametresRolesCarte": "Roles and permissions",
+  "parametresRolesCarteDetail": "Action permissions and accessible modules per role.",
+  "parametresLicenceCarte": "Licence",
+  "shellBandeauDemo": "Demo mode — data is not meant for production",
+  "shellMenuUtilisateur": "User menu",
+  "shellVerrouille": "Advanced licence only",
+  "shellAccesRestreint": "Not allowed for your role",
+  "produitsTitre": "Products",
+  "produitsOngletProduits": "Products",
+  "produitsOngletCategories": "Categories",
+  "produitsOngletColis": "Cases",
+  "produitsOngletPacks": "Bundles",
+  "produitsOngletRemises": "Discounts",
+  "produitsNouveau": "New product",
+  "produitsModeIa": "AI mode",
+  "produitsImporter": "Import Excel",
+  "produitsEtiquettes": "Labels",
+  "produitsSynchro": "Sync catalogue",
+  "produitsRecherche": "Search by name, code or barcode…",
+  "produitsColCode": "Code",
+  "produitsColDesignation": "Name",
+  "produitsColCodeBarres": "Barcode",
+  "produitsColCategorie": "Category",
+  "produitsColPrixAchat": "Purchase price",
+  "produitsColPrixVente": "Selling price",
+  "produitsColMarge": "Margin %",
+  "produitsColActif": "Active",
+  "produitsColStock": "Stock",
+  "produitsAucun": "No products. Create one or import an Excel file.",
+  "produitModifier": "Edit product",
+  "produitDesactiver": "Deactivate",
+  "produitActiver": "Activate",
+  "produitGenererCodeBarres": "Generate an internal barcode",
+  "produitChampDesignation": "Name",
+  "produitChampCodeBarres": "Barcode (EAN-13 or internal)",
+  "produitChampCategorie": "Category",
+  "produitChampSousCategorie": "Sub-category",
+  "produitChampPrixAchat": "Purchase price",
+  "produitChampPrixVente": "Selling price",
+  "produitChampMarge": "Margin (%)",
+  "produitChampUnite": "Unit",
+  "produitChampTva": "VAT (%)",
+  "produitChampSeuil": "Alert threshold (empty = global)",
+  "produitChampSuiviNombre": "Track a second \"count\" stock (pieces)",
+  "produitChampSuiviNombreAide": "The product sells by unit or by piece; stock is kept in both.",
+  "produitChampNombreParUnite": "Pieces per unit",
+  "produitPrixAuto": "The selling price is computed from the margin if left empty.",
+  "produitErreurDesignation": "Name is required.",
+  "produitErreurCodeBarres": "Invalid barcode.",
+  "produitErreurCodeBarresPris": "This barcode is already used.",
+  "produitErreurPrix": "Invalid price.",
+  "produitErreurQuantite": "Invalid quantity.",
+  "produitCree": "Product \"{nom}\" created ({code}).",
+  "@produitCree": {
+    "placeholders": {
+      "nom": {
+        "type": "String"
+      },
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "iaTitre": "New product in AI mode",
+  "iaIntro": "Scan or type a barcode: the product sheet is looked up in CaisseDZ, then Mantouj, Open Food Facts and Open Beauty Facts.",
+  "iaRechercher": "Search",
+  "iaRechercheEnCours": "Searching…",
+  "iaAucun": "No sheet found for this barcode: switch to detailed entry.",
+  "iaTrouve": "Sheet found via {source}",
+  "@iaTrouve": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "iaMarque": "Brand",
+  "iaCreer": "Create product",
+  "iaSaisieDetaillee": "Detailed entry",
+  "importTitre": "Import products from Excel",
+  "importIntro": "Expected columns on row 1: designation (required), code_barres, categorie, prix_achat, prix_vente.",
+  "importChoisirFichier": "Choose an .xlsx file",
+  "importTelechargerModele": "Save template",
+  "importLignesValides": "{n} valid row(s)",
+  "@importLignesValides": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "importLignesInvalides": "{n} skipped row(s)",
+  "@importLignesInvalides": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "importColLigne": "Row",
+  "importColErreur": "Error",
+  "importLancer": "Import",
+  "importResultat": "{importees} product(s) imported, {ignorees} skipped.",
+  "@importResultat": {
+    "placeholders": {
+      "importees": {
+        "type": "int"
+      },
+      "ignorees": {
+        "type": "int"
+      }
+    }
+  },
+  "importErreurFichier": "Unreadable file: {detail}",
+  "@importErreurFichier": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "importErreurDesignationVide": "Empty name",
+  "importErreurCodeBarresPris": "Barcode already used",
+  "importErreurPrix": "Invalid price",
+  "etiquettesTitre": "Print labels",
+  "etiquettesQuantite": "Quantity",
+  "etiquettesFormatA4": "A4 sheet",
+  "etiquettesFormatRouleau": "Roll",
+  "etiquettesAfficherPrix": "Show price",
+  "etiquettesQr": "QR code instead of barcode",
+  "etiquettesGenerer": "Generate PDF",
+  "etiquettesAucuneSelection": "Select at least one product in the list.",
+  "synchroResultat": "Sync: {envoyes} sent, {recus} updated.",
+  "@synchroResultat": {
+    "placeholders": {
+      "envoyes": {
+        "type": "int"
+      },
+      "recus": {
+        "type": "int"
+      }
+    }
+  },
+  "synchroNonConfiguree": "Set the CaisseDZ server URL in Settings to sync the catalogue.",
+  "synchroErreur": "Sync failed: {detail}",
+  "@synchroErreur": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "categoriesNouvelle": "New category",
+  "categoriesNouvelleSous": "New sub-category",
+  "categorieNom": "Name",
+  "categorieRenommer": "Rename",
+  "categorieSupprimer": "Delete",
+  "categorieSousCategories": "Sub-categories",
+  "categorieErreurSysteme": "The system category cannot be changed.",
+  "categorieErreurUtilisee": "Products are attached to this category.",
+  "categorieConfirmerSuppression": "Delete category \"{nom}\" and its sub-categories?",
+  "@categorieConfirmerSuppression": {
+    "placeholders": {
+      "nom": {
+        "type": "String"
+      }
+    }
+  },
+  "colisNouveau": "New case",
+  "colisProduit": "Product",
+  "colisQuantite": "Units per case",
+  "colisAucun": "No cases.",
+  "packNouveau": "New bundle",
+  "packLignes": "Contents",
+  "packAjouterProduit": "Add a product",
+  "packAucun": "No bundles.",
+  "packErreurLignes": "Add at least one product to the bundle.",
+  "remiseNouvelle": "New discount",
+  "remiseType": "Type",
+  "remiseTypePourcentage": "Percentage",
+  "remiseTypeMontant": "Amount",
+  "remiseValeur": "Value",
+  "remisePortee": "Scope",
+  "remisePorteeGlobale": "All products",
+  "remisePorteeCategorie": "A category",
+  "remisePorteeProduit": "A product",
+  "remiseDebut": "Start",
+  "remiseFin": "End",
+  "remiseAucune": "No discounts.",
+  "communNouveau": "New",
+  "communModifier": "Edit",
+  "communActif": "Active",
+  "communInactif": "Inactive",
+  "communOui": "Yes",
+  "communNon": "No",
+  "communValider": "Confirm",
+  "communApercu": "Preview",
+  "communImprimer": "Print",
+  "communAucune": "None",
+  "stockTitre": "Stock",
+  "stockOngletNiveaux": "Levels",
+  "stockOngletJournal": "Movements journal",
+  "stockColProduit": "Product",
+  "stockColMagasin": "Store",
+  "stockColQuantite": "Quantity",
+  "stockColNombre": "Count (pieces)",
+  "stockColSeuil": "Threshold",
+  "stockColDate": "Date",
+  "stockColType": "Type",
+  "stockColMotif": "Reason",
+  "stockColReference": "Reference",
+  "stockColUtilisateur": "User",
+  "stockColCommentaire": "Comment",
+  "stockColValeur": "Value (cost)",
+  "stockTousMagasins": "All stores",
+  "stockSousSeuil": "Below threshold",
+  "stockEntreeManuelle": "Manual receipt",
+  "stockInventaire": "Stocktake",
+  "stockQuantiteConstatee": "Counted quantity",
+  "stockNombreConstate": "Counted pieces",
+  "stockAucunMouvement": "No movements.",
+  "stockErreurQuantite": "Invalid quantity.",
+  "stockErreurInsuffisant": "Insufficient stock: the stock guard refuses this outflow.",
+  "stockErreurMemeMagasin": "Destination store must differ.",
+  "stockErreurLignes": "Add at least one line.",
+  "stockErreurMotif": "Invalid reason.",
+  "stockErreurMagasinInactif": "Inactive or unknown store.",
+  "stockErreurMagasinSysteme": "The main store cannot be deactivated.",
+  "stockErreurProduit": "Unknown product.",
+  "stockErreurStatut": "Invalid status.",
+  "typeMouvementEntree": "Receipt",
+  "typeMouvementSortie": "Outflow",
+  "typeMouvementVente": "Sale",
+  "typeMouvementRetour": "Return",
+  "typeMouvementTransfert": "Transfer",
+  "typeMouvementInventaire": "Stocktake",
+  "typeMouvementInitial": "Opening stock",
+  "magasinsTitre": "Stores",
+  "magasinNouveau": "New store",
+  "magasinNom": "Name",
+  "magasinAdresse": "Address",
+  "magasinPrincipal": "Main",
+  "magasinMesMagasins": "My stores (the first is the main one)",
+  "magasinAjouterAuxMiens": "Add to my stores",
+  "magasinRetirerDesMiens": "Remove from my stores",
+  "magasinDefinirPrincipal": "Set as main",
+  "transfertsTitre": "Transfers",
+  "transfertNouveau": "New transfer",
+  "transfertSource": "Source store",
+  "transfertDestination": "Destination store",
+  "transfertLignes": "Lines",
+  "transfertAjouterLigne": "Add a product",
+  "transfertAucun": "No transfers.",
+  "transfertCree": "Transfer {code} saved: 2 movements per line.",
+  "@transfertCree": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "besoinsTitre": "Needs",
+  "besoinNouveau": "New need",
+  "besoinGenerer": "Generate below threshold",
+  "besoinGeneres": "{n} need(s) generated.",
+  "@besoinGeneres": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "besoinStatut": "Status",
+  "besoinPasserCommande": "Mark as Ordered",
+  "besoinPasserDisponible": "Mark as Available",
+  "besoinRemettreAttente": "Back to Pending",
+  "besoinAucun": "No needs.",
+  "statutBesoinEnAttente": "Pending",
+  "statutBesoinCommande": "Ordered",
+  "statutBesoinDisponible": "Available",
+  "sortiesTitre": "Outgoings",
+  "sortiesOngletSorties": "Outgoings",
+  "sortiesOngletVentes": "Sales",
+  "sortieNouvelle": "New outflow",
+  "sortieMotif": "Reason",
+  "sortieAucune": "No outflows.",
+  "motifCasse": "Breakage",
+  "motifPerime": "Expired",
+  "motifPerteVol": "Loss/theft",
+  "motifConsommationInterne": "Internal use",
+  "motifDon": "Donation",
+  "motifEchantillon": "Sample",
+  "communLignes": "{n} line(s)",
+  "@communLignes": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "communCommentaire": "Comment",
+  "communDate": "Date",
+  "communQuantite": "Quantity",
+  "moduleMagasins": "Stores",
+  "posTitre": "Point of sale",
+  "posScan": "Scan or search a product (F1)",
+  "posPanier": "Cart {n}",
+  "@posPanier": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "posNouveauPanier": "New cart (Ctrl+N)",
+  "posMaxPaniers": "At most 5 parallel sales.",
+  "posPanierVide": "Empty cart: scan a barcode or click a product.",
+  "posSousTotal": "Subtotal",
+  "posRemise": "Discount",
+  "posTotal": "Total",
+  "posVerse": "Paid",
+  "posReste": "Due",
+  "posMonnaie": "Change",
+  "posPointsGagnes": "Points earned",
+  "posClient": "Customer (F2)",
+  "posClientPassage": "Walk-in customer",
+  "posChoisirClient": "Choose a customer",
+  "posRemiseGlobale": "Global discount (F3)",
+  "posRemisePct": "Discount (%)",
+  "posPaiement": "Payment",
+  "posMontant": "Amount",
+  "posEncaisser": "Checkout (F12)",
+  "posVider": "Clear (F10)",
+  "posCalculatrice": "Calculator (F9)",
+  "posAide": "Help (F11)",
+  "posSessionOuvrir": "Open session",
+  "posSessionFermer": "Close session",
+  "posSessionAucune": "No open cash session: open one to sell.",
+  "posSessionOuverte": "Session {code} · {caisse}",
+  "@posSessionOuverte": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "caisse": {
+        "type": "String"
+      }
+    }
+  },
+  "posSessionCaisse": "Register",
+  "posSessionFond": "Opening float",
+  "posSessionMontantCompte": "Counted amount",
+  "posSessionAttendu": "Expected cash",
+  "posSessionEcart": "Difference",
+  "posSessionFermee": "Session {code} closed. Difference: {ecart}.",
+  "@posSessionFermee": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "ecart": {
+        "type": "String"
+      }
+    }
+  },
+  "posErreurSessionDejaOuverte": "A session is already open (user or register).",
+  "posErreurSessionAucune": "No open session.",
+  "posErreurCaisse": "Unknown or inactive register.",
+  "posErreurMontant": "Invalid amount.",
+  "posErreurStock": "Insufficient stock (reserved by open carts): {detail}",
+  "@posErreurStock": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "posErreurProduitInconnu": "Unknown code: {code}",
+  "@posErreurProduitInconnu": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "posErreurPanierVide": "The cart is empty.",
+  "posErreurPaiementInsuffisant": "Insufficient payment. Due: {reste}",
+  "@posErreurPaiementInsuffisant": {
+    "placeholders": {
+      "reste": {
+        "type": "String"
+      }
+    }
+  },
+  "posErreurModePaiement": "Invalid payment method.",
+  "posErreurPoints": "Not enough points.",
+  "posErreurCredit": "Credit sale not allowed for this customer.",
+  "posErreurQuantite": "Invalid quantity.",
+  "posErreurPeriodeCloturee": "Refused: closed period.",
+  "posVenteEnregistree": "Sale {code} completed. Change: {monnaie}",
+  "@posVenteEnregistree": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "monnaie": {
+        "type": "String"
+      }
+    }
+  },
+  "posImprimerTicket": "Print receipt",
+  "posImprimerFacture": "A4 invoice",
+  "posTicket58": "58 mm receipt",
+  "posTicket80": "80 mm receipt",
+  "posApercuTicket": "Receipt preview",
+  "posImpressionOk": "Receipt sent to the printer.",
+  "posImpressionErreur": "Printing failed: {detail}",
+  "@posImpressionErreur": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "posCreditAutoriser": "Sell on credit (amount due)",
+  "posRaccourcisTitre": "Keyboard shortcuts",
+  "posRaccourciF1": "Search / scan",
+  "posRaccourciF2": "Choose customer",
+  "posRaccourciF3": "Global discount",
+  "posRaccourciF4": "Cash: exact amount",
+  "posRaccourciF5": "Card: exact amount",
+  "posRaccourciF6": "Cheque: exact amount",
+  "posRaccourciF7": "Transfer: exact amount",
+  "posRaccourciF8": "Loyalty points",
+  "posRaccourciF9": "Calculator",
+  "posRaccourciF10": "Clear cart",
+  "posRaccourciF11": "This help",
+  "posRaccourciF12": "Checkout",
+  "posRaccourciCtrlN": "New cart",
+  "posRaccourciCtrlTab": "Next cart",
+  "posRaccourciSuppr": "Remove selected line",
+  "posRaccourciPlusMoins": "Quantity +1 / −1 on the selected line",
+  "posLigneQuantite": "Qty",
+  "posLignePrix": "Unit",
+  "posLigneRemise": "Disc.",
+  "posLigneTotal": "Total",
+  "posVendreNombre": "Sell by piece",
+  "posColis": "Case",
+  "posPack": "Bundle",
+  "posCategoriesToutes": "All",
+  "posAucunProduit": "No active product.",
+  "calcTitre": "Calculator",
+  "calcUtiliser": "Use as amount",
+  "modePaiementEspeces": "Cash",
+  "modePaiementCarte": "Card",
+  "modePaiementCheque": "Cheque",
+  "modePaiementVirement": "Transfer",
+  "modePaiementPoints": "Points",
+  "ventesTitre": "Sales",
+  "ventesColTicket": "Receipt",
+  "ventesColClient": "Customer",
+  "ventesColNet": "Net",
+  "ventesColVerse": "Paid",
+  "ventesColReste": "Due",
+  "ventesColStatut": "Status",
+  "ventesColCaisse": "Register",
+  "ventesColVendeur": "Seller",
+  "ventesAucune": "No sales.",
+  "ventesVoirTicket": "View receipt",
+  "ventesAnnuler": "Cancel sale",
+  "ventesConfirmerAnnulation": "Cancel sale {code}? Stock and points are restored; the sealed receipt is kept.",
+  "@ventesConfirmerAnnulation": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "ventesCreerRetour": "Create a return",
+  "ventesVerifierChaine": "Verify sealing",
+  "ventesChaineOk": "Receipt chain intact.",
+  "ventesChaineKo": "Chain altered from receipt {code}.",
+  "@ventesChaineKo": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "ventesFiltreToutes": "All",
+  "ventesFiltreValidees": "Completed",
+  "ventesFiltreAnnulees": "Cancelled",
+  "ventesFiltreCredit": "On credit",
+  "statutVenteValidee": "Completed",
+  "statutVenteAnnulee": "Cancelled",
+  "ticketDetail": "Receipt {code}",
+  "@ticketDetail": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "retoursTitre": "Returns",
+  "retourNouveau": "New return",
+  "retourVente": "Original sale",
+  "retourMotif": "Reason",
+  "retourRembourser": "Refunded amount",
+  "retourModeRemboursement": "Refund method",
+  "retourAvoir": "The rest is credited to the customer account.",
+  "retourAucun": "No returns.",
+  "retourColTotal": "Returned total",
+  "retourColRembourse": "Refunded",
+  "retourQuantiteMax": "Returned quantity (max {max})",
+  "@retourQuantiteMax": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "retourErreurVenteInconnue": "Sale not found.",
+  "retourErreurVenteAnnulee": "This sale is cancelled.",
+  "retourErreurLignes": "Enter at least one quantity to return.",
+  "retourErreurQuantite": "Invalid quantity.",
+  "retourErreurDepasse": "Quantity exceeds the sold quantity (including previous returns).",
+  "retourErreurPeriode": "Closed period: return not possible.",
+  "retourCree": "Return {code} saved: {total} (refunded {rembourse}).",
+  "@retourCree": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      },
+      "rembourse": {
+        "type": "String"
+      }
+    }
+  },
+  "clientsTitre": "Customers",
+  "clientNouveau": "New customer",
+  "clientNom": "Name",
+  "clientTelephone": "Phone",
+  "clientAdresse": "Address",
+  "clientEmail": "E-mail",
+  "clientPoints": "Points",
+  "clientPlafond": "Credit limit",
+  "clientSolde": "Balance due",
+  "clientAucun": "No customers.",
+  "clientFiche": "Customer card",
+  "clientDocumentsOuverts": "Open documents",
+  "clientVersements": "Payments",
+  "clientNouveauVersement": "Receive a payment",
+  "fournisseursTitre": "Suppliers",
+  "fournisseurNouveau": "New supplier",
+  "fournisseurAucun": "No suppliers.",
+  "fournisseurFiche": "Supplier card",
+  "fournisseurNouveauVersement": "Pay a supplier",
+  "versementsTitre": "Payments",
+  "versementNouveau": "New payment",
+  "versementTiers": "Party",
+  "versementTiersClient": "Customer",
+  "versementTiersFournisseur": "Supplier",
+  "versementMontant": "Amount",
+  "versementMode": "Method",
+  "versementReference": "Reference",
+  "versementAucun": "No payments.",
+  "versementColSens": "Direction",
+  "versementColImpute": "Allocated",
+  "versementColNonImpute": "Unallocated",
+  "versementVerrouille": "Locked (linked to return {retour})",
+  "@versementVerrouille": {
+    "placeholders": {
+      "retour": {
+        "type": "String"
+      }
+    }
+  },
+  "versementImputations": "Allocations (oldest first)",
+  "versementSupprimer": "Delete payment",
+  "versementConfirmerSuppression": "Delete payment {code}? Allocations will be reverted.",
+  "@versementConfirmerSuppression": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "versementErreurMontant": "Invalid amount.",
+  "versementErreurMode": "Invalid payment method.",
+  "versementErreurSysteme": "Not possible for the system party.",
+  "versementErreurVerrouille": "Locked payment: linked to a return, it can neither be edited nor deleted.",
+  "versementErreurInconnu": "Payment not found.",
+  "versementErreurTiers": "Invalid party.",
+  "versementEnregistre": "Payment {code} saved: {impute} allocated, {reste} as advance.",
+  "@versementEnregistre": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "impute": {
+        "type": "String"
+      },
+      "reste": {
+        "type": "String"
+      }
+    }
+  },
+  "sensEncaissement": "Receipt",
+  "sensDecaissement": "Disbursement",
+  "tiersErreurNom": "Name is required.",
+  "tiersErreurSysteme": "The system party cannot be changed.",
+  "achatsTitre": "Receipts / Purchases",
+  "achatNouveau": "New receipt",
+  "achatSmartScan": "Smart Scan AI",
+  "achatFournisseur": "Supplier",
+  "achatReference": "Invoice reference",
+  "achatMagasin": "Store",
+  "achatLignes": "Lines",
+  "achatPrixAchat": "Purchase price",
+  "achatNouveauPrixVente": "New selling price",
+  "achatVerse": "Paid",
+  "achatModePaiement": "Payment method",
+  "achatMettreAJourPrix": "Update product purchase prices",
+  "achatAucun": "No receipts.",
+  "achatColTotal": "Total",
+  "achatColVerse": "Paid",
+  "achatColReste": "Due",
+  "achatColSource": "Source",
+  "achatColStatut": "Status",
+  "achatAnnuler": "Cancel receipt",
+  "achatConfirmerAnnulation": "Cancel receipt {code}? Stock will be taken out.",
+  "@achatConfirmerAnnulation": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "achatEnregistre": "Receipt {code} saved: {total}, due {reste}.",
+  "@achatEnregistre": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      },
+      "reste": {
+        "type": "String"
+      }
+    }
+  },
+  "achatErreurLignes": "Add at least one line.",
+  "achatErreurQuantite": "Invalid quantity.",
+  "achatErreurPrix": "Invalid price or amount.",
+  "achatErreurProduit": "Unknown product.",
+  "achatErreurFournisseur": "Unknown supplier.",
+  "achatErreurInconnu": "Receipt not found.",
+  "achatErreurAnnule": "Receipt already cancelled.",
+  "achatErreurPeriode": "Closed period: cannot cancel.",
+  "achatErreurStock": "Insufficient stock to cancel (already sold).",
+  "statutAchatValide": "Validated",
+  "statutAchatAnnule": "Cancelled",
+  "sourceManuel": "Manual",
+  "sourceSmartScan": "Smart Scan",
+  "smartScanTitre": "Smart Scan AI — supplier invoice",
+  "smartScanIntro": "Photograph or pick the invoice (image or PDF): lines are recognised by the CaisseDZ server and matched with your catalogue.",
+  "smartScanQuota": "Quota: {restant} analysis(es) left out of {total}",
+  "@smartScanQuota": {
+    "placeholders": {
+      "restant": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "smartScanChoisir": "Choose an invoice",
+  "smartScanAnalyser": "Analyse",
+  "smartScanAnalyse": "Analysing…",
+  "smartScanAucuneLigne": "No line recognised.",
+  "smartScanLigneNonRapprochee": "Unmatched",
+  "smartScanRapprocher": "Link a product",
+  "smartScanCreerEntree": "Create receipt",
+  "smartScanQuotaAtteint": "Smart Scan quota reached",
+  "smartScanQuotaAtteintDetail": "You have used all your analyses. Request an offer to continue.",
+  "smartScanDemandeOffre": "Request an offer",
+  "smartScanEmail": "Your e-mail",
+  "smartScanMessage": "Message",
+  "smartScanOffreEnvoyee": "Request sent, we will contact you shortly.",
+  "smartScanNonConfigure": "Set the CaisseDZ server URL in Settings to use Smart Scan.",
+  "smartScanErreurReseau": "Server unreachable: {detail}",
+  "@smartScanErreurReseau": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "smartScanErreurServeur": "Server error: {detail}",
+  "@smartScanErreurServeur": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "smartScanErreurFichier": "Invalid file.",
+  "gestionCaisseTitre": "Cash management",
+  "gestionCaisseOngletCaisses": "Registers",
+  "gestionCaisseOngletMouvements": "Movements",
+  "gestionCaisseOngletTransferts": "Register transfers",
+  "caisseNouvelle": "New register",
+  "caisseModifier": "Edit register",
+  "caisseNom": "Name",
+  "caisseType": "Type",
+  "caisseMagasin": "Store",
+  "caisseSansMagasin": "No store",
+  "caisseActive": "Active",
+  "caisseInactive": "Inactive",
+  "caisseSoldeEspeces": "Cash balance",
+  "caisseSoldeTotal": "Total balance",
+  "caisseTypePhysique": "Physical",
+  "caisseTypeCompte": "Account",
+  "caisseAucune": "No register.",
+  "caisseDesactiver": "Deactivate",
+  "caisseActiver": "Activate",
+  "mouvementApport": "Cash in",
+  "mouvementDepense": "Expense",
+  "mouvementColType": "Type",
+  "mouvementColSens": "Direction",
+  "mouvementColMontant": "Amount",
+  "mouvementColMode": "Method",
+  "mouvementColReference": "Reference",
+  "mouvementAucun": "No movement.",
+  "mouvementToutesCaisses": "All registers",
+  "mouvementCaisse": "Register",
+  "mvtVente": "Sale",
+  "mvtAnnulation": "Cancellation",
+  "mvtRemboursement": "Refund",
+  "mvtEncaissement": "Receipt",
+  "mvtDecaissement": "Payment",
+  "mvtApport": "Cash in",
+  "mvtDepense": "Expense",
+  "mvtTransfert": "Transfer",
+  "mvtFondInitial": "Opening float",
+  "mvtRetrait": "Withdrawal",
+  "mvtEcart": "Variance",
+  "sensEntree": "In",
+  "sensSortie": "Out",
+  "transfertCaisseNouveau": "New transfer",
+  "transfertCaisseSource": "Source register",
+  "transfertCaisseDestination": "Destination register",
+  "transfertCaisseAucun": "No transfer.",
+  "transfertCaisseCree": "Transfer {code} recorded (2 movements).",
+  "@transfertCaisseCree": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "caisseErreurNom": "Name is required.",
+  "caisseErreurType": "Invalid register type.",
+  "caisseErreurMagasin": "Unknown store.",
+  "caisseErreurInconnue": "Register not found.",
+  "caisseErreurInactive": "Inactive register.",
+  "caisseErreurSysteme": "The main register cannot be deactivated.",
+  "caisseErreurMontant": "Invalid amount.",
+  "caisseErreurMode": "Invalid payment method.",
+  "caisseErreurMemeCaisse": "Choose two different registers.",
+  "caisseErreurSolde": "Insufficient balance in the source register.",
+  "caisseErreurSessionOuverte": "A session is open on this register.",
+  "cloturesTitre": "Z closures",
+  "clotureNouvelle": "Close (Z)",
+  "clotureApercuTitre": "Z closure — period preview",
+  "cloturePeriode": "Period",
+  "clotureDebut": "Start",
+  "clotureFin": "End",
+  "clotureColVentes": "Sales",
+  "clotureColAnnulations": "Cancellations",
+  "clotureColTotalVentes": "Sales total",
+  "clotureColRemises": "Discounts",
+  "clotureColRetours": "Returns",
+  "clotureColEncaissements": "Receipts",
+  "clotureColDecaissements": "Payments",
+  "clotureColHash": "Seal",
+  "clotureColUtilisateur": "User",
+  "clotureAucune": "No closure.",
+  "clotureConfirmer": "Seal the closure",
+  "clotureCreee": "Closure {code} sealed. Hash: {hash}",
+  "@clotureCreee": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "hash": {
+        "type": "String"
+      }
+    }
+  },
+  "clotureDetail": "Closure details",
+  "clotureParMode": "Receipts by method",
+  "clotureSoldes": "Register balances",
+  "clotureDerniereVente": "Last receipt",
+  "clotureHashPrecedent": "Previous hash",
+  "clotureHash": "Hash",
+  "clotureVerifier": "Verify chain",
+  "clotureChaineOk": "Closure chain intact.",
+  "clotureChaineKo": "Chain altered from closure {code}.",
+  "@clotureChaineKo": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "clotureErreurSession": "Close all register sessions before closing.",
+  "clotureErreurRien": "Nothing to close since the last closure.",
+  "clotureAvertissementImmuable": "A closure is final: it can neither be modified nor deleted, and documents of the period can no longer be cancelled.",
+  "exportFiscalTitre": "Fiscal export",
+  "exportFiscalDebut": "From (dd/mm/yyyy)",
+  "exportFiscalFin": "To (dd/mm/yyyy)",
+  "exportFiscalGenerer": "Generate archive",
+  "exportFiscalOk": "Archive saved: {chemin} ({ventes} sales, {clotures} closures, fingerprint verified).",
+  "@exportFiscalOk": {
+    "placeholders": {
+      "chemin": {
+        "type": "String"
+      },
+      "ventes": {
+        "type": "int"
+      },
+      "clotures": {
+        "type": "int"
+      }
+    }
+  },
+  "exportFiscalErreurDates": "Invalid dates.",
+  "exportFiscalVerifier": "Verify an archive",
+  "exportFiscalVerifOk": "Valid archive: {ventes} sales, {clotures} closures.",
+  "@exportFiscalVerifOk": {
+    "placeholders": {
+      "ventes": {
+        "type": "int"
+      },
+      "clotures": {
+        "type": "int"
+      }
+    }
+  },
+  "exportFiscalVerifKo": "Invalid archive: {erreurs}",
+  "@exportFiscalVerifKo": {
+    "placeholders": {
+      "erreurs": {
+        "type": "String"
+      }
+    }
+  },
+  "exportFiscalPermission": "Permission “export data” required.",
+  "tableauBordTitre": "Dashboard",
+  "tableauBordCaJour": "Today's revenue",
+  "tableauBordTicketsJour": "Today's receipts",
+  "tableauBordPanierMoyen": "Average basket",
+  "tableauBordCaMois": "Month revenue",
+  "tableauBordSousSeuil": "Products below threshold",
+  "tableauBordCreances": "Customer receivables",
+  "tableauBordCa30Jours": "Revenue over the last 30 days",
+  "tableauBordPaiements": "Receipts by method (30 days)",
+  "tableauBordTopProduits": "Top 5 products (30 days)",
+  "tableauBordCategories": "Sales by category (30 days)",
+  "tableauBordCaMensuel": "Monthly revenue (12 months)",
+  "tableauBordActualiser": "Refresh",
+  "situationTitre": "Reports",
+  "situationRapport": "Report",
+  "situationDu": "From (dd/mm/yyyy)",
+  "situationAu": "To (dd/mm/yyyy)",
+  "situationAfficher": "Show",
+  "situationExportExcel": "Export to Excel",
+  "situationApercuPdf": "PDF preview",
+  "situationAucuneLigne": "No data for the period.",
+  "situationDatesInvalides": "Invalid dates.",
+  "situationExportOk": "File saved: {chemin}",
+  "@situationExportOk": {
+    "placeholders": {
+      "chemin": {
+        "type": "String"
+      }
+    }
+  },
+  "situationPeriode": "Period from {debut} to {fin}",
+  "@situationPeriode": {
+    "placeholders": {
+      "debut": {
+        "type": "String"
+      },
+      "fin": {
+        "type": "String"
+      }
+    }
+  },
+  "rapportVentesJour": "Sales by day",
+  "rapportVentesProduit": "Sales by product",
+  "rapportVentesCategorie": "Sales by category",
+  "rapportVentesClient": "Sales by customer",
+  "rapportVentesVendeur": "Sales by seller and register",
+  "rapportEncaissementsMode": "Receipts by method",
+  "rapportAchatsFournisseur": "Purchases by supplier",
+  "rapportRetours": "Customer returns",
+  "rapportEtatStock": "Valued stock status",
+  "rapportCreancesDettes": "Receivables and payables",
+  "zakatTitre": "Zakat",
+  "zakatIntro": "Zakat on trade goods: 2.5% of the base when it reaches the nisab (85 g of gold).",
+  "zakatPrixOr": "Gold price per gram ({devise})",
+  "@zakatPrixOr": {
+    "placeholders": {
+      "devise": {
+        "type": "String"
+      }
+    }
+  },
+  "zakatEnregistrerPrix": "Save price",
+  "zakatStock": "Stock (purchase price)",
+  "zakatCaisses": "Registers",
+  "zakatCreances": "Customer receivables",
+  "zakatDettes": "Supplier payables",
+  "zakatAssiette": "Base",
+  "zakatNissab": "Nisab (85 g)",
+  "zakatMontant": "Zakat due (2.5%)",
+  "zakatAssujetti": "Due: the base reaches the nisab.",
+  "zakatNonAssujetti": "Not due: the base is below the nisab.",
+  "zakatPrixManquant": "Enter the gold price to compute the nisab.",
+  "historiqueTitre": "History",
+  "historiqueColUtilisateur": "User",
+  "historiqueColAction": "Action",
+  "historiqueColEntite": "Entity",
+  "historiqueColDetail": "Details",
+  "historiqueToutesEntites": "All entities",
+  "historiqueAucun": "No operation.",
+  "parametresTitre": "Settings",
+  "parametresOngletGeneral": "General",
+  "parametresOngletBoutique": "Shop",
+  "parametresOngletVente": "Sales",
+  "parametresOngletImpression": "Printing",
+  "parametresOngletServeur": "Servers",
+  "parametresOngletSauvegarde": "Backup",
+  "parametresEnregistre": "Settings saved.",
+  "parametresBoutiqueNom": "Shop name",
+  "parametresBoutiqueRc": "Trade register (RC)",
+  "parametresBoutiqueNif": "Tax ID (NIF)",
+  "parametresBoutiqueAdresse": "Address",
+  "parametresBoutiqueTelephone": "Phone",
+  "parametresBoutiqueEmail": "E-mail",
+  "parametresMarge": "Default margin (%)",
+  "parametresDevise": "Currency",
+  "parametresSeuil": "Global stock threshold",
+  "parametresFidelite": "Loyalty program",
+  "parametresPoints": "Points per dinar",
+  "parametresGardeStock": "Stock guard: always on (no sale without stock).",
+  "parametresImprimanteType": "Printer type",
+  "parametresImprimanteAdresse": "Windows queue or IP:port address",
+  "parametresImprimanteLargeur": "Receipt width",
+  "parametresImprimanteNormale": "Standard (print dialog)",
+  "parametresImprimanteUsb": "USB (Windows spooler)",
+  "parametresImprimanteReseau": "Network (IP:port)",
+  "parametresImprimanteBluetooth": "Bluetooth",
+  "parametresServeurUrl": "CaisseDZ server URL",
+  "parametresServeurCle": "API key",
+  "parametresMantoujUrl": "Mantouj catalog URL",
+  "parametresErreurNom": "Shop name is required.",
+  "parametresErreurValeur": "Invalid value.",
+  "parametresErreurImprimanteType": "Invalid printer type.",
+  "parametresErreurImprimanteAdresse": "Enter the printer queue or address.",
+  "sauvegardeIntro": "The backup is encrypted with the chosen password: keep it, it is required to restore.",
+  "sauvegardeCreer": "Create a backup",
+  "sauvegardeRestaurer": "Restore a backup",
+  "sauvegardeMotDePasse": "Backup password",
+  "sauvegardeFichier": "Backup file",
+  "sauvegardeChoisirFichier": "Choose file…",
+  "sauvegardeOk": "Backup saved: {chemin}",
+  "@sauvegardeOk": {
+    "placeholders": {
+      "chemin": {
+        "type": "String"
+      }
+    }
+  },
+  "sauvegardeInfo": "Shop “{boutique}”, {ventes} sales, {produits} products, schema v{version}.",
+  "@sauvegardeInfo": {
+    "placeholders": {
+      "boutique": {
+        "type": "String"
+      },
+      "ventes": {
+        "type": "int"
+      },
+      "produits": {
+        "type": "int"
+      },
+      "version": {
+        "type": "int"
+      }
+    }
+  },
+  "sauvegardeConfirmerRestauration": "Restore this backup? Current data will be replaced at next start.",
+  "sauvegardeRestaurationPreparee": "Restore ready: close and relaunch CaisseDZ to apply it.",
+  "sauvegardeRestaurationEnAttente": "A restore is pending: it will be applied at next start.",
+  "sauvegardeAnnulerRestauration": "Cancel restore",
+  "sauvegardeErreurMotDePasse": "Invalid password or corrupted file.",
+  "sauvegardeErreurMotDePasseVide": "Enter a password.",
+  "sauvegardeErreurFichier": "File not found.",
+  "sauvegardeErreurChemin": "Invalid location: {detail}",
+  "@sauvegardeErreurChemin": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  }
+}

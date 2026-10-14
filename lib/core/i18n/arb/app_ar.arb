@@ -1,0 +1,1260 @@
+{
+  "@@locale": "ar",
+  "appTitle": "CaisseDZ",
+  "shellNavGeneral": "عام",
+  "shellNavStock": "المخزون",
+  "shellNavTiers": "الأطراف",
+  "shellNavGestion": "الإدارة",
+  "shellFavoris": "المفضلة",
+  "shellFavorisVide": "لا توجد مفضلة. انقر بالزر الأيمن على وحدة لإضافتها.",
+  "shellFavorisMax": "7 مفضلات كحد أقصى",
+  "shellFavorisAjouter": "إضافة إلى المفضلة",
+  "shellFavorisRetirer": "إزالة من المفضلة",
+  "shellMenuModules": "الوحدات",
+  "shellMenuModulesRaccourci": "Ctrl+M",
+  "shellMenuModulesRecherche": "البحث عن وحدة…",
+  "shellMenuModulesAucun": "لا توجد وحدة مطابقة.",
+  "shellAlertes": "التنبيهات",
+  "shellAlertesAucune": "لا توجد تنبيهات",
+  "shellInternetConnecte": "الإنترنت: متصل",
+  "shellInternetDeconnecte": "الإنترنت: غير متصل",
+  "shellFenetreReduire": "تصغير",
+  "shellFenetreAgrandir": "تكبير",
+  "shellFenetreRestaurer": "استعادة",
+  "shellFenetreFermer": "إغلاق",
+  "shellReduireSidebar": "طي القائمة",
+  "shellEtendreSidebar": "توسيع القائمة",
+  "shellGalerie": "معرض نظام التصميم",
+  "modulePlaceholder": "الوحدة « {nom} » : متاحة في دفعة قادمة.",
+  "@modulePlaceholder": {
+    "placeholders": {
+      "nom": {
+        "type": "String"
+      }
+    }
+  },
+  "moduleTableauBord": "لوحة القيادة",
+  "moduleCaisse": "الصندوق",
+  "moduleVentes": "المبيعات",
+  "moduleRetours": "المرتجعات",
+  "moduleHistorique": "السجل",
+  "moduleProduits": "المنتجات",
+  "moduleStock": "المخزون",
+  "moduleEntrees": "الإدخالات / المشتريات",
+  "moduleTransferts": "التحويلات",
+  "moduleBesoins": "الاحتياجات",
+  "moduleSorties": "الإخراجات",
+  "moduleClients": "العملاء",
+  "moduleFournisseurs": "الموردون",
+  "moduleVersements": "الدفعات",
+  "moduleGestionCaisse": "إدارة الصندوق",
+  "moduleClotures": "الإقفالات",
+  "moduleSituation": "الوضعية",
+  "moduleZakat": "الزكاة",
+  "moduleParametres": "الإعدادات",
+  "moduleMonCompte": "حسابي",
+  "communOk": "موافق",
+  "communAnnuler": "إلغاء",
+  "communConfirmer": "تأكيد",
+  "communFermer": "إغلاق",
+  "communEnregistrer": "حفظ",
+  "communSupprimer": "حذف",
+  "communRechercher": "بحث",
+  "communChargement": "جارٍ التحميل…",
+  "communAucunResultat": "لا توجد نتائج",
+  "communSelectionner": "اختيار",
+  "communTotal": "المجموع",
+  "communColonnes": "الأعمدة",
+  "communToutSelectionner": "تحديد الكل",
+  "communLignesParPage": "أسطر في الصفحة",
+  "communPagination": "{debut}–{fin} من {total}",
+  "@communPagination": {
+    "placeholders": {
+      "debut": {
+        "type": "int"
+      },
+      "fin": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "communPagePrecedente": "الصفحة السابقة",
+  "communPageSuivante": "الصفحة التالية",
+  "communSelectionnes": "{n} محدد",
+  "@communSelectionnes": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "galerieTitre": "معرض نظام التصميم",
+  "galerieTheme": "المظهر",
+  "galerieLangue": "اللغة",
+  "galerieClair": "فاتح",
+  "galerieSombre": "داكن",
+  "activationTitre": "تفعيل CaisseDZ",
+  "activationIntro": "أدخل مفتاح التفعيل الخاص بهذا الجهاز، أو جرّب الوضع التجريبي.",
+  "activationIdentifiantMachine": "معرّف هذا الجهاز",
+  "activationCopierIdentifiant": "نسخ المعرّف",
+  "activationIdentifiantCopie": "تم نسخ المعرّف",
+  "activationCle": "مفتاح التفعيل (64 حرفًا)",
+  "activationCleIndice": "مفتاح SHA-256 من 64 حرفًا سداسيًا عشريًا",
+  "activationBouton": "تفعيل",
+  "activationDemo": "تجربة الوضع التجريبي",
+  "activationDemoAide": "يفتح الوضع التجريبي كل الوظائف (رخصة متقدم) بالحساب demo / demo. البيانات المدخلة ليست للاستعمال الفعلي.",
+  "activationErreurFormat": "يجب أن يحتوي المفتاح على 64 حرفًا سداسيًا عشريًا بالضبط (0-9، a-f).",
+  "activationErreurInconnue": "هذا المفتاح لا يطابق هذا الجهاز. تحقق من المفتاح أو اتصل بالموزع.",
+  "activationReussie": "تم تفعيل رخصة {niveau}.",
+  "@activationReussie": {
+    "placeholders": {
+      "niveau": {
+        "type": "String"
+      }
+    }
+  },
+  "licenceBasic": "أساسي",
+  "licenceAvance": "متقدم",
+  "licenceDemo": "وضع تجريبي",
+  "licenceNiveau": "رخصة {niveau}",
+  "@licenceNiveau": {
+    "placeholders": {
+      "niveau": {
+        "type": "String"
+      }
+    }
+  },
+  "licenceRequise": "وظيفة متاحة مع الرخصة المتقدمة",
+  "licenceRequiseDetail": "رخصتك الحالية أساسية. فعّل رخصة متقدمة للوصول إلى هذه الوحدة.",
+  "licenceGererCle": "تفعيل مفتاح آخر",
+  "connexionTitre": "تسجيل الدخول",
+  "connexionIdentifiant": "المعرّف",
+  "connexionMotDePasse": "كلمة المرور",
+  "connexionBouton": "دخول",
+  "connexionErreurIdentifiants": "المعرّف أو كلمة المرور غير صحيحة.",
+  "connexionErreurInactif": "هذا الحساب معطّل.",
+  "connexionErreurNonConfigure": "ليس لهذا الحساب كلمة مرور بعد: أكمل الإعداد الأولي.",
+  "connexionErreurDemo": "الحساب demo/demo متاح فقط في الوضع التجريبي.",
+  "connexionDemoIndice": "الوضع التجريبي: المعرّف demo، كلمة المرور demo",
+  "connexionSaisirCle": "إدخال مفتاح التفعيل",
+  "connexionDeconnecter": "تسجيل الخروج",
+  "configTitre": "الإعداد الأولي",
+  "configEtape": "الخطوة {n} من {total}",
+  "@configEtape": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "configEtapeBoutique": "المتجر",
+  "configEtapeAdmin": "المدير",
+  "configEtapeVente": "الهامش والبيع",
+  "configEtapeRecap": "الملخص",
+  "configBoutiqueNom": "اسم المتجر",
+  "configBoutiqueRc": "السجل التجاري",
+  "configBoutiqueNif": "رقم التعريف الجبائي",
+  "configBoutiqueAdresse": "العنوان",
+  "configBoutiqueTelephone": "الهاتف",
+  "configBoutiqueEmail": "البريد الإلكتروني",
+  "configAdminIntro": "سيملك حساب المدير هذا كل الصلاحيات. اختر معرّفًا وكلمة مرور.",
+  "configAdminNom": "الاسم المعروض",
+  "configAdminMotDePasseConfirmation": "تأكيد كلمة المرور",
+  "configMarge": "الهامش الافتراضي (%)",
+  "configMargeAide": "يُطبّق لحساب سعر البيع من سعر الشراء للمنتجات الجديدة.",
+  "configSeuil": "حد تنبيه المخزون (عام)",
+  "configFidelite": "تفعيل الولاء (نقاط)",
+  "configPointsParDinar": "النقاط المكتسبة لكل دينار",
+  "configDevise": "العملة",
+  "configLangue": "لغة التطبيق",
+  "configRecapIntro": "تحقق من المعلومات قبل الإنهاء. يمكنك تعديلها لاحقًا في الإعدادات.",
+  "configPrecedent": "السابق",
+  "configSuivant": "التالي",
+  "configTerminer": "إنهاء",
+  "configErreurObligatoire": "حقل إلزامي",
+  "configErreurIdentifiant": "من 3 إلى 32 حرفًا: أحرف، أرقام، نقطة، شرطة، شرطة سفلية.",
+  "configErreurMotDePasseCourt": "4 أحرف على الأقل.",
+  "configErreurConfirmation": "كلمتا المرور غير متطابقتين.",
+  "configErreurIdentifiantPris": "هذا المعرّف مستعمل بالفعل.",
+  "configErreurMarge": "قيمة بين 0 و 1000.",
+  "configErreurNombre": "رقم غير صالح.",
+  "configReussie": "اكتمل الإعداد. سجّل الدخول بحساب المدير.",
+  "compteTitre": "حسابي",
+  "compteRole": "الدور",
+  "compteIdentifiantActuel": "المعرّف الحالي",
+  "compteNouvelIdentifiant": "المعرّف الجديد",
+  "compteMotDePasseActuel": "كلمة المرور الحالية",
+  "compteNouveauMotDePasse": "كلمة المرور الجديدة",
+  "compteChangerIdentifiant": "تغيير المعرّف",
+  "compteChangerMotDePasse": "تغيير كلمة المرور",
+  "compteIdentifiantChange": "تم تغيير المعرّف: سجّل الدخول من الآن بـ « {identifiant} ».",
+  "@compteIdentifiantChange": {
+    "placeholders": {
+      "identifiant": {
+        "type": "String"
+      }
+    }
+  },
+  "compteMotDePasseChange": "تم تغيير كلمة المرور.",
+  "compteErreurMotDePasseActuel": "كلمة المرور الحالية غير صحيحة.",
+  "comptePreferences": "التفضيلات",
+  "compteDemoLectureSeule": "لا يمكن تعديل الحساب التجريبي.",
+  "accesRefuseTitre": "الوصول مرفوض",
+  "accesRefuseMessage": "دورك « {role} » لا يملك صلاحية الوصول إلى الوحدة « {module} ». اطلب من مدير.",
+  "@accesRefuseMessage": {
+    "placeholders": {
+      "role": {
+        "type": "String"
+      },
+      "module": {
+        "type": "String"
+      }
+    }
+  },
+  "accesRefuseRetour": "العودة إلى لوحة القيادة",
+  "rolesTitre": "الأدوار والصلاحيات",
+  "rolesIntro": "حدد صلاحيات الإجراءات والوحدات المتاحة لكل دور. يحتفظ المدير دائمًا بكل الصلاحيات.",
+  "rolesPermissions": "صلاحيات الإجراءات",
+  "rolesModules": "الوحدات المتاحة",
+  "rolesEnregistre": "تم حفظ شبكة الأدوار.",
+  "rolesAdminTotal": "كل الصلاحيات",
+  "permVoirPrixAchat": "عرض سعر الشراء",
+  "permModifierPrix": "تعديل السعر في الصندوق",
+  "permAppliquerRemise": "تطبيق تخفيض",
+  "permAnnulerVente": "إلغاء بيع",
+  "permSupprimerDocument": "حذف مستند",
+  "permExporterDonnees": "تصدير البيانات",
+  "permGererUtilisateurs": "إدارة المستخدمين",
+  "roleAdmin": "مدير",
+  "roleCaissier": "أمين الصندوق",
+  "roleMagasinier": "أمين المخزن",
+  "parametresRolesCarte": "الأدوار والصلاحيات",
+  "parametresRolesCarteDetail": "صلاحيات الإجراءات والوحدات المتاحة حسب الدور.",
+  "parametresLicenceCarte": "الرخصة",
+  "shellBandeauDemo": "وضع تجريبي — البيانات ليست للاستعمال الفعلي",
+  "shellMenuUtilisateur": "قائمة المستخدم",
+  "shellVerrouille": "مخصص للرخصة المتقدمة",
+  "shellAccesRestreint": "وصول غير مسموح لدورك",
+  "produitsTitre": "المنتجات",
+  "produitsOngletProduits": "المنتجات",
+  "produitsOngletCategories": "الفئات",
+  "produitsOngletColis": "الطرود",
+  "produitsOngletPacks": "الحزم",
+  "produitsOngletRemises": "التخفيضات",
+  "produitsNouveau": "منتج جديد",
+  "produitsModeIa": "وضع الذكاء الاصطناعي",
+  "produitsImporter": "استيراد Excel",
+  "produitsEtiquettes": "الملصقات",
+  "produitsSynchro": "مزامنة الكتالوج",
+  "produitsRecherche": "البحث بالاسم أو الرمز أو الباركود…",
+  "produitsColCode": "الرمز",
+  "produitsColDesignation": "التسمية",
+  "produitsColCodeBarres": "الباركود",
+  "produitsColCategorie": "الفئة",
+  "produitsColPrixAchat": "سعر الشراء",
+  "produitsColPrixVente": "سعر البيع",
+  "produitsColMarge": "الهامش %",
+  "produitsColActif": "نشط",
+  "produitsColStock": "المخزون",
+  "produitsAucun": "لا توجد منتجات. أنشئ منتجًا أو استورد ملف Excel.",
+  "produitModifier": "تعديل المنتج",
+  "produitDesactiver": "تعطيل",
+  "produitActiver": "تفعيل",
+  "produitGenererCodeBarres": "توليد باركود داخلي",
+  "produitChampDesignation": "التسمية",
+  "produitChampCodeBarres": "الباركود (EAN-13 أو داخلي)",
+  "produitChampCategorie": "الفئة",
+  "produitChampSousCategorie": "الفئة الفرعية",
+  "produitChampPrixAchat": "سعر الشراء",
+  "produitChampPrixVente": "سعر البيع",
+  "produitChampMarge": "الهامش (%)",
+  "produitChampUnite": "الوحدة",
+  "produitChampTva": "الضريبة (%)",
+  "produitChampSeuil": "حد التنبيه (فارغ = الحد العام)",
+  "produitChampSuiviNombre": "تتبع مخزون ثانٍ « بالعدد » (قطع)",
+  "produitChampSuiviNombreAide": "يُباع المنتج بالوحدة أو بالقطعة؛ يُحفظ المخزون في الاثنين.",
+  "produitChampNombreParUnite": "قطع لكل وحدة",
+  "produitPrixAuto": "يُحسب سعر البيع من الهامش إذا تركته فارغًا.",
+  "produitErreurDesignation": "التسمية إلزامية.",
+  "produitErreurCodeBarres": "باركود غير صالح.",
+  "produitErreurCodeBarresPris": "هذا الباركود مستعمل بالفعل.",
+  "produitErreurPrix": "سعر غير صالح.",
+  "produitErreurQuantite": "كمية غير صالحة.",
+  "produitCree": "تم إنشاء المنتج « {nom} » ({code}).",
+  "@produitCree": {
+    "placeholders": {
+      "nom": {
+        "type": "String"
+      },
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "iaTitre": "منتج جديد بالذكاء الاصطناعي",
+  "iaIntro": "امسح أو أدخل باركودًا: يُبحث عن البطاقة في CaisseDZ ثم Mantouj ثم Open Food Facts ثم Open Beauty Facts.",
+  "iaRechercher": "بحث",
+  "iaRechercheEnCours": "جارٍ البحث…",
+  "iaAucun": "لم يُعثر على بطاقة لهذا الباركود: انتقل إلى الإدخال التفصيلي.",
+  "iaTrouve": "بطاقة موجودة عبر {source}",
+  "@iaTrouve": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "iaMarque": "العلامة",
+  "iaCreer": "إنشاء المنتج",
+  "iaSaisieDetaillee": "إدخال تفصيلي",
+  "importTitre": "استيراد منتجات من Excel",
+  "importIntro": "الأعمدة المتوقعة في السطر 1: designation (إلزامي)، code_barres، categorie، prix_achat، prix_vente.",
+  "importChoisirFichier": "اختيار ملف .xlsx",
+  "importTelechargerModele": "حفظ النموذج",
+  "importLignesValides": "{n} سطر صالح",
+  "@importLignesValides": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "importLignesInvalides": "{n} سطر متجاهل",
+  "@importLignesInvalides": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "importColLigne": "السطر",
+  "importColErreur": "الخطأ",
+  "importLancer": "استيراد",
+  "importResultat": "{importees} منتج مستورد، {ignorees} متجاهل.",
+  "@importResultat": {
+    "placeholders": {
+      "importees": {
+        "type": "int"
+      },
+      "ignorees": {
+        "type": "int"
+      }
+    }
+  },
+  "importErreurFichier": "ملف غير قابل للقراءة: {detail}",
+  "@importErreurFichier": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "importErreurDesignationVide": "تسمية فارغة",
+  "importErreurCodeBarresPris": "باركود مستعمل بالفعل",
+  "importErreurPrix": "سعر غير صالح",
+  "etiquettesTitre": "طباعة الملصقات",
+  "etiquettesQuantite": "الكمية",
+  "etiquettesFormatA4": "ورقة A4",
+  "etiquettesFormatRouleau": "لفافة",
+  "etiquettesAfficherPrix": "إظهار السعر",
+  "etiquettesQr": "رمز QR بدل الباركود",
+  "etiquettesGenerer": "توليد PDF",
+  "etiquettesAucuneSelection": "اختر منتجًا واحدًا على الأقل من القائمة.",
+  "synchroResultat": "المزامنة: {envoyes} مرسل، {recus} محدّث.",
+  "@synchroResultat": {
+    "placeholders": {
+      "envoyes": {
+        "type": "int"
+      },
+      "recus": {
+        "type": "int"
+      }
+    }
+  },
+  "synchroNonConfiguree": "أدخل عنوان خادم CaisseDZ في الإعدادات لمزامنة الكتالوج.",
+  "synchroErreur": "فشلت المزامنة: {detail}",
+  "@synchroErreur": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "categoriesNouvelle": "فئة جديدة",
+  "categoriesNouvelleSous": "فئة فرعية جديدة",
+  "categorieNom": "الاسم",
+  "categorieRenommer": "إعادة التسمية",
+  "categorieSupprimer": "حذف",
+  "categorieSousCategories": "الفئات الفرعية",
+  "categorieErreurSysteme": "لا يمكن تعديل فئة النظام.",
+  "categorieErreurUtilisee": "توجد منتجات مرتبطة بهذه الفئة.",
+  "categorieConfirmerSuppression": "حذف الفئة « {nom} » وفئاتها الفرعية؟",
+  "@categorieConfirmerSuppression": {
+    "placeholders": {
+      "nom": {
+        "type": "String"
+      }
+    }
+  },
+  "colisNouveau": "طرد جديد",
+  "colisProduit": "المنتج",
+  "colisQuantite": "وحدات لكل طرد",
+  "colisAucun": "لا توجد طرود.",
+  "packNouveau": "حزمة جديدة",
+  "packLignes": "التركيبة",
+  "packAjouterProduit": "إضافة منتج",
+  "packAucun": "لا توجد حزم.",
+  "packErreurLignes": "أضف منتجًا واحدًا على الأقل إلى الحزمة.",
+  "remiseNouvelle": "تخفيض جديد",
+  "remiseType": "النوع",
+  "remiseTypePourcentage": "نسبة مئوية",
+  "remiseTypeMontant": "مبلغ",
+  "remiseValeur": "القيمة",
+  "remisePortee": "النطاق",
+  "remisePorteeGlobale": "كل المنتجات",
+  "remisePorteeCategorie": "فئة",
+  "remisePorteeProduit": "منتج",
+  "remiseDebut": "البداية",
+  "remiseFin": "النهاية",
+  "remiseAucune": "لا توجد تخفيضات.",
+  "communNouveau": "جديد",
+  "communModifier": "تعديل",
+  "communActif": "نشط",
+  "communInactif": "غير نشط",
+  "communOui": "نعم",
+  "communNon": "لا",
+  "communValider": "تأكيد",
+  "communApercu": "معاينة",
+  "communImprimer": "طباعة",
+  "communAucune": "لا شيء",
+  "stockTitre": "المخزون",
+  "stockOngletNiveaux": "المستويات",
+  "stockOngletJournal": "سجل الحركات",
+  "stockColProduit": "المنتج",
+  "stockColMagasin": "المخزن",
+  "stockColQuantite": "الكمية",
+  "stockColNombre": "العدد (قطع)",
+  "stockColSeuil": "الحد",
+  "stockColDate": "التاريخ",
+  "stockColType": "النوع",
+  "stockColMotif": "السبب",
+  "stockColReference": "المرجع",
+  "stockColUtilisateur": "المستخدم",
+  "stockColCommentaire": "تعليق",
+  "stockColValeur": "القيمة (سعر الشراء)",
+  "stockTousMagasins": "كل المخازن",
+  "stockSousSeuil": "تحت الحد",
+  "stockEntreeManuelle": "إدخال يدوي",
+  "stockInventaire": "جرد",
+  "stockQuantiteConstatee": "الكمية المعاينة",
+  "stockNombreConstate": "العدد المعاين",
+  "stockAucunMouvement": "لا توجد حركات.",
+  "stockErreurQuantite": "كمية غير صالحة.",
+  "stockErreurInsuffisant": "مخزون غير كافٍ: حارس المخزون يرفض هذا الإخراج.",
+  "stockErreurMemeMagasin": "يجب أن يكون مخزن الوجهة مختلفًا.",
+  "stockErreurLignes": "أضف سطرًا واحدًا على الأقل.",
+  "stockErreurMotif": "سبب غير صالح.",
+  "stockErreurMagasinInactif": "مخزن معطّل أو غير معروف.",
+  "stockErreurMagasinSysteme": "لا يمكن تعطيل المخزن الرئيسي.",
+  "stockErreurProduit": "منتج غير معروف.",
+  "stockErreurStatut": "حالة غير صالحة.",
+  "typeMouvementEntree": "إدخال",
+  "typeMouvementSortie": "إخراج",
+  "typeMouvementVente": "بيع",
+  "typeMouvementRetour": "مرتجع",
+  "typeMouvementTransfert": "تحويل",
+  "typeMouvementInventaire": "جرد",
+  "typeMouvementInitial": "مخزون أولي",
+  "magasinsTitre": "المخازن",
+  "magasinNouveau": "مخزن جديد",
+  "magasinNom": "الاسم",
+  "magasinAdresse": "العنوان",
+  "magasinPrincipal": "رئيسي",
+  "magasinMesMagasins": "مخازني (الأول هو الرئيسي)",
+  "magasinAjouterAuxMiens": "إضافة إلى مخازني",
+  "magasinRetirerDesMiens": "إزالة من مخازني",
+  "magasinDefinirPrincipal": "تعيين كرئيسي",
+  "transfertsTitre": "التحويلات",
+  "transfertNouveau": "تحويل جديد",
+  "transfertSource": "المخزن المصدر",
+  "transfertDestination": "مخزن الوجهة",
+  "transfertLignes": "الأسطر",
+  "transfertAjouterLigne": "إضافة منتج",
+  "transfertAucun": "لا توجد تحويلات.",
+  "transfertCree": "تم تسجيل التحويل {code}: حركتان لكل سطر.",
+  "@transfertCree": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "besoinsTitre": "الاحتياجات",
+  "besoinNouveau": "احتياج جديد",
+  "besoinGenerer": "توليد تحت الحد",
+  "besoinGeneres": "تم توليد {n} احتياج.",
+  "@besoinGeneres": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "besoinStatut": "الحالة",
+  "besoinPasserCommande": "تحويل إلى طلبية",
+  "besoinPasserDisponible": "تحويل إلى متوفر",
+  "besoinRemettreAttente": "إعادة إلى قيد الانتظار",
+  "besoinAucun": "لا توجد احتياجات.",
+  "statutBesoinEnAttente": "قيد الانتظار",
+  "statutBesoinCommande": "طلبية",
+  "statutBesoinDisponible": "متوفر",
+  "sortiesTitre": "الإخراجات",
+  "sortiesOngletSorties": "الإخراجات",
+  "sortiesOngletVentes": "المبيعات",
+  "sortieNouvelle": "إخراج جديد",
+  "sortieMotif": "السبب",
+  "sortieAucune": "لا توجد إخراجات.",
+  "motifCasse": "كسر",
+  "motifPerime": "منتهي الصلاحية",
+  "motifPerteVol": "ضياع/سرقة",
+  "motifConsommationInterne": "استهلاك داخلي",
+  "motifDon": "هبة",
+  "motifEchantillon": "عينة",
+  "communLignes": "{n} سطر",
+  "@communLignes": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "communCommentaire": "تعليق",
+  "communDate": "التاريخ",
+  "communQuantite": "الكمية",
+  "moduleMagasins": "المخازن",
+  "posTitre": "الصندوق",
+  "posScan": "امسح أو ابحث عن منتج (F1)",
+  "posPanier": "سلة {n}",
+  "@posPanier": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "posNouveauPanier": "سلة جديدة (Ctrl+N)",
+  "posMaxPaniers": "5 مبيعات متوازية كحد أقصى.",
+  "posPanierVide": "السلة فارغة: امسح باركودًا أو انقر على منتج.",
+  "posSousTotal": "المجموع الجزئي",
+  "posRemise": "التخفيض",
+  "posTotal": "المجموع",
+  "posVerse": "المدفوع",
+  "posReste": "المتبقي",
+  "posMonnaie": "الباقي المسترجع",
+  "posPointsGagnes": "النقاط المكتسبة",
+  "posClient": "الزبون (F2)",
+  "posClientPassage": "زبون عابر",
+  "posChoisirClient": "اختيار زبون",
+  "posRemiseGlobale": "تخفيض إجمالي (F3)",
+  "posRemisePct": "التخفيض (%)",
+  "posPaiement": "الدفع",
+  "posMontant": "المبلغ",
+  "posEncaisser": "تحصيل (F12)",
+  "posVider": "إفراغ (F10)",
+  "posCalculatrice": "الآلة الحاسبة (F9)",
+  "posAide": "مساعدة (F11)",
+  "posSessionOuvrir": "فتح الجلسة",
+  "posSessionFermer": "إغلاق الجلسة",
+  "posSessionAucune": "لا توجد جلسة صندوق مفتوحة: افتح جلسة للتحصيل.",
+  "posSessionOuverte": "الجلسة {code} · {caisse}",
+  "@posSessionOuverte": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "caisse": {
+        "type": "String"
+      }
+    }
+  },
+  "posSessionCaisse": "الصندوق",
+  "posSessionFond": "رصيد الصندوق الأولي",
+  "posSessionMontantCompte": "المبلغ المعدود",
+  "posSessionAttendu": "النقد المتوقع",
+  "posSessionEcart": "الفرق",
+  "posSessionFermee": "أُغلقت الجلسة {code}. الفرق: {ecart}.",
+  "@posSessionFermee": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "ecart": {
+        "type": "String"
+      }
+    }
+  },
+  "posErreurSessionDejaOuverte": "توجد جلسة مفتوحة بالفعل (المستخدم أو الصندوق).",
+  "posErreurSessionAucune": "لا توجد جلسة مفتوحة.",
+  "posErreurCaisse": "صندوق غير معروف أو معطّل.",
+  "posErreurMontant": "مبلغ غير صالح.",
+  "posErreurStock": "مخزون غير كافٍ (محجوز في السلال المفتوحة): {detail}",
+  "@posErreurStock": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "posErreurProduitInconnu": "رمز غير معروف: {code}",
+  "@posErreurProduitInconnu": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "posErreurPanierVide": "السلة فارغة.",
+  "posErreurPaiementInsuffisant": "الدفع غير كافٍ. المتبقي: {reste}",
+  "@posErreurPaiementInsuffisant": {
+    "placeholders": {
+      "reste": {
+        "type": "String"
+      }
+    }
+  },
+  "posErreurModePaiement": "طريقة دفع غير صالحة.",
+  "posErreurPoints": "نقاط غير كافية.",
+  "posErreurCredit": "البيع بالدين غير مسموح لهذا الزبون.",
+  "posErreurQuantite": "كمية غير صالحة.",
+  "posErreurPeriodeCloturee": "عملية مرفوضة: فترة مقفلة.",
+  "posVenteEnregistree": "تم تحصيل البيع {code}. الباقي المسترجع: {monnaie}",
+  "@posVenteEnregistree": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "monnaie": {
+        "type": "String"
+      }
+    }
+  },
+  "posImprimerTicket": "طباعة التذكرة",
+  "posImprimerFacture": "فاتورة A4",
+  "posTicket58": "تذكرة 58 مم",
+  "posTicket80": "تذكرة 80 مم",
+  "posApercuTicket": "معاينة التذكرة",
+  "posImpressionOk": "أُرسلت التذكرة إلى الطابعة.",
+  "posImpressionErreur": "تعذرت الطباعة: {detail}",
+  "@posImpressionErreur": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "posCreditAutoriser": "البيع بالدين (متبقٍ مستحق)",
+  "posRaccourcisTitre": "اختصارات لوحة المفاتيح",
+  "posRaccourciF1": "بحث / مسح",
+  "posRaccourciF2": "اختيار الزبون",
+  "posRaccourciF3": "تخفيض إجمالي",
+  "posRaccourciF4": "نقدًا: المبلغ بالضبط",
+  "posRaccourciF5": "بطاقة: المبلغ بالضبط",
+  "posRaccourciF6": "شيك: المبلغ بالضبط",
+  "posRaccourciF7": "تحويل: المبلغ بالضبط",
+  "posRaccourciF8": "نقاط الولاء",
+  "posRaccourciF9": "الآلة الحاسبة",
+  "posRaccourciF10": "إفراغ السلة",
+  "posRaccourciF11": "هذه المساعدة",
+  "posRaccourciF12": "تحصيل",
+  "posRaccourciCtrlN": "سلة جديدة",
+  "posRaccourciCtrlTab": "السلة التالية",
+  "posRaccourciSuppr": "إزالة السطر المحدد",
+  "posRaccourciPlusMoins": "الكمية +1 / −1 على السطر المحدد",
+  "posLigneQuantite": "الكمية",
+  "posLignePrix": "السعر",
+  "posLigneRemise": "تخف.",
+  "posLigneTotal": "المجموع",
+  "posVendreNombre": "البيع بالقطعة",
+  "posColis": "طرد",
+  "posPack": "حزمة",
+  "posCategoriesToutes": "الكل",
+  "posAucunProduit": "لا يوجد منتج نشط.",
+  "calcTitre": "الآلة الحاسبة",
+  "calcUtiliser": "استعمال كمبلغ",
+  "modePaiementEspeces": "نقدًا",
+  "modePaiementCarte": "بطاقة",
+  "modePaiementCheque": "شيك",
+  "modePaiementVirement": "تحويل",
+  "modePaiementPoints": "نقاط",
+  "ventesTitre": "المبيعات",
+  "ventesColTicket": "التذكرة",
+  "ventesColClient": "الزبون",
+  "ventesColNet": "الصافي",
+  "ventesColVerse": "المدفوع",
+  "ventesColReste": "المتبقي",
+  "ventesColStatut": "الحالة",
+  "ventesColCaisse": "الصندوق",
+  "ventesColVendeur": "البائع",
+  "ventesAucune": "لا توجد مبيعات.",
+  "ventesVoirTicket": "عرض التذكرة",
+  "ventesAnnuler": "إلغاء البيع",
+  "ventesConfirmerAnnulation": "إلغاء البيع {code}؟ سيُعاد المخزون والنقاط؛ تبقى التذكرة المختومة محفوظة.",
+  "@ventesConfirmerAnnulation": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "ventesCreerRetour": "إنشاء مرتجع",
+  "ventesVerifierChaine": "التحقق من الختم",
+  "ventesChaineOk": "سلسلة التذاكر سليمة.",
+  "ventesChaineKo": "سلسلة معدّلة ابتداءً من التذكرة {code}.",
+  "@ventesChaineKo": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "ventesFiltreToutes": "الكل",
+  "ventesFiltreValidees": "مؤكدة",
+  "ventesFiltreAnnulees": "ملغاة",
+  "ventesFiltreCredit": "بالدين",
+  "statutVenteValidee": "مؤكدة",
+  "statutVenteAnnulee": "ملغاة",
+  "ticketDetail": "التذكرة {code}",
+  "@ticketDetail": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "retoursTitre": "المرتجعات",
+  "retourNouveau": "مرتجع جديد",
+  "retourVente": "البيع الأصلي",
+  "retourMotif": "السبب",
+  "retourRembourser": "المبلغ المسترجع",
+  "retourModeRemboursement": "طريقة الاسترجاع",
+  "retourAvoir": "يُسجل الباقي كرصيد في حساب الزبون.",
+  "retourAucun": "لا توجد مرتجعات.",
+  "retourColTotal": "إجمالي المرتجع",
+  "retourColRembourse": "المسترجع",
+  "retourQuantiteMax": "الكمية المرتجعة (الحد {max})",
+  "@retourQuantiteMax": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "retourErreurVenteInconnue": "البيع غير موجود.",
+  "retourErreurVenteAnnulee": "هذا البيع ملغى.",
+  "retourErreurLignes": "حدد كمية واحدة على الأقل للإرجاع.",
+  "retourErreurQuantite": "كمية غير صالحة.",
+  "retourErreurDepasse": "الكمية أكبر من الكمية المباعة (بما فيها المرتجع سابقًا).",
+  "retourErreurPeriode": "فترة مقفلة: الإرجاع غير ممكن.",
+  "retourCree": "تم تسجيل المرتجع {code}: {total} (مسترجع {rembourse}).",
+  "@retourCree": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      },
+      "rembourse": {
+        "type": "String"
+      }
+    }
+  },
+  "clientsTitre": "العملاء",
+  "clientNouveau": "عميل جديد",
+  "clientNom": "الاسم",
+  "clientTelephone": "الهاتف",
+  "clientAdresse": "العنوان",
+  "clientEmail": "البريد الإلكتروني",
+  "clientPoints": "النقاط",
+  "clientPlafond": "سقف الدين",
+  "clientSolde": "الرصيد المستحق",
+  "clientAucun": "لا يوجد عملاء.",
+  "clientFiche": "بطاقة العميل",
+  "clientDocumentsOuverts": "المستندات المفتوحة",
+  "clientVersements": "الدفعات",
+  "clientNouveauVersement": "تحصيل دفعة",
+  "fournisseursTitre": "الموردون",
+  "fournisseurNouveau": "مورد جديد",
+  "fournisseurAucun": "لا يوجد موردون.",
+  "fournisseurFiche": "بطاقة المورد",
+  "fournisseurNouveauVersement": "تسديد دفعة",
+  "versementsTitre": "الدفعات",
+  "versementNouveau": "دفعة جديدة",
+  "versementTiers": "الطرف",
+  "versementTiersClient": "عميل",
+  "versementTiersFournisseur": "مورد",
+  "versementMontant": "المبلغ",
+  "versementMode": "الطريقة",
+  "versementReference": "المرجع",
+  "versementAucun": "لا توجد دفعات.",
+  "versementColSens": "الاتجاه",
+  "versementColImpute": "المخصص",
+  "versementColNonImpute": "غير المخصص",
+  "versementVerrouille": "مقفل (مرتبط بالمرتجع {retour})",
+  "@versementVerrouille": {
+    "placeholders": {
+      "retour": {
+        "type": "String"
+      }
+    }
+  },
+  "versementImputations": "التخصيصات (الأقدم أولاً)",
+  "versementSupprimer": "حذف الدفعة",
+  "versementConfirmerSuppression": "حذف الدفعة {code}؟ ستُلغى التخصيصات.",
+  "@versementConfirmerSuppression": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "versementErreurMontant": "مبلغ غير صالح.",
+  "versementErreurMode": "طريقة دفع غير صالحة.",
+  "versementErreurSysteme": "غير ممكن للطرف النظامي.",
+  "versementErreurVerrouille": "دفعة مقفلة: مرتبطة بمرتجع، لا يمكن تعديلها ولا حذفها.",
+  "versementErreurInconnu": "الدفعة غير موجودة.",
+  "versementErreurTiers": "طرف غير صالح.",
+  "versementEnregistre": "تم تسجيل الدفعة {code}: {impute} مخصص، {reste} كسلفة.",
+  "@versementEnregistre": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "impute": {
+        "type": "String"
+      },
+      "reste": {
+        "type": "String"
+      }
+    }
+  },
+  "sensEncaissement": "تحصيل",
+  "sensDecaissement": "صرف",
+  "tiersErreurNom": "الاسم إلزامي.",
+  "tiersErreurSysteme": "لا يمكن تعديل الطرف النظامي.",
+  "achatsTitre": "الإدخالات / المشتريات",
+  "achatNouveau": "إدخال جديد",
+  "achatSmartScan": "Smart Scan IA",
+  "achatFournisseur": "المورد",
+  "achatReference": "مرجع الفاتورة",
+  "achatMagasin": "المخزن",
+  "achatLignes": "الأسطر",
+  "achatPrixAchat": "سعر الشراء",
+  "achatNouveauPrixVente": "سعر البيع الجديد",
+  "achatVerse": "المدفوع",
+  "achatModePaiement": "طريقة الدفع",
+  "achatMettreAJourPrix": "تحديث سعر شراء المنتجات",
+  "achatAucun": "لا توجد إدخالات.",
+  "achatColTotal": "المجموع",
+  "achatColVerse": "المدفوع",
+  "achatColReste": "المتبقي",
+  "achatColSource": "المصدر",
+  "achatColStatut": "الحالة",
+  "achatAnnuler": "إلغاء الإدخال",
+  "achatConfirmerAnnulation": "إلغاء الإدخال {code}؟ سيُخرج المخزون.",
+  "@achatConfirmerAnnulation": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "achatEnregistre": "تم تسجيل الإدخال {code}: {total}، المتبقي {reste}.",
+  "@achatEnregistre": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      },
+      "reste": {
+        "type": "String"
+      }
+    }
+  },
+  "achatErreurLignes": "أضف سطرًا واحدًا على الأقل.",
+  "achatErreurQuantite": "كمية غير صالحة.",
+  "achatErreurPrix": "سعر أو مبلغ غير صالح.",
+  "achatErreurProduit": "منتج غير معروف.",
+  "achatErreurFournisseur": "مورد غير معروف.",
+  "achatErreurInconnu": "الإدخال غير موجود.",
+  "achatErreurAnnule": "الإدخال ملغى بالفعل.",
+  "achatErreurPeriode": "فترة مقفلة: الإلغاء غير ممكن.",
+  "achatErreurStock": "مخزون غير كافٍ للإلغاء (بيع سابق).",
+  "statutAchatValide": "مؤكد",
+  "statutAchatAnnule": "ملغى",
+  "sourceManuel": "يدوي",
+  "sourceSmartScan": "Smart Scan",
+  "smartScanTitre": "Smart Scan IA — فاتورة المورد",
+  "smartScanIntro": "صوّر الفاتورة أو اخترها (صورة أو PDF): يتعرف خادم CaisseDZ على الأسطر ويقارنها بالكتالوج.",
+  "smartScanQuota": "الحصة: {restant} تحليل متبقٍ من {total}",
+  "@smartScanQuota": {
+    "placeholders": {
+      "restant": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "smartScanChoisir": "اختيار فاتورة",
+  "smartScanAnalyser": "تحليل",
+  "smartScanAnalyse": "جارٍ التحليل…",
+  "smartScanAucuneLigne": "لم يُتعرف على أي سطر.",
+  "smartScanLigneNonRapprochee": "غير مطابق",
+  "smartScanRapprocher": "ربط بمنتج",
+  "smartScanCreerEntree": "إنشاء الإدخال",
+  "smartScanQuotaAtteint": "تم بلوغ حصة Smart Scan",
+  "smartScanQuotaAtteintDetail": "استعملت كل تحليلاتك. اطلب عرضًا للمتابعة.",
+  "smartScanDemandeOffre": "طلب عرض",
+  "smartScanEmail": "بريدك الإلكتروني",
+  "smartScanMessage": "الرسالة",
+  "smartScanOffreEnvoyee": "أُرسل الطلب، سنتصل بك قريبًا.",
+  "smartScanNonConfigure": "أدخل عنوان خادم CaisseDZ في الإعدادات لاستعمال Smart Scan.",
+  "smartScanErreurReseau": "تعذر الوصول إلى الخادم: {detail}",
+  "@smartScanErreurReseau": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "smartScanErreurServeur": "خطأ في الخادم: {detail}",
+  "@smartScanErreurServeur": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "smartScanErreurFichier": "ملف غير صالح.",
+  "gestionCaisseTitre": "إدارة الصندوق",
+  "gestionCaisseOngletCaisses": "الصناديق",
+  "gestionCaisseOngletMouvements": "الحركات",
+  "gestionCaisseOngletTransferts": "التحويلات بين الصناديق",
+  "caisseNouvelle": "صندوق جديد",
+  "caisseModifier": "تعديل الصندوق",
+  "caisseNom": "الاسم",
+  "caisseType": "النوع",
+  "caisseMagasin": "المخزن",
+  "caisseSansMagasin": "بدون مخزن",
+  "caisseActive": "نشط",
+  "caisseInactive": "غير نشط",
+  "caisseSoldeEspeces": "رصيد نقدي",
+  "caisseSoldeTotal": "الرصيد الإجمالي",
+  "caisseTypePhysique": "مادي",
+  "caisseTypeCompte": "حساب",
+  "caisseAucune": "لا يوجد صندوق.",
+  "caisseDesactiver": "تعطيل",
+  "caisseActiver": "تفعيل",
+  "mouvementApport": "إيداع",
+  "mouvementDepense": "مصروف",
+  "mouvementColType": "النوع",
+  "mouvementColSens": "الاتجاه",
+  "mouvementColMontant": "المبلغ",
+  "mouvementColMode": "الوسيلة",
+  "mouvementColReference": "المرجع",
+  "mouvementAucun": "لا توجد حركات.",
+  "mouvementToutesCaisses": "كل الصناديق",
+  "mouvementCaisse": "الصندوق",
+  "mvtVente": "بيع",
+  "mvtAnnulation": "إلغاء",
+  "mvtRemboursement": "استرجاع",
+  "mvtEncaissement": "تحصيل",
+  "mvtDecaissement": "صرف",
+  "mvtApport": "إيداع",
+  "mvtDepense": "مصروف",
+  "mvtTransfert": "تحويل",
+  "mvtFondInitial": "رصيد افتتاحي",
+  "mvtRetrait": "سحب",
+  "mvtEcart": "فرق",
+  "sensEntree": "دخول",
+  "sensSortie": "خروج",
+  "transfertCaisseNouveau": "تحويل جديد",
+  "transfertCaisseSource": "الصندوق المصدر",
+  "transfertCaisseDestination": "الصندوق الوجهة",
+  "transfertCaisseAucun": "لا توجد تحويلات.",
+  "transfertCaisseCree": "تم تسجيل التحويل {code} (حركتان).",
+  "@transfertCaisseCree": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "caisseErreurNom": "الاسم إلزامي.",
+  "caisseErreurType": "نوع الصندوق غير صالح.",
+  "caisseErreurMagasin": "مخزن غير معروف.",
+  "caisseErreurInconnue": "الصندوق غير موجود.",
+  "caisseErreurInactive": "الصندوق غير نشط.",
+  "caisseErreurSysteme": "لا يمكن تعطيل الصندوق الرئيسي.",
+  "caisseErreurMontant": "مبلغ غير صالح.",
+  "caisseErreurMode": "وسيلة دفع غير صالحة.",
+  "caisseErreurMemeCaisse": "اختر صندوقين مختلفين.",
+  "caisseErreurSolde": "الرصيد غير كافٍ في الصندوق المصدر.",
+  "caisseErreurSessionOuverte": "توجد جلسة مفتوحة على هذا الصندوق.",
+  "cloturesTitre": "إقفالات Z",
+  "clotureNouvelle": "إقفال (Z)",
+  "clotureApercuTitre": "إقفال Z — معاينة الفترة",
+  "cloturePeriode": "الفترة",
+  "clotureDebut": "البداية",
+  "clotureFin": "النهاية",
+  "clotureColVentes": "المبيعات",
+  "clotureColAnnulations": "الإلغاءات",
+  "clotureColTotalVentes": "إجمالي المبيعات",
+  "clotureColRemises": "الخصومات",
+  "clotureColRetours": "المرتجعات",
+  "clotureColEncaissements": "التحصيلات",
+  "clotureColDecaissements": "المصروفات",
+  "clotureColHash": "الختم",
+  "clotureColUtilisateur": "المستخدم",
+  "clotureAucune": "لا يوجد إقفال.",
+  "clotureConfirmer": "ختم الإقفال",
+  "clotureCreee": "تم ختم الإقفال {code}. البصمة: {hash}",
+  "@clotureCreee": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "hash": {
+        "type": "String"
+      }
+    }
+  },
+  "clotureDetail": "تفاصيل الإقفال",
+  "clotureParMode": "التحصيلات حسب الوسيلة",
+  "clotureSoldes": "أرصدة الصناديق",
+  "clotureDerniereVente": "آخر تذكرة",
+  "clotureHashPrecedent": "البصمة السابقة",
+  "clotureHash": "البصمة",
+  "clotureVerifier": "التحقق من السلسلة",
+  "clotureChaineOk": "سلسلة الإقفالات سليمة.",
+  "clotureChaineKo": "سلسلة معدّلة ابتداءً من الإقفال {code}.",
+  "@clotureChaineKo": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "clotureErreurSession": "أغلق جميع جلسات الصندوق قبل الإقفال.",
+  "clotureErreurRien": "لا شيء للإقفال منذ آخر إقفال.",
+  "clotureAvertissementImmuable": "الإقفال نهائي: لا يمكن تعديله أو حذفه، ولن يمكن إلغاء مستندات الفترة بعد ذلك.",
+  "exportFiscalTitre": "التصدير الجبائي",
+  "exportFiscalDebut": "من (يوم/شهر/سنة)",
+  "exportFiscalFin": "إلى (يوم/شهر/سنة)",
+  "exportFiscalGenerer": "إنشاء الأرشيف",
+  "exportFiscalOk": "تم حفظ الأرشيف: {chemin} ({ventes} مبيعات، {clotures} إقفالات، تم التحقق من البصمة).",
+  "@exportFiscalOk": {
+    "placeholders": {
+      "chemin": {
+        "type": "String"
+      },
+      "ventes": {
+        "type": "int"
+      },
+      "clotures": {
+        "type": "int"
+      }
+    }
+  },
+  "exportFiscalErreurDates": "تواريخ غير صالحة.",
+  "exportFiscalVerifier": "التحقق من أرشيف",
+  "exportFiscalVerifOk": "أرشيف صالح: {ventes} مبيعات، {clotures} إقفالات.",
+  "@exportFiscalVerifOk": {
+    "placeholders": {
+      "ventes": {
+        "type": "int"
+      },
+      "clotures": {
+        "type": "int"
+      }
+    }
+  },
+  "exportFiscalVerifKo": "أرشيف غير صالح: {erreurs}",
+  "@exportFiscalVerifKo": {
+    "placeholders": {
+      "erreurs": {
+        "type": "String"
+      }
+    }
+  },
+  "exportFiscalPermission": "مطلوب إذن « تصدير البيانات ».",
+  "tableauBordTitre": "لوحة القيادة",
+  "tableauBordCaJour": "رقم أعمال اليوم",
+  "tableauBordTicketsJour": "تذاكر اليوم",
+  "tableauBordPanierMoyen": "متوسط السلة",
+  "tableauBordCaMois": "رقم أعمال الشهر",
+  "tableauBordSousSeuil": "منتجات تحت الحد",
+  "tableauBordCreances": "ديون الزبائن",
+  "tableauBordCa30Jours": "رقم الأعمال خلال 30 يومًا",
+  "tableauBordPaiements": "التحصيلات حسب الوسيلة (30 يومًا)",
+  "tableauBordTopProduits": "أفضل 5 منتجات (30 يومًا)",
+  "tableauBordCategories": "المبيعات حسب الفئة (30 يومًا)",
+  "tableauBordCaMensuel": "رقم الأعمال الشهري (12 شهرًا)",
+  "tableauBordActualiser": "تحديث",
+  "situationTitre": "الوضعية",
+  "situationRapport": "التقرير",
+  "situationDu": "من (يوم/شهر/سنة)",
+  "situationAu": "إلى (يوم/شهر/سنة)",
+  "situationAfficher": "عرض",
+  "situationExportExcel": "تصدير Excel",
+  "situationApercuPdf": "معاينة PDF",
+  "situationAucuneLigne": "لا توجد بيانات في هذه الفترة.",
+  "situationDatesInvalides": "تواريخ غير صالحة.",
+  "situationExportOk": "تم حفظ الملف: {chemin}",
+  "@situationExportOk": {
+    "placeholders": {
+      "chemin": {
+        "type": "String"
+      }
+    }
+  },
+  "situationPeriode": "الفترة من {debut} إلى {fin}",
+  "@situationPeriode": {
+    "placeholders": {
+      "debut": {
+        "type": "String"
+      },
+      "fin": {
+        "type": "String"
+      }
+    }
+  },
+  "rapportVentesJour": "المبيعات حسب اليوم",
+  "rapportVentesProduit": "المبيعات حسب المنتج",
+  "rapportVentesCategorie": "المبيعات حسب الفئة",
+  "rapportVentesClient": "المبيعات حسب الزبون",
+  "rapportVentesVendeur": "المبيعات حسب البائع والصندوق",
+  "rapportEncaissementsMode": "التحصيلات حسب الوسيلة",
+  "rapportAchatsFournisseur": "المشتريات حسب المورد",
+  "rapportRetours": "مرتجعات الزبائن",
+  "rapportEtatStock": "حالة المخزون المقيّم",
+  "rapportCreancesDettes": "الديون والمستحقات",
+  "zakatTitre": "الزكاة",
+  "zakatIntro": "زكاة عروض التجارة: 2.5٪ من الوعاء إذا بلغ النصاب (85 غ ذهب).",
+  "zakatPrixOr": "سعر غرام الذهب ({devise})",
+  "@zakatPrixOr": {
+    "placeholders": {
+      "devise": {
+        "type": "String"
+      }
+    }
+  },
+  "zakatEnregistrerPrix": "حفظ السعر",
+  "zakatStock": "المخزون (سعر الشراء)",
+  "zakatCaisses": "الصناديق",
+  "zakatCreances": "ديون الزبائن",
+  "zakatDettes": "مستحقات الموردين",
+  "zakatAssiette": "الوعاء",
+  "zakatNissab": "النصاب (85 غ)",
+  "zakatMontant": "الزكاة الواجبة (2.5٪)",
+  "zakatAssujetti": "واجبة: الوعاء بلغ النصاب.",
+  "zakatNonAssujetti": "غير واجبة: الوعاء أقل من النصاب.",
+  "zakatPrixManquant": "أدخل سعر الذهب لحساب النصاب.",
+  "historiqueTitre": "السجل",
+  "historiqueColUtilisateur": "المستخدم",
+  "historiqueColAction": "الإجراء",
+  "historiqueColEntite": "الكيان",
+  "historiqueColDetail": "التفاصيل",
+  "historiqueToutesEntites": "كل الكيانات",
+  "historiqueAucun": "لا توجد عمليات.",
+  "parametresTitre": "الإعدادات",
+  "parametresOngletGeneral": "عام",
+  "parametresOngletBoutique": "المتجر",
+  "parametresOngletVente": "البيع",
+  "parametresOngletImpression": "الطباعة",
+  "parametresOngletServeur": "الخوادم",
+  "parametresOngletSauvegarde": "النسخ الاحتياطي",
+  "parametresEnregistre": "تم حفظ الإعدادات.",
+  "parametresBoutiqueNom": "اسم المتجر",
+  "parametresBoutiqueRc": "السجل التجاري",
+  "parametresBoutiqueNif": "الرقم الجبائي",
+  "parametresBoutiqueAdresse": "العنوان",
+  "parametresBoutiqueTelephone": "الهاتف",
+  "parametresBoutiqueEmail": "البريد الإلكتروني",
+  "parametresMarge": "الهامش الافتراضي (٪)",
+  "parametresDevise": "العملة",
+  "parametresSeuil": "حد المخزون العام",
+  "parametresFidelite": "برنامج الولاء",
+  "parametresPoints": "نقاط لكل دينار",
+  "parametresGardeStock": "حماية المخزون: مفعّلة دائمًا (لا بيع بدون مخزون).",
+  "parametresImprimanteType": "نوع الطابعة",
+  "parametresImprimanteAdresse": "طابور Windows أو عنوان IP:port",
+  "parametresImprimanteLargeur": "عرض التذكرة",
+  "parametresImprimanteNormale": "عادية (نافذة الطباعة)",
+  "parametresImprimanteUsb": "USB (طابور Windows)",
+  "parametresImprimanteReseau": "شبكة (IP:port)",
+  "parametresImprimanteBluetooth": "بلوتوث",
+  "parametresServeurUrl": "عنوان خادم CaisseDZ",
+  "parametresServeurCle": "مفتاح API",
+  "parametresMantoujUrl": "عنوان كتالوج Mantouj",
+  "parametresErreurNom": "اسم المتجر إلزامي.",
+  "parametresErreurValeur": "قيمة غير صالحة.",
+  "parametresErreurImprimanteType": "نوع طابعة غير صالح.",
+  "parametresErreurImprimanteAdresse": "حدد طابور الطباعة أو عنوان الطابعة.",
+  "sauvegardeIntro": "النسخة الاحتياطية مشفّرة بكلمة المرور المختارة: احتفظ بها، ستُطلب عند الاستعادة.",
+  "sauvegardeCreer": "إنشاء نسخة احتياطية",
+  "sauvegardeRestaurer": "استعادة نسخة احتياطية",
+  "sauvegardeMotDePasse": "كلمة مرور النسخة",
+  "sauvegardeFichier": "ملف النسخة الاحتياطية",
+  "sauvegardeChoisirFichier": "اختيار الملف…",
+  "sauvegardeOk": "تم حفظ النسخة: {chemin}",
+  "@sauvegardeOk": {
+    "placeholders": {
+      "chemin": {
+        "type": "String"
+      }
+    }
+  },
+  "sauvegardeInfo": "المتجر « {boutique} »، {ventes} مبيعات، {produits} منتجات، المخطط v{version}.",
+  "@sauvegardeInfo": {
+    "placeholders": {
+      "boutique": {
+        "type": "String"
+      },
+      "ventes": {
+        "type": "int"
+      },
+      "produits": {
+        "type": "int"
+      },
+      "version": {
+        "type": "int"
+      }
+    }
+  },
+  "sauvegardeConfirmerRestauration": "استعادة هذه النسخة؟ سيتم استبدال البيانات الحالية عند التشغيل القادم.",
+  "sauvegardeRestaurationPreparee": "الاستعادة جاهزة: أغلق CaisseDZ ثم أعد تشغيله لتطبيقها.",
+  "sauvegardeRestaurationEnAttente": "استعادة قيد الانتظار: ستُطبّق عند التشغيل القادم.",
+  "sauvegardeAnnulerRestauration": "إلغاء الاستعادة",
+  "sauvegardeErreurMotDePasse": "كلمة مرور غير صالحة أو ملف تالف.",
+  "sauvegardeErreurMotDePasseVide": "أدخل كلمة مرور.",
+  "sauvegardeErreurFichier": "الملف غير موجود.",
+  "sauvegardeErreurChemin": "موقع غير صالح: {detail}",
+  "@sauvegardeErreurChemin": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  }
+}

@@ -1,0 +1,1260 @@
+{
+  "@@locale": "fr",
+  "appTitle": "CaisseDZ",
+  "shellNavGeneral": "Général",
+  "shellNavStock": "Stock",
+  "shellNavTiers": "Tiers",
+  "shellNavGestion": "Gestion",
+  "shellFavoris": "Favoris",
+  "shellFavorisVide": "Aucun favori. Clic droit sur un module pour l'ajouter.",
+  "shellFavorisMax": "7 favoris maximum",
+  "shellFavorisAjouter": "Ajouter aux favoris",
+  "shellFavorisRetirer": "Retirer des favoris",
+  "shellMenuModules": "Modules",
+  "shellMenuModulesRaccourci": "Ctrl+M",
+  "shellMenuModulesRecherche": "Rechercher un module…",
+  "shellMenuModulesAucun": "Aucun module ne correspond.",
+  "shellAlertes": "Alertes",
+  "shellAlertesAucune": "Aucune alerte",
+  "shellInternetConnecte": "Internet : connecté",
+  "shellInternetDeconnecte": "Internet : hors ligne",
+  "shellFenetreReduire": "Réduire",
+  "shellFenetreAgrandir": "Agrandir",
+  "shellFenetreRestaurer": "Restaurer",
+  "shellFenetreFermer": "Fermer",
+  "shellReduireSidebar": "Réduire le menu",
+  "shellEtendreSidebar": "Étendre le menu",
+  "shellGalerie": "Galerie du design system",
+  "modulePlaceholder": "Module « {nom} » : disponible dans un prochain lot.",
+  "@modulePlaceholder": {
+    "placeholders": {
+      "nom": {
+        "type": "String"
+      }
+    }
+  },
+  "moduleTableauBord": "Tableau de bord",
+  "moduleCaisse": "Caisse",
+  "moduleVentes": "Ventes",
+  "moduleRetours": "Retours",
+  "moduleHistorique": "Historique",
+  "moduleProduits": "Produits",
+  "moduleStock": "Stock",
+  "moduleEntrees": "Entrées / Achats",
+  "moduleTransferts": "Transferts",
+  "moduleBesoins": "Besoins",
+  "moduleSorties": "Sorties",
+  "moduleClients": "Clients",
+  "moduleFournisseurs": "Fournisseurs",
+  "moduleVersements": "Versements",
+  "moduleGestionCaisse": "Gestion caisse",
+  "moduleClotures": "Clôtures",
+  "moduleSituation": "Situation",
+  "moduleZakat": "Zakat",
+  "moduleParametres": "Paramètres",
+  "moduleMonCompte": "Mon compte",
+  "communOk": "OK",
+  "communAnnuler": "Annuler",
+  "communConfirmer": "Confirmer",
+  "communFermer": "Fermer",
+  "communEnregistrer": "Enregistrer",
+  "communSupprimer": "Supprimer",
+  "communRechercher": "Rechercher",
+  "communChargement": "Chargement…",
+  "communAucunResultat": "Aucun résultat",
+  "communSelectionner": "Sélectionner",
+  "communTotal": "Total",
+  "communColonnes": "Colonnes",
+  "communToutSelectionner": "Tout sélectionner",
+  "communLignesParPage": "Lignes par page",
+  "communPagination": "{debut}–{fin} sur {total}",
+  "@communPagination": {
+    "placeholders": {
+      "debut": {
+        "type": "int"
+      },
+      "fin": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "communPagePrecedente": "Page précédente",
+  "communPageSuivante": "Page suivante",
+  "communSelectionnes": "{n} sélectionné(s)",
+  "@communSelectionnes": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "galerieTitre": "Galerie du design system",
+  "galerieTheme": "Thème",
+  "galerieLangue": "Langue",
+  "galerieClair": "Clair",
+  "galerieSombre": "Sombre",
+  "activationTitre": "Activation de CaisseDZ",
+  "activationIntro": "Saisissez la clé d'activation fournie pour cette machine, ou essayez le mode démo.",
+  "activationIdentifiantMachine": "Identifiant de cette machine",
+  "activationCopierIdentifiant": "Copier l'identifiant",
+  "activationIdentifiantCopie": "Identifiant copié",
+  "activationCle": "Clé d'activation (64 caractères)",
+  "activationCleIndice": "Clé SHA-256 de 64 caractères hexadécimaux",
+  "activationBouton": "Activer",
+  "activationDemo": "Essayer en mode démo",
+  "activationDemoAide": "Le mode démo ouvre toutes les fonctions (licence Avancé) avec le compte demo / demo. Les données saisies ne sont pas destinées à la production.",
+  "activationErreurFormat": "La clé doit contenir exactement 64 caractères hexadécimaux (0-9, a-f).",
+  "activationErreurInconnue": "Cette clé ne correspond pas à cette machine. Vérifiez la clé ou contactez votre revendeur.",
+  "activationReussie": "Licence {niveau} activée.",
+  "@activationReussie": {
+    "placeholders": {
+      "niveau": {
+        "type": "String"
+      }
+    }
+  },
+  "licenceBasic": "Basic",
+  "licenceAvance": "Avancé",
+  "licenceDemo": "Mode démo",
+  "licenceNiveau": "Licence {niveau}",
+  "@licenceNiveau": {
+    "placeholders": {
+      "niveau": {
+        "type": "String"
+      }
+    }
+  },
+  "licenceRequise": "Fonction disponible avec la licence Avancé",
+  "licenceRequiseDetail": "Votre licence actuelle est Basic. Activez une licence Avancé pour accéder à ce module.",
+  "licenceGererCle": "Activer une autre clé",
+  "connexionTitre": "Connexion",
+  "connexionIdentifiant": "Identifiant",
+  "connexionMotDePasse": "Mot de passe",
+  "connexionBouton": "Se connecter",
+  "connexionErreurIdentifiants": "Identifiant ou mot de passe incorrect.",
+  "connexionErreurInactif": "Ce compte est désactivé.",
+  "connexionErreurNonConfigure": "Ce compte n'a pas encore de mot de passe : terminez la configuration initiale.",
+  "connexionErreurDemo": "Le compte demo/demo n'est disponible qu'en mode démo.",
+  "connexionDemoIndice": "Mode démo : identifiant demo, mot de passe demo",
+  "connexionSaisirCle": "Saisir une clé d'activation",
+  "connexionDeconnecter": "Se déconnecter",
+  "configTitre": "Configuration initiale",
+  "configEtape": "Étape {n} sur {total}",
+  "@configEtape": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "configEtapeBoutique": "Boutique",
+  "configEtapeAdmin": "Administrateur",
+  "configEtapeVente": "Marge et vente",
+  "configEtapeRecap": "Récapitulatif",
+  "configBoutiqueNom": "Nom de la boutique",
+  "configBoutiqueRc": "Registre de commerce (RC)",
+  "configBoutiqueNif": "NIF",
+  "configBoutiqueAdresse": "Adresse",
+  "configBoutiqueTelephone": "Téléphone",
+  "configBoutiqueEmail": "E-mail",
+  "configAdminIntro": "Ce compte administrateur aura tous les droits. Choisissez un identifiant et un mot de passe.",
+  "configAdminNom": "Nom affiché",
+  "configAdminMotDePasseConfirmation": "Confirmer le mot de passe",
+  "configMarge": "Marge par défaut (%)",
+  "configMargeAide": "Appliquée au calcul du prix de vente à partir du prix d'achat des nouveaux produits.",
+  "configSeuil": "Seuil d'alerte de stock (global)",
+  "configFidelite": "Activer la fidélité (points)",
+  "configPointsParDinar": "Points gagnés par dinar",
+  "configDevise": "Devise",
+  "configLangue": "Langue de l'application",
+  "configRecapIntro": "Vérifiez les informations avant de terminer. Vous pourrez les modifier plus tard dans Paramètres.",
+  "configPrecedent": "Précédent",
+  "configSuivant": "Suivant",
+  "configTerminer": "Terminer",
+  "configErreurObligatoire": "Champ obligatoire",
+  "configErreurIdentifiant": "3 à 32 caractères : lettres, chiffres, point, tiret, tiret bas.",
+  "configErreurMotDePasseCourt": "Au moins 4 caractères.",
+  "configErreurConfirmation": "Les mots de passe ne correspondent pas.",
+  "configErreurIdentifiantPris": "Cet identifiant est déjà utilisé.",
+  "configErreurMarge": "Valeur entre 0 et 1000.",
+  "configErreurNombre": "Nombre invalide.",
+  "configReussie": "Configuration terminée. Connectez-vous avec votre compte administrateur.",
+  "compteTitre": "Mon compte",
+  "compteRole": "Rôle",
+  "compteIdentifiantActuel": "Identifiant actuel",
+  "compteNouvelIdentifiant": "Nouvel identifiant",
+  "compteMotDePasseActuel": "Mot de passe actuel",
+  "compteNouveauMotDePasse": "Nouveau mot de passe",
+  "compteChangerIdentifiant": "Changer l'identifiant",
+  "compteChangerMotDePasse": "Changer le mot de passe",
+  "compteIdentifiantChange": "Identifiant modifié : connectez-vous désormais avec « {identifiant} ».",
+  "@compteIdentifiantChange": {
+    "placeholders": {
+      "identifiant": {
+        "type": "String"
+      }
+    }
+  },
+  "compteMotDePasseChange": "Mot de passe modifié.",
+  "compteErreurMotDePasseActuel": "Mot de passe actuel incorrect.",
+  "comptePreferences": "Préférences",
+  "compteDemoLectureSeule": "Le compte de démonstration ne peut pas être modifié.",
+  "accesRefuseTitre": "Accès refusé",
+  "accesRefuseMessage": "Votre rôle « {role} » n'a pas accès au module « {module} ». Demandez à un administrateur.",
+  "@accesRefuseMessage": {
+    "placeholders": {
+      "role": {
+        "type": "String"
+      },
+      "module": {
+        "type": "String"
+      }
+    }
+  },
+  "accesRefuseRetour": "Retour au tableau de bord",
+  "rolesTitre": "Rôles et permissions",
+  "rolesIntro": "Cochez les permissions d'action et les modules accessibles pour chaque rôle. L'administrateur conserve toujours tous les droits.",
+  "rolesPermissions": "Permissions d'action",
+  "rolesModules": "Modules accessibles",
+  "rolesEnregistre": "Grille des rôles enregistrée.",
+  "rolesAdminTotal": "Tous les droits",
+  "permVoirPrixAchat": "Voir le prix d'achat",
+  "permModifierPrix": "Modifier le prix en caisse",
+  "permAppliquerRemise": "Appliquer une remise",
+  "permAnnulerVente": "Annuler une vente",
+  "permSupprimerDocument": "Supprimer un document",
+  "permExporterDonnees": "Exporter les données",
+  "permGererUtilisateurs": "Gérer les utilisateurs",
+  "roleAdmin": "Admin",
+  "roleCaissier": "Caissier",
+  "roleMagasinier": "Magasinier",
+  "parametresRolesCarte": "Rôles et permissions",
+  "parametresRolesCarteDetail": "Permissions d'action et modules accessibles par rôle.",
+  "parametresLicenceCarte": "Licence",
+  "shellBandeauDemo": "Mode démo — les données ne sont pas destinées à la production",
+  "shellMenuUtilisateur": "Menu utilisateur",
+  "shellVerrouille": "Réservé à la licence Avancé",
+  "shellAccesRestreint": "Accès non autorisé pour votre rôle",
+  "produitsTitre": "Produits",
+  "produitsOngletProduits": "Produits",
+  "produitsOngletCategories": "Catégories",
+  "produitsOngletColis": "Colis",
+  "produitsOngletPacks": "Packs",
+  "produitsOngletRemises": "Remises",
+  "produitsNouveau": "Nouveau produit",
+  "produitsModeIa": "Mode IA",
+  "produitsImporter": "Importer Excel",
+  "produitsEtiquettes": "Étiquettes",
+  "produitsSynchro": "Synchro catalogue",
+  "produitsRecherche": "Rechercher par désignation, code ou code-barres…",
+  "produitsColCode": "Code",
+  "produitsColDesignation": "Désignation",
+  "produitsColCodeBarres": "Code-barres",
+  "produitsColCategorie": "Catégorie",
+  "produitsColPrixAchat": "Prix d'achat",
+  "produitsColPrixVente": "Prix de vente",
+  "produitsColMarge": "Marge %",
+  "produitsColActif": "Actif",
+  "produitsColStock": "Stock",
+  "produitsAucun": "Aucun produit. Créez-en un ou importez un fichier Excel.",
+  "produitModifier": "Modifier le produit",
+  "produitDesactiver": "Désactiver",
+  "produitActiver": "Activer",
+  "produitGenererCodeBarres": "Générer un code-barres interne",
+  "produitChampDesignation": "Désignation",
+  "produitChampCodeBarres": "Code-barres (EAN-13 ou interne)",
+  "produitChampCategorie": "Catégorie",
+  "produitChampSousCategorie": "Sous-catégorie",
+  "produitChampPrixAchat": "Prix d'achat",
+  "produitChampPrixVente": "Prix de vente",
+  "produitChampMarge": "Marge (%)",
+  "produitChampUnite": "Unité",
+  "produitChampTva": "TVA (%)",
+  "produitChampSeuil": "Seuil d'alerte (vide = seuil global)",
+  "produitChampSuiviNombre": "Suivre un 2ᵉ stock « nombre » (pièces)",
+  "produitChampSuiviNombreAide": "Le produit se vend à l'unité ou à la pièce ; le stock est tenu dans les deux.",
+  "produitChampNombreParUnite": "Pièces par unité",
+  "produitPrixAuto": "Le prix de vente est calculé depuis la marge si vous le laissez vide.",
+  "produitErreurDesignation": "La désignation est obligatoire.",
+  "produitErreurCodeBarres": "Code-barres invalide.",
+  "produitErreurCodeBarresPris": "Ce code-barres est déjà utilisé.",
+  "produitErreurPrix": "Prix invalide.",
+  "produitErreurQuantite": "Quantité invalide.",
+  "produitCree": "Produit « {nom} » créé ({code}).",
+  "@produitCree": {
+    "placeholders": {
+      "nom": {
+        "type": "String"
+      },
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "iaTitre": "Nouveau produit en mode IA",
+  "iaIntro": "Scannez ou saisissez un code-barres : la fiche est recherchée dans CaisseDZ, puis Mantouj, Open Food Facts et Open Beauty Facts.",
+  "iaRechercher": "Rechercher",
+  "iaRechercheEnCours": "Recherche en cours…",
+  "iaAucun": "Aucune fiche trouvée pour ce code-barres : passez en saisie détaillée.",
+  "iaTrouve": "Fiche trouvée via {source}",
+  "@iaTrouve": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "iaMarque": "Marque",
+  "iaCreer": "Créer le produit",
+  "iaSaisieDetaillee": "Saisie détaillée",
+  "importTitre": "Importer des produits depuis Excel",
+  "importIntro": "Colonnes attendues en ligne 1 : designation (obligatoire), code_barres, categorie, prix_achat, prix_vente.",
+  "importChoisirFichier": "Choisir un fichier .xlsx",
+  "importTelechargerModele": "Enregistrer le modèle",
+  "importLignesValides": "{n} ligne(s) valide(s)",
+  "@importLignesValides": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "importLignesInvalides": "{n} ligne(s) ignorée(s)",
+  "@importLignesInvalides": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "importColLigne": "Ligne",
+  "importColErreur": "Erreur",
+  "importLancer": "Importer",
+  "importResultat": "{importees} produit(s) importé(s), {ignorees} ignoré(s).",
+  "@importResultat": {
+    "placeholders": {
+      "importees": {
+        "type": "int"
+      },
+      "ignorees": {
+        "type": "int"
+      }
+    }
+  },
+  "importErreurFichier": "Fichier illisible : {detail}",
+  "@importErreurFichier": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "importErreurDesignationVide": "Désignation vide",
+  "importErreurCodeBarresPris": "Code-barres déjà utilisé",
+  "importErreurPrix": "Prix invalide",
+  "etiquettesTitre": "Imprimer des étiquettes",
+  "etiquettesQuantite": "Quantité",
+  "etiquettesFormatA4": "Planche A4",
+  "etiquettesFormatRouleau": "Rouleau",
+  "etiquettesAfficherPrix": "Afficher le prix",
+  "etiquettesQr": "Code QR au lieu du code-barres",
+  "etiquettesGenerer": "Générer le PDF",
+  "etiquettesAucuneSelection": "Sélectionnez au moins un produit dans la liste.",
+  "synchroResultat": "Synchronisation : {envoyes} envoyé(s), {recus} mis à jour.",
+  "@synchroResultat": {
+    "placeholders": {
+      "envoyes": {
+        "type": "int"
+      },
+      "recus": {
+        "type": "int"
+      }
+    }
+  },
+  "synchroNonConfiguree": "Renseignez l'URL du serveur CaisseDZ dans Paramètres pour synchroniser le catalogue.",
+  "synchroErreur": "Échec de la synchronisation : {detail}",
+  "@synchroErreur": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "categoriesNouvelle": "Nouvelle catégorie",
+  "categoriesNouvelleSous": "Nouvelle sous-catégorie",
+  "categorieNom": "Nom",
+  "categorieRenommer": "Renommer",
+  "categorieSupprimer": "Supprimer",
+  "categorieSousCategories": "Sous-catégories",
+  "categorieErreurSysteme": "La catégorie système ne peut pas être modifiée.",
+  "categorieErreurUtilisee": "Des produits sont rattachés à cette catégorie.",
+  "categorieConfirmerSuppression": "Supprimer la catégorie « {nom} » et ses sous-catégories ?",
+  "@categorieConfirmerSuppression": {
+    "placeholders": {
+      "nom": {
+        "type": "String"
+      }
+    }
+  },
+  "colisNouveau": "Nouveau colis",
+  "colisProduit": "Produit",
+  "colisQuantite": "Unités par colis",
+  "colisAucun": "Aucun colis.",
+  "packNouveau": "Nouveau pack",
+  "packLignes": "Composition",
+  "packAjouterProduit": "Ajouter un produit",
+  "packAucun": "Aucun pack.",
+  "packErreurLignes": "Ajoutez au moins un produit au pack.",
+  "remiseNouvelle": "Nouvelle remise",
+  "remiseType": "Type",
+  "remiseTypePourcentage": "Pourcentage",
+  "remiseTypeMontant": "Montant",
+  "remiseValeur": "Valeur",
+  "remisePortee": "Portée",
+  "remisePorteeGlobale": "Tous les produits",
+  "remisePorteeCategorie": "Une catégorie",
+  "remisePorteeProduit": "Un produit",
+  "remiseDebut": "Début",
+  "remiseFin": "Fin",
+  "remiseAucune": "Aucune remise.",
+  "communNouveau": "Nouveau",
+  "communModifier": "Modifier",
+  "communActif": "Actif",
+  "communInactif": "Inactif",
+  "communOui": "Oui",
+  "communNon": "Non",
+  "communValider": "Valider",
+  "communApercu": "Aperçu",
+  "communImprimer": "Imprimer",
+  "communAucune": "Aucune",
+  "stockTitre": "Stock",
+  "stockOngletNiveaux": "Niveaux",
+  "stockOngletJournal": "Journal des mouvements",
+  "stockColProduit": "Produit",
+  "stockColMagasin": "Magasin",
+  "stockColQuantite": "Quantité",
+  "stockColNombre": "Nombre (pièces)",
+  "stockColSeuil": "Seuil",
+  "stockColDate": "Date",
+  "stockColType": "Type",
+  "stockColMotif": "Motif",
+  "stockColReference": "Référence",
+  "stockColUtilisateur": "Utilisateur",
+  "stockColCommentaire": "Commentaire",
+  "stockColValeur": "Valeur (PA)",
+  "stockTousMagasins": "Tous les magasins",
+  "stockSousSeuil": "Sous seuil",
+  "stockEntreeManuelle": "Entrée manuelle",
+  "stockInventaire": "Inventaire",
+  "stockQuantiteConstatee": "Quantité constatée",
+  "stockNombreConstate": "Nombre constaté",
+  "stockAucunMouvement": "Aucun mouvement.",
+  "stockErreurQuantite": "Quantité invalide.",
+  "stockErreurInsuffisant": "Stock insuffisant : la garde de stock refuse cette sortie.",
+  "stockErreurMemeMagasin": "Le magasin de destination doit être différent.",
+  "stockErreurLignes": "Ajoutez au moins une ligne.",
+  "stockErreurMotif": "Motif invalide.",
+  "stockErreurMagasinInactif": "Magasin inactif ou inconnu.",
+  "stockErreurMagasinSysteme": "Le magasin principal ne peut pas être désactivé.",
+  "stockErreurProduit": "Produit inconnu.",
+  "stockErreurStatut": "Statut invalide.",
+  "typeMouvementEntree": "Entrée",
+  "typeMouvementSortie": "Sortie",
+  "typeMouvementVente": "Vente",
+  "typeMouvementRetour": "Retour",
+  "typeMouvementTransfert": "Transfert",
+  "typeMouvementInventaire": "Inventaire",
+  "typeMouvementInitial": "Stock initial",
+  "magasinsTitre": "Magasins",
+  "magasinNouveau": "Nouveau magasin",
+  "magasinNom": "Nom",
+  "magasinAdresse": "Adresse",
+  "magasinPrincipal": "Principal",
+  "magasinMesMagasins": "Mes magasins (le premier est le principal)",
+  "magasinAjouterAuxMiens": "Ajouter à mes magasins",
+  "magasinRetirerDesMiens": "Retirer de mes magasins",
+  "magasinDefinirPrincipal": "Définir comme principal",
+  "transfertsTitre": "Transferts",
+  "transfertNouveau": "Nouveau transfert",
+  "transfertSource": "Magasin source",
+  "transfertDestination": "Magasin destination",
+  "transfertLignes": "Lignes",
+  "transfertAjouterLigne": "Ajouter un produit",
+  "transfertAucun": "Aucun transfert.",
+  "transfertCree": "Transfert {code} enregistré : 2 mouvements par ligne.",
+  "@transfertCree": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "besoinsTitre": "Besoins",
+  "besoinNouveau": "Nouveau besoin",
+  "besoinGenerer": "Générer sous seuil",
+  "besoinGeneres": "{n} besoin(s) généré(s).",
+  "@besoinGeneres": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "besoinStatut": "Statut",
+  "besoinPasserCommande": "Passer en Commande",
+  "besoinPasserDisponible": "Passer en Disponible",
+  "besoinRemettreAttente": "Remettre En attente",
+  "besoinAucun": "Aucun besoin.",
+  "statutBesoinEnAttente": "En attente",
+  "statutBesoinCommande": "Commande",
+  "statutBesoinDisponible": "Disponible",
+  "sortiesTitre": "Sorties",
+  "sortiesOngletSorties": "Sorties",
+  "sortiesOngletVentes": "Ventes",
+  "sortieNouvelle": "Nouvelle sortie",
+  "sortieMotif": "Motif",
+  "sortieAucune": "Aucune sortie.",
+  "motifCasse": "Casse",
+  "motifPerime": "Périmé",
+  "motifPerteVol": "Perte/vol",
+  "motifConsommationInterne": "Consommation interne",
+  "motifDon": "Don",
+  "motifEchantillon": "Échantillon",
+  "communLignes": "{n} ligne(s)",
+  "@communLignes": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "communCommentaire": "Commentaire",
+  "communDate": "Date",
+  "communQuantite": "Quantité",
+  "moduleMagasins": "Magasins",
+  "posTitre": "Caisse",
+  "posScan": "Scanner ou rechercher un produit (F1)",
+  "posPanier": "Panier {n}",
+  "@posPanier": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "posNouveauPanier": "Nouveau panier (Ctrl+N)",
+  "posMaxPaniers": "5 ventes en parallèle au maximum.",
+  "posPanierVide": "Panier vide : scannez un code-barres ou cliquez sur un produit.",
+  "posSousTotal": "Sous-total",
+  "posRemise": "Remise",
+  "posTotal": "Total",
+  "posVerse": "Versé",
+  "posReste": "Reste",
+  "posMonnaie": "Monnaie à rendre",
+  "posPointsGagnes": "Points gagnés",
+  "posClient": "Client (F2)",
+  "posClientPassage": "Client de passage",
+  "posChoisirClient": "Choisir un client",
+  "posRemiseGlobale": "Remise globale (F3)",
+  "posRemisePct": "Remise (%)",
+  "posPaiement": "Paiement",
+  "posMontant": "Montant",
+  "posEncaisser": "Encaisser (F12)",
+  "posVider": "Vider (F10)",
+  "posCalculatrice": "Calculatrice (F9)",
+  "posAide": "Aide (F11)",
+  "posSessionOuvrir": "Ouvrir la session",
+  "posSessionFermer": "Fermer la session",
+  "posSessionAucune": "Aucune session de caisse ouverte : ouvrez une session pour encaisser.",
+  "posSessionOuverte": "Session {code} · {caisse}",
+  "@posSessionOuverte": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "caisse": {
+        "type": "String"
+      }
+    }
+  },
+  "posSessionCaisse": "Caisse",
+  "posSessionFond": "Fond de caisse initial",
+  "posSessionMontantCompte": "Montant compté",
+  "posSessionAttendu": "Espèces attendues",
+  "posSessionEcart": "Écart",
+  "posSessionFermee": "Session {code} fermée. Écart : {ecart}.",
+  "@posSessionFermee": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "ecart": {
+        "type": "String"
+      }
+    }
+  },
+  "posErreurSessionDejaOuverte": "Une session est déjà ouverte (utilisateur ou caisse).",
+  "posErreurSessionAucune": "Aucune session ouverte.",
+  "posErreurCaisse": "Caisse inconnue ou inactive.",
+  "posErreurMontant": "Montant invalide.",
+  "posErreurStock": "Stock insuffisant (réservé par les paniers ouverts) : {detail}",
+  "@posErreurStock": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "posErreurProduitInconnu": "Code inconnu : {code}",
+  "@posErreurProduitInconnu": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "posErreurPanierVide": "Le panier est vide.",
+  "posErreurPaiementInsuffisant": "Paiement insuffisant. Reste : {reste}",
+  "@posErreurPaiementInsuffisant": {
+    "placeholders": {
+      "reste": {
+        "type": "String"
+      }
+    }
+  },
+  "posErreurModePaiement": "Mode de paiement invalide.",
+  "posErreurPoints": "Points insuffisants.",
+  "posErreurCredit": "Vente à crédit non autorisée pour ce client.",
+  "posErreurQuantite": "Quantité invalide.",
+  "posErreurPeriodeCloturee": "Opération refusée : période clôturée.",
+  "posVenteEnregistree": "Vente {code} encaissée. Monnaie à rendre : {monnaie}",
+  "@posVenteEnregistree": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "monnaie": {
+        "type": "String"
+      }
+    }
+  },
+  "posImprimerTicket": "Imprimer le ticket",
+  "posImprimerFacture": "Facture A4",
+  "posTicket58": "Ticket 58 mm",
+  "posTicket80": "Ticket 80 mm",
+  "posApercuTicket": "Aperçu du ticket",
+  "posImpressionOk": "Ticket envoyé à l'imprimante.",
+  "posImpressionErreur": "Impression impossible : {detail}",
+  "@posImpressionErreur": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "posCreditAutoriser": "Vendre à crédit (reste dû)",
+  "posRaccourcisTitre": "Raccourcis clavier",
+  "posRaccourciF1": "Rechercher / scanner",
+  "posRaccourciF2": "Choisir le client",
+  "posRaccourciF3": "Remise globale",
+  "posRaccourciF4": "Espèces : montant exact",
+  "posRaccourciF5": "Carte : montant exact",
+  "posRaccourciF6": "Chèque : montant exact",
+  "posRaccourciF7": "Virement : montant exact",
+  "posRaccourciF8": "Points de fidélité",
+  "posRaccourciF9": "Calculatrice",
+  "posRaccourciF10": "Vider le panier",
+  "posRaccourciF11": "Cette aide",
+  "posRaccourciF12": "Encaisser",
+  "posRaccourciCtrlN": "Nouveau panier",
+  "posRaccourciCtrlTab": "Panier suivant",
+  "posRaccourciSuppr": "Retirer la ligne sélectionnée",
+  "posRaccourciPlusMoins": "Quantité +1 / −1 sur la ligne sélectionnée",
+  "posLigneQuantite": "Qté",
+  "posLignePrix": "P.U.",
+  "posLigneRemise": "Rem.",
+  "posLigneTotal": "Total",
+  "posVendreNombre": "Vendre à la pièce",
+  "posColis": "Colis",
+  "posPack": "Pack",
+  "posCategoriesToutes": "Toutes",
+  "posAucunProduit": "Aucun produit actif.",
+  "calcTitre": "Calculatrice",
+  "calcUtiliser": "Utiliser comme montant",
+  "modePaiementEspeces": "Espèces",
+  "modePaiementCarte": "Carte",
+  "modePaiementCheque": "Chèque",
+  "modePaiementVirement": "Virement",
+  "modePaiementPoints": "Points",
+  "ventesTitre": "Ventes",
+  "ventesColTicket": "Ticket",
+  "ventesColClient": "Client",
+  "ventesColNet": "Net",
+  "ventesColVerse": "Versé",
+  "ventesColReste": "Reste dû",
+  "ventesColStatut": "Statut",
+  "ventesColCaisse": "Caisse",
+  "ventesColVendeur": "Vendeur",
+  "ventesAucune": "Aucune vente.",
+  "ventesVoirTicket": "Voir le ticket",
+  "ventesAnnuler": "Annuler la vente",
+  "ventesConfirmerAnnulation": "Annuler la vente {code} ? Le stock et les points seront restitués ; le ticket scellé est conservé.",
+  "@ventesConfirmerAnnulation": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "ventesCreerRetour": "Créer un retour",
+  "ventesVerifierChaine": "Vérifier le scellement",
+  "ventesChaineOk": "Chaîne de tickets intacte.",
+  "ventesChaineKo": "Chaîne altérée à partir du ticket {code}.",
+  "@ventesChaineKo": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "ventesFiltreToutes": "Toutes",
+  "ventesFiltreValidees": "Validées",
+  "ventesFiltreAnnulees": "Annulées",
+  "ventesFiltreCredit": "À crédit",
+  "statutVenteValidee": "Validée",
+  "statutVenteAnnulee": "Annulée",
+  "ticketDetail": "Ticket {code}",
+  "@ticketDetail": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "retoursTitre": "Retours",
+  "retourNouveau": "Nouveau retour",
+  "retourVente": "Vente d'origine",
+  "retourMotif": "Motif",
+  "retourRembourser": "Montant remboursé",
+  "retourModeRemboursement": "Mode de remboursement",
+  "retourAvoir": "Le reste est porté en avoir sur le compte du client.",
+  "retourAucun": "Aucun retour.",
+  "retourColTotal": "Total retourné",
+  "retourColRembourse": "Remboursé",
+  "retourQuantiteMax": "Quantité retournée (max {max})",
+  "@retourQuantiteMax": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "retourErreurVenteInconnue": "Vente introuvable.",
+  "retourErreurVenteAnnulee": "Cette vente est annulée.",
+  "retourErreurLignes": "Indiquez au moins une quantité à retourner.",
+  "retourErreurQuantite": "Quantité invalide.",
+  "retourErreurDepasse": "Quantité supérieure à la quantité vendue (déjà retournée incluse).",
+  "retourErreurPeriode": "Période clôturée : retour impossible.",
+  "retourCree": "Retour {code} enregistré : {total} (remboursé {rembourse}).",
+  "@retourCree": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      },
+      "rembourse": {
+        "type": "String"
+      }
+    }
+  },
+  "clientsTitre": "Clients",
+  "clientNouveau": "Nouveau client",
+  "clientNom": "Nom",
+  "clientTelephone": "Téléphone",
+  "clientAdresse": "Adresse",
+  "clientEmail": "E-mail",
+  "clientPoints": "Points",
+  "clientPlafond": "Plafond de crédit",
+  "clientSolde": "Solde dû",
+  "clientAucun": "Aucun client.",
+  "clientFiche": "Fiche client",
+  "clientDocumentsOuverts": "Documents ouverts",
+  "clientVersements": "Versements",
+  "clientNouveauVersement": "Encaisser un versement",
+  "fournisseursTitre": "Fournisseurs",
+  "fournisseurNouveau": "Nouveau fournisseur",
+  "fournisseurAucun": "Aucun fournisseur.",
+  "fournisseurFiche": "Fiche fournisseur",
+  "fournisseurNouveauVersement": "Régler un versement",
+  "versementsTitre": "Versements",
+  "versementNouveau": "Nouveau versement",
+  "versementTiers": "Tiers",
+  "versementTiersClient": "Client",
+  "versementTiersFournisseur": "Fournisseur",
+  "versementMontant": "Montant",
+  "versementMode": "Mode",
+  "versementReference": "Référence",
+  "versementAucun": "Aucun versement.",
+  "versementColSens": "Sens",
+  "versementColImpute": "Imputé",
+  "versementColNonImpute": "Non imputé",
+  "versementVerrouille": "Verrouillé (lié au retour {retour})",
+  "@versementVerrouille": {
+    "placeholders": {
+      "retour": {
+        "type": "String"
+      }
+    }
+  },
+  "versementImputations": "Imputations (plus ancien d'abord)",
+  "versementSupprimer": "Supprimer le versement",
+  "versementConfirmerSuppression": "Supprimer le versement {code} ? Les imputations seront annulées.",
+  "@versementConfirmerSuppression": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "versementErreurMontant": "Montant invalide.",
+  "versementErreurMode": "Mode de paiement invalide.",
+  "versementErreurSysteme": "Impossible pour le tiers système.",
+  "versementErreurVerrouille": "Versement verrouillé : lié à un retour, il ne peut être ni modifié ni supprimé.",
+  "versementErreurInconnu": "Versement introuvable.",
+  "versementErreurTiers": "Tiers invalide.",
+  "versementEnregistre": "Versement {code} enregistré : {impute} imputé(s), {reste} en avance.",
+  "@versementEnregistre": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "impute": {
+        "type": "String"
+      },
+      "reste": {
+        "type": "String"
+      }
+    }
+  },
+  "sensEncaissement": "Encaissement",
+  "sensDecaissement": "Décaissement",
+  "tiersErreurNom": "Le nom est obligatoire.",
+  "tiersErreurSysteme": "Le tiers système ne peut pas être modifié.",
+  "achatsTitre": "Entrées / Achats",
+  "achatNouveau": "Nouvelle entrée",
+  "achatSmartScan": "Smart Scan IA",
+  "achatFournisseur": "Fournisseur",
+  "achatReference": "Référence facture",
+  "achatMagasin": "Magasin",
+  "achatLignes": "Lignes",
+  "achatPrixAchat": "Prix d'achat",
+  "achatNouveauPrixVente": "Nouveau prix de vente",
+  "achatVerse": "Versé",
+  "achatModePaiement": "Mode de paiement",
+  "achatMettreAJourPrix": "Mettre à jour le prix d'achat des produits",
+  "achatAucun": "Aucune entrée.",
+  "achatColTotal": "Total",
+  "achatColVerse": "Versé",
+  "achatColReste": "Reste",
+  "achatColSource": "Source",
+  "achatColStatut": "Statut",
+  "achatAnnuler": "Annuler l'entrée",
+  "achatConfirmerAnnulation": "Annuler l'entrée {code} ? Le stock sera ressorti.",
+  "@achatConfirmerAnnulation": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "achatEnregistre": "Entrée {code} enregistrée : {total}, reste dû {reste}.",
+  "@achatEnregistre": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      },
+      "reste": {
+        "type": "String"
+      }
+    }
+  },
+  "achatErreurLignes": "Ajoutez au moins une ligne.",
+  "achatErreurQuantite": "Quantité invalide.",
+  "achatErreurPrix": "Prix ou montant invalide.",
+  "achatErreurProduit": "Produit inconnu.",
+  "achatErreurFournisseur": "Fournisseur inconnu.",
+  "achatErreurInconnu": "Entrée introuvable.",
+  "achatErreurAnnule": "Entrée déjà annulée.",
+  "achatErreurPeriode": "Période clôturée : annulation impossible.",
+  "achatErreurStock": "Stock insuffisant pour annuler (déjà vendu).",
+  "statutAchatValide": "Validé",
+  "statutAchatAnnule": "Annulé",
+  "sourceManuel": "Manuel",
+  "sourceSmartScan": "Smart Scan",
+  "smartScanTitre": "Smart Scan IA — facture fournisseur",
+  "smartScanIntro": "Prenez en photo ou choisissez la facture (image ou PDF) : les lignes sont reconnues par le serveur CaisseDZ et rapprochées de votre catalogue.",
+  "smartScanQuota": "Quota : {restant} analyse(s) restante(s) sur {total}",
+  "@smartScanQuota": {
+    "placeholders": {
+      "restant": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "smartScanChoisir": "Choisir une facture",
+  "smartScanAnalyser": "Analyser",
+  "smartScanAnalyse": "Analyse en cours…",
+  "smartScanAucuneLigne": "Aucune ligne reconnue.",
+  "smartScanLigneNonRapprochee": "Non rapprochée",
+  "smartScanRapprocher": "Associer un produit",
+  "smartScanCreerEntree": "Créer l'entrée",
+  "smartScanQuotaAtteint": "Quota Smart Scan atteint",
+  "smartScanQuotaAtteintDetail": "Vous avez utilisé toutes vos analyses. Demandez une offre pour continuer.",
+  "smartScanDemandeOffre": "Demander une offre",
+  "smartScanEmail": "Votre e-mail",
+  "smartScanMessage": "Message",
+  "smartScanOffreEnvoyee": "Demande envoyée, nous vous contacterons rapidement.",
+  "smartScanNonConfigure": "Renseignez l'URL du serveur CaisseDZ dans Paramètres pour utiliser Smart Scan.",
+  "smartScanErreurReseau": "Serveur injoignable : {detail}",
+  "@smartScanErreurReseau": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "smartScanErreurServeur": "Erreur du serveur : {detail}",
+  "@smartScanErreurServeur": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "smartScanErreurFichier": "Fichier invalide.",
+  "gestionCaisseTitre": "Gestion de caisse",
+  "gestionCaisseOngletCaisses": "Caisses",
+  "gestionCaisseOngletMouvements": "Mouvements",
+  "gestionCaisseOngletTransferts": "Transferts entre caisses",
+  "caisseNouvelle": "Nouvelle caisse",
+  "caisseModifier": "Modifier la caisse",
+  "caisseNom": "Nom",
+  "caisseType": "Type",
+  "caisseMagasin": "Magasin",
+  "caisseSansMagasin": "Sans magasin",
+  "caisseActive": "Active",
+  "caisseInactive": "Inactive",
+  "caisseSoldeEspeces": "Solde espèces",
+  "caisseSoldeTotal": "Solde total",
+  "caisseTypePhysique": "Physique",
+  "caisseTypeCompte": "Compte",
+  "caisseAucune": "Aucune caisse.",
+  "caisseDesactiver": "Désactiver",
+  "caisseActiver": "Activer",
+  "mouvementApport": "Apport",
+  "mouvementDepense": "Dépense",
+  "mouvementColType": "Type",
+  "mouvementColSens": "Sens",
+  "mouvementColMontant": "Montant",
+  "mouvementColMode": "Mode",
+  "mouvementColReference": "Référence",
+  "mouvementAucun": "Aucun mouvement.",
+  "mouvementToutesCaisses": "Toutes les caisses",
+  "mouvementCaisse": "Caisse",
+  "mvtVente": "Vente",
+  "mvtAnnulation": "Annulation",
+  "mvtRemboursement": "Remboursement",
+  "mvtEncaissement": "Encaissement",
+  "mvtDecaissement": "Décaissement",
+  "mvtApport": "Apport",
+  "mvtDepense": "Dépense",
+  "mvtTransfert": "Transfert",
+  "mvtFondInitial": "Fond initial",
+  "mvtRetrait": "Retrait",
+  "mvtEcart": "Écart",
+  "sensEntree": "Entrée",
+  "sensSortie": "Sortie",
+  "transfertCaisseNouveau": "Nouveau transfert",
+  "transfertCaisseSource": "Caisse source",
+  "transfertCaisseDestination": "Caisse destination",
+  "transfertCaisseAucun": "Aucun transfert.",
+  "transfertCaisseCree": "Transfert {code} enregistré (2 mouvements).",
+  "@transfertCaisseCree": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "caisseErreurNom": "Le nom est obligatoire.",
+  "caisseErreurType": "Type de caisse invalide.",
+  "caisseErreurMagasin": "Magasin inconnu.",
+  "caisseErreurInconnue": "Caisse introuvable.",
+  "caisseErreurInactive": "Caisse inactive.",
+  "caisseErreurSysteme": "La caisse principale ne peut pas être désactivée.",
+  "caisseErreurMontant": "Montant invalide.",
+  "caisseErreurMode": "Mode de paiement invalide.",
+  "caisseErreurMemeCaisse": "Choisissez deux caisses différentes.",
+  "caisseErreurSolde": "Solde insuffisant dans la caisse source.",
+  "caisseErreurSessionOuverte": "Une session est ouverte sur cette caisse.",
+  "cloturesTitre": "Clôtures Z",
+  "clotureNouvelle": "Clôturer (Z)",
+  "clotureApercuTitre": "Clôture Z — aperçu de la période",
+  "cloturePeriode": "Période",
+  "clotureDebut": "Début",
+  "clotureFin": "Fin",
+  "clotureColVentes": "Ventes",
+  "clotureColAnnulations": "Annulations",
+  "clotureColTotalVentes": "Total ventes",
+  "clotureColRemises": "Remises",
+  "clotureColRetours": "Retours",
+  "clotureColEncaissements": "Encaissements",
+  "clotureColDecaissements": "Décaissements",
+  "clotureColHash": "Scellement",
+  "clotureColUtilisateur": "Utilisateur",
+  "clotureAucune": "Aucune clôture.",
+  "clotureConfirmer": "Sceller la clôture",
+  "clotureCreee": "Clôture {code} scellée. Hash : {hash}",
+  "@clotureCreee": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "hash": {
+        "type": "String"
+      }
+    }
+  },
+  "clotureDetail": "Détail de la clôture",
+  "clotureParMode": "Encaissements par mode",
+  "clotureSoldes": "Soldes des caisses",
+  "clotureDerniereVente": "Dernier ticket",
+  "clotureHashPrecedent": "Hash précédent",
+  "clotureHash": "Hash",
+  "clotureVerifier": "Vérifier la chaîne",
+  "clotureChaineOk": "Chaîne des clôtures intacte.",
+  "clotureChaineKo": "Chaîne altérée à partir de la clôture {code}.",
+  "@clotureChaineKo": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "clotureErreurSession": "Fermez toutes les sessions de caisse avant de clôturer.",
+  "clotureErreurRien": "Rien à clôturer depuis la dernière clôture.",
+  "clotureAvertissementImmuable": "Une clôture est définitive : elle ne peut être ni modifiée ni supprimée, et les documents de la période ne pourront plus être annulés.",
+  "exportFiscalTitre": "Export fiscal",
+  "exportFiscalDebut": "Du (jj/mm/aaaa)",
+  "exportFiscalFin": "Au (jj/mm/aaaa)",
+  "exportFiscalGenerer": "Générer l'archive",
+  "exportFiscalOk": "Archive enregistrée : {chemin} ({ventes} ventes, {clotures} clôtures, empreinte vérifiée).",
+  "@exportFiscalOk": {
+    "placeholders": {
+      "chemin": {
+        "type": "String"
+      },
+      "ventes": {
+        "type": "int"
+      },
+      "clotures": {
+        "type": "int"
+      }
+    }
+  },
+  "exportFiscalErreurDates": "Dates invalides.",
+  "exportFiscalVerifier": "Vérifier une archive",
+  "exportFiscalVerifOk": "Archive valide : {ventes} ventes, {clotures} clôtures.",
+  "@exportFiscalVerifOk": {
+    "placeholders": {
+      "ventes": {
+        "type": "int"
+      },
+      "clotures": {
+        "type": "int"
+      }
+    }
+  },
+  "exportFiscalVerifKo": "Archive invalide : {erreurs}",
+  "@exportFiscalVerifKo": {
+    "placeholders": {
+      "erreurs": {
+        "type": "String"
+      }
+    }
+  },
+  "exportFiscalPermission": "Permission « exporter les données » requise.",
+  "tableauBordTitre": "Tableau de bord",
+  "tableauBordCaJour": "CA du jour",
+  "tableauBordTicketsJour": "Tickets du jour",
+  "tableauBordPanierMoyen": "Panier moyen",
+  "tableauBordCaMois": "CA du mois",
+  "tableauBordSousSeuil": "Produits sous seuil",
+  "tableauBordCreances": "Créances clients",
+  "tableauBordCa30Jours": "Chiffre d'affaires des 30 derniers jours",
+  "tableauBordPaiements": "Encaissements par mode (30 jours)",
+  "tableauBordTopProduits": "Top 5 produits (30 jours)",
+  "tableauBordCategories": "Ventes par catégorie (30 jours)",
+  "tableauBordCaMensuel": "Chiffre d'affaires mensuel (12 mois)",
+  "tableauBordActualiser": "Actualiser",
+  "situationTitre": "Situation",
+  "situationRapport": "Rapport",
+  "situationDu": "Du (jj/mm/aaaa)",
+  "situationAu": "Au (jj/mm/aaaa)",
+  "situationAfficher": "Afficher",
+  "situationExportExcel": "Exporter Excel",
+  "situationApercuPdf": "Aperçu PDF",
+  "situationAucuneLigne": "Aucune donnée sur la période.",
+  "situationDatesInvalides": "Dates invalides.",
+  "situationExportOk": "Fichier enregistré : {chemin}",
+  "@situationExportOk": {
+    "placeholders": {
+      "chemin": {
+        "type": "String"
+      }
+    }
+  },
+  "situationPeriode": "Période du {debut} au {fin}",
+  "@situationPeriode": {
+    "placeholders": {
+      "debut": {
+        "type": "String"
+      },
+      "fin": {
+        "type": "String"
+      }
+    }
+  },
+  "rapportVentesJour": "Ventes par jour",
+  "rapportVentesProduit": "Ventes par produit",
+  "rapportVentesCategorie": "Ventes par catégorie",
+  "rapportVentesClient": "Ventes par client",
+  "rapportVentesVendeur": "Ventes par vendeur et caisse",
+  "rapportEncaissementsMode": "Encaissements par mode",
+  "rapportAchatsFournisseur": "Achats par fournisseur",
+  "rapportRetours": "Retours clients",
+  "rapportEtatStock": "État du stock valorisé",
+  "rapportCreancesDettes": "Créances et dettes",
+  "zakatTitre": "Zakat",
+  "zakatIntro": "Zakat sur les biens commerciaux : 2,5 % de l'assiette si elle atteint le nissab (85 g d'or).",
+  "zakatPrixOr": "Prix du gramme d'or ({devise})",
+  "@zakatPrixOr": {
+    "placeholders": {
+      "devise": {
+        "type": "String"
+      }
+    }
+  },
+  "zakatEnregistrerPrix": "Enregistrer le cours",
+  "zakatStock": "Stock (prix d'achat)",
+  "zakatCaisses": "Caisses",
+  "zakatCreances": "Créances clients",
+  "zakatDettes": "Dettes fournisseurs",
+  "zakatAssiette": "Assiette",
+  "zakatNissab": "Nissab (85 g)",
+  "zakatMontant": "Zakat due (2,5 %)",
+  "zakatAssujetti": "Assujetti : l'assiette atteint le nissab.",
+  "zakatNonAssujetti": "Non assujetti : l'assiette est inférieure au nissab.",
+  "zakatPrixManquant": "Renseignez le cours de l'or pour calculer le nissab.",
+  "historiqueTitre": "Historique",
+  "historiqueColUtilisateur": "Utilisateur",
+  "historiqueColAction": "Action",
+  "historiqueColEntite": "Entité",
+  "historiqueColDetail": "Détail",
+  "historiqueToutesEntites": "Toutes les entités",
+  "historiqueAucun": "Aucune opération.",
+  "parametresTitre": "Paramètres",
+  "parametresOngletGeneral": "Général",
+  "parametresOngletBoutique": "Boutique",
+  "parametresOngletVente": "Vente",
+  "parametresOngletImpression": "Impression",
+  "parametresOngletServeur": "Serveurs",
+  "parametresOngletSauvegarde": "Sauvegarde",
+  "parametresEnregistre": "Paramètres enregistrés.",
+  "parametresBoutiqueNom": "Nom de la boutique",
+  "parametresBoutiqueRc": "Registre de commerce (RC)",
+  "parametresBoutiqueNif": "NIF",
+  "parametresBoutiqueAdresse": "Adresse",
+  "parametresBoutiqueTelephone": "Téléphone",
+  "parametresBoutiqueEmail": "E-mail",
+  "parametresMarge": "Marge par défaut (%)",
+  "parametresDevise": "Devise",
+  "parametresSeuil": "Seuil de stock global",
+  "parametresFidelite": "Programme de fidélité",
+  "parametresPoints": "Points par dinar",
+  "parametresGardeStock": "Garde de stock : toujours active (aucune vente sans stock).",
+  "parametresImprimanteType": "Type d'imprimante",
+  "parametresImprimanteAdresse": "File d'attente Windows ou adresse IP:port",
+  "parametresImprimanteLargeur": "Largeur du ticket",
+  "parametresImprimanteNormale": "Normale (dialogue d'impression)",
+  "parametresImprimanteUsb": "USB (spouleur Windows)",
+  "parametresImprimanteReseau": "Réseau (IP:port)",
+  "parametresImprimanteBluetooth": "Bluetooth",
+  "parametresServeurUrl": "URL du serveur CaisseDZ",
+  "parametresServeurCle": "Clé API",
+  "parametresMantoujUrl": "URL du catalogue Mantouj",
+  "parametresErreurNom": "Le nom de la boutique est obligatoire.",
+  "parametresErreurValeur": "Valeur invalide.",
+  "parametresErreurImprimanteType": "Type d'imprimante invalide.",
+  "parametresErreurImprimanteAdresse": "Indiquez la file d'attente ou l'adresse de l'imprimante.",
+  "sauvegardeIntro": "La sauvegarde est chiffrée avec le mot de passe choisi : conservez-le, il sera demandé à la restauration.",
+  "sauvegardeCreer": "Créer une sauvegarde",
+  "sauvegardeRestaurer": "Restaurer une sauvegarde",
+  "sauvegardeMotDePasse": "Mot de passe de la sauvegarde",
+  "sauvegardeFichier": "Fichier de sauvegarde",
+  "sauvegardeChoisirFichier": "Choisir le fichier…",
+  "sauvegardeOk": "Sauvegarde enregistrée : {chemin}",
+  "@sauvegardeOk": {
+    "placeholders": {
+      "chemin": {
+        "type": "String"
+      }
+    }
+  },
+  "sauvegardeInfo": "Boutique « {boutique} », {ventes} ventes, {produits} produits, schéma v{version}.",
+  "@sauvegardeInfo": {
+    "placeholders": {
+      "boutique": {
+        "type": "String"
+      },
+      "ventes": {
+        "type": "int"
+      },
+      "produits": {
+        "type": "int"
+      },
+      "version": {
+        "type": "int"
+      }
+    }
+  },
+  "sauvegardeConfirmerRestauration": "Restaurer cette sauvegarde ? Les données actuelles seront remplacées au prochain démarrage.",
+  "sauvegardeRestaurationPreparee": "Restauration prête : fermez puis relancez CaisseDZ pour l'appliquer.",
+  "sauvegardeRestaurationEnAttente": "Une restauration est en attente : elle sera appliquée au prochain démarrage.",
+  "sauvegardeAnnulerRestauration": "Annuler la restauration",
+  "sauvegardeErreurMotDePasse": "Mot de passe invalide ou fichier corrompu.",
+  "sauvegardeErreurMotDePasseVide": "Saisissez un mot de passe.",
+  "sauvegardeErreurFichier": "Fichier introuvable.",
+  "sauvegardeErreurChemin": "Emplacement invalide : {detail}",
+  "@sauvegardeErreurChemin": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  }
+}
