@@ -60,6 +60,7 @@ dev_dependencies:
   json_serializable: ^6.14.1
   riverpod_generator: ^4.0.9
   mocktail: ^1.0.5
+  msix: ^3.18.0
 
 # SQLCipher (édition communautaire) à la place de SQLite pour package:sqlite3.
 hooks:
@@ -99,3 +100,15 @@ flutter:
           weight: 700
         - asset: assets/fonts/Cairo-800.ttf
           weight: 800
+
+# Empaquetage Windows (lot 9) : `dart run msix:create` après `flutter build windows --release`.
+# Voir docs/BUILD_WINDOWS.md (certificat, Inno Setup en alternative).
+msix_config:
+  display_name: CaisseDZ Desktop
+  publisher_display_name: CaisseDZ
+  identity_name: dz.caissedz.desktop
+  msix_version: 0.1.0.0
+  languages: fr-fr, ar-dz, en-us
+  capabilities: internetClient
+  install_certificate: false
+  output_name: CaisseDZ-Desktop

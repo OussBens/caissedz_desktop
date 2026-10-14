@@ -48,7 +48,17 @@ const MotDePasse hachageTest = MotDePasse(iterations: 300);
 String cleTest(NiveauLicence n) => CleActivation.cleAttendue(n, machineTest);
 
 /// État de départ de l'application dans un test.
-enum EtatApp { vierge, activeeBasic, demo, configuree, connecteeAdmin, connecteeDemo, connecteeCaissier }
+enum EtatApp {
+  vierge,
+  activeeBasic,
+  demo,
+  configuree,
+  connecteeAdmin,
+  connecteeAdminBasic,
+  connecteeDemo,
+  connecteeCaissier,
+  connecteeMagasinier,
+}
 
 /// Monte l'application complète sur une base en mémoire, dans l'état voulu.
 Future<ProviderContainer> pumpApp(
@@ -96,10 +106,22 @@ Future<ProviderContainer> pumpApp(
       await licence.activer(cleTest(NiveauLicence.avance));
       await config.terminer(configurationTest());
       await session.connecter('gerant', 'azerty');
+    case EtatApp.connecteeAdminBasic:
+      await licence.activer(cleTest(NiveauLicence.basic));
+      await config.terminer(configurationTest());
+      await session.connecter('gerant', 'azerty');
     case EtatApp.connecteeDemo:
       await licence.activerDemo();
       await config.terminer(configurationTest());
       await session.connecter('demo', 'demo');
+    case EtatApp.connecteeMagasinier:
+      await licence.activer(cleTest(NiveauLicence.avance));
+      await config.terminer(configurationTest());
+      await UtilisateurRepository(base.db).inserer(
+        const Utilisateur(code: 'USR0003', identifiant: 'yacine', nom: 'Yacine', role: Roles.magasinier),
+        hachageTest.hacher('1234'),
+      );
+      await session.connecter('yacine', '1234');
     case EtatApp.connecteeCaissier:
       await licence.activer(cleTest(NiveauLicence.basic));
       await config.terminer(configurationTest());

@@ -73,5 +73,6 @@
 - [x] Sauvegarde / restauration ; exports Excel / PDF avec aperçu
 
 ## Recette (lot 9)
-- [ ] Parcours FR/AR/EN, clair/sombre, Basic/Avancé, Admin/Caissier/Magasinier
-- [ ] Build Windows (msix ou installeur)
+- [x] Parcours FR/AR/EN, clair/sombre, Basic/Avancé, Admin/Caissier/Magasinier (`test/recette/parcours_test.dart`)
+- [x] Build Windows (configuration MSIX `msix_config`, script Inno Setup, procédure `docs/BUILD_WINDOWS.md`) — build
+      non exécuté ici (poste Linux sans toolchain Windows)

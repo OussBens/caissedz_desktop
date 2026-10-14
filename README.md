@@ -13,3 +13,5 @@ flutter analyze
 flutter test
 flutter run -d windows
 ```
+
+Build Windows (release, MSIX ou Inno Setup) : voir `docs/BUILD_WINDOWS.md`.

@@ -308,6 +308,19 @@ Checklist §15 : rapports / paramètres / sauvegarde.
 estimé au prix d'achat actuel (pas de coût historisé par ligne) ; zakat = 85 g d'or, 2,5 % ; format de sauvegarde
 `.cdz` = base SQLCipher chiffrée par mot de passe ; la garde de stock n'est pas paramétrable.
 
-## Lot 9 — Recette ⬜
+## Lot 9 — Recette ✅ (build Windows à exécuter sur un poste Windows)
 Parcours FR/AR/EN, clair/sombre, Basic/Avancé, rôles Admin/Caissier/Magasinier ; `docs/CONFORMITE.md`
 entièrement cochée ; build Windows (msix ou installeur).
+
+**Livré**
+- `test/recette/parcours_test.dart` : les 20 modules montés en FR, AR (RTL vérifié) et EN sans exception ni
+  accès refusé (admin Avancé) ; thème sombre puis clair sur 5 modules ; licence Basic : LicenceGate exactement
+  sur les modules `niveauRequis = Avancé` ; rôles Caissier et Magasinier : Accès refusé exactement hors des
+  modules du rôle (`Roles.modulesParDefaut`).
+- Empaquetage : `msix_config` dans `pubspec.yaml` (`dart run msix:create`), `installer/caissedz.iss` (Inno
+  Setup), procédure et recette manuelle dans `docs/BUILD_WINDOWS.md`.
+- `docs/CONFORMITE.md` : toutes les cases cochées sauf celles qui dépendent des sources absentes (tokens et
+  fidélité visuelle du DS v2.2, 45 tables, clé §4.2, widgets métier « exacts »).
+
+**Reste (hors périmètre d'un poste Linux)** : exécuter `flutter build windows --release` puis `dart run
+msix:create` sur Windows ; recette manuelle de l'impression (USB / réseau / Bluetooth) et du lecteur de codes-barres.
