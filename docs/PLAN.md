@@ -44,17 +44,51 @@ car la zone asynchrone simulée de `testWidgets` ne termine jamais les E/S fichi
 | Widgets métier du DS (CartLine, Numpad, Calculator, PaymentPanel, PermissionGrid, LicenseGate, charts) | ⬜ attendent le DS (libellés et dispositions exacts) ; livrés avec les lots 1 et 4 |
 | Page galerie clair/sombre/RTL | ✅ pour les widgets existants |
 | Base chiffrée + migrations + `foreign_keys` | ✅ plomberie ; clé §4.2 provisoire |
-| Schéma 45 tables + seed système | ⚠️ attente spec (migration v1 = tables système minimales) |
+| Schéma 45 tables + seed système | ⚠️ attente spec ; v2 (lot 1) crée des tables minimales `magasin`, `caisse`, `categorie`, `sous_categorie`, `client`, `fournisseur`, `utilisateur` et seed MAG0000, CIS0000, CLN0000, FOR0000, CATE0000, SC0000, admin (USR0000) |
 | i18n FR/AR/EN | ✅ plomberie + libellés du shell ; libellés métier attendent DS/ref.js |
 | go_router + AppShell (sidebar 4 groupes, favoris max 7, Ctrl+M, alertes, Internet) | ✅ structure ; liste des 17 modules provisoire |
 
-## Lot 1 — Démarrage ⬜
+## Lot 1 — Démarrage ✅ (sous hypothèses ⚠️, sources toujours absentes le 2026-10-14)
 Écrans : activation (clé SHA-256 64 car.), mode démo demo/demo, connexion, configuration initiale 4 étapes (dont
 marge), Mon compte (changement d'identifiant), licences Basic/Avancé, rôles et 7 permissions d'action
 (voirPrixAchat, colonnes masquées, écran « Accès refusé »).
 Règles : §8 (permissions, licences), §9 (workflows démarrage), LISEZ-MOI (décisions L2…).
 Tests : validation de clé, hachage mot de passe, gating licence, grille de permissions, parcours de configuration.
 Checklist §15 : activation / sécurité / rôles.
+
+**Livré**
+- Parcours : activation → configuration initiale → connexion → application (redirections `go_router`).
+- Activation : identifiant machine affiché + copie, clé 64 hex validée, erreurs format / clé inconnue, bouton
+  « Essayer en mode démo », badge de licence ; accessible aussi depuis Paramètres › Licence.
+- Configuration initiale 4 étapes : Boutique (nom, RC, NIF, adresse, téléphone, e-mail) → Administrateur
+  (identifiant, nom, mot de passe + confirmation) → Marge et vente (marge par défaut %, seuil de stock global,
+  fidélité, points/dinar, devise) → Récapitulatif ; validations par étape ; écriture en UNE transaction
+  (`ConfigurationInitialeService.terminer`).
+- Connexion : identifiant + mot de passe (PBKDF2-HMAC-SHA256), messages d'erreur, indice demo/demo en mode démo,
+  bandeau « Mode démo » dans le shell, menu utilisateur (Mon compte, Se déconnecter) dans la barre de titre.
+- Mon compte : changement d'identifiant (mot de passe exigé, unicité), changement de mot de passe, préférences
+  langue/thème ; compte démo en lecture seule.
+- Licences : `NiveauLicence` Basic/Avancé, `niveauRequis` par module, `LicenceGate` (page et compact), cadenas
+  dans la sidebar.
+- Rôles : Admin / Caissier / Magasinier, 7 permissions d'action, modules accessibles par rôle, `PermissionGrid`,
+  page Paramètres › Rôles et permissions (permission `gererUtilisateurs`, Admin verrouillé à « tous les
+  droits »), écran « Accès refusé », colonnes à permission masquées dans `DsDataTable` (`DsColonne.permission`).
+- Tests : 27 unitaires (hachage avec vecteur PBKDF2, clés, services, transaction annulée) + 13 widget
+  (activation FR/AR, assistant complet, connexion, accès refusé, garde de licence, rôles, Mon compte, colonnes).
+
+**Hypothèses à confirmer dès réception de la spec 06 et du DS v2.2 (⚠️)**
+1. Clé d'activation liée à la machine : `SHA-256("CAISSEDZ|BASIC|<id machine>")` ou `…|AVANCE|…`
+   (`core/licence/cle_activation.dart`). Toute autre règle (serveur, clé signée) remplacera ce résolveur.
+2. Les 6 permissions autres que `voirPrixAchat` : modifierPrix, appliquerRemise, annulerVente,
+   supprimerDocument, exporterDonnees, gererUtilisateurs ; permissions et modules par défaut des rôles
+   (`domain/permissions.dart`).
+3. Contenu des 4 étapes de configuration et paramètres de vente (`ParametresVente`).
+4. Répartition Basic/Avancé des modules (`domain/modules.dart`, `niveauRequis`).
+5. Mode démo : licence Avancé sans clé ; demo/demo accepté uniquement tant qu'aucune vraie licence n'est active ;
+   compte démo non modifiable.
+6. Codes utilisateurs `USR0000` (admin système) / `USR0001` (demo) ; schéma minimal v2 des tables seedées.
+7. Apparence des écrans : tokens provisoires du lot 0 (aucune comparaison avec `CaisseDZ-DS-v2.2.html`
+   possible).
 
 ## Lot 2 — Produits & catalogue ⬜
 Écrans : catégories, produits (modes détaillé et IA : cascade CaisseDZ → Mantouj → Open Food Facts → Open Beauty

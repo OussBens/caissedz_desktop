@@ -14,18 +14,21 @@
 - [x] Base SQLite chiffrée SQLCipher, `foreign_keys ON`, migrations versionnées
 - [ ] Clé dérivée de la machine conforme §4.2 — provisoire
 - [ ] Schéma des 45 tables
-- [ ] Seed système : MAG0000, CIS0000, CLN0000, FOR0000, CATE0000, SC0000, admin
+- [x] Seed système : MAG0000, CIS0000, CLN0000, FOR0000, CATE0000, SC0000, admin (migration v2 ; colonnes minimales, à compléter avec la spec)
 - [x] i18n FR/AR/EN (ARB), arabe en RTL
 - [x] go_router ShellRoute + AppShell (sidebar Général/Stock/Tiers/Gestion, favoris max 7, menu modules Ctrl+M,
       alertes, témoin Internet)
 - [x] Relations par code, aucune valeur traduite en base (règle appliquée dès le socle)
 
 ## Démarrage (lot 1)
-- [ ] Activation par clé SHA-256 (64 caractères)
-- [ ] Mode démo demo/demo
-- [ ] Configuration initiale en 4 étapes (dont marge)
-- [ ] Licences Basic / Avancé
-- [ ] Rôles et 7 permissions d'action (voirPrixAchat, colonnes masquées, écran « Accès refusé »)
+- [x] Activation par clé SHA-256 (64 caractères) — règle de résolution de la clé provisoire (hypothèse n° 1 du plan)
+- [x] Mode démo demo/demo
+- [x] Connexion, mots de passe hachés (PBKDF2-HMAC-SHA256), déconnexion
+- [x] Configuration initiale en 4 étapes (dont marge) — contenu des étapes provisoire
+- [x] Mon compte : changement d'identifiant et de mot de passe
+- [x] Licences Basic / Avancé (LicenceGate, modules réservés) — répartition des modules provisoire
+- [x] Rôles et 7 permissions d'action (voirPrixAchat, colonnes masquées, écran « Accès refusé ») — 6 permissions provisoires
+- [ ] Fidélité visuelle des écrans au DS v2.2 (FR/AR, clair/sombre) — impossible à vérifier, DS absent
 
 ## Produits (lot 2)
 - [ ] Codes-barres EAN-13, CAISSEDZ+date, QR

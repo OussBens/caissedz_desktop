@@ -18,9 +18,15 @@ Logiciel de point de vente (caisse) + gestion de stock et commerciale pour Windo
 **Conflit** : le design v2.2 l'emporte pour l'apparence et les décisions de `LISEZ-MOI.md` ;
 la spécification 06 l'emporte pour tout le reste (données, règles, calculs).
 
-> État au 2026-10-14 : ces deux sources ne sont PAS encore présentes dans le dépôt (voir `docs/spec/README.md`
+> État au 2026-10-14 (lots 0 et 1) : ces deux sources ne sont PAS encore présentes dans le dépôt (voir `docs/spec/README.md`
 > et `docs/design/README.md`). Tout ce qui en dépend (tokens, 45 tables, libellés exacts, §15) est marqué
 > « PROVISOIRE » dans le code et dans `docs/PLAN.md`, et doit être réaligné dès qu'elles sont ajoutées.
+
+## Hypothèses prises faute de sources (à réaligner en priorité)
+
+Listées dans `docs/PLAN.md` (lot 1, « Hypothèses à confirmer ») : règle de la clé d'activation, 6 permissions,
+contenu des 4 étapes de configuration, répartition Basic/Avancé des modules, règles du mode démo, codes `USR`,
+schéma minimal v2. Chaque hypothèse est marquée `⚠️ PROVISOIRE` dans le code.
 
 ## Stack imposée
 
