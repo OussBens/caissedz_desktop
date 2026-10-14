@@ -19,6 +19,11 @@ import '../features/stock/magasins_page.dart';
 import '../features/stock/sorties_page.dart';
 import '../features/stock/stock_page.dart';
 import '../features/stock/transferts_page.dart';
+import '../features/tiers/clients_page.dart';
+import '../features/tiers/fournisseurs_page.dart';
+import '../features/tiers/versements_page.dart';
+import '../features/ventes/retour_dialog.dart';
+import '../features/ventes/ventes_page.dart';
 import 'demarrage_providers.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
@@ -101,6 +106,11 @@ GoRouter construireRouter(Ref ref, {String routeInitiale = routeAccueil}) {
 Widget pageModule(ModuleApp module) => switch (module.id) {
   'parametres' => const ParametresAccueilPage(),
   'caisse' => const PosPage(),
+  'ventes' => const VentesPage(),
+  'retours' => const RetoursPage(),
+  'clients' => const ClientsPage(),
+  'fournisseurs' => const FournisseursPage(),
+  'versements' => const VersementsPage(),
   'produits' => const ProduitsPage(),
   'stock' => const StockPage(),
   'magasins' => const MagasinsPage(),

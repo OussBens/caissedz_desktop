@@ -2882,6 +2882,534 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Points'**
   String get modePaiementPoints;
+
+  /// No description provided for @ventesTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ventes'**
+  String get ventesTitre;
+
+  /// No description provided for @ventesColTicket.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ticket'**
+  String get ventesColTicket;
+
+  /// No description provided for @ventesColClient.
+  ///
+  /// In fr, this message translates to:
+  /// **'Client'**
+  String get ventesColClient;
+
+  /// No description provided for @ventesColNet.
+  ///
+  /// In fr, this message translates to:
+  /// **'Net'**
+  String get ventesColNet;
+
+  /// No description provided for @ventesColVerse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Versé'**
+  String get ventesColVerse;
+
+  /// No description provided for @ventesColReste.
+  ///
+  /// In fr, this message translates to:
+  /// **'Reste dû'**
+  String get ventesColReste;
+
+  /// No description provided for @ventesColStatut.
+  ///
+  /// In fr, this message translates to:
+  /// **'Statut'**
+  String get ventesColStatut;
+
+  /// No description provided for @ventesColCaisse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Caisse'**
+  String get ventesColCaisse;
+
+  /// No description provided for @ventesColVendeur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vendeur'**
+  String get ventesColVendeur;
+
+  /// No description provided for @ventesAucune.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune vente.'**
+  String get ventesAucune;
+
+  /// No description provided for @ventesVoirTicket.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir le ticket'**
+  String get ventesVoirTicket;
+
+  /// No description provided for @ventesAnnuler.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annuler la vente'**
+  String get ventesAnnuler;
+
+  /// No description provided for @ventesConfirmerAnnulation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annuler la vente {code} ? Le stock et les points seront restitués ; le ticket scellé est conservé.'**
+  String ventesConfirmerAnnulation(String code);
+
+  /// No description provided for @ventesCreerRetour.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créer un retour'**
+  String get ventesCreerRetour;
+
+  /// No description provided for @ventesVerifierChaine.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vérifier le scellement'**
+  String get ventesVerifierChaine;
+
+  /// No description provided for @ventesChaineOk.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chaîne de tickets intacte.'**
+  String get ventesChaineOk;
+
+  /// No description provided for @ventesChaineKo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chaîne altérée à partir du ticket {code}.'**
+  String ventesChaineKo(String code);
+
+  /// No description provided for @ventesFiltreToutes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Toutes'**
+  String get ventesFiltreToutes;
+
+  /// No description provided for @ventesFiltreValidees.
+  ///
+  /// In fr, this message translates to:
+  /// **'Validées'**
+  String get ventesFiltreValidees;
+
+  /// No description provided for @ventesFiltreAnnulees.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annulées'**
+  String get ventesFiltreAnnulees;
+
+  /// No description provided for @ventesFiltreCredit.
+  ///
+  /// In fr, this message translates to:
+  /// **'À crédit'**
+  String get ventesFiltreCredit;
+
+  /// No description provided for @statutVenteValidee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Validée'**
+  String get statutVenteValidee;
+
+  /// No description provided for @statutVenteAnnulee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annulée'**
+  String get statutVenteAnnulee;
+
+  /// No description provided for @ticketDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ticket {code}'**
+  String ticketDetail(String code);
+
+  /// No description provided for @retoursTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retours'**
+  String get retoursTitre;
+
+  /// No description provided for @retourNouveau.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau retour'**
+  String get retourNouveau;
+
+  /// No description provided for @retourVente.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vente d\'origine'**
+  String get retourVente;
+
+  /// No description provided for @retourMotif.
+  ///
+  /// In fr, this message translates to:
+  /// **'Motif'**
+  String get retourMotif;
+
+  /// No description provided for @retourRembourser.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montant remboursé'**
+  String get retourRembourser;
+
+  /// No description provided for @retourModeRemboursement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mode de remboursement'**
+  String get retourModeRemboursement;
+
+  /// No description provided for @retourAvoir.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le reste est porté en avoir sur le compte du client.'**
+  String get retourAvoir;
+
+  /// No description provided for @retourAucun.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun retour.'**
+  String get retourAucun;
+
+  /// No description provided for @retourColTotal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Total retourné'**
+  String get retourColTotal;
+
+  /// No description provided for @retourColRembourse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Remboursé'**
+  String get retourColRembourse;
+
+  /// No description provided for @retourQuantiteMax.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quantité retournée (max {max})'**
+  String retourQuantiteMax(String max);
+
+  /// No description provided for @retourErreurVenteInconnue.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vente introuvable.'**
+  String get retourErreurVenteInconnue;
+
+  /// No description provided for @retourErreurVenteAnnulee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette vente est annulée.'**
+  String get retourErreurVenteAnnulee;
+
+  /// No description provided for @retourErreurLignes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Indiquez au moins une quantité à retourner.'**
+  String get retourErreurLignes;
+
+  /// No description provided for @retourErreurQuantite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quantité invalide.'**
+  String get retourErreurQuantite;
+
+  /// No description provided for @retourErreurDepasse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quantité supérieure à la quantité vendue (déjà retournée incluse).'**
+  String get retourErreurDepasse;
+
+  /// No description provided for @retourErreurPeriode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Période clôturée : retour impossible.'**
+  String get retourErreurPeriode;
+
+  /// No description provided for @retourCree.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retour {code} enregistré : {total} (remboursé {rembourse}).'**
+  String retourCree(String code, String total, String rembourse);
+
+  /// No description provided for @clientsTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Clients'**
+  String get clientsTitre;
+
+  /// No description provided for @clientNouveau.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau client'**
+  String get clientNouveau;
+
+  /// No description provided for @clientNom.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom'**
+  String get clientNom;
+
+  /// No description provided for @clientTelephone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Téléphone'**
+  String get clientTelephone;
+
+  /// No description provided for @clientAdresse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Adresse'**
+  String get clientAdresse;
+
+  /// No description provided for @clientEmail.
+  ///
+  /// In fr, this message translates to:
+  /// **'E-mail'**
+  String get clientEmail;
+
+  /// No description provided for @clientPoints.
+  ///
+  /// In fr, this message translates to:
+  /// **'Points'**
+  String get clientPoints;
+
+  /// No description provided for @clientPlafond.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plafond de crédit'**
+  String get clientPlafond;
+
+  /// No description provided for @clientSolde.
+  ///
+  /// In fr, this message translates to:
+  /// **'Solde dû'**
+  String get clientSolde;
+
+  /// No description provided for @clientAucun.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun client.'**
+  String get clientAucun;
+
+  /// No description provided for @clientFiche.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fiche client'**
+  String get clientFiche;
+
+  /// No description provided for @clientDocumentsOuverts.
+  ///
+  /// In fr, this message translates to:
+  /// **'Documents ouverts'**
+  String get clientDocumentsOuverts;
+
+  /// No description provided for @clientVersements.
+  ///
+  /// In fr, this message translates to:
+  /// **'Versements'**
+  String get clientVersements;
+
+  /// No description provided for @clientNouveauVersement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Encaisser un versement'**
+  String get clientNouveauVersement;
+
+  /// No description provided for @fournisseursTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fournisseurs'**
+  String get fournisseursTitre;
+
+  /// No description provided for @fournisseurNouveau.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau fournisseur'**
+  String get fournisseurNouveau;
+
+  /// No description provided for @fournisseurAucun.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun fournisseur.'**
+  String get fournisseurAucun;
+
+  /// No description provided for @fournisseurFiche.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fiche fournisseur'**
+  String get fournisseurFiche;
+
+  /// No description provided for @fournisseurNouveauVersement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Régler un versement'**
+  String get fournisseurNouveauVersement;
+
+  /// No description provided for @versementsTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Versements'**
+  String get versementsTitre;
+
+  /// No description provided for @versementNouveau.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau versement'**
+  String get versementNouveau;
+
+  /// No description provided for @versementTiers.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tiers'**
+  String get versementTiers;
+
+  /// No description provided for @versementTiersClient.
+  ///
+  /// In fr, this message translates to:
+  /// **'Client'**
+  String get versementTiersClient;
+
+  /// No description provided for @versementTiersFournisseur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fournisseur'**
+  String get versementTiersFournisseur;
+
+  /// No description provided for @versementMontant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montant'**
+  String get versementMontant;
+
+  /// No description provided for @versementMode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mode'**
+  String get versementMode;
+
+  /// No description provided for @versementReference.
+  ///
+  /// In fr, this message translates to:
+  /// **'Référence'**
+  String get versementReference;
+
+  /// No description provided for @versementAucun.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun versement.'**
+  String get versementAucun;
+
+  /// No description provided for @versementColSens.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sens'**
+  String get versementColSens;
+
+  /// No description provided for @versementColImpute.
+  ///
+  /// In fr, this message translates to:
+  /// **'Imputé'**
+  String get versementColImpute;
+
+  /// No description provided for @versementColNonImpute.
+  ///
+  /// In fr, this message translates to:
+  /// **'Non imputé'**
+  String get versementColNonImpute;
+
+  /// No description provided for @versementVerrouille.
+  ///
+  /// In fr, this message translates to:
+  /// **'Verrouillé (lié au retour {retour})'**
+  String versementVerrouille(String retour);
+
+  /// No description provided for @versementImputations.
+  ///
+  /// In fr, this message translates to:
+  /// **'Imputations (plus ancien d\'abord)'**
+  String get versementImputations;
+
+  /// No description provided for @versementSupprimer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer le versement'**
+  String get versementSupprimer;
+
+  /// No description provided for @versementConfirmerSuppression.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer le versement {code} ? Les imputations seront annulées.'**
+  String versementConfirmerSuppression(String code);
+
+  /// No description provided for @versementErreurMontant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montant invalide.'**
+  String get versementErreurMontant;
+
+  /// No description provided for @versementErreurMode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mode de paiement invalide.'**
+  String get versementErreurMode;
+
+  /// No description provided for @versementErreurSysteme.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible pour le tiers système.'**
+  String get versementErreurSysteme;
+
+  /// No description provided for @versementErreurVerrouille.
+  ///
+  /// In fr, this message translates to:
+  /// **'Versement verrouillé : lié à un retour, il ne peut être ni modifié ni supprimé.'**
+  String get versementErreurVerrouille;
+
+  /// No description provided for @versementErreurInconnu.
+  ///
+  /// In fr, this message translates to:
+  /// **'Versement introuvable.'**
+  String get versementErreurInconnu;
+
+  /// No description provided for @versementErreurTiers.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tiers invalide.'**
+  String get versementErreurTiers;
+
+  /// No description provided for @versementEnregistre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Versement {code} enregistré : {impute} imputé(s), {reste} en avance.'**
+  String versementEnregistre(String code, String impute, String reste);
+
+  /// No description provided for @sensEncaissement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Encaissement'**
+  String get sensEncaissement;
+
+  /// No description provided for @sensDecaissement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Décaissement'**
+  String get sensDecaissement;
+
+  /// No description provided for @tiersErreurNom.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le nom est obligatoire.'**
+  String get tiersErreurNom;
+
+  /// No description provided for @tiersErreurSysteme.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le tiers système ne peut pas être modifié.'**
+  String get tiersErreurSysteme;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

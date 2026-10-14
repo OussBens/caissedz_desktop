@@ -175,12 +175,29 @@ seulement), chaîne de scellement globale ordonnée par code de vente, forme can
 16 raccourcis, prix à la pièce = prix de vente / pièces par unité, écart de caisse calculé sur les espèces,
 Bluetooth via file d'impression Windows (écart : pas d'accès série direct).
 
-## Lot 5 — Ventes, retours, tiers, versements ⬜
+## Lot 5 — Ventes, retours, tiers, versements ✅ (sous hypothèses ⚠️)
 Écrans : ventes, retours, clients, fournisseurs, versements imputés aux documents ouverts (plus ancien d'abord),
 versement lié à un retour verrouillé.
 Règles : §8 (imputation FIFO, verrouillage), §9, §8.10 (CLN, FOR).
 Tests : RetourService.creer, VersementService.imputer (plus ancien d'abord), verrouillage.
 Checklist §15 : ventes / retours / tiers.
+
+**Livré**
+- Migration v6 : `retour` + lignes, `versement` + `versement_imputation`, `achat` + lignes (préparé pour le
+  lot 6), adresse / e-mail fournisseur.
+- `VersementService.imputer` : répartition automatique sur les documents ouverts du tiers (ventes à crédit ou
+  achats) du plus ancien au plus récent, excédent conservé en avance ; suppression refusée si verrouillé.
+- `RetourService.creer` en UNE transaction : contrôle des quantités (déjà retournées incluses), stock restitué,
+  remboursement = versement verrouillé lié au retour, reste de l'avoir imputé aux documents ouverts du client ;
+  refus sur vente annulée / période clôturée.
+- `TiersService` (clients, fournisseurs), soldes calculés (documents ouverts − avances).
+- Écrans : Ventes (filtres, ticket, annulation avec permission, retour, vérification du scellement), Retours,
+  Clients (solde, fiche avec documents ouverts et versements, encaissement), Fournisseurs (règlement),
+  Versements (aperçu des imputations avant validation, suppression sauf verrouillé).
+- Tests : 4 unitaires + 5 widget.
+
+**Hypothèses (⚠️)** : avoir non remboursé = versement interne « Avoir » verrouillé et imputé ; prix de retour =
+prix net payé sur la ligne ; les packs ne se retournent pas ligne à ligne ; solde client = Σ restes − avances.
 
 ## Lot 6 — Entrées / achats + Smart Scan IA ⬜
 Écrans : entrées/achats, Smart Scan IA (quota serveur, quota atteint, demande d'offre).

@@ -1470,4 +1470,285 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get modePaiementPoints => 'Points';
+
+  @override
+  String get ventesTitre => 'Ventes';
+
+  @override
+  String get ventesColTicket => 'Ticket';
+
+  @override
+  String get ventesColClient => 'Client';
+
+  @override
+  String get ventesColNet => 'Net';
+
+  @override
+  String get ventesColVerse => 'Versé';
+
+  @override
+  String get ventesColReste => 'Reste dû';
+
+  @override
+  String get ventesColStatut => 'Statut';
+
+  @override
+  String get ventesColCaisse => 'Caisse';
+
+  @override
+  String get ventesColVendeur => 'Vendeur';
+
+  @override
+  String get ventesAucune => 'Aucune vente.';
+
+  @override
+  String get ventesVoirTicket => 'Voir le ticket';
+
+  @override
+  String get ventesAnnuler => 'Annuler la vente';
+
+  @override
+  String ventesConfirmerAnnulation(String code) {
+    return 'Annuler la vente $code ? Le stock et les points seront restitués ; le ticket scellé est conservé.';
+  }
+
+  @override
+  String get ventesCreerRetour => 'Créer un retour';
+
+  @override
+  String get ventesVerifierChaine => 'Vérifier le scellement';
+
+  @override
+  String get ventesChaineOk => 'Chaîne de tickets intacte.';
+
+  @override
+  String ventesChaineKo(String code) {
+    return 'Chaîne altérée à partir du ticket $code.';
+  }
+
+  @override
+  String get ventesFiltreToutes => 'Toutes';
+
+  @override
+  String get ventesFiltreValidees => 'Validées';
+
+  @override
+  String get ventesFiltreAnnulees => 'Annulées';
+
+  @override
+  String get ventesFiltreCredit => 'À crédit';
+
+  @override
+  String get statutVenteValidee => 'Validée';
+
+  @override
+  String get statutVenteAnnulee => 'Annulée';
+
+  @override
+  String ticketDetail(String code) {
+    return 'Ticket $code';
+  }
+
+  @override
+  String get retoursTitre => 'Retours';
+
+  @override
+  String get retourNouveau => 'Nouveau retour';
+
+  @override
+  String get retourVente => 'Vente d\'origine';
+
+  @override
+  String get retourMotif => 'Motif';
+
+  @override
+  String get retourRembourser => 'Montant remboursé';
+
+  @override
+  String get retourModeRemboursement => 'Mode de remboursement';
+
+  @override
+  String get retourAvoir => 'Le reste est porté en avoir sur le compte du client.';
+
+  @override
+  String get retourAucun => 'Aucun retour.';
+
+  @override
+  String get retourColTotal => 'Total retourné';
+
+  @override
+  String get retourColRembourse => 'Remboursé';
+
+  @override
+  String retourQuantiteMax(String max) {
+    return 'Quantité retournée (max $max)';
+  }
+
+  @override
+  String get retourErreurVenteInconnue => 'Vente introuvable.';
+
+  @override
+  String get retourErreurVenteAnnulee => 'Cette vente est annulée.';
+
+  @override
+  String get retourErreurLignes => 'Indiquez au moins une quantité à retourner.';
+
+  @override
+  String get retourErreurQuantite => 'Quantité invalide.';
+
+  @override
+  String get retourErreurDepasse => 'Quantité supérieure à la quantité vendue (déjà retournée incluse).';
+
+  @override
+  String get retourErreurPeriode => 'Période clôturée : retour impossible.';
+
+  @override
+  String retourCree(String code, String total, String rembourse) {
+    return 'Retour $code enregistré : $total (remboursé $rembourse).';
+  }
+
+  @override
+  String get clientsTitre => 'Clients';
+
+  @override
+  String get clientNouveau => 'Nouveau client';
+
+  @override
+  String get clientNom => 'Nom';
+
+  @override
+  String get clientTelephone => 'Téléphone';
+
+  @override
+  String get clientAdresse => 'Adresse';
+
+  @override
+  String get clientEmail => 'E-mail';
+
+  @override
+  String get clientPoints => 'Points';
+
+  @override
+  String get clientPlafond => 'Plafond de crédit';
+
+  @override
+  String get clientSolde => 'Solde dû';
+
+  @override
+  String get clientAucun => 'Aucun client.';
+
+  @override
+  String get clientFiche => 'Fiche client';
+
+  @override
+  String get clientDocumentsOuverts => 'Documents ouverts';
+
+  @override
+  String get clientVersements => 'Versements';
+
+  @override
+  String get clientNouveauVersement => 'Encaisser un versement';
+
+  @override
+  String get fournisseursTitre => 'Fournisseurs';
+
+  @override
+  String get fournisseurNouveau => 'Nouveau fournisseur';
+
+  @override
+  String get fournisseurAucun => 'Aucun fournisseur.';
+
+  @override
+  String get fournisseurFiche => 'Fiche fournisseur';
+
+  @override
+  String get fournisseurNouveauVersement => 'Régler un versement';
+
+  @override
+  String get versementsTitre => 'Versements';
+
+  @override
+  String get versementNouveau => 'Nouveau versement';
+
+  @override
+  String get versementTiers => 'Tiers';
+
+  @override
+  String get versementTiersClient => 'Client';
+
+  @override
+  String get versementTiersFournisseur => 'Fournisseur';
+
+  @override
+  String get versementMontant => 'Montant';
+
+  @override
+  String get versementMode => 'Mode';
+
+  @override
+  String get versementReference => 'Référence';
+
+  @override
+  String get versementAucun => 'Aucun versement.';
+
+  @override
+  String get versementColSens => 'Sens';
+
+  @override
+  String get versementColImpute => 'Imputé';
+
+  @override
+  String get versementColNonImpute => 'Non imputé';
+
+  @override
+  String versementVerrouille(String retour) {
+    return 'Verrouillé (lié au retour $retour)';
+  }
+
+  @override
+  String get versementImputations => 'Imputations (plus ancien d\'abord)';
+
+  @override
+  String get versementSupprimer => 'Supprimer le versement';
+
+  @override
+  String versementConfirmerSuppression(String code) {
+    return 'Supprimer le versement $code ? Les imputations seront annulées.';
+  }
+
+  @override
+  String get versementErreurMontant => 'Montant invalide.';
+
+  @override
+  String get versementErreurMode => 'Mode de paiement invalide.';
+
+  @override
+  String get versementErreurSysteme => 'Impossible pour le tiers système.';
+
+  @override
+  String get versementErreurVerrouille =>
+      'Versement verrouillé : lié à un retour, il ne peut être ni modifié ni supprimé.';
+
+  @override
+  String get versementErreurInconnu => 'Versement introuvable.';
+
+  @override
+  String get versementErreurTiers => 'Tiers invalide.';
+
+  @override
+  String versementEnregistre(String code, String impute, String reste) {
+    return 'Versement $code enregistré : $impute imputé(s), $reste en avance.';
+  }
+
+  @override
+  String get sensEncaissement => 'Encaissement';
+
+  @override
+  String get sensDecaissement => 'Décaissement';
+
+  @override
+  String get tiersErreurNom => 'Le nom est obligatoire.';
+
+  @override
+  String get tiersErreurSysteme => 'Le tiers système ne peut pas être modifié.';
 }

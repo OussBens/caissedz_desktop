@@ -690,5 +690,161 @@
   "modePaiementCarte": "Carte",
   "modePaiementCheque": "Chèque",
   "modePaiementVirement": "Virement",
-  "modePaiementPoints": "Points"
+  "modePaiementPoints": "Points",
+  "ventesTitre": "Ventes",
+  "ventesColTicket": "Ticket",
+  "ventesColClient": "Client",
+  "ventesColNet": "Net",
+  "ventesColVerse": "Versé",
+  "ventesColReste": "Reste dû",
+  "ventesColStatut": "Statut",
+  "ventesColCaisse": "Caisse",
+  "ventesColVendeur": "Vendeur",
+  "ventesAucune": "Aucune vente.",
+  "ventesVoirTicket": "Voir le ticket",
+  "ventesAnnuler": "Annuler la vente",
+  "ventesConfirmerAnnulation": "Annuler la vente {code} ? Le stock et les points seront restitués ; le ticket scellé est conservé.",
+  "@ventesConfirmerAnnulation": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "ventesCreerRetour": "Créer un retour",
+  "ventesVerifierChaine": "Vérifier le scellement",
+  "ventesChaineOk": "Chaîne de tickets intacte.",
+  "ventesChaineKo": "Chaîne altérée à partir du ticket {code}.",
+  "@ventesChaineKo": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "ventesFiltreToutes": "Toutes",
+  "ventesFiltreValidees": "Validées",
+  "ventesFiltreAnnulees": "Annulées",
+  "ventesFiltreCredit": "À crédit",
+  "statutVenteValidee": "Validée",
+  "statutVenteAnnulee": "Annulée",
+  "ticketDetail": "Ticket {code}",
+  "@ticketDetail": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "retoursTitre": "Retours",
+  "retourNouveau": "Nouveau retour",
+  "retourVente": "Vente d'origine",
+  "retourMotif": "Motif",
+  "retourRembourser": "Montant remboursé",
+  "retourModeRemboursement": "Mode de remboursement",
+  "retourAvoir": "Le reste est porté en avoir sur le compte du client.",
+  "retourAucun": "Aucun retour.",
+  "retourColTotal": "Total retourné",
+  "retourColRembourse": "Remboursé",
+  "retourQuantiteMax": "Quantité retournée (max {max})",
+  "@retourQuantiteMax": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "retourErreurVenteInconnue": "Vente introuvable.",
+  "retourErreurVenteAnnulee": "Cette vente est annulée.",
+  "retourErreurLignes": "Indiquez au moins une quantité à retourner.",
+  "retourErreurQuantite": "Quantité invalide.",
+  "retourErreurDepasse": "Quantité supérieure à la quantité vendue (déjà retournée incluse).",
+  "retourErreurPeriode": "Période clôturée : retour impossible.",
+  "retourCree": "Retour {code} enregistré : {total} (remboursé {rembourse}).",
+  "@retourCree": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      },
+      "rembourse": {
+        "type": "String"
+      }
+    }
+  },
+  "clientsTitre": "Clients",
+  "clientNouveau": "Nouveau client",
+  "clientNom": "Nom",
+  "clientTelephone": "Téléphone",
+  "clientAdresse": "Adresse",
+  "clientEmail": "E-mail",
+  "clientPoints": "Points",
+  "clientPlafond": "Plafond de crédit",
+  "clientSolde": "Solde dû",
+  "clientAucun": "Aucun client.",
+  "clientFiche": "Fiche client",
+  "clientDocumentsOuverts": "Documents ouverts",
+  "clientVersements": "Versements",
+  "clientNouveauVersement": "Encaisser un versement",
+  "fournisseursTitre": "Fournisseurs",
+  "fournisseurNouveau": "Nouveau fournisseur",
+  "fournisseurAucun": "Aucun fournisseur.",
+  "fournisseurFiche": "Fiche fournisseur",
+  "fournisseurNouveauVersement": "Régler un versement",
+  "versementsTitre": "Versements",
+  "versementNouveau": "Nouveau versement",
+  "versementTiers": "Tiers",
+  "versementTiersClient": "Client",
+  "versementTiersFournisseur": "Fournisseur",
+  "versementMontant": "Montant",
+  "versementMode": "Mode",
+  "versementReference": "Référence",
+  "versementAucun": "Aucun versement.",
+  "versementColSens": "Sens",
+  "versementColImpute": "Imputé",
+  "versementColNonImpute": "Non imputé",
+  "versementVerrouille": "Verrouillé (lié au retour {retour})",
+  "@versementVerrouille": {
+    "placeholders": {
+      "retour": {
+        "type": "String"
+      }
+    }
+  },
+  "versementImputations": "Imputations (plus ancien d'abord)",
+  "versementSupprimer": "Supprimer le versement",
+  "versementConfirmerSuppression": "Supprimer le versement {code} ? Les imputations seront annulées.",
+  "@versementConfirmerSuppression": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "versementErreurMontant": "Montant invalide.",
+  "versementErreurMode": "Mode de paiement invalide.",
+  "versementErreurSysteme": "Impossible pour le tiers système.",
+  "versementErreurVerrouille": "Versement verrouillé : lié à un retour, il ne peut être ni modifié ni supprimé.",
+  "versementErreurInconnu": "Versement introuvable.",
+  "versementErreurTiers": "Tiers invalide.",
+  "versementEnregistre": "Versement {code} enregistré : {impute} imputé(s), {reste} en avance.",
+  "@versementEnregistre": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "impute": {
+        "type": "String"
+      },
+      "reste": {
+        "type": "String"
+      }
+    }
+  },
+  "sensEncaissement": "Encaissement",
+  "sensDecaissement": "Décaissement",
+  "tiersErreurNom": "Le nom est obligatoire.",
+  "tiersErreurSysteme": "Le tiers système ne peut pas être modifié."
 }

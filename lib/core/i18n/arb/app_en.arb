@@ -690,5 +690,161 @@
   "modePaiementCarte": "Card",
   "modePaiementCheque": "Cheque",
   "modePaiementVirement": "Transfer",
-  "modePaiementPoints": "Points"
+  "modePaiementPoints": "Points",
+  "ventesTitre": "Sales",
+  "ventesColTicket": "Receipt",
+  "ventesColClient": "Customer",
+  "ventesColNet": "Net",
+  "ventesColVerse": "Paid",
+  "ventesColReste": "Due",
+  "ventesColStatut": "Status",
+  "ventesColCaisse": "Register",
+  "ventesColVendeur": "Seller",
+  "ventesAucune": "No sales.",
+  "ventesVoirTicket": "View receipt",
+  "ventesAnnuler": "Cancel sale",
+  "ventesConfirmerAnnulation": "Cancel sale {code}? Stock and points are restored; the sealed receipt is kept.",
+  "@ventesConfirmerAnnulation": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "ventesCreerRetour": "Create a return",
+  "ventesVerifierChaine": "Verify sealing",
+  "ventesChaineOk": "Receipt chain intact.",
+  "ventesChaineKo": "Chain altered from receipt {code}.",
+  "@ventesChaineKo": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "ventesFiltreToutes": "All",
+  "ventesFiltreValidees": "Completed",
+  "ventesFiltreAnnulees": "Cancelled",
+  "ventesFiltreCredit": "On credit",
+  "statutVenteValidee": "Completed",
+  "statutVenteAnnulee": "Cancelled",
+  "ticketDetail": "Receipt {code}",
+  "@ticketDetail": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "retoursTitre": "Returns",
+  "retourNouveau": "New return",
+  "retourVente": "Original sale",
+  "retourMotif": "Reason",
+  "retourRembourser": "Refunded amount",
+  "retourModeRemboursement": "Refund method",
+  "retourAvoir": "The rest is credited to the customer account.",
+  "retourAucun": "No returns.",
+  "retourColTotal": "Returned total",
+  "retourColRembourse": "Refunded",
+  "retourQuantiteMax": "Returned quantity (max {max})",
+  "@retourQuantiteMax": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "retourErreurVenteInconnue": "Sale not found.",
+  "retourErreurVenteAnnulee": "This sale is cancelled.",
+  "retourErreurLignes": "Enter at least one quantity to return.",
+  "retourErreurQuantite": "Invalid quantity.",
+  "retourErreurDepasse": "Quantity exceeds the sold quantity (including previous returns).",
+  "retourErreurPeriode": "Closed period: return not possible.",
+  "retourCree": "Return {code} saved: {total} (refunded {rembourse}).",
+  "@retourCree": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      },
+      "rembourse": {
+        "type": "String"
+      }
+    }
+  },
+  "clientsTitre": "Customers",
+  "clientNouveau": "New customer",
+  "clientNom": "Name",
+  "clientTelephone": "Phone",
+  "clientAdresse": "Address",
+  "clientEmail": "E-mail",
+  "clientPoints": "Points",
+  "clientPlafond": "Credit limit",
+  "clientSolde": "Balance due",
+  "clientAucun": "No customers.",
+  "clientFiche": "Customer card",
+  "clientDocumentsOuverts": "Open documents",
+  "clientVersements": "Payments",
+  "clientNouveauVersement": "Receive a payment",
+  "fournisseursTitre": "Suppliers",
+  "fournisseurNouveau": "New supplier",
+  "fournisseurAucun": "No suppliers.",
+  "fournisseurFiche": "Supplier card",
+  "fournisseurNouveauVersement": "Pay a supplier",
+  "versementsTitre": "Payments",
+  "versementNouveau": "New payment",
+  "versementTiers": "Party",
+  "versementTiersClient": "Customer",
+  "versementTiersFournisseur": "Supplier",
+  "versementMontant": "Amount",
+  "versementMode": "Method",
+  "versementReference": "Reference",
+  "versementAucun": "No payments.",
+  "versementColSens": "Direction",
+  "versementColImpute": "Allocated",
+  "versementColNonImpute": "Unallocated",
+  "versementVerrouille": "Locked (linked to return {retour})",
+  "@versementVerrouille": {
+    "placeholders": {
+      "retour": {
+        "type": "String"
+      }
+    }
+  },
+  "versementImputations": "Allocations (oldest first)",
+  "versementSupprimer": "Delete payment",
+  "versementConfirmerSuppression": "Delete payment {code}? Allocations will be reverted.",
+  "@versementConfirmerSuppression": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "versementErreurMontant": "Invalid amount.",
+  "versementErreurMode": "Invalid payment method.",
+  "versementErreurSysteme": "Not possible for the system party.",
+  "versementErreurVerrouille": "Locked payment: linked to a return, it can neither be edited nor deleted.",
+  "versementErreurInconnu": "Payment not found.",
+  "versementErreurTiers": "Invalid party.",
+  "versementEnregistre": "Payment {code} saved: {impute} allocated, {reste} as advance.",
+  "@versementEnregistre": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "impute": {
+        "type": "String"
+      },
+      "reste": {
+        "type": "String"
+      }
+    }
+  },
+  "sensEncaissement": "Receipt",
+  "sensDecaissement": "Disbursement",
+  "tiersErreurNom": "Name is required.",
+  "tiersErreurSysteme": "The system party cannot be changed."
 }

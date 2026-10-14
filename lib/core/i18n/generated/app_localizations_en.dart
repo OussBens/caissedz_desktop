@@ -1465,4 +1465,284 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get modePaiementPoints => 'Points';
+
+  @override
+  String get ventesTitre => 'Sales';
+
+  @override
+  String get ventesColTicket => 'Receipt';
+
+  @override
+  String get ventesColClient => 'Customer';
+
+  @override
+  String get ventesColNet => 'Net';
+
+  @override
+  String get ventesColVerse => 'Paid';
+
+  @override
+  String get ventesColReste => 'Due';
+
+  @override
+  String get ventesColStatut => 'Status';
+
+  @override
+  String get ventesColCaisse => 'Register';
+
+  @override
+  String get ventesColVendeur => 'Seller';
+
+  @override
+  String get ventesAucune => 'No sales.';
+
+  @override
+  String get ventesVoirTicket => 'View receipt';
+
+  @override
+  String get ventesAnnuler => 'Cancel sale';
+
+  @override
+  String ventesConfirmerAnnulation(String code) {
+    return 'Cancel sale $code? Stock and points are restored; the sealed receipt is kept.';
+  }
+
+  @override
+  String get ventesCreerRetour => 'Create a return';
+
+  @override
+  String get ventesVerifierChaine => 'Verify sealing';
+
+  @override
+  String get ventesChaineOk => 'Receipt chain intact.';
+
+  @override
+  String ventesChaineKo(String code) {
+    return 'Chain altered from receipt $code.';
+  }
+
+  @override
+  String get ventesFiltreToutes => 'All';
+
+  @override
+  String get ventesFiltreValidees => 'Completed';
+
+  @override
+  String get ventesFiltreAnnulees => 'Cancelled';
+
+  @override
+  String get ventesFiltreCredit => 'On credit';
+
+  @override
+  String get statutVenteValidee => 'Completed';
+
+  @override
+  String get statutVenteAnnulee => 'Cancelled';
+
+  @override
+  String ticketDetail(String code) {
+    return 'Receipt $code';
+  }
+
+  @override
+  String get retoursTitre => 'Returns';
+
+  @override
+  String get retourNouveau => 'New return';
+
+  @override
+  String get retourVente => 'Original sale';
+
+  @override
+  String get retourMotif => 'Reason';
+
+  @override
+  String get retourRembourser => 'Refunded amount';
+
+  @override
+  String get retourModeRemboursement => 'Refund method';
+
+  @override
+  String get retourAvoir => 'The rest is credited to the customer account.';
+
+  @override
+  String get retourAucun => 'No returns.';
+
+  @override
+  String get retourColTotal => 'Returned total';
+
+  @override
+  String get retourColRembourse => 'Refunded';
+
+  @override
+  String retourQuantiteMax(String max) {
+    return 'Returned quantity (max $max)';
+  }
+
+  @override
+  String get retourErreurVenteInconnue => 'Sale not found.';
+
+  @override
+  String get retourErreurVenteAnnulee => 'This sale is cancelled.';
+
+  @override
+  String get retourErreurLignes => 'Enter at least one quantity to return.';
+
+  @override
+  String get retourErreurQuantite => 'Invalid quantity.';
+
+  @override
+  String get retourErreurDepasse => 'Quantity exceeds the sold quantity (including previous returns).';
+
+  @override
+  String get retourErreurPeriode => 'Closed period: return not possible.';
+
+  @override
+  String retourCree(String code, String total, String rembourse) {
+    return 'Return $code saved: $total (refunded $rembourse).';
+  }
+
+  @override
+  String get clientsTitre => 'Customers';
+
+  @override
+  String get clientNouveau => 'New customer';
+
+  @override
+  String get clientNom => 'Name';
+
+  @override
+  String get clientTelephone => 'Phone';
+
+  @override
+  String get clientAdresse => 'Address';
+
+  @override
+  String get clientEmail => 'E-mail';
+
+  @override
+  String get clientPoints => 'Points';
+
+  @override
+  String get clientPlafond => 'Credit limit';
+
+  @override
+  String get clientSolde => 'Balance due';
+
+  @override
+  String get clientAucun => 'No customers.';
+
+  @override
+  String get clientFiche => 'Customer card';
+
+  @override
+  String get clientDocumentsOuverts => 'Open documents';
+
+  @override
+  String get clientVersements => 'Payments';
+
+  @override
+  String get clientNouveauVersement => 'Receive a payment';
+
+  @override
+  String get fournisseursTitre => 'Suppliers';
+
+  @override
+  String get fournisseurNouveau => 'New supplier';
+
+  @override
+  String get fournisseurAucun => 'No suppliers.';
+
+  @override
+  String get fournisseurFiche => 'Supplier card';
+
+  @override
+  String get fournisseurNouveauVersement => 'Pay a supplier';
+
+  @override
+  String get versementsTitre => 'Payments';
+
+  @override
+  String get versementNouveau => 'New payment';
+
+  @override
+  String get versementTiers => 'Party';
+
+  @override
+  String get versementTiersClient => 'Customer';
+
+  @override
+  String get versementTiersFournisseur => 'Supplier';
+
+  @override
+  String get versementMontant => 'Amount';
+
+  @override
+  String get versementMode => 'Method';
+
+  @override
+  String get versementReference => 'Reference';
+
+  @override
+  String get versementAucun => 'No payments.';
+
+  @override
+  String get versementColSens => 'Direction';
+
+  @override
+  String get versementColImpute => 'Allocated';
+
+  @override
+  String get versementColNonImpute => 'Unallocated';
+
+  @override
+  String versementVerrouille(String retour) {
+    return 'Locked (linked to return $retour)';
+  }
+
+  @override
+  String get versementImputations => 'Allocations (oldest first)';
+
+  @override
+  String get versementSupprimer => 'Delete payment';
+
+  @override
+  String versementConfirmerSuppression(String code) {
+    return 'Delete payment $code? Allocations will be reverted.';
+  }
+
+  @override
+  String get versementErreurMontant => 'Invalid amount.';
+
+  @override
+  String get versementErreurMode => 'Invalid payment method.';
+
+  @override
+  String get versementErreurSysteme => 'Not possible for the system party.';
+
+  @override
+  String get versementErreurVerrouille => 'Locked payment: linked to a return, it can neither be edited nor deleted.';
+
+  @override
+  String get versementErreurInconnu => 'Payment not found.';
+
+  @override
+  String get versementErreurTiers => 'Invalid party.';
+
+  @override
+  String versementEnregistre(String code, String impute, String reste) {
+    return 'Payment $code saved: $impute allocated, $reste as advance.';
+  }
+
+  @override
+  String get sensEncaissement => 'Receipt';
+
+  @override
+  String get sensDecaissement => 'Disbursement';
+
+  @override
+  String get tiersErreurNom => 'Name is required.';
+
+  @override
+  String get tiersErreurSysteme => 'The system party cannot be changed.';
 }

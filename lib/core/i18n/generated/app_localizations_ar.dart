@@ -1462,4 +1462,284 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get modePaiementPoints => 'نقاط';
+
+  @override
+  String get ventesTitre => 'المبيعات';
+
+  @override
+  String get ventesColTicket => 'التذكرة';
+
+  @override
+  String get ventesColClient => 'الزبون';
+
+  @override
+  String get ventesColNet => 'الصافي';
+
+  @override
+  String get ventesColVerse => 'المدفوع';
+
+  @override
+  String get ventesColReste => 'المتبقي';
+
+  @override
+  String get ventesColStatut => 'الحالة';
+
+  @override
+  String get ventesColCaisse => 'الصندوق';
+
+  @override
+  String get ventesColVendeur => 'البائع';
+
+  @override
+  String get ventesAucune => 'لا توجد مبيعات.';
+
+  @override
+  String get ventesVoirTicket => 'عرض التذكرة';
+
+  @override
+  String get ventesAnnuler => 'إلغاء البيع';
+
+  @override
+  String ventesConfirmerAnnulation(String code) {
+    return 'إلغاء البيع $code؟ سيُعاد المخزون والنقاط؛ تبقى التذكرة المختومة محفوظة.';
+  }
+
+  @override
+  String get ventesCreerRetour => 'إنشاء مرتجع';
+
+  @override
+  String get ventesVerifierChaine => 'التحقق من الختم';
+
+  @override
+  String get ventesChaineOk => 'سلسلة التذاكر سليمة.';
+
+  @override
+  String ventesChaineKo(String code) {
+    return 'سلسلة معدّلة ابتداءً من التذكرة $code.';
+  }
+
+  @override
+  String get ventesFiltreToutes => 'الكل';
+
+  @override
+  String get ventesFiltreValidees => 'مؤكدة';
+
+  @override
+  String get ventesFiltreAnnulees => 'ملغاة';
+
+  @override
+  String get ventesFiltreCredit => 'بالدين';
+
+  @override
+  String get statutVenteValidee => 'مؤكدة';
+
+  @override
+  String get statutVenteAnnulee => 'ملغاة';
+
+  @override
+  String ticketDetail(String code) {
+    return 'التذكرة $code';
+  }
+
+  @override
+  String get retoursTitre => 'المرتجعات';
+
+  @override
+  String get retourNouveau => 'مرتجع جديد';
+
+  @override
+  String get retourVente => 'البيع الأصلي';
+
+  @override
+  String get retourMotif => 'السبب';
+
+  @override
+  String get retourRembourser => 'المبلغ المسترجع';
+
+  @override
+  String get retourModeRemboursement => 'طريقة الاسترجاع';
+
+  @override
+  String get retourAvoir => 'يُسجل الباقي كرصيد في حساب الزبون.';
+
+  @override
+  String get retourAucun => 'لا توجد مرتجعات.';
+
+  @override
+  String get retourColTotal => 'إجمالي المرتجع';
+
+  @override
+  String get retourColRembourse => 'المسترجع';
+
+  @override
+  String retourQuantiteMax(String max) {
+    return 'الكمية المرتجعة (الحد $max)';
+  }
+
+  @override
+  String get retourErreurVenteInconnue => 'البيع غير موجود.';
+
+  @override
+  String get retourErreurVenteAnnulee => 'هذا البيع ملغى.';
+
+  @override
+  String get retourErreurLignes => 'حدد كمية واحدة على الأقل للإرجاع.';
+
+  @override
+  String get retourErreurQuantite => 'كمية غير صالحة.';
+
+  @override
+  String get retourErreurDepasse => 'الكمية أكبر من الكمية المباعة (بما فيها المرتجع سابقًا).';
+
+  @override
+  String get retourErreurPeriode => 'فترة مقفلة: الإرجاع غير ممكن.';
+
+  @override
+  String retourCree(String code, String total, String rembourse) {
+    return 'تم تسجيل المرتجع $code: $total (مسترجع $rembourse).';
+  }
+
+  @override
+  String get clientsTitre => 'العملاء';
+
+  @override
+  String get clientNouveau => 'عميل جديد';
+
+  @override
+  String get clientNom => 'الاسم';
+
+  @override
+  String get clientTelephone => 'الهاتف';
+
+  @override
+  String get clientAdresse => 'العنوان';
+
+  @override
+  String get clientEmail => 'البريد الإلكتروني';
+
+  @override
+  String get clientPoints => 'النقاط';
+
+  @override
+  String get clientPlafond => 'سقف الدين';
+
+  @override
+  String get clientSolde => 'الرصيد المستحق';
+
+  @override
+  String get clientAucun => 'لا يوجد عملاء.';
+
+  @override
+  String get clientFiche => 'بطاقة العميل';
+
+  @override
+  String get clientDocumentsOuverts => 'المستندات المفتوحة';
+
+  @override
+  String get clientVersements => 'الدفعات';
+
+  @override
+  String get clientNouveauVersement => 'تحصيل دفعة';
+
+  @override
+  String get fournisseursTitre => 'الموردون';
+
+  @override
+  String get fournisseurNouveau => 'مورد جديد';
+
+  @override
+  String get fournisseurAucun => 'لا يوجد موردون.';
+
+  @override
+  String get fournisseurFiche => 'بطاقة المورد';
+
+  @override
+  String get fournisseurNouveauVersement => 'تسديد دفعة';
+
+  @override
+  String get versementsTitre => 'الدفعات';
+
+  @override
+  String get versementNouveau => 'دفعة جديدة';
+
+  @override
+  String get versementTiers => 'الطرف';
+
+  @override
+  String get versementTiersClient => 'عميل';
+
+  @override
+  String get versementTiersFournisseur => 'مورد';
+
+  @override
+  String get versementMontant => 'المبلغ';
+
+  @override
+  String get versementMode => 'الطريقة';
+
+  @override
+  String get versementReference => 'المرجع';
+
+  @override
+  String get versementAucun => 'لا توجد دفعات.';
+
+  @override
+  String get versementColSens => 'الاتجاه';
+
+  @override
+  String get versementColImpute => 'المخصص';
+
+  @override
+  String get versementColNonImpute => 'غير المخصص';
+
+  @override
+  String versementVerrouille(String retour) {
+    return 'مقفل (مرتبط بالمرتجع $retour)';
+  }
+
+  @override
+  String get versementImputations => 'التخصيصات (الأقدم أولاً)';
+
+  @override
+  String get versementSupprimer => 'حذف الدفعة';
+
+  @override
+  String versementConfirmerSuppression(String code) {
+    return 'حذف الدفعة $code؟ ستُلغى التخصيصات.';
+  }
+
+  @override
+  String get versementErreurMontant => 'مبلغ غير صالح.';
+
+  @override
+  String get versementErreurMode => 'طريقة دفع غير صالحة.';
+
+  @override
+  String get versementErreurSysteme => 'غير ممكن للطرف النظامي.';
+
+  @override
+  String get versementErreurVerrouille => 'دفعة مقفلة: مرتبطة بمرتجع، لا يمكن تعديلها ولا حذفها.';
+
+  @override
+  String get versementErreurInconnu => 'الدفعة غير موجودة.';
+
+  @override
+  String get versementErreurTiers => 'طرف غير صالح.';
+
+  @override
+  String versementEnregistre(String code, String impute, String reste) {
+    return 'تم تسجيل الدفعة $code: $impute مخصص، $reste كسلفة.';
+  }
+
+  @override
+  String get sensEncaissement => 'تحصيل';
+
+  @override
+  String get sensDecaissement => 'صرف';
+
+  @override
+  String get tiersErreurNom => 'الاسم إلزامي.';
+
+  @override
+  String get tiersErreurSysteme => 'لا يمكن تعديل الطرف النظامي.';
 }

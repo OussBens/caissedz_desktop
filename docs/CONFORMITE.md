@@ -52,8 +52,11 @@
       file d'impression Windows (écart)
 
 ## Ventes, retours, tiers (lot 5)
-- [ ] Versements imputés aux documents ouverts, plus ancien d'abord
-- [ ] Versement lié à un retour verrouillé
+- [x] Ventes : liste, ticket, annulation (permission), vérification du scellement
+- [x] Retours : stock restitué, avoir, remboursement
+- [x] Clients / fournisseurs : fiches, soldes
+- [x] Versements imputés aux documents ouverts, plus ancien d'abord
+- [x] Versement lié à un retour verrouillé
 
 ## Achats (lot 6)
 - [ ] Smart Scan IA : quota serveur, quota atteint, demande d'offre

@@ -32,7 +32,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('Clients'));
       await tester.pumpAndSettle();
-      expect(find.text('Module « Clients » : disponible dans un prochain lot.'), findsOneWidget);
+      expect(find.text('Nouveau client'), findsOneWidget);
     });
 
     testWidgets('Ctrl+M ouvre le menu des modules, la recherche filtre', (tester) async {

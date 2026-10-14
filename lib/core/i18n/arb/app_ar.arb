@@ -690,5 +690,161 @@
   "modePaiementCarte": "بطاقة",
   "modePaiementCheque": "شيك",
   "modePaiementVirement": "تحويل",
-  "modePaiementPoints": "نقاط"
+  "modePaiementPoints": "نقاط",
+  "ventesTitre": "المبيعات",
+  "ventesColTicket": "التذكرة",
+  "ventesColClient": "الزبون",
+  "ventesColNet": "الصافي",
+  "ventesColVerse": "المدفوع",
+  "ventesColReste": "المتبقي",
+  "ventesColStatut": "الحالة",
+  "ventesColCaisse": "الصندوق",
+  "ventesColVendeur": "البائع",
+  "ventesAucune": "لا توجد مبيعات.",
+  "ventesVoirTicket": "عرض التذكرة",
+  "ventesAnnuler": "إلغاء البيع",
+  "ventesConfirmerAnnulation": "إلغاء البيع {code}؟ سيُعاد المخزون والنقاط؛ تبقى التذكرة المختومة محفوظة.",
+  "@ventesConfirmerAnnulation": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "ventesCreerRetour": "إنشاء مرتجع",
+  "ventesVerifierChaine": "التحقق من الختم",
+  "ventesChaineOk": "سلسلة التذاكر سليمة.",
+  "ventesChaineKo": "سلسلة معدّلة ابتداءً من التذكرة {code}.",
+  "@ventesChaineKo": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "ventesFiltreToutes": "الكل",
+  "ventesFiltreValidees": "مؤكدة",
+  "ventesFiltreAnnulees": "ملغاة",
+  "ventesFiltreCredit": "بالدين",
+  "statutVenteValidee": "مؤكدة",
+  "statutVenteAnnulee": "ملغاة",
+  "ticketDetail": "التذكرة {code}",
+  "@ticketDetail": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "retoursTitre": "المرتجعات",
+  "retourNouveau": "مرتجع جديد",
+  "retourVente": "البيع الأصلي",
+  "retourMotif": "السبب",
+  "retourRembourser": "المبلغ المسترجع",
+  "retourModeRemboursement": "طريقة الاسترجاع",
+  "retourAvoir": "يُسجل الباقي كرصيد في حساب الزبون.",
+  "retourAucun": "لا توجد مرتجعات.",
+  "retourColTotal": "إجمالي المرتجع",
+  "retourColRembourse": "المسترجع",
+  "retourQuantiteMax": "الكمية المرتجعة (الحد {max})",
+  "@retourQuantiteMax": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "retourErreurVenteInconnue": "البيع غير موجود.",
+  "retourErreurVenteAnnulee": "هذا البيع ملغى.",
+  "retourErreurLignes": "حدد كمية واحدة على الأقل للإرجاع.",
+  "retourErreurQuantite": "كمية غير صالحة.",
+  "retourErreurDepasse": "الكمية أكبر من الكمية المباعة (بما فيها المرتجع سابقًا).",
+  "retourErreurPeriode": "فترة مقفلة: الإرجاع غير ممكن.",
+  "retourCree": "تم تسجيل المرتجع {code}: {total} (مسترجع {rembourse}).",
+  "@retourCree": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      },
+      "rembourse": {
+        "type": "String"
+      }
+    }
+  },
+  "clientsTitre": "العملاء",
+  "clientNouveau": "عميل جديد",
+  "clientNom": "الاسم",
+  "clientTelephone": "الهاتف",
+  "clientAdresse": "العنوان",
+  "clientEmail": "البريد الإلكتروني",
+  "clientPoints": "النقاط",
+  "clientPlafond": "سقف الدين",
+  "clientSolde": "الرصيد المستحق",
+  "clientAucun": "لا يوجد عملاء.",
+  "clientFiche": "بطاقة العميل",
+  "clientDocumentsOuverts": "المستندات المفتوحة",
+  "clientVersements": "الدفعات",
+  "clientNouveauVersement": "تحصيل دفعة",
+  "fournisseursTitre": "الموردون",
+  "fournisseurNouveau": "مورد جديد",
+  "fournisseurAucun": "لا يوجد موردون.",
+  "fournisseurFiche": "بطاقة المورد",
+  "fournisseurNouveauVersement": "تسديد دفعة",
+  "versementsTitre": "الدفعات",
+  "versementNouveau": "دفعة جديدة",
+  "versementTiers": "الطرف",
+  "versementTiersClient": "عميل",
+  "versementTiersFournisseur": "مورد",
+  "versementMontant": "المبلغ",
+  "versementMode": "الطريقة",
+  "versementReference": "المرجع",
+  "versementAucun": "لا توجد دفعات.",
+  "versementColSens": "الاتجاه",
+  "versementColImpute": "المخصص",
+  "versementColNonImpute": "غير المخصص",
+  "versementVerrouille": "مقفل (مرتبط بالمرتجع {retour})",
+  "@versementVerrouille": {
+    "placeholders": {
+      "retour": {
+        "type": "String"
+      }
+    }
+  },
+  "versementImputations": "التخصيصات (الأقدم أولاً)",
+  "versementSupprimer": "حذف الدفعة",
+  "versementConfirmerSuppression": "حذف الدفعة {code}؟ ستُلغى التخصيصات.",
+  "@versementConfirmerSuppression": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "versementErreurMontant": "مبلغ غير صالح.",
+  "versementErreurMode": "طريقة دفع غير صالحة.",
+  "versementErreurSysteme": "غير ممكن للطرف النظامي.",
+  "versementErreurVerrouille": "دفعة مقفلة: مرتبطة بمرتجع، لا يمكن تعديلها ولا حذفها.",
+  "versementErreurInconnu": "الدفعة غير موجودة.",
+  "versementErreurTiers": "طرف غير صالح.",
+  "versementEnregistre": "تم تسجيل الدفعة {code}: {impute} مخصص، {reste} كسلفة.",
+  "@versementEnregistre": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "impute": {
+        "type": "String"
+      },
+      "reste": {
+        "type": "String"
+      }
+    }
+  },
+  "sensEncaissement": "تحصيل",
+  "sensDecaissement": "صرف",
+  "tiersErreurNom": "الاسم إلزامي.",
+  "tiersErreurSysteme": "لا يمكن تعديل الطرف النظامي."
 }

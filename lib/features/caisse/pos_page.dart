@@ -6,11 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../app/demarrage_providers.dart';
-import '../../app/providers.dart';
 import '../../application/vente_service.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
-import '../../data/client_repository.dart';
 import '../../domain/models/panier.dart';
 import '../../domain/models/produit.dart';
 import '../../domain/permissions.dart';
@@ -624,8 +622,3 @@ class _PosPageState extends ConsumerState<PosPage> {
     );
   }
 }
-
-/// Repository client exposé pour les écrans (lot 5).
-final clientRepositoryProvider = Provider<ClientRepository>(
-  (ref) => ClientRepository(ref.watch(appDatabaseProvider).db),
-);
