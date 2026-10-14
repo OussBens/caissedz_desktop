@@ -19,6 +19,7 @@ class DsColonne<T> {
     this.masquable = true,
     this.visibleParDefaut = true,
     this.total,
+    this.permission,
   });
 
   /// Identifiant stable (utilisé pour le tri et la visibilité).
@@ -39,6 +40,10 @@ class DsColonne<T> {
 
   /// Calcul du total affiché dans la ligne de totaux (sur toutes les lignes).
   final String Function(List<T> lignes)? total;
+
+  /// Permission requise pour voir la colonne (ex. `voirPrixAchat`). Sans la
+  /// permission, la colonne est masquée et absente du menu « Colonnes ».
+  final String? permission;
 }
 
 /// Action du menu contextuel d'une ligne.
@@ -79,6 +84,7 @@ class DsDataTable<T> extends StatefulWidget {
     this.triInitial,
     this.messageVide,
     this.hauteurLigne = DsTailles.ligneTable,
+    this.permissions = const {},
   });
 
   final List<DsColonne<T>> colonnes;
@@ -99,6 +105,13 @@ class DsDataTable<T> extends StatefulWidget {
   final DsTri? triInitial;
   final String? messageVide;
   final double hauteurLigne;
+
+  /// Permissions de l'utilisateur connecté (codes) : filtrent les colonnes à permission.
+  final Set<String> permissions;
+
+  /// Colonnes que l'utilisateur a le droit de voir.
+  List<DsColonne<T>> get colonnesAutorisees =>
+      colonnes.where((c) => c.permission == null || permissions.contains(c.permission)).toList();
 
   @override
   State<DsDataTable<T>> createState() => _DsDataTableState<T>();
@@ -152,7 +165,7 @@ class _DsDataTableState<T> extends State<DsDataTable<T>> {
 
   int _nbPages(int n) => widget.pagine ? (n / _taillePage).ceil().clamp(1, 1 << 30) : 1;
 
-  List<DsColonne<T>> get _visibles => widget.colonnes.where((c) => !_masquees.contains(c.id)).toList();
+  List<DsColonne<T>> get _visibles => widget.colonnesAutorisees.where((c) => !_masquees.contains(c.id)).toList();
 
   List<T> get _triees {
     final tri = _tri;
@@ -261,7 +274,7 @@ class _DsDataTableState<T> extends State<DsDataTable<T>> {
           height: 32,
           child: Text(l10n.communColonnes, style: t.legende.copyWith(color: c.texteAttenue)),
         ),
-        for (final col in widget.colonnes.where((c) => c.masquable))
+        for (final col in widget.colonnesAutorisees.where((c) => c.masquable))
           PopupMenuItem<void>(
             height: 36,
             child: StatefulBuilder(
