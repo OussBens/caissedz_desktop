@@ -68,8 +68,9 @@
 - [x] Export fiscal : archive + JSON vérifiable
 
 ## Rapports et paramètres (lot 8)
-- [ ] Tableau de bord 6 KPI / 5 graphiques ; Situation 10 rapports ; Zakat
-- [ ] Sauvegarde / restauration ; exports Excel / PDF avec aperçu
+- [x] Tableau de bord 6 KPI / 5 graphiques ; Situation 10 rapports ; Zakat
+- [x] Historique (journal d'audit) ; Paramètres complets (boutique, vente, impression, serveurs)
+- [x] Sauvegarde / restauration ; exports Excel / PDF avec aperçu
 
 ## Recette (lot 9)
 - [ ] Parcours FR/AR/EN, clair/sombre, Basic/Avancé, Admin/Caissier/Magasinier

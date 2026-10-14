@@ -1096,5 +1096,164 @@
       }
     }
   },
-  "exportFiscalPermission": "مطلوب إذن « تصدير البيانات »."
+  "exportFiscalPermission": "مطلوب إذن « تصدير البيانات ».",
+  "tableauBordTitre": "لوحة القيادة",
+  "tableauBordCaJour": "رقم أعمال اليوم",
+  "tableauBordTicketsJour": "تذاكر اليوم",
+  "tableauBordPanierMoyen": "متوسط السلة",
+  "tableauBordCaMois": "رقم أعمال الشهر",
+  "tableauBordSousSeuil": "منتجات تحت الحد",
+  "tableauBordCreances": "ديون الزبائن",
+  "tableauBordCa30Jours": "رقم الأعمال خلال 30 يومًا",
+  "tableauBordPaiements": "التحصيلات حسب الوسيلة (30 يومًا)",
+  "tableauBordTopProduits": "أفضل 5 منتجات (30 يومًا)",
+  "tableauBordCategories": "المبيعات حسب الفئة (30 يومًا)",
+  "tableauBordCaMensuel": "رقم الأعمال الشهري (12 شهرًا)",
+  "tableauBordActualiser": "تحديث",
+  "situationTitre": "الوضعية",
+  "situationRapport": "التقرير",
+  "situationDu": "من (يوم/شهر/سنة)",
+  "situationAu": "إلى (يوم/شهر/سنة)",
+  "situationAfficher": "عرض",
+  "situationExportExcel": "تصدير Excel",
+  "situationApercuPdf": "معاينة PDF",
+  "situationAucuneLigne": "لا توجد بيانات في هذه الفترة.",
+  "situationDatesInvalides": "تواريخ غير صالحة.",
+  "situationExportOk": "تم حفظ الملف: {chemin}",
+  "@situationExportOk": {
+    "placeholders": {
+      "chemin": {
+        "type": "String"
+      }
+    }
+  },
+  "situationPeriode": "الفترة من {debut} إلى {fin}",
+  "@situationPeriode": {
+    "placeholders": {
+      "debut": {
+        "type": "String"
+      },
+      "fin": {
+        "type": "String"
+      }
+    }
+  },
+  "rapportVentesJour": "المبيعات حسب اليوم",
+  "rapportVentesProduit": "المبيعات حسب المنتج",
+  "rapportVentesCategorie": "المبيعات حسب الفئة",
+  "rapportVentesClient": "المبيعات حسب الزبون",
+  "rapportVentesVendeur": "المبيعات حسب البائع والصندوق",
+  "rapportEncaissementsMode": "التحصيلات حسب الوسيلة",
+  "rapportAchatsFournisseur": "المشتريات حسب المورد",
+  "rapportRetours": "مرتجعات الزبائن",
+  "rapportEtatStock": "حالة المخزون المقيّم",
+  "rapportCreancesDettes": "الديون والمستحقات",
+  "zakatTitre": "الزكاة",
+  "zakatIntro": "زكاة عروض التجارة: 2.5٪ من الوعاء إذا بلغ النصاب (85 غ ذهب).",
+  "zakatPrixOr": "سعر غرام الذهب ({devise})",
+  "@zakatPrixOr": {
+    "placeholders": {
+      "devise": {
+        "type": "String"
+      }
+    }
+  },
+  "zakatEnregistrerPrix": "حفظ السعر",
+  "zakatStock": "المخزون (سعر الشراء)",
+  "zakatCaisses": "الصناديق",
+  "zakatCreances": "ديون الزبائن",
+  "zakatDettes": "مستحقات الموردين",
+  "zakatAssiette": "الوعاء",
+  "zakatNissab": "النصاب (85 غ)",
+  "zakatMontant": "الزكاة الواجبة (2.5٪)",
+  "zakatAssujetti": "واجبة: الوعاء بلغ النصاب.",
+  "zakatNonAssujetti": "غير واجبة: الوعاء أقل من النصاب.",
+  "zakatPrixManquant": "أدخل سعر الذهب لحساب النصاب.",
+  "historiqueTitre": "السجل",
+  "historiqueColUtilisateur": "المستخدم",
+  "historiqueColAction": "الإجراء",
+  "historiqueColEntite": "الكيان",
+  "historiqueColDetail": "التفاصيل",
+  "historiqueToutesEntites": "كل الكيانات",
+  "historiqueAucun": "لا توجد عمليات.",
+  "parametresTitre": "الإعدادات",
+  "parametresOngletGeneral": "عام",
+  "parametresOngletBoutique": "المتجر",
+  "parametresOngletVente": "البيع",
+  "parametresOngletImpression": "الطباعة",
+  "parametresOngletServeur": "الخوادم",
+  "parametresOngletSauvegarde": "النسخ الاحتياطي",
+  "parametresEnregistre": "تم حفظ الإعدادات.",
+  "parametresBoutiqueNom": "اسم المتجر",
+  "parametresBoutiqueRc": "السجل التجاري",
+  "parametresBoutiqueNif": "الرقم الجبائي",
+  "parametresBoutiqueAdresse": "العنوان",
+  "parametresBoutiqueTelephone": "الهاتف",
+  "parametresBoutiqueEmail": "البريد الإلكتروني",
+  "parametresMarge": "الهامش الافتراضي (٪)",
+  "parametresDevise": "العملة",
+  "parametresSeuil": "حد المخزون العام",
+  "parametresFidelite": "برنامج الولاء",
+  "parametresPoints": "نقاط لكل دينار",
+  "parametresGardeStock": "حماية المخزون: مفعّلة دائمًا (لا بيع بدون مخزون).",
+  "parametresImprimanteType": "نوع الطابعة",
+  "parametresImprimanteAdresse": "طابور Windows أو عنوان IP:port",
+  "parametresImprimanteLargeur": "عرض التذكرة",
+  "parametresImprimanteNormale": "عادية (نافذة الطباعة)",
+  "parametresImprimanteUsb": "USB (طابور Windows)",
+  "parametresImprimanteReseau": "شبكة (IP:port)",
+  "parametresImprimanteBluetooth": "بلوتوث",
+  "parametresServeurUrl": "عنوان خادم CaisseDZ",
+  "parametresServeurCle": "مفتاح API",
+  "parametresMantoujUrl": "عنوان كتالوج Mantouj",
+  "parametresErreurNom": "اسم المتجر إلزامي.",
+  "parametresErreurValeur": "قيمة غير صالحة.",
+  "parametresErreurImprimanteType": "نوع طابعة غير صالح.",
+  "parametresErreurImprimanteAdresse": "حدد طابور الطباعة أو عنوان الطابعة.",
+  "sauvegardeIntro": "النسخة الاحتياطية مشفّرة بكلمة المرور المختارة: احتفظ بها، ستُطلب عند الاستعادة.",
+  "sauvegardeCreer": "إنشاء نسخة احتياطية",
+  "sauvegardeRestaurer": "استعادة نسخة احتياطية",
+  "sauvegardeMotDePasse": "كلمة مرور النسخة",
+  "sauvegardeFichier": "ملف النسخة الاحتياطية",
+  "sauvegardeChoisirFichier": "اختيار الملف…",
+  "sauvegardeOk": "تم حفظ النسخة: {chemin}",
+  "@sauvegardeOk": {
+    "placeholders": {
+      "chemin": {
+        "type": "String"
+      }
+    }
+  },
+  "sauvegardeInfo": "المتجر « {boutique} »، {ventes} مبيعات، {produits} منتجات، المخطط v{version}.",
+  "@sauvegardeInfo": {
+    "placeholders": {
+      "boutique": {
+        "type": "String"
+      },
+      "ventes": {
+        "type": "int"
+      },
+      "produits": {
+        "type": "int"
+      },
+      "version": {
+        "type": "int"
+      }
+    }
+  },
+  "sauvegardeConfirmerRestauration": "استعادة هذه النسخة؟ سيتم استبدال البيانات الحالية عند التشغيل القادم.",
+  "sauvegardeRestaurationPreparee": "الاستعادة جاهزة: أغلق CaisseDZ ثم أعد تشغيله لتطبيقها.",
+  "sauvegardeRestaurationEnAttente": "استعادة قيد الانتظار: ستُطبّق عند التشغيل القادم.",
+  "sauvegardeAnnulerRestauration": "إلغاء الاستعادة",
+  "sauvegardeErreurMotDePasse": "كلمة مرور غير صالحة أو ملف تالف.",
+  "sauvegardeErreurMotDePasseVide": "أدخل كلمة مرور.",
+  "sauvegardeErreurFichier": "الملف غير موجود.",
+  "sauvegardeErreurChemin": "موقع غير صالح: {detail}",
+  "@sauvegardeErreurChemin": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  }
 }

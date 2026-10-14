@@ -4322,6 +4322,636 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Permission « exporter les données » requise.'**
   String get exportFiscalPermission;
+
+  /// No description provided for @tableauBordTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tableau de bord'**
+  String get tableauBordTitre;
+
+  /// No description provided for @tableauBordCaJour.
+  ///
+  /// In fr, this message translates to:
+  /// **'CA du jour'**
+  String get tableauBordCaJour;
+
+  /// No description provided for @tableauBordTicketsJour.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tickets du jour'**
+  String get tableauBordTicketsJour;
+
+  /// No description provided for @tableauBordPanierMoyen.
+  ///
+  /// In fr, this message translates to:
+  /// **'Panier moyen'**
+  String get tableauBordPanierMoyen;
+
+  /// No description provided for @tableauBordCaMois.
+  ///
+  /// In fr, this message translates to:
+  /// **'CA du mois'**
+  String get tableauBordCaMois;
+
+  /// No description provided for @tableauBordSousSeuil.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produits sous seuil'**
+  String get tableauBordSousSeuil;
+
+  /// No description provided for @tableauBordCreances.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créances clients'**
+  String get tableauBordCreances;
+
+  /// No description provided for @tableauBordCa30Jours.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chiffre d\'affaires des 30 derniers jours'**
+  String get tableauBordCa30Jours;
+
+  /// No description provided for @tableauBordPaiements.
+  ///
+  /// In fr, this message translates to:
+  /// **'Encaissements par mode (30 jours)'**
+  String get tableauBordPaiements;
+
+  /// No description provided for @tableauBordTopProduits.
+  ///
+  /// In fr, this message translates to:
+  /// **'Top 5 produits (30 jours)'**
+  String get tableauBordTopProduits;
+
+  /// No description provided for @tableauBordCategories.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ventes par catégorie (30 jours)'**
+  String get tableauBordCategories;
+
+  /// No description provided for @tableauBordCaMensuel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chiffre d\'affaires mensuel (12 mois)'**
+  String get tableauBordCaMensuel;
+
+  /// No description provided for @tableauBordActualiser.
+  ///
+  /// In fr, this message translates to:
+  /// **'Actualiser'**
+  String get tableauBordActualiser;
+
+  /// No description provided for @situationTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Situation'**
+  String get situationTitre;
+
+  /// No description provided for @situationRapport.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rapport'**
+  String get situationRapport;
+
+  /// No description provided for @situationDu.
+  ///
+  /// In fr, this message translates to:
+  /// **'Du (jj/mm/aaaa)'**
+  String get situationDu;
+
+  /// No description provided for @situationAu.
+  ///
+  /// In fr, this message translates to:
+  /// **'Au (jj/mm/aaaa)'**
+  String get situationAu;
+
+  /// No description provided for @situationAfficher.
+  ///
+  /// In fr, this message translates to:
+  /// **'Afficher'**
+  String get situationAfficher;
+
+  /// No description provided for @situationExportExcel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Exporter Excel'**
+  String get situationExportExcel;
+
+  /// No description provided for @situationApercuPdf.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aperçu PDF'**
+  String get situationApercuPdf;
+
+  /// No description provided for @situationAucuneLigne.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune donnée sur la période.'**
+  String get situationAucuneLigne;
+
+  /// No description provided for @situationDatesInvalides.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dates invalides.'**
+  String get situationDatesInvalides;
+
+  /// No description provided for @situationExportOk.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fichier enregistré : {chemin}'**
+  String situationExportOk(String chemin);
+
+  /// No description provided for @situationPeriode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Période du {debut} au {fin}'**
+  String situationPeriode(String debut, String fin);
+
+  /// No description provided for @rapportVentesJour.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ventes par jour'**
+  String get rapportVentesJour;
+
+  /// No description provided for @rapportVentesProduit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ventes par produit'**
+  String get rapportVentesProduit;
+
+  /// No description provided for @rapportVentesCategorie.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ventes par catégorie'**
+  String get rapportVentesCategorie;
+
+  /// No description provided for @rapportVentesClient.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ventes par client'**
+  String get rapportVentesClient;
+
+  /// No description provided for @rapportVentesVendeur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ventes par vendeur et caisse'**
+  String get rapportVentesVendeur;
+
+  /// No description provided for @rapportEncaissementsMode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Encaissements par mode'**
+  String get rapportEncaissementsMode;
+
+  /// No description provided for @rapportAchatsFournisseur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Achats par fournisseur'**
+  String get rapportAchatsFournisseur;
+
+  /// No description provided for @rapportRetours.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retours clients'**
+  String get rapportRetours;
+
+  /// No description provided for @rapportEtatStock.
+  ///
+  /// In fr, this message translates to:
+  /// **'État du stock valorisé'**
+  String get rapportEtatStock;
+
+  /// No description provided for @rapportCreancesDettes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créances et dettes'**
+  String get rapportCreancesDettes;
+
+  /// No description provided for @zakatTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Zakat'**
+  String get zakatTitre;
+
+  /// No description provided for @zakatIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Zakat sur les biens commerciaux : 2,5 % de l\'assiette si elle atteint le nissab (85 g d\'or).'**
+  String get zakatIntro;
+
+  /// No description provided for @zakatPrixOr.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix du gramme d\'or ({devise})'**
+  String zakatPrixOr(String devise);
+
+  /// No description provided for @zakatEnregistrerPrix.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrer le cours'**
+  String get zakatEnregistrerPrix;
+
+  /// No description provided for @zakatStock.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock (prix d\'achat)'**
+  String get zakatStock;
+
+  /// No description provided for @zakatCaisses.
+  ///
+  /// In fr, this message translates to:
+  /// **'Caisses'**
+  String get zakatCaisses;
+
+  /// No description provided for @zakatCreances.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créances clients'**
+  String get zakatCreances;
+
+  /// No description provided for @zakatDettes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dettes fournisseurs'**
+  String get zakatDettes;
+
+  /// No description provided for @zakatAssiette.
+  ///
+  /// In fr, this message translates to:
+  /// **'Assiette'**
+  String get zakatAssiette;
+
+  /// No description provided for @zakatNissab.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nissab (85 g)'**
+  String get zakatNissab;
+
+  /// No description provided for @zakatMontant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Zakat due (2,5 %)'**
+  String get zakatMontant;
+
+  /// No description provided for @zakatAssujetti.
+  ///
+  /// In fr, this message translates to:
+  /// **'Assujetti : l\'assiette atteint le nissab.'**
+  String get zakatAssujetti;
+
+  /// No description provided for @zakatNonAssujetti.
+  ///
+  /// In fr, this message translates to:
+  /// **'Non assujetti : l\'assiette est inférieure au nissab.'**
+  String get zakatNonAssujetti;
+
+  /// No description provided for @zakatPrixManquant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Renseignez le cours de l\'or pour calculer le nissab.'**
+  String get zakatPrixManquant;
+
+  /// No description provided for @historiqueTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Historique'**
+  String get historiqueTitre;
+
+  /// No description provided for @historiqueColUtilisateur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Utilisateur'**
+  String get historiqueColUtilisateur;
+
+  /// No description provided for @historiqueColAction.
+  ///
+  /// In fr, this message translates to:
+  /// **'Action'**
+  String get historiqueColAction;
+
+  /// No description provided for @historiqueColEntite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entité'**
+  String get historiqueColEntite;
+
+  /// No description provided for @historiqueColDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Détail'**
+  String get historiqueColDetail;
+
+  /// No description provided for @historiqueToutesEntites.
+  ///
+  /// In fr, this message translates to:
+  /// **'Toutes les entités'**
+  String get historiqueToutesEntites;
+
+  /// No description provided for @historiqueAucun.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune opération.'**
+  String get historiqueAucun;
+
+  /// No description provided for @parametresTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paramètres'**
+  String get parametresTitre;
+
+  /// No description provided for @parametresOngletGeneral.
+  ///
+  /// In fr, this message translates to:
+  /// **'Général'**
+  String get parametresOngletGeneral;
+
+  /// No description provided for @parametresOngletBoutique.
+  ///
+  /// In fr, this message translates to:
+  /// **'Boutique'**
+  String get parametresOngletBoutique;
+
+  /// No description provided for @parametresOngletVente.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vente'**
+  String get parametresOngletVente;
+
+  /// No description provided for @parametresOngletImpression.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impression'**
+  String get parametresOngletImpression;
+
+  /// No description provided for @parametresOngletServeur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Serveurs'**
+  String get parametresOngletServeur;
+
+  /// No description provided for @parametresOngletSauvegarde.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sauvegarde'**
+  String get parametresOngletSauvegarde;
+
+  /// No description provided for @parametresEnregistre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paramètres enregistrés.'**
+  String get parametresEnregistre;
+
+  /// No description provided for @parametresBoutiqueNom.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom de la boutique'**
+  String get parametresBoutiqueNom;
+
+  /// No description provided for @parametresBoutiqueRc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Registre de commerce (RC)'**
+  String get parametresBoutiqueRc;
+
+  /// No description provided for @parametresBoutiqueNif.
+  ///
+  /// In fr, this message translates to:
+  /// **'NIF'**
+  String get parametresBoutiqueNif;
+
+  /// No description provided for @parametresBoutiqueAdresse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Adresse'**
+  String get parametresBoutiqueAdresse;
+
+  /// No description provided for @parametresBoutiqueTelephone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Téléphone'**
+  String get parametresBoutiqueTelephone;
+
+  /// No description provided for @parametresBoutiqueEmail.
+  ///
+  /// In fr, this message translates to:
+  /// **'E-mail'**
+  String get parametresBoutiqueEmail;
+
+  /// No description provided for @parametresMarge.
+  ///
+  /// In fr, this message translates to:
+  /// **'Marge par défaut (%)'**
+  String get parametresMarge;
+
+  /// No description provided for @parametresDevise.
+  ///
+  /// In fr, this message translates to:
+  /// **'Devise'**
+  String get parametresDevise;
+
+  /// No description provided for @parametresSeuil.
+  ///
+  /// In fr, this message translates to:
+  /// **'Seuil de stock global'**
+  String get parametresSeuil;
+
+  /// No description provided for @parametresFidelite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Programme de fidélité'**
+  String get parametresFidelite;
+
+  /// No description provided for @parametresPoints.
+  ///
+  /// In fr, this message translates to:
+  /// **'Points par dinar'**
+  String get parametresPoints;
+
+  /// No description provided for @parametresGardeStock.
+  ///
+  /// In fr, this message translates to:
+  /// **'Garde de stock : toujours active (aucune vente sans stock).'**
+  String get parametresGardeStock;
+
+  /// No description provided for @parametresImprimanteType.
+  ///
+  /// In fr, this message translates to:
+  /// **'Type d\'imprimante'**
+  String get parametresImprimanteType;
+
+  /// No description provided for @parametresImprimanteAdresse.
+  ///
+  /// In fr, this message translates to:
+  /// **'File d\'attente Windows ou adresse IP:port'**
+  String get parametresImprimanteAdresse;
+
+  /// No description provided for @parametresImprimanteLargeur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Largeur du ticket'**
+  String get parametresImprimanteLargeur;
+
+  /// No description provided for @parametresImprimanteNormale.
+  ///
+  /// In fr, this message translates to:
+  /// **'Normale (dialogue d\'impression)'**
+  String get parametresImprimanteNormale;
+
+  /// No description provided for @parametresImprimanteUsb.
+  ///
+  /// In fr, this message translates to:
+  /// **'USB (spouleur Windows)'**
+  String get parametresImprimanteUsb;
+
+  /// No description provided for @parametresImprimanteReseau.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réseau (IP:port)'**
+  String get parametresImprimanteReseau;
+
+  /// No description provided for @parametresImprimanteBluetooth.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bluetooth'**
+  String get parametresImprimanteBluetooth;
+
+  /// No description provided for @parametresServeurUrl.
+  ///
+  /// In fr, this message translates to:
+  /// **'URL du serveur CaisseDZ'**
+  String get parametresServeurUrl;
+
+  /// No description provided for @parametresServeurCle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Clé API'**
+  String get parametresServeurCle;
+
+  /// No description provided for @parametresMantoujUrl.
+  ///
+  /// In fr, this message translates to:
+  /// **'URL du catalogue Mantouj'**
+  String get parametresMantoujUrl;
+
+  /// No description provided for @parametresErreurNom.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le nom de la boutique est obligatoire.'**
+  String get parametresErreurNom;
+
+  /// No description provided for @parametresErreurValeur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Valeur invalide.'**
+  String get parametresErreurValeur;
+
+  /// No description provided for @parametresErreurImprimanteType.
+  ///
+  /// In fr, this message translates to:
+  /// **'Type d\'imprimante invalide.'**
+  String get parametresErreurImprimanteType;
+
+  /// No description provided for @parametresErreurImprimanteAdresse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Indiquez la file d\'attente ou l\'adresse de l\'imprimante.'**
+  String get parametresErreurImprimanteAdresse;
+
+  /// No description provided for @sauvegardeIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'La sauvegarde est chiffrée avec le mot de passe choisi : conservez-le, il sera demandé à la restauration.'**
+  String get sauvegardeIntro;
+
+  /// No description provided for @sauvegardeCreer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créer une sauvegarde'**
+  String get sauvegardeCreer;
+
+  /// No description provided for @sauvegardeRestaurer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Restaurer une sauvegarde'**
+  String get sauvegardeRestaurer;
+
+  /// No description provided for @sauvegardeMotDePasse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mot de passe de la sauvegarde'**
+  String get sauvegardeMotDePasse;
+
+  /// No description provided for @sauvegardeFichier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fichier de sauvegarde'**
+  String get sauvegardeFichier;
+
+  /// No description provided for @sauvegardeChoisirFichier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir le fichier…'**
+  String get sauvegardeChoisirFichier;
+
+  /// No description provided for @sauvegardeOk.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sauvegarde enregistrée : {chemin}'**
+  String sauvegardeOk(String chemin);
+
+  /// No description provided for @sauvegardeInfo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Boutique « {boutique} », {ventes} ventes, {produits} produits, schéma v{version}.'**
+  String sauvegardeInfo(String boutique, int ventes, int produits, int version);
+
+  /// No description provided for @sauvegardeConfirmerRestauration.
+  ///
+  /// In fr, this message translates to:
+  /// **'Restaurer cette sauvegarde ? Les données actuelles seront remplacées au prochain démarrage.'**
+  String get sauvegardeConfirmerRestauration;
+
+  /// No description provided for @sauvegardeRestaurationPreparee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Restauration prête : fermez puis relancez CaisseDZ pour l\'appliquer.'**
+  String get sauvegardeRestaurationPreparee;
+
+  /// No description provided for @sauvegardeRestaurationEnAttente.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une restauration est en attente : elle sera appliquée au prochain démarrage.'**
+  String get sauvegardeRestaurationEnAttente;
+
+  /// No description provided for @sauvegardeAnnulerRestauration.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annuler la restauration'**
+  String get sauvegardeAnnulerRestauration;
+
+  /// No description provided for @sauvegardeErreurMotDePasse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mot de passe invalide ou fichier corrompu.'**
+  String get sauvegardeErreurMotDePasse;
+
+  /// No description provided for @sauvegardeErreurMotDePasseVide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Saisissez un mot de passe.'**
+  String get sauvegardeErreurMotDePasseVide;
+
+  /// No description provided for @sauvegardeErreurFichier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fichier introuvable.'**
+  String get sauvegardeErreurFichier;
+
+  /// No description provided for @sauvegardeErreurChemin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Emplacement invalide : {detail}'**
+  String sauvegardeErreurChemin(String detail);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

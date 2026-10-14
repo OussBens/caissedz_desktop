@@ -2222,4 +2222,331 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get exportFiscalPermission => 'مطلوب إذن « تصدير البيانات ».';
+
+  @override
+  String get tableauBordTitre => 'لوحة القيادة';
+
+  @override
+  String get tableauBordCaJour => 'رقم أعمال اليوم';
+
+  @override
+  String get tableauBordTicketsJour => 'تذاكر اليوم';
+
+  @override
+  String get tableauBordPanierMoyen => 'متوسط السلة';
+
+  @override
+  String get tableauBordCaMois => 'رقم أعمال الشهر';
+
+  @override
+  String get tableauBordSousSeuil => 'منتجات تحت الحد';
+
+  @override
+  String get tableauBordCreances => 'ديون الزبائن';
+
+  @override
+  String get tableauBordCa30Jours => 'رقم الأعمال خلال 30 يومًا';
+
+  @override
+  String get tableauBordPaiements => 'التحصيلات حسب الوسيلة (30 يومًا)';
+
+  @override
+  String get tableauBordTopProduits => 'أفضل 5 منتجات (30 يومًا)';
+
+  @override
+  String get tableauBordCategories => 'المبيعات حسب الفئة (30 يومًا)';
+
+  @override
+  String get tableauBordCaMensuel => 'رقم الأعمال الشهري (12 شهرًا)';
+
+  @override
+  String get tableauBordActualiser => 'تحديث';
+
+  @override
+  String get situationTitre => 'الوضعية';
+
+  @override
+  String get situationRapport => 'التقرير';
+
+  @override
+  String get situationDu => 'من (يوم/شهر/سنة)';
+
+  @override
+  String get situationAu => 'إلى (يوم/شهر/سنة)';
+
+  @override
+  String get situationAfficher => 'عرض';
+
+  @override
+  String get situationExportExcel => 'تصدير Excel';
+
+  @override
+  String get situationApercuPdf => 'معاينة PDF';
+
+  @override
+  String get situationAucuneLigne => 'لا توجد بيانات في هذه الفترة.';
+
+  @override
+  String get situationDatesInvalides => 'تواريخ غير صالحة.';
+
+  @override
+  String situationExportOk(String chemin) {
+    return 'تم حفظ الملف: $chemin';
+  }
+
+  @override
+  String situationPeriode(String debut, String fin) {
+    return 'الفترة من $debut إلى $fin';
+  }
+
+  @override
+  String get rapportVentesJour => 'المبيعات حسب اليوم';
+
+  @override
+  String get rapportVentesProduit => 'المبيعات حسب المنتج';
+
+  @override
+  String get rapportVentesCategorie => 'المبيعات حسب الفئة';
+
+  @override
+  String get rapportVentesClient => 'المبيعات حسب الزبون';
+
+  @override
+  String get rapportVentesVendeur => 'المبيعات حسب البائع والصندوق';
+
+  @override
+  String get rapportEncaissementsMode => 'التحصيلات حسب الوسيلة';
+
+  @override
+  String get rapportAchatsFournisseur => 'المشتريات حسب المورد';
+
+  @override
+  String get rapportRetours => 'مرتجعات الزبائن';
+
+  @override
+  String get rapportEtatStock => 'حالة المخزون المقيّم';
+
+  @override
+  String get rapportCreancesDettes => 'الديون والمستحقات';
+
+  @override
+  String get zakatTitre => 'الزكاة';
+
+  @override
+  String get zakatIntro => 'زكاة عروض التجارة: 2.5٪ من الوعاء إذا بلغ النصاب (85 غ ذهب).';
+
+  @override
+  String zakatPrixOr(String devise) {
+    return 'سعر غرام الذهب ($devise)';
+  }
+
+  @override
+  String get zakatEnregistrerPrix => 'حفظ السعر';
+
+  @override
+  String get zakatStock => 'المخزون (سعر الشراء)';
+
+  @override
+  String get zakatCaisses => 'الصناديق';
+
+  @override
+  String get zakatCreances => 'ديون الزبائن';
+
+  @override
+  String get zakatDettes => 'مستحقات الموردين';
+
+  @override
+  String get zakatAssiette => 'الوعاء';
+
+  @override
+  String get zakatNissab => 'النصاب (85 غ)';
+
+  @override
+  String get zakatMontant => 'الزكاة الواجبة (2.5٪)';
+
+  @override
+  String get zakatAssujetti => 'واجبة: الوعاء بلغ النصاب.';
+
+  @override
+  String get zakatNonAssujetti => 'غير واجبة: الوعاء أقل من النصاب.';
+
+  @override
+  String get zakatPrixManquant => 'أدخل سعر الذهب لحساب النصاب.';
+
+  @override
+  String get historiqueTitre => 'السجل';
+
+  @override
+  String get historiqueColUtilisateur => 'المستخدم';
+
+  @override
+  String get historiqueColAction => 'الإجراء';
+
+  @override
+  String get historiqueColEntite => 'الكيان';
+
+  @override
+  String get historiqueColDetail => 'التفاصيل';
+
+  @override
+  String get historiqueToutesEntites => 'كل الكيانات';
+
+  @override
+  String get historiqueAucun => 'لا توجد عمليات.';
+
+  @override
+  String get parametresTitre => 'الإعدادات';
+
+  @override
+  String get parametresOngletGeneral => 'عام';
+
+  @override
+  String get parametresOngletBoutique => 'المتجر';
+
+  @override
+  String get parametresOngletVente => 'البيع';
+
+  @override
+  String get parametresOngletImpression => 'الطباعة';
+
+  @override
+  String get parametresOngletServeur => 'الخوادم';
+
+  @override
+  String get parametresOngletSauvegarde => 'النسخ الاحتياطي';
+
+  @override
+  String get parametresEnregistre => 'تم حفظ الإعدادات.';
+
+  @override
+  String get parametresBoutiqueNom => 'اسم المتجر';
+
+  @override
+  String get parametresBoutiqueRc => 'السجل التجاري';
+
+  @override
+  String get parametresBoutiqueNif => 'الرقم الجبائي';
+
+  @override
+  String get parametresBoutiqueAdresse => 'العنوان';
+
+  @override
+  String get parametresBoutiqueTelephone => 'الهاتف';
+
+  @override
+  String get parametresBoutiqueEmail => 'البريد الإلكتروني';
+
+  @override
+  String get parametresMarge => 'الهامش الافتراضي (٪)';
+
+  @override
+  String get parametresDevise => 'العملة';
+
+  @override
+  String get parametresSeuil => 'حد المخزون العام';
+
+  @override
+  String get parametresFidelite => 'برنامج الولاء';
+
+  @override
+  String get parametresPoints => 'نقاط لكل دينار';
+
+  @override
+  String get parametresGardeStock => 'حماية المخزون: مفعّلة دائمًا (لا بيع بدون مخزون).';
+
+  @override
+  String get parametresImprimanteType => 'نوع الطابعة';
+
+  @override
+  String get parametresImprimanteAdresse => 'طابور Windows أو عنوان IP:port';
+
+  @override
+  String get parametresImprimanteLargeur => 'عرض التذكرة';
+
+  @override
+  String get parametresImprimanteNormale => 'عادية (نافذة الطباعة)';
+
+  @override
+  String get parametresImprimanteUsb => 'USB (طابور Windows)';
+
+  @override
+  String get parametresImprimanteReseau => 'شبكة (IP:port)';
+
+  @override
+  String get parametresImprimanteBluetooth => 'بلوتوث';
+
+  @override
+  String get parametresServeurUrl => 'عنوان خادم CaisseDZ';
+
+  @override
+  String get parametresServeurCle => 'مفتاح API';
+
+  @override
+  String get parametresMantoujUrl => 'عنوان كتالوج Mantouj';
+
+  @override
+  String get parametresErreurNom => 'اسم المتجر إلزامي.';
+
+  @override
+  String get parametresErreurValeur => 'قيمة غير صالحة.';
+
+  @override
+  String get parametresErreurImprimanteType => 'نوع طابعة غير صالح.';
+
+  @override
+  String get parametresErreurImprimanteAdresse => 'حدد طابور الطباعة أو عنوان الطابعة.';
+
+  @override
+  String get sauvegardeIntro => 'النسخة الاحتياطية مشفّرة بكلمة المرور المختارة: احتفظ بها، ستُطلب عند الاستعادة.';
+
+  @override
+  String get sauvegardeCreer => 'إنشاء نسخة احتياطية';
+
+  @override
+  String get sauvegardeRestaurer => 'استعادة نسخة احتياطية';
+
+  @override
+  String get sauvegardeMotDePasse => 'كلمة مرور النسخة';
+
+  @override
+  String get sauvegardeFichier => 'ملف النسخة الاحتياطية';
+
+  @override
+  String get sauvegardeChoisirFichier => 'اختيار الملف…';
+
+  @override
+  String sauvegardeOk(String chemin) {
+    return 'تم حفظ النسخة: $chemin';
+  }
+
+  @override
+  String sauvegardeInfo(String boutique, int ventes, int produits, int version) {
+    return 'المتجر « $boutique »، $ventes مبيعات، $produits منتجات، المخطط v$version.';
+  }
+
+  @override
+  String get sauvegardeConfirmerRestauration => 'استعادة هذه النسخة؟ سيتم استبدال البيانات الحالية عند التشغيل القادم.';
+
+  @override
+  String get sauvegardeRestaurationPreparee => 'الاستعادة جاهزة: أغلق CaisseDZ ثم أعد تشغيله لتطبيقها.';
+
+  @override
+  String get sauvegardeRestaurationEnAttente => 'استعادة قيد الانتظار: ستُطبّق عند التشغيل القادم.';
+
+  @override
+  String get sauvegardeAnnulerRestauration => 'إلغاء الاستعادة';
+
+  @override
+  String get sauvegardeErreurMotDePasse => 'كلمة مرور غير صالحة أو ملف تالف.';
+
+  @override
+  String get sauvegardeErreurMotDePasseVide => 'أدخل كلمة مرور.';
+
+  @override
+  String get sauvegardeErreurFichier => 'الملف غير موجود.';
+
+  @override
+  String sauvegardeErreurChemin(String detail) {
+    return 'موقع غير صالح: $detail';
+  }
 }

@@ -1096,5 +1096,164 @@
       }
     }
   },
-  "exportFiscalPermission": "Permission “export data” required."
+  "exportFiscalPermission": "Permission “export data” required.",
+  "tableauBordTitre": "Dashboard",
+  "tableauBordCaJour": "Today's revenue",
+  "tableauBordTicketsJour": "Today's receipts",
+  "tableauBordPanierMoyen": "Average basket",
+  "tableauBordCaMois": "Month revenue",
+  "tableauBordSousSeuil": "Products below threshold",
+  "tableauBordCreances": "Customer receivables",
+  "tableauBordCa30Jours": "Revenue over the last 30 days",
+  "tableauBordPaiements": "Receipts by method (30 days)",
+  "tableauBordTopProduits": "Top 5 products (30 days)",
+  "tableauBordCategories": "Sales by category (30 days)",
+  "tableauBordCaMensuel": "Monthly revenue (12 months)",
+  "tableauBordActualiser": "Refresh",
+  "situationTitre": "Reports",
+  "situationRapport": "Report",
+  "situationDu": "From (dd/mm/yyyy)",
+  "situationAu": "To (dd/mm/yyyy)",
+  "situationAfficher": "Show",
+  "situationExportExcel": "Export to Excel",
+  "situationApercuPdf": "PDF preview",
+  "situationAucuneLigne": "No data for the period.",
+  "situationDatesInvalides": "Invalid dates.",
+  "situationExportOk": "File saved: {chemin}",
+  "@situationExportOk": {
+    "placeholders": {
+      "chemin": {
+        "type": "String"
+      }
+    }
+  },
+  "situationPeriode": "Period from {debut} to {fin}",
+  "@situationPeriode": {
+    "placeholders": {
+      "debut": {
+        "type": "String"
+      },
+      "fin": {
+        "type": "String"
+      }
+    }
+  },
+  "rapportVentesJour": "Sales by day",
+  "rapportVentesProduit": "Sales by product",
+  "rapportVentesCategorie": "Sales by category",
+  "rapportVentesClient": "Sales by customer",
+  "rapportVentesVendeur": "Sales by seller and register",
+  "rapportEncaissementsMode": "Receipts by method",
+  "rapportAchatsFournisseur": "Purchases by supplier",
+  "rapportRetours": "Customer returns",
+  "rapportEtatStock": "Valued stock status",
+  "rapportCreancesDettes": "Receivables and payables",
+  "zakatTitre": "Zakat",
+  "zakatIntro": "Zakat on trade goods: 2.5% of the base when it reaches the nisab (85 g of gold).",
+  "zakatPrixOr": "Gold price per gram ({devise})",
+  "@zakatPrixOr": {
+    "placeholders": {
+      "devise": {
+        "type": "String"
+      }
+    }
+  },
+  "zakatEnregistrerPrix": "Save price",
+  "zakatStock": "Stock (purchase price)",
+  "zakatCaisses": "Registers",
+  "zakatCreances": "Customer receivables",
+  "zakatDettes": "Supplier payables",
+  "zakatAssiette": "Base",
+  "zakatNissab": "Nisab (85 g)",
+  "zakatMontant": "Zakat due (2.5%)",
+  "zakatAssujetti": "Due: the base reaches the nisab.",
+  "zakatNonAssujetti": "Not due: the base is below the nisab.",
+  "zakatPrixManquant": "Enter the gold price to compute the nisab.",
+  "historiqueTitre": "History",
+  "historiqueColUtilisateur": "User",
+  "historiqueColAction": "Action",
+  "historiqueColEntite": "Entity",
+  "historiqueColDetail": "Details",
+  "historiqueToutesEntites": "All entities",
+  "historiqueAucun": "No operation.",
+  "parametresTitre": "Settings",
+  "parametresOngletGeneral": "General",
+  "parametresOngletBoutique": "Shop",
+  "parametresOngletVente": "Sales",
+  "parametresOngletImpression": "Printing",
+  "parametresOngletServeur": "Servers",
+  "parametresOngletSauvegarde": "Backup",
+  "parametresEnregistre": "Settings saved.",
+  "parametresBoutiqueNom": "Shop name",
+  "parametresBoutiqueRc": "Trade register (RC)",
+  "parametresBoutiqueNif": "Tax ID (NIF)",
+  "parametresBoutiqueAdresse": "Address",
+  "parametresBoutiqueTelephone": "Phone",
+  "parametresBoutiqueEmail": "E-mail",
+  "parametresMarge": "Default margin (%)",
+  "parametresDevise": "Currency",
+  "parametresSeuil": "Global stock threshold",
+  "parametresFidelite": "Loyalty program",
+  "parametresPoints": "Points per dinar",
+  "parametresGardeStock": "Stock guard: always on (no sale without stock).",
+  "parametresImprimanteType": "Printer type",
+  "parametresImprimanteAdresse": "Windows queue or IP:port address",
+  "parametresImprimanteLargeur": "Receipt width",
+  "parametresImprimanteNormale": "Standard (print dialog)",
+  "parametresImprimanteUsb": "USB (Windows spooler)",
+  "parametresImprimanteReseau": "Network (IP:port)",
+  "parametresImprimanteBluetooth": "Bluetooth",
+  "parametresServeurUrl": "CaisseDZ server URL",
+  "parametresServeurCle": "API key",
+  "parametresMantoujUrl": "Mantouj catalog URL",
+  "parametresErreurNom": "Shop name is required.",
+  "parametresErreurValeur": "Invalid value.",
+  "parametresErreurImprimanteType": "Invalid printer type.",
+  "parametresErreurImprimanteAdresse": "Enter the printer queue or address.",
+  "sauvegardeIntro": "The backup is encrypted with the chosen password: keep it, it is required to restore.",
+  "sauvegardeCreer": "Create a backup",
+  "sauvegardeRestaurer": "Restore a backup",
+  "sauvegardeMotDePasse": "Backup password",
+  "sauvegardeFichier": "Backup file",
+  "sauvegardeChoisirFichier": "Choose file…",
+  "sauvegardeOk": "Backup saved: {chemin}",
+  "@sauvegardeOk": {
+    "placeholders": {
+      "chemin": {
+        "type": "String"
+      }
+    }
+  },
+  "sauvegardeInfo": "Shop “{boutique}”, {ventes} sales, {produits} products, schema v{version}.",
+  "@sauvegardeInfo": {
+    "placeholders": {
+      "boutique": {
+        "type": "String"
+      },
+      "ventes": {
+        "type": "int"
+      },
+      "produits": {
+        "type": "int"
+      },
+      "version": {
+        "type": "int"
+      }
+    }
+  },
+  "sauvegardeConfirmerRestauration": "Restore this backup? Current data will be replaced at next start.",
+  "sauvegardeRestaurationPreparee": "Restore ready: close and relaunch CaisseDZ to apply it.",
+  "sauvegardeRestaurationEnAttente": "A restore is pending: it will be applied at next start.",
+  "sauvegardeAnnulerRestauration": "Cancel restore",
+  "sauvegardeErreurMotDePasse": "Invalid password or corrupted file.",
+  "sauvegardeErreurMotDePasseVide": "Enter a password.",
+  "sauvegardeErreurFichier": "File not found.",
+  "sauvegardeErreurChemin": "Invalid location: {detail}",
+  "@sauvegardeErreurChemin": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  }
 }

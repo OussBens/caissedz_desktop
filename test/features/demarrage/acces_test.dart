@@ -34,7 +34,7 @@ void main() {
 
     testWidgets('admin Avancé : Zakat accessible et grille des rôles modifiable', (tester) async {
       await pumpApp(tester, etat: EtatApp.connecteeAdmin, routeInitiale: '/zakat');
-      expect(find.textContaining('Module « Zakat »'), findsOneWidget);
+      expect(find.textContaining('Zakat sur les biens commerciaux'), findsOneWidget);
       expect(find.text('Fonction disponible avec la licence Avancé'), findsNothing);
     });
   });

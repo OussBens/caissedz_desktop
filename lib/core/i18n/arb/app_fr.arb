@@ -1096,5 +1096,164 @@
       }
     }
   },
-  "exportFiscalPermission": "Permission « exporter les données » requise."
+  "exportFiscalPermission": "Permission « exporter les données » requise.",
+  "tableauBordTitre": "Tableau de bord",
+  "tableauBordCaJour": "CA du jour",
+  "tableauBordTicketsJour": "Tickets du jour",
+  "tableauBordPanierMoyen": "Panier moyen",
+  "tableauBordCaMois": "CA du mois",
+  "tableauBordSousSeuil": "Produits sous seuil",
+  "tableauBordCreances": "Créances clients",
+  "tableauBordCa30Jours": "Chiffre d'affaires des 30 derniers jours",
+  "tableauBordPaiements": "Encaissements par mode (30 jours)",
+  "tableauBordTopProduits": "Top 5 produits (30 jours)",
+  "tableauBordCategories": "Ventes par catégorie (30 jours)",
+  "tableauBordCaMensuel": "Chiffre d'affaires mensuel (12 mois)",
+  "tableauBordActualiser": "Actualiser",
+  "situationTitre": "Situation",
+  "situationRapport": "Rapport",
+  "situationDu": "Du (jj/mm/aaaa)",
+  "situationAu": "Au (jj/mm/aaaa)",
+  "situationAfficher": "Afficher",
+  "situationExportExcel": "Exporter Excel",
+  "situationApercuPdf": "Aperçu PDF",
+  "situationAucuneLigne": "Aucune donnée sur la période.",
+  "situationDatesInvalides": "Dates invalides.",
+  "situationExportOk": "Fichier enregistré : {chemin}",
+  "@situationExportOk": {
+    "placeholders": {
+      "chemin": {
+        "type": "String"
+      }
+    }
+  },
+  "situationPeriode": "Période du {debut} au {fin}",
+  "@situationPeriode": {
+    "placeholders": {
+      "debut": {
+        "type": "String"
+      },
+      "fin": {
+        "type": "String"
+      }
+    }
+  },
+  "rapportVentesJour": "Ventes par jour",
+  "rapportVentesProduit": "Ventes par produit",
+  "rapportVentesCategorie": "Ventes par catégorie",
+  "rapportVentesClient": "Ventes par client",
+  "rapportVentesVendeur": "Ventes par vendeur et caisse",
+  "rapportEncaissementsMode": "Encaissements par mode",
+  "rapportAchatsFournisseur": "Achats par fournisseur",
+  "rapportRetours": "Retours clients",
+  "rapportEtatStock": "État du stock valorisé",
+  "rapportCreancesDettes": "Créances et dettes",
+  "zakatTitre": "Zakat",
+  "zakatIntro": "Zakat sur les biens commerciaux : 2,5 % de l'assiette si elle atteint le nissab (85 g d'or).",
+  "zakatPrixOr": "Prix du gramme d'or ({devise})",
+  "@zakatPrixOr": {
+    "placeholders": {
+      "devise": {
+        "type": "String"
+      }
+    }
+  },
+  "zakatEnregistrerPrix": "Enregistrer le cours",
+  "zakatStock": "Stock (prix d'achat)",
+  "zakatCaisses": "Caisses",
+  "zakatCreances": "Créances clients",
+  "zakatDettes": "Dettes fournisseurs",
+  "zakatAssiette": "Assiette",
+  "zakatNissab": "Nissab (85 g)",
+  "zakatMontant": "Zakat due (2,5 %)",
+  "zakatAssujetti": "Assujetti : l'assiette atteint le nissab.",
+  "zakatNonAssujetti": "Non assujetti : l'assiette est inférieure au nissab.",
+  "zakatPrixManquant": "Renseignez le cours de l'or pour calculer le nissab.",
+  "historiqueTitre": "Historique",
+  "historiqueColUtilisateur": "Utilisateur",
+  "historiqueColAction": "Action",
+  "historiqueColEntite": "Entité",
+  "historiqueColDetail": "Détail",
+  "historiqueToutesEntites": "Toutes les entités",
+  "historiqueAucun": "Aucune opération.",
+  "parametresTitre": "Paramètres",
+  "parametresOngletGeneral": "Général",
+  "parametresOngletBoutique": "Boutique",
+  "parametresOngletVente": "Vente",
+  "parametresOngletImpression": "Impression",
+  "parametresOngletServeur": "Serveurs",
+  "parametresOngletSauvegarde": "Sauvegarde",
+  "parametresEnregistre": "Paramètres enregistrés.",
+  "parametresBoutiqueNom": "Nom de la boutique",
+  "parametresBoutiqueRc": "Registre de commerce (RC)",
+  "parametresBoutiqueNif": "NIF",
+  "parametresBoutiqueAdresse": "Adresse",
+  "parametresBoutiqueTelephone": "Téléphone",
+  "parametresBoutiqueEmail": "E-mail",
+  "parametresMarge": "Marge par défaut (%)",
+  "parametresDevise": "Devise",
+  "parametresSeuil": "Seuil de stock global",
+  "parametresFidelite": "Programme de fidélité",
+  "parametresPoints": "Points par dinar",
+  "parametresGardeStock": "Garde de stock : toujours active (aucune vente sans stock).",
+  "parametresImprimanteType": "Type d'imprimante",
+  "parametresImprimanteAdresse": "File d'attente Windows ou adresse IP:port",
+  "parametresImprimanteLargeur": "Largeur du ticket",
+  "parametresImprimanteNormale": "Normale (dialogue d'impression)",
+  "parametresImprimanteUsb": "USB (spouleur Windows)",
+  "parametresImprimanteReseau": "Réseau (IP:port)",
+  "parametresImprimanteBluetooth": "Bluetooth",
+  "parametresServeurUrl": "URL du serveur CaisseDZ",
+  "parametresServeurCle": "Clé API",
+  "parametresMantoujUrl": "URL du catalogue Mantouj",
+  "parametresErreurNom": "Le nom de la boutique est obligatoire.",
+  "parametresErreurValeur": "Valeur invalide.",
+  "parametresErreurImprimanteType": "Type d'imprimante invalide.",
+  "parametresErreurImprimanteAdresse": "Indiquez la file d'attente ou l'adresse de l'imprimante.",
+  "sauvegardeIntro": "La sauvegarde est chiffrée avec le mot de passe choisi : conservez-le, il sera demandé à la restauration.",
+  "sauvegardeCreer": "Créer une sauvegarde",
+  "sauvegardeRestaurer": "Restaurer une sauvegarde",
+  "sauvegardeMotDePasse": "Mot de passe de la sauvegarde",
+  "sauvegardeFichier": "Fichier de sauvegarde",
+  "sauvegardeChoisirFichier": "Choisir le fichier…",
+  "sauvegardeOk": "Sauvegarde enregistrée : {chemin}",
+  "@sauvegardeOk": {
+    "placeholders": {
+      "chemin": {
+        "type": "String"
+      }
+    }
+  },
+  "sauvegardeInfo": "Boutique « {boutique} », {ventes} ventes, {produits} produits, schéma v{version}.",
+  "@sauvegardeInfo": {
+    "placeholders": {
+      "boutique": {
+        "type": "String"
+      },
+      "ventes": {
+        "type": "int"
+      },
+      "produits": {
+        "type": "int"
+      },
+      "version": {
+        "type": "int"
+      }
+    }
+  },
+  "sauvegardeConfirmerRestauration": "Restaurer cette sauvegarde ? Les données actuelles seront remplacées au prochain démarrage.",
+  "sauvegardeRestaurationPreparee": "Restauration prête : fermez puis relancez CaisseDZ pour l'appliquer.",
+  "sauvegardeRestaurationEnAttente": "Une restauration est en attente : elle sera appliquée au prochain démarrage.",
+  "sauvegardeAnnulerRestauration": "Annuler la restauration",
+  "sauvegardeErreurMotDePasse": "Mot de passe invalide ou fichier corrompu.",
+  "sauvegardeErreurMotDePasseVide": "Saisissez un mot de passe.",
+  "sauvegardeErreurFichier": "Fichier introuvable.",
+  "sauvegardeErreurChemin": "Emplacement invalide : {detail}",
+  "@sauvegardeErreurChemin": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  }
 }

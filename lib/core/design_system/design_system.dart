@@ -3,6 +3,7 @@ library;
 
 export 'tokens/ds_theme.dart';
 export 'widgets/ds_button.dart';
+export 'widgets/ds_charts.dart';
 export 'widgets/ds_data_table.dart';
 export 'widgets/ds_dialog.dart';
 export 'widgets/ds_page.dart';

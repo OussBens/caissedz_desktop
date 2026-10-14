@@ -2225,4 +2225,331 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get exportFiscalPermission => 'Permission “export data” required.';
+
+  @override
+  String get tableauBordTitre => 'Dashboard';
+
+  @override
+  String get tableauBordCaJour => 'Today\'s revenue';
+
+  @override
+  String get tableauBordTicketsJour => 'Today\'s receipts';
+
+  @override
+  String get tableauBordPanierMoyen => 'Average basket';
+
+  @override
+  String get tableauBordCaMois => 'Month revenue';
+
+  @override
+  String get tableauBordSousSeuil => 'Products below threshold';
+
+  @override
+  String get tableauBordCreances => 'Customer receivables';
+
+  @override
+  String get tableauBordCa30Jours => 'Revenue over the last 30 days';
+
+  @override
+  String get tableauBordPaiements => 'Receipts by method (30 days)';
+
+  @override
+  String get tableauBordTopProduits => 'Top 5 products (30 days)';
+
+  @override
+  String get tableauBordCategories => 'Sales by category (30 days)';
+
+  @override
+  String get tableauBordCaMensuel => 'Monthly revenue (12 months)';
+
+  @override
+  String get tableauBordActualiser => 'Refresh';
+
+  @override
+  String get situationTitre => 'Reports';
+
+  @override
+  String get situationRapport => 'Report';
+
+  @override
+  String get situationDu => 'From (dd/mm/yyyy)';
+
+  @override
+  String get situationAu => 'To (dd/mm/yyyy)';
+
+  @override
+  String get situationAfficher => 'Show';
+
+  @override
+  String get situationExportExcel => 'Export to Excel';
+
+  @override
+  String get situationApercuPdf => 'PDF preview';
+
+  @override
+  String get situationAucuneLigne => 'No data for the period.';
+
+  @override
+  String get situationDatesInvalides => 'Invalid dates.';
+
+  @override
+  String situationExportOk(String chemin) {
+    return 'File saved: $chemin';
+  }
+
+  @override
+  String situationPeriode(String debut, String fin) {
+    return 'Period from $debut to $fin';
+  }
+
+  @override
+  String get rapportVentesJour => 'Sales by day';
+
+  @override
+  String get rapportVentesProduit => 'Sales by product';
+
+  @override
+  String get rapportVentesCategorie => 'Sales by category';
+
+  @override
+  String get rapportVentesClient => 'Sales by customer';
+
+  @override
+  String get rapportVentesVendeur => 'Sales by seller and register';
+
+  @override
+  String get rapportEncaissementsMode => 'Receipts by method';
+
+  @override
+  String get rapportAchatsFournisseur => 'Purchases by supplier';
+
+  @override
+  String get rapportRetours => 'Customer returns';
+
+  @override
+  String get rapportEtatStock => 'Valued stock status';
+
+  @override
+  String get rapportCreancesDettes => 'Receivables and payables';
+
+  @override
+  String get zakatTitre => 'Zakat';
+
+  @override
+  String get zakatIntro => 'Zakat on trade goods: 2.5% of the base when it reaches the nisab (85 g of gold).';
+
+  @override
+  String zakatPrixOr(String devise) {
+    return 'Gold price per gram ($devise)';
+  }
+
+  @override
+  String get zakatEnregistrerPrix => 'Save price';
+
+  @override
+  String get zakatStock => 'Stock (purchase price)';
+
+  @override
+  String get zakatCaisses => 'Registers';
+
+  @override
+  String get zakatCreances => 'Customer receivables';
+
+  @override
+  String get zakatDettes => 'Supplier payables';
+
+  @override
+  String get zakatAssiette => 'Base';
+
+  @override
+  String get zakatNissab => 'Nisab (85 g)';
+
+  @override
+  String get zakatMontant => 'Zakat due (2.5%)';
+
+  @override
+  String get zakatAssujetti => 'Due: the base reaches the nisab.';
+
+  @override
+  String get zakatNonAssujetti => 'Not due: the base is below the nisab.';
+
+  @override
+  String get zakatPrixManquant => 'Enter the gold price to compute the nisab.';
+
+  @override
+  String get historiqueTitre => 'History';
+
+  @override
+  String get historiqueColUtilisateur => 'User';
+
+  @override
+  String get historiqueColAction => 'Action';
+
+  @override
+  String get historiqueColEntite => 'Entity';
+
+  @override
+  String get historiqueColDetail => 'Details';
+
+  @override
+  String get historiqueToutesEntites => 'All entities';
+
+  @override
+  String get historiqueAucun => 'No operation.';
+
+  @override
+  String get parametresTitre => 'Settings';
+
+  @override
+  String get parametresOngletGeneral => 'General';
+
+  @override
+  String get parametresOngletBoutique => 'Shop';
+
+  @override
+  String get parametresOngletVente => 'Sales';
+
+  @override
+  String get parametresOngletImpression => 'Printing';
+
+  @override
+  String get parametresOngletServeur => 'Servers';
+
+  @override
+  String get parametresOngletSauvegarde => 'Backup';
+
+  @override
+  String get parametresEnregistre => 'Settings saved.';
+
+  @override
+  String get parametresBoutiqueNom => 'Shop name';
+
+  @override
+  String get parametresBoutiqueRc => 'Trade register (RC)';
+
+  @override
+  String get parametresBoutiqueNif => 'Tax ID (NIF)';
+
+  @override
+  String get parametresBoutiqueAdresse => 'Address';
+
+  @override
+  String get parametresBoutiqueTelephone => 'Phone';
+
+  @override
+  String get parametresBoutiqueEmail => 'E-mail';
+
+  @override
+  String get parametresMarge => 'Default margin (%)';
+
+  @override
+  String get parametresDevise => 'Currency';
+
+  @override
+  String get parametresSeuil => 'Global stock threshold';
+
+  @override
+  String get parametresFidelite => 'Loyalty program';
+
+  @override
+  String get parametresPoints => 'Points per dinar';
+
+  @override
+  String get parametresGardeStock => 'Stock guard: always on (no sale without stock).';
+
+  @override
+  String get parametresImprimanteType => 'Printer type';
+
+  @override
+  String get parametresImprimanteAdresse => 'Windows queue or IP:port address';
+
+  @override
+  String get parametresImprimanteLargeur => 'Receipt width';
+
+  @override
+  String get parametresImprimanteNormale => 'Standard (print dialog)';
+
+  @override
+  String get parametresImprimanteUsb => 'USB (Windows spooler)';
+
+  @override
+  String get parametresImprimanteReseau => 'Network (IP:port)';
+
+  @override
+  String get parametresImprimanteBluetooth => 'Bluetooth';
+
+  @override
+  String get parametresServeurUrl => 'CaisseDZ server URL';
+
+  @override
+  String get parametresServeurCle => 'API key';
+
+  @override
+  String get parametresMantoujUrl => 'Mantouj catalog URL';
+
+  @override
+  String get parametresErreurNom => 'Shop name is required.';
+
+  @override
+  String get parametresErreurValeur => 'Invalid value.';
+
+  @override
+  String get parametresErreurImprimanteType => 'Invalid printer type.';
+
+  @override
+  String get parametresErreurImprimanteAdresse => 'Enter the printer queue or address.';
+
+  @override
+  String get sauvegardeIntro => 'The backup is encrypted with the chosen password: keep it, it is required to restore.';
+
+  @override
+  String get sauvegardeCreer => 'Create a backup';
+
+  @override
+  String get sauvegardeRestaurer => 'Restore a backup';
+
+  @override
+  String get sauvegardeMotDePasse => 'Backup password';
+
+  @override
+  String get sauvegardeFichier => 'Backup file';
+
+  @override
+  String get sauvegardeChoisirFichier => 'Choose file…';
+
+  @override
+  String sauvegardeOk(String chemin) {
+    return 'Backup saved: $chemin';
+  }
+
+  @override
+  String sauvegardeInfo(String boutique, int ventes, int produits, int version) {
+    return 'Shop “$boutique”, $ventes sales, $produits products, schema v$version.';
+  }
+
+  @override
+  String get sauvegardeConfirmerRestauration => 'Restore this backup? Current data will be replaced at next start.';
+
+  @override
+  String get sauvegardeRestaurationPreparee => 'Restore ready: close and relaunch CaisseDZ to apply it.';
+
+  @override
+  String get sauvegardeRestaurationEnAttente => 'A restore is pending: it will be applied at next start.';
+
+  @override
+  String get sauvegardeAnnulerRestauration => 'Cancel restore';
+
+  @override
+  String get sauvegardeErreurMotDePasse => 'Invalid password or corrupted file.';
+
+  @override
+  String get sauvegardeErreurMotDePasseVide => 'Enter a password.';
+
+  @override
+  String get sauvegardeErreurFichier => 'File not found.';
+
+  @override
+  String sauvegardeErreurChemin(String detail) {
+    return 'Invalid location: $detail';
+  }
 }

@@ -268,13 +268,45 @@ paiements carte / chèque / virement sont journalisés sur la caisse de la sessi
 défaut d'un versement = caisse de la session ouverte de l'utilisateur, sinon `CIS0000` ; format de l'export
 fiscal déduit de la commande.
 
-## Lot 8 — Tableau de bord, Situation, Zakat, Historique, Paramètres, sauvegarde, exports ⬜
+## Lot 8 — Tableau de bord, Situation, Zakat, Historique, Paramètres, sauvegarde, exports ✅ (sous hypothèses ⚠️)
 Écrans : tableau de bord (6 KPI, 5 graphiques), Situation (10 rapports), Zakat (nissab, taux), Historique,
 Paramètres complets (marge, fidélité, seuils globaux, garde de stock toujours active, boutique RC/e-mail,
 imprimante bluetooth/USB/réseau/normale), sauvegarde/restauration, exports Excel/PDF avec aperçu.
 Règles : §8 (zakat, seuils), §11, §12.
 Tests : KPI, rapports, calcul zakat, sauvegarde/restauration (base chiffrée), exports.
 Checklist §15 : rapports / paramètres / sauvegarde.
+
+**Livré**
+- `StatistiquesRepository` (lecture seule, SQL d'agrégation) : 6 KPI (CA du jour, tickets, panier moyen, CA du
+  mois, produits sous seuil, créances clients), 5 séries (CA 30 jours, encaissements par mode, top 5 produits,
+  ventes par catégorie, CA mensuel 12 mois), valeur du stock au prix d'achat, soldes des caisses, créances /
+  dettes (restes ouverts − avances non imputées), et les 10 rapports de Situation (ventes par jour / produit /
+  catégorie / client / vendeur et caisse, encaissements par mode, achats par fournisseur, retours, état du stock
+  valorisé, créances et dettes) sous forme de `Rapport` générique (colonnes typées, totaux).
+- `CalculZakat` (domaine pur) : assiette = stock + caisses + créances − dettes, nissab = 85 g × cours de l'or,
+  taux 2,5 %.
+- `ParametresService` : boutique (RC, NIF, e-mail…), vente (marge, devise, seuil global, fidélité, points), impression
+  (Normale / USB spouleur / Réseau IP:port / Bluetooth, largeur 58-80), serveurs (CaisseDZ, clé API, Mantouj),
+  cours de l'or ; validations, UNE transaction + historique par écriture.
+- `SauvegardeService` : sauvegarde SQLCipher (`sqlcipher_export`) chiffrée avec un mot de passe utilisateur
+  (restaurable sur une autre machine), vérification (boutique, nb ventes / produits, version du schéma),
+  restauration préparée dans `<base>.restaurer` re-chiffrée avec la clé machine et appliquée par
+  `AppDatabase.ouvrir` au démarrage suivant (jamais de remplacement à chaud) ; annulation possible.
+- `ExportExcel` (xlsx) et `RapportPdf` (A4 paysage, police Cairo en arabe) pour tout `Rapport` ; aperçu PDF via
+  `PdfPreview` (printing) dans l'écran Situation.
+- DS : `DsGraphiqueLignes`, `DsGraphiqueBarres`, `DsGraphiqueSecteurs`, `DsCarteGraphique` (fl_chart habillé aux
+  tokens, palette sémantique).
+- Écrans : Tableau de bord (6 cartes KPI + 5 graphiques responsives), Situation (choix du rapport, période,
+  tableau DsDataTable avec totaux, export Excel et aperçu PDF soumis à `exporterDonnees`), Zakat (cours de l'or
+  enregistré, composantes, assiette, nissab, montant, assujettissement), Historique (journal d'audit filtrable par
+  entité et recherche), Paramètres (onglets Général [rôles, licence], Boutique, Vente, Impression, Serveurs,
+  Sauvegarde [création, restauration avec confirmation, restauration en attente]).
+- Tests : 5 unitaires (KPI et séries, 10 rapports + Excel + PDF, zakat, paramètres, sauvegarde / restauration au
+  redémarrage) + 5 widget (tableau de bord, Situation + export Excel, Zakat, Historique, Paramètres + sauvegarde).
+
+**Hypothèses (⚠️)** : liste des 6 KPI, des 5 graphiques et des 10 rapports déduite de la commande ; coût des ventes
+estimé au prix d'achat actuel (pas de coût historisé par ligne) ; zakat = 85 g d'or, 2,5 % ; format de sauvegarde
+`.cdz` = base SQLCipher chiffrée par mot de passe ; la garde de stock n'est pas paramétrable.
 
 ## Lot 9 — Recette ⬜
 Parcours FR/AR/EN, clair/sombre, Basic/Avancé, rôles Admin/Caissier/Magasinier ; `docs/CONFORMITE.md`

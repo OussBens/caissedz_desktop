@@ -2231,4 +2231,335 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get exportFiscalPermission => 'Permission « exporter les données » requise.';
+
+  @override
+  String get tableauBordTitre => 'Tableau de bord';
+
+  @override
+  String get tableauBordCaJour => 'CA du jour';
+
+  @override
+  String get tableauBordTicketsJour => 'Tickets du jour';
+
+  @override
+  String get tableauBordPanierMoyen => 'Panier moyen';
+
+  @override
+  String get tableauBordCaMois => 'CA du mois';
+
+  @override
+  String get tableauBordSousSeuil => 'Produits sous seuil';
+
+  @override
+  String get tableauBordCreances => 'Créances clients';
+
+  @override
+  String get tableauBordCa30Jours => 'Chiffre d\'affaires des 30 derniers jours';
+
+  @override
+  String get tableauBordPaiements => 'Encaissements par mode (30 jours)';
+
+  @override
+  String get tableauBordTopProduits => 'Top 5 produits (30 jours)';
+
+  @override
+  String get tableauBordCategories => 'Ventes par catégorie (30 jours)';
+
+  @override
+  String get tableauBordCaMensuel => 'Chiffre d\'affaires mensuel (12 mois)';
+
+  @override
+  String get tableauBordActualiser => 'Actualiser';
+
+  @override
+  String get situationTitre => 'Situation';
+
+  @override
+  String get situationRapport => 'Rapport';
+
+  @override
+  String get situationDu => 'Du (jj/mm/aaaa)';
+
+  @override
+  String get situationAu => 'Au (jj/mm/aaaa)';
+
+  @override
+  String get situationAfficher => 'Afficher';
+
+  @override
+  String get situationExportExcel => 'Exporter Excel';
+
+  @override
+  String get situationApercuPdf => 'Aperçu PDF';
+
+  @override
+  String get situationAucuneLigne => 'Aucune donnée sur la période.';
+
+  @override
+  String get situationDatesInvalides => 'Dates invalides.';
+
+  @override
+  String situationExportOk(String chemin) {
+    return 'Fichier enregistré : $chemin';
+  }
+
+  @override
+  String situationPeriode(String debut, String fin) {
+    return 'Période du $debut au $fin';
+  }
+
+  @override
+  String get rapportVentesJour => 'Ventes par jour';
+
+  @override
+  String get rapportVentesProduit => 'Ventes par produit';
+
+  @override
+  String get rapportVentesCategorie => 'Ventes par catégorie';
+
+  @override
+  String get rapportVentesClient => 'Ventes par client';
+
+  @override
+  String get rapportVentesVendeur => 'Ventes par vendeur et caisse';
+
+  @override
+  String get rapportEncaissementsMode => 'Encaissements par mode';
+
+  @override
+  String get rapportAchatsFournisseur => 'Achats par fournisseur';
+
+  @override
+  String get rapportRetours => 'Retours clients';
+
+  @override
+  String get rapportEtatStock => 'État du stock valorisé';
+
+  @override
+  String get rapportCreancesDettes => 'Créances et dettes';
+
+  @override
+  String get zakatTitre => 'Zakat';
+
+  @override
+  String get zakatIntro =>
+      'Zakat sur les biens commerciaux : 2,5 % de l\'assiette si elle atteint le nissab (85 g d\'or).';
+
+  @override
+  String zakatPrixOr(String devise) {
+    return 'Prix du gramme d\'or ($devise)';
+  }
+
+  @override
+  String get zakatEnregistrerPrix => 'Enregistrer le cours';
+
+  @override
+  String get zakatStock => 'Stock (prix d\'achat)';
+
+  @override
+  String get zakatCaisses => 'Caisses';
+
+  @override
+  String get zakatCreances => 'Créances clients';
+
+  @override
+  String get zakatDettes => 'Dettes fournisseurs';
+
+  @override
+  String get zakatAssiette => 'Assiette';
+
+  @override
+  String get zakatNissab => 'Nissab (85 g)';
+
+  @override
+  String get zakatMontant => 'Zakat due (2,5 %)';
+
+  @override
+  String get zakatAssujetti => 'Assujetti : l\'assiette atteint le nissab.';
+
+  @override
+  String get zakatNonAssujetti => 'Non assujetti : l\'assiette est inférieure au nissab.';
+
+  @override
+  String get zakatPrixManquant => 'Renseignez le cours de l\'or pour calculer le nissab.';
+
+  @override
+  String get historiqueTitre => 'Historique';
+
+  @override
+  String get historiqueColUtilisateur => 'Utilisateur';
+
+  @override
+  String get historiqueColAction => 'Action';
+
+  @override
+  String get historiqueColEntite => 'Entité';
+
+  @override
+  String get historiqueColDetail => 'Détail';
+
+  @override
+  String get historiqueToutesEntites => 'Toutes les entités';
+
+  @override
+  String get historiqueAucun => 'Aucune opération.';
+
+  @override
+  String get parametresTitre => 'Paramètres';
+
+  @override
+  String get parametresOngletGeneral => 'Général';
+
+  @override
+  String get parametresOngletBoutique => 'Boutique';
+
+  @override
+  String get parametresOngletVente => 'Vente';
+
+  @override
+  String get parametresOngletImpression => 'Impression';
+
+  @override
+  String get parametresOngletServeur => 'Serveurs';
+
+  @override
+  String get parametresOngletSauvegarde => 'Sauvegarde';
+
+  @override
+  String get parametresEnregistre => 'Paramètres enregistrés.';
+
+  @override
+  String get parametresBoutiqueNom => 'Nom de la boutique';
+
+  @override
+  String get parametresBoutiqueRc => 'Registre de commerce (RC)';
+
+  @override
+  String get parametresBoutiqueNif => 'NIF';
+
+  @override
+  String get parametresBoutiqueAdresse => 'Adresse';
+
+  @override
+  String get parametresBoutiqueTelephone => 'Téléphone';
+
+  @override
+  String get parametresBoutiqueEmail => 'E-mail';
+
+  @override
+  String get parametresMarge => 'Marge par défaut (%)';
+
+  @override
+  String get parametresDevise => 'Devise';
+
+  @override
+  String get parametresSeuil => 'Seuil de stock global';
+
+  @override
+  String get parametresFidelite => 'Programme de fidélité';
+
+  @override
+  String get parametresPoints => 'Points par dinar';
+
+  @override
+  String get parametresGardeStock => 'Garde de stock : toujours active (aucune vente sans stock).';
+
+  @override
+  String get parametresImprimanteType => 'Type d\'imprimante';
+
+  @override
+  String get parametresImprimanteAdresse => 'File d\'attente Windows ou adresse IP:port';
+
+  @override
+  String get parametresImprimanteLargeur => 'Largeur du ticket';
+
+  @override
+  String get parametresImprimanteNormale => 'Normale (dialogue d\'impression)';
+
+  @override
+  String get parametresImprimanteUsb => 'USB (spouleur Windows)';
+
+  @override
+  String get parametresImprimanteReseau => 'Réseau (IP:port)';
+
+  @override
+  String get parametresImprimanteBluetooth => 'Bluetooth';
+
+  @override
+  String get parametresServeurUrl => 'URL du serveur CaisseDZ';
+
+  @override
+  String get parametresServeurCle => 'Clé API';
+
+  @override
+  String get parametresMantoujUrl => 'URL du catalogue Mantouj';
+
+  @override
+  String get parametresErreurNom => 'Le nom de la boutique est obligatoire.';
+
+  @override
+  String get parametresErreurValeur => 'Valeur invalide.';
+
+  @override
+  String get parametresErreurImprimanteType => 'Type d\'imprimante invalide.';
+
+  @override
+  String get parametresErreurImprimanteAdresse => 'Indiquez la file d\'attente ou l\'adresse de l\'imprimante.';
+
+  @override
+  String get sauvegardeIntro =>
+      'La sauvegarde est chiffrée avec le mot de passe choisi : conservez-le, il sera demandé à la restauration.';
+
+  @override
+  String get sauvegardeCreer => 'Créer une sauvegarde';
+
+  @override
+  String get sauvegardeRestaurer => 'Restaurer une sauvegarde';
+
+  @override
+  String get sauvegardeMotDePasse => 'Mot de passe de la sauvegarde';
+
+  @override
+  String get sauvegardeFichier => 'Fichier de sauvegarde';
+
+  @override
+  String get sauvegardeChoisirFichier => 'Choisir le fichier…';
+
+  @override
+  String sauvegardeOk(String chemin) {
+    return 'Sauvegarde enregistrée : $chemin';
+  }
+
+  @override
+  String sauvegardeInfo(String boutique, int ventes, int produits, int version) {
+    return 'Boutique « $boutique », $ventes ventes, $produits produits, schéma v$version.';
+  }
+
+  @override
+  String get sauvegardeConfirmerRestauration =>
+      'Restaurer cette sauvegarde ? Les données actuelles seront remplacées au prochain démarrage.';
+
+  @override
+  String get sauvegardeRestaurationPreparee => 'Restauration prête : fermez puis relancez CaisseDZ pour l\'appliquer.';
+
+  @override
+  String get sauvegardeRestaurationEnAttente =>
+      'Une restauration est en attente : elle sera appliquée au prochain démarrage.';
+
+  @override
+  String get sauvegardeAnnulerRestauration => 'Annuler la restauration';
+
+  @override
+  String get sauvegardeErreurMotDePasse => 'Mot de passe invalide ou fichier corrompu.';
+
+  @override
+  String get sauvegardeErreurMotDePasseVide => 'Saisissez un mot de passe.';
+
+  @override
+  String get sauvegardeErreurFichier => 'Fichier introuvable.';
+
+  @override
+  String sauvegardeErreurChemin(String detail) {
+    return 'Emplacement invalide : $detail';
+  }
 }

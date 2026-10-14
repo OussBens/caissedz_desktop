@@ -18,10 +18,28 @@ class CleBaseInvalideException implements Exception {
 
 /// Ouverture de la base SQLite chiffrée (SQLCipher) et application des migrations.
 class AppDatabase {
-  AppDatabase._(this.db, this.chemin);
+  AppDatabase._(this.db, this.chemin, this.cleHex);
 
   final Database db;
   final String chemin;
+
+  /// Clé de chiffrement (hex) de la base ouverte ; sert à re-chiffrer une sauvegarde restaurée.
+  final String cleHex;
+
+  /// Chemin du fichier de restauration en attente pour une base [chemin].
+  static String cheminRestauration(String chemin) => '$chemin.restaurer';
+
+  /// Applique une restauration en attente (`<base>.restaurer` remplace la base avant ouverture).
+  static bool appliquerRestaurationEnAttente(String chemin) {
+    final attente = File(cheminRestauration(chemin));
+    if (!attente.existsSync()) return false;
+    for (final suffixe in ['', '-wal', '-shm', '-journal']) {
+      final f = File('$chemin$suffixe');
+      if (f.existsSync()) f.deleteSync();
+    }
+    attente.renameSync(chemin);
+    return true;
+  }
 
   static const String nomFichier = 'caissedz.db';
 
@@ -51,6 +69,7 @@ class AppDatabase {
     if (!_ffiInitialise) initialiserMoteur();
     Directory(dossier).createSync(recursive: true);
     final chemin = p.join(dossier, nom);
+    appliquerRestaurationEnAttente(chemin);
     final Database db;
     try {
       db = await databaseFactory.openDatabase(
@@ -74,7 +93,7 @@ class AppDatabase {
       rethrow;
     }
     await MigrationRunner(migrations).executer(db);
-    return AppDatabase._(db, chemin);
+    return AppDatabase._(db, chemin, cleHex);
   }
 
   /// Ouvre une base en mémoire (tests de widgets : aucune E/S fichier réelle,
@@ -95,7 +114,7 @@ class AppDatabase {
       ),
     );
     await MigrationRunner(migrations).executer(db);
-    return AppDatabase._(db, inMemoryDatabasePath);
+    return AppDatabase._(db, inMemoryDatabasePath, cleHex);
   }
 
   /// Ouvre la base de l'application avec la clé dérivée de la machine (§4.2).

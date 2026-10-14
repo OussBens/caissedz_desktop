@@ -12,21 +12,25 @@ import '../features/configuration/configuration_page.dart';
 import '../features/connexion/connexion_page.dart';
 import '../features/galerie/galerie_page.dart';
 import '../features/gestion_caisse/gestion_caisse_page.dart';
+import '../features/historique/historique_page.dart';
+import '../features/parametres/parametres_page.dart';
 import '../features/produits/produits_page.dart';
 import '../features/roles/roles_page.dart';
 import '../features/shell/app_shell.dart';
 import '../features/shell/module_placeholder_page.dart';
-import '../features/shell/parametres_accueil_page.dart';
+import '../features/situation/situation_page.dart';
 import '../features/stock/besoins_page.dart';
 import '../features/stock/magasins_page.dart';
 import '../features/stock/sorties_page.dart';
 import '../features/stock/stock_page.dart';
 import '../features/stock/transferts_page.dart';
+import '../features/tableau_bord/tableau_bord_page.dart';
 import '../features/tiers/clients_page.dart';
 import '../features/tiers/fournisseurs_page.dart';
 import '../features/tiers/versements_page.dart';
 import '../features/ventes/retour_dialog.dart';
 import '../features/ventes/ventes_page.dart';
+import '../features/zakat/zakat_page.dart';
 import 'demarrage_providers.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
@@ -107,7 +111,11 @@ GoRouter construireRouter(Ref ref, {String routeInitiale = routeAccueil}) {
 
 /// Page d'un module : écrans livrés par lot, sinon page provisoire.
 Widget pageModule(ModuleApp module) => switch (module.id) {
-  'parametres' => const ParametresAccueilPage(),
+  'parametres' => const ParametresPage(),
+  'tableau_bord' => const TableauBordPage(),
+  'situation' => const SituationPage(),
+  'zakat' => const ZakatPage(),
+  'historique' => const HistoriquePage(),
   'caisse' => const PosPage(),
   'entrees' => const AchatsPage(),
   'gestion_caisse' => const GestionCaissePage(),
