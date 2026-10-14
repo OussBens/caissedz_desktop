@@ -20,7 +20,7 @@ extension DsContext on BuildContext {
     final theme = Theme.of(this);
     return DsTokens(
       theme.extension<DsColors>() ?? DsColors.clair,
-      theme.extension<DsTypography>() ?? DsTypography.pour(const Locale('fr'), DsColors.clair.texte),
+      theme.extension<DsTypography>() ?? DsTypography.pour(const Locale('fr'), DsColors.clair.textPrimary),
     );
   }
 }
@@ -31,55 +31,57 @@ extension DsContext on BuildContext {
 /// `context.ds` et non `Theme.of(context).colorScheme`.
 ThemeData construireTheme({required Brightness brightness, required Locale locale}) {
   final couleurs = brightness == Brightness.dark ? DsColors.sombre : DsColors.clair;
-  final typo = DsTypography.pour(locale, couleurs.texte);
+  final typo = DsTypography.pour(locale, couleurs.textPrimary);
   final scheme = ColorScheme(
     brightness: brightness,
-    primary: couleurs.primaire,
-    onPrimary: couleurs.surPrimaire,
-    secondary: couleurs.info,
-    onSecondary: couleurs.texteInverse,
+    primary: couleurs.primary,
+    onPrimary: couleurs.primaryFg,
+    secondary: couleurs.accent,
+    onSecondary: couleurs.accentFg,
     error: couleurs.danger,
-    onError: couleurs.texteInverse,
-    surface: couleurs.surface,
-    onSurface: couleurs.texte,
-    outline: couleurs.bordure,
+    onError: couleurs.textInverse,
+    surface: couleurs.surfaceCard,
+    onSurface: couleurs.textPrimary,
+    outline: couleurs.borderDefault,
   );
   return ThemeData(
     useMaterial3: true,
     brightness: brightness,
     colorScheme: scheme,
     fontFamily: typo.famille,
-    scaffoldBackgroundColor: couleurs.fond,
-    canvasColor: couleurs.surface,
-    dividerColor: couleurs.bordure,
-    focusColor: couleurs.focus,
+    scaffoldBackgroundColor: couleurs.surfaceApp,
+    canvasColor: couleurs.surfaceCard,
+    dividerColor: couleurs.borderDefault,
+    focusColor: couleurs.borderFocus,
     splashFactory: NoSplash.splashFactory,
     visualDensity: VisualDensity.compact,
     textTheme: TextTheme(
-      headlineLarge: typo.titreXl,
-      headlineMedium: typo.titreLg,
-      headlineSmall: typo.titreMd,
-      titleMedium: typo.titreSm,
-      bodyMedium: typo.corps,
-      bodySmall: typo.petit,
-      labelSmall: typo.legende,
+      displayLarge: typo.display,
+      headlineLarge: typo.pageTitle,
+      headlineMedium: typo.heading,
+      headlineSmall: typo.cardTitle,
+      titleMedium: typo.cardTitle,
+      bodyMedium: typo.body,
+      bodySmall: typo.bodySm,
+      labelMedium: typo.label,
+      labelSmall: typo.caption,
     ),
     tooltipTheme: TooltipThemeData(
       waitDuration: const Duration(milliseconds: 500),
-      decoration: BoxDecoration(color: couleurs.texte, borderRadius: DsRadius.borderSm),
-      textStyle: typo.petit.copyWith(color: couleurs.texteInverse),
+      decoration: BoxDecoration(color: couleurs.surfaceInverse, borderRadius: DsRadius.borderSm),
+      textStyle: typo.bodySm.copyWith(color: couleurs.textInverse),
     ),
     dialogTheme: DialogThemeData(
-      backgroundColor: couleurs.surfaceElevee,
-      shape: RoundedRectangleBorder(borderRadius: DsRadius.borderLg),
+      backgroundColor: couleurs.surfaceRaised,
+      shape: RoundedRectangleBorder(borderRadius: DsRadius.borderXl),
     ),
     popupMenuTheme: PopupMenuThemeData(
-      color: couleurs.surfaceElevee,
+      color: couleurs.surfaceRaised,
       shape: RoundedRectangleBorder(
-        borderRadius: DsRadius.borderMd,
-        side: BorderSide(color: couleurs.bordure),
+        borderRadius: DsRadius.borderLg,
+        side: BorderSide(color: couleurs.borderDefault),
       ),
-      textStyle: typo.corps,
+      textStyle: typo.body,
     ),
     extensions: [couleurs, typo],
   );

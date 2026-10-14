@@ -413,212 +413,222 @@ class _PosPageState extends ConsumerState<PosPage> {
     required bool peutPrix,
   }) {
     final modes = [for (final v in Referentiel.modesPaiement.valeurs) (v.stocke, libelleModePaiement(l10n, v.stocke))];
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        // Onglets des paniers
-        Container(
-          padding: const EdgeInsets.fromLTRB(DsSpacing.sm, DsSpacing.sm, DsSpacing.sm, 0),
-          decoration: BoxDecoration(
-            border: Border(bottom: BorderSide(color: c.bordure)),
-          ),
-          child: Row(
-            children: [
-              for (final (i, p) in etat.paniers.indexed)
-                Padding(
-                  padding: const EdgeInsets.only(right: DsSpacing.xs),
-                  child: InkWell(
-                    onTap: () => ctrl.selectionnerPanier(i),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: DsSpacing.md, vertical: DsSpacing.sm),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(color: i == etat.courant ? c.primaire : const Color(0x00000000), width: 2),
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          Text(
-                            l10n.posPanier(p.id),
-                            style: (i == etat.courant ? t.petitFort : t.petit).copyWith(
-                              color: i == etat.courant ? c.primaire : c.texteSecondaire,
+    return LayoutBuilder(
+      builder: (context, contraintes) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Onglets des paniers
+          Container(
+            padding: const EdgeInsets.fromLTRB(DsSpacing.sm, DsSpacing.sm, DsSpacing.sm, 0),
+            decoration: BoxDecoration(
+              border: Border(bottom: BorderSide(color: c.bordure)),
+            ),
+            child: Row(
+              children: [
+                for (final (i, p) in etat.paniers.indexed)
+                  Padding(
+                    padding: const EdgeInsets.only(right: DsSpacing.xs),
+                    child: InkWell(
+                      onTap: () => ctrl.selectionnerPanier(i),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: DsSpacing.md, vertical: DsSpacing.sm),
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              color: i == etat.courant ? c.primaire : const Color(0x00000000),
+                              width: 2,
                             ),
                           ),
-                          if (p.lignes.isNotEmpty) ...[
-                            const SizedBox(width: DsSpacing.xs),
-                            DsBadge(libelle: '${p.lignes.length}', ton: DsBadgeTon.primaire),
-                          ],
-                          if (etat.paniers.length > 1) ...[
-                            const SizedBox(width: DsSpacing.xs),
-                            DsIconButton(
-                              icone: LucideIcons.x,
-                              tooltip: '×',
-                              taille: 20,
-                              onPressed: () => ctrl.fermerPanier(i),
+                        ),
+                        child: Row(
+                          children: [
+                            Text(
+                              l10n.posPanier(p.id),
+                              style: (i == etat.courant ? t.petitFort : t.petit).copyWith(
+                                color: i == etat.courant ? c.primaire : c.texteSecondaire,
+                              ),
                             ),
+                            if (p.lignes.isNotEmpty) ...[
+                              const SizedBox(width: DsSpacing.xs),
+                              DsBadge(libelle: '${p.lignes.length}', ton: DsBadgeTon.primaire),
+                            ],
+                            if (etat.paniers.length > 1) ...[
+                              const SizedBox(width: DsSpacing.xs),
+                              DsIconButton(
+                                icone: LucideIcons.x,
+                                tooltip: '×',
+                                taille: 20,
+                                onPressed: () => ctrl.fermerPanier(i),
+                              ),
+                            ],
                           ],
-                        ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-              const Spacer(),
-              DsIconButton(
-                icone: LucideIcons.plus,
-                tooltip: l10n.posNouveauPanier,
-                onPressed: etat.paniers.length >= maxPaniers ? null : () => _executer(() async => ctrl.nouveauPanier()),
-              ),
-            ],
-          ),
-        ),
-        // Client + remise
-        Padding(
-          padding: const EdgeInsets.fromLTRB(DsSpacing.md, DsSpacing.sm, DsSpacing.md, 0),
-          child: Row(
-            children: [
-              Expanded(
-                child: DsButton(
-                  libelle: _nomClient ?? l10n.posClientPassage,
-                  icone: LucideIcons.user,
-                  taille: DsButtonTaille.sm,
-                  variante: DsButtonVariante.secondaire,
-                  pleineLargeur: true,
-                  onPressed: () {
-                    _choisirClient();
-                  },
-                ),
-              ),
-              const SizedBox(width: DsSpacing.xs),
-              DsButton(
-                libelle: panier.remiseGlobalePct > 0
-                    ? '−${panier.remiseGlobalePct.toStringAsFixed(0)} %'
-                    : l10n.posRemise,
-                icone: LucideIcons.percent,
-                taille: DsButtonTaille.sm,
-                variante: DsButtonVariante.secondaire,
-                onPressed: peutRemise
-                    ? () {
-                        _remiseGlobale();
-                      }
-                    : null,
-              ),
-            ],
-          ),
-        ),
-        // Lignes
-        Expanded(
-          child: panier.estVide
-              ? DsVide(message: l10n.posPanierVide, icone: LucideIcons.shoppingCart)
-              : ListView.builder(
-                  itemCount: panier.lignes.length,
-                  itemBuilder: (_, i) {
-                    final l = panier.lignes[i];
-                    return CartLine(
-                      key: ValueKey('ligne_$i'),
-                      designation: l.designation,
-                      sousTitre: l.uniteVente == UniteVente.nombre
-                          ? l10n.posVendreNombre
-                          : (l.colis != null ? l10n.posColis : (l.pack != null ? l10n.posPack : null)),
-                      quantite: l.quantite,
-                      prixUnitaire: l.prixUnitaire,
-                      remisePct: l.remisePct,
-                      total: l.total,
-                      devise: devise,
-                      selectionnee: _ligneSelectionnee == i,
-                      onTap: () => setState(() => _ligneSelectionnee = i),
-                      onPlus: () => _executer(() => ctrl.modifierQuantite(i, l.quantite + 1)),
-                      onMoins: () => _executer(() => ctrl.modifierQuantite(i, l.quantite - 1)),
-                      onSupprimer: () {
-                        ctrl.retirerLigne(i);
-                        setState(() => _ligneSelectionnee = null);
-                      },
-                    );
-                  },
-                ),
-        ),
-        // Totaux + paiement
-        Container(
-          padding: const EdgeInsets.all(DsSpacing.md),
-          decoration: BoxDecoration(
-            color: c.surfaceAttenuee,
-            border: Border(top: BorderSide(color: c.bordure)),
-          ),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Row(
-                  children: [
-                    Expanded(child: Text(l10n.posTotal, style: t.titreSm)),
-                    Text(
-                      formaterMontant(panier.totalNet, devise),
-                      key: const ValueKey('pos_total'),
-                      style: t.chiffreLg.copyWith(color: c.primaire),
-                    ),
-                  ],
-                ),
-                if (panier.totalRemise > 0)
-                  Text(
-                    '${l10n.posRemise} : −${formaterMontant(panier.totalRemise, devise)}',
-                    style: t.petit.copyWith(color: c.texteSecondaire),
-                  ),
-                const SizedBox(height: DsSpacing.sm),
-                PaymentPanel(
-                  modes: modes,
-                  modeCourant: _mode,
-                  onMode: (m) => setState(() => _mode = m),
-                  montantSaisi: _montant,
-                  onMontantChange: (v) => setState(() => _montant = v),
-                  onAjouter: _ajouterPaiement,
-                  paiements: [for (final p in panier.paiements) (libelleModePaiement(l10n, p.mode), p.montant)],
-                  onRetirerPaiement: ctrl.retirerPaiement,
-                  totalNet: panier.totalNet,
-                  verse: panier.verse,
-                  reste: panier.reste,
-                  monnaie: panier.monnaie,
-                  devise: devise,
-                  libelleVerse: l10n.posVerse,
-                  libelleReste: l10n.posReste,
-                  libelleMonnaie: l10n.posMonnaie,
-                ),
-                if (panier.clientCode != 'CLN0000')
-                  DsSwitch(
-                    valeur: _credit,
-                    libelle: l10n.posCreditAutoriser,
-                    onChanged: (v) => setState(() => _credit = v),
-                  ),
-                const SizedBox(height: DsSpacing.sm),
-                Row(
-                  children: [
-                    DsButton(
-                      libelle: l10n.posVider,
-                      icone: LucideIcons.trash2,
-                      variante: DsButtonVariante.fantome,
-                      onPressed: panier.estVide
-                          ? null
-                          : () {
-                              ctrl.viderPanier();
-                              setState(() => _ligneSelectionnee = null);
-                            },
-                    ),
-                    const SizedBox(width: DsSpacing.sm),
-                    Expanded(
-                      child: DsButton(
-                        libelle: l10n.posEncaisser,
-                        icone: LucideIcons.circleCheck,
-                        taille: DsButtonTaille.lg,
-                        variante: DsButtonVariante.succes,
-                        pleineLargeur: true,
-                        onPressed: etat.session == null || panier.estVide ? null : _encaisser,
-                      ),
-                    ),
-                  ],
+                const Spacer(),
+                DsIconButton(
+                  icone: LucideIcons.plus,
+                  tooltip: l10n.posNouveauPanier,
+                  onPressed: etat.paniers.length >= maxPaniers
+                      ? null
+                      : () => _executer(() async => ctrl.nouveauPanier()),
                 ),
               ],
             ),
           ),
-        ),
-      ],
+          // Client + remise
+          Padding(
+            padding: const EdgeInsets.fromLTRB(DsSpacing.md, DsSpacing.sm, DsSpacing.md, 0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: DsButton(
+                    libelle: _nomClient ?? l10n.posClientPassage,
+                    icone: LucideIcons.user,
+                    taille: DsButtonTaille.sm,
+                    variante: DsButtonVariante.secondaire,
+                    pleineLargeur: true,
+                    onPressed: () {
+                      _choisirClient();
+                    },
+                  ),
+                ),
+                const SizedBox(width: DsSpacing.xs),
+                DsButton(
+                  libelle: panier.remiseGlobalePct > 0
+                      ? '−${panier.remiseGlobalePct.toStringAsFixed(0)} %'
+                      : l10n.posRemise,
+                  icone: LucideIcons.percent,
+                  taille: DsButtonTaille.sm,
+                  variante: DsButtonVariante.secondaire,
+                  onPressed: peutRemise
+                      ? () {
+                          _remiseGlobale();
+                        }
+                      : null,
+                ),
+              ],
+            ),
+          ),
+          // Lignes
+          Expanded(
+            child: panier.estVide
+                ? DsVide(message: l10n.posPanierVide, icone: LucideIcons.shoppingCart)
+                : ListView.builder(
+                    itemCount: panier.lignes.length,
+                    itemBuilder: (_, i) {
+                      final l = panier.lignes[i];
+                      return CartLine(
+                        key: ValueKey('ligne_$i'),
+                        designation: l.designation,
+                        sousTitre: l.uniteVente == UniteVente.nombre
+                            ? l10n.posVendreNombre
+                            : (l.colis != null ? l10n.posColis : (l.pack != null ? l10n.posPack : null)),
+                        quantite: l.quantite,
+                        prixUnitaire: l.prixUnitaire,
+                        remisePct: l.remisePct,
+                        total: l.total,
+                        devise: devise,
+                        selectionnee: _ligneSelectionnee == i,
+                        onTap: () => setState(() => _ligneSelectionnee = i),
+                        onPlus: () => _executer(() => ctrl.modifierQuantite(i, l.quantite + 1)),
+                        onMoins: () => _executer(() => ctrl.modifierQuantite(i, l.quantite - 1)),
+                        onSupprimer: () {
+                          ctrl.retirerLigne(i);
+                          setState(() => _ligneSelectionnee = null);
+                        },
+                      );
+                    },
+                  ),
+          ),
+          // Totaux + paiement (bloc borné : il défile si la hauteur manque, les lignes gardent le reste)
+          ConstrainedBox(
+            constraints: BoxConstraints(maxHeight: contraintes.maxHeight * 0.72),
+            child: Container(
+              padding: const EdgeInsets.all(DsSpacing.md),
+              decoration: BoxDecoration(
+                color: c.surfaceAttenuee,
+                border: Border(top: BorderSide(color: c.bordure)),
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(child: Text(l10n.posTotal, style: t.titreSm)),
+                        Text(
+                          formaterMontant(panier.totalNet, devise),
+                          key: const ValueKey('pos_total'),
+                          style: t.chiffreLg.copyWith(color: c.primaire),
+                        ),
+                      ],
+                    ),
+                    if (panier.totalRemise > 0)
+                      Text(
+                        '${l10n.posRemise} : −${formaterMontant(panier.totalRemise, devise)}',
+                        style: t.petit.copyWith(color: c.texteSecondaire),
+                      ),
+                    const SizedBox(height: DsSpacing.sm),
+                    PaymentPanel(
+                      modes: modes,
+                      modeCourant: _mode,
+                      onMode: (m) => setState(() => _mode = m),
+                      montantSaisi: _montant,
+                      onMontantChange: (v) => setState(() => _montant = v),
+                      onAjouter: _ajouterPaiement,
+                      paiements: [for (final p in panier.paiements) (libelleModePaiement(l10n, p.mode), p.montant)],
+                      onRetirerPaiement: ctrl.retirerPaiement,
+                      totalNet: panier.totalNet,
+                      verse: panier.verse,
+                      reste: panier.reste,
+                      monnaie: panier.monnaie,
+                      devise: devise,
+                      libelleVerse: l10n.posVerse,
+                      libelleReste: l10n.posReste,
+                      libelleMonnaie: l10n.posMonnaie,
+                    ),
+                    if (panier.clientCode != 'CLN0000')
+                      DsSwitch(
+                        valeur: _credit,
+                        libelle: l10n.posCreditAutoriser,
+                        onChanged: (v) => setState(() => _credit = v),
+                      ),
+                    const SizedBox(height: DsSpacing.sm),
+                    Row(
+                      children: [
+                        DsButton(
+                          libelle: l10n.posVider,
+                          icone: LucideIcons.trash2,
+                          variante: DsButtonVariante.fantome,
+                          onPressed: panier.estVide
+                              ? null
+                              : () {
+                                  ctrl.viderPanier();
+                                  setState(() => _ligneSelectionnee = null);
+                                },
+                        ),
+                        const SizedBox(width: DsSpacing.sm),
+                        Expanded(
+                          child: DsButton(
+                            libelle: l10n.posEncaisser,
+                            icone: LucideIcons.circleCheck,
+                            taille: DsButtonTaille.lg,
+                            variante: DsButtonVariante.succes,
+                            pleineLargeur: true,
+                            onPressed: etat.session == null || panier.estVide ? null : _encaisser,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
