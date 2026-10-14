@@ -924,4 +924,262 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get communAucune => 'None';
+
+  @override
+  String get stockTitre => 'Stock';
+
+  @override
+  String get stockOngletNiveaux => 'Levels';
+
+  @override
+  String get stockOngletJournal => 'Movements journal';
+
+  @override
+  String get stockColProduit => 'Product';
+
+  @override
+  String get stockColMagasin => 'Store';
+
+  @override
+  String get stockColQuantite => 'Quantity';
+
+  @override
+  String get stockColNombre => 'Count (pieces)';
+
+  @override
+  String get stockColSeuil => 'Threshold';
+
+  @override
+  String get stockColDate => 'Date';
+
+  @override
+  String get stockColType => 'Type';
+
+  @override
+  String get stockColMotif => 'Reason';
+
+  @override
+  String get stockColReference => 'Reference';
+
+  @override
+  String get stockColUtilisateur => 'User';
+
+  @override
+  String get stockColCommentaire => 'Comment';
+
+  @override
+  String get stockColValeur => 'Value (cost)';
+
+  @override
+  String get stockTousMagasins => 'All stores';
+
+  @override
+  String get stockSousSeuil => 'Below threshold';
+
+  @override
+  String get stockEntreeManuelle => 'Manual receipt';
+
+  @override
+  String get stockInventaire => 'Stocktake';
+
+  @override
+  String get stockQuantiteConstatee => 'Counted quantity';
+
+  @override
+  String get stockNombreConstate => 'Counted pieces';
+
+  @override
+  String get stockAucunMouvement => 'No movements.';
+
+  @override
+  String get stockErreurQuantite => 'Invalid quantity.';
+
+  @override
+  String get stockErreurInsuffisant => 'Insufficient stock: the stock guard refuses this outflow.';
+
+  @override
+  String get stockErreurMemeMagasin => 'Destination store must differ.';
+
+  @override
+  String get stockErreurLignes => 'Add at least one line.';
+
+  @override
+  String get stockErreurMotif => 'Invalid reason.';
+
+  @override
+  String get stockErreurMagasinInactif => 'Inactive or unknown store.';
+
+  @override
+  String get stockErreurMagasinSysteme => 'The main store cannot be deactivated.';
+
+  @override
+  String get stockErreurProduit => 'Unknown product.';
+
+  @override
+  String get stockErreurStatut => 'Invalid status.';
+
+  @override
+  String get typeMouvementEntree => 'Receipt';
+
+  @override
+  String get typeMouvementSortie => 'Outflow';
+
+  @override
+  String get typeMouvementVente => 'Sale';
+
+  @override
+  String get typeMouvementRetour => 'Return';
+
+  @override
+  String get typeMouvementTransfert => 'Transfer';
+
+  @override
+  String get typeMouvementInventaire => 'Stocktake';
+
+  @override
+  String get typeMouvementInitial => 'Opening stock';
+
+  @override
+  String get magasinsTitre => 'Stores';
+
+  @override
+  String get magasinNouveau => 'New store';
+
+  @override
+  String get magasinNom => 'Name';
+
+  @override
+  String get magasinAdresse => 'Address';
+
+  @override
+  String get magasinPrincipal => 'Main';
+
+  @override
+  String get magasinMesMagasins => 'My stores (the first is the main one)';
+
+  @override
+  String get magasinAjouterAuxMiens => 'Add to my stores';
+
+  @override
+  String get magasinRetirerDesMiens => 'Remove from my stores';
+
+  @override
+  String get magasinDefinirPrincipal => 'Set as main';
+
+  @override
+  String get transfertsTitre => 'Transfers';
+
+  @override
+  String get transfertNouveau => 'New transfer';
+
+  @override
+  String get transfertSource => 'Source store';
+
+  @override
+  String get transfertDestination => 'Destination store';
+
+  @override
+  String get transfertLignes => 'Lines';
+
+  @override
+  String get transfertAjouterLigne => 'Add a product';
+
+  @override
+  String get transfertAucun => 'No transfers.';
+
+  @override
+  String transfertCree(String code) {
+    return 'Transfer $code saved: 2 movements per line.';
+  }
+
+  @override
+  String get besoinsTitre => 'Needs';
+
+  @override
+  String get besoinNouveau => 'New need';
+
+  @override
+  String get besoinGenerer => 'Generate below threshold';
+
+  @override
+  String besoinGeneres(int n) {
+    return '$n need(s) generated.';
+  }
+
+  @override
+  String get besoinStatut => 'Status';
+
+  @override
+  String get besoinPasserCommande => 'Mark as Ordered';
+
+  @override
+  String get besoinPasserDisponible => 'Mark as Available';
+
+  @override
+  String get besoinRemettreAttente => 'Back to Pending';
+
+  @override
+  String get besoinAucun => 'No needs.';
+
+  @override
+  String get statutBesoinEnAttente => 'Pending';
+
+  @override
+  String get statutBesoinCommande => 'Ordered';
+
+  @override
+  String get statutBesoinDisponible => 'Available';
+
+  @override
+  String get sortiesTitre => 'Outgoings';
+
+  @override
+  String get sortiesOngletSorties => 'Outgoings';
+
+  @override
+  String get sortiesOngletVentes => 'Sales';
+
+  @override
+  String get sortieNouvelle => 'New outflow';
+
+  @override
+  String get sortieMotif => 'Reason';
+
+  @override
+  String get sortieAucune => 'No outflows.';
+
+  @override
+  String get motifCasse => 'Breakage';
+
+  @override
+  String get motifPerime => 'Expired';
+
+  @override
+  String get motifPerteVol => 'Loss/theft';
+
+  @override
+  String get motifConsommationInterne => 'Internal use';
+
+  @override
+  String get motifDon => 'Donation';
+
+  @override
+  String get motifEchantillon => 'Sample';
+
+  @override
+  String communLignes(int n) {
+    return '$n line(s)';
+  }
+
+  @override
+  String get communCommentaire => 'Comment';
+
+  @override
+  String get communDate => 'Date';
+
+  @override
+  String get communQuantite => 'Quantity';
+
+  @override
+  String get moduleMagasins => 'Stores';
 }

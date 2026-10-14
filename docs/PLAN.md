@@ -115,13 +115,30 @@ Checklist §15 : produits / codes-barres / import.
 (pièces par unité), colonnes Excel attendues, API CaisseDZ / Mantouj (`GET <base>/catalogue/produits/<ean>`),
 protocole de synchro, dimensions d'étiquettes 50×30 mm.
 
-## Lot 3 — Stock ⬜
+## Lot 3 — Stock ✅ (sous hypothèses ⚠️)
 Écrans : journal des mouvements, magasins (principal = premier magasin de l'utilisateur), transferts TRM, besoins
 (En attente / Commande / Disponible), sorties (Casse, Périmé, Perte/vol, Consommation interne, Don, Échantillon +
 onglet Ventes).
 Règles : §8 (stock = journal des mouvements, répartition multi-magasin), §8.10 (TRM), §13 (motifs).
 Tests : stock calculé depuis le journal, transfert = 2 mouvements, répartition multi-magasin, garde de stock.
 Checklist §15 : stock.
+
+**Livré**
+- Migration v4 : `mouvement_stock` (journal signé, quantité + nombre, référence, motif), `utilisateur_magasin`,
+  `transfert_stock` + lignes, `besoin`, `sortie_stock` + lignes.
+- `StockService` : stock = SUM(mouvements) (jamais un compteur), garde de stock toujours active (sortie refusée
+  si stock négatif, aucune écriture), entrée manuelle, inventaire (mouvement d'écart), transfert TRM = 2
+  mouvements par ligne en UNE transaction, sorties avec motif du référentiel, besoins (cycle En attente →
+  Commande → Disponible, génération sous seuil propre ou global), magasin principal = premier magasin de
+  l'utilisateur (repli : MAG0000).
+- Écrans : Stock (niveaux par magasin avec seuil et valeur au PA soumise à `voirPrixAchat`, journal filtrable,
+  entrée manuelle, inventaire), Magasins (+ « mes magasins », principal), Transferts, Besoins (filtres par
+  statut), Sorties (onglet Sorties + onglet Ventes), éditeur de lignes partagé (quantité + nombre).
+- Tests : 5 unitaires (journal, 2ᵉ stock, inventaire, transferts, besoins) + 5 widget.
+
+**Hypothèses (⚠️)** : colonnes des tables de stock, règle « magasin principal » (ordre de la liste
+`utilisateur_magasin`), génération des besoins (quantité = 2 × seuil − stock), module « Magasins » séparé dans
+le groupe Stock.
 
 ## Lot 4 — Caisse POS ⬜
 Écrans : sessions obligatoires, 5 ventes en parallèle, scan, colis, nombre, réservation de stock entre paniers,

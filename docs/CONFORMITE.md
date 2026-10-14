@@ -38,8 +38,10 @@
 - [x] Import Excel, étiquettes (PDF A4 / rouleau), synchro catalogue (protocole provisoire)
 
 ## Stock (lot 3)
-- [ ] Stock = journal des mouvements
-- [ ] Transferts TRM, besoins, sorties avec motifs §13
+- [x] Stock = journal des mouvements (SUM), garde de stock toujours active, 2ᵉ stock « nombre »
+- [x] Magasins, principal = premier magasin de l'utilisateur
+- [x] Transferts TRM (2 mouvements par ligne, une transaction), besoins En attente / Commande / Disponible,
+      sorties avec motifs §13 + onglet Ventes
 
 ## Caisse (lot 4)
 - [ ] Sessions obligatoires, 5 ventes en parallèle, réservation de stock entre paniers

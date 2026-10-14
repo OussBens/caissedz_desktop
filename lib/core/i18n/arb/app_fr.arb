@@ -431,5 +431,110 @@
   "communValider": "Valider",
   "communApercu": "Aperçu",
   "communImprimer": "Imprimer",
-  "communAucune": "Aucune"
+  "communAucune": "Aucune",
+  "stockTitre": "Stock",
+  "stockOngletNiveaux": "Niveaux",
+  "stockOngletJournal": "Journal des mouvements",
+  "stockColProduit": "Produit",
+  "stockColMagasin": "Magasin",
+  "stockColQuantite": "Quantité",
+  "stockColNombre": "Nombre (pièces)",
+  "stockColSeuil": "Seuil",
+  "stockColDate": "Date",
+  "stockColType": "Type",
+  "stockColMotif": "Motif",
+  "stockColReference": "Référence",
+  "stockColUtilisateur": "Utilisateur",
+  "stockColCommentaire": "Commentaire",
+  "stockColValeur": "Valeur (PA)",
+  "stockTousMagasins": "Tous les magasins",
+  "stockSousSeuil": "Sous seuil",
+  "stockEntreeManuelle": "Entrée manuelle",
+  "stockInventaire": "Inventaire",
+  "stockQuantiteConstatee": "Quantité constatée",
+  "stockNombreConstate": "Nombre constaté",
+  "stockAucunMouvement": "Aucun mouvement.",
+  "stockErreurQuantite": "Quantité invalide.",
+  "stockErreurInsuffisant": "Stock insuffisant : la garde de stock refuse cette sortie.",
+  "stockErreurMemeMagasin": "Le magasin de destination doit être différent.",
+  "stockErreurLignes": "Ajoutez au moins une ligne.",
+  "stockErreurMotif": "Motif invalide.",
+  "stockErreurMagasinInactif": "Magasin inactif ou inconnu.",
+  "stockErreurMagasinSysteme": "Le magasin principal ne peut pas être désactivé.",
+  "stockErreurProduit": "Produit inconnu.",
+  "stockErreurStatut": "Statut invalide.",
+  "typeMouvementEntree": "Entrée",
+  "typeMouvementSortie": "Sortie",
+  "typeMouvementVente": "Vente",
+  "typeMouvementRetour": "Retour",
+  "typeMouvementTransfert": "Transfert",
+  "typeMouvementInventaire": "Inventaire",
+  "typeMouvementInitial": "Stock initial",
+  "magasinsTitre": "Magasins",
+  "magasinNouveau": "Nouveau magasin",
+  "magasinNom": "Nom",
+  "magasinAdresse": "Adresse",
+  "magasinPrincipal": "Principal",
+  "magasinMesMagasins": "Mes magasins (le premier est le principal)",
+  "magasinAjouterAuxMiens": "Ajouter à mes magasins",
+  "magasinRetirerDesMiens": "Retirer de mes magasins",
+  "magasinDefinirPrincipal": "Définir comme principal",
+  "transfertsTitre": "Transferts",
+  "transfertNouveau": "Nouveau transfert",
+  "transfertSource": "Magasin source",
+  "transfertDestination": "Magasin destination",
+  "transfertLignes": "Lignes",
+  "transfertAjouterLigne": "Ajouter un produit",
+  "transfertAucun": "Aucun transfert.",
+  "transfertCree": "Transfert {code} enregistré : 2 mouvements par ligne.",
+  "@transfertCree": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "besoinsTitre": "Besoins",
+  "besoinNouveau": "Nouveau besoin",
+  "besoinGenerer": "Générer sous seuil",
+  "besoinGeneres": "{n} besoin(s) généré(s).",
+  "@besoinGeneres": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "besoinStatut": "Statut",
+  "besoinPasserCommande": "Passer en Commande",
+  "besoinPasserDisponible": "Passer en Disponible",
+  "besoinRemettreAttente": "Remettre En attente",
+  "besoinAucun": "Aucun besoin.",
+  "statutBesoinEnAttente": "En attente",
+  "statutBesoinCommande": "Commande",
+  "statutBesoinDisponible": "Disponible",
+  "sortiesTitre": "Sorties",
+  "sortiesOngletSorties": "Sorties",
+  "sortiesOngletVentes": "Ventes",
+  "sortieNouvelle": "Nouvelle sortie",
+  "sortieMotif": "Motif",
+  "sortieAucune": "Aucune sortie.",
+  "motifCasse": "Casse",
+  "motifPerime": "Périmé",
+  "motifPerteVol": "Perte/vol",
+  "motifConsommationInterne": "Consommation interne",
+  "motifDon": "Don",
+  "motifEchantillon": "Échantillon",
+  "communLignes": "{n} ligne(s)",
+  "@communLignes": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "communCommentaire": "Commentaire",
+  "communDate": "Date",
+  "communQuantite": "Quantité",
+  "moduleMagasins": "Magasins"
 }

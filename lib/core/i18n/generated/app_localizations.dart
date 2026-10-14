@@ -1844,6 +1844,510 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Aucune'**
   String get communAucune;
+
+  /// No description provided for @stockTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock'**
+  String get stockTitre;
+
+  /// No description provided for @stockOngletNiveaux.
+  ///
+  /// In fr, this message translates to:
+  /// **'Niveaux'**
+  String get stockOngletNiveaux;
+
+  /// No description provided for @stockOngletJournal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Journal des mouvements'**
+  String get stockOngletJournal;
+
+  /// No description provided for @stockColProduit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produit'**
+  String get stockColProduit;
+
+  /// No description provided for @stockColMagasin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Magasin'**
+  String get stockColMagasin;
+
+  /// No description provided for @stockColQuantite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quantité'**
+  String get stockColQuantite;
+
+  /// No description provided for @stockColNombre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nombre (pièces)'**
+  String get stockColNombre;
+
+  /// No description provided for @stockColSeuil.
+  ///
+  /// In fr, this message translates to:
+  /// **'Seuil'**
+  String get stockColSeuil;
+
+  /// No description provided for @stockColDate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Date'**
+  String get stockColDate;
+
+  /// No description provided for @stockColType.
+  ///
+  /// In fr, this message translates to:
+  /// **'Type'**
+  String get stockColType;
+
+  /// No description provided for @stockColMotif.
+  ///
+  /// In fr, this message translates to:
+  /// **'Motif'**
+  String get stockColMotif;
+
+  /// No description provided for @stockColReference.
+  ///
+  /// In fr, this message translates to:
+  /// **'Référence'**
+  String get stockColReference;
+
+  /// No description provided for @stockColUtilisateur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Utilisateur'**
+  String get stockColUtilisateur;
+
+  /// No description provided for @stockColCommentaire.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commentaire'**
+  String get stockColCommentaire;
+
+  /// No description provided for @stockColValeur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Valeur (PA)'**
+  String get stockColValeur;
+
+  /// No description provided for @stockTousMagasins.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tous les magasins'**
+  String get stockTousMagasins;
+
+  /// No description provided for @stockSousSeuil.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sous seuil'**
+  String get stockSousSeuil;
+
+  /// No description provided for @stockEntreeManuelle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrée manuelle'**
+  String get stockEntreeManuelle;
+
+  /// No description provided for @stockInventaire.
+  ///
+  /// In fr, this message translates to:
+  /// **'Inventaire'**
+  String get stockInventaire;
+
+  /// No description provided for @stockQuantiteConstatee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quantité constatée'**
+  String get stockQuantiteConstatee;
+
+  /// No description provided for @stockNombreConstate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nombre constaté'**
+  String get stockNombreConstate;
+
+  /// No description provided for @stockAucunMouvement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun mouvement.'**
+  String get stockAucunMouvement;
+
+  /// No description provided for @stockErreurQuantite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quantité invalide.'**
+  String get stockErreurQuantite;
+
+  /// No description provided for @stockErreurInsuffisant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock insuffisant : la garde de stock refuse cette sortie.'**
+  String get stockErreurInsuffisant;
+
+  /// No description provided for @stockErreurMemeMagasin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le magasin de destination doit être différent.'**
+  String get stockErreurMemeMagasin;
+
+  /// No description provided for @stockErreurLignes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajoutez au moins une ligne.'**
+  String get stockErreurLignes;
+
+  /// No description provided for @stockErreurMotif.
+  ///
+  /// In fr, this message translates to:
+  /// **'Motif invalide.'**
+  String get stockErreurMotif;
+
+  /// No description provided for @stockErreurMagasinInactif.
+  ///
+  /// In fr, this message translates to:
+  /// **'Magasin inactif ou inconnu.'**
+  String get stockErreurMagasinInactif;
+
+  /// No description provided for @stockErreurMagasinSysteme.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le magasin principal ne peut pas être désactivé.'**
+  String get stockErreurMagasinSysteme;
+
+  /// No description provided for @stockErreurProduit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produit inconnu.'**
+  String get stockErreurProduit;
+
+  /// No description provided for @stockErreurStatut.
+  ///
+  /// In fr, this message translates to:
+  /// **'Statut invalide.'**
+  String get stockErreurStatut;
+
+  /// No description provided for @typeMouvementEntree.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrée'**
+  String get typeMouvementEntree;
+
+  /// No description provided for @typeMouvementSortie.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sortie'**
+  String get typeMouvementSortie;
+
+  /// No description provided for @typeMouvementVente.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vente'**
+  String get typeMouvementVente;
+
+  /// No description provided for @typeMouvementRetour.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retour'**
+  String get typeMouvementRetour;
+
+  /// No description provided for @typeMouvementTransfert.
+  ///
+  /// In fr, this message translates to:
+  /// **'Transfert'**
+  String get typeMouvementTransfert;
+
+  /// No description provided for @typeMouvementInventaire.
+  ///
+  /// In fr, this message translates to:
+  /// **'Inventaire'**
+  String get typeMouvementInventaire;
+
+  /// No description provided for @typeMouvementInitial.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock initial'**
+  String get typeMouvementInitial;
+
+  /// No description provided for @magasinsTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Magasins'**
+  String get magasinsTitre;
+
+  /// No description provided for @magasinNouveau.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau magasin'**
+  String get magasinNouveau;
+
+  /// No description provided for @magasinNom.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom'**
+  String get magasinNom;
+
+  /// No description provided for @magasinAdresse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Adresse'**
+  String get magasinAdresse;
+
+  /// No description provided for @magasinPrincipal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Principal'**
+  String get magasinPrincipal;
+
+  /// No description provided for @magasinMesMagasins.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mes magasins (le premier est le principal)'**
+  String get magasinMesMagasins;
+
+  /// No description provided for @magasinAjouterAuxMiens.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter à mes magasins'**
+  String get magasinAjouterAuxMiens;
+
+  /// No description provided for @magasinRetirerDesMiens.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retirer de mes magasins'**
+  String get magasinRetirerDesMiens;
+
+  /// No description provided for @magasinDefinirPrincipal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Définir comme principal'**
+  String get magasinDefinirPrincipal;
+
+  /// No description provided for @transfertsTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Transferts'**
+  String get transfertsTitre;
+
+  /// No description provided for @transfertNouveau.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau transfert'**
+  String get transfertNouveau;
+
+  /// No description provided for @transfertSource.
+  ///
+  /// In fr, this message translates to:
+  /// **'Magasin source'**
+  String get transfertSource;
+
+  /// No description provided for @transfertDestination.
+  ///
+  /// In fr, this message translates to:
+  /// **'Magasin destination'**
+  String get transfertDestination;
+
+  /// No description provided for @transfertLignes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lignes'**
+  String get transfertLignes;
+
+  /// No description provided for @transfertAjouterLigne.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter un produit'**
+  String get transfertAjouterLigne;
+
+  /// No description provided for @transfertAucun.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun transfert.'**
+  String get transfertAucun;
+
+  /// No description provided for @transfertCree.
+  ///
+  /// In fr, this message translates to:
+  /// **'Transfert {code} enregistré : 2 mouvements par ligne.'**
+  String transfertCree(String code);
+
+  /// No description provided for @besoinsTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Besoins'**
+  String get besoinsTitre;
+
+  /// No description provided for @besoinNouveau.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau besoin'**
+  String get besoinNouveau;
+
+  /// No description provided for @besoinGenerer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Générer sous seuil'**
+  String get besoinGenerer;
+
+  /// No description provided for @besoinGeneres.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n} besoin(s) généré(s).'**
+  String besoinGeneres(int n);
+
+  /// No description provided for @besoinStatut.
+  ///
+  /// In fr, this message translates to:
+  /// **'Statut'**
+  String get besoinStatut;
+
+  /// No description provided for @besoinPasserCommande.
+  ///
+  /// In fr, this message translates to:
+  /// **'Passer en Commande'**
+  String get besoinPasserCommande;
+
+  /// No description provided for @besoinPasserDisponible.
+  ///
+  /// In fr, this message translates to:
+  /// **'Passer en Disponible'**
+  String get besoinPasserDisponible;
+
+  /// No description provided for @besoinRemettreAttente.
+  ///
+  /// In fr, this message translates to:
+  /// **'Remettre En attente'**
+  String get besoinRemettreAttente;
+
+  /// No description provided for @besoinAucun.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun besoin.'**
+  String get besoinAucun;
+
+  /// No description provided for @statutBesoinEnAttente.
+  ///
+  /// In fr, this message translates to:
+  /// **'En attente'**
+  String get statutBesoinEnAttente;
+
+  /// No description provided for @statutBesoinCommande.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commande'**
+  String get statutBesoinCommande;
+
+  /// No description provided for @statutBesoinDisponible.
+  ///
+  /// In fr, this message translates to:
+  /// **'Disponible'**
+  String get statutBesoinDisponible;
+
+  /// No description provided for @sortiesTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sorties'**
+  String get sortiesTitre;
+
+  /// No description provided for @sortiesOngletSorties.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sorties'**
+  String get sortiesOngletSorties;
+
+  /// No description provided for @sortiesOngletVentes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ventes'**
+  String get sortiesOngletVentes;
+
+  /// No description provided for @sortieNouvelle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouvelle sortie'**
+  String get sortieNouvelle;
+
+  /// No description provided for @sortieMotif.
+  ///
+  /// In fr, this message translates to:
+  /// **'Motif'**
+  String get sortieMotif;
+
+  /// No description provided for @sortieAucune.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune sortie.'**
+  String get sortieAucune;
+
+  /// No description provided for @motifCasse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Casse'**
+  String get motifCasse;
+
+  /// No description provided for @motifPerime.
+  ///
+  /// In fr, this message translates to:
+  /// **'Périmé'**
+  String get motifPerime;
+
+  /// No description provided for @motifPerteVol.
+  ///
+  /// In fr, this message translates to:
+  /// **'Perte/vol'**
+  String get motifPerteVol;
+
+  /// No description provided for @motifConsommationInterne.
+  ///
+  /// In fr, this message translates to:
+  /// **'Consommation interne'**
+  String get motifConsommationInterne;
+
+  /// No description provided for @motifDon.
+  ///
+  /// In fr, this message translates to:
+  /// **'Don'**
+  String get motifDon;
+
+  /// No description provided for @motifEchantillon.
+  ///
+  /// In fr, this message translates to:
+  /// **'Échantillon'**
+  String get motifEchantillon;
+
+  /// No description provided for @communLignes.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n} ligne(s)'**
+  String communLignes(int n);
+
+  /// No description provided for @communCommentaire.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commentaire'**
+  String get communCommentaire;
+
+  /// No description provided for @communDate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Date'**
+  String get communDate;
+
+  /// No description provided for @communQuantite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quantité'**
+  String get communQuantite;
+
+  /// No description provided for @moduleMagasins.
+  ///
+  /// In fr, this message translates to:
+  /// **'Magasins'**
+  String get moduleMagasins;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

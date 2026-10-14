@@ -13,6 +13,11 @@ import '../features/roles/roles_page.dart';
 import '../features/shell/app_shell.dart';
 import '../features/shell/module_placeholder_page.dart';
 import '../features/shell/parametres_accueil_page.dart';
+import '../features/stock/besoins_page.dart';
+import '../features/stock/magasins_page.dart';
+import '../features/stock/sorties_page.dart';
+import '../features/stock/stock_page.dart';
+import '../features/stock/transferts_page.dart';
 import 'demarrage_providers.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
@@ -95,6 +100,11 @@ GoRouter construireRouter(Ref ref, {String routeInitiale = routeAccueil}) {
 Widget pageModule(ModuleApp module) => switch (module.id) {
   'parametres' => const ParametresAccueilPage(),
   'produits' => const ProduitsPage(),
+  'stock' => const StockPage(),
+  'magasins' => const MagasinsPage(),
+  'transferts' => const TransfertsPage(),
+  'besoins' => const BesoinsPage(),
+  'sorties' => const SortiesPage(),
   _ => ModulePlaceholderPage(module: module),
 };
 

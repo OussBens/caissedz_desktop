@@ -431,5 +431,110 @@
   "communValider": "تأكيد",
   "communApercu": "معاينة",
   "communImprimer": "طباعة",
-  "communAucune": "لا شيء"
+  "communAucune": "لا شيء",
+  "stockTitre": "المخزون",
+  "stockOngletNiveaux": "المستويات",
+  "stockOngletJournal": "سجل الحركات",
+  "stockColProduit": "المنتج",
+  "stockColMagasin": "المخزن",
+  "stockColQuantite": "الكمية",
+  "stockColNombre": "العدد (قطع)",
+  "stockColSeuil": "الحد",
+  "stockColDate": "التاريخ",
+  "stockColType": "النوع",
+  "stockColMotif": "السبب",
+  "stockColReference": "المرجع",
+  "stockColUtilisateur": "المستخدم",
+  "stockColCommentaire": "تعليق",
+  "stockColValeur": "القيمة (سعر الشراء)",
+  "stockTousMagasins": "كل المخازن",
+  "stockSousSeuil": "تحت الحد",
+  "stockEntreeManuelle": "إدخال يدوي",
+  "stockInventaire": "جرد",
+  "stockQuantiteConstatee": "الكمية المعاينة",
+  "stockNombreConstate": "العدد المعاين",
+  "stockAucunMouvement": "لا توجد حركات.",
+  "stockErreurQuantite": "كمية غير صالحة.",
+  "stockErreurInsuffisant": "مخزون غير كافٍ: حارس المخزون يرفض هذا الإخراج.",
+  "stockErreurMemeMagasin": "يجب أن يكون مخزن الوجهة مختلفًا.",
+  "stockErreurLignes": "أضف سطرًا واحدًا على الأقل.",
+  "stockErreurMotif": "سبب غير صالح.",
+  "stockErreurMagasinInactif": "مخزن معطّل أو غير معروف.",
+  "stockErreurMagasinSysteme": "لا يمكن تعطيل المخزن الرئيسي.",
+  "stockErreurProduit": "منتج غير معروف.",
+  "stockErreurStatut": "حالة غير صالحة.",
+  "typeMouvementEntree": "إدخال",
+  "typeMouvementSortie": "إخراج",
+  "typeMouvementVente": "بيع",
+  "typeMouvementRetour": "مرتجع",
+  "typeMouvementTransfert": "تحويل",
+  "typeMouvementInventaire": "جرد",
+  "typeMouvementInitial": "مخزون أولي",
+  "magasinsTitre": "المخازن",
+  "magasinNouveau": "مخزن جديد",
+  "magasinNom": "الاسم",
+  "magasinAdresse": "العنوان",
+  "magasinPrincipal": "رئيسي",
+  "magasinMesMagasins": "مخازني (الأول هو الرئيسي)",
+  "magasinAjouterAuxMiens": "إضافة إلى مخازني",
+  "magasinRetirerDesMiens": "إزالة من مخازني",
+  "magasinDefinirPrincipal": "تعيين كرئيسي",
+  "transfertsTitre": "التحويلات",
+  "transfertNouveau": "تحويل جديد",
+  "transfertSource": "المخزن المصدر",
+  "transfertDestination": "مخزن الوجهة",
+  "transfertLignes": "الأسطر",
+  "transfertAjouterLigne": "إضافة منتج",
+  "transfertAucun": "لا توجد تحويلات.",
+  "transfertCree": "تم تسجيل التحويل {code}: حركتان لكل سطر.",
+  "@transfertCree": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "besoinsTitre": "الاحتياجات",
+  "besoinNouveau": "احتياج جديد",
+  "besoinGenerer": "توليد تحت الحد",
+  "besoinGeneres": "تم توليد {n} احتياج.",
+  "@besoinGeneres": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "besoinStatut": "الحالة",
+  "besoinPasserCommande": "تحويل إلى طلبية",
+  "besoinPasserDisponible": "تحويل إلى متوفر",
+  "besoinRemettreAttente": "إعادة إلى قيد الانتظار",
+  "besoinAucun": "لا توجد احتياجات.",
+  "statutBesoinEnAttente": "قيد الانتظار",
+  "statutBesoinCommande": "طلبية",
+  "statutBesoinDisponible": "متوفر",
+  "sortiesTitre": "الإخراجات",
+  "sortiesOngletSorties": "الإخراجات",
+  "sortiesOngletVentes": "المبيعات",
+  "sortieNouvelle": "إخراج جديد",
+  "sortieMotif": "السبب",
+  "sortieAucune": "لا توجد إخراجات.",
+  "motifCasse": "كسر",
+  "motifPerime": "منتهي الصلاحية",
+  "motifPerteVol": "ضياع/سرقة",
+  "motifConsommationInterne": "استهلاك داخلي",
+  "motifDon": "هبة",
+  "motifEchantillon": "عينة",
+  "communLignes": "{n} سطر",
+  "@communLignes": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "communCommentaire": "تعليق",
+  "communDate": "التاريخ",
+  "communQuantite": "الكمية",
+  "moduleMagasins": "المخازن"
 }

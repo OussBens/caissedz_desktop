@@ -95,6 +95,13 @@ class Modules {
       libelle: (l) => l.moduleStock,
     ),
     ModuleApp(
+      id: 'magasins',
+      groupe: GroupeModule.stock,
+      icone: LucideIcons.store,
+      route: '/magasins',
+      libelle: (l) => l.moduleMagasins,
+    ),
+    ModuleApp(
       id: 'entrees',
       groupe: GroupeModule.stock,
       icone: LucideIcons.packagePlus,

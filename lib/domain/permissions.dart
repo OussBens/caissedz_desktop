@@ -47,7 +47,17 @@ class Roles {
   /// L'Admin accède à tout ; cette carte ne liste que les autres rôles.
   static const Map<String, Set<String>> modulesParDefaut = {
     caissier: {'tableau_bord', 'caisse', 'ventes', 'retours', 'clients', 'historique'},
-    magasinier: {'tableau_bord', 'produits', 'stock', 'entrees', 'transferts', 'besoins', 'sorties', 'fournisseurs'},
+    magasinier: {
+      'tableau_bord',
+      'produits',
+      'stock',
+      'magasins',
+      'entrees',
+      'transferts',
+      'besoins',
+      'sorties',
+      'fournisseurs',
+    },
   };
 }
 

@@ -431,5 +431,110 @@
   "communValider": "Confirm",
   "communApercu": "Preview",
   "communImprimer": "Print",
-  "communAucune": "None"
+  "communAucune": "None",
+  "stockTitre": "Stock",
+  "stockOngletNiveaux": "Levels",
+  "stockOngletJournal": "Movements journal",
+  "stockColProduit": "Product",
+  "stockColMagasin": "Store",
+  "stockColQuantite": "Quantity",
+  "stockColNombre": "Count (pieces)",
+  "stockColSeuil": "Threshold",
+  "stockColDate": "Date",
+  "stockColType": "Type",
+  "stockColMotif": "Reason",
+  "stockColReference": "Reference",
+  "stockColUtilisateur": "User",
+  "stockColCommentaire": "Comment",
+  "stockColValeur": "Value (cost)",
+  "stockTousMagasins": "All stores",
+  "stockSousSeuil": "Below threshold",
+  "stockEntreeManuelle": "Manual receipt",
+  "stockInventaire": "Stocktake",
+  "stockQuantiteConstatee": "Counted quantity",
+  "stockNombreConstate": "Counted pieces",
+  "stockAucunMouvement": "No movements.",
+  "stockErreurQuantite": "Invalid quantity.",
+  "stockErreurInsuffisant": "Insufficient stock: the stock guard refuses this outflow.",
+  "stockErreurMemeMagasin": "Destination store must differ.",
+  "stockErreurLignes": "Add at least one line.",
+  "stockErreurMotif": "Invalid reason.",
+  "stockErreurMagasinInactif": "Inactive or unknown store.",
+  "stockErreurMagasinSysteme": "The main store cannot be deactivated.",
+  "stockErreurProduit": "Unknown product.",
+  "stockErreurStatut": "Invalid status.",
+  "typeMouvementEntree": "Receipt",
+  "typeMouvementSortie": "Outflow",
+  "typeMouvementVente": "Sale",
+  "typeMouvementRetour": "Return",
+  "typeMouvementTransfert": "Transfer",
+  "typeMouvementInventaire": "Stocktake",
+  "typeMouvementInitial": "Opening stock",
+  "magasinsTitre": "Stores",
+  "magasinNouveau": "New store",
+  "magasinNom": "Name",
+  "magasinAdresse": "Address",
+  "magasinPrincipal": "Main",
+  "magasinMesMagasins": "My stores (the first is the main one)",
+  "magasinAjouterAuxMiens": "Add to my stores",
+  "magasinRetirerDesMiens": "Remove from my stores",
+  "magasinDefinirPrincipal": "Set as main",
+  "transfertsTitre": "Transfers",
+  "transfertNouveau": "New transfer",
+  "transfertSource": "Source store",
+  "transfertDestination": "Destination store",
+  "transfertLignes": "Lines",
+  "transfertAjouterLigne": "Add a product",
+  "transfertAucun": "No transfers.",
+  "transfertCree": "Transfer {code} saved: 2 movements per line.",
+  "@transfertCree": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "besoinsTitre": "Needs",
+  "besoinNouveau": "New need",
+  "besoinGenerer": "Generate below threshold",
+  "besoinGeneres": "{n} need(s) generated.",
+  "@besoinGeneres": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "besoinStatut": "Status",
+  "besoinPasserCommande": "Mark as Ordered",
+  "besoinPasserDisponible": "Mark as Available",
+  "besoinRemettreAttente": "Back to Pending",
+  "besoinAucun": "No needs.",
+  "statutBesoinEnAttente": "Pending",
+  "statutBesoinCommande": "Ordered",
+  "statutBesoinDisponible": "Available",
+  "sortiesTitre": "Outgoings",
+  "sortiesOngletSorties": "Outgoings",
+  "sortiesOngletVentes": "Sales",
+  "sortieNouvelle": "New outflow",
+  "sortieMotif": "Reason",
+  "sortieAucune": "No outflows.",
+  "motifCasse": "Breakage",
+  "motifPerime": "Expired",
+  "motifPerteVol": "Loss/theft",
+  "motifConsommationInterne": "Internal use",
+  "motifDon": "Donation",
+  "motifEchantillon": "Sample",
+  "communLignes": "{n} line(s)",
+  "@communLignes": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "communCommentaire": "Comment",
+  "communDate": "Date",
+  "communQuantite": "Quantity",
+  "moduleMagasins": "Stores"
 }

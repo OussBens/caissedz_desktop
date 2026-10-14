@@ -921,4 +921,262 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get communAucune => 'لا شيء';
+
+  @override
+  String get stockTitre => 'المخزون';
+
+  @override
+  String get stockOngletNiveaux => 'المستويات';
+
+  @override
+  String get stockOngletJournal => 'سجل الحركات';
+
+  @override
+  String get stockColProduit => 'المنتج';
+
+  @override
+  String get stockColMagasin => 'المخزن';
+
+  @override
+  String get stockColQuantite => 'الكمية';
+
+  @override
+  String get stockColNombre => 'العدد (قطع)';
+
+  @override
+  String get stockColSeuil => 'الحد';
+
+  @override
+  String get stockColDate => 'التاريخ';
+
+  @override
+  String get stockColType => 'النوع';
+
+  @override
+  String get stockColMotif => 'السبب';
+
+  @override
+  String get stockColReference => 'المرجع';
+
+  @override
+  String get stockColUtilisateur => 'المستخدم';
+
+  @override
+  String get stockColCommentaire => 'تعليق';
+
+  @override
+  String get stockColValeur => 'القيمة (سعر الشراء)';
+
+  @override
+  String get stockTousMagasins => 'كل المخازن';
+
+  @override
+  String get stockSousSeuil => 'تحت الحد';
+
+  @override
+  String get stockEntreeManuelle => 'إدخال يدوي';
+
+  @override
+  String get stockInventaire => 'جرد';
+
+  @override
+  String get stockQuantiteConstatee => 'الكمية المعاينة';
+
+  @override
+  String get stockNombreConstate => 'العدد المعاين';
+
+  @override
+  String get stockAucunMouvement => 'لا توجد حركات.';
+
+  @override
+  String get stockErreurQuantite => 'كمية غير صالحة.';
+
+  @override
+  String get stockErreurInsuffisant => 'مخزون غير كافٍ: حارس المخزون يرفض هذا الإخراج.';
+
+  @override
+  String get stockErreurMemeMagasin => 'يجب أن يكون مخزن الوجهة مختلفًا.';
+
+  @override
+  String get stockErreurLignes => 'أضف سطرًا واحدًا على الأقل.';
+
+  @override
+  String get stockErreurMotif => 'سبب غير صالح.';
+
+  @override
+  String get stockErreurMagasinInactif => 'مخزن معطّل أو غير معروف.';
+
+  @override
+  String get stockErreurMagasinSysteme => 'لا يمكن تعطيل المخزن الرئيسي.';
+
+  @override
+  String get stockErreurProduit => 'منتج غير معروف.';
+
+  @override
+  String get stockErreurStatut => 'حالة غير صالحة.';
+
+  @override
+  String get typeMouvementEntree => 'إدخال';
+
+  @override
+  String get typeMouvementSortie => 'إخراج';
+
+  @override
+  String get typeMouvementVente => 'بيع';
+
+  @override
+  String get typeMouvementRetour => 'مرتجع';
+
+  @override
+  String get typeMouvementTransfert => 'تحويل';
+
+  @override
+  String get typeMouvementInventaire => 'جرد';
+
+  @override
+  String get typeMouvementInitial => 'مخزون أولي';
+
+  @override
+  String get magasinsTitre => 'المخازن';
+
+  @override
+  String get magasinNouveau => 'مخزن جديد';
+
+  @override
+  String get magasinNom => 'الاسم';
+
+  @override
+  String get magasinAdresse => 'العنوان';
+
+  @override
+  String get magasinPrincipal => 'رئيسي';
+
+  @override
+  String get magasinMesMagasins => 'مخازني (الأول هو الرئيسي)';
+
+  @override
+  String get magasinAjouterAuxMiens => 'إضافة إلى مخازني';
+
+  @override
+  String get magasinRetirerDesMiens => 'إزالة من مخازني';
+
+  @override
+  String get magasinDefinirPrincipal => 'تعيين كرئيسي';
+
+  @override
+  String get transfertsTitre => 'التحويلات';
+
+  @override
+  String get transfertNouveau => 'تحويل جديد';
+
+  @override
+  String get transfertSource => 'المخزن المصدر';
+
+  @override
+  String get transfertDestination => 'مخزن الوجهة';
+
+  @override
+  String get transfertLignes => 'الأسطر';
+
+  @override
+  String get transfertAjouterLigne => 'إضافة منتج';
+
+  @override
+  String get transfertAucun => 'لا توجد تحويلات.';
+
+  @override
+  String transfertCree(String code) {
+    return 'تم تسجيل التحويل $code: حركتان لكل سطر.';
+  }
+
+  @override
+  String get besoinsTitre => 'الاحتياجات';
+
+  @override
+  String get besoinNouveau => 'احتياج جديد';
+
+  @override
+  String get besoinGenerer => 'توليد تحت الحد';
+
+  @override
+  String besoinGeneres(int n) {
+    return 'تم توليد $n احتياج.';
+  }
+
+  @override
+  String get besoinStatut => 'الحالة';
+
+  @override
+  String get besoinPasserCommande => 'تحويل إلى طلبية';
+
+  @override
+  String get besoinPasserDisponible => 'تحويل إلى متوفر';
+
+  @override
+  String get besoinRemettreAttente => 'إعادة إلى قيد الانتظار';
+
+  @override
+  String get besoinAucun => 'لا توجد احتياجات.';
+
+  @override
+  String get statutBesoinEnAttente => 'قيد الانتظار';
+
+  @override
+  String get statutBesoinCommande => 'طلبية';
+
+  @override
+  String get statutBesoinDisponible => 'متوفر';
+
+  @override
+  String get sortiesTitre => 'الإخراجات';
+
+  @override
+  String get sortiesOngletSorties => 'الإخراجات';
+
+  @override
+  String get sortiesOngletVentes => 'المبيعات';
+
+  @override
+  String get sortieNouvelle => 'إخراج جديد';
+
+  @override
+  String get sortieMotif => 'السبب';
+
+  @override
+  String get sortieAucune => 'لا توجد إخراجات.';
+
+  @override
+  String get motifCasse => 'كسر';
+
+  @override
+  String get motifPerime => 'منتهي الصلاحية';
+
+  @override
+  String get motifPerteVol => 'ضياع/سرقة';
+
+  @override
+  String get motifConsommationInterne => 'استهلاك داخلي';
+
+  @override
+  String get motifDon => 'هبة';
+
+  @override
+  String get motifEchantillon => 'عينة';
+
+  @override
+  String communLignes(int n) {
+    return '$n سطر';
+  }
+
+  @override
+  String get communCommentaire => 'تعليق';
+
+  @override
+  String get communDate => 'التاريخ';
+
+  @override
+  String get communQuantite => 'الكمية';
+
+  @override
+  String get moduleMagasins => 'المخازن';
 }
