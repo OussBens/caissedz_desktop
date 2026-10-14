@@ -846,5 +846,103 @@
   "sensEncaissement": "تحصيل",
   "sensDecaissement": "صرف",
   "tiersErreurNom": "الاسم إلزامي.",
-  "tiersErreurSysteme": "لا يمكن تعديل الطرف النظامي."
+  "tiersErreurSysteme": "لا يمكن تعديل الطرف النظامي.",
+  "achatsTitre": "الإدخالات / المشتريات",
+  "achatNouveau": "إدخال جديد",
+  "achatSmartScan": "Smart Scan IA",
+  "achatFournisseur": "المورد",
+  "achatReference": "مرجع الفاتورة",
+  "achatMagasin": "المخزن",
+  "achatLignes": "الأسطر",
+  "achatPrixAchat": "سعر الشراء",
+  "achatNouveauPrixVente": "سعر البيع الجديد",
+  "achatVerse": "المدفوع",
+  "achatModePaiement": "طريقة الدفع",
+  "achatMettreAJourPrix": "تحديث سعر شراء المنتجات",
+  "achatAucun": "لا توجد إدخالات.",
+  "achatColTotal": "المجموع",
+  "achatColVerse": "المدفوع",
+  "achatColReste": "المتبقي",
+  "achatColSource": "المصدر",
+  "achatColStatut": "الحالة",
+  "achatAnnuler": "إلغاء الإدخال",
+  "achatConfirmerAnnulation": "إلغاء الإدخال {code}؟ سيُخرج المخزون.",
+  "@achatConfirmerAnnulation": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "achatEnregistre": "تم تسجيل الإدخال {code}: {total}، المتبقي {reste}.",
+  "@achatEnregistre": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      },
+      "reste": {
+        "type": "String"
+      }
+    }
+  },
+  "achatErreurLignes": "أضف سطرًا واحدًا على الأقل.",
+  "achatErreurQuantite": "كمية غير صالحة.",
+  "achatErreurPrix": "سعر أو مبلغ غير صالح.",
+  "achatErreurProduit": "منتج غير معروف.",
+  "achatErreurFournisseur": "مورد غير معروف.",
+  "achatErreurInconnu": "الإدخال غير موجود.",
+  "achatErreurAnnule": "الإدخال ملغى بالفعل.",
+  "achatErreurPeriode": "فترة مقفلة: الإلغاء غير ممكن.",
+  "achatErreurStock": "مخزون غير كافٍ للإلغاء (بيع سابق).",
+  "statutAchatValide": "مؤكد",
+  "statutAchatAnnule": "ملغى",
+  "sourceManuel": "يدوي",
+  "sourceSmartScan": "Smart Scan",
+  "smartScanTitre": "Smart Scan IA — فاتورة المورد",
+  "smartScanIntro": "صوّر الفاتورة أو اخترها (صورة أو PDF): يتعرف خادم CaisseDZ على الأسطر ويقارنها بالكتالوج.",
+  "smartScanQuota": "الحصة: {restant} تحليل متبقٍ من {total}",
+  "@smartScanQuota": {
+    "placeholders": {
+      "restant": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "smartScanChoisir": "اختيار فاتورة",
+  "smartScanAnalyser": "تحليل",
+  "smartScanAnalyse": "جارٍ التحليل…",
+  "smartScanAucuneLigne": "لم يُتعرف على أي سطر.",
+  "smartScanLigneNonRapprochee": "غير مطابق",
+  "smartScanRapprocher": "ربط بمنتج",
+  "smartScanCreerEntree": "إنشاء الإدخال",
+  "smartScanQuotaAtteint": "تم بلوغ حصة Smart Scan",
+  "smartScanQuotaAtteintDetail": "استعملت كل تحليلاتك. اطلب عرضًا للمتابعة.",
+  "smartScanDemandeOffre": "طلب عرض",
+  "smartScanEmail": "بريدك الإلكتروني",
+  "smartScanMessage": "الرسالة",
+  "smartScanOffreEnvoyee": "أُرسل الطلب، سنتصل بك قريبًا.",
+  "smartScanNonConfigure": "أدخل عنوان خادم CaisseDZ في الإعدادات لاستعمال Smart Scan.",
+  "smartScanErreurReseau": "تعذر الوصول إلى الخادم: {detail}",
+  "@smartScanErreurReseau": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "smartScanErreurServeur": "خطأ في الخادم: {detail}",
+  "@smartScanErreurServeur": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "smartScanErreurFichier": "ملف غير صالح."
 }

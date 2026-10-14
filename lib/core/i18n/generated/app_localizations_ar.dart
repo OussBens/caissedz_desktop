@@ -1742,4 +1742,177 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get tiersErreurSysteme => 'لا يمكن تعديل الطرف النظامي.';
+
+  @override
+  String get achatsTitre => 'الإدخالات / المشتريات';
+
+  @override
+  String get achatNouveau => 'إدخال جديد';
+
+  @override
+  String get achatSmartScan => 'Smart Scan IA';
+
+  @override
+  String get achatFournisseur => 'المورد';
+
+  @override
+  String get achatReference => 'مرجع الفاتورة';
+
+  @override
+  String get achatMagasin => 'المخزن';
+
+  @override
+  String get achatLignes => 'الأسطر';
+
+  @override
+  String get achatPrixAchat => 'سعر الشراء';
+
+  @override
+  String get achatNouveauPrixVente => 'سعر البيع الجديد';
+
+  @override
+  String get achatVerse => 'المدفوع';
+
+  @override
+  String get achatModePaiement => 'طريقة الدفع';
+
+  @override
+  String get achatMettreAJourPrix => 'تحديث سعر شراء المنتجات';
+
+  @override
+  String get achatAucun => 'لا توجد إدخالات.';
+
+  @override
+  String get achatColTotal => 'المجموع';
+
+  @override
+  String get achatColVerse => 'المدفوع';
+
+  @override
+  String get achatColReste => 'المتبقي';
+
+  @override
+  String get achatColSource => 'المصدر';
+
+  @override
+  String get achatColStatut => 'الحالة';
+
+  @override
+  String get achatAnnuler => 'إلغاء الإدخال';
+
+  @override
+  String achatConfirmerAnnulation(String code) {
+    return 'إلغاء الإدخال $code؟ سيُخرج المخزون.';
+  }
+
+  @override
+  String achatEnregistre(String code, String total, String reste) {
+    return 'تم تسجيل الإدخال $code: $total، المتبقي $reste.';
+  }
+
+  @override
+  String get achatErreurLignes => 'أضف سطرًا واحدًا على الأقل.';
+
+  @override
+  String get achatErreurQuantite => 'كمية غير صالحة.';
+
+  @override
+  String get achatErreurPrix => 'سعر أو مبلغ غير صالح.';
+
+  @override
+  String get achatErreurProduit => 'منتج غير معروف.';
+
+  @override
+  String get achatErreurFournisseur => 'مورد غير معروف.';
+
+  @override
+  String get achatErreurInconnu => 'الإدخال غير موجود.';
+
+  @override
+  String get achatErreurAnnule => 'الإدخال ملغى بالفعل.';
+
+  @override
+  String get achatErreurPeriode => 'فترة مقفلة: الإلغاء غير ممكن.';
+
+  @override
+  String get achatErreurStock => 'مخزون غير كافٍ للإلغاء (بيع سابق).';
+
+  @override
+  String get statutAchatValide => 'مؤكد';
+
+  @override
+  String get statutAchatAnnule => 'ملغى';
+
+  @override
+  String get sourceManuel => 'يدوي';
+
+  @override
+  String get sourceSmartScan => 'Smart Scan';
+
+  @override
+  String get smartScanTitre => 'Smart Scan IA — فاتورة المورد';
+
+  @override
+  String get smartScanIntro =>
+      'صوّر الفاتورة أو اخترها (صورة أو PDF): يتعرف خادم CaisseDZ على الأسطر ويقارنها بالكتالوج.';
+
+  @override
+  String smartScanQuota(int restant, int total) {
+    return 'الحصة: $restant تحليل متبقٍ من $total';
+  }
+
+  @override
+  String get smartScanChoisir => 'اختيار فاتورة';
+
+  @override
+  String get smartScanAnalyser => 'تحليل';
+
+  @override
+  String get smartScanAnalyse => 'جارٍ التحليل…';
+
+  @override
+  String get smartScanAucuneLigne => 'لم يُتعرف على أي سطر.';
+
+  @override
+  String get smartScanLigneNonRapprochee => 'غير مطابق';
+
+  @override
+  String get smartScanRapprocher => 'ربط بمنتج';
+
+  @override
+  String get smartScanCreerEntree => 'إنشاء الإدخال';
+
+  @override
+  String get smartScanQuotaAtteint => 'تم بلوغ حصة Smart Scan';
+
+  @override
+  String get smartScanQuotaAtteintDetail => 'استعملت كل تحليلاتك. اطلب عرضًا للمتابعة.';
+
+  @override
+  String get smartScanDemandeOffre => 'طلب عرض';
+
+  @override
+  String get smartScanEmail => 'بريدك الإلكتروني';
+
+  @override
+  String get smartScanMessage => 'الرسالة';
+
+  @override
+  String get smartScanOffreEnvoyee => 'أُرسل الطلب، سنتصل بك قريبًا.';
+
+  @override
+  String get smartScanNonConfigure => 'أدخل عنوان خادم CaisseDZ في الإعدادات لاستعمال Smart Scan.';
+
+  @override
+  String smartScanErreurReseau(String detail) {
+    return 'تعذر الوصول إلى الخادم: $detail';
+  }
+
+  @override
+  String smartScanErreurServeur(String detail) {
+    return 'خطأ في الخادم: $detail';
+  }
+
+  @override
+  String get smartScanErreurFichier => 'ملف غير صالح.';
 }

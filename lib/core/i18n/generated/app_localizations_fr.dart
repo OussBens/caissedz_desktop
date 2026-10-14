@@ -1751,4 +1751,177 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tiersErreurSysteme => 'Le tiers système ne peut pas être modifié.';
+
+  @override
+  String get achatsTitre => 'Entrées / Achats';
+
+  @override
+  String get achatNouveau => 'Nouvelle entrée';
+
+  @override
+  String get achatSmartScan => 'Smart Scan IA';
+
+  @override
+  String get achatFournisseur => 'Fournisseur';
+
+  @override
+  String get achatReference => 'Référence facture';
+
+  @override
+  String get achatMagasin => 'Magasin';
+
+  @override
+  String get achatLignes => 'Lignes';
+
+  @override
+  String get achatPrixAchat => 'Prix d\'achat';
+
+  @override
+  String get achatNouveauPrixVente => 'Nouveau prix de vente';
+
+  @override
+  String get achatVerse => 'Versé';
+
+  @override
+  String get achatModePaiement => 'Mode de paiement';
+
+  @override
+  String get achatMettreAJourPrix => 'Mettre à jour le prix d\'achat des produits';
+
+  @override
+  String get achatAucun => 'Aucune entrée.';
+
+  @override
+  String get achatColTotal => 'Total';
+
+  @override
+  String get achatColVerse => 'Versé';
+
+  @override
+  String get achatColReste => 'Reste';
+
+  @override
+  String get achatColSource => 'Source';
+
+  @override
+  String get achatColStatut => 'Statut';
+
+  @override
+  String get achatAnnuler => 'Annuler l\'entrée';
+
+  @override
+  String achatConfirmerAnnulation(String code) {
+    return 'Annuler l\'entrée $code ? Le stock sera ressorti.';
+  }
+
+  @override
+  String achatEnregistre(String code, String total, String reste) {
+    return 'Entrée $code enregistrée : $total, reste dû $reste.';
+  }
+
+  @override
+  String get achatErreurLignes => 'Ajoutez au moins une ligne.';
+
+  @override
+  String get achatErreurQuantite => 'Quantité invalide.';
+
+  @override
+  String get achatErreurPrix => 'Prix ou montant invalide.';
+
+  @override
+  String get achatErreurProduit => 'Produit inconnu.';
+
+  @override
+  String get achatErreurFournisseur => 'Fournisseur inconnu.';
+
+  @override
+  String get achatErreurInconnu => 'Entrée introuvable.';
+
+  @override
+  String get achatErreurAnnule => 'Entrée déjà annulée.';
+
+  @override
+  String get achatErreurPeriode => 'Période clôturée : annulation impossible.';
+
+  @override
+  String get achatErreurStock => 'Stock insuffisant pour annuler (déjà vendu).';
+
+  @override
+  String get statutAchatValide => 'Validé';
+
+  @override
+  String get statutAchatAnnule => 'Annulé';
+
+  @override
+  String get sourceManuel => 'Manuel';
+
+  @override
+  String get sourceSmartScan => 'Smart Scan';
+
+  @override
+  String get smartScanTitre => 'Smart Scan IA — facture fournisseur';
+
+  @override
+  String get smartScanIntro =>
+      'Prenez en photo ou choisissez la facture (image ou PDF) : les lignes sont reconnues par le serveur CaisseDZ et rapprochées de votre catalogue.';
+
+  @override
+  String smartScanQuota(int restant, int total) {
+    return 'Quota : $restant analyse(s) restante(s) sur $total';
+  }
+
+  @override
+  String get smartScanChoisir => 'Choisir une facture';
+
+  @override
+  String get smartScanAnalyser => 'Analyser';
+
+  @override
+  String get smartScanAnalyse => 'Analyse en cours…';
+
+  @override
+  String get smartScanAucuneLigne => 'Aucune ligne reconnue.';
+
+  @override
+  String get smartScanLigneNonRapprochee => 'Non rapprochée';
+
+  @override
+  String get smartScanRapprocher => 'Associer un produit';
+
+  @override
+  String get smartScanCreerEntree => 'Créer l\'entrée';
+
+  @override
+  String get smartScanQuotaAtteint => 'Quota Smart Scan atteint';
+
+  @override
+  String get smartScanQuotaAtteintDetail => 'Vous avez utilisé toutes vos analyses. Demandez une offre pour continuer.';
+
+  @override
+  String get smartScanDemandeOffre => 'Demander une offre';
+
+  @override
+  String get smartScanEmail => 'Votre e-mail';
+
+  @override
+  String get smartScanMessage => 'Message';
+
+  @override
+  String get smartScanOffreEnvoyee => 'Demande envoyée, nous vous contacterons rapidement.';
+
+  @override
+  String get smartScanNonConfigure => 'Renseignez l\'URL du serveur CaisseDZ dans Paramètres pour utiliser Smart Scan.';
+
+  @override
+  String smartScanErreurReseau(String detail) {
+    return 'Serveur injoignable : $detail';
+  }
+
+  @override
+  String smartScanErreurServeur(String detail) {
+    return 'Erreur du serveur : $detail';
+  }
+
+  @override
+  String get smartScanErreurFichier => 'Fichier invalide.';
 }

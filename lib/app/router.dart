@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../domain/modules.dart';
+import '../features/achats/achats_page.dart';
 import '../features/activation/activation_page.dart';
 import '../features/caisse/pos_page.dart';
 import '../features/compte/mon_compte_page.dart';
@@ -106,6 +107,7 @@ GoRouter construireRouter(Ref ref, {String routeInitiale = routeAccueil}) {
 Widget pageModule(ModuleApp module) => switch (module.id) {
   'parametres' => const ParametresAccueilPage(),
   'caisse' => const PosPage(),
+  'entrees' => const AchatsPage(),
   'ventes' => const VentesPage(),
   'retours' => const RetoursPage(),
   'clients' => const ClientsPage(),

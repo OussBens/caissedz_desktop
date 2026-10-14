@@ -59,7 +59,8 @@
 - [x] Versement lié à un retour verrouillé
 
 ## Achats (lot 6)
-- [ ] Smart Scan IA : quota serveur, quota atteint, demande d'offre
+- [x] Entrées / achats : transaction unique, stock par mouvements, prix d'achat, dette fournisseur
+- [x] Smart Scan IA : quota serveur, quota atteint, demande d'offre
 
 ## Gestion caisse et fiscal (lot 7)
 - [ ] Clôtures Z chaînées immuables ; annulation refusée en période clôturée

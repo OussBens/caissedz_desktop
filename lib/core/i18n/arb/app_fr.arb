@@ -846,5 +846,103 @@
   "sensEncaissement": "Encaissement",
   "sensDecaissement": "Décaissement",
   "tiersErreurNom": "Le nom est obligatoire.",
-  "tiersErreurSysteme": "Le tiers système ne peut pas être modifié."
+  "tiersErreurSysteme": "Le tiers système ne peut pas être modifié.",
+  "achatsTitre": "Entrées / Achats",
+  "achatNouveau": "Nouvelle entrée",
+  "achatSmartScan": "Smart Scan IA",
+  "achatFournisseur": "Fournisseur",
+  "achatReference": "Référence facture",
+  "achatMagasin": "Magasin",
+  "achatLignes": "Lignes",
+  "achatPrixAchat": "Prix d'achat",
+  "achatNouveauPrixVente": "Nouveau prix de vente",
+  "achatVerse": "Versé",
+  "achatModePaiement": "Mode de paiement",
+  "achatMettreAJourPrix": "Mettre à jour le prix d'achat des produits",
+  "achatAucun": "Aucune entrée.",
+  "achatColTotal": "Total",
+  "achatColVerse": "Versé",
+  "achatColReste": "Reste",
+  "achatColSource": "Source",
+  "achatColStatut": "Statut",
+  "achatAnnuler": "Annuler l'entrée",
+  "achatConfirmerAnnulation": "Annuler l'entrée {code} ? Le stock sera ressorti.",
+  "@achatConfirmerAnnulation": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "achatEnregistre": "Entrée {code} enregistrée : {total}, reste dû {reste}.",
+  "@achatEnregistre": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      },
+      "reste": {
+        "type": "String"
+      }
+    }
+  },
+  "achatErreurLignes": "Ajoutez au moins une ligne.",
+  "achatErreurQuantite": "Quantité invalide.",
+  "achatErreurPrix": "Prix ou montant invalide.",
+  "achatErreurProduit": "Produit inconnu.",
+  "achatErreurFournisseur": "Fournisseur inconnu.",
+  "achatErreurInconnu": "Entrée introuvable.",
+  "achatErreurAnnule": "Entrée déjà annulée.",
+  "achatErreurPeriode": "Période clôturée : annulation impossible.",
+  "achatErreurStock": "Stock insuffisant pour annuler (déjà vendu).",
+  "statutAchatValide": "Validé",
+  "statutAchatAnnule": "Annulé",
+  "sourceManuel": "Manuel",
+  "sourceSmartScan": "Smart Scan",
+  "smartScanTitre": "Smart Scan IA — facture fournisseur",
+  "smartScanIntro": "Prenez en photo ou choisissez la facture (image ou PDF) : les lignes sont reconnues par le serveur CaisseDZ et rapprochées de votre catalogue.",
+  "smartScanQuota": "Quota : {restant} analyse(s) restante(s) sur {total}",
+  "@smartScanQuota": {
+    "placeholders": {
+      "restant": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "smartScanChoisir": "Choisir une facture",
+  "smartScanAnalyser": "Analyser",
+  "smartScanAnalyse": "Analyse en cours…",
+  "smartScanAucuneLigne": "Aucune ligne reconnue.",
+  "smartScanLigneNonRapprochee": "Non rapprochée",
+  "smartScanRapprocher": "Associer un produit",
+  "smartScanCreerEntree": "Créer l'entrée",
+  "smartScanQuotaAtteint": "Quota Smart Scan atteint",
+  "smartScanQuotaAtteintDetail": "Vous avez utilisé toutes vos analyses. Demandez une offre pour continuer.",
+  "smartScanDemandeOffre": "Demander une offre",
+  "smartScanEmail": "Votre e-mail",
+  "smartScanMessage": "Message",
+  "smartScanOffreEnvoyee": "Demande envoyée, nous vous contacterons rapidement.",
+  "smartScanNonConfigure": "Renseignez l'URL du serveur CaisseDZ dans Paramètres pour utiliser Smart Scan.",
+  "smartScanErreurReseau": "Serveur injoignable : {detail}",
+  "@smartScanErreurReseau": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "smartScanErreurServeur": "Erreur du serveur : {detail}",
+  "@smartScanErreurServeur": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "smartScanErreurFichier": "Fichier invalide."
 }

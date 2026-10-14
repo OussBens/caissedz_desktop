@@ -846,5 +846,103 @@
   "sensEncaissement": "Receipt",
   "sensDecaissement": "Disbursement",
   "tiersErreurNom": "Name is required.",
-  "tiersErreurSysteme": "The system party cannot be changed."
+  "tiersErreurSysteme": "The system party cannot be changed.",
+  "achatsTitre": "Receipts / Purchases",
+  "achatNouveau": "New receipt",
+  "achatSmartScan": "Smart Scan AI",
+  "achatFournisseur": "Supplier",
+  "achatReference": "Invoice reference",
+  "achatMagasin": "Store",
+  "achatLignes": "Lines",
+  "achatPrixAchat": "Purchase price",
+  "achatNouveauPrixVente": "New selling price",
+  "achatVerse": "Paid",
+  "achatModePaiement": "Payment method",
+  "achatMettreAJourPrix": "Update product purchase prices",
+  "achatAucun": "No receipts.",
+  "achatColTotal": "Total",
+  "achatColVerse": "Paid",
+  "achatColReste": "Due",
+  "achatColSource": "Source",
+  "achatColStatut": "Status",
+  "achatAnnuler": "Cancel receipt",
+  "achatConfirmerAnnulation": "Cancel receipt {code}? Stock will be taken out.",
+  "@achatConfirmerAnnulation": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "achatEnregistre": "Receipt {code} saved: {total}, due {reste}.",
+  "@achatEnregistre": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      },
+      "reste": {
+        "type": "String"
+      }
+    }
+  },
+  "achatErreurLignes": "Add at least one line.",
+  "achatErreurQuantite": "Invalid quantity.",
+  "achatErreurPrix": "Invalid price or amount.",
+  "achatErreurProduit": "Unknown product.",
+  "achatErreurFournisseur": "Unknown supplier.",
+  "achatErreurInconnu": "Receipt not found.",
+  "achatErreurAnnule": "Receipt already cancelled.",
+  "achatErreurPeriode": "Closed period: cannot cancel.",
+  "achatErreurStock": "Insufficient stock to cancel (already sold).",
+  "statutAchatValide": "Validated",
+  "statutAchatAnnule": "Cancelled",
+  "sourceManuel": "Manual",
+  "sourceSmartScan": "Smart Scan",
+  "smartScanTitre": "Smart Scan AI — supplier invoice",
+  "smartScanIntro": "Photograph or pick the invoice (image or PDF): lines are recognised by the CaisseDZ server and matched with your catalogue.",
+  "smartScanQuota": "Quota: {restant} analysis(es) left out of {total}",
+  "@smartScanQuota": {
+    "placeholders": {
+      "restant": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "smartScanChoisir": "Choose an invoice",
+  "smartScanAnalyser": "Analyse",
+  "smartScanAnalyse": "Analysing…",
+  "smartScanAucuneLigne": "No line recognised.",
+  "smartScanLigneNonRapprochee": "Unmatched",
+  "smartScanRapprocher": "Link a product",
+  "smartScanCreerEntree": "Create receipt",
+  "smartScanQuotaAtteint": "Smart Scan quota reached",
+  "smartScanQuotaAtteintDetail": "You have used all your analyses. Request an offer to continue.",
+  "smartScanDemandeOffre": "Request an offer",
+  "smartScanEmail": "Your e-mail",
+  "smartScanMessage": "Message",
+  "smartScanOffreEnvoyee": "Request sent, we will contact you shortly.",
+  "smartScanNonConfigure": "Set the CaisseDZ server URL in Settings to use Smart Scan.",
+  "smartScanErreurReseau": "Server unreachable: {detail}",
+  "@smartScanErreurReseau": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "smartScanErreurServeur": "Server error: {detail}",
+  "@smartScanErreurServeur": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "smartScanErreurFichier": "Invalid file."
 }

@@ -3410,6 +3410,330 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Le tiers système ne peut pas être modifié.'**
   String get tiersErreurSysteme;
+
+  /// No description provided for @achatsTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrées / Achats'**
+  String get achatsTitre;
+
+  /// No description provided for @achatNouveau.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouvelle entrée'**
+  String get achatNouveau;
+
+  /// No description provided for @achatSmartScan.
+  ///
+  /// In fr, this message translates to:
+  /// **'Smart Scan IA'**
+  String get achatSmartScan;
+
+  /// No description provided for @achatFournisseur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fournisseur'**
+  String get achatFournisseur;
+
+  /// No description provided for @achatReference.
+  ///
+  /// In fr, this message translates to:
+  /// **'Référence facture'**
+  String get achatReference;
+
+  /// No description provided for @achatMagasin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Magasin'**
+  String get achatMagasin;
+
+  /// No description provided for @achatLignes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lignes'**
+  String get achatLignes;
+
+  /// No description provided for @achatPrixAchat.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix d\'achat'**
+  String get achatPrixAchat;
+
+  /// No description provided for @achatNouveauPrixVente.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau prix de vente'**
+  String get achatNouveauPrixVente;
+
+  /// No description provided for @achatVerse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Versé'**
+  String get achatVerse;
+
+  /// No description provided for @achatModePaiement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mode de paiement'**
+  String get achatModePaiement;
+
+  /// No description provided for @achatMettreAJourPrix.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mettre à jour le prix d\'achat des produits'**
+  String get achatMettreAJourPrix;
+
+  /// No description provided for @achatAucun.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune entrée.'**
+  String get achatAucun;
+
+  /// No description provided for @achatColTotal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Total'**
+  String get achatColTotal;
+
+  /// No description provided for @achatColVerse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Versé'**
+  String get achatColVerse;
+
+  /// No description provided for @achatColReste.
+  ///
+  /// In fr, this message translates to:
+  /// **'Reste'**
+  String get achatColReste;
+
+  /// No description provided for @achatColSource.
+  ///
+  /// In fr, this message translates to:
+  /// **'Source'**
+  String get achatColSource;
+
+  /// No description provided for @achatColStatut.
+  ///
+  /// In fr, this message translates to:
+  /// **'Statut'**
+  String get achatColStatut;
+
+  /// No description provided for @achatAnnuler.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annuler l\'entrée'**
+  String get achatAnnuler;
+
+  /// No description provided for @achatConfirmerAnnulation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annuler l\'entrée {code} ? Le stock sera ressorti.'**
+  String achatConfirmerAnnulation(String code);
+
+  /// No description provided for @achatEnregistre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrée {code} enregistrée : {total}, reste dû {reste}.'**
+  String achatEnregistre(String code, String total, String reste);
+
+  /// No description provided for @achatErreurLignes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajoutez au moins une ligne.'**
+  String get achatErreurLignes;
+
+  /// No description provided for @achatErreurQuantite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quantité invalide.'**
+  String get achatErreurQuantite;
+
+  /// No description provided for @achatErreurPrix.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix ou montant invalide.'**
+  String get achatErreurPrix;
+
+  /// No description provided for @achatErreurProduit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produit inconnu.'**
+  String get achatErreurProduit;
+
+  /// No description provided for @achatErreurFournisseur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fournisseur inconnu.'**
+  String get achatErreurFournisseur;
+
+  /// No description provided for @achatErreurInconnu.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrée introuvable.'**
+  String get achatErreurInconnu;
+
+  /// No description provided for @achatErreurAnnule.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrée déjà annulée.'**
+  String get achatErreurAnnule;
+
+  /// No description provided for @achatErreurPeriode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Période clôturée : annulation impossible.'**
+  String get achatErreurPeriode;
+
+  /// No description provided for @achatErreurStock.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock insuffisant pour annuler (déjà vendu).'**
+  String get achatErreurStock;
+
+  /// No description provided for @statutAchatValide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Validé'**
+  String get statutAchatValide;
+
+  /// No description provided for @statutAchatAnnule.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annulé'**
+  String get statutAchatAnnule;
+
+  /// No description provided for @sourceManuel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Manuel'**
+  String get sourceManuel;
+
+  /// No description provided for @sourceSmartScan.
+  ///
+  /// In fr, this message translates to:
+  /// **'Smart Scan'**
+  String get sourceSmartScan;
+
+  /// No description provided for @smartScanTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Smart Scan IA — facture fournisseur'**
+  String get smartScanTitre;
+
+  /// No description provided for @smartScanIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prenez en photo ou choisissez la facture (image ou PDF) : les lignes sont reconnues par le serveur CaisseDZ et rapprochées de votre catalogue.'**
+  String get smartScanIntro;
+
+  /// No description provided for @smartScanQuota.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quota : {restant} analyse(s) restante(s) sur {total}'**
+  String smartScanQuota(int restant, int total);
+
+  /// No description provided for @smartScanChoisir.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir une facture'**
+  String get smartScanChoisir;
+
+  /// No description provided for @smartScanAnalyser.
+  ///
+  /// In fr, this message translates to:
+  /// **'Analyser'**
+  String get smartScanAnalyser;
+
+  /// No description provided for @smartScanAnalyse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Analyse en cours…'**
+  String get smartScanAnalyse;
+
+  /// No description provided for @smartScanAucuneLigne.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune ligne reconnue.'**
+  String get smartScanAucuneLigne;
+
+  /// No description provided for @smartScanLigneNonRapprochee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Non rapprochée'**
+  String get smartScanLigneNonRapprochee;
+
+  /// No description provided for @smartScanRapprocher.
+  ///
+  /// In fr, this message translates to:
+  /// **'Associer un produit'**
+  String get smartScanRapprocher;
+
+  /// No description provided for @smartScanCreerEntree.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créer l\'entrée'**
+  String get smartScanCreerEntree;
+
+  /// No description provided for @smartScanQuotaAtteint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quota Smart Scan atteint'**
+  String get smartScanQuotaAtteint;
+
+  /// No description provided for @smartScanQuotaAtteintDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous avez utilisé toutes vos analyses. Demandez une offre pour continuer.'**
+  String get smartScanQuotaAtteintDetail;
+
+  /// No description provided for @smartScanDemandeOffre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Demander une offre'**
+  String get smartScanDemandeOffre;
+
+  /// No description provided for @smartScanEmail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre e-mail'**
+  String get smartScanEmail;
+
+  /// No description provided for @smartScanMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Message'**
+  String get smartScanMessage;
+
+  /// No description provided for @smartScanOffreEnvoyee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Demande envoyée, nous vous contacterons rapidement.'**
+  String get smartScanOffreEnvoyee;
+
+  /// No description provided for @smartScanNonConfigure.
+  ///
+  /// In fr, this message translates to:
+  /// **'Renseignez l\'URL du serveur CaisseDZ dans Paramètres pour utiliser Smart Scan.'**
+  String get smartScanNonConfigure;
+
+  /// No description provided for @smartScanErreurReseau.
+  ///
+  /// In fr, this message translates to:
+  /// **'Serveur injoignable : {detail}'**
+  String smartScanErreurReseau(String detail);
+
+  /// No description provided for @smartScanErreurServeur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Erreur du serveur : {detail}'**
+  String smartScanErreurServeur(String detail);
+
+  /// No description provided for @smartScanErreurFichier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fichier invalide.'**
+  String get smartScanErreurFichier;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

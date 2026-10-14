@@ -199,11 +199,34 @@ Checklist §15 : ventes / retours / tiers.
 **Hypothèses (⚠️)** : avoir non remboursé = versement interne « Avoir » verrouillé et imputé ; prix de retour =
 prix net payé sur la ligne ; les packs ne se retournent pas ligne à ligne ; solde client = Σ restes − avances.
 
-## Lot 6 — Entrées / achats + Smart Scan IA ⬜
+## Lot 6 — Entrées / achats + Smart Scan IA ✅ (sous hypothèses ⚠️)
 Écrans : entrées/achats, Smart Scan IA (quota serveur, quota atteint, demande d'offre).
 Règles : §8 (prix d'achat, stock), §9, LISEZ-MOI.
 Tests : AchatService.enregistrer (transaction unique, mouvements de stock), quota (mocks).
 Checklist §15 : achats.
+
+**Livré**
+- `AchatService.enregistrer` en UNE transaction : contrôle fournisseur / produits / quantités / prix, code `ACH`,
+  entrée de stock par mouvement (type Achat, référence = code de l'achat), mise à jour optionnelle du prix
+  d'achat (et du prix de vente + marge si saisi), paiement immédiat = versement fournisseur imputé à l'achat,
+  reste dû = total − imputations (réglable ensuite par `VersementService.imputer`, plus ancien d'abord).
+- `AchatService.annuler` : stock ressorti via la garde (refus si déjà vendu), statut Annulé, refus en période
+  clôturée (crochet `periodeCloturee`, branché au lot 7).
+- `SmartScanService` : `GET /smart-scan/quota`, `POST /smart-scan/analyser` (multipart image/PDF), 429 → quota
+  atteint, `POST /smart-scan/demande-offre` ; non configuré tant que `serveur_url` est vide.
+- Écrans : Entrées / Achats (liste avec total / versé / reste masqués sans `voirPrixAchat`, source Manuel ou
+  Smart Scan, statut, annulation contextuelle avec confirmation), formulaire d'entrée (fournisseur, magasin,
+  référence, lignes quantité / prix d'achat / nouveau prix de vente, versé + mode, mise à jour du prix),
+  dialog Smart Scan (quota, choix du fichier, analyse, rapprochement automatique par code-barres ou désignation,
+  association manuelle, état « quota atteint » avec demande d'offre, création de l'entrée pré-remplie).
+- Tests : 3 unitaires (achat, annulation, Smart Scan mocké) + 3 widget (entrée manuelle et annulation, Smart Scan
+  complet, quota atteint + demande d'offre).
+
+**Hypothèses (⚠️)** : API Smart Scan hypothétique (`/smart-scan/quota|analyser|demande-offre`, JSON
+`{utilise, total}` et `{fournisseur, reference, lignes[{designation, code_barres, quantite, prix_achat}], quota}`,
+en-tête `X-Api-Key`) ; le paiement immédiat d'un achat est un versement fournisseur imputé à l'achat ; le prix de
+vente n'est modifié que si un nouveau prix est saisi ; les achats sur `FOR0000` (fournisseur divers) ne créent
+pas de versement.
 
 ## Lot 7 — Gestion caisse, clôtures Z, export fiscal ⬜
 Écrans : caisses (types Physique/Compte, caisse sans magasin), transferts TRF (2 mouvements), clôtures Z chaînées

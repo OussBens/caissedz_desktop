@@ -1745,4 +1745,177 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tiersErreurSysteme => 'The system party cannot be changed.';
+
+  @override
+  String get achatsTitre => 'Receipts / Purchases';
+
+  @override
+  String get achatNouveau => 'New receipt';
+
+  @override
+  String get achatSmartScan => 'Smart Scan AI';
+
+  @override
+  String get achatFournisseur => 'Supplier';
+
+  @override
+  String get achatReference => 'Invoice reference';
+
+  @override
+  String get achatMagasin => 'Store';
+
+  @override
+  String get achatLignes => 'Lines';
+
+  @override
+  String get achatPrixAchat => 'Purchase price';
+
+  @override
+  String get achatNouveauPrixVente => 'New selling price';
+
+  @override
+  String get achatVerse => 'Paid';
+
+  @override
+  String get achatModePaiement => 'Payment method';
+
+  @override
+  String get achatMettreAJourPrix => 'Update product purchase prices';
+
+  @override
+  String get achatAucun => 'No receipts.';
+
+  @override
+  String get achatColTotal => 'Total';
+
+  @override
+  String get achatColVerse => 'Paid';
+
+  @override
+  String get achatColReste => 'Due';
+
+  @override
+  String get achatColSource => 'Source';
+
+  @override
+  String get achatColStatut => 'Status';
+
+  @override
+  String get achatAnnuler => 'Cancel receipt';
+
+  @override
+  String achatConfirmerAnnulation(String code) {
+    return 'Cancel receipt $code? Stock will be taken out.';
+  }
+
+  @override
+  String achatEnregistre(String code, String total, String reste) {
+    return 'Receipt $code saved: $total, due $reste.';
+  }
+
+  @override
+  String get achatErreurLignes => 'Add at least one line.';
+
+  @override
+  String get achatErreurQuantite => 'Invalid quantity.';
+
+  @override
+  String get achatErreurPrix => 'Invalid price or amount.';
+
+  @override
+  String get achatErreurProduit => 'Unknown product.';
+
+  @override
+  String get achatErreurFournisseur => 'Unknown supplier.';
+
+  @override
+  String get achatErreurInconnu => 'Receipt not found.';
+
+  @override
+  String get achatErreurAnnule => 'Receipt already cancelled.';
+
+  @override
+  String get achatErreurPeriode => 'Closed period: cannot cancel.';
+
+  @override
+  String get achatErreurStock => 'Insufficient stock to cancel (already sold).';
+
+  @override
+  String get statutAchatValide => 'Validated';
+
+  @override
+  String get statutAchatAnnule => 'Cancelled';
+
+  @override
+  String get sourceManuel => 'Manual';
+
+  @override
+  String get sourceSmartScan => 'Smart Scan';
+
+  @override
+  String get smartScanTitre => 'Smart Scan AI — supplier invoice';
+
+  @override
+  String get smartScanIntro =>
+      'Photograph or pick the invoice (image or PDF): lines are recognised by the CaisseDZ server and matched with your catalogue.';
+
+  @override
+  String smartScanQuota(int restant, int total) {
+    return 'Quota: $restant analysis(es) left out of $total';
+  }
+
+  @override
+  String get smartScanChoisir => 'Choose an invoice';
+
+  @override
+  String get smartScanAnalyser => 'Analyse';
+
+  @override
+  String get smartScanAnalyse => 'Analysing…';
+
+  @override
+  String get smartScanAucuneLigne => 'No line recognised.';
+
+  @override
+  String get smartScanLigneNonRapprochee => 'Unmatched';
+
+  @override
+  String get smartScanRapprocher => 'Link a product';
+
+  @override
+  String get smartScanCreerEntree => 'Create receipt';
+
+  @override
+  String get smartScanQuotaAtteint => 'Smart Scan quota reached';
+
+  @override
+  String get smartScanQuotaAtteintDetail => 'You have used all your analyses. Request an offer to continue.';
+
+  @override
+  String get smartScanDemandeOffre => 'Request an offer';
+
+  @override
+  String get smartScanEmail => 'Your e-mail';
+
+  @override
+  String get smartScanMessage => 'Message';
+
+  @override
+  String get smartScanOffreEnvoyee => 'Request sent, we will contact you shortly.';
+
+  @override
+  String get smartScanNonConfigure => 'Set the CaisseDZ server URL in Settings to use Smart Scan.';
+
+  @override
+  String smartScanErreurReseau(String detail) {
+    return 'Server unreachable: $detail';
+  }
+
+  @override
+  String smartScanErreurServeur(String detail) {
+    return 'Server error: $detail';
+  }
+
+  @override
+  String get smartScanErreurFichier => 'Invalid file.';
 }
