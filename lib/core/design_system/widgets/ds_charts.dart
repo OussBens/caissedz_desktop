@@ -533,6 +533,9 @@ class DsDonutChart extends StatefulWidget {
 class _DsDonutChartState extends State<DsDonutChart> {
   int? _survol;
 
+  /// Les données peuvent changer (période) alors qu'une section était survolée.
+  bool _survolValide(List<DsDonnee> d) => _survol != null && _survol! >= 0 && _survol! < d.length;
+
   Color _couleur(int i) =>
       widget.donnees[i].couleur ?? DsColors.chart[DsDonutChart.palette[i % DsDonutChart.palette.length]];
 
@@ -563,7 +566,12 @@ class _DsDonutChartState extends State<DsDonutChart> {
                 centerSpaceRadius: (widget.taille - 2 * widget.epaisseur) / 2,
                 startDegreeOffset: -90,
                 pieTouchData: PieTouchData(
-                  touchCallback: (e, r) => setState(() => _survol = r?.touchedSection?.touchedSectionIndex),
+                  // Centre de l'anneau ou sortie du survol : index −1 ou aucune section (RangeError sinon).
+                  touchCallback: (e, r) {
+                    final i = r?.touchedSection?.touchedSectionIndex;
+                    final survol = e.isInterestedForInteractions && i != null && i >= 0 && i < d.length ? i : null;
+                    if (survol != _survol) setState(() => _survol = survol);
+                  },
                 ),
                 sections: [
                   for (final (i, x) in d.indexed)
@@ -583,13 +591,13 @@ class _DsDonutChartState extends State<DsDonutChart> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  _survol != null && _survol! < d.length ? d[_survol!].libelle : (widget.libelleCentre ?? ''),
+                  _survolValide(d) ? d[_survol!].libelle : (widget.libelleCentre ?? ''),
                   style: t.caption.copyWith(fontWeight: FontWeight.w500, color: c.textMuted),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
                 Text(
-                  _survol != null && _survol! < d.length && total > 0
+                  _survolValide(d) && total > 0
                       ? '${(d[_survol!].valeur / total * 100).round()} %'
                       : (widget.valeurCentre ?? ''),
                   style: t.heading.copyWith(
