@@ -10814,6 +10814,876 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Import terminé'**
   String get prdImportTermine;
+
+  /// No description provided for @stkACommander.
+  ///
+  /// In fr, this message translates to:
+  /// **'À commander'**
+  String get stkACommander;
+
+  /// No description provided for @stkAReapprovisionner.
+  ///
+  /// In fr, this message translates to:
+  /// **'À réapprovisionner'**
+  String get stkAReapprovisionner;
+
+  /// No description provided for @stkAdresse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Adresse'**
+  String get stkAdresse;
+
+  /// No description provided for @stkArticles.
+  ///
+  /// In fr, this message translates to:
+  /// **'Articles'**
+  String get stkArticles;
+
+  /// No description provided for @stkAucun.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun'**
+  String get stkAucun;
+
+  /// No description provided for @stkAucunChangement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun changement'**
+  String get stkAucunChangement;
+
+  /// No description provided for @stkAucunExpire.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun produit expiré ou proche de l\'expiration.'**
+  String get stkAucunExpire;
+
+  /// No description provided for @stkAucunTransfert.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun transfert sur la période.'**
+  String get stkAucunTransfert;
+
+  /// No description provided for @stkAucuneListe.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune liste de besoins sur la période.'**
+  String get stkAucuneListe;
+
+  /// No description provided for @stkAucuneRupture.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun produit sous le seuil.'**
+  String get stkAucuneRupture;
+
+  /// No description provided for @stkAucuneSortie.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune sortie sur la période.'**
+  String get stkAucuneSortie;
+
+  /// No description provided for @stkAudit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Audit'**
+  String get stkAudit;
+
+  /// No description provided for @stkBloqueBesoinRecu.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déjà reçue en entrée'**
+  String get stkBloqueBesoinRecu;
+
+  /// No description provided for @stkBloqueDejaAnnule.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déjà annulé'**
+  String get stkBloqueDejaAnnule;
+
+  /// No description provided for @stkBloqueDejaAnnulee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déjà annulée'**
+  String get stkBloqueDejaAnnulee;
+
+  /// No description provided for @stkBloqueDejaInactif.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déjà inactif'**
+  String get stkBloqueDejaInactif;
+
+  /// No description provided for @stkBloqueMagasinPrincipal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Magasin principal d\'un utilisateur'**
+  String get stkBloqueMagasinPrincipal;
+
+  /// No description provided for @stkBloqueStockNonNul.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock non nul — transférez-le d\'abord'**
+  String get stkBloqueStockNonNul;
+
+  /// No description provided for @stkCaisses.
+  ///
+  /// In fr, this message translates to:
+  /// **'Caisses'**
+  String get stkCaisses;
+
+  /// No description provided for @stkChoisirFournisseur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir un fournisseur'**
+  String get stkChoisirFournisseur;
+
+  /// No description provided for @stkCreerListe.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créer une liste de besoins'**
+  String get stkCreerListe;
+
+  /// No description provided for @stkDepuis.
+  ///
+  /// In fr, this message translates to:
+  /// **'Depuis'**
+  String get stkDepuis;
+
+  /// No description provided for @stkDesactiver.
+  ///
+  /// In fr, this message translates to:
+  /// **'Désactiver'**
+  String get stkDesactiver;
+
+  /// No description provided for @stkDescriptionBesoins.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réapprovisionnement : listes fournisseurs, ruptures et produits expirés'**
+  String get stkDescriptionBesoins;
+
+  /// No description provided for @stkDescriptionMagasins.
+  ///
+  /// In fr, this message translates to:
+  /// **'Points de stock, transferts et rattachements'**
+  String get stkDescriptionMagasins;
+
+  /// No description provided for @stkDescriptionSorties.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sorties de stock hors vente : casse, périmé, perte, consommation interne, don'**
+  String get stkDescriptionSorties;
+
+  /// No description provided for @stkDescriptionStock.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quantités par magasin · {n} magasins actifs'**
+  String stkDescriptionStock(int n);
+
+  /// No description provided for @stkDispoSource.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dispo. source'**
+  String get stkDispoSource;
+
+  /// No description provided for @stkDisponible.
+  ///
+  /// In fr, this message translates to:
+  /// **'Disponible : {quantite}'**
+  String stkDisponible(String quantite);
+
+  /// No description provided for @stkDisponibleEtat.
+  ///
+  /// In fr, this message translates to:
+  /// **'Disponible'**
+  String get stkDisponibleEtat;
+
+  /// No description provided for @stkDistribuer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Distribuer'**
+  String get stkDistribuer;
+
+  /// No description provided for @stkDistribuerDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'{nom} · {quantite} pièces à répartir entre les magasins'**
+  String stkDistribuerDescription(String nom, String quantite);
+
+  /// No description provided for @stkDistribuerTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Distribuer le stock'**
+  String get stkDistribuerTitre;
+
+  /// No description provided for @stkEnStock.
+  ///
+  /// In fr, this message translates to:
+  /// **'en stock'**
+  String get stkEnStock;
+
+  /// No description provided for @stkEnregistrerListe.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrer la liste'**
+  String get stkEnregistrerListe;
+
+  /// No description provided for @stkEntiteListe.
+  ///
+  /// In fr, this message translates to:
+  /// **'liste'**
+  String get stkEntiteListe;
+
+  /// No description provided for @stkEntiteListes.
+  ///
+  /// In fr, this message translates to:
+  /// **'listes'**
+  String get stkEntiteListes;
+
+  /// No description provided for @stkEntiteMagasin.
+  ///
+  /// In fr, this message translates to:
+  /// **'magasin'**
+  String get stkEntiteMagasin;
+
+  /// No description provided for @stkEntiteMagasins.
+  ///
+  /// In fr, this message translates to:
+  /// **'magasins'**
+  String get stkEntiteMagasins;
+
+  /// No description provided for @stkEntiteMouvements.
+  ///
+  /// In fr, this message translates to:
+  /// **'mouvements'**
+  String get stkEntiteMouvements;
+
+  /// No description provided for @stkEntiteSortie.
+  ///
+  /// In fr, this message translates to:
+  /// **'sortie'**
+  String get stkEntiteSortie;
+
+  /// No description provided for @stkEntiteSorties.
+  ///
+  /// In fr, this message translates to:
+  /// **'sorties'**
+  String get stkEntiteSorties;
+
+  /// No description provided for @stkEntiteTransfert.
+  ///
+  /// In fr, this message translates to:
+  /// **'transfert'**
+  String get stkEntiteTransfert;
+
+  /// No description provided for @stkEntiteTransferts.
+  ///
+  /// In fr, this message translates to:
+  /// **'transferts'**
+  String get stkEntiteTransferts;
+
+  /// No description provided for @stkErreurDocumentInconnu.
+  ///
+  /// In fr, this message translates to:
+  /// **'Document introuvable.'**
+  String get stkErreurDocumentInconnu;
+
+  /// No description provided for @stkErreurFournisseur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisissez un fournisseur.'**
+  String get stkErreurFournisseur;
+
+  /// No description provided for @stkErreurMotifObligatoire.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le motif est obligatoire.'**
+  String get stkErreurMotifObligatoire;
+
+  /// No description provided for @stkErreurNomPris.
+  ///
+  /// In fr, this message translates to:
+  /// **'Un magasin porte déjà ce nom.'**
+  String get stkErreurNomPris;
+
+  /// No description provided for @stkExpiration.
+  ///
+  /// In fr, this message translates to:
+  /// **'Expiration'**
+  String get stkExpiration;
+
+  /// No description provided for @stkExpireDepuis.
+  ///
+  /// In fr, this message translates to:
+  /// **'Expiré depuis {jours} j'**
+  String stkExpireDepuis(int jours);
+
+  /// No description provided for @stkJMoins.
+  ///
+  /// In fr, this message translates to:
+  /// **'J−{jours}'**
+  String stkJMoins(int jours);
+
+  /// No description provided for @stkJours.
+  ///
+  /// In fr, this message translates to:
+  /// **'Jours'**
+  String get stkJours;
+
+  /// No description provided for @stkKpiArticlesSortis.
+  ///
+  /// In fr, this message translates to:
+  /// **'Articles sortis'**
+  String get stkKpiArticlesSortis;
+
+  /// No description provided for @stkKpiCoutReassort.
+  ///
+  /// In fr, this message translates to:
+  /// **'Coût de réassort estimé'**
+  String get stkKpiCoutReassort;
+
+  /// No description provided for @stkKpiEnRupture.
+  ///
+  /// In fr, this message translates to:
+  /// **'En rupture'**
+  String get stkKpiEnRupture;
+
+  /// No description provided for @stkKpiMagasinsActifs.
+  ///
+  /// In fr, this message translates to:
+  /// **'Magasins actifs'**
+  String get stkKpiMagasinsActifs;
+
+  /// No description provided for @stkKpiSorties.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sorties de la période'**
+  String get stkKpiSorties;
+
+  /// No description provided for @stkKpiSousSeuil.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sous le seuil'**
+  String get stkKpiSousSeuil;
+
+  /// No description provided for @stkKpiUtilisateursRattaches.
+  ///
+  /// In fr, this message translates to:
+  /// **'Utilisateurs rattachés'**
+  String get stkKpiUtilisateursRattaches;
+
+  /// No description provided for @stkKpiValeurPerdue.
+  ///
+  /// In fr, this message translates to:
+  /// **'Valeur perdue'**
+  String get stkKpiValeurPerdue;
+
+  /// No description provided for @stkKpiValeurTotale.
+  ///
+  /// In fr, this message translates to:
+  /// **'Valeur totale du stock'**
+  String get stkKpiValeurTotale;
+
+  /// No description provided for @stkListeDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quantités suggérées = 2 × seuil − stock. Ajustez avant d\'envoyer au fournisseur.'**
+  String get stkListeDescription;
+
+  /// No description provided for @stkListeTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Liste {code}'**
+  String stkListeTitre(String code);
+
+  /// No description provided for @stkLivraison.
+  ///
+  /// In fr, this message translates to:
+  /// **'Livraison souhaitée'**
+  String get stkLivraison;
+
+  /// No description provided for @stkMagasin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Magasin'**
+  String get stkMagasin;
+
+  /// No description provided for @stkMagasinDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Un magasin a son propre stock ; les caisses et utilisateurs y sont rattachés.'**
+  String get stkMagasinDescription;
+
+  /// No description provided for @stkMagasinDifferent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisissez un magasin différent'**
+  String get stkMagasinDifferent;
+
+  /// No description provided for @stkModifierListe.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier la liste de besoins'**
+  String get stkModifierListe;
+
+  /// No description provided for @stkModifierMagasin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier le magasin'**
+  String get stkModifierMagasin;
+
+  /// No description provided for @stkModifierSortie.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier la sortie'**
+  String get stkModifierSortie;
+
+  /// No description provided for @stkModifierTransfert.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier le transfert'**
+  String get stkModifierTransfert;
+
+  /// No description provided for @stkMontantEstime.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montant estimé'**
+  String get stkMontantEstime;
+
+  /// No description provided for @stkMotif.
+  ///
+  /// In fr, this message translates to:
+  /// **'Motif'**
+  String get stkMotif;
+
+  /// No description provided for @stkMotifDistributionIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex. réassort boutique'**
+  String get stkMotifDistributionIndice;
+
+  /// No description provided for @stkMotifSortieIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex. carton tombé lors de la mise en rayon'**
+  String get stkMotifSortieIndice;
+
+  /// No description provided for @stkMouvementsRecents.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mouvements récents'**
+  String get stkMouvementsRecents;
+
+  /// No description provided for @stkNom.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom'**
+  String get stkNom;
+
+  /// No description provided for @stkNomMagasinIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex. Boutique Hydra'**
+  String get stkNomMagasinIndice;
+
+  /// No description provided for @stkNouveauMagasin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau magasin'**
+  String get stkNouveauMagasin;
+
+  /// No description provided for @stkNouveauTransfert.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau transfert'**
+  String get stkNouveauTransfert;
+
+  /// No description provided for @stkNouvelleListe.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouvelle liste'**
+  String get stkNouvelleListe;
+
+  /// No description provided for @stkNouvelleSortie.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouvelle sortie'**
+  String get stkNouvelleSortie;
+
+  /// No description provided for @stkObservationTransfertIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex. réassort hebdomadaire'**
+  String get stkObservationTransfertIndice;
+
+  /// No description provided for @stkOngletExpires.
+  ///
+  /// In fr, this message translates to:
+  /// **'Expirés'**
+  String get stkOngletExpires;
+
+  /// No description provided for @stkOngletListes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Listes de besoins'**
+  String get stkOngletListes;
+
+  /// No description provided for @stkOngletMagasins.
+  ///
+  /// In fr, this message translates to:
+  /// **'Magasins'**
+  String get stkOngletMagasins;
+
+  /// No description provided for @stkOngletMouvements.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mouvements'**
+  String get stkOngletMouvements;
+
+  /// No description provided for @stkOngletRuptures.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ruptures & seuils'**
+  String get stkOngletRuptures;
+
+  /// No description provided for @stkOngletTransferts.
+  ///
+  /// In fr, this message translates to:
+  /// **'Transferts'**
+  String get stkOngletTransferts;
+
+  /// No description provided for @stkPalierAvance.
+  ///
+  /// In fr, this message translates to:
+  /// **'Palier Avancé'**
+  String get stkPalierAvance;
+
+  /// No description provided for @stkPcs.
+  ///
+  /// In fr, this message translates to:
+  /// **'pcs'**
+  String get stkPcs;
+
+  /// No description provided for @stkPdfFournisseur.
+  ///
+  /// In fr, this message translates to:
+  /// **'PDF fournisseur'**
+  String get stkPdfFournisseur;
+
+  /// No description provided for @stkPrincipal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Principal'**
+  String get stkPrincipal;
+
+  /// No description provided for @stkPrixEstime.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix estimé'**
+  String get stkPrixEstime;
+
+  /// No description provided for @stkProduitsEnStock.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produits en stock'**
+  String get stkProduitsEnStock;
+
+  /// No description provided for @stkProduitsSortis.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produits sortis'**
+  String get stkProduitsSortis;
+
+  /// No description provided for @stkProduitsTransferes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produits transférés'**
+  String get stkProduitsTransferes;
+
+  /// No description provided for @stkQte.
+  ///
+  /// In fr, this message translates to:
+  /// **'Qté'**
+  String get stkQte;
+
+  /// No description provided for @stkQuantiteTotale.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quantité totale'**
+  String get stkQuantiteTotale;
+
+  /// No description provided for @stkRechercheMouvement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réf. ou produit…'**
+  String get stkRechercheMouvement;
+
+  /// No description provided for @stkReference.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réf.'**
+  String get stkReference;
+
+  /// No description provided for @stkReparti.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réparti'**
+  String get stkReparti;
+
+  /// No description provided for @stkRepartirEgalement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Répartir également'**
+  String get stkRepartirEgalement;
+
+  /// No description provided for @stkRepartition.
+  ///
+  /// In fr, this message translates to:
+  /// **'Répartition par magasin'**
+  String get stkRepartition;
+
+  /// No description provided for @stkResponsable.
+  ///
+  /// In fr, this message translates to:
+  /// **'Responsable'**
+  String get stkResponsable;
+
+  /// No description provided for @stkReste.
+  ///
+  /// In fr, this message translates to:
+  /// **'Reste'**
+  String get stkReste;
+
+  /// No description provided for @stkRestePrincipal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Reste au principal'**
+  String get stkRestePrincipal;
+
+  /// No description provided for @stkRetourFournisseur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retour fournisseur'**
+  String get stkRetourFournisseur;
+
+  /// No description provided for @stkSeuilAlerte.
+  ///
+  /// In fr, this message translates to:
+  /// **'Seuil d\'alerte'**
+  String get stkSeuilAlerte;
+
+  /// No description provided for @stkSortieDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sortie de stock hors vente — valorisée au prix d\'achat.'**
+  String get stkSortieDescription;
+
+  /// No description provided for @stkSortiePerime.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sortie « Périmé »'**
+  String get stkSortiePerime;
+
+  /// No description provided for @stkSortieTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sortie {code}'**
+  String stkSortieTitre(String code);
+
+  /// No description provided for @stkSousSeuilEtat.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sous le seuil'**
+  String get stkSousSeuilEtat;
+
+  /// No description provided for @stkStatut.
+  ///
+  /// In fr, this message translates to:
+  /// **'Statut'**
+  String get stkStatut;
+
+  /// No description provided for @stkStockDispo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock : {quantite}'**
+  String stkStockDispo(String quantite);
+
+  /// No description provided for @stkStockDuMagasin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock du magasin'**
+  String get stkStockDuMagasin;
+
+  /// No description provided for @stkStockTotal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock total'**
+  String get stkStockTotal;
+
+  /// No description provided for @stkSuggestion.
+  ///
+  /// In fr, this message translates to:
+  /// **'Suggestion'**
+  String get stkSuggestion;
+
+  /// No description provided for @stkTelephone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Téléphone'**
+  String get stkTelephone;
+
+  /// No description provided for @stkToastDistribue.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock distribué'**
+  String get stkToastDistribue;
+
+  /// No description provided for @stkToastListe.
+  ///
+  /// In fr, this message translates to:
+  /// **'Liste enregistrée'**
+  String get stkToastListe;
+
+  /// No description provided for @stkToastListeDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'{code} · prête à envoyer'**
+  String stkToastListeDesc(String code);
+
+  /// No description provided for @stkToastListesAnnulees.
+  ///
+  /// In fr, this message translates to:
+  /// **'Listes annulées'**
+  String get stkToastListesAnnulees;
+
+  /// No description provided for @stkToastMagasin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Magasin enregistré'**
+  String get stkToastMagasin;
+
+  /// No description provided for @stkToastMagasinsDesactives.
+  ///
+  /// In fr, this message translates to:
+  /// **'Magasins désactivés'**
+  String get stkToastMagasinsDesactives;
+
+  /// No description provided for @stkToastSortie.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sortie enregistrée'**
+  String get stkToastSortie;
+
+  /// No description provided for @stkToastSortiesAnnulees.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sorties annulées'**
+  String get stkToastSortiesAnnulees;
+
+  /// No description provided for @stkToastStockAJour.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock mis à jour'**
+  String get stkToastStockAJour;
+
+  /// No description provided for @stkToastStockReintegre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le stock a été réintégré'**
+  String get stkToastStockReintegre;
+
+  /// No description provided for @stkToastTransfert.
+  ///
+  /// In fr, this message translates to:
+  /// **'Transfert validé'**
+  String get stkToastTransfert;
+
+  /// No description provided for @stkToastTransfertsAnnules.
+  ///
+  /// In fr, this message translates to:
+  /// **'Transferts annulés'**
+  String get stkToastTransfertsAnnules;
+
+  /// No description provided for @stkToutPrincipal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tout au principal'**
+  String get stkToutPrincipal;
+
+  /// No description provided for @stkTransfererPieces.
+  ///
+  /// In fr, this message translates to:
+  /// **'Transférer {quantite} pièce(s)'**
+  String stkTransfererPieces(String quantite);
+
+  /// No description provided for @stkTransfertDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déplacer du stock d\'un magasin à un autre.'**
+  String get stkTransfertDescription;
+
+  /// No description provided for @stkTransfertTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Transfert {code}'**
+  String stkTransfertTitre(String code);
+
+  /// No description provided for @stkUtilisateurs.
+  ///
+  /// In fr, this message translates to:
+  /// **'Utilisateurs'**
+  String get stkUtilisateurs;
+
+  /// No description provided for @stkUtilisateursCaisses.
+  ///
+  /// In fr, this message translates to:
+  /// **'Utilisateurs & caisses'**
+  String get stkUtilisateursCaisses;
+
+  /// No description provided for @stkValeurAchat.
+  ///
+  /// In fr, this message translates to:
+  /// **'Valeur d\'achat'**
+  String get stkValeurAchat;
+
+  /// No description provided for @stkValeurStock.
+  ///
+  /// In fr, this message translates to:
+  /// **'Valeur du stock'**
+  String get stkValeurStock;
+
+  /// No description provided for @stkValeurVente.
+  ///
+  /// In fr, this message translates to:
+  /// **'Valeur de vente'**
+  String get stkValeurVente;
+
+  /// No description provided for @stkValideLe.
+  ///
+  /// In fr, this message translates to:
+  /// **'Validé le'**
+  String get stkValideLe;
+
+  /// No description provided for @stkValiderTransfert.
+  ///
+  /// In fr, this message translates to:
+  /// **'Valider le transfert'**
+  String get stkValiderTransfert;
+
+  /// No description provided for @stkVers.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vers'**
+  String get stkVers;
+
+  /// No description provided for @stkVoirMouvements.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir les mouvements'**
+  String get stkVoirMouvements;
+
+  /// No description provided for @stkVoirPiece.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir la pièce'**
+  String get stkVoirPiece;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

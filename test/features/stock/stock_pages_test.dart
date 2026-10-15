@@ -1,6 +1,7 @@
 import 'package:caissedz_desktop/app/providers.dart';
 import 'package:caissedz_desktop/application/catalogue_service.dart';
 import 'package:caissedz_desktop/application/stock_service.dart';
+import 'package:caissedz_desktop/core/design_system/design_system.dart';
 import 'package:caissedz_desktop/data/stock_repository.dart';
 import 'package:caissedz_desktop/domain/models/produit.dart';
 import 'package:caissedz_desktop/domain/models/stock.dart';
@@ -41,102 +42,106 @@ Future<(Produit, Produit)> _donnees(ProviderContainer c) async {
   return (lait, eau);
 }
 
-Future<void> rafraichir(WidgetTester tester, ProviderContainer c) async {
+Future<void> _rafraichir(WidgetTester tester, ProviderContainer c) async {
   c.read(catalogueVersionProvider.notifier).incrementer();
   c.read(stockVersionProvider.notifier).incrementer();
   await tester.pumpAndSettle();
 }
 
-Finder _champ(String libelle) => find
-    .descendant(
-      of: find.ancestor(of: find.text(libelle).last, matching: find.byType(Column)).first,
-      matching: find.byType(TextField),
-    )
-    .first;
+Finder _cle(String cle) => find.byKey(ValueKey(cle));
+
+Finder _champ(String cle) => find.descendant(of: _cle(cle), matching: find.byType(TextField)).first;
+
+/// Ajoute un produit aux lignes d'un DocForm via le sélecteur.
+Future<void> _ajouterProduit(WidgetTester tester, String designation) async {
+  await clic(tester, find.text('Ajouter des produits').last);
+  await clic(tester, find.text(designation).last);
+  await clic(tester, find.text('Ajouter').last);
+}
+
+const _taille = Size(1600, 1000);
 
 void main() {
-  group('Stock', () {
-    testWidgets('niveaux (sous seuil en rouge), journal, entrée manuelle', (tester) async {
-      final c = await pumpApp(tester, routeInitiale: '/stock', taille: const Size(1400, 900));
+  group('Stock (DS v2.2)', () {
+    testWidgets('stock par magasin puis onglet Mouvements', (tester) async {
+      final c = await pumpApp(tester, routeInitiale: '/stock', taille: _taille);
       await _donnees(c);
-      await rafraichir(tester, c);
+      await _rafraichir(tester, c);
       expect(find.text('Lait 1 L'), findsOneWidget);
+      expect(find.text('DÉPÔT'), findsWidgets, reason: 'une colonne par magasin');
       expect(find.text('12'), findsWidgets);
-      await clic(tester, find.text('Entrée manuelle').first);
-      await tester.enterText(_champ('Quantité'), '8');
-      await clic(tester, find.text('Enregistrer'));
-      expect(
-        (await StockRepository(c.read(appDatabaseProvider).db).niveau('PRD0002', 'MAG0000')).quantite,
-        8,
-      ); // Eau (premier par désignation)
-      await clic(tester, find.text('Journal des mouvements'));
+      await clic(tester, _cle('stock_voir_mouvements'));
       expect(find.text('Stock initial'), findsOneWidget);
-      expect(find.text('Entrée'), findsOneWidget);
+      expect(find.text('+12'), findsOneWidget);
     });
 
-    testWidgets('sortie refusée par la garde de stock, puis acceptée', (tester) async {
-      final c = await pumpApp(tester, routeInitiale: '/sorties', taille: const Size(1400, 900));
+    testWidgets('sortie : quantité plafonnée au stock, puis enregistrée', (tester) async {
+      final c = await pumpApp(tester, routeInitiale: '/sorties', taille: _taille);
       await _donnees(c);
-      await rafraichir(tester, c);
-      await clic(tester, find.text('Nouvelle sortie'));
-      await clic(tester, find.text('Ajouter un produit'));
-      await clic(tester, find.text('Lait 1 L').last);
-      await clic(tester, find.text('Choisir'));
-      await tester.enterText(find.byKey(const ValueKey('qte_PRD0001')), '50');
-      await clic(tester, find.text('Valider'));
-      expect(find.textContaining('Stock insuffisant'), findsOneWidget);
-      await clic(tester, find.text('Fermer').last);
-      await clic(tester, find.text('Nouvelle sortie'));
-      await clic(tester, find.text('Ajouter un produit'));
-      await clic(tester, find.text('Lait 1 L').last);
-      await clic(tester, find.text('Choisir'));
-      await tester.enterText(find.byKey(const ValueKey('qte_PRD0001')), '2');
-      await clic(tester, find.text('Valider'));
-      expect(find.text('SOR0001'), findsOneWidget);
-      expect(find.text('Casse'), findsOneWidget);
+      await _rafraichir(tester, c);
+      await clic(tester, _cle('sortie_nouvelle'));
+      await _ajouterProduit(tester, 'Lait 1 L');
+      final qte = find
+          .descendant(of: find.byKey(const ValueKey<Object>('PRD0001')), matching: find.byType(TextField))
+          .first;
+      await tester.enterText(qte, '50');
+      await tester.pump();
+      expect(find.text('Stock : 12'), findsOneWidget);
+      expect(tester.widget<DsButton>(_cle('sortie_enregistrer')).onPressed, isNull);
+      await tester.enterText(qte, '2');
+      await tester.pump();
+      await clic(tester, _cle('sortie_enregistrer'));
+      expect(find.text('SRT0001'), findsOneWidget);
       expect((await StockRepository(c.read(appDatabaseProvider).db).niveau('PRD0001', 'MAG0000')).quantite, 10);
+      await tester.pump(const Duration(seconds: 5));
     });
 
-    testWidgets('transfert TRM entre magasins', (tester) async {
-      final c = await pumpApp(tester, routeInitiale: '/transferts', taille: const Size(1400, 900));
+    testWidgets('transferts : onglet de Magasins, transfert TRM validé', (tester) async {
+      final c = await pumpApp(tester, routeInitiale: '/transferts', taille: _taille);
       await _donnees(c);
-      await rafraichir(tester, c);
-      await clic(tester, find.text('Nouveau transfert'));
-      await clic(tester, find.text('Ajouter un produit'));
-      await clic(tester, find.text('Lait 1 L').last);
-      await clic(tester, find.text('Choisir'));
-      await tester.enterText(find.byKey(const ValueKey('qte_PRD0001')), '5');
-      await clic(tester, find.text('Valider'));
-      expect(find.textContaining('TRM0001'), findsWidgets);
-      await clic(tester, find.text('Fermer').last);
+      await _rafraichir(tester, c);
+      await clic(tester, _cle('transfert_nouveau'));
+      await _ajouterProduit(tester, 'Lait 1 L');
+      await tester.enterText(
+        find.descendant(of: find.byKey(const ValueKey<Object>('PRD0001')), matching: find.byType(TextField)).first,
+        '5',
+      );
+      await tester.pump();
+      await clic(tester, _cle('transfert_enregistrer'));
+      expect(find.text('TRM0001'), findsWidgets);
       final repo = StockRepository(c.read(appDatabaseProvider).db);
       expect((await repo.niveau('PRD0001', 'MAG0000')).quantite, 7);
       expect((await repo.niveau('PRD0001', 'MAG0001')).quantite, 5);
+      await tester.pump(const Duration(seconds: 5));
     });
 
-    testWidgets('besoins : génération sous seuil et changement de statut', (tester) async {
-      final c = await pumpApp(tester, routeInitiale: '/besoins', taille: const Size(1400, 900));
-      await _donnees(c);
-      await rafraichir(tester, c);
-      await clic(tester, find.text('Générer sous seuil'));
-      expect(find.text('1 besoin(s) généré(s).'), findsOneWidget); // l'eau est à 0
-      await clic(tester, find.text('Fermer').last);
-      expect(find.text('BES0001'), findsOneWidget);
-      expect(find.text('En attente'), findsWidgets); // libellé FR de « En Attente »
-    });
-
-    testWidgets('magasins : création et magasin principal', (tester) async {
-      final c = await pumpApp(tester, routeInitiale: '/magasins', taille: const Size(1400, 900));
-      expect(find.text('Magasin principal'), findsWidgets);
-      await clic(tester, find.text('Nouveau magasin'));
-      await tester.enterText(_champ('Nom'), 'Entrepôt');
-      await clic(tester, find.text('Enregistrer'));
+    testWidgets('magasins : création', (tester) async {
+      await pumpApp(tester, routeInitiale: '/magasins', taille: _taille);
+      await clic(tester, _cle('magasin_nouveau'));
+      await tester.enterText(_champ('magasin_nom'), 'Entrepôt');
+      await tester.pump();
+      await clic(tester, _cle('magasin_enregistrer'));
       expect(find.text('Entrepôt'), findsOneWidget);
       expect(find.text('MAG0001'), findsOneWidget);
-      expect(
-        await StockService(c.read(appDatabaseProvider).db, utilisateurCode: 'USR0000').magasinPrincipal('USR0000'),
-        'MAG0000',
-      );
+      await tester.pump(const Duration(seconds: 5));
+    });
+
+    testWidgets('besoins : ruptures & seuils puis listes', (tester) async {
+      final c = await pumpApp(tester, routeInitiale: '/besoins', taille: _taille);
+      await _donnees(c);
+      await _rafraichir(tester, c);
+      await clic(tester, find.text('Ruptures & seuils'));
+      expect(find.text('Eau 1,5 L'), findsOneWidget);
+      expect(find.text('Rupture'), findsWidgets);
+      await clic(tester, find.text('Expirés'));
+      expect(find.text("Aucun produit expiré ou proche de l'expiration."), findsOneWidget);
+    });
+
+    testWidgets('arabe : écran Stock en RTL', (tester) async {
+      await pumpApp(tester, routeInitiale: '/stock', locale: const Locale('ar'), taille: _taille);
+      final bouton = _cle('stock_voir_mouvements');
+      expect(bouton, findsOneWidget);
+      expect(Directionality.of(tester.element(bouton)), TextDirection.rtl);
     });
   });
 }

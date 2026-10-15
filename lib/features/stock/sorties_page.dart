@@ -1,20 +1,23 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-import '../../application/stock_service.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
 import '../../domain/models/stock.dart';
+import '../../domain/permissions.dart';
 import '../../domain/referentiel/referentiel.dart';
+import '../commun/export_module.dart';
+import '../commun/page_module.dart';
+import '../commun/statuts.dart';
+import '../historique/historique_page.dart';
 import '../produits/produits_providers.dart';
-import 'lignes_stock_editeur.dart';
+import '../tableau_bord/tableau_bord_page.dart';
+import 'stock_dialogs.dart';
 import 'stock_providers.dart';
 
-/// Sorties de stock (motifs §13) + onglet Ventes (mouvements de type Vente).
+/// Écran Sorties (`SortiesScreen` du DS v2.2) : sorties de stock hors vente (casse, périmé, perte, consommation
+/// interne, don, échantillon) ; KPI, filtres Type / Magasin, détail, modification, annulation avec motif.
 class SortiesPage extends ConsumerStatefulWidget {
   const SortiesPage({super.key});
 
@@ -23,202 +26,199 @@ class SortiesPage extends ConsumerStatefulWidget {
 }
 
 class _SortiesPageState extends ConsumerState<SortiesPage> {
-  int _onglet = 0;
+  DsPeriode _periode = DsPeriode.calculer('month');
+  String? _type;
+  String? _magasin;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final magasins = ref.watch(magasinsProvider).value ?? const [];
-    final produits = ref.watch(produitsProvider).value ?? const [];
-    String nomMagasin(String code) => magasins.where((m) => m.code == code).firstOrNull?.nom ?? code;
-    String nomProduit(String code) => produits.where((p) => p.code == code).firstOrNull?.designation ?? code;
-    final df = DateFormat('dd/MM/yyyy HH:mm');
-    return DsPage(
-      titre: l10n.sortiesTitre,
-      actions: [
-        if (_onglet == 0)
-          DsButton(
-            libelle: l10n.sortieNouvelle,
-            icone: LucideIcons.plus,
-            onPressed: () {
-              _nouvelle();
-            },
+    final devise = ref.watch(deviseProvider);
+    String da(double v) => formaterMontant(v, devise);
+    final toutes = ref.watch(sortiesProvider).value ?? const <SortieStock>[];
+    final magasins = ref.watch(magasinsProvider).value ?? const <Magasin>[];
+    final utilisateurs = ref.watch(nomsUtilisateursProvider).value ?? const <String, String>{};
+    final noms = {for (final m in magasins) m.code: m.nom};
+    final lignes = toutes
+        .where(
+          (s) =>
+              dansPeriode(s.date, _periode) &&
+              (_type == null || s.motif == _type) &&
+              (_magasin == null || s.magasinCode == _magasin),
+        )
+        .toList();
+    final actives = lignes.where((s) => s.actif);
+    final (duAvant, auAvant) = periodePrecedente(_periode.du, _periode.au);
+    final avant = toutes
+        .where((s) => s.actif && dansPeriode(s.date, DsPeriode(du: duAvant, au: auAvant)))
+        .fold(0.0, (a, s) => a + s.valeur);
+    final perdue = actives.fold(0.0, (a, s) => a + s.valeur);
+    final achat = permissionsSession(ref).contains(Permission.voirPrixAchat.code);
+
+    final colonnes = <DsColonne<SortieStock>>[
+      DsColonne(id: 'code', libelle: l10n.produitsColCode, valeur: (s) => s.code, attenue: true),
+      DsColonne(
+        id: 'date',
+        libelle: l10n.communDate,
+        attenue: true,
+        valeur: (s) => s.date,
+        cellule: (_, s) => Text(formatDate.format(s.date)),
+      ),
+      DsColonne(id: 'type', libelle: l10n.stockColType, fort: true, valeur: (s) => libelleMotif(l10n, s.motif)),
+      DsColonne(id: 'mag', libelle: l10n.stockColMagasin, flex: 2, valeur: (s) => noms[s.magasinCode] ?? s.magasinCode),
+      DsColonne(
+        id: 'n',
+        libelle: l10n.stkArticles,
+        numerique: true,
+        valeur: (s) => s.lignes.length,
+        total: (ss) => '${ss.fold(0, (a, s) => a + s.lignes.length)}',
+      ),
+      DsColonne(
+        id: 'valeur',
+        libelle: l10n.stockColValeur,
+        numerique: true,
+        permission: Permission.voirPrixAchat.code,
+        valeur: (s) => s.valeur,
+        cellule: (_, s) => Text(da(s.valeur)),
+        total: (ss) => da(ss.where((s) => s.actif).fold(0.0, (a, s) => a + s.valeur)),
+      ),
+      DsColonne(
+        id: 'etat',
+        libelle: l10n.retoursEtat,
+        valeur: (s) => s.actif ? 1 : 0,
+        cellule: (_, s) => BadgeStatut(s.actif ? 'actif' : 'annule'),
+      ),
+      DsColonne(
+        id: 'q',
+        libelle: l10n.stockColQuantite,
+        numerique: true,
+        visibleParDefaut: false,
+        valeur: (s) => s.quantite,
+        cellule: (_, s) => Text(formaterNombre(s.quantite)),
+      ),
+      DsColonne(id: 'obs', libelle: l10n.stkMotif, visibleParDefaut: false, valeur: (s) => s.commentaire ?? ''),
+      DsColonne(
+        id: 'cree_par',
+        libelle: l10n.ventesCreePar,
+        visibleParDefaut: false,
+        valeur: (s) => utilisateurs[s.utilisateurCode] ?? s.utilisateurCode,
+      ),
+      DsColonne(
+        id: 'annule_par',
+        libelle: l10n.ventesAnnulePar,
+        visibleParDefaut: false,
+        valeur: (s) => s.annulation == null ? '' : (utilisateurs[s.annulation!.par] ?? s.annulation!.par),
+      ),
+      DsColonne(
+        id: 'motif_annulation',
+        libelle: l10n.ventesMotifAnnulation,
+        visibleParDefaut: false,
+        valeur: (s) => s.annulation?.motif ?? '',
+      ),
+    ];
+
+    return PageModule(
+      moduleId: 'sorties',
+      sousTitre: l10n.stkDescriptionSorties,
+      child: DsModuleTable<SortieStock>(
+        entite: l10n.stkEntiteSorties,
+        lignes: lignes,
+        colonnes: colonnes,
+        cle: (s) => s.code,
+        afficherTotaux: true,
+        permissions: permissionsSession(ref),
+        messageVide: l10n.stkAucuneSortie,
+        kpis: [
+          DsStatCard(libelle: l10n.stkKpiSorties, valeur: '${actives.length}', icone: LucideIcons.packageMinus),
+          DsStatCard(
+            libelle: l10n.stkKpiArticlesSortis,
+            valeur: '${actives.fold(0, (a, s) => a + s.lignes.length)}',
+            icone: LucideIcons.boxes,
           ),
-      ],
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          DsOnglets(
-            onglets: [l10n.sortiesOngletSorties, l10n.sortiesOngletVentes],
-            courant: _onglet,
-            onChanged: (i) => setState(() => _onglet = i),
+          if (achat)
+            DsStatCard(
+              libelle: l10n.stkKpiValeurPerdue,
+              valeur: f2(perdue),
+              suffixe: devise,
+              icone: LucideIcons.wallet,
+              tendance: avant <= 0 ? null : (perdue - avant) / avant * 100,
+              tendanceInverser: true,
+            ),
+        ],
+        periode: _periode,
+        onPeriode: (p) => setState(() => _periode = p),
+        texteRecherche: (s) => '${s.code} ${libelleMotif(l10n, s.motif)} ${noms[s.magasinCode] ?? ''}',
+        nbFiltresActifs: [_type, _magasin].where((f) => f != null).length,
+        onReinitialiser: () => setState(() {
+          _type = null;
+          _magasin = null;
+          _periode = DsPeriode.calculer('month');
+        }),
+        filtres: [
+          DsFormRow(
+            libelle: l10n.stockColType,
+            largeurLibelle: 80,
+            child: DsSelect<String?>(
+              cle: const ValueKey('sorties_filtre_type'),
+              valeur: _type,
+              options: [null, for (final v in Referentiel.motifsSortie.valeurs) v.stocke],
+              libelle: (t) => t == null ? l10n.retoursTous : libelleMotif(l10n, t),
+              onChanged: (v) => setState(() => _type = v),
+            ),
           ),
-          const SizedBox(height: DsSpacing.lg),
-          Expanded(
-            child: _onglet == 0
-                ? DsDataTable<SortieStock>(
-                    colonnes: [
-                      DsColonne(id: 'code', libelle: l10n.produitsColCode, valeur: (s) => s.code, largeur: 100),
-                      DsColonne(
-                        id: 'd',
-                        libelle: l10n.communDate,
-                        valeur: (s) => s.date,
-                        largeur: 150,
-                        cellule: (_, s) => Text(df.format(s.date)),
-                      ),
-                      DsColonne(
-                        id: 'm',
-                        libelle: l10n.stockColMagasin,
-                        valeur: (s) => nomMagasin(s.magasinCode),
-                        flex: 2,
-                      ),
-                      DsColonne(
-                        id: 'mo',
-                        libelle: l10n.sortieMotif,
-                        valeur: (s) => s.motif,
-                        flex: 2,
-                        cellule: (_, s) => DsBadge(libelle: libelleMotif(l10n, s.motif), ton: DsBadgeTon.avertissement),
-                      ),
-                      DsColonne(
-                        id: 'n',
-                        libelle: l10n.transfertLignes,
-                        valeur: (s) => s.lignes.length,
-                        numerique: true,
-                        cellule: (_, s) => Text(l10n.communLignes(s.lignes.length)),
-                      ),
-                      DsColonne(id: 'c', libelle: l10n.communCommentaire, valeur: (s) => s.commentaire, flex: 2),
-                    ],
-                    lignes: ref.watch(sortiesProvider).value ?? const [],
-                    cle: (s) => s.code,
-                    messageVide: l10n.sortieAucune,
-                  )
-                : DsDataTable<MouvementStock>(
-                    colonnes: [
-                      DsColonne(
-                        id: 'd',
-                        libelle: l10n.communDate,
-                        valeur: (m) => m.date,
-                        largeur: 150,
-                        cellule: (_, m) => Text(df.format(m.date)),
-                      ),
-                      DsColonne(
-                        id: 'p',
-                        libelle: l10n.stockColProduit,
-                        valeur: (m) => nomProduit(m.produitCode),
-                        flex: 3,
-                      ),
-                      DsColonne(
-                        id: 'm',
-                        libelle: l10n.stockColMagasin,
-                        valeur: (m) => nomMagasin(m.magasinCode),
-                        flex: 2,
-                      ),
-                      DsColonne(
-                        id: 'q',
-                        libelle: l10n.stockColQuantite,
-                        valeur: (m) => -m.quantite,
-                        numerique: true,
-                        cellule: (_, m) => Text((-m.quantite).toStringAsFixed(0)),
-                      ),
-                      DsColonne(id: 'ref', libelle: l10n.stockColReference, valeur: (m) => m.referenceCode, flex: 2),
-                    ],
-                    lignes: ref.watch(mouvementsVenteProvider).value ?? const [],
-                    cle: (m) => m.id ?? m.hashCode,
-                    messageVide: l10n.stockAucunMouvement,
-                  ),
+          DsFormRow(
+            libelle: l10n.stockColMagasin,
+            largeurLibelle: 80,
+            child: DsSelect<String?>(
+              valeur: _magasin,
+              options: [null, for (final m in magasins) m.code],
+              libelle: (c) => c == null ? l10n.retoursTous : (noms[c] ?? c),
+              onChanged: (v) => setState(() => _magasin = v),
+            ),
           ),
         ],
-      ),
-    );
-  }
-
-  Future<void> _nouvelle() async {
-    final l10n = AppLocalizations.of(context);
-    final magasins = (await ref.read(magasinsProvider.future)).where((m) => m.actif).toList();
-    final produits = await ref.read(produitsProvider.future);
-    if (!context.mounted) return;
-    if (magasins.isEmpty) return;
-    var magasin = await ref.read(magasinPrincipalProvider.future);
-    var motif = Referentiel.motifsSortie.valeurs.first.stocke;
-    var lignes = <LigneStock>[];
-    final commentaire = TextEditingController();
-    if (!mounted) return;
-    final ok = await showDialog<bool>(
-      context: context,
-      barrierColor: context.ds.colors.overlay,
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setState) => DsDialog(
-          titre: l10n.sortieNouvelle,
-          largeur: 640,
-          actions: [
-            DsButton(
-              libelle: l10n.communAnnuler,
-              variante: DsButtonVariante.secondaire,
-              onPressed: () => Navigator.of(ctx).pop(false),
-            ),
-            DsButton(
-              libelle: l10n.communValider,
-              icone: LucideIcons.packageMinus,
-              onPressed: () => Navigator.of(ctx).pop(true),
-            ),
-          ],
-          contenu: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: DsSelect<String>(
-                      titre: l10n.stockColMagasin,
-                      valeur: magasin,
-                      options: magasins.map((m) => m.code).toList(),
-                      libelle: (c) => magasins.firstWhere((m) => m.code == c).nom,
-                      onChanged: (v) => setState(() => magasin = v ?? magasin),
-                    ),
-                  ),
-                  const SizedBox(width: DsSpacing.md),
-                  Expanded(
-                    child: DsSelect<String>(
-                      titre: l10n.sortieMotif,
-                      valeur: motif,
-                      options: Referentiel.motifsSortie.valeurs.map((v) => v.stocke).toList(),
-                      libelle: (m) => libelleMotif(l10n, m),
-                      onChanged: (v) => setState(() => motif = v ?? motif),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: DsSpacing.lg),
-              LignesStockEditeur(produits: produits, lignes: lignes, onChanged: (l) => setState(() => lignes = l)),
-              const SizedBox(height: DsSpacing.md),
-              DsTextField(controller: commentaire, libelle: l10n.communCommentaire),
-            ],
+        onExport: peutExporter(ref)
+            ? (format, ss) => exporterTableau(
+                context,
+                ref,
+                id: 'sorties',
+                titre: l10n.stkEntiteSorties,
+                colonnes: colonnes,
+                lignes: ss,
+                format: format,
+              )
+            : null,
+        onOuvrir: (s) => afficherDetailSortie(context, ref, s),
+        actions: [
+          DsActionModule(
+            libelle: l10n.tiersDetail,
+            icone: LucideIcons.eye,
+            regle: DsRegleSelection.une,
+            detail: true,
+            onPressed: (choix, _) => afficherDetailSortie(context, ref, choix.first),
           ),
+          DsActionModule(
+            libelle: l10n.communModifier,
+            icone: LucideIcons.pencil,
+            regle: DsRegleSelection.une,
+            desactive: (choix) => choix.isNotEmpty && !choix.first.actif,
+            onPressed: (choix, _) => afficherFormulaireSortie(context, ref, sortie: choix.first),
+          ),
+          DsActionModule(
+            cle: const ValueKey('sorties_annuler'),
+            libelle: l10n.dsAnnuler,
+            icone: LucideIcons.ban,
+            danger: true,
+            onPressed: (choix, effacer) => annulerSorties(context, ref, choix, effacer),
+          ),
+        ],
+        primaire: DsButton(
+          key: const ValueKey('sortie_nouvelle'),
+          libelle: l10n.stkNouvelleSortie,
+          icone: LucideIcons.plus,
+          onPressed: () => afficherFormulaireSortie(context, ref),
         ),
       ),
     );
-    if (ok != true || !mounted) return;
-    try {
-      await ref
-          .read(stockServiceProvider)
-          .sortir(
-            magasinCode: magasin,
-            motif: motif,
-            lignes: lignes,
-            commentaire: commentaire.text.trim().isEmpty ? null : commentaire.text.trim(),
-          );
-      rafraichirStock(ref);
-    } on StockException catch (e) {
-      if (!mounted) return;
-      unawaited(
-        afficherResultat(
-          context,
-          type: DsResultatType.erreur,
-          titre: l10n.sortieNouvelle,
-          message: messageErreurStock(l10n, e.erreur),
-        ),
-      );
-    }
   }
 }

@@ -5686,4 +5686,462 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get prdImportTermine => 'Import complete';
+
+  @override
+  String get stkACommander => 'To order';
+
+  @override
+  String get stkAReapprovisionner => 'To restock';
+
+  @override
+  String get stkAdresse => 'Address';
+
+  @override
+  String get stkArticles => 'Items';
+
+  @override
+  String get stkAucun => 'None';
+
+  @override
+  String get stkAucunChangement => 'No change';
+
+  @override
+  String get stkAucunExpire => 'No expired or soon-to-expire products.';
+
+  @override
+  String get stkAucunTransfert => 'No transfers in this period.';
+
+  @override
+  String get stkAucuneListe => 'No needs lists in this period.';
+
+  @override
+  String get stkAucuneRupture => 'No product below threshold.';
+
+  @override
+  String get stkAucuneSortie => 'No stock exits in this period.';
+
+  @override
+  String get stkAudit => 'Audit';
+
+  @override
+  String get stkBloqueBesoinRecu => 'Already received';
+
+  @override
+  String get stkBloqueDejaAnnule => 'Already cancelled';
+
+  @override
+  String get stkBloqueDejaAnnulee => 'Already cancelled';
+
+  @override
+  String get stkBloqueDejaInactif => 'Already inactive';
+
+  @override
+  String get stkBloqueMagasinPrincipal => 'Main store of a user';
+
+  @override
+  String get stkBloqueStockNonNul => 'Stock not empty — transfer it first';
+
+  @override
+  String get stkCaisses => 'Registers';
+
+  @override
+  String get stkChoisirFournisseur => 'Choose a supplier';
+
+  @override
+  String get stkCreerListe => 'Create a needs list';
+
+  @override
+  String get stkDepuis => 'From';
+
+  @override
+  String get stkDesactiver => 'Deactivate';
+
+  @override
+  String get stkDescriptionBesoins => 'Restocking: supplier lists, shortages and expired products';
+
+  @override
+  String get stkDescriptionMagasins => 'Stock locations, transfers and assignments';
+
+  @override
+  String get stkDescriptionSorties => 'Non-sale stock exits: breakage, expired, loss, internal use, donation';
+
+  @override
+  String stkDescriptionStock(int n) {
+    return 'Quantities by store · $n active stores';
+  }
+
+  @override
+  String get stkDispoSource => 'Available at source';
+
+  @override
+  String stkDisponible(String quantite) {
+    return 'Available: $quantite';
+  }
+
+  @override
+  String get stkDisponibleEtat => 'Available';
+
+  @override
+  String get stkDistribuer => 'Distribute';
+
+  @override
+  String stkDistribuerDescription(String nom, String quantite) {
+    return '$nom · $quantite pieces to split across stores';
+  }
+
+  @override
+  String get stkDistribuerTitre => 'Distribute stock';
+
+  @override
+  String get stkEnStock => 'in stock';
+
+  @override
+  String get stkEnregistrerListe => 'Save list';
+
+  @override
+  String get stkEntiteListe => 'list';
+
+  @override
+  String get stkEntiteListes => 'lists';
+
+  @override
+  String get stkEntiteMagasin => 'store';
+
+  @override
+  String get stkEntiteMagasins => 'stores';
+
+  @override
+  String get stkEntiteMouvements => 'movements';
+
+  @override
+  String get stkEntiteSortie => 'exit';
+
+  @override
+  String get stkEntiteSorties => 'exits';
+
+  @override
+  String get stkEntiteTransfert => 'transfer';
+
+  @override
+  String get stkEntiteTransferts => 'transfers';
+
+  @override
+  String get stkErreurDocumentInconnu => 'Document not found.';
+
+  @override
+  String get stkErreurFournisseur => 'Choose a supplier.';
+
+  @override
+  String get stkErreurMotifObligatoire => 'A reason is required.';
+
+  @override
+  String get stkErreurNomPris => 'A store already has this name.';
+
+  @override
+  String get stkExpiration => 'Expiry';
+
+  @override
+  String stkExpireDepuis(int jours) {
+    return 'Expired $jours d ago';
+  }
+
+  @override
+  String stkJMoins(int jours) {
+    return 'D−$jours';
+  }
+
+  @override
+  String get stkJours => 'Days';
+
+  @override
+  String get stkKpiArticlesSortis => 'Items out';
+
+  @override
+  String get stkKpiCoutReassort => 'Estimated restock cost';
+
+  @override
+  String get stkKpiEnRupture => 'Out of stock';
+
+  @override
+  String get stkKpiMagasinsActifs => 'Active stores';
+
+  @override
+  String get stkKpiSorties => 'Exits in period';
+
+  @override
+  String get stkKpiSousSeuil => 'Below threshold';
+
+  @override
+  String get stkKpiUtilisateursRattaches => 'Assigned users';
+
+  @override
+  String get stkKpiValeurPerdue => 'Lost value';
+
+  @override
+  String get stkKpiValeurTotale => 'Total stock value';
+
+  @override
+  String get stkListeDescription =>
+      'Suggested quantities = 2 × threshold − stock. Adjust before sending to the supplier.';
+
+  @override
+  String stkListeTitre(String code) {
+    return 'List $code';
+  }
+
+  @override
+  String get stkLivraison => 'Requested delivery';
+
+  @override
+  String get stkMagasin => 'Store';
+
+  @override
+  String get stkMagasinDescription => 'A store has its own stock; registers and users are attached to it.';
+
+  @override
+  String get stkMagasinDifferent => 'Choose a different store';
+
+  @override
+  String get stkModifierListe => 'Edit needs list';
+
+  @override
+  String get stkModifierMagasin => 'Edit store';
+
+  @override
+  String get stkModifierSortie => 'Edit exit';
+
+  @override
+  String get stkModifierTransfert => 'Edit transfer';
+
+  @override
+  String get stkMontantEstime => 'Estimated amount';
+
+  @override
+  String get stkMotif => 'Reason';
+
+  @override
+  String get stkMotifDistributionIndice => 'E.g. shop restock';
+
+  @override
+  String get stkMotifSortieIndice => 'E.g. carton dropped while shelving';
+
+  @override
+  String get stkMouvementsRecents => 'Recent movements';
+
+  @override
+  String get stkNom => 'Name';
+
+  @override
+  String get stkNomMagasinIndice => 'E.g. Hydra shop';
+
+  @override
+  String get stkNouveauMagasin => 'New store';
+
+  @override
+  String get stkNouveauTransfert => 'New transfer';
+
+  @override
+  String get stkNouvelleListe => 'New list';
+
+  @override
+  String get stkNouvelleSortie => 'New exit';
+
+  @override
+  String get stkObservationTransfertIndice => 'E.g. weekly restock';
+
+  @override
+  String get stkOngletExpires => 'Expired';
+
+  @override
+  String get stkOngletListes => 'Needs lists';
+
+  @override
+  String get stkOngletMagasins => 'Stores';
+
+  @override
+  String get stkOngletMouvements => 'Movements';
+
+  @override
+  String get stkOngletRuptures => 'Shortages & thresholds';
+
+  @override
+  String get stkOngletTransferts => 'Transfers';
+
+  @override
+  String get stkPalierAvance => 'Advanced tier';
+
+  @override
+  String get stkPcs => 'pcs';
+
+  @override
+  String get stkPdfFournisseur => 'Supplier PDF';
+
+  @override
+  String get stkPrincipal => 'Main';
+
+  @override
+  String get stkPrixEstime => 'Estimated price';
+
+  @override
+  String get stkProduitsEnStock => 'Products in stock';
+
+  @override
+  String get stkProduitsSortis => 'Products out';
+
+  @override
+  String get stkProduitsTransferes => 'Transferred products';
+
+  @override
+  String get stkQte => 'Qty';
+
+  @override
+  String get stkQuantiteTotale => 'Total quantity';
+
+  @override
+  String get stkRechercheMouvement => 'Ref. or product…';
+
+  @override
+  String get stkReference => 'Ref.';
+
+  @override
+  String get stkReparti => 'Allocated';
+
+  @override
+  String get stkRepartirEgalement => 'Split evenly';
+
+  @override
+  String get stkRepartition => 'Breakdown by store';
+
+  @override
+  String get stkResponsable => 'Manager';
+
+  @override
+  String get stkReste => 'Remaining';
+
+  @override
+  String get stkRestePrincipal => 'Rest to main';
+
+  @override
+  String get stkRetourFournisseur => 'Supplier return';
+
+  @override
+  String get stkSeuilAlerte => 'Alert threshold';
+
+  @override
+  String get stkSortieDescription => 'Non-sale stock exit — valued at purchase price.';
+
+  @override
+  String get stkSortiePerime => '\"Expired\" exit';
+
+  @override
+  String stkSortieTitre(String code) {
+    return 'Exit $code';
+  }
+
+  @override
+  String get stkSousSeuilEtat => 'Below threshold';
+
+  @override
+  String get stkStatut => 'Status';
+
+  @override
+  String stkStockDispo(String quantite) {
+    return 'Stock: $quantite';
+  }
+
+  @override
+  String get stkStockDuMagasin => 'Store stock';
+
+  @override
+  String get stkStockTotal => 'Total stock';
+
+  @override
+  String get stkSuggestion => 'Suggestion';
+
+  @override
+  String get stkTelephone => 'Phone';
+
+  @override
+  String get stkToastDistribue => 'Stock distributed';
+
+  @override
+  String get stkToastListe => 'List saved';
+
+  @override
+  String stkToastListeDesc(String code) {
+    return '$code · ready to send';
+  }
+
+  @override
+  String get stkToastListesAnnulees => 'Lists cancelled';
+
+  @override
+  String get stkToastMagasin => 'Store saved';
+
+  @override
+  String get stkToastMagasinsDesactives => 'Stores deactivated';
+
+  @override
+  String get stkToastSortie => 'Exit saved';
+
+  @override
+  String get stkToastSortiesAnnulees => 'Exits cancelled';
+
+  @override
+  String get stkToastStockAJour => 'Stock updated';
+
+  @override
+  String get stkToastStockReintegre => 'Stock was restored';
+
+  @override
+  String get stkToastTransfert => 'Transfer validated';
+
+  @override
+  String get stkToastTransfertsAnnules => 'Transfers cancelled';
+
+  @override
+  String get stkToutPrincipal => 'All to main';
+
+  @override
+  String stkTransfererPieces(String quantite) {
+    return 'Transfer $quantite piece(s)';
+  }
+
+  @override
+  String get stkTransfertDescription => 'Move stock from one store to another.';
+
+  @override
+  String stkTransfertTitre(String code) {
+    return 'Transfer $code';
+  }
+
+  @override
+  String get stkUtilisateurs => 'Users';
+
+  @override
+  String get stkUtilisateursCaisses => 'Users & registers';
+
+  @override
+  String get stkValeurAchat => 'Purchase value';
+
+  @override
+  String get stkValeurStock => 'Stock value';
+
+  @override
+  String get stkValeurVente => 'Sale value';
+
+  @override
+  String get stkValideLe => 'Validated on';
+
+  @override
+  String get stkValiderTransfert => 'Validate transfer';
+
+  @override
+  String get stkVers => 'To';
+
+  @override
+  String get stkVoirMouvements => 'View movements';
+
+  @override
+  String get stkVoirPiece => 'View document';
 }

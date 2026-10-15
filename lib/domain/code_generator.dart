@@ -25,8 +25,8 @@ class CodeGenerator {
   static const String colis = 'COL';
   static const String pack = 'PCK';
   static const String remise = 'REM';
-  static const String besoin = 'BES';
-  static const String sortie = 'SOR';
+  static const String besoin = 'BL';
+  static const String sortie = 'SRT';
   static const String sessionCaisse = 'SES';
   static const String vente = 'VTE';
   static const String retour = 'RET';

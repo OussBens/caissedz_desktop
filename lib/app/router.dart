@@ -21,7 +21,6 @@ import '../features/stock/besoins_page.dart';
 import '../features/stock/magasins_page.dart';
 import '../features/stock/sorties_page.dart';
 import '../features/stock/stock_page.dart';
-import '../features/stock/transferts_page.dart';
 import '../features/tableau_bord/tableau_bord_page.dart';
 import '../features/tiers/tiers_page.dart';
 import '../features/ventes/ventes_page.dart';
@@ -109,7 +108,7 @@ Widget pageModule(ModuleApp module) => switch (module.id) {
   'produits' => const ProduitsPage(),
   'stock' => const StockPage(),
   'magasins' => const MagasinsPage(),
-  'transferts' => const TransfertsPage(),
+  'transferts' => const MagasinsPage(ongletInitial: 1),
   'besoins' => const BesoinsPage(),
   'sorties' => const SortiesPage(),
   'utilisateurs' => const RolesPage(),

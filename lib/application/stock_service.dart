@@ -17,6 +17,15 @@ enum ErreurStock {
   magasinSysteme,
   produitInconnu,
   statutInvalide,
+  nomPris,
+  magasinPrincipal,
+  stockNonNul,
+  dejaAnnule,
+  documentInconnu,
+  motifObligatoire,
+  fournisseurObligatoire,
+  besoinRecu,
+  aucunChangement,
 }
 
 class StockException implements Exception {
@@ -41,12 +50,26 @@ class StockService {
   StockRepository get _repo => StockRepository(db);
 
   // ---------------- Magasins ----------------
-  Future<Magasin> creerMagasin(String nom, {String adresse = ''}) async {
+  Future<Magasin> creerMagasin(
+    String nom, {
+    String adresse = '',
+    String telephone = '',
+    String? responsableCode,
+    String observation = '',
+  }) async {
     if (nom.trim().isEmpty) throw ArgumentError('nom');
     return db.transaction((txn) async {
       final repo = StockRepository(txn);
+      if (await repo.nomMagasinPris(nom)) throw const StockException(ErreurStock.nomPris);
       final code = await repo.prochainCode('magasin', CodeGenerator.magasin);
-      final m = Magasin(code: code, nom: nom.trim(), adresse: adresse.trim());
+      final m = Magasin(
+        code: code,
+        nom: nom.trim(),
+        adresse: adresse.trim(),
+        telephone: telephone.trim(),
+        responsableCode: responsableCode,
+        observation: observation.trim(),
+      );
       await repo.insererMagasin(m);
       await HistoriqueRepository(txn).journaliser(
         utilisateurCode: utilisateurCode,
@@ -59,10 +82,59 @@ class StockService {
     });
   }
 
-  Future<void> modifierMagasin(Magasin m) async {
-    if (m.systeme && !m.actif) throw const StockException(ErreurStock.magasinSysteme);
-    await _repo.mettreAJourMagasin(m);
+  Future<void> modifierMagasin(Magasin m) => db.transaction((txn) async {
+    final repo = StockRepository(txn);
+    final avant = await repo.magasin(m.code);
+    if (avant == null) throw StockException(ErreurStock.documentInconnu, m.code);
+    if (m.nom.trim().isEmpty) throw ArgumentError('nom');
+    if (await repo.nomMagasinPris(m.nom, sauf: m.code)) throw const StockException(ErreurStock.nomPris);
+    if (avant.actif && !m.actif) await _verifierDesactivable(repo, avant);
+    await repo.mettreAJourMagasin(m.copyWith(nom: m.nom.trim()));
+    await HistoriqueRepository(txn).journaliser(
+      utilisateurCode: utilisateurCode,
+      action: 'Modification',
+      entite: 'magasin',
+      entiteCode: m.code,
+      detail: m.nom.trim(),
+    );
+  });
+
+  /// Motif de blocage d'une désactivation : magasin système, principal d'un utilisateur, stock non nul.
+  Future<ErreurStock?> blocageDesactivation(Magasin m) async {
+    try {
+      await _verifierDesactivable(_repo, m);
+      return null;
+    } on StockException catch (e) {
+      return e.erreur;
+    }
   }
+
+  Future<void> _verifierDesactivable(StockRepository repo, Magasin m) async {
+    if (m.systeme) throw const StockException(ErreurStock.magasinSysteme);
+    if ((await repo.utilisateursPrincipal(m.code)).isNotEmpty) throw const StockException(ErreurStock.magasinPrincipal);
+    final stocks = await repo.stocksParMagasin();
+    if (stocks.values.any((parMagasin) => (parMagasin[m.code] ?? 0).abs() > 1e-9)) {
+      throw const StockException(ErreurStock.stockNonNul);
+    }
+  }
+
+  /// Active ou désactive des magasins, en UNE transaction (chacun est vérifié).
+  Future<void> changerEtatMagasins(List<String> codes, {required bool actif}) => db.transaction((txn) async {
+    final repo = StockRepository(txn);
+    for (final code in codes) {
+      final m = await repo.magasin(code);
+      if (m == null || m.actif == actif) continue;
+      if (!actif) await _verifierDesactivable(repo, m);
+      await repo.mettreAJourMagasin(m.copyWith(actif: actif));
+      await HistoriqueRepository(txn).journaliser(
+        utilisateurCode: utilisateurCode,
+        action: actif ? 'Activation' : 'Désactivation',
+        entite: 'magasin',
+        entiteCode: code,
+        detail: m.nom,
+      );
+    }
+  });
 
   /// Magasin principal d'un utilisateur = premier de sa liste ; à défaut, le magasin système.
   Future<String> magasinPrincipal(String utilisateur) async {
@@ -257,7 +329,121 @@ class StockService {
     );
   }
 
+  /// Défait les mouvements d'un document : mouvements inverses du net passé par produit et par magasin.
+  Future<void> _defaire(Transaction txn, String referenceType, String code, String type, {String? motif}) async {
+    final net = await txn.rawQuery(
+      '''
+      SELECT produit_code p, magasin_code m, SUM(quantite) q, SUM(nombre) n FROM mouvement_stock
+      WHERE reference_type = ? AND reference_code = ? GROUP BY produit_code, magasin_code
+      ''',
+      [referenceType, code],
+    );
+    // Les retours en stock d'abord : une sortie inverse peut dépendre d'une entrée inverse du même document.
+    final tries = [...net]..sort((a, b) => (a['q']! as num).compareTo(b['q']! as num));
+    for (final m in tries) {
+      final q = (m['q']! as num).toDouble();
+      final n = (m['n']! as num).toDouble();
+      if (q.abs() < 1e-9 && n.abs() < 1e-9) continue;
+      if (q < 0 || n < 0) {
+        await entrerDansTransaction(
+          txn,
+          produitCode: m['p']! as String,
+          magasinCode: m['m']! as String,
+          quantite: -q,
+          nombre: -n,
+          type: type,
+          referenceType: referenceType,
+          referenceCode: code,
+          motif: motif,
+        );
+      } else {
+        await sortirDansTransaction(
+          txn,
+          produitCode: m['p']! as String,
+          magasinCode: m['m']! as String,
+          quantite: q,
+          nombre: n,
+          type: type,
+          referenceType: referenceType,
+          referenceCode: code,
+          motif: motif,
+        );
+      }
+    }
+  }
+
   // ---------------- Transferts TRM ----------------
+  void _validerTransfert(String source, String destination, List<LigneStock> lignes) {
+    if (source == destination) throw const StockException(ErreurStock.memeMagasin);
+    if (lignes.isEmpty) throw const StockException(ErreurStock.lignesVides);
+    if (lignes.any((l) => l.quantite <= 0 && l.nombre <= 0)) throw const StockException(ErreurStock.quantiteInvalide);
+  }
+
+  /// Mouvements d'un transfert : pour chaque ligne, sortie de la source puis entrée dans la destination.
+  Future<void> _mouvementsTransfert(Transaction txn, TransfertStock t) async {
+    final repo = StockRepository(txn);
+    for (final m in [t.magasinSource, t.magasinDestination]) {
+      final mag = await repo.magasin(m);
+      if (mag == null || !mag.actif) throw StockException(ErreurStock.magasinInactif, m);
+    }
+    for (final l in t.lignes) {
+      await _verifierProduit(txn, l.produitCode);
+      await sortirDansTransaction(
+        txn,
+        produitCode: l.produitCode,
+        magasinCode: t.magasinSource,
+        quantite: l.quantite,
+        nombre: l.nombre,
+        type: TypesMouvement.transfert,
+        referenceType: 'transfert',
+        referenceCode: t.code,
+        date: t.date,
+      );
+      await entrerDansTransaction(
+        txn,
+        produitCode: l.produitCode,
+        magasinCode: t.magasinDestination,
+        quantite: l.quantite,
+        nombre: l.nombre,
+        type: TypesMouvement.transfert,
+        referenceType: 'transfert',
+        referenceCode: t.code,
+        date: t.date,
+      );
+    }
+  }
+
+  Future<TransfertStock> _creerTransfert(
+    Transaction txn, {
+    required String magasinSource,
+    required String magasinDestination,
+    required List<LigneStock> lignes,
+    String? commentaire,
+    DateTime? date,
+  }) async {
+    final repo = StockRepository(txn);
+    final code = await repo.prochainCode('transfert_stock', CodeGenerator.transfertStock);
+    final t = TransfertStock(
+      code: code,
+      date: date ?? DateTime.now(),
+      magasinSource: magasinSource,
+      magasinDestination: magasinDestination,
+      utilisateurCode: utilisateurCode,
+      commentaire: commentaire,
+      lignes: lignes,
+    );
+    await repo.insererTransfert(t);
+    await _mouvementsTransfert(txn, t);
+    await HistoriqueRepository(txn).journaliser(
+      utilisateurCode: utilisateurCode,
+      action: 'Création',
+      entite: 'transfert_stock',
+      entiteCode: code,
+      detail: '$magasinSource → $magasinDestination',
+    );
+    return t;
+  }
+
   /// Transfert = pour chaque ligne, 2 mouvements (sortie source, entrée destination), en UNE transaction.
   Future<TransfertStock> transferer({
     required String magasinSource,
@@ -266,55 +452,54 @@ class StockService {
     String? commentaire,
     DateTime? date,
   }) async {
-    if (magasinSource == magasinDestination) throw const StockException(ErreurStock.memeMagasin);
-    if (lignes.isEmpty) throw const StockException(ErreurStock.lignesVides);
-    if (lignes.any((l) => l.quantite <= 0 && l.nombre <= 0)) throw const StockException(ErreurStock.quantiteInvalide);
-    return db.transaction((txn) async {
-      final repo = StockRepository(txn);
-      for (final m in [magasinSource, magasinDestination]) {
-        final mag = await repo.magasin(m);
-        if (mag == null || !mag.actif) throw StockException(ErreurStock.magasinInactif, m);
-      }
-      final code = await repo.prochainCode('transfert_stock', CodeGenerator.transfertStock);
-      final d = date ?? DateTime.now();
-      final t = TransfertStock(
-        code: code,
-        date: d,
+    _validerTransfert(magasinSource, magasinDestination, lignes);
+    return db.transaction(
+      (txn) => _creerTransfert(
+        txn,
         magasinSource: magasinSource,
         magasinDestination: magasinDestination,
-        utilisateurCode: utilisateurCode,
+        lignes: lignes,
+        commentaire: commentaire,
+        date: date,
+      ),
+    );
+  }
+
+  Future<TransfertStock> _transfertActif(StockRepository repo, String code) async {
+    final t = await repo.transfert(code);
+    if (t == null) throw StockException(ErreurStock.documentInconnu, code);
+    if (!t.actif) throw const StockException(ErreurStock.dejaAnnule);
+    return t;
+  }
+
+  /// Modification : les mouvements du transfert sont défaits puis réécrits (§8.3), en UNE transaction.
+  Future<TransfertStock> modifierTransfert(
+    String code, {
+    required String magasinSource,
+    required String magasinDestination,
+    required List<LigneStock> lignes,
+    String? commentaire,
+    DateTime? date,
+  }) async {
+    _validerTransfert(magasinSource, magasinDestination, lignes);
+    return db.transaction((txn) async {
+      final repo = StockRepository(txn);
+      final avant = await _transfertActif(repo, code);
+      await _defaire(txn, 'transfert', code, TypesMouvement.transfert, motif: 'Modification');
+      final t = TransfertStock(
+        code: code,
+        date: date ?? avant.date,
+        magasinSource: magasinSource,
+        magasinDestination: magasinDestination,
+        utilisateurCode: avant.utilisateurCode,
         commentaire: commentaire,
         lignes: lignes,
       );
-      await repo.insererTransfert(t);
-      for (final l in lignes) {
-        await _verifierProduit(txn, l.produitCode);
-        await sortirDansTransaction(
-          txn,
-          produitCode: l.produitCode,
-          magasinCode: magasinSource,
-          quantite: l.quantite,
-          nombre: l.nombre,
-          type: TypesMouvement.transfert,
-          referenceType: 'transfert',
-          referenceCode: code,
-          date: d,
-        );
-        await entrerDansTransaction(
-          txn,
-          produitCode: l.produitCode,
-          magasinCode: magasinDestination,
-          quantite: l.quantite,
-          nombre: l.nombre,
-          type: TypesMouvement.transfert,
-          referenceType: 'transfert',
-          referenceCode: code,
-          date: d,
-        );
-      }
+      await repo.remplacerTransfert(t);
+      await _mouvementsTransfert(txn, t);
       await HistoriqueRepository(txn).journaliser(
         utilisateurCode: utilisateurCode,
-        action: 'Création',
+        action: 'Modification',
         entite: 'transfert_stock',
         entiteCode: code,
         detail: '$magasinSource → $magasinDestination',
@@ -323,7 +508,109 @@ class StockService {
     });
   }
 
+  /// Annulation douce avec motif : chaque magasin récupère ce qui en est sorti.
+  Future<void> annulerTransferts(List<String> codes, {required String motif}) async {
+    if (motif.trim().isEmpty) throw const StockException(ErreurStock.motifObligatoire);
+    await db.transaction((txn) async {
+      final repo = StockRepository(txn);
+      for (final code in codes) {
+        await _transfertActif(repo, code);
+        await _defaire(txn, 'transfert', code, TypesMouvement.transfert, motif: motif.trim());
+        await repo.annulerDocument('transfert_stock', code, par: utilisateurCode, motif: motif.trim());
+        await HistoriqueRepository(txn).journaliser(
+          utilisateurCode: utilisateurCode,
+          action: 'Annulation',
+          entite: 'transfert_stock',
+          entiteCode: code,
+          detail: motif.trim(),
+        );
+      }
+    });
+  }
+
+  /// Distribution (licence Avancé) : répartit le stock d'un produit entre les magasins, total conservé.
+  /// Les écarts sont soldés par des transferts (magasin excédentaire → magasin déficitaire), en UNE transaction.
+  Future<List<TransfertStock>> distribuer(String produitCode, {required Map<String, double> cible, String? motif}) =>
+      db.transaction((txn) async {
+        final repo = StockRepository(txn);
+        final actuel = {for (final n in await repo.repartition(produitCode)) n.magasinCode: n.quantite};
+        final codes = {...actuel.keys, ...cible.keys};
+        final total = actuel.values.fold(0.0, (a, b) => a + b);
+        final totalCible = cible.values.fold(0.0, (a, b) => a + b);
+        if ((total - totalCible).abs() > 1e-6) throw const StockException(ErreurStock.quantiteInvalide);
+        final surplus = <String, double>{};
+        final deficit = <String, double>{};
+        for (final c in codes) {
+          final ecart = (actuel[c] ?? 0) - (cible[c] ?? 0);
+          if (ecart > 1e-9) surplus[c] = ecart;
+          if (ecart < -1e-9) deficit[c] = -ecart;
+        }
+        if (surplus.isEmpty) throw const StockException(ErreurStock.aucunChangement);
+        final crees = <TransfertStock>[];
+        for (final s in surplus.keys) {
+          for (final d in deficit.keys) {
+            final q = surplus[s]! < deficit[d]! ? surplus[s]! : deficit[d]!;
+            if (q <= 1e-9) continue;
+            crees.add(
+              await _creerTransfert(
+                txn,
+                magasinSource: s,
+                magasinDestination: d,
+                lignes: [LigneStock(produitCode: produitCode, quantite: q)],
+                commentaire: motif?.trim().isEmpty ?? true ? null : motif!.trim(),
+              ),
+            );
+            surplus[s] = surplus[s]! - q;
+            deficit[d] = deficit[d]! - q;
+          }
+        }
+        return crees;
+      });
+
   // ---------------- Sorties ----------------
+  void _validerSortie(String motif, List<LigneStock> lignes) {
+    if (!Referentiel.motifsSortie.contient(motif)) throw const StockException(ErreurStock.motifInvalide);
+    if (lignes.isEmpty) throw const StockException(ErreurStock.lignesVides);
+    if (lignes.any((l) => l.quantite <= 0 && l.nombre <= 0)) throw const StockException(ErreurStock.quantiteInvalide);
+  }
+
+  /// Lignes valorisées au prix d'achat du produit quand aucun prix n'est fourni.
+  Future<List<LigneStock>> _valoriser(Transaction txn, List<LigneStock> lignes) async {
+    final catalogue = CatalogueRepository(txn);
+    return [
+      for (final l in lignes)
+        if (l.prix > 0)
+          l
+        else
+          LigneStock(
+            produitCode: l.produitCode,
+            quantite: l.quantite,
+            nombre: l.nombre,
+            prix: (await catalogue.produitParCode(l.produitCode))?.prixAchat ?? 0,
+          ),
+    ];
+  }
+
+  Future<void> _mouvementsSortie(Transaction txn, SortieStock s) async {
+    final mag = await StockRepository(txn).magasin(s.magasinCode);
+    if (mag == null || !mag.actif) throw StockException(ErreurStock.magasinInactif, s.magasinCode);
+    for (final l in s.lignes) {
+      await _verifierProduit(txn, l.produitCode);
+      await sortirDansTransaction(
+        txn,
+        produitCode: l.produitCode,
+        magasinCode: s.magasinCode,
+        quantite: l.quantite,
+        nombre: l.nombre,
+        type: TypesMouvement.sortie,
+        referenceType: 'sortie',
+        referenceCode: s.code,
+        motif: s.motif,
+        date: s.date,
+      );
+    }
+  }
+
   Future<SortieStock> sortir({
     required String magasinCode,
     required String motif,
@@ -331,38 +618,21 @@ class StockService {
     String? commentaire,
     DateTime? date,
   }) async {
-    if (!Referentiel.motifsSortie.contient(motif)) throw const StockException(ErreurStock.motifInvalide);
-    if (lignes.isEmpty) throw const StockException(ErreurStock.lignesVides);
-    if (lignes.any((l) => l.quantite <= 0 && l.nombre <= 0)) throw const StockException(ErreurStock.quantiteInvalide);
+    _validerSortie(motif, lignes);
     return db.transaction((txn) async {
       final repo = StockRepository(txn);
       final code = await repo.prochainCode('sortie_stock', CodeGenerator.sortie);
-      final d = date ?? DateTime.now();
       final s = SortieStock(
         code: code,
-        date: d,
+        date: date ?? DateTime.now(),
         magasinCode: magasinCode,
         motif: motif,
         utilisateurCode: utilisateurCode,
         commentaire: commentaire,
-        lignes: lignes,
+        lignes: await _valoriser(txn, lignes),
       );
       await repo.insererSortie(s);
-      for (final l in lignes) {
-        await _verifierProduit(txn, l.produitCode);
-        await sortirDansTransaction(
-          txn,
-          produitCode: l.produitCode,
-          magasinCode: magasinCode,
-          quantite: l.quantite,
-          nombre: l.nombre,
-          type: TypesMouvement.sortie,
-          referenceType: 'sortie',
-          referenceCode: code,
-          motif: motif,
-          date: d,
-        );
-      }
+      await _mouvementsSortie(txn, s);
       await HistoriqueRepository(txn).journaliser(
         utilisateurCode: utilisateurCode,
         action: 'Création',
@@ -374,66 +644,184 @@ class StockService {
     });
   }
 
-  // ---------------- Besoins ----------------
-  Future<Besoin> creerBesoin({
-    required String produitCode,
-    required double quantite,
-    String? magasinCode,
+  Future<SortieStock> _sortieActive(StockRepository repo, String code) async {
+    final s = await repo.sortie(code);
+    if (s == null) throw StockException(ErreurStock.documentInconnu, code);
+    if (!s.actif) throw const StockException(ErreurStock.dejaAnnule);
+    return s;
+  }
+
+  Future<SortieStock> modifierSortie(
+    String code, {
+    required String magasinCode,
+    required String motif,
+    required List<LigneStock> lignes,
     String? commentaire,
+    DateTime? date,
   }) async {
-    if (quantite <= 0) throw const StockException(ErreurStock.quantiteInvalide);
+    _validerSortie(motif, lignes);
     return db.transaction((txn) async {
-      await _verifierProduit(txn, produitCode);
+      final repo = StockRepository(txn);
+      final avant = await _sortieActive(repo, code);
+      await _defaire(txn, 'sortie', code, TypesMouvement.sortie, motif: 'Modification');
+      final s = SortieStock(
+        code: code,
+        date: date ?? avant.date,
+        magasinCode: magasinCode,
+        motif: motif,
+        utilisateurCode: avant.utilisateurCode,
+        commentaire: commentaire,
+        lignes: await _valoriser(txn, lignes),
+      );
+      await repo.remplacerSortie(s);
+      await _mouvementsSortie(txn, s);
+      await HistoriqueRepository(txn).journaliser(
+        utilisateurCode: utilisateurCode,
+        action: 'Modification',
+        entite: 'sortie_stock',
+        entiteCode: code,
+        detail: motif,
+      );
+      return s;
+    });
+  }
+
+  /// Annulation douce avec motif : le stock sorti est réintégré.
+  Future<void> annulerSorties(List<String> codes, {required String motif}) async {
+    if (motif.trim().isEmpty) throw const StockException(ErreurStock.motifObligatoire);
+    await db.transaction((txn) async {
+      final repo = StockRepository(txn);
+      for (final code in codes) {
+        await _sortieActive(repo, code);
+        await _defaire(txn, 'sortie', code, TypesMouvement.sortie, motif: motif.trim());
+        await repo.annulerDocument('sortie_stock', code, par: utilisateurCode, motif: motif.trim());
+        await HistoriqueRepository(txn).journaliser(
+          utilisateurCode: utilisateurCode,
+          action: 'Annulation',
+          entite: 'sortie_stock',
+          entiteCode: code,
+          detail: motif.trim(),
+        );
+      }
+    });
+  }
+
+  // ---------------- Listes de besoins BL ----------------
+  /// Quantité suggérée pour un produit sous le seuil : 2 × seuil − stock (au moins 1).
+  static double suggestion(double stock, int seuil) {
+    final s = 2 * seuil - stock;
+    return s < 1 ? 1 : s;
+  }
+
+  void _validerBesoin(String fournisseurCode, List<LigneStock> lignes) {
+    if (fournisseurCode.isEmpty) throw const StockException(ErreurStock.fournisseurObligatoire);
+    if (lignes.isEmpty) throw const StockException(ErreurStock.lignesVides);
+    if (lignes.any((l) => l.quantite <= 0 || l.prix < 0)) throw const StockException(ErreurStock.quantiteInvalide);
+  }
+
+  Future<Besoin> creerBesoin({
+    required String fournisseurCode,
+    required List<LigneStock> lignes,
+    DateTime? date,
+    DateTime? dateLivraison,
+    String? observation,
+  }) async {
+    _validerBesoin(fournisseurCode, lignes);
+    return db.transaction((txn) async {
+      for (final l in lignes) {
+        await _verifierProduit(txn, l.produitCode);
+      }
       final repo = StockRepository(txn);
       final code = await repo.prochainCode('besoin', CodeGenerator.besoin);
       final b = Besoin(
         code: code,
-        date: DateTime.now(),
-        produitCode: produitCode,
-        quantite: quantite,
-        magasinCode: magasinCode,
-        commentaire: commentaire,
+        date: date ?? DateTime.now(),
+        fournisseurCode: fournisseurCode,
+        dateLivraison: dateLivraison,
+        observation: observation,
         utilisateurCode: utilisateurCode,
+        lignes: lignes,
       );
       await repo.insererBesoin(b);
+      await HistoriqueRepository(txn).journaliser(
+        utilisateurCode: utilisateurCode,
+        action: 'Création',
+        entite: 'besoin',
+        entiteCode: code,
+        detail: fournisseurCode,
+      );
       return b;
     });
   }
 
-  /// Transition : En attente → Commande → Disponible (ou retour arrière).
+  Future<Besoin> _besoinModifiable(StockRepository repo, String code) async {
+    final b = await repo.besoin(code);
+    if (b == null) throw StockException(ErreurStock.documentInconnu, code);
+    if (!b.actif) throw const StockException(ErreurStock.dejaAnnule);
+    if (b.statut == StatutsBesoin.disponible) throw const StockException(ErreurStock.besoinRecu);
+    return b;
+  }
+
+  Future<Besoin> modifierBesoin(
+    String code, {
+    required String fournisseurCode,
+    required List<LigneStock> lignes,
+    DateTime? date,
+    DateTime? dateLivraison,
+    String? observation,
+  }) async {
+    _validerBesoin(fournisseurCode, lignes);
+    return db.transaction((txn) async {
+      final repo = StockRepository(txn);
+      final avant = await _besoinModifiable(repo, code);
+      final b = Besoin(
+        code: code,
+        date: date ?? avant.date,
+        fournisseurCode: fournisseurCode,
+        statut: avant.statut,
+        dateLivraison: dateLivraison,
+        observation: observation,
+        utilisateurCode: avant.utilisateurCode,
+        lignes: lignes,
+      );
+      await repo.remplacerBesoin(b);
+      await HistoriqueRepository(txn).journaliser(
+        utilisateurCode: utilisateurCode,
+        action: 'Modification',
+        entite: 'besoin',
+        entiteCode: code,
+        detail: fournisseurCode,
+      );
+      return b;
+    });
+  }
+
+  /// Transition : En Attente → Commande → Disponible (reçue en entrée).
   Future<Besoin> changerStatutBesoin(String code, String statut) async {
     if (!StatutsBesoin.tous.contains(statut)) throw const StockException(ErreurStock.statutInvalide);
-    final b = await _repo.besoin(code);
-    if (b == null) throw StockException(ErreurStock.produitInconnu, code);
-    final maj = b.copyWith(statut: statut);
-    await _repo.mettreAJourBesoin(maj);
-    return maj;
+    return db.transaction((txn) async {
+      final repo = StockRepository(txn);
+      final b = await repo.besoin(code);
+      if (b == null) throw StockException(ErreurStock.documentInconnu, code);
+      if (!b.actif) throw const StockException(ErreurStock.dejaAnnule);
+      await repo.changerStatutBesoin(code, statut);
+      return b.copyWith(statut: statut);
+    });
   }
 
-  Future<void> supprimerBesoin(String code) => _repo.supprimerBesoin(code);
-
-  /// Besoins automatiques : produits sous leur seuil (propre ou global) sans besoin ouvert.
-  Future<List<Besoin>> genererBesoinsSousSeuil({required int seuilGlobal}) async {
-    final produits = await CatalogueRepository(db).produits(actifsSeulement: true);
-    final niveaux = {for (final n in await _repo.niveaux()) n.produitCode: n};
-    final ouverts = (await _repo.besoins())
-        .where((b) => b.statut != StatutsBesoin.disponible)
-        .map((b) => b.produitCode)
-        .toSet();
-    final crees = <Besoin>[];
-    for (final p in produits) {
-      final seuil = p.seuilStock ?? seuilGlobal;
-      final stock = niveaux[p.code]?.quantite ?? 0;
-      if (stock <= seuil && !ouverts.contains(p.code)) {
-        crees.add(
-          await creerBesoin(
-            produitCode: p.code,
-            quantite: (seuil - stock) + seuil,
-            commentaire: 'Sous seuil ($stock ≤ $seuil)',
-          ),
-        );
-      }
+  /// Annulation douce des listes (une liste déjà reçue en entrée ne s'annule pas).
+  Future<void> annulerBesoins(List<String> codes, {String motif = ''}) => db.transaction((txn) async {
+    final repo = StockRepository(txn);
+    for (final code in codes) {
+      await _besoinModifiable(repo, code);
+      await repo.annulerDocument('besoin', code, par: utilisateurCode, motif: motif.trim());
+      await HistoriqueRepository(txn).journaliser(
+        utilisateurCode: utilisateurCode,
+        action: 'Annulation',
+        entite: 'besoin',
+        entiteCode: code,
+        detail: motif.trim(),
+      );
     }
-    return crees;
-  }
+  });
 }

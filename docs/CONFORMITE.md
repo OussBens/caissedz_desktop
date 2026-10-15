@@ -53,7 +53,11 @@
 - [x] Stock = journal des mouvements (SUM), garde de stock toujours active, 2ᵉ stock « nombre »
 - [x] Magasins, principal = premier magasin de l'utilisateur
 - [x] Transferts TRM (2 mouvements par ligne, une transaction), besoins En attente / Commande / Disponible,
-      sorties avec motifs §13 + onglet Ventes
+      sorties avec motifs §13
+- [x] Écrans DS v2.2 (phase D) : Stock (quantités par magasin, détail, distribution Avancé, onglet Mouvements
+      avec « Voir la pièce »), Sorties (modifier, annuler avec motif → stock réintégré), Magasins (téléphone,
+      responsable, désactivation bloquée si principal ou stock non nul) + onglet Transferts (modifier, annuler),
+      Besoins (listes fournisseur multi-lignes BL, ruptures & seuils, expirés)
 
 ## Caisse (lot 4)
 - [x] Sessions obligatoires, 5 ventes en parallèle, réservation de stock entre paniers

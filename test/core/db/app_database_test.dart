@@ -125,7 +125,7 @@ void main() {
         'retour_code': 'RET0001',
       });
 
-      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [12, 13]);
+      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [12, 13, 14]);
       final r = (await db.query('retour')).single;
       expect(r['type'], 'Client');
       expect(r['document_code'], 'VTE0001');
@@ -166,7 +166,7 @@ void main() {
         'sous_categorie_code': 'SC0000',
         'code_barres': '6130000000015',
       });
-      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [13]);
+      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [13, 14]);
       final p = (await db.query('produit')).single;
       expect(p['service'], 0);
       expect(p['suivi_serie'], 0);
@@ -177,6 +177,52 @@ void main() {
         db.insert('produit_code_detail', {'produit_code': 'PRD0001', 'code_barres': '2000000000015'}),
         throwsA(anything),
       );
+      expect(await db.rawQuery('PRAGMA foreign_key_check'), isEmpty);
+    });
+  });
+
+  group('Migration v14 (stock DS)', () {
+    test('ancien besoin → liste fournisseur d\'une ligne ; sorties valorisées ; annulation douce', () async {
+      final base = await AppDatabase.ouvrirEnMemoire(
+        cleHex: cleTestHex,
+        migrations: toutesLesMigrations.sublist(0, 13),
+      );
+      addTearDown(base.fermer);
+      final db = base.db;
+      await db.insert('produit', {
+        'code': 'PRD0001',
+        'designation': 'Lait',
+        'categorie_code': 'CATE0000',
+        'sous_categorie_code': 'SC0000',
+        'prix_achat': 80,
+      });
+      await db.insert('besoin', {
+        'code': 'BES0001',
+        'date': '2026-10-01T10:00:00Z',
+        'produit_code': 'PRD0001',
+        'quantite': 12,
+        'statut': 'Commande',
+        'utilisateur_code': 'USR0000',
+      });
+      await db.insert('sortie_stock', {
+        'code': 'SOR0001',
+        'date': '2026-10-01T10:00:00Z',
+        'magasin_code': 'MAG0000',
+        'motif': 'Casse',
+        'utilisateur_code': 'USR0000',
+      });
+      await db.insert('sortie_stock_ligne', {'sortie_code': 'SOR0001', 'produit_code': 'PRD0001', 'quantite': 2});
+      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [14]);
+      final b = (await db.query('besoin')).single;
+      expect(b['fournisseur_code'], 'FOR0000');
+      expect(b['statut'], 'Commande');
+      expect(b['actif'], 1);
+      final l = (await db.query('besoin_ligne')).single;
+      expect(l['quantite'], 12);
+      expect(l['prix'], 80);
+      expect((await db.query('sortie_stock_ligne')).single['prix'], 80);
+      expect((await db.query('sortie_stock')).single['actif'], 1);
+      expect((await db.query('magasin', where: "code = 'MAG0000'")).single['telephone'], '');
       expect(await db.rawQuery('PRAGMA foreign_key_check'), isEmpty);
     });
   });

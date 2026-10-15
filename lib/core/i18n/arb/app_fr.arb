@@ -3008,5 +3008,230 @@
       }
     }
   },
-  "prdImportTermine": "Import terminé"
+  "prdImportTermine": "Import terminé",
+  "stkACommander": "À commander",
+  "stkAReapprovisionner": "À réapprovisionner",
+  "stkAdresse": "Adresse",
+  "stkArticles": "Articles",
+  "stkAucun": "Aucun",
+  "stkAucunChangement": "Aucun changement",
+  "stkAucunExpire": "Aucun produit expiré ou proche de l'expiration.",
+  "stkAucunTransfert": "Aucun transfert sur la période.",
+  "stkAucuneListe": "Aucune liste de besoins sur la période.",
+  "stkAucuneRupture": "Aucun produit sous le seuil.",
+  "stkAucuneSortie": "Aucune sortie sur la période.",
+  "stkAudit": "Audit",
+  "stkBloqueBesoinRecu": "Déjà reçue en entrée",
+  "stkBloqueDejaAnnule": "Déjà annulé",
+  "stkBloqueDejaAnnulee": "Déjà annulée",
+  "stkBloqueDejaInactif": "Déjà inactif",
+  "stkBloqueMagasinPrincipal": "Magasin principal d'un utilisateur",
+  "stkBloqueStockNonNul": "Stock non nul — transférez-le d'abord",
+  "stkCaisses": "Caisses",
+  "stkChoisirFournisseur": "Choisir un fournisseur",
+  "stkCreerListe": "Créer une liste de besoins",
+  "stkDepuis": "Depuis",
+  "stkDesactiver": "Désactiver",
+  "stkDescriptionBesoins": "Réapprovisionnement : listes fournisseurs, ruptures et produits expirés",
+  "stkDescriptionMagasins": "Points de stock, transferts et rattachements",
+  "stkDescriptionSorties": "Sorties de stock hors vente : casse, périmé, perte, consommation interne, don",
+  "stkDescriptionStock": "Quantités par magasin · {n} magasins actifs",
+  "@stkDescriptionStock": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "stkDispoSource": "Dispo. source",
+  "stkDisponible": "Disponible : {quantite}",
+  "@stkDisponible": {
+    "placeholders": {
+      "quantite": {
+        "type": "String"
+      }
+    }
+  },
+  "stkDisponibleEtat": "Disponible",
+  "stkDistribuer": "Distribuer",
+  "stkDistribuerDescription": "{nom} · {quantite} pièces à répartir entre les magasins",
+  "@stkDistribuerDescription": {
+    "placeholders": {
+      "nom": {
+        "type": "String"
+      },
+      "quantite": {
+        "type": "String"
+      }
+    }
+  },
+  "stkDistribuerTitre": "Distribuer le stock",
+  "stkEnStock": "en stock",
+  "stkEnregistrerListe": "Enregistrer la liste",
+  "stkEntiteListe": "liste",
+  "stkEntiteListes": "listes",
+  "stkEntiteMagasin": "magasin",
+  "stkEntiteMagasins": "magasins",
+  "stkEntiteMouvements": "mouvements",
+  "stkEntiteSortie": "sortie",
+  "stkEntiteSorties": "sorties",
+  "stkEntiteTransfert": "transfert",
+  "stkEntiteTransferts": "transferts",
+  "stkErreurDocumentInconnu": "Document introuvable.",
+  "stkErreurFournisseur": "Choisissez un fournisseur.",
+  "stkErreurMotifObligatoire": "Le motif est obligatoire.",
+  "stkErreurNomPris": "Un magasin porte déjà ce nom.",
+  "stkExpiration": "Expiration",
+  "stkExpireDepuis": "Expiré depuis {jours} j",
+  "@stkExpireDepuis": {
+    "placeholders": {
+      "jours": {
+        "type": "int"
+      }
+    }
+  },
+  "stkJMoins": "J−{jours}",
+  "@stkJMoins": {
+    "placeholders": {
+      "jours": {
+        "type": "int"
+      }
+    }
+  },
+  "stkJours": "Jours",
+  "stkKpiArticlesSortis": "Articles sortis",
+  "stkKpiCoutReassort": "Coût de réassort estimé",
+  "stkKpiEnRupture": "En rupture",
+  "stkKpiMagasinsActifs": "Magasins actifs",
+  "stkKpiSorties": "Sorties de la période",
+  "stkKpiSousSeuil": "Sous le seuil",
+  "stkKpiUtilisateursRattaches": "Utilisateurs rattachés",
+  "stkKpiValeurPerdue": "Valeur perdue",
+  "stkKpiValeurTotale": "Valeur totale du stock",
+  "stkListeDescription": "Quantités suggérées = 2 × seuil − stock. Ajustez avant d'envoyer au fournisseur.",
+  "stkListeTitre": "Liste {code}",
+  "@stkListeTitre": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "stkLivraison": "Livraison souhaitée",
+  "stkMagasin": "Magasin",
+  "stkMagasinDescription": "Un magasin a son propre stock ; les caisses et utilisateurs y sont rattachés.",
+  "stkMagasinDifferent": "Choisissez un magasin différent",
+  "stkModifierListe": "Modifier la liste de besoins",
+  "stkModifierMagasin": "Modifier le magasin",
+  "stkModifierSortie": "Modifier la sortie",
+  "stkModifierTransfert": "Modifier le transfert",
+  "stkMontantEstime": "Montant estimé",
+  "stkMotif": "Motif",
+  "stkMotifDistributionIndice": "Ex. réassort boutique",
+  "stkMotifSortieIndice": "Ex. carton tombé lors de la mise en rayon",
+  "stkMouvementsRecents": "Mouvements récents",
+  "stkNom": "Nom",
+  "stkNomMagasinIndice": "Ex. Boutique Hydra",
+  "stkNouveauMagasin": "Nouveau magasin",
+  "stkNouveauTransfert": "Nouveau transfert",
+  "stkNouvelleListe": "Nouvelle liste",
+  "stkNouvelleSortie": "Nouvelle sortie",
+  "stkObservationTransfertIndice": "Ex. réassort hebdomadaire",
+  "stkOngletExpires": "Expirés",
+  "stkOngletListes": "Listes de besoins",
+  "stkOngletMagasins": "Magasins",
+  "stkOngletMouvements": "Mouvements",
+  "stkOngletRuptures": "Ruptures & seuils",
+  "stkOngletTransferts": "Transferts",
+  "stkPalierAvance": "Palier Avancé",
+  "stkPcs": "pcs",
+  "stkPdfFournisseur": "PDF fournisseur",
+  "stkPrincipal": "Principal",
+  "stkPrixEstime": "Prix estimé",
+  "stkProduitsEnStock": "Produits en stock",
+  "stkProduitsSortis": "Produits sortis",
+  "stkProduitsTransferes": "Produits transférés",
+  "stkQte": "Qté",
+  "stkQuantiteTotale": "Quantité totale",
+  "stkRechercheMouvement": "Réf. ou produit…",
+  "stkReference": "Réf.",
+  "stkReparti": "Réparti",
+  "stkRepartirEgalement": "Répartir également",
+  "stkRepartition": "Répartition par magasin",
+  "stkResponsable": "Responsable",
+  "stkReste": "Reste",
+  "stkRestePrincipal": "Reste au principal",
+  "stkRetourFournisseur": "Retour fournisseur",
+  "stkSeuilAlerte": "Seuil d'alerte",
+  "stkSortieDescription": "Sortie de stock hors vente — valorisée au prix d'achat.",
+  "stkSortiePerime": "Sortie « Périmé »",
+  "stkSortieTitre": "Sortie {code}",
+  "@stkSortieTitre": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "stkSousSeuilEtat": "Sous le seuil",
+  "stkStatut": "Statut",
+  "stkStockDispo": "Stock : {quantite}",
+  "@stkStockDispo": {
+    "placeholders": {
+      "quantite": {
+        "type": "String"
+      }
+    }
+  },
+  "stkStockDuMagasin": "Stock du magasin",
+  "stkStockTotal": "Stock total",
+  "stkSuggestion": "Suggestion",
+  "stkTelephone": "Téléphone",
+  "stkToastDistribue": "Stock distribué",
+  "stkToastListe": "Liste enregistrée",
+  "stkToastListeDesc": "{code} · prête à envoyer",
+  "@stkToastListeDesc": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "stkToastListesAnnulees": "Listes annulées",
+  "stkToastMagasin": "Magasin enregistré",
+  "stkToastMagasinsDesactives": "Magasins désactivés",
+  "stkToastSortie": "Sortie enregistrée",
+  "stkToastSortiesAnnulees": "Sorties annulées",
+  "stkToastStockAJour": "Stock mis à jour",
+  "stkToastStockReintegre": "Le stock a été réintégré",
+  "stkToastTransfert": "Transfert validé",
+  "stkToastTransfertsAnnules": "Transferts annulés",
+  "stkToutPrincipal": "Tout au principal",
+  "stkTransfererPieces": "Transférer {quantite} pièce(s)",
+  "@stkTransfererPieces": {
+    "placeholders": {
+      "quantite": {
+        "type": "String"
+      }
+    }
+  },
+  "stkTransfertDescription": "Déplacer du stock d'un magasin à un autre.",
+  "stkTransfertTitre": "Transfert {code}",
+  "@stkTransfertTitre": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "stkUtilisateurs": "Utilisateurs",
+  "stkUtilisateursCaisses": "Utilisateurs & caisses",
+  "stkValeurAchat": "Valeur d'achat",
+  "stkValeurStock": "Valeur du stock",
+  "stkValeurVente": "Valeur de vente",
+  "stkValideLe": "Validé le",
+  "stkValiderTransfert": "Valider le transfert",
+  "stkVers": "Vers",
+  "stkVoirMouvements": "Voir les mouvements",
+  "stkVoirPiece": "Voir la pièce"
 }

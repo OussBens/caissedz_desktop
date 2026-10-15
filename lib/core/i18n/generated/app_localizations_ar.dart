@@ -5679,4 +5679,461 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get prdImportTermine => 'انتهى الاستيراد';
+
+  @override
+  String get stkACommander => 'للطلب';
+
+  @override
+  String get stkAReapprovisionner => 'للتموين';
+
+  @override
+  String get stkAdresse => 'العنوان';
+
+  @override
+  String get stkArticles => 'المواد';
+
+  @override
+  String get stkAucun => 'لا أحد';
+
+  @override
+  String get stkAucunChangement => 'لا تغيير';
+
+  @override
+  String get stkAucunExpire => 'لا توجد منتجات منتهية أو قريبة من الانتهاء.';
+
+  @override
+  String get stkAucunTransfert => 'لا توجد تحويلات في هذه الفترة.';
+
+  @override
+  String get stkAucuneListe => 'لا توجد قوائم احتياجات في هذه الفترة.';
+
+  @override
+  String get stkAucuneRupture => 'لا توجد منتجات تحت الحد.';
+
+  @override
+  String get stkAucuneSortie => 'لا توجد إخراجات في هذه الفترة.';
+
+  @override
+  String get stkAudit => 'التدقيق';
+
+  @override
+  String get stkBloqueBesoinRecu => 'تم استلامها كمدخل';
+
+  @override
+  String get stkBloqueDejaAnnule => 'ملغى مسبقًا';
+
+  @override
+  String get stkBloqueDejaAnnulee => 'ملغاة مسبقًا';
+
+  @override
+  String get stkBloqueDejaInactif => 'غير نشط مسبقًا';
+
+  @override
+  String get stkBloqueMagasinPrincipal => 'المخزن الرئيسي لمستخدم';
+
+  @override
+  String get stkBloqueStockNonNul => 'المخزون غير معدوم — حوّله أولاً';
+
+  @override
+  String get stkCaisses => 'الصناديق';
+
+  @override
+  String get stkChoisirFournisseur => 'اختر موردًا';
+
+  @override
+  String get stkCreerListe => 'إنشاء قائمة احتياجات';
+
+  @override
+  String get stkDepuis => 'من';
+
+  @override
+  String get stkDesactiver => 'تعطيل';
+
+  @override
+  String get stkDescriptionBesoins => 'التموين: قوائم الموردين، النفاد والمنتجات المنتهية';
+
+  @override
+  String get stkDescriptionMagasins => 'نقاط المخزون، التحويلات والارتباطات';
+
+  @override
+  String get stkDescriptionSorties => 'إخراجات المخزون خارج البيع: كسر، منتهي، ضياع، استهلاك داخلي، هبة';
+
+  @override
+  String stkDescriptionStock(int n) {
+    return 'الكميات حسب المخزن · $n مخازن نشطة';
+  }
+
+  @override
+  String get stkDispoSource => 'المتاح بالمصدر';
+
+  @override
+  String stkDisponible(String quantite) {
+    return 'المتاح: $quantite';
+  }
+
+  @override
+  String get stkDisponibleEtat => 'متوفر';
+
+  @override
+  String get stkDistribuer => 'توزيع';
+
+  @override
+  String stkDistribuerDescription(String nom, String quantite) {
+    return '$nom · $quantite قطعة للتوزيع بين المخازن';
+  }
+
+  @override
+  String get stkDistribuerTitre => 'توزيع المخزون';
+
+  @override
+  String get stkEnStock => 'في المخزون';
+
+  @override
+  String get stkEnregistrerListe => 'حفظ القائمة';
+
+  @override
+  String get stkEntiteListe => 'قائمة';
+
+  @override
+  String get stkEntiteListes => 'قوائم';
+
+  @override
+  String get stkEntiteMagasin => 'مخزن';
+
+  @override
+  String get stkEntiteMagasins => 'مخازن';
+
+  @override
+  String get stkEntiteMouvements => 'حركات';
+
+  @override
+  String get stkEntiteSortie => 'إخراج';
+
+  @override
+  String get stkEntiteSorties => 'إخراجات';
+
+  @override
+  String get stkEntiteTransfert => 'تحويل';
+
+  @override
+  String get stkEntiteTransferts => 'تحويلات';
+
+  @override
+  String get stkErreurDocumentInconnu => 'المستند غير موجود.';
+
+  @override
+  String get stkErreurFournisseur => 'اختر موردًا.';
+
+  @override
+  String get stkErreurMotifObligatoire => 'السبب إلزامي.';
+
+  @override
+  String get stkErreurNomPris => 'يوجد مخزن بهذا الاسم.';
+
+  @override
+  String get stkExpiration => 'انتهاء الصلاحية';
+
+  @override
+  String stkExpireDepuis(int jours) {
+    return 'منتهي منذ $jours ي';
+  }
+
+  @override
+  String stkJMoins(int jours) {
+    return 'ي−$jours';
+  }
+
+  @override
+  String get stkJours => 'الأيام';
+
+  @override
+  String get stkKpiArticlesSortis => 'المواد المخرجة';
+
+  @override
+  String get stkKpiCoutReassort => 'تكلفة التموين المقدرة';
+
+  @override
+  String get stkKpiEnRupture => 'نفد';
+
+  @override
+  String get stkKpiMagasinsActifs => 'المخازن النشطة';
+
+  @override
+  String get stkKpiSorties => 'إخراجات الفترة';
+
+  @override
+  String get stkKpiSousSeuil => 'تحت الحد';
+
+  @override
+  String get stkKpiUtilisateursRattaches => 'المستخدمون المرتبطون';
+
+  @override
+  String get stkKpiValeurPerdue => 'القيمة المفقودة';
+
+  @override
+  String get stkKpiValeurTotale => 'القيمة الإجمالية للمخزون';
+
+  @override
+  String get stkListeDescription => 'الكميات المقترحة = 2 × الحد − المخزون. عدّلها قبل الإرسال للمورد.';
+
+  @override
+  String stkListeTitre(String code) {
+    return 'القائمة $code';
+  }
+
+  @override
+  String get stkLivraison => 'التسليم المطلوب';
+
+  @override
+  String get stkMagasin => 'المخزن';
+
+  @override
+  String get stkMagasinDescription => 'لكل مخزن مخزونه؛ ترتبط به الصناديق والمستخدمون.';
+
+  @override
+  String get stkMagasinDifferent => 'اختر مخزنًا مختلفًا';
+
+  @override
+  String get stkModifierListe => 'تعديل قائمة الاحتياجات';
+
+  @override
+  String get stkModifierMagasin => 'تعديل المخزن';
+
+  @override
+  String get stkModifierSortie => 'تعديل الإخراج';
+
+  @override
+  String get stkModifierTransfert => 'تعديل التحويل';
+
+  @override
+  String get stkMontantEstime => 'المبلغ المقدر';
+
+  @override
+  String get stkMotif => 'السبب';
+
+  @override
+  String get stkMotifDistributionIndice => 'مثال: تموين المحل';
+
+  @override
+  String get stkMotifSortieIndice => 'مثال: سقوط كرتون أثناء الترتيب';
+
+  @override
+  String get stkMouvementsRecents => 'الحركات الأخيرة';
+
+  @override
+  String get stkNom => 'الاسم';
+
+  @override
+  String get stkNomMagasinIndice => 'مثال: محل حيدرة';
+
+  @override
+  String get stkNouveauMagasin => 'مخزن جديد';
+
+  @override
+  String get stkNouveauTransfert => 'تحويل جديد';
+
+  @override
+  String get stkNouvelleListe => 'قائمة جديدة';
+
+  @override
+  String get stkNouvelleSortie => 'إخراج جديد';
+
+  @override
+  String get stkObservationTransfertIndice => 'مثال: تموين أسبوعي';
+
+  @override
+  String get stkOngletExpires => 'المنتهية';
+
+  @override
+  String get stkOngletListes => 'قوائم الاحتياجات';
+
+  @override
+  String get stkOngletMagasins => 'المخازن';
+
+  @override
+  String get stkOngletMouvements => 'الحركات';
+
+  @override
+  String get stkOngletRuptures => 'النفاد والحدود';
+
+  @override
+  String get stkOngletTransferts => 'التحويلات';
+
+  @override
+  String get stkPalierAvance => 'المستوى المتقدم';
+
+  @override
+  String get stkPcs => 'قطعة';
+
+  @override
+  String get stkPdfFournisseur => 'PDF للمورد';
+
+  @override
+  String get stkPrincipal => 'رئيسي';
+
+  @override
+  String get stkPrixEstime => 'السعر المقدر';
+
+  @override
+  String get stkProduitsEnStock => 'المنتجات في المخزون';
+
+  @override
+  String get stkProduitsSortis => 'المنتجات المخرجة';
+
+  @override
+  String get stkProduitsTransferes => 'المنتجات المحولة';
+
+  @override
+  String get stkQte => 'الكمية';
+
+  @override
+  String get stkQuantiteTotale => 'الكمية الإجمالية';
+
+  @override
+  String get stkRechercheMouvement => 'المرجع أو المنتج…';
+
+  @override
+  String get stkReference => 'المرجع';
+
+  @override
+  String get stkReparti => 'موزع';
+
+  @override
+  String get stkRepartirEgalement => 'توزيع بالتساوي';
+
+  @override
+  String get stkRepartition => 'التوزيع حسب المخزن';
+
+  @override
+  String get stkResponsable => 'المسؤول';
+
+  @override
+  String get stkReste => 'الباقي';
+
+  @override
+  String get stkRestePrincipal => 'الباقي للرئيسي';
+
+  @override
+  String get stkRetourFournisseur => 'إرجاع للمورد';
+
+  @override
+  String get stkSeuilAlerte => 'حد التنبيه';
+
+  @override
+  String get stkSortieDescription => 'إخراج من المخزون خارج البيع — مقيم بسعر الشراء.';
+
+  @override
+  String get stkSortiePerime => 'إخراج «منتهي الصلاحية»';
+
+  @override
+  String stkSortieTitre(String code) {
+    return 'الإخراج $code';
+  }
+
+  @override
+  String get stkSousSeuilEtat => 'تحت الحد';
+
+  @override
+  String get stkStatut => 'الحالة';
+
+  @override
+  String stkStockDispo(String quantite) {
+    return 'المخزون: $quantite';
+  }
+
+  @override
+  String get stkStockDuMagasin => 'مخزون المخزن';
+
+  @override
+  String get stkStockTotal => 'المخزون الإجمالي';
+
+  @override
+  String get stkSuggestion => 'الاقتراح';
+
+  @override
+  String get stkTelephone => 'الهاتف';
+
+  @override
+  String get stkToastDistribue => 'تم توزيع المخزون';
+
+  @override
+  String get stkToastListe => 'تم حفظ القائمة';
+
+  @override
+  String stkToastListeDesc(String code) {
+    return '$code · جاهزة للإرسال';
+  }
+
+  @override
+  String get stkToastListesAnnulees => 'تم إلغاء القوائم';
+
+  @override
+  String get stkToastMagasin => 'تم حفظ المخزن';
+
+  @override
+  String get stkToastMagasinsDesactives => 'تم تعطيل المخازن';
+
+  @override
+  String get stkToastSortie => 'تم حفظ الإخراج';
+
+  @override
+  String get stkToastSortiesAnnulees => 'تم إلغاء الإخراجات';
+
+  @override
+  String get stkToastStockAJour => 'تم تحديث المخزون';
+
+  @override
+  String get stkToastStockReintegre => 'تمت إعادة المخزون';
+
+  @override
+  String get stkToastTransfert => 'تم اعتماد التحويل';
+
+  @override
+  String get stkToastTransfertsAnnules => 'تم إلغاء التحويلات';
+
+  @override
+  String get stkToutPrincipal => 'الكل للرئيسي';
+
+  @override
+  String stkTransfererPieces(String quantite) {
+    return 'تحويل $quantite قطعة';
+  }
+
+  @override
+  String get stkTransfertDescription => 'نقل المخزون من مخزن إلى آخر.';
+
+  @override
+  String stkTransfertTitre(String code) {
+    return 'التحويل $code';
+  }
+
+  @override
+  String get stkUtilisateurs => 'المستخدمون';
+
+  @override
+  String get stkUtilisateursCaisses => 'المستخدمون والصناديق';
+
+  @override
+  String get stkValeurAchat => 'قيمة الشراء';
+
+  @override
+  String get stkValeurStock => 'قيمة المخزون';
+
+  @override
+  String get stkValeurVente => 'قيمة البيع';
+
+  @override
+  String get stkValideLe => 'تاريخ الاعتماد';
+
+  @override
+  String get stkValiderTransfert => 'اعتماد التحويل';
+
+  @override
+  String get stkVers => 'إلى';
+
+  @override
+  String get stkVoirMouvements => 'عرض الحركات';
+
+  @override
+  String get stkVoirPiece => 'عرض المستند';
 }

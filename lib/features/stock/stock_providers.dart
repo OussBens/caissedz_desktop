@@ -37,23 +37,28 @@ final magasinPrincipalProvider = FutureProvider<String>((ref) {
   return ref.watch(stockServiceProvider).magasinPrincipal(ref.watch(utilisateurCourantCodeProvider));
 });
 
-/// Filtre magasin des écrans de stock (`null` = tous).
-class FiltreMagasinNotifier extends Notifier<String?> {
-  @override
-  String? build() => null;
-  void changer(String? v) => state = v;
-}
-
-final filtreMagasinProvider = NotifierProvider<FiltreMagasinNotifier, String?>(FiltreMagasinNotifier.new);
-
-final niveauxStockProvider = FutureProvider<List<NiveauStock>>((ref) {
-  ref.watch(stockVersionProvider);
-  return ref.watch(stockRepositoryProvider).niveaux(magasinCode: ref.watch(filtreMagasinProvider));
-});
-
+/// Journal complet des mouvements (les filtres sont appliqués à l'écran).
 final mouvementsProvider = FutureProvider<List<MouvementStock>>((ref) {
   ref.watch(stockVersionProvider);
-  return ref.watch(stockRepositoryProvider).mouvements(magasinCode: ref.watch(filtreMagasinProvider));
+  ref.watch(catalogueVersionProvider);
+  return ref.watch(stockRepositoryProvider).mouvements(limite: 5000);
+});
+
+/// Quantités par produit et par magasin : `{produit: {magasin: quantité}}`.
+final stocksParMagasinProvider = FutureProvider<Map<String, Map<String, double>>>((ref) {
+  ref.watch(stockVersionProvider);
+  ref.watch(catalogueVersionProvider);
+  return ref.watch(stockRepositoryProvider).stocksParMagasin();
+});
+
+final utilisateursParMagasinProvider = FutureProvider<Map<String, List<String>>>((ref) {
+  ref.watch(stockVersionProvider);
+  return ref.watch(stockRepositoryProvider).utilisateursParMagasin();
+});
+
+final caissesParMagasinProvider = FutureProvider<Map<String, List<String>>>((ref) {
+  ref.watch(stockVersionProvider);
+  return ref.watch(stockRepositoryProvider).caissesParMagasin();
 });
 
 final transfertsProvider = FutureProvider<List<TransfertStock>>((ref) {
@@ -69,12 +74,6 @@ final besoinsProvider = FutureProvider<List<Besoin>>((ref) {
 final sortiesProvider = FutureProvider<List<SortieStock>>((ref) {
   ref.watch(stockVersionProvider);
   return ref.watch(stockRepositoryProvider).sorties();
-});
-
-/// Mouvements de type Vente (onglet « Ventes » des sorties).
-final mouvementsVenteProvider = FutureProvider<List<MouvementStock>>((ref) {
-  ref.watch(stockVersionProvider);
-  return ref.watch(stockRepositoryProvider).mouvements(type: TypesMouvement.vente);
 });
 
 String libelleTypeMouvement(AppLocalizations l10n, String type) => switch (type) {
@@ -98,12 +97,14 @@ String libelleMotif(AppLocalizations l10n, String motif) => switch (motif) {
   _ => Referentiel.motifsSortie.libelle(motif, const Locale('fr')),
 };
 
-String libelleStatutBesoin(AppLocalizations l10n, String statut) => switch (statut) {
-  StatutsBesoin.enAttente => l10n.statutBesoinEnAttente,
-  StatutsBesoin.commande => l10n.statutBesoinCommande,
-  StatutsBesoin.disponible => l10n.statutBesoinDisponible,
-  _ => statut,
-};
+/// Statut du DS (`StatusBadge`) d'une liste de besoins.
+String statutBesoinDs(Besoin b) => !b.actif
+    ? 'annule'
+    : switch (b.statut) {
+        StatutsBesoin.commande => 'commande',
+        StatutsBesoin.disponible => 'disponible',
+        _ => 'enAttente',
+      };
 
 String messageErreurStock(AppLocalizations l10n, ErreurStock e) => switch (e) {
   ErreurStock.quantiteInvalide => l10n.stockErreurQuantite,
@@ -115,4 +116,13 @@ String messageErreurStock(AppLocalizations l10n, ErreurStock e) => switch (e) {
   ErreurStock.magasinSysteme => l10n.stockErreurMagasinSysteme,
   ErreurStock.produitInconnu => l10n.stockErreurProduit,
   ErreurStock.statutInvalide => l10n.stockErreurStatut,
+  ErreurStock.nomPris => l10n.stkErreurNomPris,
+  ErreurStock.magasinPrincipal => l10n.stkBloqueMagasinPrincipal,
+  ErreurStock.stockNonNul => l10n.stkBloqueStockNonNul,
+  ErreurStock.dejaAnnule => l10n.stkBloqueDejaAnnule,
+  ErreurStock.documentInconnu => l10n.stkErreurDocumentInconnu,
+  ErreurStock.motifObligatoire => l10n.stkErreurMotifObligatoire,
+  ErreurStock.fournisseurObligatoire => l10n.stkErreurFournisseur,
+  ErreurStock.besoinRecu => l10n.stkBloqueBesoinRecu,
+  ErreurStock.aucunChangement => l10n.stkAucunChangement,
 };

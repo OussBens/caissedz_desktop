@@ -446,6 +446,27 @@ Référence : `docs/design/CaisseDZ-DS-v2.2/CaisseDZ-DS-v2.2.html`, `bundle-v2.2
     liste sur le produit (pas de produits variantes) ; pas de « jours d'alerte » de péremption (aucune date de
     péremption au schéma) ; libellés de tailles enfant non traduits ; « Annuler » désactive (catégorie avec
     produits bloquée) ; le mode IA est gardé comme 3ᵉ segment (§9.4 exige 3 modes).
+  - ✅ Stock / Sorties / Magasins / Besoins (`StockKit`) : migration v14 (annulation douce des sorties et
+    transferts, prix d'achat figé sur les lignes de sortie, magasin téléphone / responsable / observation, liste
+    de besoins = document fournisseur `BL…` avec lignes et livraison souhaitée ; chaque ancien besoin devient une
+    liste d'une ligne au fournisseur système). `StockService` : `modifierSortie` / `annulerSorties`,
+    `modifierTransfert` / `annulerTransferts` (mouvements défaits puis réécrits, §8.3), `distribuer` (écarts soldés
+    par transferts, total conservé), `changerEtatMagasins` (bloqué si magasin principal d'un utilisateur ou stock
+    non nul), nom de magasin unique, listes de besoins (créer, modifier, statut, annuler). Préfixes alignés sur
+    §8.10 : `SRT` (sorties) et `BL` (listes de besoins). Écrans : Stock (une colonne par magasin consultable, KPI,
+    filtres magasin / catégorie / état, colonnes masquables, détail 1000 px, distribution 680 px, onglet
+    Mouvements filtrable avec « Voir la pièce » vers vente / retour / sortie / transfert), Sorties (DocForm avec
+    stock du magasin, détail 940 px, annulation avec motif), Magasins + onglet Transferts (la route
+    `/transferts` ouvre l'onglet), Besoins (Listes, Ruptures & seuils → « Créer une liste », Expirés → sortie
+    « Périmé » pré-remplie ou retour fournisseur ; détail avec « PDF fournisseur »).
+    Écarts Stock : l'onglet « Vente » de §9.7 n'est pas repris (le DS n'a qu'un tableau ; les ventes restent
+    visibles dans Stock › Mouvements, filtre Vente) ; colonnes catégorie / sous-catégorie d'une sortie absentes
+    (une sortie a plusieurs lignes) ; pas de lots ni de « jours d'alerte » : les expirés viennent de la date
+    d'expiration du produit (fenêtre de 30 jours) ; la sortie « Périmé » ouvre le formulaire pré-rempli au lieu
+    de sortir directement ; le statut « Commande » d'une liste n'a pas encore de déclencheur (« Créer l'entrée »
+    arrive avec l'écran Entrées) ; en l'absence de la permission `voirStockTousMagasins`, l'administrateur voit
+    tous les magasins (⚠️ PROVISOIRE) ; l'entrée manuelle et l'inventaire unitaire de l'ancien écran sont retirés
+    (inventaire dans Situation, entrées dans Entrées).
   - Écarts : colonnes d'audit « modifié le / par » absentes du schéma (seuls créé par et annulation) ;
     tendances des KPI calculées seulement pour les ventes ; ventes antérieures à la v10 valorisées au prix
     d'achat actuel ; `mouvement_stock` sans valorisation (prix_achat / prix_vente de §7.3).
