@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -838,8 +836,7 @@ class _CarteProduit extends StatelessWidget {
     final t = context.ds.typo;
     final l10n = AppLocalizations.of(context);
     final teinte = teintePour(categorie);
-    final image = produit.image;
-    final photo = image != null && File(image).existsSync() ? FileImage(File(image)) : null;
+    final photo = imageProduit(produit.image);
     return DsGridCard(
       etat: etatCarte,
       child: Column(

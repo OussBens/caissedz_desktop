@@ -141,6 +141,55 @@ class _SelectionProduitDialogState extends ConsumerState<_SelectionProduitDialog
     setState(() => _touche = true);
   }
 
+  /// La première frappe remplace la quantité proposée ; les suivantes la complètent.
+  bool _remplacer = true;
+
+  /// Saisie de la quantité au clavier physique (chiffres, pavé numérique, retour arrière, Échap = 0).
+  bool _saisirClavier(KeyEvent e) {
+    final k = e.logicalKey;
+    final chiffre =
+        _chiffres[k] ?? (e.character != null && RegExp(r'^[0-9]$').hasMatch(e.character!) ? e.character : null);
+    if (chiffre != null) {
+      setState(() {
+        final base = _remplacer || _q == '0' ? '' : _q;
+        _q = (base + chiffre).length > 6 ? base : base + chiffre;
+        _remplacer = false;
+      });
+      return true;
+    }
+    if (k == LogicalKeyboardKey.backspace || k == LogicalKeyboardKey.delete) {
+      setState(() {
+        _q = _q.isEmpty ? '' : _q.substring(0, _q.length - 1);
+        _remplacer = false;
+      });
+      return true;
+    }
+    return false;
+  }
+
+  static final Map<LogicalKeyboardKey, String> _chiffres = {
+    LogicalKeyboardKey.numpad0: '0',
+    LogicalKeyboardKey.numpad1: '1',
+    LogicalKeyboardKey.numpad2: '2',
+    LogicalKeyboardKey.numpad3: '3',
+    LogicalKeyboardKey.numpad4: '4',
+    LogicalKeyboardKey.numpad5: '5',
+    LogicalKeyboardKey.numpad6: '6',
+    LogicalKeyboardKey.numpad7: '7',
+    LogicalKeyboardKey.numpad8: '8',
+    LogicalKeyboardKey.numpad9: '9',
+    LogicalKeyboardKey.digit0: '0',
+    LogicalKeyboardKey.digit1: '1',
+    LogicalKeyboardKey.digit2: '2',
+    LogicalKeyboardKey.digit3: '3',
+    LogicalKeyboardKey.digit4: '4',
+    LogicalKeyboardKey.digit5: '5',
+    LogicalKeyboardKey.digit6: '6',
+    LogicalKeyboardKey.digit7: '7',
+    LogicalKeyboardKey.digit8: '8',
+    LogicalKeyboardKey.digit9: '9',
+  };
+
   Colis? get _colisChoisi => widget.colis.where((c) => c.code == _colis).firstOrNull;
   double get _quantite => double.tryParse(_q) ?? 0;
   double get _parColis => (_colisChoisi?.quantite ?? 1).toDouble();
@@ -190,8 +239,11 @@ class _SelectionProduitDialogState extends ConsumerState<_SelectionProduitDialog
       child: Focus(
         autofocus: true,
         onKeyEvent: (_, e) {
-          if (e is KeyDownEvent && e.logicalKey != LogicalKeyboardKey.enter) _toucher();
-          return KeyEventResult.ignored;
+          if (e is! KeyDownEvent && e is! KeyRepeatEvent) return KeyEventResult.ignored;
+          final k = e.logicalKey;
+          if (k == LogicalKeyboardKey.enter || k == LogicalKeyboardKey.numpadEnter) return KeyEventResult.ignored;
+          _toucher();
+          return _saisirClavier(e) ? KeyEventResult.handled : KeyEventResult.ignored;
         },
         child: DsDialog(
           titre: widget.modification ? l10n.posSelTitreModif : l10n.posSelTitre,
@@ -241,7 +293,7 @@ class _SelectionProduitDialogState extends ConsumerState<_SelectionProduitDialog
                                 ),
                           couleur: _touche ? c.textMuted : c.primaryTintFg,
                         ),
-                        if (!_touche) DsProgressBar(valeur: _reste.inMilliseconds / widget.auto.inMilliseconds),
+                        if (!_touche) DsProgressBar(valeur: _reste.inMilliseconds / widget.auto.inMilliseconds, max: 1),
                       ],
                     ),
                   ),
@@ -274,6 +326,7 @@ class _SelectionProduitDialogState extends ConsumerState<_SelectionProduitDialog
                           onChanged: (v) => setState(() {
                             _colis = v;
                             _q = '1';
+                            _remplacer = true;
                           }),
                           options: [
                             DsOption('', libelle: l10n.posSelUnite, meta: '${_da(ref, p.prixVente)} / ${p.unite}'),
@@ -319,7 +372,10 @@ class _SelectionProduitDialogState extends ConsumerState<_SelectionProduitDialog
                           decimales: false,
                           hauteurTouche: 40,
                           montantsRapides: const [],
-                          onChanged: (v) => setState(() => _q = v),
+                          onChanged: (v) => setState(() {
+                            _q = v;
+                            _remplacer = false;
+                          }),
                         ),
                         if (_depasse)
                           puce(

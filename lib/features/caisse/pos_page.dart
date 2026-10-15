@@ -21,6 +21,7 @@ import '../commun/referentiel_ui.dart';
 import '../entrees/entree_dialogs.dart';
 import '../gestion_caisse/gestion_caisse_providers.dart';
 import '../produits/produit_form_dialog.dart';
+import '../produits/produits_donnees.dart';
 import '../produits/produits_providers.dart';
 import '../tiers/tiers_dialogs.dart';
 import '../tiers/tiers_providers.dart';
@@ -53,10 +54,14 @@ class _PosPageState extends ConsumerState<PosPage> {
   void initState() {
     super.initState();
     unawaited(ref.read(posControllerProvider.notifier).initialiser());
+    // Raccourcis globaux : la caisse les reçoit où que soit le focus (barre latérale, carte, panier…),
+    // tant qu'aucun dialog n'est ouvert par-dessus.
+    HardwareKeyboard.instance.addHandler(_clavierGlobal);
   }
 
   @override
   void dispose() {
+    HardwareKeyboard.instance.removeHandler(_clavierGlobal);
     _scan.dispose();
     _scanFocus.dispose();
     super.dispose();
@@ -355,12 +360,28 @@ class _PosPageState extends ConsumerState<PosPage> {
 
   // ------------------------------------------------------------------ Raccourcis
 
-  KeyEventResult _raccourci(FocusNode node, KeyEvent e) {
+  bool _clavierGlobal(KeyEvent e) {
+    if (!mounted || e is! KeyDownEvent) return false;
+    // Un dialog (sélection, encaissement…) gère lui-même son clavier.
+    if (Navigator.of(context, rootNavigator: true).canPop() || ModalRoute.of(context)?.isCurrent == false) {
+      return false;
+    }
+    return _raccourci(e) == KeyEventResult.handled;
+  }
+
+  /// Un champ de saisie a le focus (scan, recherche, remise…) : lettres et touches d'édition lui reviennent.
+  bool get _saisieEnCours {
+    if (_scanFocus.hasFocus) return true;
+    final ctx = FocusManager.instance.primaryFocus?.context;
+    return ctx != null && (ctx.widget is EditableText || ctx.findAncestorStateOfType<EditableTextState>() != null);
+  }
+
+  KeyEventResult _raccourci(KeyEvent e) {
     if (e is! KeyDownEvent) return KeyEventResult.ignored;
     final ctrlPresse = HardwareKeyboard.instance.isControlPressed;
     final k = e.logicalKey;
     final etat = ref.read(posControllerProvider);
-    final saisie = _scanFocus.hasFocus;
+    final saisie = _saisieEnCours;
     final i = _ligneSelectionnee;
     final ligne = i != null && i < etat.panier.lignes.length ? etat.panier.lignes[i] : null;
     if (k == LogicalKeyboardKey.f1) {
@@ -419,7 +440,6 @@ class _PosPageState extends ConsumerState<PosPage> {
       ..watch(caissesListeProvider);
     final large = !_afficherProduits;
     return Focus(
-      onKeyEvent: _raccourci,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(
           DsTailles.pagePaddingX,
@@ -627,6 +647,7 @@ class _PosPageState extends ConsumerState<PosPage> {
               prix: p.prixVente,
               stock: stocks[p.code] ?? 0,
               categorie: nomsCategories[p.categorieCode],
+              image: imageProduit(p.image),
               seuilBas: (p.seuilStock ?? 5).toDouble(),
               devise: devise,
               enLigne: liste,

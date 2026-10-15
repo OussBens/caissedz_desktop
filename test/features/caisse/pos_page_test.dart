@@ -111,6 +111,35 @@ void main() {
       expect(find.text('Panier vide'), findsOneWidget);
     });
 
+    testWidgets('quantité au clavier dans le dialog, raccourcis actifs hors du champ de scan', (tester) async {
+      final c = await pumpApp(tester, routeInitiale: '/caisse', taille: const Size(1600, 1000));
+      await _donnees(c);
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('tuile_PRD0001')));
+      await tester.pump(const Duration(milliseconds: 300));
+      // La 1ʳᵉ frappe remplace la quantité proposée (1), la suivante complète ; retour arrière efface.
+      await tester.sendKeyEvent(LogicalKeyboardKey.digit2);
+      await tester.sendKeyEvent(LogicalKeyboardKey.numpad3);
+      await tester.pump();
+      expect(tester.widget<Text>(find.byKey(const ValueKey('selection_quantite'))).data, '23');
+      expect(find.byType(DsProgressBar), findsNothing, reason: 'la frappe annule l\'ajout auto');
+      await tester.sendKeyEvent(LogicalKeyboardKey.backspace);
+      await tester.pump();
+      expect(tester.widget<Text>(find.byKey(const ValueKey('selection_quantite'))).data, '2');
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('ligne_0')), findsOneWidget);
+      expect(_total(tester), contains('200,00'));
+      // Focus hors du champ de scan (clic ailleurs) : les touches F restent actives.
+      FocusManager.instance.primaryFocus?.unfocus();
+      await tester.pump();
+      await _touche(tester, LogicalKeyboardKey.f1);
+      expect(find.text('Raccourcis clavier'), findsOneWidget);
+      await clic(tester, find.text('Fermer'));
+      await _touche(tester, LogicalKeyboardKey.f10);
+      expect(find.byKey(const ValueKey('ligne_0')), findsNothing);
+    });
+
     testWidgets('scan : code-barres → dialog, code inconnu → produit introuvable', (tester) async {
       final c = await pumpApp(tester, routeInitiale: '/caisse', taille: const Size(1600, 1000));
       await _donnees(c);

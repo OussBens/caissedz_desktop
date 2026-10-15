@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -1149,6 +1151,44 @@ class _DsProductTileState extends State<DsProductTile> {
   bool _survol = false;
   bool _presse = false;
 
+  /// Bouton « Entrée » flottant au-dessus de la carte (grille) : il reste affiché un court instant après la
+  /// sortie du pointeur pour pouvoir l'atteindre.
+  final _lien = LayerLink();
+  final _portail = OverlayPortalController();
+  bool _survolEntree = false;
+  Timer? _delai;
+
+  static const _delaiMasquage = Duration(milliseconds: 450);
+
+  @override
+  void dispose() {
+    _delai?.cancel();
+    super.dispose();
+  }
+
+  void _entrerCarte() {
+    _delai?.cancel();
+    if (widget.onEntree != null && !widget.enLigne && !_portail.isShowing) _portail.show();
+    setState(() => _survol = true);
+  }
+
+  void _quitterCarte() {
+    setState(() {
+      _survol = false;
+      _presse = false;
+    });
+    _planifierMasquage();
+  }
+
+  void _planifierMasquage() {
+    _delai?.cancel();
+    _delai = Timer(_delaiMasquage, () {
+      if (!mounted || _survol || _survolEntree) return;
+      if (_portail.isShowing) _portail.hide();
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final c = context.ds.colors;
@@ -1272,13 +1312,12 @@ class _DsProductTileState extends State<DsProductTile> {
         ),
       );
     }
-    return MouseRegion(
+    final rtl = Directionality.of(context) == TextDirection.rtl;
+    final actif = _survol && !rupture;
+    final carte = MouseRegion(
       cursor: rupture ? SystemMouseCursors.forbidden : SystemMouseCursors.click,
-      onEnter: (_) => setState(() => _survol = true),
-      onExit: (_) => setState(() {
-        _survol = false;
-        _presse = false;
-      }),
+      onEnter: (_) => _entrerCarte(),
+      onExit: (_) => _quitterCarte(),
       child: GestureDetector(
         onTapDown: (_) => setState(() => _presse = true),
         onTapUp: (_) => setState(() => _presse = false),
@@ -1292,22 +1331,23 @@ class _DsProductTileState extends State<DsProductTile> {
             child: AnimatedContainer(
               duration: DsMotion.base,
               curve: DsMotion.standard,
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.all(8),
+              transform: Matrix4.translationValues(0, actif ? -2 : 0, 0),
               decoration: BoxDecoration(
-                color: c.surfaceCard,
+                color: actif ? Color.alphaBlend(c.primaryTint.withValues(alpha: .45), c.surfaceCard) : c.surfaceCard,
                 borderRadius: DsRadius.borderLg,
-                border: Border.all(color: _survol && !rupture ? c.borderFocus : c.borderDefault),
-                boxShadow: _survol && !rupture ? c.shadowMd : c.shadowXs,
+                border: Border.all(color: actif ? c.primary : c.borderDefault, width: actif ? 1.5 : 1),
+                boxShadow: actif ? [...c.shadowMd, BoxShadow(color: c.ringFocus, spreadRadius: 2)] : c.shadowXs,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisSize: MainAxisSize.min,
-                spacing: 10,
+                spacing: 6,
                 children: [
-                  vignette(72),
+                  vignette(52),
                   Text(
                     w.nom,
-                    style: t.bodySmStrong.copyWith(height: 1.3),
+                    style: t.bodySmStrong.copyWith(height: 1.25),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -1318,13 +1358,69 @@ class _DsProductTileState extends State<DsProductTile> {
                       ?stockTexte,
                     ],
                   ),
-                  if (entree != null && _survol) entree,
                 ],
               ),
             ),
           ),
         ),
       ),
+    );
+    if (w.onEntree == null) return carte;
+    return OverlayPortal(
+      controller: _portail,
+      overlayChildBuilder: (_) => Positioned(
+        left: 0,
+        top: 0,
+        child: CompositedTransformFollower(
+          link: _lien,
+          showWhenUnlinked: false,
+          // À cheval sur le bord supérieur, côté fin de lecture : hors de la carte, sans en changer la taille.
+          targetAnchor: rtl ? Alignment.topLeft : Alignment.topRight,
+          followerAnchor: rtl ? Alignment.centerLeft : Alignment.centerRight,
+          offset: Offset(rtl ? -6 : 6, -4),
+          child: MouseRegion(
+            onEnter: (_) {
+              _delai?.cancel();
+              _survolEntree = true;
+            },
+            onExit: (_) {
+              _survolEntree = false;
+              _planifierMasquage();
+            },
+            child: TweenAnimationBuilder<double>(
+              tween: Tween(begin: 0, end: 1),
+              duration: DsMotion.base,
+              curve: DsMotion.standard,
+              builder: (context, v, child) => Opacity(
+                opacity: v,
+                child: Transform.scale(scale: .9 + .1 * v, child: child),
+              ),
+              child: Material(
+                type: MaterialType.transparency,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(borderRadius: DsRadius.borderMd, boxShadow: c.shadowMd),
+                  child: Tooltip(
+                    message: l10n.dsPosEntreeRapide,
+                    child: DsButton(
+                      key: ValueKey('${w.key is ValueKey ? (w.key! as ValueKey).value : w.nom}_entree'),
+                      libelle: l10n.dsPosEntree,
+                      icone: LucideIcons.packagePlus,
+                      taille: DsButtonTaille.sm,
+                      onPressed: () {
+                        _delai?.cancel();
+                        _survolEntree = false;
+                        if (_portail.isShowing) _portail.hide();
+                        w.onEntree!();
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+      child: CompositedTransformTarget(link: _lien, child: carte),
     );
   }
 }

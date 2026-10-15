@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as p;
 
@@ -71,4 +72,15 @@ Future<String> importerPhoto(String dossier, String source) async {
   final cible = p.join(dossier, nom);
   await File(source).copy(cible);
   return cible;
+}
+
+/// Photo d'un produit (chemin local enregistré par la fiche, ou URL du catalogue partagé), redimensionnée
+/// pour les vignettes ; `null` si absente ou introuvable.
+ImageProvider? imageProduit(String? chemin, {int largeur = 320}) {
+  if (chemin == null || chemin.trim().isEmpty) return null;
+  if (chemin.startsWith('http://') || chemin.startsWith('https://')) {
+    return ResizeImage(NetworkImage(chemin), width: largeur);
+  }
+  final f = File(chemin);
+  return f.existsSync() ? ResizeImage(FileImage(f), width: largeur) : null;
 }
