@@ -74,6 +74,60 @@ void main() {
       final h = await base.db.query('historique', where: 'entite = ?', whereArgs: ['parametre']);
       expect(h.length, 5);
     });
+
+    test('barre d’enregistrement unique : tout validé puis écrit en une transaction, une ligne d’historique', () async {
+      final base = await ouvrirBaseDeTest();
+      final s = ParametresService(base.db, utilisateurCode: 'USR0000');
+      final p = await s.lireTout();
+      expect(p.paiements.points, isTrue);
+      expect(p.alertes.afficherConnexion, isTrue);
+      expect(p.vente.venteSousAchat, ParametresVente.venteSousAchatAvertir);
+      ParametresComplets avec({Boutique? boutique, ParametresVente? vente, ParametresImpression? impression}) =>
+          ParametresComplets(
+            boutique: boutique ?? const Boutique(nom: 'El Baraka', nis: '0002', messageTicket: 'Merci'),
+            vente:
+                vente ??
+                p.vente.copyWith(
+                  typeMarge: ParametresVente.typeMargeMontant,
+                  margeMontant: 40,
+                  seuilStockGlobal: 4,
+                  seuilStockMax: 120,
+                  venteSousAchat: ParametresVente.venteSousAchatInterdire,
+                ),
+            paiements: p.paiements.copyWith(cheque: true, points: false),
+            impression:
+                impression ??
+                const ParametresImpression(type: TypesImprimante.reseau, adresse: ' 10.0.0.5:9100 ', largeur: '58'),
+            serveur: const ParametresServeur(url: 'https://api.test/'),
+            zakat: const ParametresZakat(nissab: 1615000, tauxPct: 2.5),
+            alertes: const ParametresAlertes(afficherConnexion: false, seuilCreditClient: 20000),
+          );
+      // Une seule section invalide : rien n'est écrit.
+      await expectLater(
+        s.enregistrerTout(avec(vente: p.vente.copyWith(seuilStockGlobal: 10, seuilStockMax: 5))),
+        throwsA(isA<ParametresException>().having((e) => e.erreur, 'e', ErreurParametres.valeurInvalide)),
+      );
+      await expectLater(
+        s.enregistrerTout(avec(impression: const ParametresImpression(type: TypesImprimante.usb))),
+        throwsA(isA<ParametresException>()),
+      );
+      expect((await s.lireBoutique())?.nom, isNot('El Baraka'));
+      await s.enregistrerTout(avec());
+      final l = await s.lireTout();
+      expect(l.boutique.nis, '0002');
+      expect(l.vente.margeEnMontant, isTrue);
+      expect(l.vente.margeMontant, 40);
+      expect(l.vente.seuilStockMax, 120);
+      expect(l.vente.venteSousAchat, ParametresVente.venteSousAchatInterdire);
+      expect(l.paiements.modes, ['Espèces', 'Carte', 'Chèque']);
+      expect(l.impression.adresse, '10.0.0.5:9100');
+      expect(l.serveur.url, 'https://api.test');
+      expect(l.zakat.nissab, 1615000);
+      expect(l.alertes.afficherConnexion, isFalse);
+      expect(l.alertes.seuilCreditClient, 20000);
+      final h = await base.db.query('historique', where: 'entite = ?', whereArgs: ['parametre']);
+      expect(h.single['entite_code'], 'tout');
+    });
   });
 
   group('SauvegardeService', () {

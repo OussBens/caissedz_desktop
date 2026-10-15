@@ -1304,3 +1304,44 @@ void afficherToast(
     if (entree.mounted) entree.remove();
   });
 }
+
+/// Encart d'information teinté (`Note` du DS v2.2) : icône, texte, action facultative.
+class DsNote extends StatelessWidget {
+  const DsNote({super.key, required this.texte, this.ton = DsBadgeTon.info, this.icone, this.action});
+  final String texte;
+  final DsBadgeTon ton;
+  final IconData? icone;
+  final Widget? action;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.ds.colors;
+    final t = context.ds.typo;
+    final (fond, texteCouleur) = switch (ton) {
+      DsBadgeTon.succes => (c.successTint, c.successFg),
+      DsBadgeTon.avertissement => (c.warningTint, c.warningFg),
+      DsBadgeTon.danger => (c.dangerTint, c.dangerFg),
+      DsBadgeTon.primaire || DsBadgeTon.accent => (c.primaryTint, c.primaryTintFg),
+      DsBadgeTon.neutre => (c.surfaceSunken, c.textSecondary),
+      DsBadgeTon.info => (c.infoTint, c.infoFg),
+    };
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: DsSpacing.s3, vertical: DsSpacing.s2 + 2),
+      decoration: BoxDecoration(color: fond, borderRadius: DsRadius.borderLg),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        spacing: DsSpacing.s2,
+        children: [
+          Icon(icone ?? LucideIcons.info, size: 15, color: texteCouleur),
+          Expanded(
+            child: Text(
+              texte,
+              style: t.bodySm.copyWith(fontWeight: FontWeight.w500, height: 1.45, color: texteCouleur),
+            ),
+          ),
+          ?action,
+        ],
+      ),
+    );
+  }
+}

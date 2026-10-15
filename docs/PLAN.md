@@ -560,6 +560,24 @@ Référence : `docs/design/CaisseDZ-DS-v2.2/CaisseDZ-DS-v2.2.html`, `bundle-v2.2
     inaltérable, cohérent avec la conformité fiscale) ; pas de tableau « Changements » avant / après (les services
     ne journalisent qu'une description) ; pas de version ni d'adresse IP dans le contexte ; les exports et
     sauvegardes ne sont pas encore journalisés (famille « Export » prête mais vide).
+  - ✅ Paramètres (`ParametresScreen` + compléments `ParametresV22`, §9.16) : navigation latérale fixe en 7 groupes
+    (Système, Boutique, Caisse et ventes, Impression, Alertes, Sauvegarde, Licence), badge « Modifications non
+    enregistrées » et barre d'enregistrement unique : `ParametresService.enregistrerTout` valide tout puis écrit
+    boutique et paramètres dans UNE transaction avec une ligne d'historique. Thème et langue s'appliquent tout de
+    suite (préférences du poste). Nouveaux paramètres de la spec appliqués : type de marge (`Pourcentage` /
+    `Montant`, valeur proposée à la création d'un produit), seuil maximum, vente sous le prix d'achat
+    (`Interdire` / `Avertir` / `Autoriser`, contrôlée à la modification du prix en caisse), moyens de paiement
+    visibles (Points compris, proposés en caisse seulement si le bonus fidélité est actif), nissab et taux de la
+    zakat ; côté DS : alertes à la connexion (désactivables) et seuil de crédit client signalé. Services en ligne
+    (URL CaisseDZ, clé, Mantouj) avec bouton « Synchroniser le catalogue ». Imprimante : 4 cartes de type, adresse,
+    largeur et « Imprimer un test » (page ESC/POS). Sauvegarde : mot de passe demandé dans un dialog, restauration
+    confirmée puis vérifiée avant préparation. Licence : palier, clé masquée, accès à l'activation.
+    Écarts Paramètres : densité, réduction des animations, TVA par défaut, remise ticket maximale, mode de paiement
+    par défaut, impression automatique, tiroir-caisse, imprimante A4, dossier et sauvegarde automatique, postes
+    activés et quota Smart Scan, marge gros, valeur d'un point et 2ᵉ stock « nombre » non repris (aucune règle
+    ni donnée derrière dans la spec ou le schéma actuel) ; « Bientôt expiré » absent tant que les alertes
+    d'expiration restent vides ; le seuil maximum n'alimente pas encore le calcul des besoins ; la marge en
+    pourcentage n'est pas arrondie au multiple de 5 DA (§8) ; pas d'aperçu du ticket.
   - Écarts : colonnes d'audit « modifié le / par » absentes du schéma (seuls créé par et annulation) ;
     tendances des KPI calculées seulement pour les ventes ; ventes antérieures à la v10 valorisées au prix
     d'achat actuel ; `mouvement_stock` sans valorisation (prix_achat / prix_vente de §7.3).

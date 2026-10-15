@@ -1017,24 +1017,6 @@ abstract class AppLocalizations {
   /// **'Magasinier'**
   String get roleMagasinier;
 
-  /// No description provided for @parametresRolesCarte.
-  ///
-  /// In fr, this message translates to:
-  /// **'Rôles et permissions'**
-  String get parametresRolesCarte;
-
-  /// No description provided for @parametresRolesCarteDetail.
-  ///
-  /// In fr, this message translates to:
-  /// **'Permissions d\'action et modules accessibles par rôle.'**
-  String get parametresRolesCarteDetail;
-
-  /// No description provided for @parametresLicenceCarte.
-  ///
-  /// In fr, this message translates to:
-  /// **'Licence'**
-  String get parametresLicenceCarte;
-
   /// No description provided for @shellBandeauDemo.
   ///
   /// In fr, this message translates to:
@@ -4275,186 +4257,6 @@ abstract class AppLocalizations {
   /// **'Créances et dettes'**
   String get rapportCreancesDettes;
 
-  /// No description provided for @parametresTitre.
-  ///
-  /// In fr, this message translates to:
-  /// **'Paramètres'**
-  String get parametresTitre;
-
-  /// No description provided for @parametresOngletGeneral.
-  ///
-  /// In fr, this message translates to:
-  /// **'Général'**
-  String get parametresOngletGeneral;
-
-  /// No description provided for @parametresOngletBoutique.
-  ///
-  /// In fr, this message translates to:
-  /// **'Boutique'**
-  String get parametresOngletBoutique;
-
-  /// No description provided for @parametresOngletVente.
-  ///
-  /// In fr, this message translates to:
-  /// **'Vente'**
-  String get parametresOngletVente;
-
-  /// No description provided for @parametresOngletImpression.
-  ///
-  /// In fr, this message translates to:
-  /// **'Impression'**
-  String get parametresOngletImpression;
-
-  /// No description provided for @parametresOngletServeur.
-  ///
-  /// In fr, this message translates to:
-  /// **'Serveurs'**
-  String get parametresOngletServeur;
-
-  /// No description provided for @parametresOngletSauvegarde.
-  ///
-  /// In fr, this message translates to:
-  /// **'Sauvegarde'**
-  String get parametresOngletSauvegarde;
-
-  /// No description provided for @parametresEnregistre.
-  ///
-  /// In fr, this message translates to:
-  /// **'Paramètres enregistrés.'**
-  String get parametresEnregistre;
-
-  /// No description provided for @parametresBoutiqueNom.
-  ///
-  /// In fr, this message translates to:
-  /// **'Nom de la boutique'**
-  String get parametresBoutiqueNom;
-
-  /// No description provided for @parametresBoutiqueRc.
-  ///
-  /// In fr, this message translates to:
-  /// **'Registre de commerce (RC)'**
-  String get parametresBoutiqueRc;
-
-  /// No description provided for @parametresBoutiqueNif.
-  ///
-  /// In fr, this message translates to:
-  /// **'NIF'**
-  String get parametresBoutiqueNif;
-
-  /// No description provided for @parametresBoutiqueAdresse.
-  ///
-  /// In fr, this message translates to:
-  /// **'Adresse'**
-  String get parametresBoutiqueAdresse;
-
-  /// No description provided for @parametresBoutiqueTelephone.
-  ///
-  /// In fr, this message translates to:
-  /// **'Téléphone'**
-  String get parametresBoutiqueTelephone;
-
-  /// No description provided for @parametresBoutiqueEmail.
-  ///
-  /// In fr, this message translates to:
-  /// **'E-mail'**
-  String get parametresBoutiqueEmail;
-
-  /// No description provided for @parametresMarge.
-  ///
-  /// In fr, this message translates to:
-  /// **'Marge par défaut (%)'**
-  String get parametresMarge;
-
-  /// No description provided for @parametresDevise.
-  ///
-  /// In fr, this message translates to:
-  /// **'Devise'**
-  String get parametresDevise;
-
-  /// No description provided for @parametresSeuil.
-  ///
-  /// In fr, this message translates to:
-  /// **'Seuil de stock global'**
-  String get parametresSeuil;
-
-  /// No description provided for @parametresFidelite.
-  ///
-  /// In fr, this message translates to:
-  /// **'Programme de fidélité'**
-  String get parametresFidelite;
-
-  /// No description provided for @parametresPoints.
-  ///
-  /// In fr, this message translates to:
-  /// **'Points par dinar'**
-  String get parametresPoints;
-
-  /// No description provided for @parametresGardeStock.
-  ///
-  /// In fr, this message translates to:
-  /// **'Garde de stock : toujours active (aucune vente sans stock).'**
-  String get parametresGardeStock;
-
-  /// No description provided for @parametresImprimanteType.
-  ///
-  /// In fr, this message translates to:
-  /// **'Type d\'imprimante'**
-  String get parametresImprimanteType;
-
-  /// No description provided for @parametresImprimanteAdresse.
-  ///
-  /// In fr, this message translates to:
-  /// **'File d\'attente Windows ou adresse IP:port'**
-  String get parametresImprimanteAdresse;
-
-  /// No description provided for @parametresImprimanteLargeur.
-  ///
-  /// In fr, this message translates to:
-  /// **'Largeur du ticket'**
-  String get parametresImprimanteLargeur;
-
-  /// No description provided for @parametresImprimanteNormale.
-  ///
-  /// In fr, this message translates to:
-  /// **'Normale (dialogue d\'impression)'**
-  String get parametresImprimanteNormale;
-
-  /// No description provided for @parametresImprimanteUsb.
-  ///
-  /// In fr, this message translates to:
-  /// **'USB (spouleur Windows)'**
-  String get parametresImprimanteUsb;
-
-  /// No description provided for @parametresImprimanteReseau.
-  ///
-  /// In fr, this message translates to:
-  /// **'Réseau (IP:port)'**
-  String get parametresImprimanteReseau;
-
-  /// No description provided for @parametresImprimanteBluetooth.
-  ///
-  /// In fr, this message translates to:
-  /// **'Bluetooth'**
-  String get parametresImprimanteBluetooth;
-
-  /// No description provided for @parametresServeurUrl.
-  ///
-  /// In fr, this message translates to:
-  /// **'URL du serveur CaisseDZ'**
-  String get parametresServeurUrl;
-
-  /// No description provided for @parametresServeurCle.
-  ///
-  /// In fr, this message translates to:
-  /// **'Clé API'**
-  String get parametresServeurCle;
-
-  /// No description provided for @parametresMantoujUrl.
-  ///
-  /// In fr, this message translates to:
-  /// **'URL du catalogue Mantouj'**
-  String get parametresMantoujUrl;
-
   /// No description provided for @parametresErreurNom.
   ///
   /// In fr, this message translates to:
@@ -4485,12 +4287,6 @@ abstract class AppLocalizations {
   /// **'La sauvegarde est chiffrée avec le mot de passe choisi : conservez-le, il sera demandé à la restauration.'**
   String get sauvegardeIntro;
 
-  /// No description provided for @sauvegardeCreer.
-  ///
-  /// In fr, this message translates to:
-  /// **'Créer une sauvegarde'**
-  String get sauvegardeCreer;
-
   /// No description provided for @sauvegardeRestaurer.
   ///
   /// In fr, this message translates to:
@@ -4502,24 +4298,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Mot de passe de la sauvegarde'**
   String get sauvegardeMotDePasse;
-
-  /// No description provided for @sauvegardeFichier.
-  ///
-  /// In fr, this message translates to:
-  /// **'Fichier de sauvegarde'**
-  String get sauvegardeFichier;
-
-  /// No description provided for @sauvegardeChoisirFichier.
-  ///
-  /// In fr, this message translates to:
-  /// **'Choisir le fichier…'**
-  String get sauvegardeChoisirFichier;
-
-  /// No description provided for @sauvegardeOk.
-  ///
-  /// In fr, this message translates to:
-  /// **'Sauvegarde enregistrée : {chemin}'**
-  String sauvegardeOk(String chemin);
 
   /// No description provided for @sauvegardeInfo.
   ///
@@ -14432,6 +14210,708 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Export'**
   String get hiActExport;
+
+  /// No description provided for @pmDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Préférences du poste, de la boutique et de l\'application.'**
+  String get pmDescription;
+
+  /// No description provided for @pmNonEnregistre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifications non enregistrées'**
+  String get pmNonEnregistre;
+
+  /// No description provided for @pmEnregistrer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrer'**
+  String get pmEnregistrer;
+
+  /// No description provided for @pmEnregistre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paramètres enregistrés'**
+  String get pmEnregistre;
+
+  /// No description provided for @pmGrpSysteme.
+  ///
+  /// In fr, this message translates to:
+  /// **'Système'**
+  String get pmGrpSysteme;
+
+  /// No description provided for @pmGrpBoutique.
+  ///
+  /// In fr, this message translates to:
+  /// **'Boutique'**
+  String get pmGrpBoutique;
+
+  /// No description provided for @pmGrpCaisse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Caisse et ventes'**
+  String get pmGrpCaisse;
+
+  /// No description provided for @pmGrpImpression.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impression'**
+  String get pmGrpImpression;
+
+  /// No description provided for @pmGrpAlertes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Alertes'**
+  String get pmGrpAlertes;
+
+  /// No description provided for @pmGrpSauvegarde.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sauvegarde'**
+  String get pmGrpSauvegarde;
+
+  /// No description provided for @pmGrpLicence.
+  ///
+  /// In fr, this message translates to:
+  /// **'Licence'**
+  String get pmGrpLicence;
+
+  /// No description provided for @pmTheme.
+  ///
+  /// In fr, this message translates to:
+  /// **'Thème'**
+  String get pmTheme;
+
+  /// No description provided for @pmThemeDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Clair pour la journée, sombre pour les écrans de caisse en faible lumière.'**
+  String get pmThemeDesc;
+
+  /// No description provided for @pmClair.
+  ///
+  /// In fr, this message translates to:
+  /// **'Clair'**
+  String get pmClair;
+
+  /// No description provided for @pmSombre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sombre'**
+  String get pmSombre;
+
+  /// No description provided for @pmLangue.
+  ///
+  /// In fr, this message translates to:
+  /// **'Langue de l\'interface'**
+  String get pmLangue;
+
+  /// No description provided for @pmLangueDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'L\'arabe active la mise en page de droite à gauche et la police Cairo.'**
+  String get pmLangueDesc;
+
+  /// No description provided for @pmDevise.
+  ///
+  /// In fr, this message translates to:
+  /// **'Devise'**
+  String get pmDevise;
+
+  /// No description provided for @pmDeviseDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Affichée sur les montants, tickets et factures.'**
+  String get pmDeviseDesc;
+
+  /// No description provided for @pmDecimales.
+  ///
+  /// In fr, this message translates to:
+  /// **'Décimales des quantités'**
+  String get pmDecimales;
+
+  /// No description provided for @pmDecimalesDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'0 pour les articles à l\'unité, 3 pour la vente au poids (kg).'**
+  String get pmDecimalesDesc;
+
+  /// No description provided for @pmMargeTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Marge par défaut'**
+  String get pmMargeTitre;
+
+  /// No description provided for @pmMargeInfo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Appliquée aux nouveaux produits et proposée dans l\'entrée'**
+  String get pmMargeInfo;
+
+  /// No description provided for @pmMargeType.
+  ///
+  /// In fr, this message translates to:
+  /// **'Type de marge'**
+  String get pmMargeType;
+
+  /// No description provided for @pmMargeTypeDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'En montant fixe ou en pourcentage du prix d\'achat.'**
+  String get pmMargeTypeDesc;
+
+  /// No description provided for @pmMontant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montant'**
+  String get pmMontant;
+
+  /// No description provided for @pmPourcentage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pourcentage'**
+  String get pmPourcentage;
+
+  /// No description provided for @pmMargeValeur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Marge'**
+  String get pmMargeValeur;
+
+  /// No description provided for @pmMargeValeurDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix de vente = achat + marge.'**
+  String get pmMargeValeurDesc;
+
+  /// No description provided for @pmSeuilsTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Seuils de stock globaux'**
+  String get pmSeuilsTitre;
+
+  /// No description provided for @pmSeuilsInfo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Valeurs par défaut, modifiables produit par produit'**
+  String get pmSeuilsInfo;
+
+  /// No description provided for @pmSeuilMin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Seuil minimum (rupture)'**
+  String get pmSeuilMin;
+
+  /// No description provided for @pmSeuilMinDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Alerte quand le stock passe sous ce seuil.'**
+  String get pmSeuilMinDesc;
+
+  /// No description provided for @pmSeuilMax.
+  ///
+  /// In fr, this message translates to:
+  /// **'Seuil maximum'**
+  String get pmSeuilMax;
+
+  /// No description provided for @pmSeuilMaxDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Signale un sur-stock ; 0 pour aucun.'**
+  String get pmSeuilMaxDesc;
+
+  /// No description provided for @pmPieces.
+  ///
+  /// In fr, this message translates to:
+  /// **'pcs'**
+  String get pmPieces;
+
+  /// No description provided for @pmGarde.
+  ///
+  /// In fr, this message translates to:
+  /// **'Garde de stock'**
+  String get pmGarde;
+
+  /// No description provided for @pmGardeDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Toujours active : le stock ne devient jamais négatif.'**
+  String get pmGardeDesc;
+
+  /// No description provided for @pmGardeCaisseDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Toujours active : le stock ne devient jamais négatif, un produit à 0 ne s\'encaisse pas.'**
+  String get pmGardeCaisseDesc;
+
+  /// No description provided for @pmNonDesactivable.
+  ///
+  /// In fr, this message translates to:
+  /// **'Non désactivable'**
+  String get pmNonDesactivable;
+
+  /// No description provided for @pmZakatTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Zakat'**
+  String get pmZakatTitre;
+
+  /// No description provided for @pmNissab.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nissab'**
+  String get pmNissab;
+
+  /// No description provided for @pmNissabDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Valeur de 85 g d\'or ; proposée à chaque calcul.'**
+  String get pmNissabDesc;
+
+  /// No description provided for @pmTaux.
+  ///
+  /// In fr, this message translates to:
+  /// **'Taux'**
+  String get pmTaux;
+
+  /// No description provided for @pmTauxDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Taux appliqué à l\'assiette.'**
+  String get pmTauxDesc;
+
+  /// No description provided for @pmServeursTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Services en ligne'**
+  String get pmServeursTitre;
+
+  /// No description provided for @pmServeursInfo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Catalogue partagé et recherche de produits par code-barres'**
+  String get pmServeursInfo;
+
+  /// No description provided for @pmServeurUrl.
+  ///
+  /// In fr, this message translates to:
+  /// **'URL du serveur CaisseDZ'**
+  String get pmServeurUrl;
+
+  /// No description provided for @pmServeurCle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Clé d\'API'**
+  String get pmServeurCle;
+
+  /// No description provided for @pmMantouj.
+  ///
+  /// In fr, this message translates to:
+  /// **'URL Mantouj'**
+  String get pmMantouj;
+
+  /// No description provided for @pmSynchro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Synchroniser le catalogue'**
+  String get pmSynchro;
+
+  /// No description provided for @pmSynchroDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Envoie vos fiches et récupère les fiches enrichies du catalogue partagé.'**
+  String get pmSynchroDesc;
+
+  /// No description provided for @pmSynchroBouton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Synchroniser'**
+  String get pmSynchroBouton;
+
+  /// No description provided for @pmLogo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Logo'**
+  String get pmLogo;
+
+  /// No description provided for @pmLogoAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'PNG transparent · imprimé en haut du ticket'**
+  String get pmLogoAide;
+
+  /// No description provided for @pmRaisonSociale.
+  ///
+  /// In fr, this message translates to:
+  /// **'Raison sociale'**
+  String get pmRaisonSociale;
+
+  /// No description provided for @pmTelephone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Téléphone'**
+  String get pmTelephone;
+
+  /// No description provided for @pmAdresse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Adresse'**
+  String get pmAdresse;
+
+  /// No description provided for @pmRc.
+  ///
+  /// In fr, this message translates to:
+  /// **'RC'**
+  String get pmRc;
+
+  /// No description provided for @pmNif.
+  ///
+  /// In fr, this message translates to:
+  /// **'NIF'**
+  String get pmNif;
+
+  /// No description provided for @pmNis.
+  ///
+  /// In fr, this message translates to:
+  /// **'NIS'**
+  String get pmNis;
+
+  /// No description provided for @pmArticle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Article d\'imposition'**
+  String get pmArticle;
+
+  /// No description provided for @pmEmail.
+  ///
+  /// In fr, this message translates to:
+  /// **'E-mail'**
+  String get pmEmail;
+
+  /// No description provided for @pmMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Message du ticket'**
+  String get pmMessage;
+
+  /// No description provided for @pmMessageAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Imprimé en bas de chaque ticket'**
+  String get pmMessageAide;
+
+  /// No description provided for @pmModesTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Moyens de paiement'**
+  String get pmModesTitre;
+
+  /// No description provided for @pmModesInfo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Proposés à l\'encaissement ; les espèces sont toujours acceptées'**
+  String get pmModesInfo;
+
+  /// No description provided for @pmReglesTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Règles de vente'**
+  String get pmReglesTitre;
+
+  /// No description provided for @pmSousAchat.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vente sous le prix d\'achat'**
+  String get pmSousAchat;
+
+  /// No description provided for @pmSousAchatDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Autoriser, avertir ou interdire un prix de vente inférieur au prix d\'achat.'**
+  String get pmSousAchatDesc;
+
+  /// No description provided for @pmFideliteTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fidélité'**
+  String get pmFideliteTitre;
+
+  /// No description provided for @pmBonus.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bonus fidélité'**
+  String get pmBonus;
+
+  /// No description provided for @pmBonusDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les clients identifiés gagnent des points à chaque encaissement.'**
+  String get pmBonusDesc;
+
+  /// No description provided for @pmTauxGain.
+  ///
+  /// In fr, this message translates to:
+  /// **'Taux de gain'**
+  String get pmTauxGain;
+
+  /// No description provided for @pmTauxGainDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Points gagnés par tranche d\'achat.'**
+  String get pmTauxGainDesc;
+
+  /// No description provided for @pmPointPar.
+  ///
+  /// In fr, this message translates to:
+  /// **'point /'**
+  String get pmPointPar;
+
+  /// No description provided for @pmImprimanteTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Imprimante ticket'**
+  String get pmImprimanteTitre;
+
+  /// No description provided for @pmTypeBluetooth.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bluetooth'**
+  String get pmTypeBluetooth;
+
+  /// No description provided for @pmTypeBluetoothDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Appairée sous Windows'**
+  String get pmTypeBluetoothDesc;
+
+  /// No description provided for @pmTypeUsb.
+  ///
+  /// In fr, this message translates to:
+  /// **'USB'**
+  String get pmTypeUsb;
+
+  /// No description provided for @pmTypeUsbDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'File d\'attente Windows (ESC/POS)'**
+  String get pmTypeUsbDesc;
+
+  /// No description provided for @pmTypeReseau.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réseau'**
+  String get pmTypeReseau;
+
+  /// No description provided for @pmTypeReseauDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Adresse IP et port'**
+  String get pmTypeReseauDesc;
+
+  /// No description provided for @pmTypeNormale.
+  ///
+  /// In fr, this message translates to:
+  /// **'Normale'**
+  String get pmTypeNormale;
+
+  /// No description provided for @pmTypeNormaleDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Imprimante Windows'**
+  String get pmTypeNormaleDesc;
+
+  /// No description provided for @pmAdresseIp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Adresse IP:port'**
+  String get pmAdresseIp;
+
+  /// No description provided for @pmAdresseBluetooth.
+  ///
+  /// In fr, this message translates to:
+  /// **'File d\'attente Bluetooth'**
+  String get pmAdresseBluetooth;
+
+  /// No description provided for @pmFileUsb.
+  ///
+  /// In fr, this message translates to:
+  /// **'File d\'attente Windows'**
+  String get pmFileUsb;
+
+  /// No description provided for @pmLargeur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Largeur'**
+  String get pmLargeur;
+
+  /// No description provided for @pmTest.
+  ///
+  /// In fr, this message translates to:
+  /// **'Imprimer un test'**
+  String get pmTest;
+
+  /// No description provided for @pmTestOk.
+  ///
+  /// In fr, this message translates to:
+  /// **'Test envoyé : la page de test est sortie sur {cible}.'**
+  String pmTestOk(String cible);
+
+  /// No description provided for @pmAlertesConnexion.
+  ///
+  /// In fr, this message translates to:
+  /// **'Afficher les alertes à la connexion'**
+  String get pmAlertesConnexion;
+
+  /// No description provided for @pmAlertesConnexionDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ruptures, crédits élevés, sessions non clôturées.'**
+  String get pmAlertesConnexionDesc;
+
+  /// No description provided for @pmSeuilCredit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Seuil de crédit client'**
+  String get pmSeuilCredit;
+
+  /// No description provided for @pmSeuilCreditDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Signale les clients au-delà de ce montant ; 0 pour tous.'**
+  String get pmSeuilCreditDesc;
+
+  /// No description provided for @pmSauverMaintenant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sauvegarder maintenant'**
+  String get pmSauverMaintenant;
+
+  /// No description provided for @pmSauvegardeTerminee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sauvegarde terminée'**
+  String get pmSauvegardeTerminee;
+
+  /// No description provided for @pmRestaurerDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Remplace toutes les données actuelles par celles d\'un fichier.'**
+  String get pmRestaurerDesc;
+
+  /// No description provided for @pmRestaurerBouton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Restaurer…'**
+  String get pmRestaurerBouton;
+
+  /// No description provided for @pmRestaurerConfirmTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Restaurer une sauvegarde ?'**
+  String get pmRestaurerConfirmTitre;
+
+  /// No description provided for @pmRestaurerConfirmMsg.
+  ///
+  /// In fr, this message translates to:
+  /// **'Toutes les données actuelles (ventes, stock, clients…) seront remplacées au prochain démarrage.'**
+  String get pmRestaurerConfirmMsg;
+
+  /// No description provided for @pmRestaurerConfirmOk.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir le fichier et restaurer'**
+  String get pmRestaurerConfirmOk;
+
+  /// No description provided for @pmPalierAvance.
+  ///
+  /// In fr, this message translates to:
+  /// **'Palier Avancé'**
+  String get pmPalierAvance;
+
+  /// No description provided for @pmPalierAvanceDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Multi-magasins, multi-caisses'**
+  String get pmPalierAvanceDesc;
+
+  /// No description provided for @pmPalierBasic.
+  ///
+  /// In fr, this message translates to:
+  /// **'Palier Basic'**
+  String get pmPalierBasic;
+
+  /// No description provided for @pmPalierBasicDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Un magasin, toutes les fonctions de vente'**
+  String get pmPalierBasicDesc;
+
+  /// No description provided for @pmPalierDemo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mode démo'**
+  String get pmPalierDemo;
+
+  /// No description provided for @pmPalierDemoDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Données fictives, réinitialisées à la fermeture'**
+  String get pmPalierDemoDesc;
+
+  /// No description provided for @pmPalierAucun.
+  ///
+  /// In fr, this message translates to:
+  /// **'Application non activée'**
+  String get pmPalierAucun;
+
+  /// No description provided for @pmPalierAucunDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Saisissez une clé pour activer CaisseDZ'**
+  String get pmPalierAucunDesc;
+
+  /// No description provided for @pmActive.
+  ///
+  /// In fr, this message translates to:
+  /// **'Active'**
+  String get pmActive;
+
+  /// No description provided for @pmCle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Clé de licence'**
+  String get pmCle;
+
+  /// No description provided for @pmCleDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Liée à ce poste.'**
+  String get pmCleDesc;
+
+  /// No description provided for @pmActiveeLe.
+  ///
+  /// In fr, this message translates to:
+  /// **'Activée le {date}.'**
+  String pmActiveeLe(String date);
+
+  /// No description provided for @pmGererLicence.
+  ///
+  /// In fr, this message translates to:
+  /// **'Gérer la licence'**
+  String get pmGererLicence;
+
+  /// No description provided for @pmGererLicenceDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Saisir une nouvelle clé ou passer au palier Avancé.'**
+  String get pmGererLicenceDesc;
+
+  /// No description provided for @posPrixSousAchatInterdit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix inférieur au prix d\'achat : interdit par les paramètres.'**
+  String get posPrixSousAchatInterdit;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

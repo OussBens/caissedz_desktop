@@ -22,6 +22,7 @@ class PageModule extends ConsumerWidget {
     this.ongletCourant = 0,
     this.onOnglet,
     this.actions = const [],
+    this.defilable = true,
   });
 
   final String moduleId;
@@ -36,6 +37,9 @@ class PageModule extends ConsumerWidget {
   final ValueChanged<int>? onOnglet;
   final List<Widget> actions;
 
+  /// `false` : le contenu gère son propre défilement (navigation latérale fixe, tableaux).
+  final bool defilable;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
@@ -46,7 +50,7 @@ class PageModule extends ConsumerWidget {
       titre: nom,
       sousTitre: sousTitre,
       filAriane: module == null ? null : [libelleGroupe(l10n, module.groupe), module.libelle(l10n)],
-      defilable: true,
+      defilable: defilable,
       actions: [
         ...actions,
         if (module != null)

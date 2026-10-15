@@ -177,8 +177,15 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
           : taillesParType.entries.where((e) => _tailles.every(e.value.contains)).firstOrNull?.key;
       _chargerFiche(p.code);
     } else {
-      _marge.text = _nb(marge);
-      final seuil = ref.read(parametresVenteProvider).value?.seuilStockGlobal;
+      // Marge par défaut des Paramètres : en pourcentage ou en montant fixe.
+      final pv = ref.read(parametresVenteProvider).value;
+      if (pv != null && pv.margeEnMontant) {
+        _modeMarge = 'DA';
+        _marge.text = _nb(pv.margeMontant);
+      } else {
+        _marge.text = _nb(marge);
+      }
+      final seuil = pv?.seuilStockGlobal;
       _seuil.text = seuil?.toString() ?? '';
       final f = widget.fiche;
       if (f != null) _appliquerFiche(f);

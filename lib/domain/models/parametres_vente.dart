@@ -1,8 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-/// Paramètres métier fixés lors de la configuration initiale (table `parametre`).
-///
-/// ⚠️ PROVISOIRE : la liste exacte (§8) sera alignée au lot 8 (Paramètres complets).
+/// Paramètres métier de vente et de stock (table `parametre`, `parametre` du §7.9).
 @immutable
 class ParametresVente {
   const ParametresVente({
@@ -12,6 +10,10 @@ class ParametresVente {
     this.pointsParDinar = 0.01,
     this.devise = 'DA',
     this.decimalesQuantite = 2,
+    this.typeMarge = typeMargePourcentage,
+    this.margeMontant = 50,
+    this.seuilStockMax = 0,
+    this.venteSousAchat = venteSousAchatAvertir,
   });
 
   static const String cleMarge = 'marge_defaut_pct';
@@ -20,9 +22,36 @@ class ParametresVente {
   static const String clePoints = 'fidelite_points_par_dinar';
   static const String cleDevise = 'devise';
   static const String cleDecimales = 'decimales_quantite';
-  static const List<String> cles = [cleMarge, cleSeuil, cleFidelite, clePoints, cleDevise, cleDecimales];
+  static const String cleTypeMarge = 'marge_type';
+  static const String cleMargeMontant = 'marge_montant';
+  static const String cleSeuilMax = 'seuil_stock_max';
+  static const String cleVenteSousAchat = 'vente_sous_achat';
+  static const List<String> cles = [
+    cleMarge,
+    cleSeuil,
+    cleFidelite,
+    clePoints,
+    cleDevise,
+    cleDecimales,
+    cleTypeMarge,
+    cleMargeMontant,
+    cleSeuilMax,
+    cleVenteSousAchat,
+  ];
 
+  /// Valeurs stockées du référentiel `typeCalcul`.
+  static const String typeMargePourcentage = 'Pourcentage';
+  static const String typeMargeMontant = 'Montant';
+
+  /// Valeurs stockées du référentiel `typeVenteSousAchat`.
+  static const String venteSousAchatInterdire = 'Interdire';
+  static const String venteSousAchatAvertir = 'Avertir';
+  static const String venteSousAchatAutoriser = 'Autoriser';
+
+  /// Taux de marge en pourcentage (`taux_marge_percentage`).
   final double margeDefautPct;
+
+  /// Seuil minimum (rupture).
   final int seuilStockGlobal;
   final bool fideliteActive;
   final double pointsParDinar;
@@ -31,6 +60,20 @@ class ParametresVente {
   /// Décimales des quantités (0 à 3 ; 3 pour la vente au poids).
   final int decimalesQuantite;
 
+  /// `Pourcentage` ou `Montant` (`type_marge`).
+  final String typeMarge;
+
+  /// Marge fixe en devise (`taux_marge_montant`).
+  final double margeMontant;
+
+  /// Seuil maximum (sur-stock) ; 0 = aucun.
+  final int seuilStockMax;
+
+  /// `Interdire`, `Avertir` ou `Autoriser` : contrôle d'un prix de vente sous le prix d'achat.
+  final String venteSousAchat;
+
+  bool get margeEnMontant => typeMarge == typeMargeMontant;
+
   ParametresVente copyWith({
     double? margeDefautPct,
     int? seuilStockGlobal,
@@ -38,6 +81,10 @@ class ParametresVente {
     double? pointsParDinar,
     String? devise,
     int? decimalesQuantite,
+    String? typeMarge,
+    double? margeMontant,
+    int? seuilStockMax,
+    String? venteSousAchat,
   }) => ParametresVente(
     margeDefautPct: margeDefautPct ?? this.margeDefautPct,
     seuilStockGlobal: seuilStockGlobal ?? this.seuilStockGlobal,
@@ -45,6 +92,10 @@ class ParametresVente {
     pointsParDinar: pointsParDinar ?? this.pointsParDinar,
     devise: devise ?? this.devise,
     decimalesQuantite: decimalesQuantite ?? this.decimalesQuantite,
+    typeMarge: typeMarge ?? this.typeMarge,
+    margeMontant: margeMontant ?? this.margeMontant,
+    seuilStockMax: seuilStockMax ?? this.seuilStockMax,
+    venteSousAchat: venteSousAchat ?? this.venteSousAchat,
   );
 
   Map<String, String> versCles() => {
@@ -54,6 +105,10 @@ class ParametresVente {
     clePoints: pointsParDinar.toString(),
     cleDevise: devise,
     cleDecimales: decimalesQuantite.toString(),
+    cleTypeMarge: typeMarge,
+    cleMargeMontant: margeMontant.toString(),
+    cleSeuilMax: seuilStockMax.toString(),
+    cleVenteSousAchat: venteSousAchat,
   };
 
   factory ParametresVente.depuisCles(Map<String, String?> m) => ParametresVente(
@@ -63,6 +118,14 @@ class ParametresVente {
     pointsParDinar: double.tryParse(m[clePoints] ?? '') ?? 0.01,
     devise: m[cleDevise] ?? 'DA',
     decimalesQuantite: (int.tryParse(m[cleDecimales] ?? '') ?? 2).clamp(0, 3),
+    typeMarge: m[cleTypeMarge] == typeMargeMontant ? typeMargeMontant : typeMargePourcentage,
+    margeMontant: double.tryParse(m[cleMargeMontant] ?? '') ?? 50,
+    seuilStockMax: int.tryParse(m[cleSeuilMax] ?? '') ?? 0,
+    venteSousAchat: switch (m[cleVenteSousAchat]) {
+      venteSousAchatInterdire => venteSousAchatInterdire,
+      venteSousAchatAutoriser => venteSousAchatAutoriser,
+      _ => venteSousAchatAvertir,
+    },
   );
 
   @override
@@ -73,8 +136,22 @@ class ParametresVente {
       other.fideliteActive == fideliteActive &&
       other.pointsParDinar == pointsParDinar &&
       other.devise == devise &&
-      other.decimalesQuantite == decimalesQuantite;
+      other.decimalesQuantite == decimalesQuantite &&
+      other.typeMarge == typeMarge &&
+      other.margeMontant == margeMontant &&
+      other.seuilStockMax == seuilStockMax &&
+      other.venteSousAchat == venteSousAchat;
   @override
-  int get hashCode =>
-      Object.hash(margeDefautPct, seuilStockGlobal, fideliteActive, pointsParDinar, devise, decimalesQuantite);
+  int get hashCode => Object.hash(
+    margeDefautPct,
+    seuilStockGlobal,
+    fideliteActive,
+    pointsParDinar,
+    devise,
+    decimalesQuantite,
+    typeMarge,
+    margeMontant,
+    seuilStockMax,
+    venteSousAchat,
+  );
 }

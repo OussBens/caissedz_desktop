@@ -2,7 +2,10 @@ import 'package:caissedz_desktop/app/providers.dart';
 import 'package:caissedz_desktop/application/catalogue_service.dart';
 import 'package:caissedz_desktop/application/stock_service.dart';
 import 'package:caissedz_desktop/core/design_system/design_system.dart';
+import 'package:caissedz_desktop/data/parametre_repository.dart';
 import 'package:caissedz_desktop/data/vente_repository.dart';
+import 'package:caissedz_desktop/domain/models/parametres_paiement.dart';
+import 'package:caissedz_desktop/domain/models/parametres_vente.dart';
 import 'package:caissedz_desktop/domain/models/produit.dart';
 import 'package:caissedz_desktop/features/produits/produits_providers.dart';
 import 'package:caissedz_desktop/features/stock/stock_providers.dart';
@@ -163,6 +166,40 @@ void main() {
       expect(find.text('Calculatrice'), findsOneWidget);
       await tester.sendKeyEvent(LogicalKeyboardKey.escape);
       await tester.pumpAndSettle();
+    });
+
+    testWidgets('Paramètres appliqués : moyens de paiement visibles, vente sous achat interdite', (tester) async {
+      final c = await pumpApp(tester, routeInitiale: '/caisse', taille: const Size(1600, 1000));
+      final repo = ParametreRepository(c.read(appDatabaseProvider).db);
+      await repo.ecrirePlusieurs({
+        ParametresPaiement.cleCarte: '0',
+        ParametresPaiement.cleCheque: '1',
+        ParametresVente.cleVenteSousAchat: ParametresVente.venteSousAchatInterdire,
+      });
+      c
+        ..invalidate(parametresPaiementProvider)
+        ..invalidate(parametresVenteProvider);
+      await _donnees(c);
+      await tester.pumpAndSettle();
+      await clic(tester, find.byKey(const ValueKey('panier_mode')));
+      expect(find.text('Chèque'), findsWidgets);
+      expect(find.text('Carte CIB'), findsNothing);
+      expect(find.text('Points fidélité'), findsNothing, reason: 'bonus fidélité inactif');
+      await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('tuile_PRD0001')));
+      await tester.pumpAndSettle();
+      await doubleClic(tester, find.byKey(const ValueKey('ligne_0')));
+      await tester.enterText(
+        find.descendant(of: find.byKey(const ValueKey('prix_valeur')), matching: find.byType(TextField)),
+        '50',
+      );
+      await tester.enterText(
+        find.descendant(of: find.byKey(const ValueKey('prix_mdp')), matching: find.byType(TextField)),
+        'admin',
+      );
+      await clic(tester, find.byKey(const ValueKey('prix_enregistrer')));
+      expect(find.text('Prix inférieur au prix d\'achat : interdit par les paramètres.'), findsOneWidget);
     });
 
     testWidgets('arabe : écran caisse en RTL', (tester) async {

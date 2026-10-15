@@ -13,6 +13,7 @@ import '../../core/i18n/generated/app_localizations.dart';
 import '../../domain/codes_barres.dart';
 import '../../domain/models/caisse.dart';
 import '../../domain/models/panier.dart';
+import '../../domain/models/parametres_vente.dart';
 import '../../domain/models/produit.dart';
 import '../../domain/models/stock.dart';
 import '../../domain/models/tiers.dart';
@@ -573,7 +574,14 @@ class _ModifPrixDialogState extends ConsumerState<_ModifPrixDialog> {
       setState(() => _erreurMdp = l10n.posPrixMdpIncorrect);
       return;
     }
-    if (v! < _achat) {
+    // Contrôle « vente sous achat » (Paramètres) : interdire, avertir ou autoriser.
+    final regle = (await ref.read(parametresVenteProvider.future)).venteSousAchat;
+    if (!mounted) return;
+    if (v! < _achat && regle == ParametresVente.venteSousAchatInterdire) {
+      setState(() => _erreurPrix = l10n.posPrixSousAchatInterdit);
+      return;
+    }
+    if (v < _achat && regle == ParametresVente.venteSousAchatAvertir) {
       final confirme = await afficherConfirmation(
         context,
         titre: l10n.posPrixSousAchatTitre,

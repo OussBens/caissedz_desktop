@@ -8,6 +8,7 @@ import '../../application/import_produits_service.dart';
 import '../../application/synchro_catalogue_service.dart';
 import '../../data/catalogue_repository.dart';
 import '../../data/parametre_repository.dart';
+import '../../domain/models/parametres_paiement.dart';
 import '../../domain/models/parametres_vente.dart';
 import '../../domain/models/produit.dart';
 
@@ -29,15 +30,13 @@ final catalogueServiceProvider = Provider<CatalogueService>(
 /// Paramètres de vente (marge par défaut, devise…), relus à la demande.
 final parametresVenteProvider = FutureProvider<ParametresVente>((ref) async {
   final repo = ParametreRepository(ref.watch(appDatabaseProvider).db);
-  return ParametresVente.depuisCles(
-    await repo.lirePlusieurs([
-      ParametresVente.cleMarge,
-      ParametresVente.cleSeuil,
-      ParametresVente.cleFidelite,
-      ParametresVente.clePoints,
-      ParametresVente.cleDevise,
-    ]),
-  );
+  return ParametresVente.depuisCles(await repo.lirePlusieurs(ParametresVente.cles));
+});
+
+/// Moyens de paiement visibles en caisse (Paramètres › Caisse et ventes).
+final parametresPaiementProvider = FutureProvider<ParametresPaiement>((ref) async {
+  final repo = ParametreRepository(ref.watch(appDatabaseProvider).db);
+  return ParametresPaiement.depuisCles(await repo.lirePlusieurs(ParametresPaiement.cles));
 });
 
 final deviseProvider = Provider<String>((ref) => ref.watch(parametresVenteProvider).value?.devise ?? 'DA');

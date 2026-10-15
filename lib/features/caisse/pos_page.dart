@@ -748,7 +748,15 @@ class _PosPageState extends ConsumerState<PosPage> {
       ],
     );
 
-    final modes = [for (final v in Referentiel.modesPaiement.valeurs) v.stocke];
+    // Moyens visibles (Paramètres) ; les points seulement si le bonus fidélité est actif.
+    final visibles = ref.watch(parametresPaiementProvider).value?.modes;
+    final fidelite = ref.watch(parametresVenteProvider).value?.fideliteActive ?? false;
+    final modes = [
+      for (final v in Referentiel.modesPaiement.valeurs)
+        if (v.stocke == panier.modePaiement ||
+            ((visibles == null || visibles.contains(v.stocke)) && (v.stocke != 'Points' || fidelite)))
+          v.stocke,
+    ];
     final selects = Row(
       spacing: DsSpacing.s2,
       children: [

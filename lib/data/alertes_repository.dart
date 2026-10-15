@@ -29,16 +29,16 @@ class AlertesRepository {
   }
 
   /// Plus gros restes dus par client (ventes validées − imputations), [limite] premiers.
-  Future<List<Map<String, Object?>>> creditsClients({int limite = 3}) => db.rawQuery(
+  Future<List<Map<String, Object?>>> creditsClients({int limite = 3, double seuil = 0}) => db.rawQuery(
     '''
     SELECT c.code, c.nom, SUM(v.reste - COALESCE((SELECT SUM(i.montant) FROM versement_imputation i
              WHERE i.document_type = 'vente' AND i.document_code = v.code), 0)) du,
            MAX(v.date) derniere
     FROM vente v JOIN client c ON c.code = v.client_code
     WHERE v.statut = ? AND v.reste > 0
-    GROUP BY c.code HAVING du > 0.005 ORDER BY du DESC LIMIT ?
+    GROUP BY c.code HAVING du > MAX(0.005, ?) ORDER BY du DESC LIMIT ?
     ''',
-    [StatutsVente.validee, limite],
+    [StatutsVente.validee, seuil, limite],
   );
 
   /// Plus grosses dettes par fournisseur (achats validés − imputations), [limite] premières.

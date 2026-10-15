@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:caissedz_desktop/app/providers.dart';
@@ -58,15 +57,6 @@ Future<void> _jeu(ProviderContainer c) async {
   );
   c.read(rapportsVersionProvider.notifier).incrementer();
 }
-
-Finder _champ(String libelle, {bool premier = false}) => find
-    .descendant(
-      of: find
-          .ancestor(of: premier ? find.text(libelle).first : find.text(libelle).last, matching: find.byType(Column))
-          .first,
-      matching: find.byType(TextField),
-    )
-    .first;
 
 Finder _dansCle(String cle) => find.descendant(of: find.byKey(ValueKey(cle)), matching: find.byType(TextField)).first;
 
@@ -153,63 +143,5 @@ void main() {
     expect(find.text('Création · Produits'), findsOneWidget);
     expect(find.text('Contexte'), findsOneWidget);
     await clic(tester, find.text('Fermer').last);
-  });
-
-  testWidgets('paramètres : boutique, vente, impression, serveur, sauvegarde', (tester) async {
-    final dossier = Directory.systemTemp.createTempSync('caissedz_param_');
-    addTearDown(() => dossier.deleteSync(recursive: true));
-    final chemin = '${dossier.path}/sauvegarde.cdz';
-    final c = await pumpApp(
-      tester,
-      routeInitiale: '/parametres',
-      taille: const Size(1400, 1000),
-      overrides: [selecteurEnregistrementProvider.overrideWithValue((nom, ext) async => chemin)],
-    );
-    expect(find.text('Rôles et permissions'), findsWidgets);
-    await clic(tester, find.text('Boutique'));
-    await tester.enterText(_champ('E-mail'), 'contact@baraka.dz');
-    await tester.pump();
-    await clic(tester, find.text('Enregistrer'));
-    expect(find.text('Paramètres enregistrés.'), findsOneWidget);
-    await clic(tester, find.text('Fermer').last);
-    await clic(tester, find.text('Vente'));
-    await tester.enterText(_champ('Marge par défaut (%)'), '-5');
-    await tester.pump();
-    await clic(tester, find.text('Enregistrer'));
-    expect(find.text('Valeur invalide.'), findsOneWidget);
-    await clic(tester, find.text('Fermer').last);
-    await tester.enterText(_champ('Marge par défaut (%)'), '30');
-    await tester.pump();
-    await clic(tester, find.text('Enregistrer'));
-    await clic(tester, find.text('Fermer').last);
-    await clic(tester, find.text('Impression'));
-    await clic(tester, find.text('Normale (dialogue d\'impression)'));
-    await clic(tester, find.text('Réseau (IP:port)').last);
-    await clic(tester, find.text('Enregistrer'));
-    expect(find.text('Indiquez la file d\'attente ou l\'adresse de l\'imprimante.'), findsOneWidget);
-    await clic(tester, find.text('Fermer').last);
-    await tester.enterText(_champ('File d\'attente Windows ou adresse IP:port'), '10.0.0.5:9100');
-    await tester.pump();
-    await clic(tester, find.text('Enregistrer'));
-    await clic(tester, find.text('Fermer').last);
-    await clic(tester, find.text('Serveurs'));
-    await tester.enterText(_champ('URL du serveur CaisseDZ'), 'https://api.test/');
-    await tester.pump();
-    await clic(tester, find.text('Enregistrer'));
-    await clic(tester, find.text('Fermer').last);
-    await clic(tester, find.text('Sauvegarde'));
-    await clic(tester, find.text('Créer une sauvegarde').last);
-    expect(find.text('Saisissez un mot de passe.'), findsOneWidget);
-    await clic(tester, find.text('Fermer').last);
-    await tester.enterText(_champ('Mot de passe de la sauvegarde', premier: true), 'secret');
-    await tester.pump();
-    await clic(tester, find.text('Créer une sauvegarde').last);
-    expect(find.textContaining('Sauvegarde enregistrée'), findsOneWidget);
-    expect(File(chemin).existsSync(), isTrue);
-    final s = c.read(parametresServiceProvider);
-    expect((await s.lireBoutique())!.email, 'contact@baraka.dz');
-    expect((await s.lireVente()).margeDefautPct, 30);
-    expect((await s.lireImpression()).adresse, '10.0.0.5:9100');
-    expect((await s.lireServeur()).url, 'https://api.test');
   });
 }

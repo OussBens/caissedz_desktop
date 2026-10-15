@@ -210,6 +210,24 @@ class TicketEscPos {
     return b.toBytes();
   }
 
+  /// Page de test (Paramètres › Impression) : nom de la boutique, largeur, ligne de contrôle, coupe.
+  Uint8List pageTest({required String boutique, required String titre}) {
+    final b = BytesBuilder();
+    b.add(_init());
+    b.add(_aligner(1));
+    b.add(_gras(true));
+    b.add(_double(true));
+    b.add(_ligne(boutique));
+    b.add(_double(false));
+    b.add(_gras(false));
+    b.add(_ligne(titre));
+    b.add(_ligne('${largeur == LargeurTicket.mm58 ? 58 : 80} mm · $colonnes'));
+    b.add(_ligne('-' * colonnes));
+    b.add(_ligne('0123456789' * (colonnes ~/ 10)));
+    b.add(_couper());
+    return b.toBytes();
+  }
+
   static const Map<int, int> _cp1252 = {
     0xE9: 0xE9,
     0xE8: 0xE8,

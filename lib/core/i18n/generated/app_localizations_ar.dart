@@ -489,15 +489,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get roleMagasinier => 'أمين المخزن';
 
   @override
-  String get parametresRolesCarte => 'الأدوار والصلاحيات';
-
-  @override
-  String get parametresRolesCarteDetail => 'صلاحيات الإجراءات والوحدات المتاحة حسب الدور.';
-
-  @override
-  String get parametresLicenceCarte => 'الرخصة';
-
-  @override
   String get shellBandeauDemo => 'وضع تجريبي — البيانات ليست للاستعمال الفعلي';
 
   @override
@@ -2198,96 +2189,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get rapportCreancesDettes => 'الديون والمستحقات';
 
   @override
-  String get parametresTitre => 'الإعدادات';
-
-  @override
-  String get parametresOngletGeneral => 'عام';
-
-  @override
-  String get parametresOngletBoutique => 'المتجر';
-
-  @override
-  String get parametresOngletVente => 'البيع';
-
-  @override
-  String get parametresOngletImpression => 'الطباعة';
-
-  @override
-  String get parametresOngletServeur => 'الخوادم';
-
-  @override
-  String get parametresOngletSauvegarde => 'النسخ الاحتياطي';
-
-  @override
-  String get parametresEnregistre => 'تم حفظ الإعدادات.';
-
-  @override
-  String get parametresBoutiqueNom => 'اسم المتجر';
-
-  @override
-  String get parametresBoutiqueRc => 'السجل التجاري';
-
-  @override
-  String get parametresBoutiqueNif => 'الرقم الجبائي';
-
-  @override
-  String get parametresBoutiqueAdresse => 'العنوان';
-
-  @override
-  String get parametresBoutiqueTelephone => 'الهاتف';
-
-  @override
-  String get parametresBoutiqueEmail => 'البريد الإلكتروني';
-
-  @override
-  String get parametresMarge => 'الهامش الافتراضي (٪)';
-
-  @override
-  String get parametresDevise => 'العملة';
-
-  @override
-  String get parametresSeuil => 'حد المخزون العام';
-
-  @override
-  String get parametresFidelite => 'برنامج الولاء';
-
-  @override
-  String get parametresPoints => 'نقاط لكل دينار';
-
-  @override
-  String get parametresGardeStock => 'حماية المخزون: مفعّلة دائمًا (لا بيع بدون مخزون).';
-
-  @override
-  String get parametresImprimanteType => 'نوع الطابعة';
-
-  @override
-  String get parametresImprimanteAdresse => 'طابور Windows أو عنوان IP:port';
-
-  @override
-  String get parametresImprimanteLargeur => 'عرض التذكرة';
-
-  @override
-  String get parametresImprimanteNormale => 'عادية (نافذة الطباعة)';
-
-  @override
-  String get parametresImprimanteUsb => 'USB (طابور Windows)';
-
-  @override
-  String get parametresImprimanteReseau => 'شبكة (IP:port)';
-
-  @override
-  String get parametresImprimanteBluetooth => 'بلوتوث';
-
-  @override
-  String get parametresServeurUrl => 'عنوان خادم CaisseDZ';
-
-  @override
-  String get parametresServeurCle => 'مفتاح API';
-
-  @override
-  String get parametresMantoujUrl => 'عنوان كتالوج Mantouj';
-
-  @override
   String get parametresErreurNom => 'اسم المتجر إلزامي.';
 
   @override
@@ -2303,24 +2204,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get sauvegardeIntro => 'النسخة الاحتياطية مشفّرة بكلمة المرور المختارة: احتفظ بها، ستُطلب عند الاستعادة.';
 
   @override
-  String get sauvegardeCreer => 'إنشاء نسخة احتياطية';
-
-  @override
   String get sauvegardeRestaurer => 'استعادة نسخة احتياطية';
 
   @override
   String get sauvegardeMotDePasse => 'كلمة مرور النسخة';
-
-  @override
-  String get sauvegardeFichier => 'ملف النسخة الاحتياطية';
-
-  @override
-  String get sauvegardeChoisirFichier => 'اختيار الملف…';
-
-  @override
-  String sauvegardeOk(String chemin) {
-    return 'تم حفظ النسخة: $chemin';
-  }
 
   @override
   String sauvegardeInfo(String boutique, int ventes, int produits, int version) {
@@ -7587,4 +7474,359 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get hiActExport => 'تصدير';
+
+  @override
+  String get pmDescription => 'تفضيلات المحطة والمتجر والتطبيق.';
+
+  @override
+  String get pmNonEnregistre => 'تعديلات غير محفوظة';
+
+  @override
+  String get pmEnregistrer => 'حفظ';
+
+  @override
+  String get pmEnregistre => 'تم حفظ الإعدادات';
+
+  @override
+  String get pmGrpSysteme => 'النظام';
+
+  @override
+  String get pmGrpBoutique => 'المتجر';
+
+  @override
+  String get pmGrpCaisse => 'الصندوق والمبيعات';
+
+  @override
+  String get pmGrpImpression => 'الطباعة';
+
+  @override
+  String get pmGrpAlertes => 'التنبيهات';
+
+  @override
+  String get pmGrpSauvegarde => 'النسخ الاحتياطي';
+
+  @override
+  String get pmGrpLicence => 'الترخيص';
+
+  @override
+  String get pmTheme => 'المظهر';
+
+  @override
+  String get pmThemeDesc => 'فاتح للنهار، داكن لشاشات الصندوق في الإضاءة الخافتة.';
+
+  @override
+  String get pmClair => 'فاتح';
+
+  @override
+  String get pmSombre => 'داكن';
+
+  @override
+  String get pmLangue => 'لغة الواجهة';
+
+  @override
+  String get pmLangueDesc => 'العربية تفعّل التخطيط من اليمين إلى اليسار وخط القاهرة.';
+
+  @override
+  String get pmDevise => 'العملة';
+
+  @override
+  String get pmDeviseDesc => 'تظهر على المبالغ والتذاكر والفواتير.';
+
+  @override
+  String get pmDecimales => 'الأرقام العشرية للكميات';
+
+  @override
+  String get pmDecimalesDesc => '0 للمواد بالوحدة، 3 للبيع بالوزن (كغ).';
+
+  @override
+  String get pmMargeTitre => 'الهامش الافتراضي';
+
+  @override
+  String get pmMargeInfo => 'يطبق على المنتجات الجديدة ويقترح في الإدخال';
+
+  @override
+  String get pmMargeType => 'نوع الهامش';
+
+  @override
+  String get pmMargeTypeDesc => 'مبلغ ثابت أو نسبة من سعر الشراء.';
+
+  @override
+  String get pmMontant => 'مبلغ';
+
+  @override
+  String get pmPourcentage => 'نسبة مئوية';
+
+  @override
+  String get pmMargeValeur => 'الهامش';
+
+  @override
+  String get pmMargeValeurDesc => 'سعر البيع = الشراء + الهامش.';
+
+  @override
+  String get pmSeuilsTitre => 'حدود المخزون العامة';
+
+  @override
+  String get pmSeuilsInfo => 'قيم افتراضية قابلة للتعديل لكل منتج';
+
+  @override
+  String get pmSeuilMin => 'الحد الأدنى (نفاد)';
+
+  @override
+  String get pmSeuilMinDesc => 'تنبيه عندما ينزل المخزون تحت هذا الحد.';
+
+  @override
+  String get pmSeuilMax => 'الحد الأقصى';
+
+  @override
+  String get pmSeuilMaxDesc => 'يشير إلى فائض المخزون؛ 0 بلا حد.';
+
+  @override
+  String get pmPieces => 'قطعة';
+
+  @override
+  String get pmGarde => 'حماية المخزون';
+
+  @override
+  String get pmGardeDesc => 'مفعلة دائما: لا يصبح المخزون سالبا أبدا.';
+
+  @override
+  String get pmGardeCaisseDesc => 'مفعلة دائما: لا يصبح المخزون سالبا، ولا يباع منتج رصيده 0.';
+
+  @override
+  String get pmNonDesactivable => 'غير قابلة للتعطيل';
+
+  @override
+  String get pmZakatTitre => 'الزكاة';
+
+  @override
+  String get pmNissab => 'النصاب';
+
+  @override
+  String get pmNissabDesc => 'قيمة 85 غ من الذهب؛ تقترح في كل حساب.';
+
+  @override
+  String get pmTaux => 'النسبة';
+
+  @override
+  String get pmTauxDesc => 'النسبة المطبقة على الوعاء.';
+
+  @override
+  String get pmServeursTitre => 'الخدمات عبر الإنترنت';
+
+  @override
+  String get pmServeursInfo => 'الكتالوج المشترك والبحث عن المنتجات بالرمز الشريطي';
+
+  @override
+  String get pmServeurUrl => 'رابط خادم CaisseDZ';
+
+  @override
+  String get pmServeurCle => 'مفتاح API';
+
+  @override
+  String get pmMantouj => 'رابط Mantouj';
+
+  @override
+  String get pmSynchro => 'مزامنة الكتالوج';
+
+  @override
+  String get pmSynchroDesc => 'يرسل بطاقاتك ويسترجع البطاقات المحسنة من الكتالوج المشترك.';
+
+  @override
+  String get pmSynchroBouton => 'مزامنة';
+
+  @override
+  String get pmLogo => 'الشعار';
+
+  @override
+  String get pmLogoAide => 'PNG شفاف · يطبع أعلى التذكرة';
+
+  @override
+  String get pmRaisonSociale => 'الاسم التجاري';
+
+  @override
+  String get pmTelephone => 'الهاتف';
+
+  @override
+  String get pmAdresse => 'العنوان';
+
+  @override
+  String get pmRc => 'السجل التجاري';
+
+  @override
+  String get pmNif => 'رقم التعريف الجبائي';
+
+  @override
+  String get pmNis => 'رقم التعريف الإحصائي';
+
+  @override
+  String get pmArticle => 'رقم المادة الضريبية';
+
+  @override
+  String get pmEmail => 'البريد الإلكتروني';
+
+  @override
+  String get pmMessage => 'رسالة التذكرة';
+
+  @override
+  String get pmMessageAide => 'يطبع أسفل كل تذكرة';
+
+  @override
+  String get pmModesTitre => 'وسائل الدفع';
+
+  @override
+  String get pmModesInfo => 'تقترح عند التحصيل؛ النقد مقبول دائما';
+
+  @override
+  String get pmReglesTitre => 'قواعد البيع';
+
+  @override
+  String get pmSousAchat => 'البيع بأقل من سعر الشراء';
+
+  @override
+  String get pmSousAchatDesc => 'السماح أو التنبيه أو منع سعر بيع أقل من سعر الشراء.';
+
+  @override
+  String get pmFideliteTitre => 'الوفاء';
+
+  @override
+  String get pmBonus => 'مكافأة الوفاء';
+
+  @override
+  String get pmBonusDesc => 'يكسب الزبائن المعرفون نقاطا عند كل تحصيل.';
+
+  @override
+  String get pmTauxGain => 'نسبة الكسب';
+
+  @override
+  String get pmTauxGainDesc => 'النقاط المكتسبة لكل شريحة شراء.';
+
+  @override
+  String get pmPointPar => 'نقطة /';
+
+  @override
+  String get pmImprimanteTitre => 'طابعة التذاكر';
+
+  @override
+  String get pmTypeBluetooth => 'بلوتوث';
+
+  @override
+  String get pmTypeBluetoothDesc => 'مقترنة في ويندوز';
+
+  @override
+  String get pmTypeUsb => 'USB';
+
+  @override
+  String get pmTypeUsbDesc => 'قائمة انتظار ويندوز (ESC/POS)';
+
+  @override
+  String get pmTypeReseau => 'شبكة';
+
+  @override
+  String get pmTypeReseauDesc => 'عنوان IP والمنفذ';
+
+  @override
+  String get pmTypeNormale => 'عادية';
+
+  @override
+  String get pmTypeNormaleDesc => 'طابعة ويندوز';
+
+  @override
+  String get pmAdresseIp => 'عنوان IP:المنفذ';
+
+  @override
+  String get pmAdresseBluetooth => 'قائمة انتظار البلوتوث';
+
+  @override
+  String get pmFileUsb => 'قائمة انتظار ويندوز';
+
+  @override
+  String get pmLargeur => 'العرض';
+
+  @override
+  String get pmTest => 'طباعة تجريبية';
+
+  @override
+  String pmTestOk(String cible) {
+    return 'أرسلت التجربة: خرجت صفحة الاختبار على $cible.';
+  }
+
+  @override
+  String get pmAlertesConnexion => 'عرض التنبيهات عند الدخول';
+
+  @override
+  String get pmAlertesConnexionDesc => 'النفاد، الديون المرتفعة، الجلسات غير المقفلة.';
+
+  @override
+  String get pmSeuilCredit => 'حد دين الزبون';
+
+  @override
+  String get pmSeuilCreditDesc => 'يشير إلى الزبائن فوق هذا المبلغ؛ 0 للجميع.';
+
+  @override
+  String get pmSauverMaintenant => 'حفظ نسخة الآن';
+
+  @override
+  String get pmSauvegardeTerminee => 'اكتمل النسخ الاحتياطي';
+
+  @override
+  String get pmRestaurerDesc => 'يستبدل جميع البيانات الحالية ببيانات ملف.';
+
+  @override
+  String get pmRestaurerBouton => 'استعادة…';
+
+  @override
+  String get pmRestaurerConfirmTitre => 'استعادة نسخة احتياطية؟';
+
+  @override
+  String get pmRestaurerConfirmMsg => 'ستستبدل جميع البيانات الحالية (المبيعات، المخزون، الزبائن…) عند التشغيل القادم.';
+
+  @override
+  String get pmRestaurerConfirmOk => 'اختيار الملف والاستعادة';
+
+  @override
+  String get pmPalierAvance => 'المستوى المتقدم';
+
+  @override
+  String get pmPalierAvanceDesc => 'متاجر وصناديق متعددة';
+
+  @override
+  String get pmPalierBasic => 'المستوى الأساسي';
+
+  @override
+  String get pmPalierBasicDesc => 'متجر واحد، جميع وظائف البيع';
+
+  @override
+  String get pmPalierDemo => 'الوضع التجريبي';
+
+  @override
+  String get pmPalierDemoDesc => 'بيانات وهمية تعاد عند الإغلاق';
+
+  @override
+  String get pmPalierAucun => 'التطبيق غير مفعل';
+
+  @override
+  String get pmPalierAucunDesc => 'أدخل مفتاحا لتفعيل CaisseDZ';
+
+  @override
+  String get pmActive => 'مفعلة';
+
+  @override
+  String get pmCle => 'مفتاح الترخيص';
+
+  @override
+  String get pmCleDesc => 'مرتبط بهذه المحطة.';
+
+  @override
+  String pmActiveeLe(String date) {
+    return 'فعلت في $date.';
+  }
+
+  @override
+  String get pmGererLicence => 'إدارة الترخيص';
+
+  @override
+  String get pmGererLicenceDesc => 'إدخال مفتاح جديد أو الانتقال إلى المستوى المتقدم.';
+
+  @override
+  String get posPrixSousAchatInterdit => 'سعر أقل من سعر الشراء: ممنوع في الإعدادات.';
 }

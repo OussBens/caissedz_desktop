@@ -78,7 +78,9 @@ class _AppShellState extends ConsumerState<AppShell> {
         if (!mounted) return;
       }
       final alertes = ref.read(alertesProvider);
-      final masquees = await ref.read(alertesServiceProvider).estMasqueAujourdhui(session.utilisateur.code);
+      final service = ref.read(alertesServiceProvider);
+      final masquees =
+          !await service.afficherALaConnexion() || await service.estMasqueAujourdhui(session.utilisateur.code);
       if (!mounted) return;
       if (alertes.total > 0 && !masquees) {
         await afficherAlertes(context);

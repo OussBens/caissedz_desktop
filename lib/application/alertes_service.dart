@@ -64,7 +64,8 @@ class AlertesService {
     }
     if (session.peutAcceder('clients')) {
       parFamille[FamilleAlerte.clients] = [
-        for (final r in await repo.creditsClients(limite: nbTiers)) _tiers(FamilleAlerte.clients, r),
+        for (final r in await repo.creditsClients(limite: nbTiers, seuil: await _seuilCredit()))
+          _tiers(FamilleAlerte.clients, r),
       ];
     }
     if (session.peutAcceder('fournisseurs')) {
@@ -74,6 +75,15 @@ class AlertesService {
     }
     return AlertesDuJour(parFamille);
   }
+
+  Future<double> _seuilCredit() async => double.tryParse(await ParametreRepository(db).lire(cleSeuilCredit) ?? '') ?? 0;
+
+  /// Paramètres › Alertes : seuil de crédit client signalé et ouverture automatique à la connexion.
+  static const String cleSeuilCredit = 'alertes_seuil_credit';
+  static const String cleConnexion = 'alertes_connexion';
+
+  /// `false` si l'administrateur a désactivé l'ouverture des alertes à la connexion.
+  Future<bool> afficherALaConnexion() async => (await ParametreRepository(db).lire(cleConnexion) ?? '1') == '1';
 
   Alerte _tiers(FamilleAlerte famille, Map<String, Object?> r) => Alerte(
     famille: famille,

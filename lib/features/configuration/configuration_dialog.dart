@@ -34,6 +34,7 @@ class _ConfigurationDialogState extends ConsumerState<ConfigurationDialog> {
   String _devise = 'DA';
   int _decimales = 2;
   ParametresPaiement _paiements = const ParametresPaiement();
+  ParametresVente _parametres = const ParametresVente();
   bool _fidelite = false;
   String? _erreur;
 
@@ -73,6 +74,7 @@ class _ConfigurationDialogState extends ConsumerState<ConfigurationDialog> {
       if (!mounted) return;
       final b = c.boutique;
       setState(() {
+        _parametres = c.parametres;
         _devise = c.parametres.devise;
         _decimales = c.parametres.decimalesQuantite;
         _paiements = c.paiements;
@@ -128,7 +130,7 @@ class _ConfigurationDialogState extends ConsumerState<ConfigurationDialog> {
         messageTicket: _message.text.trim(),
       ),
       paiements: _paiements,
-      parametres: ParametresVente(
+      parametres: _parametres.copyWith(
         margeDefautPct: marge,
         seuilStockGlobal: seuil,
         fideliteActive: _fidelite,

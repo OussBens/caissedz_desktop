@@ -3,6 +3,10 @@ import 'package:caissedz_desktop/application/auth_service.dart';
 import 'package:caissedz_desktop/application/catalogue_service.dart';
 import 'package:caissedz_desktop/application/configuration_initiale_service.dart';
 import 'package:caissedz_desktop/application/licence_service.dart';
+import 'package:caissedz_desktop/application/session_caisse_service.dart';
+import 'package:caissedz_desktop/application/stock_service.dart';
+import 'package:caissedz_desktop/application/tiers_service.dart';
+import 'package:caissedz_desktop/application/vente_service.dart';
 import 'package:caissedz_desktop/core/db/app_database.dart';
 import 'package:caissedz_desktop/core/db/machine_key.dart';
 import 'package:caissedz_desktop/core/db/migrations/v002_demarrage.dart';
@@ -15,9 +19,11 @@ import 'package:caissedz_desktop/data/permissions_repository.dart';
 import 'package:caissedz_desktop/data/utilisateur_repository.dart';
 import 'package:caissedz_desktop/domain/models/alerte.dart';
 import 'package:caissedz_desktop/domain/models/boutique.dart';
+import 'package:caissedz_desktop/domain/models/panier.dart';
 import 'package:caissedz_desktop/domain/models/parametres_paiement.dart';
 import 'package:caissedz_desktop/domain/models/parametres_vente.dart';
 import 'package:caissedz_desktop/domain/models/produit.dart';
+import 'package:caissedz_desktop/domain/models/tiers.dart';
 import 'package:caissedz_desktop/domain/models/utilisateur.dart';
 import 'package:caissedz_desktop/domain/permissions.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -296,6 +302,48 @@ void main() {
       await alertes.masquerAujourdhui(_admin, maintenant: jour);
       expect(await alertes.estMasqueAujourdhui(_admin, maintenant: jour.add(const Duration(hours: 5))), isTrue);
       expect(await alertes.estMasqueAujourdhui(_admin, maintenant: jour.add(const Duration(days: 1))), isFalse);
+    });
+
+    test('Paramètres › Alertes : ouverture à la connexion, seuil de crédit client', () async {
+      final base = await ouvrirBaseDeTest();
+      await _activer(base);
+      final db = base.db;
+      final alertes = AlertesService(db);
+      expect(await alertes.afficherALaConnexion(), isTrue);
+      await ParametreRepository(db).ecrire(AlertesService.cleConnexion, '0');
+      expect(await alertes.afficherALaConnexion(), isFalse);
+      final lait = await CatalogueService(db, utilisateurCode: _admin).creerProduit(
+        const Produit(
+          code: '',
+          designation: 'Lait',
+          categorieCode: 'CATE0000',
+          sousCategorieCode: 'SC0000',
+          prixAchat: 80,
+          prixVente: 100,
+        ),
+      );
+      await StockService(
+        db,
+        utilisateurCode: _admin,
+      ).entrerStock(produitCode: lait.code, magasinCode: 'MAG0000', quantite: 10);
+      final client = await TiersService(
+        db,
+        utilisateurCode: _admin,
+      ).creerClient(const Client(code: '', nom: 'Amina', plafondCredit: 5000));
+      final session = await SessionCaisseService(
+        db,
+        utilisateurCode: _admin,
+      ).ouvrir(caisseCode: 'CIS0000', fondInitial: 0);
+      await VenteService(db, utilisateurCode: _admin, parametres: const ParametresVente()).encaisser(
+        Panier(id: 1, clientCode: client.code).ajouter(PanierLigne(produit: lait, quantite: 3, prixUnitaire: 100)),
+        session: session,
+        magasinCode: 'MAG0000',
+        creditAutorise: true,
+      );
+      final admin = await AuthService(db, hachage: _hachage).connecter('admin', 'admin');
+      expect((await alertes.calculer(admin)).de(FamilleAlerte.clients).single.valeur, 300);
+      await ParametreRepository(db).ecrire(AlertesService.cleSeuilCredit, '500');
+      expect((await alertes.calculer(admin)).de(FamilleAlerte.clients), isEmpty, reason: '300 DA < seuil 500 DA');
     });
   });
 

@@ -115,11 +115,15 @@
       filtres, export Excel / PDF ; analyses de coût réservées à `voirPrixAchat`
 - [x] Zakat DS v2.2 (phase D, migration v18) : calculs annuels enregistrés (codes `ZKT`), nissab et taux en
       paramètres, statut Brouillon / Non payé / Payée, annulation avec motif, KPI provisoires de l'année
-- [ ] Nissab et taux de la Zakat éditables dans Paramètres
+- [x] Nissab et taux de la Zakat éditables dans Paramètres
 - [x] Historique DS v2.2 (phase D, migration v19) : module, famille d'action, utilisateur, poste et période ; KPI
       7 jours ; détail ; export
 - [ ] Historique : exports et sauvegardes journalisés ; changements avant / après dans le détail
-- [x] Paramètres complets (boutique, vente, impression, serveurs)
+- [x] Paramètres DS v2.2 (phase D) : 7 groupes, barre d'enregistrement unique en une transaction, marge Montant /
+      Pourcentage, seuils min / max, vente sous achat, moyens de paiement visibles, zakat, alertes, imprimante avec
+      test, sauvegarde / restauration, licence
+- [x] Règle « vente sous achat » (Interdire / Avertir / Autoriser) à la modification du prix en caisse
+- [ ] Seuil maximum utilisé par les besoins ; marge % arrondie au multiple de 5 DA ; 2ᵉ stock « nombre »
 - [x] Sauvegarde / restauration ; exports Excel / PDF avec aperçu
 
 ## Recette (lot 9)

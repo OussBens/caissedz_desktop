@@ -494,15 +494,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get roleMagasinier => 'Magasinier';
 
   @override
-  String get parametresRolesCarte => 'Rôles et permissions';
-
-  @override
-  String get parametresRolesCarteDetail => 'Permissions d\'action et modules accessibles par rôle.';
-
-  @override
-  String get parametresLicenceCarte => 'Licence';
-
-  @override
   String get shellBandeauDemo => 'Mode démo — les données ne sont pas destinées à la production';
 
   @override
@@ -2206,96 +2197,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get rapportCreancesDettes => 'Créances et dettes';
 
   @override
-  String get parametresTitre => 'Paramètres';
-
-  @override
-  String get parametresOngletGeneral => 'Général';
-
-  @override
-  String get parametresOngletBoutique => 'Boutique';
-
-  @override
-  String get parametresOngletVente => 'Vente';
-
-  @override
-  String get parametresOngletImpression => 'Impression';
-
-  @override
-  String get parametresOngletServeur => 'Serveurs';
-
-  @override
-  String get parametresOngletSauvegarde => 'Sauvegarde';
-
-  @override
-  String get parametresEnregistre => 'Paramètres enregistrés.';
-
-  @override
-  String get parametresBoutiqueNom => 'Nom de la boutique';
-
-  @override
-  String get parametresBoutiqueRc => 'Registre de commerce (RC)';
-
-  @override
-  String get parametresBoutiqueNif => 'NIF';
-
-  @override
-  String get parametresBoutiqueAdresse => 'Adresse';
-
-  @override
-  String get parametresBoutiqueTelephone => 'Téléphone';
-
-  @override
-  String get parametresBoutiqueEmail => 'E-mail';
-
-  @override
-  String get parametresMarge => 'Marge par défaut (%)';
-
-  @override
-  String get parametresDevise => 'Devise';
-
-  @override
-  String get parametresSeuil => 'Seuil de stock global';
-
-  @override
-  String get parametresFidelite => 'Programme de fidélité';
-
-  @override
-  String get parametresPoints => 'Points par dinar';
-
-  @override
-  String get parametresGardeStock => 'Garde de stock : toujours active (aucune vente sans stock).';
-
-  @override
-  String get parametresImprimanteType => 'Type d\'imprimante';
-
-  @override
-  String get parametresImprimanteAdresse => 'File d\'attente Windows ou adresse IP:port';
-
-  @override
-  String get parametresImprimanteLargeur => 'Largeur du ticket';
-
-  @override
-  String get parametresImprimanteNormale => 'Normale (dialogue d\'impression)';
-
-  @override
-  String get parametresImprimanteUsb => 'USB (spouleur Windows)';
-
-  @override
-  String get parametresImprimanteReseau => 'Réseau (IP:port)';
-
-  @override
-  String get parametresImprimanteBluetooth => 'Bluetooth';
-
-  @override
-  String get parametresServeurUrl => 'URL du serveur CaisseDZ';
-
-  @override
-  String get parametresServeurCle => 'Clé API';
-
-  @override
-  String get parametresMantoujUrl => 'URL du catalogue Mantouj';
-
-  @override
   String get parametresErreurNom => 'Le nom de la boutique est obligatoire.';
 
   @override
@@ -2312,24 +2213,10 @@ class AppLocalizationsFr extends AppLocalizations {
       'La sauvegarde est chiffrée avec le mot de passe choisi : conservez-le, il sera demandé à la restauration.';
 
   @override
-  String get sauvegardeCreer => 'Créer une sauvegarde';
-
-  @override
   String get sauvegardeRestaurer => 'Restaurer une sauvegarde';
 
   @override
   String get sauvegardeMotDePasse => 'Mot de passe de la sauvegarde';
-
-  @override
-  String get sauvegardeFichier => 'Fichier de sauvegarde';
-
-  @override
-  String get sauvegardeChoisirFichier => 'Choisir le fichier…';
-
-  @override
-  String sauvegardeOk(String chemin) {
-    return 'Sauvegarde enregistrée : $chemin';
-  }
 
   @override
   String sauvegardeInfo(String boutique, int ventes, int produits, int version) {
@@ -7612,4 +7499,361 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get hiActExport => 'Export';
+
+  @override
+  String get pmDescription => 'Préférences du poste, de la boutique et de l\'application.';
+
+  @override
+  String get pmNonEnregistre => 'Modifications non enregistrées';
+
+  @override
+  String get pmEnregistrer => 'Enregistrer';
+
+  @override
+  String get pmEnregistre => 'Paramètres enregistrés';
+
+  @override
+  String get pmGrpSysteme => 'Système';
+
+  @override
+  String get pmGrpBoutique => 'Boutique';
+
+  @override
+  String get pmGrpCaisse => 'Caisse et ventes';
+
+  @override
+  String get pmGrpImpression => 'Impression';
+
+  @override
+  String get pmGrpAlertes => 'Alertes';
+
+  @override
+  String get pmGrpSauvegarde => 'Sauvegarde';
+
+  @override
+  String get pmGrpLicence => 'Licence';
+
+  @override
+  String get pmTheme => 'Thème';
+
+  @override
+  String get pmThemeDesc => 'Clair pour la journée, sombre pour les écrans de caisse en faible lumière.';
+
+  @override
+  String get pmClair => 'Clair';
+
+  @override
+  String get pmSombre => 'Sombre';
+
+  @override
+  String get pmLangue => 'Langue de l\'interface';
+
+  @override
+  String get pmLangueDesc => 'L\'arabe active la mise en page de droite à gauche et la police Cairo.';
+
+  @override
+  String get pmDevise => 'Devise';
+
+  @override
+  String get pmDeviseDesc => 'Affichée sur les montants, tickets et factures.';
+
+  @override
+  String get pmDecimales => 'Décimales des quantités';
+
+  @override
+  String get pmDecimalesDesc => '0 pour les articles à l\'unité, 3 pour la vente au poids (kg).';
+
+  @override
+  String get pmMargeTitre => 'Marge par défaut';
+
+  @override
+  String get pmMargeInfo => 'Appliquée aux nouveaux produits et proposée dans l\'entrée';
+
+  @override
+  String get pmMargeType => 'Type de marge';
+
+  @override
+  String get pmMargeTypeDesc => 'En montant fixe ou en pourcentage du prix d\'achat.';
+
+  @override
+  String get pmMontant => 'Montant';
+
+  @override
+  String get pmPourcentage => 'Pourcentage';
+
+  @override
+  String get pmMargeValeur => 'Marge';
+
+  @override
+  String get pmMargeValeurDesc => 'Prix de vente = achat + marge.';
+
+  @override
+  String get pmSeuilsTitre => 'Seuils de stock globaux';
+
+  @override
+  String get pmSeuilsInfo => 'Valeurs par défaut, modifiables produit par produit';
+
+  @override
+  String get pmSeuilMin => 'Seuil minimum (rupture)';
+
+  @override
+  String get pmSeuilMinDesc => 'Alerte quand le stock passe sous ce seuil.';
+
+  @override
+  String get pmSeuilMax => 'Seuil maximum';
+
+  @override
+  String get pmSeuilMaxDesc => 'Signale un sur-stock ; 0 pour aucun.';
+
+  @override
+  String get pmPieces => 'pcs';
+
+  @override
+  String get pmGarde => 'Garde de stock';
+
+  @override
+  String get pmGardeDesc => 'Toujours active : le stock ne devient jamais négatif.';
+
+  @override
+  String get pmGardeCaisseDesc =>
+      'Toujours active : le stock ne devient jamais négatif, un produit à 0 ne s\'encaisse pas.';
+
+  @override
+  String get pmNonDesactivable => 'Non désactivable';
+
+  @override
+  String get pmZakatTitre => 'Zakat';
+
+  @override
+  String get pmNissab => 'Nissab';
+
+  @override
+  String get pmNissabDesc => 'Valeur de 85 g d\'or ; proposée à chaque calcul.';
+
+  @override
+  String get pmTaux => 'Taux';
+
+  @override
+  String get pmTauxDesc => 'Taux appliqué à l\'assiette.';
+
+  @override
+  String get pmServeursTitre => 'Services en ligne';
+
+  @override
+  String get pmServeursInfo => 'Catalogue partagé et recherche de produits par code-barres';
+
+  @override
+  String get pmServeurUrl => 'URL du serveur CaisseDZ';
+
+  @override
+  String get pmServeurCle => 'Clé d\'API';
+
+  @override
+  String get pmMantouj => 'URL Mantouj';
+
+  @override
+  String get pmSynchro => 'Synchroniser le catalogue';
+
+  @override
+  String get pmSynchroDesc => 'Envoie vos fiches et récupère les fiches enrichies du catalogue partagé.';
+
+  @override
+  String get pmSynchroBouton => 'Synchroniser';
+
+  @override
+  String get pmLogo => 'Logo';
+
+  @override
+  String get pmLogoAide => 'PNG transparent · imprimé en haut du ticket';
+
+  @override
+  String get pmRaisonSociale => 'Raison sociale';
+
+  @override
+  String get pmTelephone => 'Téléphone';
+
+  @override
+  String get pmAdresse => 'Adresse';
+
+  @override
+  String get pmRc => 'RC';
+
+  @override
+  String get pmNif => 'NIF';
+
+  @override
+  String get pmNis => 'NIS';
+
+  @override
+  String get pmArticle => 'Article d\'imposition';
+
+  @override
+  String get pmEmail => 'E-mail';
+
+  @override
+  String get pmMessage => 'Message du ticket';
+
+  @override
+  String get pmMessageAide => 'Imprimé en bas de chaque ticket';
+
+  @override
+  String get pmModesTitre => 'Moyens de paiement';
+
+  @override
+  String get pmModesInfo => 'Proposés à l\'encaissement ; les espèces sont toujours acceptées';
+
+  @override
+  String get pmReglesTitre => 'Règles de vente';
+
+  @override
+  String get pmSousAchat => 'Vente sous le prix d\'achat';
+
+  @override
+  String get pmSousAchatDesc => 'Autoriser, avertir ou interdire un prix de vente inférieur au prix d\'achat.';
+
+  @override
+  String get pmFideliteTitre => 'Fidélité';
+
+  @override
+  String get pmBonus => 'Bonus fidélité';
+
+  @override
+  String get pmBonusDesc => 'Les clients identifiés gagnent des points à chaque encaissement.';
+
+  @override
+  String get pmTauxGain => 'Taux de gain';
+
+  @override
+  String get pmTauxGainDesc => 'Points gagnés par tranche d\'achat.';
+
+  @override
+  String get pmPointPar => 'point /';
+
+  @override
+  String get pmImprimanteTitre => 'Imprimante ticket';
+
+  @override
+  String get pmTypeBluetooth => 'Bluetooth';
+
+  @override
+  String get pmTypeBluetoothDesc => 'Appairée sous Windows';
+
+  @override
+  String get pmTypeUsb => 'USB';
+
+  @override
+  String get pmTypeUsbDesc => 'File d\'attente Windows (ESC/POS)';
+
+  @override
+  String get pmTypeReseau => 'Réseau';
+
+  @override
+  String get pmTypeReseauDesc => 'Adresse IP et port';
+
+  @override
+  String get pmTypeNormale => 'Normale';
+
+  @override
+  String get pmTypeNormaleDesc => 'Imprimante Windows';
+
+  @override
+  String get pmAdresseIp => 'Adresse IP:port';
+
+  @override
+  String get pmAdresseBluetooth => 'File d\'attente Bluetooth';
+
+  @override
+  String get pmFileUsb => 'File d\'attente Windows';
+
+  @override
+  String get pmLargeur => 'Largeur';
+
+  @override
+  String get pmTest => 'Imprimer un test';
+
+  @override
+  String pmTestOk(String cible) {
+    return 'Test envoyé : la page de test est sortie sur $cible.';
+  }
+
+  @override
+  String get pmAlertesConnexion => 'Afficher les alertes à la connexion';
+
+  @override
+  String get pmAlertesConnexionDesc => 'Ruptures, crédits élevés, sessions non clôturées.';
+
+  @override
+  String get pmSeuilCredit => 'Seuil de crédit client';
+
+  @override
+  String get pmSeuilCreditDesc => 'Signale les clients au-delà de ce montant ; 0 pour tous.';
+
+  @override
+  String get pmSauverMaintenant => 'Sauvegarder maintenant';
+
+  @override
+  String get pmSauvegardeTerminee => 'Sauvegarde terminée';
+
+  @override
+  String get pmRestaurerDesc => 'Remplace toutes les données actuelles par celles d\'un fichier.';
+
+  @override
+  String get pmRestaurerBouton => 'Restaurer…';
+
+  @override
+  String get pmRestaurerConfirmTitre => 'Restaurer une sauvegarde ?';
+
+  @override
+  String get pmRestaurerConfirmMsg =>
+      'Toutes les données actuelles (ventes, stock, clients…) seront remplacées au prochain démarrage.';
+
+  @override
+  String get pmRestaurerConfirmOk => 'Choisir le fichier et restaurer';
+
+  @override
+  String get pmPalierAvance => 'Palier Avancé';
+
+  @override
+  String get pmPalierAvanceDesc => 'Multi-magasins, multi-caisses';
+
+  @override
+  String get pmPalierBasic => 'Palier Basic';
+
+  @override
+  String get pmPalierBasicDesc => 'Un magasin, toutes les fonctions de vente';
+
+  @override
+  String get pmPalierDemo => 'Mode démo';
+
+  @override
+  String get pmPalierDemoDesc => 'Données fictives, réinitialisées à la fermeture';
+
+  @override
+  String get pmPalierAucun => 'Application non activée';
+
+  @override
+  String get pmPalierAucunDesc => 'Saisissez une clé pour activer CaisseDZ';
+
+  @override
+  String get pmActive => 'Active';
+
+  @override
+  String get pmCle => 'Clé de licence';
+
+  @override
+  String get pmCleDesc => 'Liée à ce poste.';
+
+  @override
+  String pmActiveeLe(String date) {
+    return 'Activée le $date.';
+  }
+
+  @override
+  String get pmGererLicence => 'Gérer la licence';
+
+  @override
+  String get pmGererLicenceDesc => 'Saisir une nouvelle clé ou passer au palier Avancé.';
+
+  @override
+  String get posPrixSousAchatInterdit => 'Prix inférieur au prix d\'achat : interdit par les paramètres.';
 }
