@@ -95,7 +95,8 @@
 - [x] Entrées DS v2.2 (phase D, migration v15) : Smart Scan 2 étapes, entrée rapide répartie entre magasins,
       Reçu IA 3 étapes avec file `bon_reception`, modification et annulation en lot avec motif, versé / reste
       calculés, réception d'une liste de besoins
-- [ ] Session de caisse ouverte obligatoire pour une entrée (§9.6) ; raccourci `E` en caisse
+- [x] Session de caisse ouverte obligatoire pour une entrée, un retour et un versement (§9.6, §8.4) ; raccourci
+      `E` (entrée rapide) en caisse
 
 ## Gestion caisse et fiscal (lot 7)
 - [x] Caisses Physique / Compte, caisse sans magasin ; journal des mouvements ; transferts TRF = 2 mouvements
@@ -121,12 +122,17 @@
 - [x] Nissab et taux de la Zakat éditables dans Paramètres
 - [x] Historique DS v2.2 (phase D, migration v19) : module, famille d'action, utilisateur, poste et période ; KPI
       7 jours ; détail ; export
-- [ ] Historique : exports et sauvegardes journalisés ; changements avant / après dans le détail
+- [x] Historique : exports (action `Export`, module d'origine) et sauvegardes / restaurations journalisés
+- [ ] Historique : changements avant / après dans le détail
 - [x] Paramètres DS v2.2 (phase D) : 7 groupes, barre d'enregistrement unique en une transaction, marge Montant /
       Pourcentage, seuils min / max, vente sous achat, moyens de paiement visibles, zakat, alertes, imprimante avec
       test, sauvegarde / restauration, licence
 - [x] Règle « vente sous achat » (Interdire / Avertir / Autoriser) à la modification du prix en caisse
-- [ ] Seuil maximum utilisé par les besoins ; marge % arrondie au multiple de 5 DA ; 2ᵉ stock « nombre »
+- [x] Seuil maximum utilisé par les besoins (suggestion = maximum − stock) ; marge % arrondie au multiple de 5 DA
+      supérieur ; 2ᵉ stock « nombre » global (Paramètres › Système)
+- [x] Sauvegarde automatique au démarrage (dossier, fréquence, mot de passe, 30 fichiers conservés) ; aperçu du
+      ticket 58 / 80 mm latin / arabe (caisse et Paramètres)
+- [x] Colonnes d'audit `cree_le / cree_par / modifie_le / modifie_par` sur 17 tables (migration v20, triggers)
 - [x] Sauvegarde / restauration ; exports Excel / PDF avec aperçu
 
 ## Recette (lot 9)
@@ -142,10 +148,11 @@ Recopie de la checklist de la spec 06. `[x]` = fait et testé ; `[ ]` = manquant
 - [ ] Windows desktop, offline-first, SQLite chiffré (clé dérivée machine), `.mid` sauvegardé avec la base —
       fait, sauf : règle de dérivation de la clé provisoire ; la sauvegarde est re-chiffrée par mot de passe
       (restaurable sur une autre machine) au lieu d'embarquer le `.mid`
-- [x] Schéma des 45 tables (§ 7) ou équivalent, migrations versionnées (v1 → v19), seed des éléments système
-- [ ] Colonnes d'audit + annulation douce avec motif sur les opérations — annulation douce partout ; « modifié le /
-      par » absents du schéma
-- [ ] Historique de toutes les actions — exports et sauvegardes pas encore journalisés
+- [x] Schéma des 45 tables (§ 7) ou équivalent, migrations versionnées (v1 → v20), seed des éléments système
+- [x] Colonnes d'audit + annulation douce avec motif sur les opérations (migration v20 : créé / modifié le / par
+      sur 17 tables, alimentés par triggers depuis l'utilisateur connecté)
+- [x] Historique de toutes les actions, exports et sauvegardes / restaurations compris (détail avant / après non
+      détaillé)
 - [x] Codification lisible par préfixes (§ 8.10)
 - [x] FR / AR (RTL) / EN, valeurs de listes stockées en français
 - [x] Activation par clé machine, paliers Basic / Avancé, mode démo (règle de clé ⚠️ provisoire)
@@ -157,8 +164,8 @@ Recopie de la checklist de la spec 06. `[x]` = fait et testé ; `[ ]` = manquant
 ### Stock
 - [x] Stock calculé uniquement depuis le journal des mouvements (règles de sens § 8.1)
 - [x] Garde de stock (jamais négatif) sur création / modification / annulation
-- [ ] 2ᵉ stock « nombre » (global + par produit), obligatoire quand actif — par produit fait ; pas de paramètre
-      global
+- [x] 2ᵉ stock « nombre » (global + par produit), obligatoire quand actif (entrées, achats, sorties, transferts ;
+      en caisse, pièces déduites de la vente à l'unité ⚠️ provisoire)
 - [x] Petit / grand colis (pièces × prix)
 - [x] Multi-magasin : magasins ordonnés par utilisateur, répartition (§ 8.3), consultation limitée, distribution,
       transfert
@@ -180,8 +187,7 @@ Recopie de la checklist de la spec 06. `[x]` = fait et testé ; `[ ]` = manquant
 
 ### Achats
 - [x] Smart Scan multi-produits → magasin principal, mise à jour des prix, paiement partiel
-- [ ] Entrée rapide 1 produit payée intégralement (aussi depuis la caisse) — faite dans Entrées ; pas de
-      raccourci `E` depuis la caisse
+- [x] Entrée rapide 1 produit payée intégralement (aussi depuis la caisse, touche `E`)
 - [x] Smart Scan IA 3 étapes avec quota serveur, matching, création de produits (API serveur provisoire)
 - [x] Sorties exceptionnelles (Expiration / Don / Autre)
 - [x] Listes de besoin, ruptures, expirés
@@ -191,7 +197,7 @@ Recopie de la checklist de la spec 06. `[x]` = fait et testé ; `[ ]` = manquant
       (§ 8.5)
 - [x] Versements liés à un retour verrouillés
 - [x] Caisses (Physique / Compte), sessions (1 ouverte max par caisse), grand-livre (§ 8.6), mouvements manuels
-- [ ] Session obligatoire pour vente / achat / retour / versement — l'entrée d'achat ne l'exige pas encore
+- [x] Session obligatoire pour vente / achat / retour / versement
 - [x] Clôture de session (théorique / réel / écart), clôture Z scellée + PDF, export contrôle fiscal (pas de ligne
       `CLOTURE_CAISSE` dans un `journal_fiscal` distinct)
 - [x] Transferts d'argent entre caisses (permission dédiée)
@@ -204,8 +210,8 @@ Recopie de la checklist de la spec 06. `[x]` = fait et testé ; `[ ]` = manquant
 
 ### Paramètres, sorties
 - [x] Paramètres Système / Boutique / Avancé (§ 9.16) — écarts listés dans `docs/PLAN.md` (Paramètres)
-- [ ] Impression thermique 4 types + facture A4 FR/AR + aperçus — pas d'aperçu du ticket dans Paramètres ;
-      Bluetooth via la file d'impression Windows
+- [ ] Impression thermique 4 types + facture A4 FR/AR + aperçus — aperçu du ticket fait (caisse, Paramètres) ;
+      reste : Bluetooth via la file d'impression Windows
 - [x] Exports Excel de tous les modules + PDF dérivé de l'Excel
-- [ ] Sauvegarde zip, auto-backup, restauration — pas de sauvegarde automatique
+- [x] Sauvegarde zip, auto-backup (au démarrage, quotidienne ou à chaque démarrage), restauration
 - [x] Catalogue partagé + cascade de recherche code-barres

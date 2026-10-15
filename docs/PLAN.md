@@ -557,8 +557,7 @@ Référence : `docs/design/CaisseDZ-DS-v2.2/CaisseDZ-DS-v2.2.html`, `bundle-v2.2
     export, détail 860 px (Action, Contexte).
     Écarts Historique : pas de suppression de lignes (§9.17 la prévoit, le DS ne la montre pas ; le journal reste
     inaltérable, cohérent avec la conformité fiscale) ; pas de tableau « Changements » avant / après (les services
-    ne journalisent qu'une description) ; pas de version ni d'adresse IP dans le contexte ; les exports et
-    sauvegardes ne sont pas encore journalisés (famille « Export » prête mais vide).
+    ne journalisent qu'une description) ; pas de version ni d'adresse IP dans le contexte. Exports et sauvegardes : journalisés depuis la phase E.
   - ✅ Paramètres (`ParametresScreen` + compléments `ParametresV22`, §9.16) : navigation latérale fixe en 7 groupes
     (Système, Boutique, Caisse et ventes, Impression, Alertes, Sauvegarde, Licence), badge « Modifications non
     enregistrées » et barre d'enregistrement unique : `ParametresService.enregistrerTout` valide tout puis écrit
@@ -572,18 +571,17 @@ Référence : `docs/design/CaisseDZ-DS-v2.2/CaisseDZ-DS-v2.2.html`, `bundle-v2.2
     largeur et « Imprimer un test » (page ESC/POS). Sauvegarde : mot de passe demandé dans un dialog, restauration
     confirmée puis vérifiée avant préparation. Licence : palier, clé masquée, accès à l'activation.
     Écarts Paramètres : densité, réduction des animations, TVA par défaut, remise ticket maximale, mode de paiement
-    par défaut, impression automatique, tiroir-caisse, imprimante A4, dossier et sauvegarde automatique, postes
-    activés et quota Smart Scan, marge gros, valeur d'un point et 2ᵉ stock « nombre » non repris (aucune règle
-    ni donnée derrière dans la spec ou le schéma actuel) ; fenêtre « Bientôt expiré » fixe à 30 jours (§5.3) ; le seuil maximum n'alimente pas encore le calcul des besoins ; la marge en
-    pourcentage n'est pas arrondie au multiple de 5 DA (§8) ; pas d'aperçu du ticket.
+    par défaut, impression automatique, tiroir-caisse, imprimante A4, postes activés et quota Smart Scan, marge
+    gros et valeur d'un point non repris (aucune règle ni donnée derrière dans la spec ou le schéma actuel) ;
+    fenêtre « Bientôt expiré » fixe à 30 jours (§5.3). Sauvegarde automatique, 2ᵉ stock « nombre », seuil
+    maximum des besoins, arrondi de la marge et aperçu du ticket : faits en phase E.
   - ✅ Nettoyage final : alias historiques des tokens supprimés (couleurs `fond` / `texte` / `primaire`…,
     typographie `petit` / `legende`…, espacements, mouvement, variante de bouton `succes`) ; tous les écrans
     utilisent les noms du DS (`surfaceApp`, `textPrimary`, `bodySm`, `DsSpacing.s4`…). Enveloppes de graphiques
     `DsGraphique*` et page provisoire de module supprimées (les 17 modules et les 4 pages rattachées sont routés ;
     Transferts, Versements, Clôtures et Situation ouvrent l'onglet de leur module parent). Clés ARB jamais
     référencées retirées des trois langues (`tool/arb_nettoyer.py`).
-  - Écarts : colonnes d'audit « modifié le / par » absentes du schéma (seuls créé par et annulation) ;
-    tendances des KPI calculées seulement pour les ventes ; ventes antérieures à la v10 valorisées au prix
+  - Écarts : tendances des KPI calculées seulement pour les ventes ; ventes antérieures à la v10 valorisées au prix
     d'achat actuel ; `mouvement_stock` sans valorisation (prix_achat / prix_vente de §7.3).
     Ventes : le client d'un panier n'est pas modifiable (§9.2 le permet, mais il fait partie du ticket scellé ;
     décision : retour puis nouvelle vente) et le montant payé ne peut que monter (une baisse passe par un retour).
@@ -591,3 +589,30 @@ Référence : `docs/design/CaisseDZ-DS-v2.2/CaisseDZ-DS-v2.2.html`, `bundle-v2.2
     paramètre « colis par défaut » n'est pas repris (les colis sont libres par produit) ; la clôture détaille
     fond + ventes espèces nettes, sans versements, mouvements manuels ni remboursements (rattachés à la caisse,
     pas à la session) ; le mot de passe demandé pour le prix est celui de l'utilisateur connecté.
+
+## Phase E — Écarts §15 ✅ (2026-10-15)
+
+- ✅ Session de caisse ouverte exigée pour une entrée / un achat, un retour et un versement (§8.4, §9.6), vérifiée
+  dans la transaction du service (`sessionRequise`) et avant l'ouverture des formulaires ; touche `E` en caisse
+  pour l'entrée rapide (produit sélectionné pré-rempli).
+- ✅ Historique : chaque export (Excel, PDF, CSV, archive fiscale) écrit une ligne `Export` rattachée au module
+  d'origine (`JournalService.export`) ; sauvegardes (`Sauvegarde`, famille Export) et restaurations journalisées.
+- ✅ Marge en pourcentage arrondie au multiple de 5 DA supérieur (§8, `CalculsPrix.prixVenteDepuisMarge`).
+- ✅ Besoins : suggestion = seuil maximum − stock quand un maximum est défini (sinon 2 × seuil − stock).
+- ✅ Aperçu du ticket (58 / 80 mm, latin ou arabe) depuis le résultat de vente et Paramètres › Impression, avec
+  impression ESC/POS ou PDF.
+- ✅ Sauvegarde automatique (§9.16) : dossier, fréquence (Désactivée / À chaque démarrage / Quotidienne), mot de
+  passe conservé dans la base chiffrée, lancée au démarrage, 30 archives `caissedz_auto_*` conservées, journalisée
+  sous l'utilisateur `SYSTEME`.
+- ✅ Audit (migration v20) : `cree_le`, `cree_par`, `modifie_le`, `modifie_par` sur 17 tables métier, renseignés
+  par triggers depuis `audit_contexte` (utilisateur connecté) ; affichés dans le détail d'un panier.
+- ✅ 2ᵉ stock « nombre » (§8.1) : paramètre global `nombre_actif` (Paramètres › Système) ; quand il est actif ou
+  que le produit le suit, le nombre est obligatoire (> 0) dans les entrées, achats, sorties et transferts
+  (colonne « Nombre » proposée à quantité × pièces par unité), réparti au prorata entre magasins.
+  ⚠️ PROVISOIRE : en caisse, la vente à l'unité sort les pièces correspondantes (unités × pièces par unité) sans
+  saisie séparée ; les composants d'un pack ne sortent pas de pièces.
+- Restent ouverts : tableau « Changements » avant / après dans le détail de l'Historique, `journal_fiscal` distinct
+  avec ligne `CLOTURE_CAISSE`, période clôturée par caisse, Bluetooth natif, règle du crédit caissier, dérivation de
+  la clé §4.2.
+- Décisions conservées par défaut : Historique inaltérable (pas de suppression de lignes) ; client d'une vente
+  scellée non modifiable (retour puis nouvelle vente).
