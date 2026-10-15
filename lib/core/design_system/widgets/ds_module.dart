@@ -5,6 +5,7 @@ import '../../i18n/generated/app_localizations.dart';
 import '../tokens/ds_theme.dart';
 import 'ds_button.dart';
 import 'ds_dialog.dart';
+import 'ds_forms.dart' show DsLargeurLibelle;
 import 'ds_module_kit.dart' show DsSpan;
 import 'ds_page.dart';
 
@@ -152,18 +153,22 @@ class _DsFilterPanelState extends State<DsFilterPanel> {
                           builder: (context, contraintes) {
                             final n = widget.colonnes;
                             final largeur = (contraintes.maxWidth - gapX * (n - 1)) / n;
-                            return Wrap(
-                              spacing: gapX,
-                              runSpacing: gapY,
-                              children: [
-                                for (final ch in widget.children)
-                                  SizedBox(
-                                    width: ch is DsSpan
-                                        ? largeur * ch.span.clamp(1, n) + gapX * (ch.span.clamp(1, n) - 1)
-                                        : largeur,
-                                    child: ch,
-                                  ),
-                              ],
+                            // Même largeur de libellé dans toutes les cellules : colonnes alignées.
+                            return DsLargeurLibelle(
+                              largeur: (largeur * .36).clamp(56.0, 110.0),
+                              child: Wrap(
+                                spacing: gapX,
+                                runSpacing: gapY,
+                                children: [
+                                  for (final ch in widget.children)
+                                    SizedBox(
+                                      width: ch is DsSpan
+                                          ? largeur * ch.span.clamp(1, n) + gapX * (ch.span.clamp(1, n) - 1)
+                                          : largeur,
+                                      child: ch,
+                                    ),
+                                ],
+                              ),
                             );
                           },
                         ),

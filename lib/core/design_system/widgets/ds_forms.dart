@@ -288,6 +288,18 @@ class DsDateField extends StatelessWidget {
   }
 }
 
+/// Impose une même largeur de libellé aux [DsFormRow] descendants (panneau de filtres) : les colonnes de la
+/// grille restent alignées quel que soit le libellé (Du, Client, Remboursement…).
+class DsLargeurLibelle extends InheritedWidget {
+  const DsLargeurLibelle({super.key, required this.largeur, required super.child});
+  final double largeur;
+
+  static double? of(BuildContext context) => context.dependOnInheritedWidgetOfExactType<DsLargeurLibelle>()?.largeur;
+
+  @override
+  bool updateShouldNotify(DsLargeurLibelle oldWidget) => largeur != oldWidget.largeur;
+}
+
 /// Ligne de formulaire (`FormRow`) : libellé à gauche (largeur fixe), champ à droite, aide / erreur.
 class DsFormRow extends StatelessWidget {
   const DsFormRow({
@@ -324,7 +336,7 @@ class DsFormRow extends StatelessWidget {
       crossAxisAlignment: alignerDebut ? CrossAxisAlignment.start : CrossAxisAlignment.center,
       children: [
         SizedBox(
-          width: largeurLibelle,
+          width: DsLargeurLibelle.of(context) ?? largeurLibelle,
           child: Padding(
             padding: EdgeInsets.only(top: alignerDebut ? 9 : 0),
             child: Text.rich(

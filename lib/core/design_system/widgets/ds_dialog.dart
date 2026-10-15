@@ -13,7 +13,7 @@ import 'ds_primitives.dart';
 enum DsDialogTon { defaut, danger, avertissement, succes, info, neutre }
 
 /// Conteneur de dialogue (`Dialog`) : 520 px, rayon 16, surface élevée, en-tête icône 40 px tonale,
-/// titre 600 18, description, corps défilant, pied aligné à droite.
+/// titre 600 18, description, corps défilant, boutons du pied centrés.
 class DsDialog extends StatelessWidget {
   const DsDialog({
     super.key,
@@ -121,26 +121,35 @@ class DsDialog extends StatelessWidget {
             if (actions.isNotEmpty || piedDebut != null)
               Padding(
                 padding: const EdgeInsets.fromLTRB(DsSpacing.s5, DsSpacing.s6, DsSpacing.s5, DsSpacing.s5),
-                child: Row(
-                  spacing: DsSpacing.s2,
-                  children: [
-                    if (piedDebut != null)
-                      Expanded(
-                        child: Align(alignment: AlignmentDirectional.centerStart, child: piedDebut),
+                // Boutons centrés ; le contenu de début de pied (compteur, « Nouveau »…) reste au début.
+                child: piedDebut == null
+                    ? SizedBox(
+                        width: double.infinity,
+                        child: Wrap(
+                          alignment: WrapAlignment.center,
+                          spacing: DsSpacing.s2,
+                          runSpacing: DsSpacing.s2,
+                          children: actions,
+                        ),
                       )
-                    else
-                      const Spacer(),
-                    Flexible(
-                      flex: 3,
-                      child: Wrap(
-                        alignment: WrapAlignment.end,
+                    : Row(
                         spacing: DsSpacing.s2,
-                        runSpacing: DsSpacing.s2,
-                        children: actions,
+                        children: [
+                          Expanded(
+                            child: Align(alignment: AlignmentDirectional.centerStart, child: piedDebut),
+                          ),
+                          Flexible(
+                            flex: 2,
+                            child: Wrap(
+                              alignment: WrapAlignment.center,
+                              spacing: DsSpacing.s2,
+                              runSpacing: DsSpacing.s2,
+                              children: actions,
+                            ),
+                          ),
+                          const Spacer(),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
               )
             else
               const SizedBox(height: DsSpacing.s5),
