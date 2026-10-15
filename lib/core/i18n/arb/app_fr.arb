@@ -3561,5 +3561,10 @@
     }
   },
   "communModifiePar": "Modifié par",
-  "communModifieLe": "Modifié le"
+  "communModifieLe": "Modifié le",
+  "communNombreObligatoire": "Le nombre de pièces (2ᵉ stock) est obligatoire pour ce produit.",
+  "stkNombre": "Nombre",
+  "stkNombreObligatoire": "Nombre obligatoire",
+  "pmNombreActif": "2ᵉ stock « nombre » pour tous les produits",
+  "pmNombreActifDesc": "Nombre de pièces saisi en plus de la quantité (ex. boucherie : kg + pièces), obligatoire à chaque mouvement."
 }

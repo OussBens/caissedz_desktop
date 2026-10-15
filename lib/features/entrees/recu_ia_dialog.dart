@@ -279,6 +279,7 @@ class _RecuIADialogState extends ConsumerState<RecuIADialog> {
     setState(() => _occupe = true);
     final total = _total;
     final caisse = _paiement.caisse ?? ref.read(caissesListeProvider).value?.where((c) => c.actif).firstOrNull?.code;
+    final nombreGlobal = ref.read(parametresVenteProvider).value?.nombreActif ?? false;
     Achat? a;
     final ok = await executerEntree(context, ref, () async {
       a = await ref
@@ -291,6 +292,8 @@ class _RecuIADialogState extends ConsumerState<RecuIADialog> {
                 DemandeAchatLigne(
                   produitCode: l.produit!.code,
                   quantite: l.quantite,
+                  // 2ᵉ stock « nombre » (§8.1) : pièces déduites du reçu (quantité × pièces par unité).
+                  nombre: l.produit!.exigeNombre(global: nombreGlobal) ? l.quantite * l.produit!.nombreParUnite : 0,
                   prixAchat: l.prix,
                   nouveauPrixVente: l.prixVente != l.produit!.prixVente ? l.prixVente : null,
                 ),

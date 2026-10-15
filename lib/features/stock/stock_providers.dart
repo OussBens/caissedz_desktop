@@ -125,4 +125,5 @@ String messageErreurStock(AppLocalizations l10n, ErreurStock e) => switch (e) {
   ErreurStock.fournisseurObligatoire => l10n.stkErreurFournisseur,
   ErreurStock.besoinRecu => l10n.stkBloqueBesoinRecu,
   ErreurStock.aucunChangement => l10n.stkAucunChangement,
+  ErreurStock.nombreObligatoire => l10n.communNombreObligatoire,
 };

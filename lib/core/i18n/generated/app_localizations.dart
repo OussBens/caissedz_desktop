@@ -13094,6 +13094,36 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Modifié le'**
   String get communModifieLe;
+
+  /// No description provided for @communNombreObligatoire.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le nombre de pièces (2ᵉ stock) est obligatoire pour ce produit.'**
+  String get communNombreObligatoire;
+
+  /// No description provided for @stkNombre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nombre'**
+  String get stkNombre;
+
+  /// No description provided for @stkNombreObligatoire.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nombre obligatoire'**
+  String get stkNombreObligatoire;
+
+  /// No description provided for @pmNombreActif.
+  ///
+  /// In fr, this message translates to:
+  /// **'2ᵉ stock « nombre » pour tous les produits'**
+  String get pmNombreActif;
+
+  /// No description provided for @pmNombreActifDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nombre de pièces saisi en plus de la quantité (ex. boucherie : kg + pièces), obligatoire à chaque mouvement.'**
+  String get pmNombreActifDesc;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

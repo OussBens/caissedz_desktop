@@ -35,7 +35,7 @@ const List<String> modesPaiementEntree = ['Espèces', 'Chèque', 'Virement'];
 
 /// Ligne d'entrée : produit, quantité reçue, prix d'achat et prix de vente (> achat, §8).
 class LigneEntree extends LigneDoc {
-  LigneEntree({required super.produit, super.quantite, super.prix, double? prixVente})
+  LigneEntree({required super.produit, super.quantite, super.prix, super.nombre, double? prixVente})
     : prixVente = prixVente ?? produit.prixVente;
   double prixVente;
 }
@@ -196,17 +196,19 @@ Future<void> afficherFormulaireEntree(BuildContext context, WidgetRef ref, {Acha
   final principal = await ref.read(magasinPrincipalProvider.future);
   await ref.read(fournisseursProvider.future);
   await ref.read(caissesListeProvider.future);
+  final nombreGlobal = (await ref.read(parametresVenteProvider.future)).nombreActif;
   if (!context.mounted) return;
   final lignes = <LigneEntree>[
     if (achat != null)
       for (final l in achat.lignes)
         if (catalogue[l.produitCode] != null)
-          LigneEntree(produit: catalogue[l.produitCode]!, quantite: l.quantite, prix: l.prixAchat),
+          LigneEntree(produit: catalogue[l.produitCode]!, quantite: l.quantite, prix: l.prixAchat, nombre: l.nombre),
     if (besoin != null)
       for (final l in besoin.lignes)
         if (catalogue[l.produitCode] != null)
-          LigneEntree(produit: catalogue[l.produitCode]!, quantite: l.quantite, prix: l.prix),
+          LigneEntree(produit: catalogue[l.produitCode]!, quantite: l.quantite, prix: l.prix, nombre: l.nombre),
   ];
+  proposerNombres(lignes, global: nombreGlobal);
   await afficherDialog<bool>(
     context,
     fermableParVoile: false,
@@ -238,6 +240,8 @@ class _EntreeFormState extends ConsumerState<_EntreeForm> {
     montant: widget.achat?.verse ?? 0,
   );
   final _scan = TextEditingController();
+
+  bool get _nombreGlobal => ref.read(parametresVenteProvider).value?.nombreActif ?? false;
   final _focusScan = FocusNode();
   String? _flash;
   Timer? _minuterie;
@@ -264,7 +268,10 @@ class _EntreeFormState extends ConsumerState<_EntreeForm> {
         existante.quantite += 1;
         _lignes = [..._lignes];
       } else {
-        _lignes = [..._lignes, LigneEntree(produit: p, quantite: 1)];
+        _lignes = [
+          ..._lignes,
+          ...proposerNombres([LigneEntree(produit: p, quantite: 1)], global: _nombreGlobal),
+        ];
       }
       _flash = '${p.designation} · ${existante != null ? '+1' : l10n.entScanAjoute}';
     });
@@ -301,7 +308,10 @@ class _EntreeFormState extends ConsumerState<_EntreeForm> {
       exclus: {for (final l in _lignes) l.produit.code},
     );
     if (choix.isEmpty) return;
-    setState(() => _lignes = [..._lignes, for (final p in choix) LigneEntree(produit: p, quantite: 1)]);
+    final nouvelles = proposerNombres([
+      for (final p in choix) LigneEntree(produit: p, quantite: 1),
+    ], global: _nombreGlobal);
+    setState(() => _lignes = [..._lignes, ...nouvelles]);
   }
 
   Future<void> _enregistrer() async {
@@ -313,6 +323,7 @@ class _EntreeFormState extends ConsumerState<_EntreeForm> {
         DemandeAchatLigne(
           produitCode: l.produit.code,
           quantite: l.quantite,
+          nombre: l.nombre,
           prixAchat: l.prix,
           nouveauPrixVente: l.prixVente != l.produit.prixVente ? l.prixVente : null,
         ),
@@ -374,10 +385,16 @@ class _EntreeFormState extends ConsumerState<_EntreeForm> {
         .toList();
     final caisses = (ref.watch(caissesListeProvider).value ?? const <Caisse>[]).where((c) => c.actif).toList();
     final nomFrn = fournisseurs.where((f) => f.code == _fournisseur).firstOrNull?.nom;
-    final erreurs = <Object, Map<String, String>>{
-      for (final l in _lignes)
-        if (l.prixVente <= l.prix && !l.produit.service) l.produit.code: {'vente': l10n.entVenteSousAchat},
-    };
+    final nombreGlobal = ref.watch(parametresVenteProvider).value?.nombreActif ?? false;
+    final erreurs = erreursNombre(
+      context,
+      {
+        for (final l in _lignes)
+          if (l.prixVente <= l.prix && !l.produit.service) l.produit.code: {'vente': l10n.entVenteSousAchat},
+      },
+      _lignes,
+      global: nombreGlobal,
+    );
     final total = _total;
     final enTete = _fournisseur != null && _date != null;
     final valide = enTete && _lignes.isNotEmpty && _lignes.every((l) => l.quantite > 0) && erreurs.isEmpty;
@@ -556,45 +573,56 @@ class _EntreeFormState extends ConsumerState<_EntreeForm> {
               quantite: (l) => l.quantite,
               texteVide: l10n.entAucunProduit,
               onSupprimer: (l) => setState(() => _lignes = _lignes.where((x) => x != l).toList()),
-              colonnes: [
-                DsColonneLigne(
-                  id: 'code',
-                  libelle: l10n.produitsColCode,
-                  valeur: (l) => l.produit.code,
-                  attenue: true,
-                  largeur: 110,
-                ),
-                DsColonneLigne(id: 'nom', libelle: l10n.dsPosProduit, valeur: (l) => l.produit.designation, fort: true),
-                DsColonneLigne(
-                  id: 'qte',
-                  libelle: l10n.entQteRecue,
-                  numerique: true,
-                  editable: true,
-                  largeur: 104,
-                  valeur: (l) => texteQuantite(l.quantite),
-                  onEdition: (l, v) => setState(() => l.quantite = nombreSaisi(v)),
-                ),
-                DsColonneLigne(
-                  id: 'prix',
-                  libelle: l10n.produitsColPrixAchat,
-                  numerique: true,
-                  editable: true,
-                  largeur: 140,
-                  suffixe: devise,
-                  valeur: (l) => montantLigne(l.prix),
-                  onEdition: (l, v) => setState(() => l.prix = nombreSaisi(v)),
-                ),
-                DsColonneLigne(
-                  id: 'vente',
-                  libelle: l10n.produitsColPrixVente,
-                  numerique: true,
-                  editable: true,
-                  largeur: 140,
-                  suffixe: devise,
-                  valeur: (l) => montantLigne((l as LigneEntree).prixVente),
-                  onEdition: (l, v) => setState(() => (l as LigneEntree).prixVente = nombreSaisi(v)),
-                ),
-              ],
+              colonnes: avecColonneNombre(
+                context,
+                [
+                  DsColonneLigne(
+                    id: 'code',
+                    libelle: l10n.produitsColCode,
+                    valeur: (l) => l.produit.code,
+                    attenue: true,
+                    largeur: 110,
+                  ),
+                  DsColonneLigne(
+                    id: 'nom',
+                    libelle: l10n.dsPosProduit,
+                    valeur: (l) => l.produit.designation,
+                    fort: true,
+                  ),
+                  DsColonneLigne(
+                    id: 'qte',
+                    libelle: l10n.entQteRecue,
+                    numerique: true,
+                    editable: true,
+                    largeur: 104,
+                    valeur: (l) => texteQuantite(l.quantite),
+                    onEdition: (l, v) => setState(() => l.quantite = nombreSaisi(v)),
+                  ),
+                  DsColonneLigne(
+                    id: 'prix',
+                    libelle: l10n.produitsColPrixAchat,
+                    numerique: true,
+                    editable: true,
+                    largeur: 140,
+                    suffixe: devise,
+                    valeur: (l) => montantLigne(l.prix),
+                    onEdition: (l, v) => setState(() => l.prix = nombreSaisi(v)),
+                  ),
+                  DsColonneLigne(
+                    id: 'vente',
+                    libelle: l10n.produitsColPrixVente,
+                    numerique: true,
+                    editable: true,
+                    largeur: 140,
+                    suffixe: devise,
+                    valeur: (l) => montantLigne((l as LigneEntree).prixVente),
+                    onEdition: (l, v) => setState(() => (l as LigneEntree).prixVente = nombreSaisi(v)),
+                  ),
+                ],
+                _lignes,
+                global: nombreGlobal,
+                onEdition: () => setState(() {}),
+              ),
             ),
           ],
         ],
@@ -662,6 +690,9 @@ class _EntreeRapideFormState extends ConsumerState<_EntreeRapideForm> {
         ? texteQuantite(widget.produit!.prixAchat)
         : '',
   );
+  late final _nombre = TextEditingController(
+    text: (widget.achat?.lignes.first.nombre ?? 0) > 0 ? texteQuantite(widget.achat!.lignes.first.nombre) : '',
+  );
   late Map<String, double> _repartition = widget.repartition.isNotEmpty
       ? widget.repartition
       : {widget.principal: lireNombre(_quantite.text) ?? 0};
@@ -671,6 +702,7 @@ class _EntreeRapideFormState extends ConsumerState<_EntreeRapideForm> {
   void dispose() {
     _quantite.dispose();
     _prix.dispose();
+    _nombre.dispose();
     super.dispose();
   }
 
@@ -685,6 +717,7 @@ class _EntreeRapideFormState extends ConsumerState<_EntreeRapideForm> {
       DemandeAchatLigne(
         produitCode: _produit!,
         quantite: _total,
+        nombre: lireNombre(_nombre.text) ?? 0,
         prixAchat: prix,
         repartition: {
           for (final MapEntry(:key, :value) in _repartition.entries)
@@ -745,6 +778,10 @@ class _EntreeRapideFormState extends ConsumerState<_EntreeRapideForm> {
         widget.produit ?? (widget.achat != null ? produits.where((p) => p.code == _produit).firstOrNull : null);
     final total = _total;
     final equilibre = DsSplitAllocator.equilibre(total, _repartition);
+    final choisi = fixe ?? produits.where((p) => p.code == _produit).firstOrNull;
+    final exigeNombre =
+        choisi?.exigeNombre(global: ref.watch(parametresVenteProvider).value?.nombreActif ?? false) ?? false;
+    final nombreOk = !exigeNombre || (lireNombre(_nombre.text) ?? 0) > 0;
     return DsDialog(
       titre: fixe != null ? l10n.entRapideTitreProduit(fixe.designation) : l10n.entRapideTitre,
       iconeData: LucideIcons.zap,
@@ -767,7 +804,7 @@ class _EntreeRapideFormState extends ConsumerState<_EntreeRapideForm> {
           libelle: equilibre ? l10n.communEnregistrer : l10n.entRepartitionIncomplete,
           icone: LucideIcons.check,
           chargement: _occupe,
-          onPressed: _produit != null && total > 0 && equilibre && (lireNombre(_prix.text) ?? -1) >= 0
+          onPressed: _produit != null && total > 0 && equilibre && nombreOk && (lireNombre(_prix.text) ?? -1) >= 0
               ? _enregistrer
               : null,
         ),
@@ -829,6 +866,18 @@ class _EntreeRapideFormState extends ConsumerState<_EntreeRapideForm> {
                   onChanged: (_) => setState(() {}),
                 ),
               ),
+              if (exigeNombre)
+                DsFormRow(
+                  libelle: l10n.stkNombre,
+                  obligatoire: true,
+                  child: DsTextField(
+                    key: const ValueKey('rapide_nombre'),
+                    controller: _nombre,
+                    numerique: true,
+                    erreur: nombreOk ? null : l10n.stkNombreObligatoire,
+                    onChanged: (_) => setState(() {}),
+                  ),
+                ),
             ],
           ),
           DsFormRow(

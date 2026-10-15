@@ -2,8 +2,10 @@ import 'package:sqflite_common/sqlite_api.dart';
 
 import '../data/catalogue_repository.dart';
 import '../data/historique_repository.dart';
+import '../data/parametre_repository.dart';
 import '../data/stock_repository.dart';
 import '../domain/code_generator.dart';
+import '../domain/models/parametres_vente.dart';
 import '../domain/models/stock.dart';
 import '../domain/referentiel/referentiel.dart';
 
@@ -26,6 +28,7 @@ enum ErreurStock {
   fournisseurObligatoire,
   besoinRecu,
   aucunChangement,
+  nombreObligatoire,
 }
 
 class StockException implements Exception {
@@ -160,11 +163,18 @@ class StockService {
     }
   }
 
-  Future<void> _verifierProduit(Transaction txn, String produitCode) async {
-    if (await CatalogueRepository(txn).produitParCode(produitCode) == null) {
-      throw StockException(ErreurStock.produitInconnu, produitCode);
+  /// Produit existant ; si [nombre] est fourni, le 2ᵉ stock « nombre » est exigé (> 0) quand il est actif (§8.1).
+  Future<void> _verifierProduit(Transaction txn, String produitCode, {double? nombre}) async {
+    final p = await CatalogueRepository(txn).produitParCode(produitCode);
+    if (p == null) throw StockException(ErreurStock.produitInconnu, produitCode);
+    if (nombre != null && nombre <= 0 && p.exigeNombre(global: await nombreGlobalActif(txn))) {
+      throw StockException(ErreurStock.nombreObligatoire, produitCode);
     }
   }
+
+  /// Paramètres › Nombre et quantité : 2ᵉ stock « nombre » exigé pour tous les produits.
+  static Future<bool> nombreGlobalActif(DatabaseExecutor db) async =>
+      await ParametreRepository(db).lire(ParametresVente.cleNombre) == '1';
 
   /// Entrée manuelle (stock initial, régularisation).
   Future<MouvementStock> entrerStock({
@@ -180,7 +190,7 @@ class StockService {
   }) async {
     if (quantite <= 0 && nombre <= 0) throw const StockException(ErreurStock.quantiteInvalide);
     return db.transaction((txn) async {
-      await _verifierProduit(txn, produitCode);
+      await _verifierProduit(txn, produitCode, nombre: nombre);
       final m = MouvementStock(
         date: date ?? DateTime.now(),
         produitCode: produitCode,
@@ -393,7 +403,7 @@ class StockService {
       if (mag == null || !mag.actif) throw StockException(ErreurStock.magasinInactif, m);
     }
     for (final l in t.lignes) {
-      await _verifierProduit(txn, l.produitCode);
+      await _verifierProduit(txn, l.produitCode, nombre: l.nombre);
       await sortirDansTransaction(
         txn,
         produitCode: l.produitCode,
@@ -601,7 +611,7 @@ class StockService {
     final mag = await StockRepository(txn).magasin(s.magasinCode);
     if (mag == null || !mag.actif) throw StockException(ErreurStock.magasinInactif, s.magasinCode);
     for (final l in s.lignes) {
-      await _verifierProduit(txn, l.produitCode);
+      await _verifierProduit(txn, l.produitCode, nombre: l.nombre);
       await sortirDansTransaction(
         txn,
         produitCode: l.produitCode,

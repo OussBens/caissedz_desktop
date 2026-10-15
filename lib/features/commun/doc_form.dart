@@ -9,12 +9,67 @@ import '../produits/produits_donnees.dart';
 import '../produits/produits_providers.dart';
 import 'statuts.dart';
 
-/// Ligne d'un [DocFormDialog] : produit, quantité et prix saisis.
+/// Ligne d'un [DocFormDialog] : produit, quantité, nombre (2ᵉ stock) et prix saisis.
 class LigneDoc {
-  LigneDoc({required this.produit, this.quantite = 1, double? prix}) : prix = prix ?? produit.prixAchat;
+  LigneDoc({required this.produit, this.quantite = 1, double? prix, this.nombre = 0})
+    : prix = prix ?? produit.prixAchat;
   final Produit produit;
   double quantite;
   double prix;
+
+  /// Nombre de pièces (2ᵉ stock « nombre », §8.1) ; 0 si non suivi.
+  double nombre;
+}
+
+/// 2ᵉ stock « nombre » (§8.1) : propose quantité × pièces par unité aux lignes qui l'exigent et n'en ont pas.
+List<T> proposerNombres<T extends LigneDoc>(List<T> lignes, {required bool global}) {
+  for (final l in lignes) {
+    if (l.nombre <= 0 && l.produit.exigeNombre(global: global)) l.nombre = l.quantite * l.produit.nombreParUnite;
+  }
+  return lignes;
+}
+
+/// Insère la colonne « Nombre » après la quantité quand une ligne exige le 2ᵉ stock (§8.1).
+List<DsColonneLigne<T>> avecColonneNombre<T extends LigneDoc>(
+  BuildContext context,
+  List<DsColonneLigne<T>> colonnes,
+  List<T> lignes, {
+  required bool global,
+  required VoidCallback onEdition,
+}) {
+  if (!lignes.any((l) => l.produit.exigeNombre(global: global))) return colonnes;
+  final i = colonnes.indexWhere((c) => c.id == 'qte');
+  return [...colonnes]..insert(
+    i + 1,
+    DsColonneLigne<T>(
+      id: 'nombre',
+      libelle: AppLocalizations.of(context).stkNombre,
+      numerique: true,
+      editable: true,
+      largeur: 90,
+      valeur: (l) => l.produit.exigeNombre(global: global) || l.nombre > 0 ? texteQuantite(l.nombre) : '—',
+      onEdition: (l, v) {
+        l.nombre = nombreSaisi(v);
+        onEdition();
+      },
+    ),
+  );
+}
+
+/// Ajoute l'erreur « nombre obligatoire » (> 0) des lignes qui exigent le 2ᵉ stock (§8.1).
+Map<Object, Map<String, String>> erreursNombre(
+  BuildContext context,
+  Map<Object, Map<String, String>> erreurs,
+  List<LigneDoc> lignes, {
+  required bool global,
+}) {
+  final message = AppLocalizations.of(context).stkNombreObligatoire;
+  return {
+    ...erreurs,
+    for (final l in lignes)
+      if (l.nombre <= 0 && l.produit.exigeNombre(global: global))
+        l.produit.code: {...?erreurs[l.produit.code], 'nombre': message},
+  };
 }
 
 /// Sélection multiple de produits (`PickerDialog` : code, produit, catégorie, stock, prix d'achat).
@@ -83,6 +138,7 @@ class DocFormDialog extends ConsumerStatefulWidget {
     this.prixVenteSelecteur = false,
     this.libelleTotal,
     this.cleEnregistrer,
+    this.saisieNombre = false,
   });
   final String titre;
   final IconData icone;
@@ -105,12 +161,17 @@ class DocFormDialog extends ConsumerStatefulWidget {
   final String? libelleTotal;
   final Key? cleEnregistrer;
 
+  /// Document qui mouvemente le stock : colonne « Nombre » obligatoire quand le 2ᵉ stock est actif (§8.1).
+  final bool saisieNombre;
+
   @override
   ConsumerState<DocFormDialog> createState() => _DocFormDialogState();
 }
 
 class _DocFormDialogState extends ConsumerState<DocFormDialog> {
   bool _occupe = false;
+
+  bool get _nombreGlobal => ref.read(parametresVenteProvider).value?.nombreActif ?? false;
 
   Future<void> _ajouter() async {
     final choix = await choisirProduits(
@@ -121,7 +182,9 @@ class _DocFormDialogState extends ConsumerState<DocFormDialog> {
       prixVente: widget.prixVenteSelecteur,
     );
     if (choix.isEmpty) return;
-    widget.onLignes([...widget.lignes, for (final p in choix) LigneDoc(produit: p)]);
+    final nouvelles = [for (final p in choix) LigneDoc(produit: p)];
+    if (widget.saisieNombre) proposerNombres(nouvelles, global: _nombreGlobal);
+    widget.onLignes([...widget.lignes, ...nouvelles]);
   }
 
   Future<void> _enregistrer() async {
@@ -139,7 +202,20 @@ class _DocFormDialogState extends ConsumerState<DocFormDialog> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final devise = ref.watch(deviseProvider);
-    final ok = widget.peutEnregistrer && widget.lignes.isNotEmpty && widget.erreurs.isEmpty;
+    final global = ref.watch(parametresVenteProvider).value?.nombreActif ?? false;
+    final erreurs = widget.saisieNombre
+        ? erreursNombre(context, widget.erreurs, widget.lignes, global: global)
+        : widget.erreurs;
+    final colonnes = widget.saisieNombre
+        ? avecColonneNombre(
+            context,
+            widget.colonnes,
+            widget.lignes,
+            global: global,
+            onEdition: () => widget.onLignes([...widget.lignes]),
+          )
+        : widget.colonnes;
+    final ok = widget.peutEnregistrer && widget.lignes.isNotEmpty && erreurs.isEmpty;
     return DsDialog(
       titre: widget.titre,
       iconeData: widget.icone,
@@ -166,12 +242,12 @@ class _DocFormDialogState extends ConsumerState<DocFormDialog> {
           DsGrilleFormulaire(children: widget.entete),
           DsLineItemsEditor<LigneDoc>(
             lignes: widget.lignes,
-            colonnes: widget.colonnes,
+            colonnes: colonnes,
             totalLigne: widget.totalLigne,
             quantite: (l) => l.quantite,
             cle: (l) => l.produit.code,
             devise: devise,
-            erreurs: widget.erreurs,
+            erreurs: erreurs,
             libelleTotal: widget.libelleTotal,
             libelleAjouter: l10n.dsPosLigneAjouter,
             onAjouter: _ajouter,

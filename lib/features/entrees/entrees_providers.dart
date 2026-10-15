@@ -75,6 +75,7 @@ String messageErreurAchat(AppLocalizations l10n, ErreurAchat e) => switch (e) {
   ErreurAchat.bonInconnu => l10n.entErreurBonInconnu,
   ErreurAchat.bonTraite => l10n.entErreurBonTraite,
   ErreurAchat.sessionRequise => l10n.communSessionRequise,
+  ErreurAchat.nombreObligatoire => l10n.communNombreObligatoire,
 };
 
 String messageErreurSmartScan(AppLocalizations l10n, SmartScanException e) => switch (e.erreur) {

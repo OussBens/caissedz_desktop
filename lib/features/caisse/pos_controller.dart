@@ -197,7 +197,9 @@ class PosController extends Notifier<PosEtat> {
       );
       return;
     }
-    await _verifierDisponibilite(produit, unites: quantite * (colis?.quantite ?? 1));
+    final unites = quantite * (colis?.quantite ?? 1);
+    final nombreExige = produit.exigeNombre(global: ref.read(parametresVenteProvider).value?.nombreActif ?? false);
+    await _verifierDisponibilite(produit, unites: unites, nombre: nombreExige ? unites * produit.nombreParUnite : 0);
     final remise = await ref.read(catalogueServiceProvider).remiseApplicable(produit, produit.prixVente);
     final remisePct = colis == null && remise > 0 && produit.prixVente > 0
         ? double.parse((remise / produit.prixVente * 100).toStringAsFixed(2))
@@ -210,6 +212,7 @@ class PosController extends Notifier<PosEtat> {
           quantite: quantite,
           prixUnitaire: colis?.prixVente ?? produit.prixVente,
           remisePct: remisePct,
+          nombreExige: nombreExige,
         ),
       ),
     );
@@ -258,7 +261,12 @@ class PosController extends Notifier<PosEtat> {
       } else if (l.uniteVente == UniteVente.nombre) {
         await _verifierDisponibilite(l.produit, nombre: delta);
       } else {
-        await _verifierDisponibilite(l.produit, unites: delta * (l.colis?.quantite ?? 1));
+        final unites = delta * (l.colis?.quantite ?? 1);
+        await _verifierDisponibilite(
+          l.produit,
+          unites: unites,
+          nombre: l.nombreExige ? unites * l.produit.nombreParUnite : 0,
+        );
       }
     }
     _poser(state.panier.modifierQuantite(index, quantite));

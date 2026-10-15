@@ -35,6 +35,7 @@ enum ErreurVente {
   motifObligatoire,
   montantPayeInferieur,
   retourLie,
+  nombreObligatoire,
 }
 
 class VenteException implements Exception {
@@ -72,6 +73,11 @@ class VenteService {
     if (!session.estOuverte) throw const VenteException(ErreurVente.sessionRequise);
     if (panier.estVide) throw const VenteException(ErreurVente.panierVide);
     if (panier.lignes.any((l) => l.quantite <= 0)) throw const VenteException(ErreurVente.quantiteInvalide);
+    for (final l in panier.lignes) {
+      if (l.pack == null && l.nombreStock <= 0 && l.produit.exigeNombre(global: parametres.nombreActif)) {
+        throw VenteException(ErreurVente.nombreObligatoire, l.produit.code);
+      }
+    }
     for (final p in panier.paiements) {
       if (!Referentiel.modesPaiement.contient(p.mode) || p.montant <= 0) {
         throw const VenteException(ErreurVente.modePaiementInvalide);

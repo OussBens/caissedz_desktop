@@ -47,6 +47,7 @@ String messageErreurVente(AppLocalizations l10n, VenteException e, String devise
     formaterMontant(double.tryParse(e.detail ?? '') ?? 0, devise),
   ),
   ErreurVente.retourLie => l10n.posErreurRetourLie,
+  ErreurVente.nombreObligatoire => l10n.communNombreObligatoire,
 };
 
 String libelleModePaiement(AppLocalizations l10n, String mode) => switch (mode) {

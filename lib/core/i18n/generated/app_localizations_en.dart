@@ -6879,4 +6879,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get communModifieLe => 'Modified on';
+
+  @override
+  String get communNombreObligatoire => 'The piece count (2nd stock) is required for this product.';
+
+  @override
+  String get stkNombre => 'Count';
+
+  @override
+  String get stkNombreObligatoire => 'Count required';
+
+  @override
+  String get pmNombreActif => '2nd stock “count” for all products';
+
+  @override
+  String get pmNombreActifDesc =>
+      'Piece count entered alongside the quantity (e.g. butcher: kg + pieces), required on every movement.';
 }

@@ -2354,5 +2354,10 @@
   "pmSauvegardeMdpChanger": "تغيير",
   "pmSauvegardeDerniere": "آخر نسخة تلقائية: {date}",
   "communModifiePar": "عُدّل بواسطة",
-  "communModifieLe": "تاريخ التعديل"
+  "communModifieLe": "تاريخ التعديل",
+  "communNombreObligatoire": "عدد القطع (المخزون الثاني) إلزامي لهذا المنتج.",
+  "stkNombre": "العدد",
+  "stkNombreObligatoire": "العدد إلزامي",
+  "pmNombreActif": "المخزون الثاني « العدد » لكل المنتجات",
+  "pmNombreActifDesc": "عدد القطع يُدخل إضافة إلى الكمية (مثال: الجزارة كغ + قطع)، إلزامي في كل حركة."
 }

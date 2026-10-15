@@ -14,6 +14,7 @@ class ParametresVente {
     this.margeMontant = 50,
     this.seuilStockMax = 0,
     this.venteSousAchat = venteSousAchatAvertir,
+    this.nombreActif = false,
   });
 
   static const String cleMarge = 'marge_defaut_pct';
@@ -26,6 +27,7 @@ class ParametresVente {
   static const String cleMargeMontant = 'marge_montant';
   static const String cleSeuilMax = 'seuil_stock_max';
   static const String cleVenteSousAchat = 'vente_sous_achat';
+  static const String cleNombre = 'nombre_actif';
   static const List<String> cles = [
     cleMarge,
     cleSeuil,
@@ -37,6 +39,7 @@ class ParametresVente {
     cleMargeMontant,
     cleSeuilMax,
     cleVenteSousAchat,
+    cleNombre,
   ];
 
   /// Valeurs stockées du référentiel `typeCalcul`.
@@ -72,6 +75,10 @@ class ParametresVente {
   /// `Interdire`, `Avertir` ou `Autoriser` : contrôle d'un prix de vente sous le prix d'achat.
   final String venteSousAchat;
 
+  /// Paramètres › Nombre et quantité (`active_nombre_quantite`, §8.1) : 2ᵉ stock « nombre » exigé pour tous les
+  /// produits (sinon seulement pour ceux qui l'activent).
+  final bool nombreActif;
+
   bool get margeEnMontant => typeMarge == typeMargeMontant;
 
   ParametresVente copyWith({
@@ -85,6 +92,7 @@ class ParametresVente {
     double? margeMontant,
     int? seuilStockMax,
     String? venteSousAchat,
+    bool? nombreActif,
   }) => ParametresVente(
     margeDefautPct: margeDefautPct ?? this.margeDefautPct,
     seuilStockGlobal: seuilStockGlobal ?? this.seuilStockGlobal,
@@ -96,6 +104,7 @@ class ParametresVente {
     margeMontant: margeMontant ?? this.margeMontant,
     seuilStockMax: seuilStockMax ?? this.seuilStockMax,
     venteSousAchat: venteSousAchat ?? this.venteSousAchat,
+    nombreActif: nombreActif ?? this.nombreActif,
   );
 
   Map<String, String> versCles() => {
@@ -109,6 +118,7 @@ class ParametresVente {
     cleMargeMontant: margeMontant.toString(),
     cleSeuilMax: seuilStockMax.toString(),
     cleVenteSousAchat: venteSousAchat,
+    cleNombre: nombreActif ? '1' : '0',
   };
 
   factory ParametresVente.depuisCles(Map<String, String?> m) => ParametresVente(
@@ -126,6 +136,7 @@ class ParametresVente {
       venteSousAchatAutoriser => venteSousAchatAutoriser,
       _ => venteSousAchatAvertir,
     },
+    nombreActif: m[cleNombre] == '1',
   );
 
   @override
@@ -140,7 +151,8 @@ class ParametresVente {
       other.typeMarge == typeMarge &&
       other.margeMontant == margeMontant &&
       other.seuilStockMax == seuilStockMax &&
-      other.venteSousAchat == venteSousAchat;
+      other.venteSousAchat == venteSousAchat &&
+      other.nombreActif == nombreActif;
   @override
   int get hashCode => Object.hash(
     margeDefautPct,
@@ -153,5 +165,6 @@ class ParametresVente {
     margeMontant,
     seuilStockMax,
     venteSousAchat,
+    nombreActif,
   );
 }

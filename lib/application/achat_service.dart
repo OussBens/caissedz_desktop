@@ -33,6 +33,7 @@ enum ErreurAchat {
   bonInconnu,
   bonTraite,
   sessionRequise,
+  nombreObligatoire,
 }
 
 class AchatException implements Exception {
@@ -435,9 +436,13 @@ class AchatService {
     final stockRepo = StockRepository(txn);
     final stock = StockService(txn.database, utilisateurCode: utilisateurCode);
     final lignesAchat = <AchatLigne>[];
+    final nombreGlobal = await StockService.nombreGlobalActif(txn);
     for (final l in lignes) {
       final p = await catalogue.produitParCode(l.produitCode);
       if (p == null) throw AchatException(ErreurAchat.produitInconnu, l.produitCode);
+      if (l.nombre <= 0 && p.exigeNombre(global: nombreGlobal)) {
+        throw AchatException(ErreurAchat.nombreObligatoire, p.code);
+      }
       final stockAvant = (await stockRepo.niveauTotal(p.code)).quantite;
       lignesAchat.add(
         AchatLigne(
@@ -457,7 +462,7 @@ class AchatService {
           produitCode: p.code,
           magasinCode: mag,
           quantite: q,
-          nombre: l.repartition == null ? l.nombre : 0,
+          nombre: l.repartition == null || l.quantite <= 0 ? l.nombre : l.nombre * q / l.quantite,
           type: TypesMouvement.entree,
           referenceType: 'achat',
           referenceCode: code,

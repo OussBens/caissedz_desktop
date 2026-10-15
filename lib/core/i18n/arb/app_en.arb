@@ -2354,5 +2354,10 @@
   "pmSauvegardeMdpChanger": "Change",
   "pmSauvegardeDerniere": "Last automatic backup: {date}",
   "communModifiePar": "Modified by",
-  "communModifieLe": "Modified on"
+  "communModifieLe": "Modified on",
+  "communNombreObligatoire": "The piece count (2nd stock) is required for this product.",
+  "stkNombre": "Count",
+  "stkNombreObligatoire": "Count required",
+  "pmNombreActif": "2nd stock “count” for all products",
+  "pmNombreActifDesc": "Piece count entered alongside the quantity (e.g. butcher: kg + pieces), required on every movement."
 }

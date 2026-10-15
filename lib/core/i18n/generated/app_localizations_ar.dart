@@ -6869,4 +6869,19 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get communModifieLe => 'تاريخ التعديل';
+
+  @override
+  String get communNombreObligatoire => 'عدد القطع (المخزون الثاني) إلزامي لهذا المنتج.';
+
+  @override
+  String get stkNombre => 'العدد';
+
+  @override
+  String get stkNombreObligatoire => 'العدد إلزامي';
+
+  @override
+  String get pmNombreActif => 'المخزون الثاني « العدد » لكل المنتجات';
+
+  @override
+  String get pmNombreActifDesc => 'عدد القطع يُدخل إضافة إلى الكمية (مثال: الجزارة كغ + قطع)، إلزامي في كل حركة.';
 }

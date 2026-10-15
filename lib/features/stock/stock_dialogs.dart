@@ -331,17 +331,18 @@ Future<void> afficherFormulaireSortie(
   final catalogue = {for (final p in await ref.read(produitsProvider.future)) p.code: p};
   final principal = await ref.read(magasinPrincipalProvider.future);
   final stocks = await ref.read(stocksParMagasinProvider.future);
+  final nombreGlobal = (await ref.read(parametresVenteProvider.future)).nombreActif;
   if (!context.mounted) return;
   final lignes = sortie != null
       ? [
           for (final l in sortie.lignes)
             if (catalogue[l.produitCode] != null)
-              LigneDoc(produit: catalogue[l.produitCode]!, quantite: l.quantite, prix: l.prix),
+              LigneDoc(produit: catalogue[l.produitCode]!, quantite: l.quantite, prix: l.prix, nombre: l.nombre),
         ]
-      : [
+      : proposerNombres([
           for (final p in produits)
             LigneDoc(produit: p, quantite: (stocks[p.code]?[principal] ?? 0) > 0 ? stocks[p.code]![principal]! : 1),
-        ];
+        ], global: nombreGlobal);
   await afficherDialog<bool>(
     context,
     fermableParVoile: false,
@@ -386,7 +387,8 @@ class _SortieFormState extends ConsumerState<_SortieForm> {
     final l10n = AppLocalizations.of(context);
     final s = ref.read(stockServiceProvider);
     final lignes = [
-      for (final l in _lignes) LigneStock(produitCode: l.produit.code, quantite: l.quantite, prix: l.prix),
+      for (final l in _lignes)
+        LigneStock(produitCode: l.produit.code, quantite: l.quantite, nombre: l.nombre, prix: l.prix),
     ];
     final commentaire = _motif.text.trim().isEmpty ? null : _motif.text.trim();
     final ok = await executerStock(context, ref, () async {
@@ -427,6 +429,7 @@ class _SortieFormState extends ConsumerState<_SortieForm> {
       icone: LucideIcons.packageMinus,
       description: widget.sortie?.code ?? l10n.stkSortieDescription,
       cleEnregistrer: const ValueKey('sortie_enregistrer'),
+      saisieNombre: true,
       lignes: _lignes,
       onLignes: (l) => setState(() => _lignes = l),
       erreurs: erreurs,
@@ -672,7 +675,8 @@ Future<void> afficherFormulaireTransfert(BuildContext context, WidgetRef ref, {T
   if (!context.mounted) return;
   final lignes = [
     for (final l in transfert?.lignes ?? const <LigneStock>[])
-      if (produits[l.produitCode] != null) LigneDoc(produit: produits[l.produitCode]!, quantite: l.quantite),
+      if (produits[l.produitCode] != null)
+        LigneDoc(produit: produits[l.produitCode]!, quantite: l.quantite, nombre: l.nombre),
   ];
   final destination =
       transfert?.magasinDestination ?? magasins.where((m) => m.code != principal).firstOrNull?.code ?? principal;
@@ -718,7 +722,9 @@ class _TransfertFormState extends ConsumerState<_TransfertForm> {
   Future<bool> _enregistrer() async {
     final l10n = AppLocalizations.of(context);
     final s = ref.read(stockServiceProvider);
-    final lignes = [for (final l in _lignes) LigneStock(produitCode: l.produit.code, quantite: l.quantite)];
+    final lignes = [
+      for (final l in _lignes) LigneStock(produitCode: l.produit.code, quantite: l.quantite, nombre: l.nombre),
+    ];
     final obs = _observation.text.trim().isEmpty ? null : _observation.text.trim();
     String code = widget.transfert?.code ?? '';
     final ok = await executerStock(context, ref, () async {
@@ -766,6 +772,7 @@ class _TransfertFormState extends ConsumerState<_TransfertForm> {
       description: widget.transfert?.code ?? l10n.stkTransfertDescription,
       cleEnregistrer: const ValueKey('transfert_enregistrer'),
       libelleEnregistrer: l10n.stkValiderTransfert,
+      saisieNombre: true,
       lignes: _lignes,
       onLignes: (l) => setState(() => _lignes = l),
       erreurs: erreurs,

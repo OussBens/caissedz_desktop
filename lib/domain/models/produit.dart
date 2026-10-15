@@ -51,6 +51,9 @@ class Produit {
   final bool suiviNombre;
   final int nombreParUnite;
 
+  /// 2ᵉ stock « nombre » obligatoire (> 0) à la saisie (§8.1) : paramètre global [global] ou propre au produit.
+  bool exigeNombre({required bool global}) => !service && (global || suiviNombre);
+
   /// `Manuel` ou `IA` (valeur stockée FR).
   final String source;
   final bool actif;

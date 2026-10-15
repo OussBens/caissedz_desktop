@@ -96,6 +96,43 @@ void main() {
       await tester.pump(const Duration(seconds: 5));
     });
 
+    testWidgets('sortie : 2ᵉ stock « nombre » proposé puis obligatoire (§8.1)', (tester) async {
+      final c = await pumpApp(tester, routeInitiale: '/sorties', taille: _taille);
+      final db = c.read(appDatabaseProvider).db;
+      final poulet = await CatalogueService(db, utilisateurCode: 'USR0000').creerProduit(
+        const Produit(
+          code: '',
+          designation: 'Poulet',
+          categorieCode: 'CATE0000',
+          sousCategorieCode: 'SC0000',
+          prixAchat: 300,
+          prixVente: 400,
+          suiviNombre: true,
+          nombreParUnite: 2,
+        ),
+      );
+      await StockService(
+        db,
+        utilisateurCode: 'USR0000',
+      ).entrerStock(produitCode: poulet.code, magasinCode: 'MAG0000', quantite: 10, nombre: 20);
+      await _rafraichir(tester, c);
+      await clic(tester, _cle('sortie_nouvelle'));
+      await _ajouterProduit(tester, 'Poulet');
+      expect(find.text('NOMBRE'), findsOneWidget);
+      final champs = find.descendant(of: find.byKey(ValueKey<Object>(poulet.code)), matching: find.byType(TextField));
+      expect(tester.widget<TextField>(champs.at(1)).controller!.text, '2'); // 1 unité × 2 pièces
+      await tester.enterText(champs.at(1), '0');
+      await tester.pump();
+      expect(find.text('Nombre obligatoire'), findsOneWidget);
+      expect(tester.widget<DsButton>(_cle('sortie_enregistrer')).onPressed, isNull);
+      await tester.enterText(champs.at(1), '3');
+      await tester.pump();
+      await clic(tester, _cle('sortie_enregistrer'));
+      final n = await StockRepository(db).niveau(poulet.code, 'MAG0000');
+      expect((n.quantite, n.nombre), (9.0, 17.0));
+      await tester.pump(const Duration(seconds: 5));
+    });
+
     testWidgets('transferts : onglet de Magasins, transfert TRM validé', (tester) async {
       final c = await pumpApp(tester, routeInitiale: '/transferts', taille: _taille);
       await _donnees(c);

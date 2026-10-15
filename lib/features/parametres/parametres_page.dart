@@ -50,6 +50,7 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
   // Système
   String _devise = 'DA';
   int _decimales = 2;
+  bool _nombreActif = false;
   String _typeMarge = ParametresVente.typeMargePourcentage;
   final _margePct = TextEditingController();
   final _margeMontant = TextEditingController();
@@ -151,6 +152,7 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
       final v = p.vente;
       _devise = v.devise;
       _decimales = v.decimalesQuantite;
+      _nombreActif = v.nombreActif;
       _typeMarge = v.typeMarge;
       _margePct.text = _entier(v.margeDefautPct);
       _margeMontant.text = _entier(v.margeMontant);
@@ -213,6 +215,7 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
       vente: i.vente.copyWith(
         devise: _devise,
         decimalesQuantite: _decimales,
+        nombreActif: _nombreActif,
         typeMarge: _typeMarge,
         margeDefautPct: _v(_margePct),
         margeMontant: _v(_margeMontant),
@@ -532,13 +535,20 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
             _ligne(
               l10n.pmDecimales,
               description: l10n.pmDecimalesDesc,
-              derniere: true,
               child: DsSegmentedControl<int>(
                 key: const ValueKey('param_decimales'),
                 valeur: _decimales,
                 options: [for (var i = 0; i <= 3; i++) DsOption(i, libelle: '$i')],
                 onChanged: (v) => _changer(() => _decimales = v),
               ),
+            ),
+            _interrupteur(
+              'param_nombre_actif',
+              l10n.pmNombreActif,
+              description: l10n.pmNombreActifDesc,
+              valeur: _nombreActif,
+              derniere: true,
+              onChanged: (v) => _changer(() => _nombreActif = v),
             ),
           ],
         ),

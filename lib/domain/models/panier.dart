@@ -17,6 +17,7 @@ class PanierLigne {
     this.uniteVente = UniteVente.unite,
     required this.prixUnitaire,
     this.remisePct = 0,
+    this.nombreExige = false,
   });
 
   final Produit produit;
@@ -31,6 +32,10 @@ class PanierLigne {
   final double prixUnitaire;
   final double remisePct;
 
+  /// 2ᵉ stock « nombre » actif (§8.1) : une vente à l'unité sort aussi les pièces correspondantes
+  /// (unités × `nombreParUnite`). ⚠️ PROVISOIRE : pièces déduites, pas de saisie séparée en caisse.
+  final bool nombreExige;
+
   String get designation => pack?.designation ?? colis?.designation ?? produit.designation;
 
   /// Clé d'agrégation : même produit / colis / pack / unité ⇒ même ligne.
@@ -42,7 +47,8 @@ class PanierLigne {
 
   /// Unités de stock consommées par cette ligne (hors pack : voir [composantsPack]).
   double get unitesStock => uniteVente == UniteVente.nombre ? 0 : quantite * (colis?.quantite ?? 1);
-  double get nombreStock => uniteVente == UniteVente.nombre ? quantite : 0;
+  double get nombreStock =>
+      uniteVente == UniteVente.nombre ? quantite : (nombreExige ? unitesStock * produit.nombreParUnite : 0);
 
   PanierLigne copyWith({double? quantite, double? prixUnitaire, double? remisePct}) => PanierLigne(
     produit: produit,
@@ -52,6 +58,7 @@ class PanierLigne {
     uniteVente: uniteVente,
     prixUnitaire: prixUnitaire ?? this.prixUnitaire,
     remisePct: remisePct ?? this.remisePct,
+    nombreExige: nombreExige,
   );
 }
 
@@ -169,7 +176,10 @@ class Panier {
   Panier reinitialiser() => Panier(id: id);
 
   /// Nombre de pièces (unités de stock ou pièces vendues au nombre).
-  double get pieces => lignes.fold(0.0, (s, l) => s + (l.pack != null ? l.quantite : l.unitesStock + l.nombreStock));
+  double get pieces => lignes.fold(
+    0.0,
+    (s, l) => s + (l.pack != null || l.uniteVente == UniteVente.nombre ? l.quantite : l.unitesStock),
+  );
 
   Panier ajouterPaiement(Paiement p) => copyWith(paiements: [...paiements, p]);
   Panier retirerPaiement(int index) => copyWith(paiements: [...paiements]..removeAt(index));
