@@ -145,8 +145,8 @@ class _DsNavItemState extends State<DsNavItem> {
   }
 }
 
-/// Barre latérale (`Sidebar`) : 248 px (72 repliée), logo, groupes séparés, pied, copyright.
-class DsSidebar extends StatelessWidget {
+/// Barre latérale (`Sidebar`) : 248 px (72 repliée), logo, groupes repliables séparés, pied, copyright.
+class DsSidebar extends StatefulWidget {
   const DsSidebar({
     super.key,
     required this.sections,
@@ -166,10 +166,23 @@ class DsSidebar extends StatelessWidget {
   final String copyright;
 
   @override
+  State<DsSidebar> createState() => _DsSidebarState();
+}
+
+class _DsSidebarState extends State<DsSidebar> {
+  /// Libellés des catégories repliées (le module actif d'une catégorie repliée reste visible).
+  final Set<String> _categoriesRepliees = {};
+
+  @override
   Widget build(BuildContext context) {
     final c = context.ds.colors;
     final t = context.ds.typo;
     final l10n = AppLocalizations.of(context);
+    final sections = widget.sections;
+    final active = widget.active;
+    final replie = widget.replie;
+    final onBasculer = widget.onBasculer;
+    final pied = widget.pied;
     return AnimatedContainer(
       duration: DsMotion.slow,
       curve: DsMotion.emphasized,
@@ -221,29 +234,49 @@ class DsSidebar extends StatelessWidget {
                     decoration: BoxDecoration(
                       border: i > 0 ? Border(top: BorderSide(color: c.borderSubtle)) : null,
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        if (!replie && s.libelle.isNotEmpty)
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(10, 4, 10, 8),
-                            child: Text(
-                              s.libelle.toUpperCase(),
-                              style: t.overline.copyWith(height: 1, color: c.textMuted),
+                    child: Builder(
+                      builder: (context) {
+                        final repliable = !replie && s.libelle.isNotEmpty;
+                        final fermee = repliable && _categoriesRepliees.contains(s.libelle);
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            if (repliable)
+                              _EnteteCategorie(
+                                key: ValueKey('nav_categorie_$i'),
+                                libelle: s.libelle,
+                                ouverte: !fermee,
+                                onTap: () => setState(
+                                  () => fermee
+                                      ? _categoriesRepliees.remove(s.libelle)
+                                      : _categoriesRepliees.add(s.libelle),
+                                ),
+                              ),
+                            AnimatedSize(
+                              duration: DsMotion.base,
+                              curve: DsMotion.standard,
+                              alignment: AlignmentDirectional.topStart,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  for (final it in s.items)
+                                    if (!fermee || active == it.route)
+                                      Padding(
+                                        padding: const EdgeInsets.only(bottom: 2),
+                                        child: DsNavItem(
+                                          key: ValueKey('nav_${it.route}'),
+                                          entree: it,
+                                          actif: active == it.route,
+                                          replie: replie,
+                                          onTap: () => widget.onNavigate(it.route),
+                                        ),
+                                      ),
+                                ],
+                              ),
                             ),
-                          ),
-                        for (final it in s.items)
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 2),
-                            child: DsNavItem(
-                              key: ValueKey('nav_${it.route}'),
-                              entree: it,
-                              actif: active == it.route,
-                              replie: replie,
-                              onTap: () => onNavigate(it.route),
-                            ),
-                          ),
-                      ],
+                          ],
+                        );
+                      },
                     ),
                   ),
               ],
@@ -258,12 +291,68 @@ class DsSidebar extends StatelessWidget {
                 border: Border(top: BorderSide(color: c.borderSubtle)),
               ),
               child: Text(
-                copyright,
+                widget.copyright,
                 textAlign: TextAlign.center,
                 style: t.caption.copyWith(fontSize: 11, color: c.textMuted),
               ),
             ),
         ],
+      ),
+    );
+  }
+}
+
+/// En-tête de catégorie de la barre latérale : libellé et chevron, clic = replier / déplier.
+class _EnteteCategorie extends StatefulWidget {
+  const _EnteteCategorie({super.key, required this.libelle, required this.ouverte, required this.onTap});
+  final String libelle;
+  final bool ouverte;
+  final VoidCallback onTap;
+
+  @override
+  State<_EnteteCategorie> createState() => _EnteteCategorieState();
+}
+
+class _EnteteCategorieState extends State<_EnteteCategorie> {
+  bool _survol = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.ds.colors;
+    final t = context.ds.typo;
+    final l10n = AppLocalizations.of(context);
+    final couleur = _survol ? c.textSecondary : c.textMuted;
+    return Semantics(
+      button: true,
+      expanded: widget.ouverte,
+      child: Tooltip(
+        message: widget.ouverte ? l10n.dsReplier : l10n.dsDeplier,
+        waitDuration: const Duration(milliseconds: 600),
+        child: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          onEnter: (_) => setState(() => _survol = true),
+          onExit: (_) => setState(() => _survol = false),
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: widget.onTap,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(10, 4, 6, 8),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(widget.libelle.toUpperCase(), style: t.overline.copyWith(height: 1, color: couleur)),
+                  ),
+                  AnimatedRotation(
+                    // Replié : chevron vers le sens de lecture (droite en LTR, gauche en RTL).
+                    turns: widget.ouverte ? 0 : (Directionality.of(context) == TextDirection.rtl ? .25 : -.25),
+                    duration: DsMotion.fast,
+                    child: Icon(LucideIcons.chevronDown, size: 14, color: couleur),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -654,6 +743,7 @@ class DsFavorisBar extends StatelessWidget {
             Tooltip(
               message: libelleAjouter ?? l10n.dsAjouterFavoris,
               child: InkWell(
+                key: const ValueKey('favoris_ajouter'),
                 borderRadius: DsRadius.borderMd,
                 onTap: onAjouter,
                 child: Container(
@@ -785,6 +875,7 @@ class DsModuleLauncher extends StatefulWidget {
     this.actif,
     this.maxFavoris = 7,
     this.titre,
+    this.modeFavoris = false,
   });
   final List<DsNavSection> sections;
   final List<String> favoris;
@@ -796,6 +887,9 @@ class DsModuleLauncher extends StatefulWidget {
   final String? actif;
   final int maxFavoris;
   final String? titre;
+
+  /// Choix des favoris : un clic sur une tuile l'ajoute ou la retire des favoris au lieu d'ouvrir le module.
+  final bool modeFavoris;
 
   @override
   State<DsModuleLauncher> createState() => _DsModuleLauncherState();
@@ -849,6 +943,12 @@ class _DsModuleLauncherState extends State<DsModuleLauncher> {
             ),
           ],
         ),
+        if (widget.modeFavoris)
+          DsNote(
+            ton: plein ? DsBadgeTon.avertissement : DsBadgeTon.info,
+            icone: LucideIcons.star,
+            texte: plein ? l10n.dsFavorisAideComplets(widget.maxFavoris) : l10n.dsFavorisAide(widget.maxFavoris),
+          ),
         for (final s in widget.sections)
           Builder(
             builder: (context) {
@@ -862,7 +962,7 @@ class _DsModuleLauncherState extends State<DsModuleLauncher> {
                     Text(s.libelle.toUpperCase(), style: t.overline.copyWith(color: c.textMuted)),
                   LayoutBuilder(
                     builder: (context, contraintes) {
-                      const gap = 10.0;
+                      const gap = 12.0;
                       final n = ((contraintes.maxWidth + gap) / (150 + gap)).floor().clamp(1, 12);
                       final largeur = (contraintes.maxWidth - gap * (n - 1)) / n;
                       return Wrap(
@@ -878,6 +978,7 @@ class _DsModuleLauncherState extends State<DsModuleLauncher> {
                                 favori: widget.favoris.contains(i.route),
                                 verrou: widget.verrous[i.route],
                                 peutFavori: !plein,
+                                modeFavoris: widget.modeFavoris,
                                 onOuvrir: () => widget.onOuvrir(i.route),
                                 onFavori: widget.onBasculerFavori == null
                                     ? null
@@ -906,11 +1007,13 @@ class _TuileModule extends StatefulWidget {
     required this.onOuvrir,
     this.verrou,
     this.onFavori,
+    this.modeFavoris = false,
   });
   final DsNavEntree entree;
   final bool actif;
   final bool favori;
   final bool peutFavori;
+  final bool modeFavoris;
   final String? verrou;
   final VoidCallback onOuvrir;
   final VoidCallback? onFavori;
@@ -925,33 +1028,49 @@ class _TuileModuleState extends State<_TuileModule> {
     final c = context.ds.colors;
     final t = context.ds.typo;
     final l10n = AppLocalizations.of(context);
-    final on = widget.actif;
+    final mode = widget.modeFavoris;
+    // Mode favoris : la tuile « active » est un favori ; sinon, le module ouvert.
+    final on = mode ? widget.favori : widget.actif;
+    final bloquee = widget.verrou != null || (mode && !widget.favori && !widget.peutFavori);
     final verrou = widget.verrou != null;
     final i = widget.entree;
+    final VoidCallback? onTap = bloquee ? null : (mode ? widget.onFavori : widget.onOuvrir);
+    final aide =
+        widget.verrou ??
+        (!mode
+            ? ''
+            : widget.favori
+            ? l10n.dsRetirerFavoris
+            : (widget.peutFavori ? l10n.dsAjouterFavoris : l10n.dsFavorisComplets));
+    final bordure = on ? (mode ? c.warning : c.primary) : c.borderDefault;
     return MouseRegion(
-      cursor: verrou ? SystemMouseCursors.forbidden : SystemMouseCursors.click,
+      cursor: bloquee ? SystemMouseCursors.forbidden : SystemMouseCursors.click,
       onEnter: (_) => setState(() => _survol = true),
       onExit: (_) => setState(() => _survol = false),
       child: Stack(
+        // La tuile occupe toute la largeur de sa cellule (grille alignée) et une hauteur fixe.
+        fit: StackFit.passthrough,
         children: [
           GestureDetector(
-            onTap: verrou ? null : widget.onOuvrir,
+            onTap: onTap,
             child: Tooltip(
-              message: widget.verrou ?? '',
+              message: aide,
               child: AnimatedContainer(
                 duration: DsMotion.fast,
                 curve: DsMotion.standard,
-                constraints: const BoxConstraints(minHeight: 104),
-                padding: const EdgeInsets.fromLTRB(10, 16, 10, 12),
-                transform: Matrix4.translationValues(0, _survol && !verrou ? -1 : 0, 0),
+                height: 124,
+                padding: const EdgeInsets.fromLTRB(10, 14, 10, 12),
+                transform: Matrix4.translationValues(0, _survol && !bloquee ? -1 : 0, 0),
                 decoration: BoxDecoration(
-                  color: on ? c.primaryTint : (_survol && !verrou ? c.surfaceHover : c.surfaceCard),
+                  color: on
+                      ? (mode ? c.warningTint : c.primaryTint)
+                      : (_survol && !bloquee ? c.surfaceHover : c.surfaceCard),
                   borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: on ? c.primary : c.borderDefault),
-                  boxShadow: _survol && !verrou ? c.shadowSm : c.shadowXs,
+                  border: Border.all(color: bordure, width: on && mode ? 1.5 : 1),
+                  boxShadow: _survol && !bloquee ? c.shadowSm : c.shadowXs,
                 ),
                 child: Opacity(
-                  opacity: verrou ? .55 : 1,
+                  opacity: bloquee ? .55 : 1,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     spacing: 10,
@@ -997,6 +1116,8 @@ class _TuileModuleState extends State<_TuileModule> {
                       Text(
                         i.libelle,
                         textAlign: TextAlign.center,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                         style: t.bodySm.copyWith(fontWeight: FontWeight.w600, height: 1.25),
                       ),
                       if (verrou)
@@ -1025,7 +1146,29 @@ class _TuileModuleState extends State<_TuileModule> {
               ),
             ),
           ),
-          if (widget.onFavori != null && !verrou && (_survol || widget.favori))
+          if (mode && !verrou)
+            PositionedDirectional(
+              top: 8,
+              end: 8,
+              child: IgnorePointer(
+                child: AnimatedContainer(
+                  duration: DsMotion.fast,
+                  width: 24,
+                  height: 24,
+                  decoration: BoxDecoration(
+                    color: widget.favori ? c.warning : c.surfaceCard,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: widget.favori ? c.warning : c.borderDefault),
+                  ),
+                  child: Icon(
+                    widget.favori ? LucideIcons.check : LucideIcons.star,
+                    size: 13,
+                    color: widget.favori ? DsColors.blanc : c.iconMuted,
+                  ),
+                ),
+              ),
+            )
+          else if (!mode && widget.onFavori != null && !verrou && (_survol || widget.favori))
             PositionedDirectional(
               top: 6,
               end: 6,

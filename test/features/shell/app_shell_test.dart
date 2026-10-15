@@ -65,6 +65,56 @@ void main() {
       expect(routeCourante(c), '/zakat');
     });
 
+    testWidgets('menu des modules : tuiles alignées, même largeur et même hauteur', (tester) async {
+      await pumpApp(tester);
+      await clic(tester, find.byKey(const ValueKey('topbar_menu')));
+      final menu = find.byKey(const ValueKey('menu_modules'));
+      Size tuile(String libelle) => tester.getSize(
+        find
+            .ancestor(
+              of: find.descendant(of: menu, matching: find.text(libelle)),
+              matching: find.byType(AnimatedContainer),
+            )
+            .first,
+      );
+      final reference = tuile('Tableau de bord');
+      for (final m in ['Caisse', 'Ventes', 'Retours', 'Produits', 'Entrées / Achats', 'Clients', 'Fournisseurs']) {
+        expect(tuile(m), reference, reason: m);
+      }
+    });
+
+    testWidgets('« + » des favoris : un clic sur un module l\'ajoute ou le retire sans l\'ouvrir', (tester) async {
+      final c = await pumpApp(tester);
+      await clic(tester, find.byKey(const ValueKey('favoris_ajouter')));
+      final menu = find.byKey(const ValueKey('menu_modules'));
+      expect(find.descendant(of: menu, matching: find.text('Choisir les favoris')), findsOneWidget);
+      await clic(tester, find.descendant(of: menu, matching: find.text('Zakat')));
+      expect(menu, findsOneWidget, reason: 'le menu reste ouvert');
+      expect(routeCourante(c), '/caisse');
+      expect(c.read(favorisProvider), contains('zakat'));
+      await clic(tester, find.descendant(of: menu, matching: find.text('Zakat')));
+      expect(c.read(favorisProvider), isNot(contains('zakat')));
+      await clic(tester, find.descendant(of: menu, matching: find.text('Clients')));
+      await clic(tester, find.byKey(const ValueKey('favoris_termine')));
+      expect(menu, findsNothing);
+      final barre = find.byKey(const ValueKey('barre_favoris'));
+      expect(find.descendant(of: barre, matching: find.text('Clients')), findsOneWidget);
+    });
+
+    testWidgets('barre latérale : catégories repliables, le module actif reste visible', (tester) async {
+      await pumpApp(tester);
+      final barre = find.byType(DsSidebar);
+      Finder dansBarre(String t) => find.descendant(of: barre, matching: find.text(t));
+      expect(dansBarre('Ventes'), findsOneWidget);
+      await clic(tester, find.byKey(const ValueKey('nav_categorie_0'))); // GÉNÉRAL
+      expect(dansBarre('Ventes'), findsNothing);
+      expect(dansBarre('Caisse'), findsOneWidget, reason: 'module actif');
+      await clic(tester, find.byKey(const ValueKey('nav_categorie_1'))); // STOCK
+      expect(dansBarre('Produits'), findsNothing);
+      await clic(tester, find.byKey(const ValueKey('nav_categorie_0')));
+      expect(dansBarre('Ventes'), findsOneWidget);
+    });
+
     testWidgets('favoris : 7 maximum, persistés, affichés dans la barre supérieure', (tester) async {
       final container = await pumpApp(tester);
       final notifier = container.read(favorisProvider.notifier);

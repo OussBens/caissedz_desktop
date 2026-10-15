@@ -3566,5 +3566,23 @@
   "stkNombre": "Nombre",
   "stkNombreObligatoire": "Nombre obligatoire",
   "pmNombreActif": "2ᵉ stock « nombre » pour tous les produits",
-  "pmNombreActifDesc": "Nombre de pièces saisi en plus de la quantité (ex. boucherie : kg + pièces), obligatoire à chaque mouvement."
+  "pmNombreActifDesc": "Nombre de pièces saisi en plus de la quantité (ex. boucherie : kg + pièces), obligatoire à chaque mouvement.",
+  "dsFavorisAide": "Cliquez sur un module pour l'ajouter à vos favoris ou l'en retirer ({max} au maximum).",
+  "@dsFavorisAide": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "dsFavorisAideComplets": "Vos {max} favoris sont choisis : retirez-en un pour en ajouter un autre.",
+  "@dsFavorisAideComplets": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "shellChoisirFavoris": "Choisir les favoris",
+  "communTermine": "Terminé"
 }

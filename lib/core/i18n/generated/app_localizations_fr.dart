@@ -6908,4 +6908,20 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get pmNombreActifDesc =>
       'Nombre de pièces saisi en plus de la quantité (ex. boucherie : kg + pièces), obligatoire à chaque mouvement.';
+
+  @override
+  String dsFavorisAide(int max) {
+    return 'Cliquez sur un module pour l\'ajouter à vos favoris ou l\'en retirer ($max au maximum).';
+  }
+
+  @override
+  String dsFavorisAideComplets(int max) {
+    return 'Vos $max favoris sont choisis : retirez-en un pour en ajouter un autre.';
+  }
+
+  @override
+  String get shellChoisirFavoris => 'Choisir les favoris';
+
+  @override
+  String get communTermine => 'Terminé';
 }

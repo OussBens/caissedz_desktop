@@ -2359,5 +2359,9 @@
   "stkNombre": "Count",
   "stkNombreObligatoire": "Count required",
   "pmNombreActif": "2nd stock “count” for all products",
-  "pmNombreActifDesc": "Piece count entered alongside the quantity (e.g. butcher: kg + pieces), required on every movement."
+  "pmNombreActifDesc": "Piece count entered alongside the quantity (e.g. butcher: kg + pieces), required on every movement.",
+  "dsFavorisAide": "Click a module to add it to or remove it from your favorites ({max} at most).",
+  "dsFavorisAideComplets": "All {max} favorites are chosen: remove one to add another.",
+  "shellChoisirFavoris": "Choose favorites",
+  "communTermine": "Done"
 }

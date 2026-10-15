@@ -6895,4 +6895,20 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get pmNombreActifDesc =>
       'Piece count entered alongside the quantity (e.g. butcher: kg + pieces), required on every movement.';
+
+  @override
+  String dsFavorisAide(int max) {
+    return 'Click a module to add it to or remove it from your favorites ($max at most).';
+  }
+
+  @override
+  String dsFavorisAideComplets(int max) {
+    return 'All $max favorites are chosen: remove one to add another.';
+  }
+
+  @override
+  String get shellChoisirFavoris => 'Choose favorites';
+
+  @override
+  String get communTermine => 'Done';
 }

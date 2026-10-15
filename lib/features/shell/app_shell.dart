@@ -226,7 +226,7 @@ class _AppShellState extends ConsumerState<AppShell> {
                                   final m = Modules.parRoute(r);
                                   if (m != null) ref.read(favorisProvider.notifier).retirer(m.id);
                                 },
-                                onAjouter: () => afficherMenuModules(context),
+                                onAjouter: () => afficherMenuModules(context, modeFavoris: true),
                               ),
                             ),
                             const Expanded(
@@ -276,11 +276,13 @@ class _AppShellState extends ConsumerState<AppShell> {
 }
 
 /// Menu des modules (Ctrl+M, DS `ModuleMenuDialog`) : tuiles par groupe, favoris (7), verrous.
-Future<void> afficherMenuModules(BuildContext context) =>
-    afficherDialog<void>(context, builder: (_) => const MenuModulesDialog());
+/// [modeFavoris] (« + » de la barre de favoris) : un clic sur un module l'ajoute ou le retire des favoris.
+Future<void> afficherMenuModules(BuildContext context, {bool modeFavoris = false}) =>
+    afficherDialog<void>(context, builder: (_) => MenuModulesDialog(modeFavoris: modeFavoris));
 
 class MenuModulesDialog extends ConsumerWidget {
-  const MenuModulesDialog({super.key});
+  const MenuModulesDialog({super.key, this.modeFavoris = false});
+  final bool modeFavoris;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -306,31 +308,54 @@ class MenuModulesDialog extends ConsumerWidget {
         constraints: const BoxConstraints(maxWidth: 980),
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(DsSpacing.s6),
-          child: DsModuleLauncher(
-            titre: l10n.shellMenuModules,
-            sections: [
-              for (final g in GroupeModule.values)
-                DsNavSection(
-                  libelle: libelleGroupe(l10n, g),
-                  items: [
-                    for (final m in Modules.parGroupe(g))
-                      DsNavEntree(route: m.route, libelle: m.libelle(l10n), icone: m.icone, badgeTexte: m.badgeTexte),
-                  ],
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            spacing: DsSpacing.s5,
+            children: [
+              DsModuleLauncher(
+                titre: modeFavoris ? l10n.shellChoisirFavoris : l10n.shellMenuModules,
+                modeFavoris: modeFavoris,
+                sections: [
+                  for (final g in GroupeModule.values)
+                    DsNavSection(
+                      libelle: libelleGroupe(l10n, g),
+                      items: [
+                        for (final m in Modules.parGroupe(g))
+                          DsNavEntree(
+                            route: m.route,
+                            libelle: m.libelle(l10n),
+                            icone: m.icone,
+                            badgeTexte: m.badgeTexte,
+                          ),
+                      ],
+                    ),
+                ],
+                favoris: [for (final id in favoris) ?Modules.parId(id)?.route],
+                verrous: verrous,
+                actif: route,
+                maxFavoris: Modules.maxFavoris,
+                onOuvrir: (r) {
+                  final router = GoRouter.of(context);
+                  Navigator.of(context).pop();
+                  router.go(r);
+                },
+                onBasculerFavori: (r) {
+                  final m = Modules.parRoute(r);
+                  if (m != null) ref.read(favorisProvider.notifier).basculer(m.id);
+                },
+              ),
+              if (modeFavoris)
+                Align(
+                  alignment: AlignmentDirectional.centerEnd,
+                  child: DsButton(
+                    key: const ValueKey('favoris_termine'),
+                    libelle: l10n.communTermine,
+                    icone: LucideIcons.check,
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
                 ),
             ],
-            favoris: [for (final id in favoris) ?Modules.parId(id)?.route],
-            verrous: verrous,
-            actif: route,
-            maxFavoris: Modules.maxFavoris,
-            onOuvrir: (r) {
-              final router = GoRouter.of(context);
-              Navigator.of(context).pop();
-              router.go(r);
-            },
-            onBasculerFavori: (r) {
-              final m = Modules.parRoute(r);
-              if (m != null) ref.read(favorisProvider.notifier).basculer(m.id);
-            },
           ),
         ),
       ),

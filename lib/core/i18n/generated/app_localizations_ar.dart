@@ -6884,4 +6884,20 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get pmNombreActifDesc => 'عدد القطع يُدخل إضافة إلى الكمية (مثال: الجزارة كغ + قطع)، إلزامي في كل حركة.';
+
+  @override
+  String dsFavorisAide(int max) {
+    return 'انقر على وحدة لإضافتها إلى المفضلة أو إزالتها ($max كحد أقصى).';
+  }
+
+  @override
+  String dsFavorisAideComplets(int max) {
+    return 'تم اختيار $max مفضلات: أزل واحدة لإضافة أخرى.';
+  }
+
+  @override
+  String get shellChoisirFavoris => 'اختيار المفضلة';
+
+  @override
+  String get communTermine => 'تم';
 }

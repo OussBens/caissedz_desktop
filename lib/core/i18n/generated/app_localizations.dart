@@ -13124,6 +13124,30 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Nombre de pièces saisi en plus de la quantité (ex. boucherie : kg + pièces), obligatoire à chaque mouvement.'**
   String get pmNombreActifDesc;
+
+  /// No description provided for @dsFavorisAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cliquez sur un module pour l\'ajouter à vos favoris ou l\'en retirer ({max} au maximum).'**
+  String dsFavorisAide(int max);
+
+  /// No description provided for @dsFavorisAideComplets.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vos {max} favoris sont choisis : retirez-en un pour en ajouter un autre.'**
+  String dsFavorisAideComplets(int max);
+
+  /// No description provided for @shellChoisirFavoris.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir les favoris'**
+  String get shellChoisirFavoris;
+
+  /// No description provided for @communTermine.
+  ///
+  /// In fr, this message translates to:
+  /// **'Terminé'**
+  String get communTermine;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
