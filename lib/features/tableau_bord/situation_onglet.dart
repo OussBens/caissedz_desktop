@@ -347,86 +347,81 @@ class _VueAnalyseState extends ConsumerState<_VueAnalyse> {
     }
     final lignes = tiers ? _lignesTiers() : _lignes;
     final colonnes = _colonnes(l10n, devise);
-    final cartefiltres = DsCard(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        spacing: 12,
-        children: [
-          if (widget.analyse.periode) DsPeriodeLocalisee(periode: _periode, onChanged: (p) => _maj(() => _periode = p)),
-          Wrap(
-            spacing: 20,
-            runSpacing: 12,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              for (final f in widget.analyse.filtres) SizedBox(width: 280, child: _filtre(l10n, f)),
-              if (_id == 'inv')
-                DsButton(
-                  key: const ValueKey('inventaire_valider'),
-                  libelle: l10n.situationValiderInventaire,
-                  icone: LucideIcons.checkCheck,
-                  variante: DsButtonVariante.doux,
-                  onPressed: _f[FiltreSituation.magasin] == null ? null : _validerInventaire,
-                ),
-              if (peutExporter(ref))
-                DsExportMenu(
-                  total: lignes.length,
-                  onExport: (format, _) => exporterTableau(
-                    context,
-                    ref,
-                    id: 'situation_$_id',
-                    titre: libelleAnalyse(l10n, _id),
-                    colonnes: colonnes,
-                    lignes: lignes,
-                    format: format,
-                  ),
-                ),
-            ],
-          ),
-          if (_id == 'inv' && _f[FiltreSituation.magasin] == null)
-            Text(
+    final inventaire = _id == 'inv';
+    final filtresActifs = [
+      for (final f in widget.analyse.filtres)
+        if (f == FiltreSituation.regrouper ? _regroupement != Regroupement.jour : _f[f] != null) f,
+    ];
+    return DsModuleTable<LigneSituation>(
+      cleTable: ValueKey('situation_table_$_id'),
+      entite: libelleAnalyse(l10n, _id).toLowerCase(),
+      lignes: lignes,
+      colonnes: colonnes,
+      cle: (r) => r['code'] ?? r['periode'] ?? '${r['date']}|${r['caisse']}|${r['type']}',
+      kpis: [DsStatsStrip(items: _stats(l10n, devise, lignes))],
+      periode: widget.analyse.periode ? _periode : null,
+      onPeriode: (p) => _maj(() => _periode = p),
+      periodePleineLargeur: true,
+      filtresOuverts: true,
+      colonnesFiltres: 3,
+      nbFiltresActifs: filtresActifs.length,
+      onReinitialiser: _reinitialiser,
+      filtres: [
+        for (final f in widget.analyse.filtres) _filtre(l10n, f),
+        if (inventaire && _f[FiltreSituation.magasin] == null)
+          DsSpan(
+            child: Text(
               l10n.situationInventaireMagasin,
               style: context.ds.typo.caption.copyWith(color: context.ds.colors.textMuted),
             ),
-        ],
-      ),
-    );
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      spacing: 16,
-      children: [
-        cartefiltres,
-        DsStatsStrip(items: _stats(l10n, devise, lignes)),
-        if (_id == 'mgper' && lignes.isNotEmpty)
-          DsCarteGraphique(
-            titre: l10n.situationMargeParPeriode,
-            icone: LucideIcons.chartColumn,
-            hauteur: 180,
-            child: DsBarChart(
-              miseEnAvant: lignes.length - 1,
-              formater: (x) => formaterMontant(x, devise),
-              donnees: [
-                for (final r in lignes)
-                  DsDonnee(libelle: _periodeCourte(r['periode']! as String), valeur: r['marge']! as double),
-              ],
-            ),
           ),
-        DsCard(
-          padding: EdgeInsets.zero,
-          child: DsDataTable<LigneSituation>(
-            key: ValueKey('situation_table_$_id'),
-            encadre: false,
-            colonnes: colonnes,
-            lignes: lignes,
-            cle: (r) => r['code'] ?? r['periode'] ?? '${r['date']}|${r['caisse']}|${r['type']}',
-            afficherTotaux: colonnes.any((c) => c.total != null),
-            permissions: permissionsSession(ref),
-            messageVide: !_charge && !tiers ? l10n.dsChargement : l10n.dsAucunElement,
-          ),
-        ),
       ],
+      apresFiltres: _id == 'mgper' && lignes.isNotEmpty
+          ? DsCarteGraphique(
+              titre: l10n.situationMargeParPeriode,
+              icone: LucideIcons.chartColumn,
+              hauteur: 180,
+              child: DsBarChart(
+                miseEnAvant: lignes.length - 1,
+                formater: (x) => formaterMontant(x, devise),
+                donnees: [
+                  for (final r in lignes)
+                    DsDonnee(libelle: _periodeCourte(r['periode']! as String), valeur: r['marge']! as double),
+                ],
+              ),
+            )
+          : null,
+      primaire: inventaire
+          ? DsButton(
+              key: const ValueKey('inventaire_valider'),
+              libelle: l10n.situationValiderInventaire,
+              icone: LucideIcons.checkCheck,
+              onPressed: _f[FiltreSituation.magasin] == null ? null : _validerInventaire,
+            )
+          : null,
+      onExport: peutExporter(ref)
+          ? (format, ls) => exporterTableau(
+              context,
+              ref,
+              id: 'situation_$_id',
+              titre: libelleAnalyse(l10n, _id),
+              colonnes: colonnes,
+              lignes: ls,
+              format: format,
+            )
+          : null,
+      afficherTotaux: colonnes.any((c) => c.total != null),
+      permissions: permissionsSession(ref),
+      messageVide: !_charge && !tiers ? l10n.dsChargement : l10n.dsAucunElement,
     );
   }
+
+  /// « Effacer les filtres » : période du mois, aucun filtre, regroupement par jour.
+  void _reinitialiser() => _maj(() {
+    _periode = DsPeriode.calculer('month');
+    _f.clear();
+    _regroupement = Regroupement.jour;
+  });
 
   String _periodeCourte(String p) => p.length == 10 ? '${p.substring(8, 10)}/${p.substring(5, 7)}' : p;
 
@@ -435,6 +430,7 @@ class _VueAnalyseState extends ConsumerState<_VueAnalyse> {
       libelle: libelle,
       largeurLibelle: 80,
       child: DsSelect<String?>(
+        key: ValueKey('situation_filtre_${f.name}'),
         valeur: _f[f],
         options: [null, ...options.map((o) => _code(o))],
         libelle: (code) => code == null ? (tous ?? l10n.tiersTous) : nom(options.firstWhere((o) => _code(o) == code)),

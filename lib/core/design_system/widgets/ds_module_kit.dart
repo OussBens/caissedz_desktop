@@ -130,6 +130,8 @@ class DsModuleTable<T> extends StatefulWidget {
     this.permissions = const {},
     this.messageVide,
     this.cleTable,
+    this.apresFiltres,
+    this.periodePleineLargeur,
   });
 
   /// Nom pluriel des éléments (« produits »), affiché avec le compteur des totaux.
@@ -168,6 +170,12 @@ class DsModuleTable<T> extends StatefulWidget {
   final Set<String> permissions;
   final String? messageVide;
   final Key? cleTable;
+
+  /// Bloc inséré entre le panneau de filtres et la barre de sélection (graphique d'une analyse…).
+  final Widget? apresFiltres;
+
+  /// La période occupe toute la ligne de la grille de filtres (par défaut : à partir de 4 colonnes).
+  final bool? periodePleineLargeur;
 
   @override
   State<DsModuleTable<T>> createState() => _DsModuleTableState<T>();
@@ -243,7 +251,7 @@ class _DsModuleTableState<T> extends State<DsModuleTable<T>> {
           children: [
             if (widget.periode != null)
               // DS (PaniersScreen) : la période occupe toute la ligne quand la grille a 4 colonnes.
-              widget.colonnesFiltres >= 4
+              (widget.periodePleineLargeur ?? widget.colonnesFiltres >= 4)
                   ? DsSpan(
                       child: DsPeriodeLocalisee(periode: widget.periode!, onChanged: widget.onPeriode!),
                     )
@@ -251,6 +259,7 @@ class _DsModuleTableState<T> extends State<DsModuleTable<T>> {
             ...?widget.filtres,
           ],
         ),
+      ?widget.apresFiltres,
       DsSelectionBar(
         nb: _selection.length,
         total: donnees.length,

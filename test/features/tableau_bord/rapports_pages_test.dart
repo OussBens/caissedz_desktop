@@ -112,6 +112,17 @@ void main() {
     expect(ModulesHistorique.module('export', 'Export', 'situation_rcp'), 'situation');
     await clic(tester, find.byKey(const ValueKey('situation_nav_mgp')));
     expect(find.text('25,0 %'), findsWidgets); // (300 − 240) / 240
+    // Même architecture que les autres modules : panneau de filtres, export et réinitialisation.
+    await clic(tester, find.byKey(const ValueKey('situation_nav_rcpr')));
+    expect(find.byType(DsFilterPanel), findsOneWidget);
+    expect(find.byType(DsExportMenu), findsOneWidget);
+    final reinit = find.widgetWithText(DsButton, 'Réinitialiser');
+    expect(tester.widget<DsButton>(reinit).onPressed, isNull);
+    await clic(tester, find.byKey(const ValueKey('situation_filtre_categorie')));
+    await clic(tester, find.text('Sans catégorie').last);
+    expect(tester.widget<DsButton>(reinit).onPressed, isNotNull);
+    await clic(tester, reinit);
+    expect(tester.widget<DsButton>(reinit).onPressed, isNull);
   });
 
   testWidgets('zakat : patrimoine repris du stock, des caisses et des créances', (tester) async {
