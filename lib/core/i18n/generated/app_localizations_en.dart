@@ -4468,7 +4468,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get stkDispoSource => 'Available at source';
+  String get stkDispoSource => 'Qty (from)';
 
   @override
   String stkDisponible(String quantite) {
@@ -7090,4 +7090,37 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get prdPackVendu => 'Already sold: kept for the sales history';
+
+  @override
+  String stkNombreDispo(String quantite) {
+    return 'Pieces: $quantite';
+  }
+
+  @override
+  String get stkListeProduits => 'Product list';
+
+  @override
+  String stkListeProduitsTitre(String code) {
+    return 'Products of $code';
+  }
+
+  @override
+  String get stkAjouterSousSeuil => 'Products below threshold';
+
+  @override
+  String get stkAjouterRuptures => 'Out-of-stock products';
+
+  @override
+  String get stkAucunProduitAjoute => 'No new product to add.';
+
+  @override
+  String stkProduitsAjoutes(int n) {
+    return '$n product(s) added';
+  }
+
+  @override
+  String get entFiltreType => 'Entry type';
+
+  @override
+  String get entTypeNormale => 'Standard entry';
 }

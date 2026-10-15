@@ -687,3 +687,15 @@ Référence : `docs/design/CaisseDZ-DS-v2.2/CaisseDZ-DS-v2.2.html`, `bundle-v2.2
 - ✅ Catégorie, sous-catégorie, remise, pack : « Supprimer » remplace « Annuler » (suppression réelle, une
   transaction, journalisée). Produits d'une catégorie / sous-catégorie supprimée basculés vers Sans catégorie
   (CATE0000 / SC0000) ; remise supprimée retirée des produits ; un pack déjà vendu ne peut pas être supprimé.
+
+## Retours utilisateur — Stock, mouvements, entrées, sorties, transferts, besoins ✅ (2026-10-15)
+
+- ✅ Panneau de filtres : `periodeSeule` (marqueur `DsFinLigne`) place Du / Au / Période rapide seuls sur la 1ʳᵉ
+  ligne ; Mouvements (4 filtres sur la 2ᵉ ligne), Entrées, Sorties, Transferts et Listes de besoins.
+- ✅ Filtres : Stock (Produit, Marque), Mouvements (Produit), Entrées (Type d'entrée rapide / normale, Produit),
+  Sorties (Produit) ; filtre Produit commun (`filtreProduit`).
+- ✅ « Liste des produits » à côté de « Détail » : Entrées, Sorties, Transferts, Listes de besoins.
+- ✅ Sorties et transferts : quand il ne reste plus de pièces (2ᵉ stock) dans le magasin, le nombre n'est plus exigé
+  et la quantité restante peut sortir jusqu'à 0 ; nombre proposé plafonné aux pièces disponibles (erreur sinon).
+- ✅ Nouveau transfert : colonnes Stock total et Qté (Depuis).
+- ✅ Nouvelle liste de besoins : boutons « Produits sous le seuil » et « Produits en rupture » (quantité suggérée).

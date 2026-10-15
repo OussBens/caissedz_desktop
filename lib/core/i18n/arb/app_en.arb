@@ -1590,7 +1590,7 @@
   "stkDescriptionMagasins": "Stock locations, transfers and assignments",
   "stkDescriptionSorties": "Non-sale stock exits: breakage, expired, loss, internal use, donation",
   "stkDescriptionStock": "Quantities by store · {n} active stores",
-  "stkDispoSource": "Available at source",
+  "stkDispoSource": "Qty (from)",
   "stkDisponible": "Available: {quantite}",
   "stkDisponibleEtat": "Available",
   "stkDistribuer": "Distribute",
@@ -2420,5 +2420,14 @@
   "prdFiltreQuantite": "Quantity",
   "prdToastSuppression": "Deleted",
   "prdVersSansCategorie": "{n} product(s) → No category",
-  "prdPackVendu": "Already sold: kept for the sales history"
+  "prdPackVendu": "Already sold: kept for the sales history",
+  "stkNombreDispo": "Pieces: {quantite}",
+  "stkListeProduits": "Product list",
+  "stkListeProduitsTitre": "Products of {code}",
+  "stkAjouterSousSeuil": "Products below threshold",
+  "stkAjouterRuptures": "Out-of-stock products",
+  "stkAucunProduitAjoute": "No new product to add.",
+  "stkProduitsAjoutes": "{n} product(s) added",
+  "entFiltreType": "Entry type",
+  "entTypeNormale": "Standard entry"
 }

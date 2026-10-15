@@ -2383,7 +2383,7 @@
       }
     }
   },
-  "stkDispoSource": "Dispo. source",
+  "stkDispoSource": "Qté (Depuis)",
   "stkDisponible": "Disponible : {quantite}",
   "@stkDisponible": {
     "placeholders": {
@@ -3676,5 +3676,35 @@
       }
     }
   },
-  "prdPackVendu": "Déjà vendu : conservé pour l'historique des ventes"
+  "prdPackVendu": "Déjà vendu : conservé pour l'historique des ventes",
+  "stkNombreDispo": "Pièces : {quantite}",
+  "@stkNombreDispo": {
+    "placeholders": {
+      "quantite": {
+        "type": "String"
+      }
+    }
+  },
+  "stkListeProduits": "Liste des produits",
+  "stkListeProduitsTitre": "Produits de {code}",
+  "@stkListeProduitsTitre": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "stkAjouterSousSeuil": "Produits sous le seuil",
+  "stkAjouterRuptures": "Produits en rupture",
+  "stkAucunProduitAjoute": "Aucun nouveau produit à ajouter.",
+  "stkProduitsAjoutes": "{n} produit(s) ajouté(s)",
+  "@stkProduitsAjoutes": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "entFiltreType": "Type d'entrée",
+  "entTypeNormale": "Entrée normale"
 }

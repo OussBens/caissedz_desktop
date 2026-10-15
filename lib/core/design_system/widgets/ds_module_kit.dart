@@ -119,6 +119,7 @@ class DsModuleTable<T> extends StatefulWidget {
     this.onReinitialiser,
     this.colonnesFiltres = 3,
     this.filtresOuverts = false,
+    this.periodeSeule = false,
     this.periode,
     this.onPeriode,
     this.indiceRecherche,
@@ -150,6 +151,9 @@ class DsModuleTable<T> extends StatefulWidget {
   final VoidCallback? onReinitialiser;
   final int colonnesFiltres;
   final bool filtresOuverts;
+
+  /// Période seule sur la 1ʳᵉ ligne du panneau de filtres, les autres filtres à partir de la 2ᵉ.
+  final bool periodeSeule;
 
   /// Période du filtre (absente : pas de filtre de période).
   final DsPeriode? periode;
@@ -263,6 +267,7 @@ class _DsModuleTableState<T> extends State<DsModuleTable<T>> {
           children: [
             // Du, Au et Période rapide occupent chacun une cellule : alignés sur les autres filtres.
             if (widget.periode != null) ...DsPeriodeLocalisee.champs(context, widget.periode!, widget.onPeriode!),
+            if (widget.periode != null && widget.periodeSeule) const DsFinLigne(),
             ...?widget.filtres,
           ],
         ),
@@ -654,6 +659,14 @@ class DsSpan extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => child;
+}
+
+/// Fin de ligne dans un [DsFilterPanel] : les cellules suivantes commencent sur une nouvelle ligne.
+class DsFinLigne extends StatelessWidget {
+  const DsFinLigne({super.key});
+
+  @override
+  Widget build(BuildContext context) => const SizedBox.shrink();
 }
 
 /// Détail générique d'une ligne de tableau : chaque colonne (masquées comprises) en libellé / valeur, sur deux

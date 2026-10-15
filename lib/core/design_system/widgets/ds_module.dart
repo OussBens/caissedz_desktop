@@ -6,7 +6,7 @@ import '../tokens/ds_theme.dart';
 import 'ds_button.dart';
 import 'ds_dialog.dart';
 import 'ds_forms.dart' show DsLargeurLibelle;
-import 'ds_module_kit.dart' show DsSpan;
+import 'ds_module_kit.dart' show DsFinLigne, DsSpan;
 import 'ds_page.dart';
 
 /// Panneau de filtres repliable (`FilterPanel`) : en-tête 52 px, compteur de filtres actifs,
@@ -154,21 +154,24 @@ class _DsFilterPanelState extends State<DsFilterPanel> {
                             final n = widget.colonnes;
                             final largeur = (contraintes.maxWidth - gapX * (n - 1)) / n;
                             // Même largeur de libellé dans toutes les cellules : colonnes alignées.
+                            double largeurDe(int span) => largeur * span + gapX * (span - 1);
+                            // Position dans la ligne courante : un [DsFinLigne] complète la ligne par du vide.
+                            var position = 0;
+                            final cellules = <Widget>[];
+                            for (final ch in widget.children) {
+                              if (ch is DsFinLigne) {
+                                if (position > 0) cellules.add(SizedBox(width: largeurDe(n - position) - .5));
+                                position = 0;
+                                continue;
+                              }
+                              final span = ch is DsSpan ? ch.span.clamp(1, n) : 1;
+                              if (position + span > n) position = 0;
+                              position = (position + span) % n;
+                              cellules.add(SizedBox(width: largeurDe(span), child: ch));
+                            }
                             return DsLargeurLibelle(
-                              largeur: (largeur * .36).clamp(56.0, 110.0),
-                              child: Wrap(
-                                spacing: gapX,
-                                runSpacing: gapY,
-                                children: [
-                                  for (final ch in widget.children)
-                                    SizedBox(
-                                      width: ch is DsSpan
-                                          ? largeur * ch.span.clamp(1, n) + gapX * (ch.span.clamp(1, n) - 1)
-                                          : largeur,
-                                      child: ch,
-                                    ),
-                                ],
-                              ),
+                              largeur: (largeur * (n >= 4 ? .30 : .36)).clamp(56.0, 110.0),
+                              child: Wrap(spacing: gapX, runSpacing: gapY, children: cellules),
                             );
                           },
                         ),

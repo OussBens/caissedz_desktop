@@ -4464,7 +4464,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get stkDispoSource => 'المتاح بالمصدر';
+  String get stkDispoSource => 'الكمية (من)';
 
   @override
   String stkDisponible(String quantite) {
@@ -7078,4 +7078,37 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get prdPackVendu => 'مُباع سابقًا: يُحتفظ به لسجل المبيعات';
+
+  @override
+  String stkNombreDispo(String quantite) {
+    return 'القطع: $quantite';
+  }
+
+  @override
+  String get stkListeProduits => 'قائمة المنتجات';
+
+  @override
+  String stkListeProduitsTitre(String code) {
+    return 'منتجات $code';
+  }
+
+  @override
+  String get stkAjouterSousSeuil => 'المنتجات تحت الحد';
+
+  @override
+  String get stkAjouterRuptures => 'المنتجات النافدة';
+
+  @override
+  String get stkAucunProduitAjoute => 'لا توجد منتجات جديدة للإضافة.';
+
+  @override
+  String stkProduitsAjoutes(int n) {
+    return 'تمت إضافة $n منتج';
+  }
+
+  @override
+  String get entFiltreType => 'نوع الإدخال';
+
+  @override
+  String get entTypeNormale => 'إدخال عادي';
 }

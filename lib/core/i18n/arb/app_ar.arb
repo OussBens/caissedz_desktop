@@ -1590,7 +1590,7 @@
   "stkDescriptionMagasins": "نقاط المخزون، التحويلات والارتباطات",
   "stkDescriptionSorties": "إخراجات المخزون خارج البيع: كسر، منتهي، ضياع، استهلاك داخلي، هبة",
   "stkDescriptionStock": "الكميات حسب المخزن · {n} مخازن نشطة",
-  "stkDispoSource": "المتاح بالمصدر",
+  "stkDispoSource": "الكمية (من)",
   "stkDisponible": "المتاح: {quantite}",
   "stkDisponibleEtat": "متوفر",
   "stkDistribuer": "توزيع",
@@ -2420,5 +2420,14 @@
   "prdFiltreQuantite": "الكمية",
   "prdToastSuppression": "تم الحذف",
   "prdVersSansCategorie": "{n} منتج(ات) ← بدون فئة",
-  "prdPackVendu": "مُباع سابقًا: يُحتفظ به لسجل المبيعات"
+  "prdPackVendu": "مُباع سابقًا: يُحتفظ به لسجل المبيعات",
+  "stkNombreDispo": "القطع: {quantite}",
+  "stkListeProduits": "قائمة المنتجات",
+  "stkListeProduitsTitre": "منتجات {code}",
+  "stkAjouterSousSeuil": "المنتجات تحت الحد",
+  "stkAjouterRuptures": "المنتجات النافدة",
+  "stkAucunProduitAjoute": "لا توجد منتجات جديدة للإضافة.",
+  "stkProduitsAjoutes": "تمت إضافة {n} منتج",
+  "entFiltreType": "نوع الإدخال",
+  "entTypeNormale": "إدخال عادي"
 }

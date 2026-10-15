@@ -41,6 +41,8 @@ class _EntreesPageState extends ConsumerState<EntreesPage> {
   String? _fournisseur;
   String? _paiement;
   String? _magasin;
+  String? _typeEntree;
+  String? _produit;
   String? _statutBon;
   String? _fournisseurBon;
   String? _entreeBon;
@@ -75,7 +77,9 @@ class _EntreesPageState extends ConsumerState<EntreesPage> {
               dansPeriode(a.date, _periode) &&
               (_fournisseur == null || a.fournisseurCode == _fournisseur) &&
               (_paiement == null || a.statutPaiement == _paiement) &&
-              (_magasin == null || a.magasinCode == _magasin),
+              (_magasin == null || a.magasinCode == _magasin) &&
+              (_typeEntree == null || (a.source == SourcesAchat.rapide) == (_typeEntree == 'rapide')) &&
+              (_produit == null || a.lignes.any((l) => l.produitCode == _produit)),
         )
         .toList();
     final actives = lignes.where((a) => a.actif).toList();
@@ -218,16 +222,33 @@ class _EntreesPageState extends ConsumerState<EntreesPage> {
       ],
       periode: _periode,
       onPeriode: (p) => setState(() => _periode = p),
+      periodeSeule: true,
       indiceRecherche: l10n.entRecherche,
       texteRecherche: (a) => '${a.code} ${nomsFrn[a.fournisseurCode] ?? ''} ${a.reference ?? ''}',
-      nbFiltresActifs: [_fournisseur, _paiement, _magasin].where((f) => f != null).length,
+      nbFiltresActifs: [_typeEntree, _fournisseur, _paiement, _magasin, _produit].where((f) => f != null).length,
       onReinitialiser: () => setState(() {
+        _typeEntree = null;
         _fournisseur = null;
         _paiement = null;
         _magasin = null;
+        _produit = null;
         _periode = DsPeriode.calculer('month');
       }),
       filtres: [
+        DsFormRow(
+          libelle: l10n.entFiltreType,
+          child: DsSelect<String?>(
+            cle: const ValueKey('entrees_filtre_type'),
+            valeur: _typeEntree,
+            options: const [null, 'normale', 'rapide'],
+            libelle: (t) => switch (t) {
+              null => l10n.retoursTous,
+              'rapide' => l10n.entRapideTitre,
+              _ => l10n.entTypeNormale,
+            },
+            onChanged: (v) => setState(() => _typeEntree = v),
+          ),
+        ),
         DsFormRow(
           libelle: l10n.achatFournisseur,
           largeurLibelle: 90,
@@ -261,6 +282,13 @@ class _EntreesPageState extends ConsumerState<EntreesPage> {
             onChanged: (v) => setState(() => _magasin = v),
           ),
         ),
+        filtreProduit(
+          context,
+          ref,
+          cle: const ValueKey('entrees_filtre_produit'),
+          valeur: _produit,
+          onChanged: (v) => setState(() => _produit = v),
+        ),
       ],
       onExport: peutExporter(ref)
           ? (format, as) => exporterTableau(
@@ -281,6 +309,13 @@ class _EntreesPageState extends ConsumerState<EntreesPage> {
           regle: DsRegleSelection.une,
           detail: true,
           onPressed: (choix, _) => afficherDetailEntree(context, ref, choix.first),
+        ),
+        DsActionModule(
+          cle: const ValueKey('entrees_liste_produits'),
+          libelle: l10n.stkListeProduits,
+          icone: LucideIcons.listOrdered,
+          regle: DsRegleSelection.une,
+          onPressed: (choix, _) => afficherProduitsEntree(context, ref, choix.first),
         ),
         DsActionModule(
           cle: const ValueKey('entrees_modifier'),

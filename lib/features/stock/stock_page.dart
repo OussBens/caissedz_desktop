@@ -48,7 +48,10 @@ class _StockPageState extends ConsumerState<StockPage> {
   String? _magasin;
   String? _categorie;
   String? _etat;
+  String? _produit;
+  String? _marque;
   String? _type;
+  String? _produitMvt;
   String? _magasinMvt;
   String? _utilisateur;
   DsPeriode _periode = DsPeriode.calculer('month');
@@ -103,7 +106,9 @@ class _StockPageState extends ConsumerState<StockPage> {
         .where(
           (l) =>
               (_categorie == null || l.produit.categorieCode == _categorie) &&
-              (_etat == null || (_etat == 'actif' ? l.etat == 'actif' : l.etat == _etat)),
+              (_etat == null || (_etat == 'actif' ? l.etat == 'actif' : l.etat == _etat)) &&
+              (_produit == null || l.produit.code == _produit) &&
+              (_marque == null || (l.produit.marque ?? '').trim() == _marque),
         )
         .toList();
     double valeurAchat(_LigneStock l) => l.total * l.produit.prixAchat;
@@ -242,6 +247,10 @@ class _StockPageState extends ConsumerState<StockPage> {
         cellule: (_, l) => Text('${formaterNombre(l.produit.tvaPct)} %'),
       ),
     ];
+    final marques = {
+      for (final p in produits)
+        if ((p.marque ?? '').trim().isNotEmpty) p.marque!.trim(),
+    }.toList()..sort();
     final sousSeuil = toutes.where((l) => l.etat == 'rupture' || l.etat == 'seuil').length;
     final achat = ref.watch(sessionProvider)?.a(Permission.voirPrixAchat) ?? false;
     return DsModuleTable<_LigneStock>(
@@ -276,11 +285,13 @@ class _StockPageState extends ConsumerState<StockPage> {
       ],
       indiceRecherche: l10n.prdRechercheProduits,
       texteRecherche: (l) => '${l.produit.code} ${l.produit.designation} ${l.produit.codeBarres ?? ''}',
-      nbFiltresActifs: [_magasin, _categorie, _etat].where((f) => f != null).length,
+      nbFiltresActifs: [_magasin, _categorie, _etat, _produit, _marque].where((f) => f != null).length,
       onReinitialiser: () => setState(() {
         _magasin = null;
         _categorie = null;
         _etat = null;
+        _produit = null;
+        _marque = null;
       }),
       filtres: [
         DsFormRow(
@@ -320,6 +331,23 @@ class _StockPageState extends ConsumerState<StockPage> {
               _ => libelleStatut(l10n, e),
             },
             onChanged: (v) => setState(() => _etat = v),
+          ),
+        ),
+        filtreProduit(
+          context,
+          ref,
+          cle: const ValueKey('stock_filtre_produit'),
+          valeur: _produit,
+          onChanged: (v) => setState(() => _produit = v),
+        ),
+        DsFormRow(
+          libelle: l10n.prdMarque,
+          child: DsSelect<String?>(
+            cle: const ValueKey('stock_filtre_marque'),
+            valeur: _marque,
+            options: [null, ...marques],
+            libelle: (m) => m ?? l10n.prdToutes,
+            onChanged: (v) => setState(() => _marque = v),
           ),
         ),
       ],
@@ -376,7 +404,8 @@ class _StockPageState extends ConsumerState<StockPage> {
               dansPeriode(m.date, _periode) &&
               (_type == null || m.type == _type) &&
               (_magasinMvt == null || m.magasinCode == _magasinMvt) &&
-              (_utilisateur == null || m.utilisateurCode == _utilisateur),
+              (_utilisateur == null || m.utilisateurCode == _utilisateur) &&
+              (_produitMvt == null || m.produitCode == _produitMvt),
         )
         .toList();
     String nomProduit(MouvementStock m) => produits[m.produitCode]?.designation ?? m.produitCode;
@@ -447,13 +476,16 @@ class _StockPageState extends ConsumerState<StockPage> {
       filtresOuverts: true,
       periode: _periode,
       onPeriode: (p) => setState(() => _periode = p),
+      periodeSeule: true,
+      colonnesFiltres: 4,
       indiceRecherche: l10n.stkRechercheMouvement,
       texteRecherche: (m) => '${m.referenceCode ?? ''} ${nomProduit(m)}',
-      nbFiltresActifs: [_type, _magasinMvt, _utilisateur].where((f) => f != null).length,
+      nbFiltresActifs: [_type, _magasinMvt, _utilisateur, _produitMvt].where((f) => f != null).length,
       onReinitialiser: () => setState(() {
         _type = null;
         _magasinMvt = null;
         _utilisateur = null;
+        _produitMvt = null;
         _periode = DsPeriode.calculer('month');
       }),
       filtres: [
@@ -498,6 +530,13 @@ class _StockPageState extends ConsumerState<StockPage> {
             recherche: rechercheListe(context, ref, ListeMetier.utilisateur),
             onChanged: (v) => setState(() => _utilisateur = v),
           ),
+        ),
+        filtreProduit(
+          context,
+          ref,
+          cle: const ValueKey('mouvement_filtre_produit'),
+          valeur: _produitMvt,
+          onChanged: (v) => setState(() => _produitMvt = v),
         ),
       ],
       onExport: peutExporter(ref)

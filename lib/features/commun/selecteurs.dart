@@ -6,6 +6,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
+import '../../domain/models/produit.dart';
 import '../../domain/models/vente.dart';
 import '../../domain/referentiel/referentiel.dart';
 import '../gestion_caisse/gestion_caisse_providers.dart';
@@ -43,6 +44,34 @@ Future<String?> Function(List<String?> options, String? valeur) rechercheListe(
 ) =>
     (options, valeur) =>
         choisirDansListe(context, ref, liste, codes: options.whereType<String>().toSet(), valeur: valeur);
+
+/// Filtre « Produit » d'un panneau de filtres : liste déroulante des produits stockés (« Tous » en tête) avec
+/// le bouton de recherche dans la liste.
+Widget filtreProduit(
+  BuildContext context,
+  WidgetRef ref, {
+  required String? valeur,
+  required ValueChanged<String?> onChanged,
+  Key? cle,
+}) {
+  final l10n = AppLocalizations.of(context);
+  final produits = [
+    for (final p in ref.watch(produitsProvider).value ?? const <Produit>[])
+      if (!p.service) p,
+  ];
+  final noms = {for (final p in produits) p.code: p.designation};
+  return DsFormRow(
+    libelle: l10n.dsPosProduit,
+    child: DsSelect<String?>(
+      cle: cle,
+      valeur: valeur,
+      options: [null, ...noms.keys],
+      libelle: (c) => c == null ? l10n.retoursTous : (noms[c] ?? c),
+      recherche: rechercheListe(context, ref, ListeMetier.produit),
+      onChanged: onChanged,
+    ),
+  );
+}
 
 /// Dialog de sélection d'une liste métier : recherche, filtres propres à la liste, affichage liste ou cartes
 /// (produits, clients, fournisseurs, ventes). [codes] restreint les éléments proposés. Retourne le code choisi.

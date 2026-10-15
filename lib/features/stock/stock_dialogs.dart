@@ -15,6 +15,7 @@ import '../../domain/permissions.dart';
 import '../../domain/referentiel/referentiel.dart';
 import '../commun/doc_form.dart';
 import '../commun/export_module.dart';
+import '../commun/liste_produits_dialog.dart';
 import '../commun/selecteurs.dart';
 import '../commun/statuts.dart';
 import '../historique/historique_providers.dart';
@@ -384,6 +385,16 @@ class _SortieFormState extends ConsumerState<_SortieForm> {
     return (stocks[produit]?[_magasin] ?? 0) + deja;
   }
 
+  /// Pièces disponibles (2ᵉ stock) dans le magasin, en comptant celles que la sortie modifiée a déjà retirées.
+  double _dispoNombre(LigneDoc l) {
+    final s = widget.sortie;
+    final nombres = ref.read(nombresParMagasinProvider).value ?? const {};
+    final deja = s != null && s.magasinCode == _magasin
+        ? s.lignes.where((x) => x.produitCode == l.produit.code).fold(0.0, (a, x) => a + x.nombre)
+        : 0.0;
+    return (nombres[l.produit.code]?[_magasin] ?? 0) + deja;
+  }
+
   Future<bool> _enregistrer() async {
     final l10n = AppLocalizations.of(context);
     final s = ref.read(stockServiceProvider);
@@ -417,6 +428,7 @@ class _SortieFormState extends ConsumerState<_SortieForm> {
     final l10n = AppLocalizations.of(context);
     final devise = ref.watch(deviseProvider);
     final stocks = ref.watch(stocksParMagasinProvider).value ?? const {};
+    ref.watch(nombresParMagasinProvider);
     final magasins = (ref.watch(magasinsProvider).value ?? const <Magasin>[])
         .where((m) => m.actif || m.code == _magasin)
         .toList();
@@ -431,6 +443,7 @@ class _SortieFormState extends ConsumerState<_SortieForm> {
       description: widget.sortie?.code ?? l10n.stkSortieDescription,
       cleEnregistrer: const ValueKey('sortie_enregistrer'),
       saisieNombre: true,
+      nombreDisponible: _dispoNombre,
       lignes: _lignes,
       onLignes: (l) => setState(() => _lignes = l),
       erreurs: erreurs,
@@ -721,6 +734,16 @@ class _TransfertFormState extends ConsumerState<_TransfertForm> {
     return (stocks[produit]?[_source] ?? 0) + deja;
   }
 
+  /// Pièces disponibles (2ᵉ stock) dans le magasin source, transfert modifié compris.
+  double _dispoNombre(LigneDoc l) {
+    final t = widget.transfert;
+    final nombres = ref.read(nombresParMagasinProvider).value ?? const {};
+    final deja = t != null && t.magasinSource == _source
+        ? t.lignes.where((x) => x.produitCode == l.produit.code).fold(0.0, (a, x) => a + x.nombre)
+        : 0.0;
+    return (nombres[l.produit.code]?[_source] ?? 0) + deja;
+  }
+
   Future<bool> _enregistrer() async {
     final l10n = AppLocalizations.of(context);
     final s = ref.read(stockServiceProvider);
@@ -760,8 +783,10 @@ class _TransfertFormState extends ConsumerState<_TransfertForm> {
     final l10n = AppLocalizations.of(context);
     final devise = ref.watch(deviseProvider);
     final stocks = ref.watch(stocksParMagasinProvider).value ?? const {};
+    ref.watch(nombresParMagasinProvider);
     final magasins = (ref.watch(magasinsProvider).value ?? const <Magasin>[]).where((m) => m.actif).toList();
     final meme = _source == _destination;
+    double total(String produit) => (stocks[produit]?.values ?? const <double>[]).fold(0.0, (a, b) => a + b);
     final erreurs = <Object, Map<String, String>>{
       for (final l in _lignes)
         if (l.quantite > _dispo(l.produit.code, stocks) + 1e-9)
@@ -775,6 +800,7 @@ class _TransfertFormState extends ConsumerState<_TransfertForm> {
       cleEnregistrer: const ValueKey('transfert_enregistrer'),
       libelleEnregistrer: l10n.stkValiderTransfert,
       saisieNombre: true,
+      nombreDisponible: _dispoNombre,
       lignes: _lignes,
       onLignes: (l) => setState(() => _lignes = l),
       erreurs: erreurs,
@@ -791,10 +817,17 @@ class _TransfertFormState extends ConsumerState<_TransfertForm> {
         ),
         DsColonneLigne(id: 'nom', libelle: l10n.dsPosProduit, valeur: (l) => l.produit.designation, fort: true),
         DsColonneLigne(
+          id: 'total',
+          libelle: l10n.stkStockTotal,
+          numerique: true,
+          largeur: 120,
+          valeur: (l) => formaterNombre(total(l.produit.code)),
+        ),
+        DsColonneLigne(
           id: 'stock',
           libelle: l10n.stkDispoSource,
           numerique: true,
-          largeur: 110,
+          largeur: 120,
           valeur: (l) => formaterNombre(_dispo(l.produit.code, stocks)),
         ),
         DsColonneLigne(
@@ -1365,6 +1398,38 @@ class _BesoinFormState extends ConsumerState<_BesoinForm> {
     return ok;
   }
 
+  /// Ajoute d'un coup les produits dont l'état de stock est [etat] (`seuil` : sous le seuil, `rupture`), avec la
+  /// quantité à commander suggérée ; les produits déjà dans la liste sont ignorés.
+  void _ajouterParEtat(String etat) {
+    final l10n = AppLocalizations.of(context);
+    final produits = ref.read(produitsProvider).value ?? const <Produit>[];
+    final stocks = ref.read(stocksProduitsProvider).value ?? const <String, double>{};
+    final parametres = ref.read(parametresVenteProvider).value;
+    final seuilGlobal = parametres?.seuilStockGlobal ?? 5;
+    final presents = {for (final l in _lignes) l.produit.code};
+    final nouvelles = [
+      for (final p in produits)
+        if (!p.service && !presents.contains(p.code) && etatStockProduit(p, stocks[p.code] ?? 0, seuilGlobal) == etat)
+          LigneDoc(
+            produit: p,
+            quantite: StockService.suggestion(
+              stocks[p.code] ?? 0,
+              seuilDe(p, seuilGlobal),
+              maximum: parametres?.seuilStockMax ?? 0,
+            ),
+          ),
+    ];
+    if (nouvelles.isEmpty) {
+      afficherToast(context, titre: l10n.stkAucunProduitAjoute);
+      return;
+    }
+    setState(() {
+      _lignes = [..._lignes, ...nouvelles];
+      _fournisseur ??= nouvelles.map((l) => l.produit.fournisseurCode).nonNulls.firstOrNull;
+    });
+    afficherToast(context, titre: l10n.stkProduitsAjoutes(nouvelles.length), ton: DsToastTon.succes);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -1383,6 +1448,24 @@ class _BesoinFormState extends ConsumerState<_BesoinForm> {
           : '${b.code} · ${fournisseurs.where((f) => f.code == b.fournisseurCode).firstOrNull?.nom ?? b.fournisseurCode}',
       cleEnregistrer: const ValueKey('besoin_enregistrer'),
       libelleEnregistrer: l10n.stkEnregistrerListe,
+      actionsLignes: [
+        DsButton(
+          key: const ValueKey('besoin_ajouter_seuil'),
+          libelle: l10n.stkAjouterSousSeuil,
+          icone: LucideIcons.triangleAlert,
+          taille: DsButtonTaille.sm,
+          variante: DsButtonVariante.secondaire,
+          onPressed: () => _ajouterParEtat('seuil'),
+        ),
+        DsButton(
+          key: const ValueKey('besoin_ajouter_rupture'),
+          libelle: l10n.stkAjouterRuptures,
+          icone: LucideIcons.packageX,
+          taille: DsButtonTaille.sm,
+          variante: DsButtonVariante.secondaire,
+          onPressed: () => _ajouterParEtat('rupture'),
+        ),
+      ],
       lignes: _lignes,
       onLignes: (l) => setState(() => _lignes = l),
       peutEnregistrer: _fournisseur != null && _date != null && _lignes.every((l) => l.quantite > 0),
@@ -1591,4 +1674,133 @@ Future<void> annulerBesoins(BuildContext context, WidgetRef ref, List<Besoin> ch
   );
   effacer();
   if (ok && context.mounted) afficherToast(context, titre: l10n.stkToastListesAnnulees);
+}
+
+/// Liste des produits d'un document de stock (« Liste des produits » à côté de « Détail ») : quantités, pièces
+/// (2ᵉ stock) si saisies, prix et montant quand [prix].
+Future<void> _listeProduitsStock(
+  BuildContext context,
+  WidgetRef ref, {
+  required String code,
+  required String description,
+  required List<LigneStock> lignes,
+  required bool prix,
+  String? libelleQte,
+  String? libellePrix,
+}) async {
+  final l10n = AppLocalizations.of(context);
+  final devise = ref.read(deviseProvider);
+  final produits = {for (final p in await ref.read(produitsProvider.future)) p.code: p};
+  if (!context.mounted) return;
+  String da(double v) => formaterMontant(v, devise);
+  return afficherListeProduits<LigneStock>(
+    context,
+    code: code,
+    description: description,
+    lignes: lignes,
+    cle: (l) => l.produitCode,
+    colonnes: [
+      DsColonne(id: 'code', libelle: l10n.produitsColCode, valeur: (l) => l.produitCode, attenue: true),
+      DsColonne(
+        id: 'nom',
+        libelle: l10n.dsPosProduit,
+        valeur: (l) => produits[l.produitCode]?.designation ?? l.produitCode,
+        fort: true,
+        flex: 3,
+      ),
+      DsColonne(
+        id: 'qte',
+        libelle: libelleQte ?? l10n.stkQte,
+        numerique: true,
+        valeur: (l) => l.quantite,
+        cellule: (_, l) => Text(formaterNombre(l.quantite)),
+        total: (ls) => formaterNombre(ls.fold(0.0, (a, l) => a + l.quantite)),
+      ),
+      if (lignes.any((l) => l.nombre > 0))
+        DsColonne(
+          id: 'nombre',
+          libelle: l10n.stkNombre,
+          numerique: true,
+          valeur: (l) => l.nombre,
+          cellule: (_, l) => Text(formaterNombre(l.nombre)),
+          total: (ls) => formaterNombre(ls.fold(0.0, (a, l) => a + l.nombre)),
+        ),
+      if (prix) ...[
+        DsColonne(
+          id: 'prix',
+          libelle: libellePrix ?? l10n.produitsColPrixAchat,
+          numerique: true,
+          valeur: (l) => l.prix,
+          cellule: (_, l) => Text(da(l.prix)),
+        ),
+        DsColonne(
+          id: 'montant',
+          libelle: l10n.retoursMontant,
+          numerique: true,
+          fort: true,
+          valeur: (l) => l.montant,
+          cellule: (_, l) => Text(da(l.montant)),
+          total: (ls) => da(ls.fold(0.0, (a, l) => a + l.montant)),
+        ),
+      ],
+    ],
+  );
+}
+
+/// « Liste des produits » d'une sortie (prix d'achat figé, si l'utilisateur voit les prix d'achat).
+Future<void> afficherProduitsSortie(BuildContext context, WidgetRef ref, SortieStock s) async {
+  final l10n = AppLocalizations.of(context);
+  final noms = _nomsMagasins(await ref.read(magasinsProvider.future));
+  if (!context.mounted) return;
+  return _listeProduitsStock(
+    context,
+    ref,
+    code: s.code,
+    description:
+        '${formatDate.format(s.date)} · ${libelleMotif(l10n, s.motif)} · ${noms[s.magasinCode] ?? s.magasinCode}',
+    lignes: s.lignes,
+    prix: voitPrixAchat(ref),
+  );
+}
+
+/// « Liste des produits » d'un transfert (valorisé au prix d'achat du catalogue).
+Future<void> afficherProduitsTransfert(BuildContext context, WidgetRef ref, TransfertStock t) async {
+  final noms = _nomsMagasins(await ref.read(magasinsProvider.future));
+  final produits = {for (final p in await ref.read(produitsProvider.future)) p.code: p};
+  if (!context.mounted) return;
+  return _listeProduitsStock(
+    context,
+    ref,
+    code: t.code,
+    description:
+        '${formatDate.format(t.date)} · ${noms[t.magasinSource] ?? t.magasinSource} → '
+        '${noms[t.magasinDestination] ?? t.magasinDestination}',
+    lignes: [
+      for (final l in t.lignes)
+        LigneStock(
+          produitCode: l.produitCode,
+          quantite: l.quantite,
+          nombre: l.nombre,
+          prix: produits[l.produitCode]?.prixAchat ?? 0,
+        ),
+    ],
+    prix: voitPrixAchat(ref),
+  );
+}
+
+/// « Liste des produits » d'une liste de besoins (quantités à commander, prix estimés).
+Future<void> afficherProduitsBesoin(BuildContext context, WidgetRef ref, Besoin b) async {
+  final l10n = AppLocalizations.of(context);
+  final fournisseurs = {for (final f in await ref.read(fournisseursProvider.future)) f.code: f.nom};
+  if (!context.mounted) return;
+  return _listeProduitsStock(
+    context,
+    ref,
+    code: b.code,
+    description: '${formatDate.format(b.date)} · ${fournisseurs[b.fournisseurCode] ?? b.fournisseurCode}',
+    lignes: b.lignes,
+    prix: true,
+    libelleQte: l10n.stkACommander,
+    libellePrix: l10n.stkPrixEstime,
+  );
 }

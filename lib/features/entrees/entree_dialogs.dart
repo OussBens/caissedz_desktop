@@ -17,6 +17,7 @@ import '../caisse/caisse_dialogs.dart';
 import '../caisse/pos_dialogs.dart';
 import '../commun/doc_form.dart';
 import '../commun/export_module.dart';
+import '../commun/liste_produits_dialog.dart';
 import '../commun/selecteurs.dart';
 import '../commun/statuts.dart';
 import '../gestion_caisse/gestion_caisse_providers.dart';
@@ -1085,4 +1086,61 @@ Future<void> annulerEntrees(BuildContext context, WidgetRef ref, List<Achat> cho
   if (ok && context.mounted) {
     afficherToast(context, titre: l10n.entToastAnnulees, description: l10n.entToastAnnuleesDetail);
   }
+}
+
+/// « Liste des produits » d'une entrée : quantités, pièces (2ᵉ stock) si saisies, prix d'achat et total si
+/// l'utilisateur voit les prix d'achat.
+Future<void> afficherProduitsEntree(BuildContext context, WidgetRef ref, Achat a) async {
+  final l10n = AppLocalizations.of(context);
+  final devise = ref.read(deviseProvider);
+  final fournisseurs = {for (final f in await ref.read(fournisseursProvider.future)) f.code: f.nom};
+  if (!context.mounted) return;
+  final achat = voitPrixAchat(ref);
+  String da(double v) => formaterMontant(v, devise);
+  return afficherListeProduits<AchatLigne>(
+    context,
+    code: a.code,
+    description: '${formatDate.format(a.date)} · ${fournisseurs[a.fournisseurCode] ?? a.fournisseurCode}',
+    lignes: a.lignes,
+    cle: (l) => l.produitCode,
+    colonnes: [
+      DsColonne(id: 'code', libelle: l10n.produitsColCode, valeur: (l) => l.produitCode, attenue: true),
+      DsColonne(id: 'nom', libelle: l10n.dsPosProduit, valeur: (l) => l.designation, fort: true, flex: 3),
+      DsColonne(
+        id: 'qte',
+        libelle: l10n.stkQte,
+        numerique: true,
+        valeur: (l) => l.quantite,
+        cellule: (_, l) => Text(formaterNombre(l.quantite)),
+        total: (ls) => formaterNombre(ls.fold(0.0, (x, l) => x + l.quantite)),
+      ),
+      if (a.lignes.any((l) => l.nombre > 0))
+        DsColonne(
+          id: 'nombre',
+          libelle: l10n.stkNombre,
+          numerique: true,
+          valeur: (l) => l.nombre,
+          cellule: (_, l) => Text(formaterNombre(l.nombre)),
+          total: (ls) => formaterNombre(ls.fold(0.0, (x, l) => x + l.nombre)),
+        ),
+      if (achat) ...[
+        DsColonne(
+          id: 'prix',
+          libelle: l10n.produitsColPrixAchat,
+          numerique: true,
+          valeur: (l) => l.prixAchat,
+          cellule: (_, l) => Text(da(l.prixAchat)),
+        ),
+        DsColonne(
+          id: 'total',
+          libelle: l10n.communTotal,
+          numerique: true,
+          fort: true,
+          valeur: (l) => l.total,
+          cellule: (_, l) => Text(da(l.total)),
+          total: (ls) => da(ls.fold(0.0, (x, l) => x + l.total)),
+        ),
+      ],
+    ],
+  );
 }

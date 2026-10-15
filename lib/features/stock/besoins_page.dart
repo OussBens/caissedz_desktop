@@ -170,6 +170,7 @@ class _BesoinsPageState extends ConsumerState<BesoinsPage> {
       messageVide: l10n.stkAucuneListe,
       periode: _periode,
       onPeriode: (p) => setState(() => _periode = p),
+      periodeSeule: true,
       texteRecherche: (b) => '${b.code} ${fournisseurs[b.fournisseurCode] ?? ''}',
       nbFiltresActifs: _statut == null ? 0 : 1,
       onReinitialiser: () => setState(() {
@@ -208,6 +209,13 @@ class _BesoinsPageState extends ConsumerState<BesoinsPage> {
           regle: DsRegleSelection.une,
           detail: true,
           onPressed: (choix, _) => afficherDetailBesoin(context, ref, choix.first),
+        ),
+        DsActionModule(
+          cle: const ValueKey('besoins_liste_produits'),
+          libelle: l10n.stkListeProduits,
+          icone: LucideIcons.listOrdered,
+          regle: DsRegleSelection.une,
+          onPressed: (choix, _) => afficherProduitsBesoin(context, ref, choix.first),
         ),
         DsActionModule(
           libelle: l10n.communModifier,

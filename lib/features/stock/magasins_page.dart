@@ -245,6 +245,7 @@ class _MagasinsPageState extends ConsumerState<MagasinsPage> {
       messageVide: l10n.stkAucunTransfert,
       periode: _periode,
       onPeriode: (p) => setState(() => _periode = p),
+      periodeSeule: true,
       texteRecherche: (t) => '${t.code} ${noms[t.magasinSource] ?? ''} ${noms[t.magasinDestination] ?? ''}',
       nbFiltresActifs: [_source, _destination, _actif].where((f) => f != null).length,
       onReinitialiser: () => setState(() {
@@ -306,6 +307,13 @@ class _MagasinsPageState extends ConsumerState<MagasinsPage> {
           regle: DsRegleSelection.une,
           detail: true,
           onPressed: (choix, _) => afficherDetailTransfert(context, ref, choix.first),
+        ),
+        DsActionModule(
+          cle: const ValueKey('transferts_liste_produits'),
+          libelle: l10n.stkListeProduits,
+          icone: LucideIcons.listOrdered,
+          regle: DsRegleSelection.une,
+          onPressed: (choix, _) => afficherProduitsTransfert(context, ref, choix.first),
         ),
         DsActionModule(
           libelle: l10n.communModifier,

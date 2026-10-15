@@ -8508,7 +8508,7 @@ abstract class AppLocalizations {
   /// No description provided for @stkDispoSource.
   ///
   /// In fr, this message translates to:
-  /// **'Dispo. source'**
+  /// **'Qté (Depuis)'**
   String get stkDispoSource;
 
   /// No description provided for @stkDisponible.
@@ -13490,6 +13490,60 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Déjà vendu : conservé pour l\'historique des ventes'**
   String get prdPackVendu;
+
+  /// No description provided for @stkNombreDispo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pièces : {quantite}'**
+  String stkNombreDispo(String quantite);
+
+  /// No description provided for @stkListeProduits.
+  ///
+  /// In fr, this message translates to:
+  /// **'Liste des produits'**
+  String get stkListeProduits;
+
+  /// No description provided for @stkListeProduitsTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produits de {code}'**
+  String stkListeProduitsTitre(String code);
+
+  /// No description provided for @stkAjouterSousSeuil.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produits sous le seuil'**
+  String get stkAjouterSousSeuil;
+
+  /// No description provided for @stkAjouterRuptures.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produits en rupture'**
+  String get stkAjouterRuptures;
+
+  /// No description provided for @stkAucunProduitAjoute.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun nouveau produit à ajouter.'**
+  String get stkAucunProduitAjoute;
+
+  /// No description provided for @stkProduitsAjoutes.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n} produit(s) ajouté(s)'**
+  String stkProduitsAjoutes(int n);
+
+  /// No description provided for @entFiltreType.
+  ///
+  /// In fr, this message translates to:
+  /// **'Type d\'entrée'**
+  String get entFiltreType;
+
+  /// No description provided for @entTypeNormale.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrée normale'**
+  String get entTypeNormale;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

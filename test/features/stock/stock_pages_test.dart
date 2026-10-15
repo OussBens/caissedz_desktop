@@ -96,6 +96,24 @@ void main() {
       await tester.pump(const Duration(seconds: 5));
     });
 
+    testWidgets('sortie : tout le stock peut sortir (reste 0)', (tester) async {
+      final c = await pumpApp(tester, routeInitiale: '/sorties', taille: _taille);
+      await _donnees(c);
+      await _rafraichir(tester, c);
+      await clic(tester, _cle('sortie_nouvelle'));
+      await _ajouterProduit(tester, 'Lait 1 L');
+      final qte = find
+          .descendant(of: find.byKey(const ValueKey<Object>('PRD0001')), matching: find.byType(TextField))
+          .first;
+      await tester.enterText(qte, '12');
+      await tester.pump();
+      expect(tester.widget<DsButton>(_cle('sortie_enregistrer')).onPressed, isNotNull);
+      await clic(tester, _cle('sortie_enregistrer'));
+      expect(find.text('SRT0001'), findsOneWidget);
+      expect((await StockRepository(c.read(appDatabaseProvider).db).niveau('PRD0001', 'MAG0000')).quantite, 0);
+      await tester.pump(const Duration(seconds: 5));
+    });
+
     testWidgets('sortie : 2ᵉ stock « nombre » proposé puis obligatoire (§8.1)', (tester) async {
       final c = await pumpApp(tester, routeInitiale: '/sorties', taille: _taille);
       final db = c.read(appDatabaseProvider).db;
@@ -131,6 +149,65 @@ void main() {
       final n = await StockRepository(db).niveau(poulet.code, 'MAG0000');
       expect((n.quantite, n.nombre), (9.0, 17.0));
       await tester.pump(const Duration(seconds: 5));
+    });
+
+    testWidgets('sortie : plus de pièces en stock, la quantité restante sort seule', (tester) async {
+      final c = await pumpApp(tester, routeInitiale: '/sorties', taille: _taille);
+      final db = c.read(appDatabaseProvider).db;
+      final poulet = await CatalogueService(db, utilisateurCode: 'USR0000').creerProduit(
+        const Produit(
+          code: '',
+          designation: 'Poulet',
+          categorieCode: 'CATE0000',
+          sousCategorieCode: 'SC0000',
+          prixAchat: 300,
+          prixVente: 400,
+          suiviNombre: true,
+          nombreParUnite: 2,
+        ),
+      );
+      final stock = StockService(db, utilisateurCode: 'USR0000');
+      await stock.entrerStock(produitCode: poulet.code, magasinCode: 'MAG0000', quantite: 4, nombre: 2);
+      await stock.sortir(
+        magasinCode: 'MAG0000',
+        motif: 'Casse',
+        lignes: [LigneStock(produitCode: poulet.code, quantite: 1, nombre: 2)],
+      );
+      await _rafraichir(tester, c);
+      await clic(tester, _cle('sortie_nouvelle'));
+      await _ajouterProduit(tester, 'Poulet');
+      final champs = find.descendant(of: find.byKey(ValueKey<Object>(poulet.code)), matching: find.byType(TextField));
+      expect(tester.widget<TextField>(champs.at(1)).controller!.text, '0', reason: 'proposition plafonnée à 0 pièce');
+      expect(find.text('Nombre obligatoire'), findsNothing);
+      await tester.enterText(champs.first, '3');
+      await tester.pump();
+      await tester.enterText(champs.at(1), '1');
+      await tester.pump();
+      expect(find.text('Pièces : 0'), findsOneWidget);
+      await tester.enterText(champs.at(1), '0');
+      await tester.pump();
+      await clic(tester, _cle('sortie_enregistrer'));
+      final n = await StockRepository(db).niveau(poulet.code, 'MAG0000');
+      expect((n.quantite, n.nombre), (0.0, 0.0));
+      await tester.pump(const Duration(seconds: 5));
+    });
+
+    testWidgets('sortie : liste des produits à côté du détail', (tester) async {
+      final c = await pumpApp(tester, routeInitiale: '/sorties', taille: _taille);
+      await _donnees(c);
+      await StockService(c.read(appDatabaseProvider).db, utilisateurCode: 'USR0000').sortir(
+        magasinCode: 'MAG0000',
+        motif: 'Casse',
+        lignes: const [LigneStock(produitCode: 'PRD0001', quantite: 2)],
+      );
+      await _rafraichir(tester, c);
+      await clic(tester, find.text('SRT0001'));
+      await clic(tester, _cle('sorties_liste_produits'));
+      expect(_cle('liste_produits'), findsOneWidget);
+      expect(find.text('Produits de SRT0001'), findsOneWidget);
+      expect(find.descendant(of: _cle('liste_produits'), matching: find.text('Lait 1 L')), findsOneWidget);
+      await clic(tester, find.text('Fermer'));
+      expect(_cle('liste_produits'), findsNothing);
     });
 
     testWidgets('transferts : onglet de Magasins, transfert TRM validé', (tester) async {
@@ -170,8 +247,17 @@ void main() {
       await clic(tester, find.text('Ruptures & seuils'));
       expect(find.text('Eau 1,5 L'), findsOneWidget);
       expect(find.text('Rupture'), findsWidgets);
+      await clic(tester, find.text('Listes de besoins'));
+      await clic(tester, find.text('Nouvelle liste'));
+      await clic(tester, _cle('besoin_ajouter_rupture'));
+      expect(find.byKey(const ValueKey<Object>('PRD0002')), findsOneWidget, reason: 'Eau en rupture');
+      expect(find.byKey(const ValueKey<Object>('PRD0001')), findsNothing, reason: 'Lait disponible');
+      await clic(tester, _cle('besoin_ajouter_rupture'));
+      expect(find.text('Aucun nouveau produit à ajouter.'), findsOneWidget);
+      await clic(tester, find.text('Annuler').last);
       await clic(tester, find.text('Expirés'));
       expect(find.text("Aucun produit expiré ou proche de l'expiration."), findsOneWidget);
+      await tester.pump(const Duration(seconds: 5));
     });
 
     testWidgets('arabe : écran Stock en RTL', (tester) async {

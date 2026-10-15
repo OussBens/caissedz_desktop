@@ -181,6 +181,18 @@ class StockRepository {
     return r;
   }
 
+  /// Pièces (2ᵉ stock « nombre ») par produit et par magasin : `{produit: {magasin: nombre}}`.
+  Future<Map<String, Map<String, double>>> nombresParMagasin() async {
+    final rows = await db.rawQuery(
+      'SELECT produit_code p, magasin_code m, SUM(nombre) n FROM mouvement_stock GROUP BY produit_code, magasin_code',
+    );
+    final r = <String, Map<String, double>>{};
+    for (final x in rows) {
+      (r[x['p']! as String] ??= {})[x['m']! as String] = (x['n']! as num).toDouble();
+    }
+    return r;
+  }
+
   /// Utilisateurs rattachés à chaque magasin : `{magasin: [utilisateurs]}`.
   Future<Map<String, List<String>>> utilisateursParMagasin() async {
     final rows = await db.query('utilisateur_magasin', orderBy: 'ordre');

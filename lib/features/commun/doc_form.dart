@@ -23,9 +23,18 @@ class LigneDoc {
 }
 
 /// 2ᵉ stock « nombre » (§8.1) : propose quantité × pièces par unité aux lignes qui l'exigent et n'en ont pas.
-List<T> proposerNombres<T extends LigneDoc>(List<T> lignes, {required bool global}) {
+/// [disponible] (sortie, transfert) plafonne la proposition au nombre de pièces en stock.
+List<T> proposerNombres<T extends LigneDoc>(
+  List<T> lignes, {
+  required bool global,
+  double Function(LigneDoc)? disponible,
+}) {
   for (final l in lignes) {
-    if (l.nombre <= 0 && l.produit.exigeNombre(global: global)) l.nombre = l.quantite * l.produit.nombreParUnite;
+    if (l.nombre <= 0 && l.produit.exigeNombre(global: global)) {
+      final propose = l.quantite * l.produit.nombreParUnite;
+      final dispo = disponible?.call(l);
+      l.nombre = dispo == null ? propose : propose.clamp(0, dispo < 0 ? 0 : dispo).toDouble();
+    }
   }
   return lignes;
 }
@@ -58,18 +67,29 @@ List<DsColonneLigne<T>> avecColonneNombre<T extends LigneDoc>(
 }
 
 /// Ajoute l'erreur « nombre obligatoire » (> 0) des lignes qui exigent le 2ᵉ stock (§8.1).
+/// Avec [disponible] (document qui sort du stock) : nombre facultatif quand il n'en reste plus en stock (la
+/// quantité peut alors sortir seule), et plafonné aux pièces disponibles.
 Map<Object, Map<String, String>> erreursNombre(
   BuildContext context,
   Map<Object, Map<String, String>> erreurs,
   List<LigneDoc> lignes, {
   required bool global,
+  double Function(LigneDoc)? disponible,
 }) {
-  final message = AppLocalizations.of(context).stkNombreObligatoire;
+  final l10n = AppLocalizations.of(context);
+  String? erreur(LigneDoc l) {
+    final dispo = disponible?.call(l);
+    if (dispo != null && l.nombre > dispo + 1e-9) return l10n.stkNombreDispo(formaterNombre(dispo < 0 ? 0 : dispo));
+    if (l.nombre <= 0 && l.produit.exigeNombre(global: global) && (dispo == null || dispo > 1e-9)) {
+      return l10n.stkNombreObligatoire;
+    }
+    return null;
+  }
+
   return {
     ...erreurs,
     for (final l in lignes)
-      if (l.nombre <= 0 && l.produit.exigeNombre(global: global))
-        l.produit.code: {...?erreurs[l.produit.code], 'nombre': message},
+      if (erreur(l) case final message?) l.produit.code: {...?erreurs[l.produit.code], 'nombre': message},
   };
 }
 
@@ -158,6 +178,8 @@ class DocFormDialog extends ConsumerStatefulWidget {
     this.cleEnregistrer,
     this.saisieNombre = false,
     this.sansLignes = false,
+    this.nombreDisponible,
+    this.actionsLignes = const [],
   });
   final String titre;
   final IconData icone;
@@ -186,6 +208,12 @@ class DocFormDialog extends ConsumerStatefulWidget {
   /// Document qui mouvemente le stock : colonne « Nombre » obligatoire quand le 2ᵉ stock est actif (§8.1).
   final bool saisieNombre;
 
+  /// Pièces (2ᵉ stock) disponibles d'une ligne, pour un document qui sort du stock (sortie, transfert).
+  final double Function(LigneDoc)? nombreDisponible;
+
+  /// Boutons d'ajout groupé placés après « Ajouter des produits ».
+  final List<Widget> actionsLignes;
+
   @override
   ConsumerState<DocFormDialog> createState() => _DocFormDialogState();
 }
@@ -205,7 +233,7 @@ class _DocFormDialogState extends ConsumerState<DocFormDialog> {
     );
     if (choix.isEmpty) return;
     final nouvelles = [for (final p in choix) LigneDoc(produit: p)];
-    if (widget.saisieNombre) proposerNombres(nouvelles, global: _nombreGlobal);
+    if (widget.saisieNombre) proposerNombres(nouvelles, global: _nombreGlobal, disponible: widget.nombreDisponible);
     widget.onLignes([...widget.lignes, ...nouvelles]);
   }
 
@@ -226,7 +254,7 @@ class _DocFormDialogState extends ConsumerState<DocFormDialog> {
     final devise = ref.watch(deviseProvider);
     final global = ref.watch(parametresVenteProvider).value?.nombreActif ?? false;
     final erreurs = widget.saisieNombre
-        ? erreursNombre(context, widget.erreurs, widget.lignes, global: global)
+        ? erreursNombre(context, widget.erreurs, widget.lignes, global: global, disponible: widget.nombreDisponible)
         : widget.erreurs;
     final colonnes = widget.saisieNombre
         ? avecColonneNombre(
@@ -275,6 +303,7 @@ class _DocFormDialogState extends ConsumerState<DocFormDialog> {
               libelleAjouter: l10n.dsPosLigneAjouter,
               onAjouter: _ajouter,
               onSupprimer: (l) => widget.onLignes(widget.lignes.where((x) => x != l).toList()),
+              actionsAjout: widget.actionsLignes,
             ),
           ?widget.apres,
         ],

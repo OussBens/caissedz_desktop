@@ -172,6 +172,11 @@ class StockService {
     }
   }
 
+  /// Nombre à contrôler pour une ligne qui sort de [magasin] : `null` (non exigé) quand il ne reste plus de pièces,
+  /// pour que la quantité restante puisse sortir seule.
+  Future<double?> _nombreExigible(StockRepository repo, LigneStock l, String magasin) async =>
+      (await repo.niveau(l.produitCode, magasin)).nombre > 1e-9 ? l.nombre : null;
+
   /// Paramètres › Nombre et quantité : 2ᵉ stock « nombre » exigé pour tous les produits.
   static Future<bool> nombreGlobalActif(DatabaseExecutor db) async =>
       await ParametreRepository(db).lire(ParametresVente.cleNombre) == '1';
@@ -411,7 +416,7 @@ class StockService {
       if (mag == null || !mag.actif) throw StockException(ErreurStock.magasinInactif, m);
     }
     for (final l in t.lignes) {
-      await _verifierProduit(txn, l.produitCode, nombre: l.nombre);
+      await _verifierProduit(txn, l.produitCode, nombre: await _nombreExigible(repo, l, t.magasinSource));
       await sortirDansTransaction(
         txn,
         produitCode: l.produitCode,
@@ -618,8 +623,9 @@ class StockService {
   Future<void> _mouvementsSortie(Transaction txn, SortieStock s) async {
     final mag = await StockRepository(txn).magasin(s.magasinCode);
     if (mag == null || !mag.actif) throw StockException(ErreurStock.magasinInactif, s.magasinCode);
+    final repo = StockRepository(txn);
     for (final l in s.lignes) {
-      await _verifierProduit(txn, l.produitCode, nombre: l.nombre);
+      await _verifierProduit(txn, l.produitCode, nombre: await _nombreExigible(repo, l, s.magasinCode));
       await sortirDansTransaction(
         txn,
         produitCode: l.produitCode,

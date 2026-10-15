@@ -31,6 +31,7 @@ class _SortiesPageState extends ConsumerState<SortiesPage> {
   DsPeriode _periode = DsPeriode.calculer('month');
   String? _type;
   String? _magasin;
+  String? _produit;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +47,8 @@ class _SortiesPageState extends ConsumerState<SortiesPage> {
           (s) =>
               dansPeriode(s.date, _periode) &&
               (_type == null || s.motif == _type) &&
-              (_magasin == null || s.magasinCode == _magasin),
+              (_magasin == null || s.magasinCode == _magasin) &&
+              (_produit == null || s.lignes.any((l) => l.produitCode == _produit)),
         )
         .toList();
     final actives = lignes.where((s) => s.actif);
@@ -144,11 +146,13 @@ class _SortiesPageState extends ConsumerState<SortiesPage> {
         ],
         periode: _periode,
         onPeriode: (p) => setState(() => _periode = p),
+        periodeSeule: true,
         texteRecherche: (s) => '${s.code} ${libelleMotif(l10n, s.motif)} ${noms[s.magasinCode] ?? ''}',
-        nbFiltresActifs: [_type, _magasin].where((f) => f != null).length,
+        nbFiltresActifs: [_type, _magasin, _produit].where((f) => f != null).length,
         onReinitialiser: () => setState(() {
           _type = null;
           _magasin = null;
+          _produit = null;
           _periode = DsPeriode.calculer('month');
         }),
         filtres: [
@@ -174,6 +178,13 @@ class _SortiesPageState extends ConsumerState<SortiesPage> {
               onChanged: (v) => setState(() => _magasin = v),
             ),
           ),
+          filtreProduit(
+            context,
+            ref,
+            cle: const ValueKey('sorties_filtre_produit'),
+            valeur: _produit,
+            onChanged: (v) => setState(() => _produit = v),
+          ),
         ],
         onExport: peutExporter(ref)
             ? (format, ss) => exporterTableau(
@@ -194,6 +205,13 @@ class _SortiesPageState extends ConsumerState<SortiesPage> {
             regle: DsRegleSelection.une,
             detail: true,
             onPressed: (choix, _) => afficherDetailSortie(context, ref, choix.first),
+          ),
+          DsActionModule(
+            cle: const ValueKey('sorties_liste_produits'),
+            libelle: l10n.stkListeProduits,
+            icone: LucideIcons.listOrdered,
+            regle: DsRegleSelection.une,
+            onPressed: (choix, _) => afficherProduitsSortie(context, ref, choix.first),
           ),
           DsActionModule(
             libelle: l10n.communModifier,

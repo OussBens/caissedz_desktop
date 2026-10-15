@@ -56,6 +56,7 @@ class DsLineItemsEditor<T> extends StatelessWidget {
     this.afficherTotaux = true,
     this.erreurs = const {},
     this.libelleTotal,
+    this.actionsAjout = const [],
   });
   final List<T> lignes;
   final List<DsColonneLigne<T>> colonnes;
@@ -74,6 +75,9 @@ class DsLineItemsEditor<T> extends StatelessWidget {
   /// Erreurs par clé de ligne puis par identifiant de colonne.
   final Map<Object, Map<String, String>> erreurs;
   final String? libelleTotal;
+
+  /// Boutons placés après « Ajouter des produits » (ajouts groupés).
+  final List<Widget> actionsAjout;
 
   @override
   Widget build(BuildContext context) {
@@ -229,6 +233,7 @@ class DsLineItemsEditor<T> extends StatelessWidget {
                       variante: DsButtonVariante.doux,
                       onPressed: onAjouter,
                     ),
+                  if (!lectureSeule) ...actionsAjout,
                   if (afficherTotaux) ...[
                     _Stat(l10n.dsPosLigneArticles, '${lignes.length}'),
                     _Stat(l10n.dsPosLigneQuantite, formaterNombre(qte, decimales: qte == qte.roundToDouble() ? 0 : 2)),

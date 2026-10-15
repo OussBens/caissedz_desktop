@@ -51,6 +51,13 @@ final stocksParMagasinProvider = FutureProvider<Map<String, Map<String, double>>
   return ref.watch(stockRepositoryProvider).stocksParMagasin();
 });
 
+/// Pièces (2ᵉ stock « nombre ») par produit et par magasin.
+final nombresParMagasinProvider = FutureProvider<Map<String, Map<String, double>>>((ref) {
+  ref.watch(stockVersionProvider);
+  ref.watch(catalogueVersionProvider);
+  return ref.watch(stockRepositoryProvider).nombresParMagasin();
+});
+
 final utilisateursParMagasinProvider = FutureProvider<Map<String, List<String>>>((ref) {
   ref.watch(stockVersionProvider);
   return ref.watch(stockRepositoryProvider).utilisateursParMagasin();
