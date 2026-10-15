@@ -73,7 +73,8 @@ void main() {
       final c = await _ouvrir(tester);
       expect(find.text('Retours clients'), findsOneWidget);
       await clic(tester, find.byKey(const ValueKey('retour_nouveau')));
-      expect(find.text('Retour client'), findsOneWidget);
+      expect(find.text('Nouveau retour client'), findsWidgets);
+      expect(find.text('Retour fournisseur'), findsNothing);
       await clic(tester, find.byTooltip('Choisir dans la liste').at(1));
       await clic(tester, find.text('VTE0001').last);
       await clic(tester, find.text('Choisir'));

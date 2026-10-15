@@ -78,7 +78,7 @@ class _FormulaireRetour extends ConsumerStatefulWidget {
 }
 
 class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
-  late String _type = widget.type;
+  late final String _type = widget.type;
   String? _tiers;
   String? _document;
   List<_LigneOrigine> _lignes = const [];
@@ -320,9 +320,13 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
         ? (_reglement == ReglementsRetour.avoir ? l10n.retoursAvoirClient : l10n.retoursARembourser)
         : (_reglement == ReglementsRetour.avoir ? l10n.retoursADeduire : l10n.retoursRembourseFournisseur);
     return DsDialog(
-      titre: _edition ? l10n.retoursModifierTitre : l10n.retoursNouveau,
+      titre: _edition
+          ? l10n.retoursModifierTitre
+          : (_client ? l10n.retoursNouveauClient : l10n.retoursNouveauFournisseur),
       iconeData: _edition ? LucideIcons.pencil : LucideIcons.undo2,
-      description: _edition ? '${widget.retour!.code} · $nomTiers' : l10n.retoursFormDescription,
+      description: _edition
+          ? '${widget.retour!.code} · $nomTiers'
+          : (_client ? l10n.retoursFormDescriptionClient : l10n.retoursFormDescriptionFournisseur),
       largeur: 920,
       actions: [
         DsButton(
@@ -342,32 +346,26 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         spacing: DsSpacing.s4,
         children: [
+          // Type fixé par l'onglet (retours clients ou fournisseurs) : une seule carte, non modifiable.
           if (!_edition)
             DsChoiceCards<String>(
+              key: const ValueKey('retour_type'),
               valeur: _type,
-              onChanged: (v) => setState(() {
-                if (v == _type) return;
-                _type = v;
-                _tiers = null;
-                _document = null;
-                _lignes = const [];
-                _produit = null;
-                _reglement = _reglementParDefaut(v);
-                _erreur = null;
-              }),
+              onChanged: (_) {},
               options: [
-                DsOption(
-                  TypesTiers.client,
-                  libelle: l10n.retoursChoixClient,
-                  icone: LucideIcons.user,
-                  description: l10n.retoursChoixClientDesc,
-                ),
-                DsOption(
-                  TypesTiers.fournisseur,
-                  libelle: l10n.retoursChoixFournisseur,
-                  icone: LucideIcons.truck,
-                  description: l10n.retoursChoixFournisseurDesc,
-                ),
+                _client
+                    ? DsOption(
+                        TypesTiers.client,
+                        libelle: l10n.retoursChoixClient,
+                        icone: LucideIcons.user,
+                        description: l10n.retoursChoixClientDesc,
+                      )
+                    : DsOption(
+                        TypesTiers.fournisseur,
+                        libelle: l10n.retoursChoixFournisseur,
+                        icone: LucideIcons.truck,
+                        description: l10n.retoursChoixFournisseurDesc,
+                      ),
               ],
             ),
           DsGrilleFormulaire(

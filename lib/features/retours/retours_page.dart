@@ -281,7 +281,7 @@ class _RetoursPageState extends ConsumerState<RetoursPage> {
         ],
         primaire: DsButton(
           key: const ValueKey('retour_nouveau'),
-          libelle: l10n.retoursNouveau,
+          libelle: client ? l10n.retoursNouveauClient : l10n.retoursNouveauFournisseur,
           icone: LucideIcons.plus,
           onPressed: () => afficherFormulaireRetour(context, ref, type: _type),
         ),
