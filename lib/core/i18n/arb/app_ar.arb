@@ -1495,5 +1495,22 @@
   "alertesFournisseurs": "ديون الموردين",
   "alertesFournisseursAide": "أكبر الديون وآخر شراء.",
   "alertesFournisseursAction": "تسوية جديدة",
-  "alertesFournisseursLigne": "تسوية"
+  "alertesFournisseursLigne": "تسوية",
+  "dsPeriodeAujourdhui": "اليوم",
+  "dsPeriodeHier": "أمس",
+  "dsPeriodeSemaine": "هذا الأسبوع",
+  "dsPeriodeSemaineDerniere": "الأسبوع الماضي",
+  "dsPeriodeMois": "هذا الشهر",
+  "dsPeriodeMoisDernier": "الشهر الماضي",
+  "dsPeriode7Jours": "آخر 7 أيام",
+  "dsPeriode30Jours": "آخر 30 يومًا",
+  "dsPeriodeAnnee": "هذه السنة",
+  "dsPeriodeAnneeDerniere": "السنة الماضية",
+  "dsDu": "من",
+  "dsAu": "إلى",
+  "dsPeriodeRapide": "فترة سريعة",
+  "dsRechercherIndice": "بحث…",
+  "dsAffichageGrille": "عرض شبكي",
+  "dsAffichageListe": "عرض قائمة",
+  "dsModifiezRecherche": "عدّل البحث أو عوامل التصفية."
 }

@@ -1495,5 +1495,22 @@
   "alertesFournisseurs": "Supplier debts",
   "alertesFournisseursAide": "The largest debts and their latest purchase.",
   "alertesFournisseursAction": "New settlement",
-  "alertesFournisseursLigne": "Settle"
+  "alertesFournisseursLigne": "Settle",
+  "dsPeriodeAujourdhui": "Today",
+  "dsPeriodeHier": "Yesterday",
+  "dsPeriodeSemaine": "This week",
+  "dsPeriodeSemaineDerniere": "Last week",
+  "dsPeriodeMois": "This month",
+  "dsPeriodeMoisDernier": "Last month",
+  "dsPeriode7Jours": "Last 7 days",
+  "dsPeriode30Jours": "Last 30 days",
+  "dsPeriodeAnnee": "This year",
+  "dsPeriodeAnneeDerniere": "Last year",
+  "dsDu": "From",
+  "dsAu": "To",
+  "dsPeriodeRapide": "Quick period",
+  "dsRechercherIndice": "Search…",
+  "dsAffichageGrille": "Grid view",
+  "dsAffichageListe": "List view",
+  "dsModifiezRecherche": "Change the search or the filters."
 }

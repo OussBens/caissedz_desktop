@@ -10,6 +10,7 @@ export 'widgets/ds_dialog.dart';
 export 'widgets/ds_forms.dart';
 export 'widgets/ds_line_items.dart';
 export 'widgets/ds_module.dart';
+export 'widgets/ds_module_kit.dart';
 export 'widgets/ds_navigation.dart';
 export 'widgets/ds_page.dart';
 export 'widgets/ds_pos.dart';

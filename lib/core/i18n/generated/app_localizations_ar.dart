@@ -3318,4 +3318,55 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get alertesFournisseursLigne => 'تسوية';
+
+  @override
+  String get dsPeriodeAujourdhui => 'اليوم';
+
+  @override
+  String get dsPeriodeHier => 'أمس';
+
+  @override
+  String get dsPeriodeSemaine => 'هذا الأسبوع';
+
+  @override
+  String get dsPeriodeSemaineDerniere => 'الأسبوع الماضي';
+
+  @override
+  String get dsPeriodeMois => 'هذا الشهر';
+
+  @override
+  String get dsPeriodeMoisDernier => 'الشهر الماضي';
+
+  @override
+  String get dsPeriode7Jours => 'آخر 7 أيام';
+
+  @override
+  String get dsPeriode30Jours => 'آخر 30 يومًا';
+
+  @override
+  String get dsPeriodeAnnee => 'هذه السنة';
+
+  @override
+  String get dsPeriodeAnneeDerniere => 'السنة الماضية';
+
+  @override
+  String get dsDu => 'من';
+
+  @override
+  String get dsAu => 'إلى';
+
+  @override
+  String get dsPeriodeRapide => 'فترة سريعة';
+
+  @override
+  String get dsRechercherIndice => 'بحث…';
+
+  @override
+  String get dsAffichageGrille => 'عرض شبكي';
+
+  @override
+  String get dsAffichageListe => 'عرض قائمة';
+
+  @override
+  String get dsModifiezRecherche => 'عدّل البحث أو عوامل التصفية.';
 }

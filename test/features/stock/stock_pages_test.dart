@@ -122,7 +122,7 @@ void main() {
       expect(find.text('1 besoin(s) généré(s).'), findsOneWidget); // l'eau est à 0
       await clic(tester, find.text('Fermer').last);
       expect(find.text('BES0001'), findsOneWidget);
-      expect(find.text('En attente'), findsWidgets);
+      expect(find.text('En attente'), findsWidgets); // libellé FR de « En Attente »
     });
 
     testWidgets('magasins : création et magasin principal', (tester) async {

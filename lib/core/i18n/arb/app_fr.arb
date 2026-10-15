@@ -1696,5 +1696,22 @@
   "alertesFournisseurs": "Dettes fournisseurs",
   "alertesFournisseursAide": "Les plus grosses dettes et leur dernier achat.",
   "alertesFournisseursAction": "Nouveau règlement",
-  "alertesFournisseursLigne": "Régler"
+  "alertesFournisseursLigne": "Régler",
+  "dsPeriodeAujourdhui": "Aujourd'hui",
+  "dsPeriodeHier": "Hier",
+  "dsPeriodeSemaine": "Cette semaine",
+  "dsPeriodeSemaineDerniere": "Semaine dernière",
+  "dsPeriodeMois": "Ce mois",
+  "dsPeriodeMoisDernier": "Mois dernier",
+  "dsPeriode7Jours": "7 derniers jours",
+  "dsPeriode30Jours": "30 derniers jours",
+  "dsPeriodeAnnee": "Cette année",
+  "dsPeriodeAnneeDerniere": "Année dernière",
+  "dsDu": "Du",
+  "dsAu": "Au",
+  "dsPeriodeRapide": "Période rapide",
+  "dsRechercherIndice": "Rechercher…",
+  "dsAffichageGrille": "Affichage grille",
+  "dsAffichageListe": "Affichage liste",
+  "dsModifiezRecherche": "Modifiez la recherche ou les filtres."
 }

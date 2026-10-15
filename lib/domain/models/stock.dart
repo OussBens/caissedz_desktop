@@ -152,7 +152,7 @@ class TransfertStock {
 /// Statuts de besoin (valeur stockée FR, §13).
 class StatutsBesoin {
   const StatutsBesoin._();
-  static const String enAttente = 'En attente';
+  static const String enAttente = 'En Attente';
   static const String commande = 'Commande';
   static const String disponible = 'Disponible';
   static const List<String> tous = [enAttente, commande, disponible];

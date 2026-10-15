@@ -7,6 +7,7 @@ import 'v005_caisse.dart';
 import 'v006_tiers.dart';
 import 'v007_gestion_caisse.dart';
 import 'v008_shell_ds.dart';
+import 'v009_ecrans_ds.dart';
 
 export 'migration.dart';
 
@@ -20,4 +21,5 @@ const List<Migration> toutesLesMigrations = [
   MigrationV006Tiers(),
   MigrationV007GestionCaisse(),
   MigrationV008ShellDs(),
+  MigrationV009EcransDs(),
 ];

@@ -6392,6 +6392,108 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Régler'**
   String get alertesFournisseursLigne;
+
+  /// No description provided for @dsPeriodeAujourdhui.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aujourd\'hui'**
+  String get dsPeriodeAujourdhui;
+
+  /// No description provided for @dsPeriodeHier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Hier'**
+  String get dsPeriodeHier;
+
+  /// No description provided for @dsPeriodeSemaine.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette semaine'**
+  String get dsPeriodeSemaine;
+
+  /// No description provided for @dsPeriodeSemaineDerniere.
+  ///
+  /// In fr, this message translates to:
+  /// **'Semaine dernière'**
+  String get dsPeriodeSemaineDerniere;
+
+  /// No description provided for @dsPeriodeMois.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce mois'**
+  String get dsPeriodeMois;
+
+  /// No description provided for @dsPeriodeMoisDernier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mois dernier'**
+  String get dsPeriodeMoisDernier;
+
+  /// No description provided for @dsPeriode7Jours.
+  ///
+  /// In fr, this message translates to:
+  /// **'7 derniers jours'**
+  String get dsPeriode7Jours;
+
+  /// No description provided for @dsPeriode30Jours.
+  ///
+  /// In fr, this message translates to:
+  /// **'30 derniers jours'**
+  String get dsPeriode30Jours;
+
+  /// No description provided for @dsPeriodeAnnee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette année'**
+  String get dsPeriodeAnnee;
+
+  /// No description provided for @dsPeriodeAnneeDerniere.
+  ///
+  /// In fr, this message translates to:
+  /// **'Année dernière'**
+  String get dsPeriodeAnneeDerniere;
+
+  /// No description provided for @dsDu.
+  ///
+  /// In fr, this message translates to:
+  /// **'Du'**
+  String get dsDu;
+
+  /// No description provided for @dsAu.
+  ///
+  /// In fr, this message translates to:
+  /// **'Au'**
+  String get dsAu;
+
+  /// No description provided for @dsPeriodeRapide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Période rapide'**
+  String get dsPeriodeRapide;
+
+  /// No description provided for @dsRechercherIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher…'**
+  String get dsRechercherIndice;
+
+  /// No description provided for @dsAffichageGrille.
+  ///
+  /// In fr, this message translates to:
+  /// **'Affichage grille'**
+  String get dsAffichageGrille;
+
+  /// No description provided for @dsAffichageListe.
+  ///
+  /// In fr, this message translates to:
+  /// **'Affichage liste'**
+  String get dsAffichageListe;
+
+  /// No description provided for @dsModifiezRecherche.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifiez la recherche ou les filtres.'**
+  String get dsModifiezRecherche;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -593,45 +593,63 @@ class DsDataTableState<T> extends State<DsDataTable<T>> {
             itemBuilder: (_, i) => ligneWidget(lignesPage[i]),
           );
 
-    final tableau = Container(
-      constraints: widget.hauteurMax != null ? BoxConstraints(maxHeight: widget.hauteurMax!) : null,
-      decoration: BoxDecoration(
-        color: c.surfaceCard,
-        borderRadius: widget.encadre ? DsRadius.borderLg : null,
-        border: widget.encadre ? Border.all(color: c.borderDefault) : null,
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          enTete,
-          Flexible(child: corps),
-          ?totaux,
-        ],
-      ),
+    // Dans une page défilante (hauteur non bornée), le tableau prend la hauteur de ses lignes.
+    Widget souple(Widget enfant, bool borne) => borne ? Flexible(child: enfant) : enfant;
+
+    final pagination = DsPagination(
+      page: _page + 1,
+      nbPages: nbPages,
+      total: total,
+      taillePage: _taillePage,
+      taillesPage: widget.taillesPage,
+      nbSelection: _selection.length,
+      onChanged: (p) => setState(() => _page = p - 1),
+      onTaillePageChanged: (v) => setState(() {
+        _taillePage = v;
+        _page = 0;
+      }),
     );
 
-    if (!widget.pagine) return tableau;
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      spacing: DsSpacing.s3,
-      children: [
-        Flexible(child: tableau),
-        DsPagination(
-          page: _page + 1,
-          nbPages: nbPages,
-          total: total,
-          taillePage: _taillePage,
-          taillesPage: widget.taillesPage,
-          nbSelection: _selection.length,
-          onChanged: (p) => setState(() => _page = p - 1),
-          onTaillePageChanged: (v) => setState(() {
-            _taillePage = v;
-            _page = 0;
-          }),
-        ),
-      ],
+    return LayoutBuilder(
+      builder: (context, contraintes) {
+        final borne = contraintes.hasBoundedHeight || widget.hauteurMax != null;
+        // Encadré (`ModuleTable`) : la pagination est dans la carte, sous un filet.
+        final paginationInterne = widget.pagine && widget.encadre;
+        final tableau = Container(
+          constraints: widget.hauteurMax != null ? BoxConstraints(maxHeight: widget.hauteurMax!) : null,
+          decoration: BoxDecoration(
+            color: c.surfaceCard,
+            borderRadius: widget.encadre ? DsRadius.borderLg : null,
+            border: widget.encadre ? Border.all(color: c.borderDefault) : null,
+            boxShadow: widget.encadre ? c.shadowXs : null,
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              enTete,
+              souple(corps, borne),
+              ?totaux,
+              if (paginationInterne)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: DsSpacing.s4, vertical: DsSpacing.s3),
+                  decoration: BoxDecoration(
+                    border: Border(top: BorderSide(color: c.borderSubtle)),
+                  ),
+                  child: pagination,
+                ),
+            ],
+          ),
+        );
+        if (!widget.pagine || paginationInterne) return tableau;
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: DsSpacing.s3,
+          children: [souple(tableau, contraintes.hasBoundedHeight), pagination],
+        );
+      },
     );
   }
 }

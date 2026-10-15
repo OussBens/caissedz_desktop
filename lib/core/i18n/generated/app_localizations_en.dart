@@ -3322,4 +3322,55 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get alertesFournisseursLigne => 'Settle';
+
+  @override
+  String get dsPeriodeAujourdhui => 'Today';
+
+  @override
+  String get dsPeriodeHier => 'Yesterday';
+
+  @override
+  String get dsPeriodeSemaine => 'This week';
+
+  @override
+  String get dsPeriodeSemaineDerniere => 'Last week';
+
+  @override
+  String get dsPeriodeMois => 'This month';
+
+  @override
+  String get dsPeriodeMoisDernier => 'Last month';
+
+  @override
+  String get dsPeriode7Jours => 'Last 7 days';
+
+  @override
+  String get dsPeriode30Jours => 'Last 30 days';
+
+  @override
+  String get dsPeriodeAnnee => 'This year';
+
+  @override
+  String get dsPeriodeAnneeDerniere => 'Last year';
+
+  @override
+  String get dsDu => 'From';
+
+  @override
+  String get dsAu => 'To';
+
+  @override
+  String get dsPeriodeRapide => 'Quick period';
+
+  @override
+  String get dsRechercherIndice => 'Search…';
+
+  @override
+  String get dsAffichageGrille => 'Grid view';
+
+  @override
+  String get dsAffichageListe => 'List view';
+
+  @override
+  String get dsModifiezRecherche => 'Change the search or the filters.';
 }
