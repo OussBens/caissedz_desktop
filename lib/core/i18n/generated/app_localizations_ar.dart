@@ -10,9 +10,6 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
-  String get appTitle => 'CaisseDZ';
-
-  @override
   String get shellNavGeneral => 'عام';
 
   @override
@@ -25,43 +22,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get shellNavGestion => 'الإدارة';
 
   @override
-  String get shellFavoris => 'المفضلة';
-
-  @override
-  String get shellFavorisVide => 'لا توجد مفضلة. انقر بالزر الأيمن على وحدة لإضافتها.';
-
-  @override
-  String get shellFavorisMax => '7 مفضلات كحد أقصى';
-
-  @override
-  String get shellFavorisAjouter => 'إضافة إلى المفضلة';
-
-  @override
-  String get shellFavorisRetirer => 'إزالة من المفضلة';
-
-  @override
   String get shellMenuModules => 'الوحدات';
-
-  @override
-  String get shellMenuModulesRaccourci => 'Ctrl+M';
-
-  @override
-  String get shellMenuModulesRecherche => 'البحث عن وحدة…';
-
-  @override
-  String get shellMenuModulesAucun => 'لا توجد وحدة مطابقة.';
-
-  @override
-  String get shellAlertes => 'التنبيهات';
-
-  @override
-  String get shellAlertesAucune => 'لا توجد تنبيهات';
-
-  @override
-  String get shellInternetConnecte => 'الإنترنت: متصل';
-
-  @override
-  String get shellInternetDeconnecte => 'الإنترنت: غير متصل';
 
   @override
   String get shellFenetreReduire => 'تصغير';
@@ -74,20 +35,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get shellFenetreFermer => 'إغلاق';
-
-  @override
-  String get shellReduireSidebar => 'طي القائمة';
-
-  @override
-  String get shellEtendreSidebar => 'توسيع القائمة';
-
-  @override
-  String get shellGalerie => 'معرض نظام التصميم';
-
-  @override
-  String modulePlaceholder(String nom) {
-    return 'الوحدة « $nom » : متاحة في دفعة قادمة.';
-  }
 
   @override
   String get moduleTableauBord => 'لوحة القيادة';
@@ -147,12 +94,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get moduleParametres => 'الإعدادات';
 
   @override
-  String get moduleMonCompte => 'حسابي';
-
-  @override
-  String get communOk => 'موافق';
-
-  @override
   String get communAnnuler => 'إلغاء';
 
   @override
@@ -171,36 +112,18 @@ class AppLocalizationsAr extends AppLocalizations {
   String get communRechercher => 'بحث';
 
   @override
-  String get communChargement => 'جارٍ التحميل…';
-
-  @override
   String get communAucunResultat => 'لا توجد نتائج';
-
-  @override
-  String get communSelectionner => 'اختيار';
 
   @override
   String get communTotal => 'المجموع';
 
   @override
-  String get communColonnes => 'الأعمدة';
-
-  @override
   String get communToutSelectionner => 'تحديد الكل';
-
-  @override
-  String get communLignesParPage => 'أسطر في الصفحة';
 
   @override
   String communPagination(int debut, int fin, int total) {
     return '$debut–$fin من $total';
   }
-
-  @override
-  String get communPagePrecedente => 'الصفحة السابقة';
-
-  @override
-  String get communPageSuivante => 'الصفحة التالية';
 
   @override
   String communSelectionnes(int n) {
@@ -247,22 +170,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get activationBouton => 'تفعيل';
 
   @override
-  String get activationDemo => 'تجربة الوضع التجريبي';
-
-  @override
-  String get activationDemoAide =>
-      'يفتح الوضع التجريبي كل الوظائف (رخصة متقدم) بالحساب demo / demo. البيانات المدخلة ليست للاستعمال الفعلي.';
-
-  @override
-  String get activationErreurFormat => 'يجب أن يحتوي المفتاح على 64 حرفًا سداسيًا عشريًا بالضبط (0-9، a-f).';
-
-  @override
   String get activationErreurInconnue => 'مفتاح غير صالح لهذا الجهاز — تحقق من المعرّف المرسل.';
-
-  @override
-  String activationReussie(String niveau) {
-    return 'تم تفعيل رخصة $niveau.';
-  }
 
   @override
   String get licenceBasic => 'أساسي';
@@ -279,13 +187,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get licenceRequise => 'وظيفة متاحة مع الرخصة المتقدمة';
-
-  @override
   String get licenceRequiseDetail => 'رخصتك الحالية أساسية. فعّل رخصة متقدمة للوصول إلى هذه الوحدة.';
-
-  @override
-  String get licenceGererCle => 'تفعيل مفتاح آخر';
 
   @override
   String get connexionTitre => 'مرحبًا بعودتك';
@@ -324,21 +226,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get configTitre => 'مرحبًا بك في CaisseDZ';
 
   @override
-  String configEtape(int n, int total) {
-    return 'الخطوة $n من $total';
-  }
-
-  @override
   String get configEtapeBoutique => 'المتجر';
 
   @override
-  String get configEtapeAdmin => 'المدير';
-
-  @override
   String get configEtapeVente => 'الهامش والمخزون';
-
-  @override
-  String get configEtapeRecap => 'الملخص';
 
   @override
   String get configBoutiqueNom => 'اسم المتجر';
@@ -357,15 +248,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get configBoutiqueEmail => 'البريد الإلكتروني';
-
-  @override
-  String get configAdminIntro => 'سيملك حساب المدير هذا كل الصلاحيات. اختر معرّفًا وكلمة مرور.';
-
-  @override
-  String get configAdminNom => 'الاسم المعروض';
-
-  @override
-  String get configAdminMotDePasseConfirmation => 'تأكيد كلمة المرور';
 
   @override
   String get configMarge => 'الهامش الافتراضي';
@@ -387,9 +269,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get configLangue => 'اللغة';
-
-  @override
-  String get configRecapIntro => 'تحقق من المعلومات قبل الإنهاء. يمكنك تعديلها لاحقًا في الإعدادات.';
 
   @override
   String get configPrecedent => 'السابق';
@@ -422,19 +301,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get configErreurNombre => 'رقم غير صالح.';
 
   @override
-  String get configReussie => 'اكتمل الإعداد. سجّل الدخول بحساب المدير.';
-
-  @override
   String get compteTitre => 'حسابي';
-
-  @override
-  String get compteRole => 'الدور';
-
-  @override
-  String get compteIdentifiantActuel => 'المعرّف الحالي';
-
-  @override
-  String get compteNouvelIdentifiant => 'المعرّف الجديد';
 
   @override
   String get compteMotDePasseActuel => 'كلمة المرور الحالية';
@@ -466,33 +333,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get compteDemoLectureSeule => 'لا يمكن تعديل الحساب التجريبي.';
 
   @override
-  String get accesRefuseTitre => 'الوصول مرفوض';
-
-  @override
-  String accesRefuseMessage(String role, String module) {
-    return 'دورك « $role » لا يملك صلاحية الوصول إلى الوحدة « $module ». اطلب من مدير.';
-  }
-
-  @override
-  String get accesRefuseRetour => 'العودة إلى لوحة القيادة';
-
-  @override
   String get permVoirPrixAchat => 'عرض سعر الشراء';
 
   @override
-  String get roleAdmin => 'مدير';
-
-  @override
-  String get roleCaissier => 'أمين الصندوق';
-
-  @override
-  String get roleMagasinier => 'أمين المخزن';
-
-  @override
   String get shellBandeauDemo => 'وضع تجريبي — البيانات ليست للاستعمال الفعلي';
-
-  @override
-  String get shellMenuUtilisateur => 'قائمة المستخدم';
 
   @override
   String get shellVerrouille => 'مخصص للرخصة المتقدمة';
@@ -501,16 +345,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get shellAccesRestreint => 'وصول غير مسموح لدورك';
 
   @override
-  String get produitsTitre => 'المنتجات';
-
-  @override
   String get produitsOngletProduits => 'المنتجات';
 
   @override
   String get produitsOngletCategories => 'الفئات';
-
-  @override
-  String get produitsOngletColis => 'الطرود';
 
   @override
   String get produitsOngletPacks => 'الحزم';
@@ -520,21 +358,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get produitsNouveau => 'منتج جديد';
-
-  @override
-  String get produitsModeIa => 'وضع الذكاء الاصطناعي';
-
-  @override
-  String get produitsImporter => 'استيراد Excel';
-
-  @override
-  String get produitsEtiquettes => 'الملصقات';
-
-  @override
-  String get produitsSynchro => 'مزامنة الكتالوج';
-
-  @override
-  String get produitsRecherche => 'البحث بالاسم أو الرمز أو الباركود…';
 
   @override
   String get produitsColCode => 'الرمز';
@@ -555,12 +378,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get produitsColPrixVente => 'سعر البيع';
 
   @override
-  String get produitsColMarge => 'الهامش %';
-
-  @override
-  String get produitsColActif => 'نشط';
-
-  @override
   String get produitsColStock => 'المخزون';
 
   @override
@@ -568,21 +385,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get produitModifier => 'تعديل المنتج';
-
-  @override
-  String get produitDesactiver => 'تعطيل';
-
-  @override
-  String get produitActiver => 'تفعيل';
-
-  @override
-  String get produitGenererCodeBarres => 'توليد باركود داخلي';
-
-  @override
-  String get produitChampDesignation => 'التسمية';
-
-  @override
-  String get produitChampCodeBarres => 'الباركود (EAN-13 أو داخلي)';
 
   @override
   String get produitChampCategorie => 'الفئة';
@@ -597,28 +399,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get produitChampPrixVente => 'سعر البيع';
 
   @override
-  String get produitChampMarge => 'الهامش (%)';
-
-  @override
   String get produitChampUnite => 'الوحدة';
-
-  @override
-  String get produitChampTva => 'الضريبة (%)';
-
-  @override
-  String get produitChampSeuil => 'حد التنبيه (فارغ = الحد العام)';
-
-  @override
-  String get produitChampSuiviNombre => 'تتبع مخزون ثانٍ « بالعدد » (قطع)';
-
-  @override
-  String get produitChampSuiviNombreAide => 'يُباع المنتج بالوحدة أو بالقطعة؛ يُحفظ المخزون في الاثنين.';
-
-  @override
-  String get produitChampNombreParUnite => 'قطع لكل وحدة';
-
-  @override
-  String get produitPrixAuto => 'يُحسب سعر البيع من الهامش إذا تركته فارغًا.';
 
   @override
   String get produitErreurDesignation => 'التسمية إلزامية.';
@@ -636,22 +417,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get produitErreurQuantite => 'كمية غير صالحة.';
 
   @override
-  String produitCree(String nom, String code) {
-    return 'تم إنشاء المنتج « $nom » ($code).';
-  }
-
-  @override
-  String get iaTitre => 'منتج جديد بالذكاء الاصطناعي';
-
-  @override
   String get iaIntro =>
       'امسح أو أدخل باركودًا: يُبحث عن البطاقة في CaisseDZ ثم Mantouj ثم Open Food Facts ثم Open Beauty Facts.';
 
   @override
   String get iaRechercher => 'بحث';
-
-  @override
-  String get iaRechercheEnCours => 'جارٍ البحث…';
 
   @override
   String get iaAucun => 'لم يُعثر على بطاقة لهذا الباركود: انتقل إلى الإدخال التفصيلي.';
@@ -660,12 +430,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String iaTrouve(String source) {
     return 'بطاقة موجودة عبر $source';
   }
-
-  @override
-  String get iaMarque => 'العلامة';
-
-  @override
-  String get iaCreer => 'إنشاء المنتج';
 
   @override
   String get iaSaisieDetaillee => 'إدخال تفصيلي';
@@ -679,28 +443,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get importChoisirFichier => 'اختيار ملف .xlsx';
-
-  @override
-  String get importTelechargerModele => 'حفظ النموذج';
-
-  @override
-  String importLignesValides(int n) {
-    return '$n سطر صالح';
-  }
-
-  @override
-  String importLignesInvalides(int n) {
-    return '$n سطر متجاهل';
-  }
-
-  @override
-  String get importColLigne => 'السطر';
-
-  @override
-  String get importColErreur => 'الخطأ';
-
-  @override
-  String get importLancer => 'استيراد';
 
   @override
   String importResultat(int importees, int ignorees) {
@@ -722,36 +464,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get importErreurPrix => 'سعر غير صالح';
 
   @override
-  String get etiquettesTitre => 'طباعة الملصقات';
-
-  @override
-  String get etiquettesQuantite => 'الكمية';
-
-  @override
-  String get etiquettesFormatA4 => 'ورقة A4';
-
-  @override
-  String get etiquettesFormatRouleau => 'لفافة';
-
-  @override
-  String get etiquettesAfficherPrix => 'إظهار السعر';
-
-  @override
-  String get etiquettesQr => 'رمز QR بدل الباركود';
-
-  @override
-  String get etiquettesGenerer => 'توليد PDF';
-
-  @override
-  String get etiquettesAucuneSelection => 'اختر منتجًا واحدًا على الأقل من القائمة.';
-
-  @override
   String synchroResultat(int envoyes, int recus) {
     return 'المزامنة: $envoyes مرسل، $recus محدّث.';
   }
-
-  @override
-  String get synchroNonConfiguree => 'أدخل عنوان خادم CaisseDZ في الإعدادات لمزامنة الكتالوج.';
 
   @override
   String synchroErreur(String detail) {
@@ -768,48 +483,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get categorieNom => 'الاسم';
 
   @override
-  String get categorieRenommer => 'إعادة التسمية';
-
-  @override
-  String get categorieSupprimer => 'حذف';
-
-  @override
-  String get categorieSousCategories => 'الفئات الفرعية';
-
-  @override
   String get categorieErreurSysteme => 'لا يمكن تعديل فئة النظام.';
 
   @override
   String get categorieErreurUtilisee => 'توجد منتجات مرتبطة بهذه الفئة.';
 
   @override
-  String categorieConfirmerSuppression(String nom) {
-    return 'حذف الفئة « $nom » وفئاتها الفرعية؟';
-  }
-
-  @override
-  String get colisNouveau => 'طرد جديد';
-
-  @override
-  String get colisProduit => 'المنتج';
-
-  @override
-  String get colisQuantite => 'وحدات لكل طرد';
-
-  @override
-  String get colisAucun => 'لا توجد طرود.';
-
-  @override
   String get packNouveau => 'حزمة جديدة';
-
-  @override
-  String get packLignes => 'التركيبة';
-
-  @override
-  String get packAjouterProduit => 'إضافة منتج';
-
-  @override
-  String get packAucun => 'لا توجد حزم.';
 
   @override
   String get packErreurLignes => 'أضف منتجًا واحدًا على الأقل إلى الحزمة.';
@@ -821,34 +501,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get remiseType => 'النوع';
 
   @override
-  String get remiseTypePourcentage => 'نسبة مئوية';
-
-  @override
-  String get remiseTypeMontant => 'مبلغ';
-
-  @override
   String get remiseValeur => 'القيمة';
-
-  @override
-  String get remisePortee => 'النطاق';
-
-  @override
-  String get remisePorteeGlobale => 'كل المنتجات';
-
-  @override
-  String get remisePorteeCategorie => 'فئة';
-
-  @override
-  String get remisePorteeProduit => 'منتج';
-
-  @override
-  String get remiseDebut => 'البداية';
-
-  @override
-  String get remiseFin => 'النهاية';
-
-  @override
-  String get remiseAucune => 'لا توجد تخفيضات.';
 
   @override
   String get communNouveau => 'جديد';
@@ -858,9 +511,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get communActif => 'نشط';
-
-  @override
-  String get communInactif => 'غير نشط';
 
   @override
   String get communOui => 'نعم';
@@ -875,22 +525,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get communApercu => 'معاينة';
 
   @override
-  String get communImprimer => 'طباعة';
-
-  @override
   String get communAucune => 'لا شيء';
 
   @override
   String get stockTitre => 'المخزون';
-
-  @override
-  String get stockOngletNiveaux => 'المستويات';
-
-  @override
-  String get stockOngletJournal => 'سجل الحركات';
-
-  @override
-  String get stockColProduit => 'المنتج';
 
   @override
   String get stockColMagasin => 'المخزن';
@@ -899,13 +537,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get stockColQuantite => 'الكمية';
 
   @override
-  String get stockColNombre => 'العدد (قطع)';
-
-  @override
   String get stockColSeuil => 'الحد';
-
-  @override
-  String get stockColDate => 'التاريخ';
 
   @override
   String get stockColType => 'النوع';
@@ -914,34 +546,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get stockColMotif => 'السبب';
 
   @override
-  String get stockColReference => 'المرجع';
-
-  @override
   String get stockColUtilisateur => 'المستخدم';
 
   @override
-  String get stockColCommentaire => 'تعليق';
-
-  @override
   String get stockColValeur => 'القيمة (سعر الشراء)';
-
-  @override
-  String get stockTousMagasins => 'كل المخازن';
-
-  @override
-  String get stockSousSeuil => 'تحت الحد';
-
-  @override
-  String get stockEntreeManuelle => 'إدخال يدوي';
-
-  @override
-  String get stockInventaire => 'جرد';
-
-  @override
-  String get stockQuantiteConstatee => 'الكمية المعاينة';
-
-  @override
-  String get stockNombreConstate => 'العدد المعاين';
 
   @override
   String get stockAucunMouvement => 'لا توجد حركات.';
@@ -995,86 +603,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get typeMouvementInitial => 'مخزون أولي';
 
   @override
-  String get magasinsTitre => 'المخازن';
-
-  @override
-  String get magasinNouveau => 'مخزن جديد';
-
-  @override
-  String get magasinNom => 'الاسم';
-
-  @override
-  String get magasinAdresse => 'العنوان';
-
-  @override
   String get magasinPrincipal => 'رئيسي';
-
-  @override
-  String get magasinMesMagasins => 'مخازني (الأول هو الرئيسي)';
-
-  @override
-  String get magasinAjouterAuxMiens => 'إضافة إلى مخازني';
-
-  @override
-  String get magasinRetirerDesMiens => 'إزالة من مخازني';
-
-  @override
-  String get magasinDefinirPrincipal => 'تعيين كرئيسي';
-
-  @override
-  String get transfertsTitre => 'التحويلات';
-
-  @override
-  String get transfertNouveau => 'تحويل جديد';
-
-  @override
-  String get transfertSource => 'المخزن المصدر';
-
-  @override
-  String get transfertDestination => 'مخزن الوجهة';
-
-  @override
-  String get transfertLignes => 'الأسطر';
-
-  @override
-  String get transfertAjouterLigne => 'إضافة منتج';
-
-  @override
-  String get transfertAucun => 'لا توجد تحويلات.';
-
-  @override
-  String transfertCree(String code) {
-    return 'تم تسجيل التحويل $code: حركتان لكل سطر.';
-  }
-
-  @override
-  String get besoinsTitre => 'الاحتياجات';
-
-  @override
-  String get besoinNouveau => 'احتياج جديد';
-
-  @override
-  String get besoinGenerer => 'توليد تحت الحد';
-
-  @override
-  String besoinGeneres(int n) {
-    return 'تم توليد $n احتياج.';
-  }
-
-  @override
-  String get besoinStatut => 'الحالة';
-
-  @override
-  String get besoinPasserCommande => 'تحويل إلى طلبية';
-
-  @override
-  String get besoinPasserDisponible => 'تحويل إلى متوفر';
-
-  @override
-  String get besoinRemettreAttente => 'إعادة إلى قيد الانتظار';
-
-  @override
-  String get besoinAucun => 'لا توجد احتياجات.';
 
   @override
   String get statutBesoinEnAttente => 'قيد الانتظار';
@@ -1084,24 +613,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get statutBesoinDisponible => 'متوفر';
-
-  @override
-  String get sortiesTitre => 'الإخراجات';
-
-  @override
-  String get sortiesOngletSorties => 'الإخراجات';
-
-  @override
-  String get sortiesOngletVentes => 'المبيعات';
-
-  @override
-  String get sortieNouvelle => 'إخراج جديد';
-
-  @override
-  String get sortieMotif => 'السبب';
-
-  @override
-  String get sortieAucune => 'لا توجد إخراجات.';
 
   @override
   String get motifCasse => 'كسر';
@@ -1120,14 +631,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get motifEchantillon => 'عينة';
-
-  @override
-  String communLignes(int n) {
-    return '$n سطر';
-  }
-
-  @override
-  String get communCommentaire => 'تعليق';
 
   @override
   String get communDate => 'التاريخ';
@@ -1323,45 +826,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get modePaiementPoints => 'نقاط';
 
   @override
-  String get ventesTitre => 'المبيعات';
-
-  @override
-  String get ventesColTicket => 'التذكرة';
-
-  @override
-  String get ventesColClient => 'الزبون';
-
-  @override
-  String get ventesColNet => 'الصافي';
-
-  @override
-  String get ventesColVerse => 'المدفوع';
-
-  @override
-  String get ventesColReste => 'المتبقي';
-
-  @override
-  String get ventesColStatut => 'الحالة';
-
-  @override
-  String get ventesColCaisse => 'الصندوق';
-
-  @override
-  String get ventesColVendeur => 'البائع';
-
-  @override
   String get ventesAucune => 'لا توجد مبيعات.';
-
-  @override
-  String get ventesVoirTicket => 'عرض التذكرة';
-
-  @override
-  String get ventesAnnuler => 'إلغاء البيع';
-
-  @override
-  String ventesConfirmerAnnulation(String code) {
-    return 'إلغاء البيع $code؟ سيُعاد المخزون والنقاط؛ تبقى التذكرة المختومة محفوظة.';
-  }
 
   @override
   String get ventesCreerRetour => 'إنشاء مرتجع';
@@ -1378,73 +843,6 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get ventesFiltreToutes => 'الكل';
-
-  @override
-  String get ventesFiltreValidees => 'مؤكدة';
-
-  @override
-  String get ventesFiltreAnnulees => 'ملغاة';
-
-  @override
-  String get ventesFiltreCredit => 'بالدين';
-
-  @override
-  String get statutVenteValidee => 'مؤكدة';
-
-  @override
-  String get statutVenteAnnulee => 'ملغاة';
-
-  @override
-  String ticketDetail(String code) {
-    return 'التذكرة $code';
-  }
-
-  @override
-  String get retoursTitre => 'المرتجعات';
-
-  @override
-  String get retourNouveau => 'مرتجع جديد';
-
-  @override
-  String get retourVente => 'البيع الأصلي';
-
-  @override
-  String get retourMotif => 'السبب';
-
-  @override
-  String get retourRembourser => 'المبلغ المسترجع';
-
-  @override
-  String get retourModeRemboursement => 'طريقة الاسترجاع';
-
-  @override
-  String get retourAvoir => 'يُسجل الباقي كرصيد في حساب الزبون.';
-
-  @override
-  String get retourAucun => 'لا توجد مرتجعات.';
-
-  @override
-  String get retourColTotal => 'إجمالي المرتجع';
-
-  @override
-  String get retourColRembourse => 'المسترجع';
-
-  @override
-  String retourQuantiteMax(String max) {
-    return 'الكمية المرتجعة (الحد $max)';
-  }
-
-  @override
-  String get retourErreurVenteInconnue => 'البيع غير موجود.';
-
-  @override
-  String get retourErreurVenteAnnulee => 'هذا البيع ملغى.';
-
-  @override
-  String get retourErreurLignes => 'حدد كمية واحدة على الأقل للإرجاع.';
-
-  @override
   String get retourErreurQuantite => 'كمية غير صالحة.';
 
   @override
@@ -1452,14 +850,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get retourErreurPeriode => 'فترة مقفلة: الإرجاع غير ممكن.';
-
-  @override
-  String retourCree(String code, String total, String rembourse) {
-    return 'تم تسجيل المرتجع $code: $total (مسترجع $rembourse).';
-  }
-
-  @override
-  String get clientsTitre => 'العملاء';
 
   @override
   String get clientNouveau => 'عميل جديد';
@@ -1480,55 +870,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get clientPoints => 'النقاط';
 
   @override
-  String get clientPlafond => 'سقف الدين';
-
-  @override
-  String get clientSolde => 'الرصيد المستحق';
-
-  @override
-  String get clientAucun => 'لا يوجد عملاء.';
-
-  @override
-  String get clientFiche => 'بطاقة العميل';
-
-  @override
-  String get clientDocumentsOuverts => 'المستندات المفتوحة';
-
-  @override
-  String get clientVersements => 'الدفعات';
-
-  @override
-  String get clientNouveauVersement => 'تحصيل دفعة';
-
-  @override
-  String get fournisseursTitre => 'الموردون';
-
-  @override
   String get fournisseurNouveau => 'مورد جديد';
 
   @override
-  String get fournisseurAucun => 'لا يوجد موردون.';
-
-  @override
-  String get fournisseurFiche => 'بطاقة المورد';
-
-  @override
-  String get fournisseurNouveauVersement => 'تسديد دفعة';
-
-  @override
-  String get versementsTitre => 'الدفعات';
-
-  @override
   String get versementNouveau => 'دفعة جديدة';
-
-  @override
-  String get versementTiers => 'الطرف';
-
-  @override
-  String get versementTiersClient => 'عميل';
-
-  @override
-  String get versementTiersFournisseur => 'مورد';
 
   @override
   String get versementMontant => 'المبلغ';
@@ -1537,35 +882,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get versementMode => 'الطريقة';
 
   @override
-  String get versementReference => 'المرجع';
-
-  @override
-  String get versementAucun => 'لا توجد دفعات.';
-
-  @override
-  String get versementColSens => 'الاتجاه';
-
-  @override
-  String get versementColImpute => 'المخصص';
-
-  @override
-  String get versementColNonImpute => 'غير المخصص';
-
-  @override
   String versementVerrouille(String retour) {
     return 'مقفل (مرتبط بالمرتجع $retour)';
   }
 
   @override
   String get versementImputations => 'التخصيصات (الأقدم أولاً)';
-
-  @override
-  String get versementSupprimer => 'حذف الدفعة';
-
-  @override
-  String versementConfirmerSuppression(String code) {
-    return 'حذف الدفعة $code؟ ستُلغى التخصيصات.';
-  }
 
   @override
   String get versementErreurMontant => 'مبلغ غير صالح.';
@@ -1586,63 +908,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String get versementErreurTiers => 'طرف غير صالح.';
 
   @override
-  String versementEnregistre(String code, String impute, String reste) {
-    return 'تم تسجيل الدفعة $code: $impute مخصص، $reste كسلفة.';
-  }
-
-  @override
-  String get sensEncaissement => 'تحصيل';
-
-  @override
-  String get sensDecaissement => 'صرف';
-
-  @override
   String get tiersErreurNom => 'الاسم إلزامي.';
 
   @override
   String get tiersErreurSysteme => 'لا يمكن تعديل الطرف النظامي.';
 
   @override
-  String get achatsTitre => 'الإدخالات / المشتريات';
-
-  @override
   String get achatNouveau => 'إدخال جديد';
-
-  @override
-  String get achatSmartScan => 'Smart Scan IA';
 
   @override
   String get achatFournisseur => 'المورد';
 
   @override
-  String get achatReference => 'مرجع الفاتورة';
-
-  @override
-  String get achatMagasin => 'المخزن';
-
-  @override
-  String get achatLignes => 'الأسطر';
-
-  @override
-  String get achatPrixAchat => 'سعر الشراء';
-
-  @override
-  String get achatNouveauPrixVente => 'سعر البيع الجديد';
-
-  @override
-  String get achatVerse => 'المدفوع';
-
-  @override
-  String get achatModePaiement => 'طريقة الدفع';
-
-  @override
-  String get achatMettreAJourPrix => 'تحديث سعر شراء المنتجات';
-
-  @override
   String get achatAucun => 'لا توجد إدخالات.';
-
-  @override
-  String get achatColTotal => 'المجموع';
 
   @override
   String get achatColVerse => 'المدفوع';
@@ -1655,19 +933,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get achatColStatut => 'الحالة';
-
-  @override
-  String get achatAnnuler => 'إلغاء الإدخال';
-
-  @override
-  String achatConfirmerAnnulation(String code) {
-    return 'إلغاء الإدخال $code؟ سيُخرج المخزون.';
-  }
-
-  @override
-  String achatEnregistre(String code, String total, String reste) {
-    return 'تم تسجيل الإدخال $code: $total، المتبقي $reste.';
-  }
 
   @override
   String get achatErreurLignes => 'أضف سطرًا واحدًا على الأقل.';
@@ -1697,52 +962,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get achatErreurStock => 'مخزون غير كافٍ للإلغاء (بيع سابق).';
 
   @override
-  String get statutAchatValide => 'مؤكد';
-
-  @override
-  String get statutAchatAnnule => 'ملغى';
-
-  @override
-  String get sourceManuel => 'يدوي';
-
-  @override
   String get sourceSmartScan => 'Smart Scan';
 
   @override
-  String get smartScanTitre => 'Smart Scan IA — فاتورة المورد';
-
-  @override
-  String get smartScanIntro =>
-      'صوّر الفاتورة أو اخترها (صورة أو PDF): يتعرف خادم CaisseDZ على الأسطر ويقارنها بالكتالوج.';
-
-  @override
-  String smartScanQuota(int restant, int total) {
-    return 'الحصة: $restant تحليل متبقٍ من $total';
-  }
-
-  @override
-  String get smartScanChoisir => 'اختيار فاتورة';
-
-  @override
-  String get smartScanAnalyser => 'تحليل';
-
-  @override
-  String get smartScanAnalyse => 'جارٍ التحليل…';
-
-  @override
   String get smartScanAucuneLigne => 'لم يُتعرف على أي سطر.';
-
-  @override
-  String get smartScanLigneNonRapprochee => 'غير مطابق';
-
-  @override
-  String get smartScanRapprocher => 'ربط بمنتج';
-
-  @override
-  String get smartScanCreerEntree => 'إنشاء الإدخال';
-
-  @override
-  String get smartScanQuotaAtteint => 'تم بلوغ حصة Smart Scan';
 
   @override
   String get smartScanQuotaAtteintDetail => 'استعملت كل تحليلاتك. اطلب عرضًا للمتابعة.';
@@ -1776,18 +999,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get smartScanErreurFichier => 'ملف غير صالح.';
 
   @override
-  String get gestionCaisseTitre => 'إدارة الصندوق';
-
-  @override
-  String get gestionCaisseOngletCaisses => 'الصناديق';
-
-  @override
-  String get gestionCaisseOngletMouvements => 'الحركات';
-
-  @override
-  String get gestionCaisseOngletTransferts => 'التحويلات بين الصناديق';
-
-  @override
   String get caisseNouvelle => 'صندوق جديد';
 
   @override
@@ -1803,19 +1014,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get caisseMagasin => 'المخزن';
 
   @override
-  String get caisseSansMagasin => 'بدون مخزن';
-
-  @override
   String get caisseActive => 'نشط';
 
   @override
   String get caisseInactive => 'غير نشط';
-
-  @override
-  String get caisseSoldeEspeces => 'رصيد نقدي';
-
-  @override
-  String get caisseSoldeTotal => 'الرصيد الإجمالي';
 
   @override
   String get caisseTypePhysique => 'مادي';
@@ -1830,34 +1032,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get caisseDesactiver => 'تعطيل';
 
   @override
-  String get caisseActiver => 'تفعيل';
-
-  @override
-  String get mouvementApport => 'إيداع';
-
-  @override
-  String get mouvementDepense => 'مصروف';
-
-  @override
-  String get mouvementColType => 'النوع';
-
-  @override
-  String get mouvementColSens => 'الاتجاه';
-
-  @override
   String get mouvementColMontant => 'المبلغ';
 
   @override
-  String get mouvementColMode => 'الوسيلة';
-
-  @override
-  String get mouvementColReference => 'المرجع';
-
-  @override
   String get mouvementAucun => 'لا توجد حركات.';
-
-  @override
-  String get mouvementToutesCaisses => 'كل الصناديق';
 
   @override
   String get mouvementCaisse => 'الصندوق';
@@ -1896,27 +1074,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get mvtEcart => 'فرق الإقفال';
 
   @override
-  String get sensEntree => 'دخول';
-
-  @override
-  String get sensSortie => 'خروج';
-
-  @override
   String get transfertCaisseNouveau => 'تحويل جديد';
 
   @override
-  String get transfertCaisseSource => 'الصندوق المصدر';
-
-  @override
-  String get transfertCaisseDestination => 'الصندوق الوجهة';
-
-  @override
   String get transfertCaisseAucun => 'لا توجد تحويلات.';
-
-  @override
-  String transfertCaisseCree(String code) {
-    return 'تم تسجيل التحويل $code (حركتان).';
-  }
 
   @override
   String get caisseErreurNom => 'الاسم إلزامي.';
@@ -1952,28 +1113,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get caisseErreurSessionOuverte => 'توجد جلسة مفتوحة على هذا الصندوق.';
 
   @override
-  String get cloturesTitre => 'إقفالات Z';
-
-  @override
-  String get clotureNouvelle => 'إقفال (Z)';
-
-  @override
-  String get clotureApercuTitre => 'إقفال Z — معاينة الفترة';
-
-  @override
   String get cloturePeriode => 'الفترة';
-
-  @override
-  String get clotureDebut => 'البداية';
-
-  @override
-  String get clotureFin => 'النهاية';
-
-  @override
-  String get clotureColVentes => 'المبيعات';
-
-  @override
-  String get clotureColAnnulations => 'الإلغاءات';
 
   @override
   String get clotureColTotalVentes => 'إجمالي المبيعات';
@@ -1991,77 +1131,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get clotureColDecaissements => 'المصروفات';
 
   @override
-  String get clotureColHash => 'الختم';
-
-  @override
-  String get clotureColUtilisateur => 'المستخدم';
-
-  @override
   String get clotureAucune => 'لا يوجد إقفال.';
-
-  @override
-  String get clotureConfirmer => 'ختم الإقفال';
-
-  @override
-  String clotureCreee(String code, String hash) {
-    return 'تم ختم الإقفال $code. البصمة: $hash';
-  }
-
-  @override
-  String get clotureDetail => 'تفاصيل الإقفال';
-
-  @override
-  String get clotureParMode => 'التحصيلات حسب الوسيلة';
-
-  @override
-  String get clotureSoldes => 'أرصدة الصناديق';
 
   @override
   String get clotureDerniereVente => 'آخر تذكرة';
 
   @override
-  String get clotureHashPrecedent => 'البصمة السابقة';
-
-  @override
-  String get clotureHash => 'البصمة';
-
-  @override
-  String get clotureVerifier => 'التحقق من السلسلة';
-
-  @override
-  String get clotureChaineOk => 'سلسلة الإقفالات سليمة.';
-
-  @override
-  String clotureChaineKo(String code) {
-    return 'سلسلة معدّلة ابتداءً من الإقفال $code.';
-  }
-
-  @override
-  String get clotureErreurSession => 'أغلق جميع جلسات الصندوق قبل الإقفال.';
-
-  @override
   String get clotureErreurRien => 'لا شيء للإقفال منذ آخر إقفال.';
 
   @override
-  String get clotureAvertissementImmuable =>
-      'الإقفال نهائي: لا يمكن تعديله أو حذفه، ولن يمكن إلغاء مستندات الفترة بعد ذلك.';
-
-  @override
-  String get exportFiscalTitre => 'التصدير الجبائي';
-
-  @override
-  String get exportFiscalDebut => 'من (يوم/شهر/سنة)';
-
-  @override
-  String get exportFiscalFin => 'إلى (يوم/شهر/سنة)';
-
-  @override
   String get exportFiscalGenerer => 'إنشاء الأرشيف';
-
-  @override
-  String exportFiscalOk(String chemin, int ventes, int clotures) {
-    return 'تم حفظ الأرشيف: $chemin ($ventes مبيعات، $clotures إقفالات، تم التحقق من البصمة).';
-  }
 
   @override
   String get exportFiscalErreurDates => 'تواريخ غير صالحة.';
@@ -2080,61 +1159,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get exportFiscalPermission => 'مطلوب إذن « تصدير البيانات ».';
-
-  @override
-  String get tableauBordTitre => 'لوحة القيادة';
-
-  @override
-  String get tableauBordCaJour => 'رقم أعمال اليوم';
-
-  @override
-  String get tableauBordTicketsJour => 'تذاكر اليوم';
-
-  @override
-  String get tableauBordPanierMoyen => 'متوسط السلة';
-
-  @override
-  String get tableauBordCaMois => 'رقم أعمال الشهر';
-
-  @override
-  String get tableauBordSousSeuil => 'منتجات تحت الحد';
-
-  @override
-  String get tableauBordCreances => 'ديون الزبائن';
-
-  @override
-  String get tableauBordCa30Jours => 'رقم الأعمال خلال 30 يومًا';
-
-  @override
-  String get tableauBordPaiements => 'التحصيلات حسب الوسيلة (30 يومًا)';
-
-  @override
   String get tableauBordTopProduits => 'أفضل 5 منتجات (30 يومًا)';
-
-  @override
-  String get tableauBordCategories => 'المبيعات حسب الفئة (30 يومًا)';
-
-  @override
-  String get tableauBordCaMensuel => 'رقم الأعمال الشهري (12 شهرًا)';
-
-  @override
-  String get tableauBordActualiser => 'تحديث';
-
-  @override
-  String get situationTitre => 'الوضعية';
-
-  @override
-  String get situationRapport => 'التقرير';
-
-  @override
-  String get situationDu => 'من (يوم/شهر/سنة)';
-
-  @override
-  String get situationAu => 'إلى (يوم/شهر/سنة)';
-
-  @override
-  String get situationAfficher => 'عرض';
 
   @override
   String get situationExportExcel => 'تصدير Excel';
@@ -2143,50 +1168,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get situationApercuPdf => 'معاينة PDF';
 
   @override
-  String get situationAucuneLigne => 'لا توجد بيانات في هذه الفترة.';
-
-  @override
-  String get situationDatesInvalides => 'تواريخ غير صالحة.';
-
-  @override
   String situationExportOk(String chemin) {
     return 'تم حفظ الملف: $chemin';
   }
-
-  @override
-  String situationPeriode(String debut, String fin) {
-    return 'الفترة من $debut إلى $fin';
-  }
-
-  @override
-  String get rapportVentesJour => 'المبيعات حسب اليوم';
-
-  @override
-  String get rapportVentesProduit => 'المبيعات حسب المنتج';
-
-  @override
-  String get rapportVentesCategorie => 'المبيعات حسب الفئة';
-
-  @override
-  String get rapportVentesClient => 'المبيعات حسب الزبون';
-
-  @override
-  String get rapportVentesVendeur => 'المبيعات حسب البائع والصندوق';
-
-  @override
-  String get rapportEncaissementsMode => 'التحصيلات حسب الوسيلة';
-
-  @override
-  String get rapportAchatsFournisseur => 'المشتريات حسب المورد';
-
-  @override
-  String get rapportRetours => 'مرتجعات الزبائن';
-
-  @override
-  String get rapportEtatStock => 'حالة المخزون المقيّم';
-
-  @override
-  String get rapportCreancesDettes => 'الديون والمستحقات';
 
   @override
   String get parametresErreurNom => 'اسم المتجر إلزامي.';
@@ -2430,9 +1414,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get dsDeplier => 'بسط';
 
   @override
-  String get dsFavori => 'مفضّل';
-
-  @override
   String get dsAjouterFavoris => 'إضافة إلى المفضلة';
 
   @override
@@ -2440,9 +1421,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get dsFavorisComplets => 'المفضلة ممتلئة';
-
-  @override
-  String get dsAucunModule => 'لا توجد وحدة';
 
   @override
   String get dsModules => 'الوحدات';
@@ -2461,12 +1439,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get dsChoisirListe => 'اختيار من القائمة';
-
-  @override
-  String get dsRechercher => 'بحث';
-
-  @override
-  String get dsSelectionner => 'تحديد';
 
   @override
   String get dsAucunResultat => 'لا نتائج';
@@ -2692,9 +1664,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get dsBarcodeGenerer => 'توليد';
-
-  @override
-  String get dsBarcodeFormatLibre => 'تنسيق حر (ليس EAN-13)';
 
   @override
   String get dsBarcodeCopier => 'نسخ';
@@ -7829,4 +6798,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get posPrixSousAchatInterdit => 'سعر أقل من سعر الشراء: ممنوع في الإعدادات.';
+
+  @override
+  String alertesExpireDepuis(int n) {
+    return 'منتهي منذ $n ي';
+  }
 }

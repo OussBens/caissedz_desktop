@@ -342,36 +342,6 @@ class DsColors extends ThemeExtension<DsColors> {
     shadowLg: [BoxShadow(color: Color(0xBF000000), blurRadius: 56, offset: Offset(0, 28), spreadRadius: -12)],
   );
 
-  // ---- Alias historiques (lots 0 à 9) : conservés pour la migration, à ne plus utiliser ----
-  Color get fond => surfaceApp;
-  Color get surface => surfaceCard;
-  Color get surfaceElevee => surfaceRaised;
-  Color get surfaceAttenuee => surfaceSunken;
-  Color get bordure => borderDefault;
-  Color get bordureForte => borderStrong;
-  Color get texte => textPrimary;
-  Color get texteSecondaire => textSecondary;
-  Color get texteAttenue => textMuted;
-  Color get texteInverse => textInverse;
-  Color get primaire => primary;
-  Color get primaireSurvol => primaryHover;
-  Color get primaireActif => primaryPressed;
-  Color get primaireDoux => primaryTint;
-  Color get surPrimaire => primaryFg;
-  Color get succes => success;
-  Color get succesDoux => successTint;
-  Color get avertissement => warning;
-  Color get avertissementDoux => warningTint;
-  Color get dangerDoux => dangerTint;
-  Color get infoDoux => infoTint;
-  Color get sidebarFond => surfaceSidebar;
-  Color get sidebarTexte => textSecondary;
-  Color get sidebarTexteActif => primaryTintFg;
-  Color get sidebarActif => surfaceActive;
-  Color get focus => borderFocus;
-  Color get selection => surfaceActive;
-  Color get overlay => surfaceOverlay;
-
   @override
   DsColors copyWith({Color? primary}) => this;
 

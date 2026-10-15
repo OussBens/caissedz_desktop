@@ -14,7 +14,6 @@ import '../features/parametres/parametres_page.dart';
 import '../features/produits/produits_page.dart';
 import '../features/retours/retours_page.dart';
 import '../features/shell/app_shell.dart';
-import '../features/shell/module_placeholder_page.dart';
 import '../features/stock/besoins_page.dart';
 import '../features/stock/magasins_page.dart';
 import '../features/stock/sorties_page.dart';
@@ -88,7 +87,7 @@ GoRouter construireRouter(Ref ref, {String routeInitiale = routeAccueil}) {
   );
 }
 
-/// Page d'un module : écrans livrés par lot, sinon page provisoire.
+/// Page d'un module (17 modules + pages rattachées ouvertes sur l'onglet de leur module parent).
 Widget pageModule(ModuleApp module) => switch (module.id) {
   'parametres' => const ParametresPage(),
   'tableau_bord' => const TableauBordPage(),
@@ -111,7 +110,7 @@ Widget pageModule(ModuleApp module) => switch (module.id) {
   'besoins' => const BesoinsPage(),
   'sorties' => const SortiesPage(),
   'utilisateurs' => const UtilisateursPage(),
-  _ => ModulePlaceholderPage(module: module),
+  _ => throw ArgumentError.value(module.id, 'module', 'Module inconnu'),
 };
 
 final routerProvider = Provider<GoRouter>(

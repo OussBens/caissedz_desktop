@@ -285,7 +285,7 @@ class _ModifPanierState extends ConsumerState<_ModifPanier> {
       contenu: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        spacing: DsSpacing.lg,
+        spacing: DsSpacing.s4,
         children: [
           DsGrilleFormulaire(
             children: [

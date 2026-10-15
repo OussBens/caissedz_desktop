@@ -360,7 +360,7 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
       contenu: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        spacing: DsSpacing.lg,
+        spacing: DsSpacing.s4,
         children: [
           if (!_edition)
             DsChoiceCards<String>(
@@ -536,18 +536,18 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
                   Expanded(
                     child: Text(
                       libelleMontant,
-                      style: t.corps.copyWith(fontWeight: FontWeight.w600, color: c.primaryTintFg),
+                      style: t.body.copyWith(fontWeight: FontWeight.w600, color: c.primaryTintFg),
                     ),
                   ),
                   Text(
                     da(montant),
                     key: const ValueKey('retour_montant'),
-                    style: t.chiffreLg.copyWith(color: c.primaryTintFg),
+                    style: t.kpi.copyWith(color: c.primaryTintFg),
                   ),
                 ],
               ),
             ),
-          if (_erreur != null) Text(_erreur!, style: t.petit.copyWith(color: c.dangerFg)),
+          if (_erreur != null) Text(_erreur!, style: t.bodySm.copyWith(color: c.dangerFg)),
         ],
       ),
     );

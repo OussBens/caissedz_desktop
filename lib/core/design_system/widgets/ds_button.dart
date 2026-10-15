@@ -8,10 +8,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../tokens/ds_theme.dart';
 
 /// Variantes du bouton DS v2.2 (`Button.variant`).
-///
-/// `succes` n'existe pas dans le DS : alias conservé pour les écrans des lots 0 à 9,
-/// rendu comme `accent`.
-enum DsButtonVariante { primaire, secondaire, fantome, doux, danger, accent, inverse, succes }
+enum DsButtonVariante { primaire, secondaire, fantome, doux, danger, accent, inverse }
 
 /// Tailles du bouton DS : sm 32, md 36, lg 44.
 enum DsButtonTaille { sm, md, lg }
@@ -107,7 +104,6 @@ class _DsButtonState extends State<DsButton> {
       DsButtonVariante.danger => (c.danger, c.dangerHover, DsColors.blanc, null),
       DsButtonVariante.accent => (c.accent, c.accentHover, c.accentFg, null),
       DsButtonVariante.inverse => (c.surfaceInverse, DsColors.ink750, c.textInverse, null),
-      DsButtonVariante.succes => (c.success, c.success, DsColors.blanc, null),
     };
     final fond = _survol && actif ? fondSurvol : fondBase;
     final kbdFond = widget.variante == DsButtonVariante.primaire || widget.variante == DsButtonVariante.danger

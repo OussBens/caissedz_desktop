@@ -1,38 +1,14 @@
 {
   "@@locale": "en",
-  "appTitle": "CaisseDZ",
   "shellNavGeneral": "General",
   "shellNavStock": "Stock",
   "shellNavTiers": "Partners",
   "shellNavGestion": "Management",
-  "shellFavoris": "Favourites",
-  "shellFavorisVide": "No favourites. Right-click a module to add it.",
-  "shellFavorisMax": "7 favourites maximum",
-  "shellFavorisAjouter": "Add to favourites",
-  "shellFavorisRetirer": "Remove from favourites",
   "shellMenuModules": "Modules",
-  "shellMenuModulesRaccourci": "Ctrl+M",
-  "shellMenuModulesRecherche": "Search a module…",
-  "shellMenuModulesAucun": "No matching module.",
-  "shellAlertes": "Alerts",
-  "shellAlertesAucune": "No alerts",
-  "shellInternetConnecte": "Internet: online",
-  "shellInternetDeconnecte": "Internet: offline",
   "shellFenetreReduire": "Minimise",
   "shellFenetreAgrandir": "Maximise",
   "shellFenetreRestaurer": "Restore",
   "shellFenetreFermer": "Close",
-  "shellReduireSidebar": "Collapse menu",
-  "shellEtendreSidebar": "Expand menu",
-  "shellGalerie": "Design system gallery",
-  "modulePlaceholder": "Module \"{nom}\": available in a later batch.",
-  "@modulePlaceholder": {
-    "placeholders": {
-      "nom": {
-        "type": "String"
-      }
-    }
-  },
   "moduleTableauBord": "Dashboard",
   "moduleCaisse": "Point of sale",
   "moduleVentes": "Sales",
@@ -52,21 +28,15 @@
   "moduleSituation": "Reports",
   "moduleZakat": "Zakat",
   "moduleParametres": "Settings",
-  "moduleMonCompte": "My account",
-  "communOk": "OK",
   "communAnnuler": "Cancel",
   "communConfirmer": "Confirm",
   "communFermer": "Close",
   "communEnregistrer": "Save",
   "communSupprimer": "Delete",
   "communRechercher": "Search",
-  "communChargement": "Loading…",
   "communAucunResultat": "No results",
-  "communSelectionner": "Select",
   "communTotal": "Total",
-  "communColonnes": "Columns",
   "communToutSelectionner": "Select all",
-  "communLignesParPage": "Rows per page",
   "communPagination": "{debut}–{fin} of {total}",
   "@communPagination": {
     "placeholders": {
@@ -81,8 +51,6 @@
       }
     }
   },
-  "communPagePrecedente": "Previous page",
-  "communPageSuivante": "Next page",
   "communSelectionnes": "{n} selected",
   "@communSelectionnes": {
     "placeholders": {
@@ -104,18 +72,7 @@
   "activationCle": "Licence key",
   "activationCleIndice": "Paste the full key into the first box.",
   "activationBouton": "Activate",
-  "activationDemo": "Try the demo mode",
-  "activationDemoAide": "Demo mode unlocks every feature (Advanced licence) with the demo / demo account. Data entered is not meant for production.",
-  "activationErreurFormat": "The key must contain exactly 64 hexadecimal characters (0-9, a-f).",
   "activationErreurInconnue": "Invalid key for this computer — check the identifier you sent.",
-  "activationReussie": "{niveau} licence activated.",
-  "@activationReussie": {
-    "placeholders": {
-      "niveau": {
-        "type": "String"
-      }
-    }
-  },
   "licenceBasic": "Basic",
   "licenceAvance": "Advanced",
   "licenceDemo": "Demo mode",
@@ -127,9 +84,7 @@
       }
     }
   },
-  "licenceRequise": "Feature available with the Advanced licence",
   "licenceRequiseDetail": "Your current licence is Basic. Activate an Advanced licence to access this module.",
-  "licenceGererCle": "Activate another key",
   "connexionTitre": "Welcome back",
   "connexionIdentifiant": "Username",
   "connexionMotDePasse": "Password",
@@ -142,30 +97,14 @@
   "connexionSaisirCle": "Enter an activation key",
   "connexionDeconnecter": "Sign out",
   "configTitre": "Welcome to CaisseDZ",
-  "configEtape": "Step {n} of {total}",
-  "@configEtape": {
-    "placeholders": {
-      "n": {
-        "type": "int"
-      },
-      "total": {
-        "type": "int"
-      }
-    }
-  },
   "configEtapeBoutique": "Shop",
-  "configEtapeAdmin": "Administrator",
   "configEtapeVente": "Margin and stock",
-  "configEtapeRecap": "Summary",
   "configBoutiqueNom": "Shop name",
   "configBoutiqueRc": "Trade register (RC)",
   "configBoutiqueNif": "Tax ID (NIF)",
   "configBoutiqueAdresse": "Address",
   "configBoutiqueTelephone": "Phone",
   "configBoutiqueEmail": "E-mail",
-  "configAdminIntro": "This administrator account will have every right. Choose a username and a password.",
-  "configAdminNom": "Display name",
-  "configAdminMotDePasseConfirmation": "Confirm password",
   "configMarge": "Default margin",
   "configMargeAide": "Used to compute the selling price from the purchase price of new products.",
   "configSeuil": "Stock-out threshold",
@@ -173,7 +112,6 @@
   "configPointsParDinar": "Points earned per dinar",
   "configDevise": "Currency",
   "configLangue": "Language",
-  "configRecapIntro": "Check the information before finishing. You can change it later in Settings.",
   "configPrecedent": "Back",
   "configSuivant": "Next",
   "configTerminer": "Finish",
@@ -184,11 +122,7 @@
   "configErreurIdentifiantPris": "This username is already in use.",
   "configErreurMarge": "Value between 0 and 1000.",
   "configErreurNombre": "Invalid number.",
-  "configReussie": "Setup complete. Sign in with your administrator account.",
   "compteTitre": "My account",
-  "compteRole": "Role",
-  "compteIdentifiantActuel": "Current username",
-  "compteNouvelIdentifiant": "New username",
   "compteMotDePasseActuel": "Current password",
   "compteNouveauMotDePasse": "New password",
   "compteChangerIdentifiant": "Change username",
@@ -205,87 +139,36 @@
   "compteErreurMotDePasseActuel": "Current password is incorrect.",
   "comptePreferences": "Preferences",
   "compteDemoLectureSeule": "The demo account cannot be modified.",
-  "accesRefuseTitre": "Access denied",
-  "accesRefuseMessage": "Your role \"{role}\" cannot access the \"{module}\" module. Ask an administrator.",
-  "@accesRefuseMessage": {
-    "placeholders": {
-      "role": {
-        "type": "String"
-      },
-      "module": {
-        "type": "String"
-      }
-    }
-  },
-  "accesRefuseRetour": "Back to dashboard",
   "permVoirPrixAchat": "View purchase price",
-  "roleAdmin": "Admin",
-  "roleCaissier": "Cashier",
-  "roleMagasinier": "Storekeeper",
   "shellBandeauDemo": "Demo mode — data is not meant for production",
-  "shellMenuUtilisateur": "User menu",
   "shellVerrouille": "Advanced licence only",
   "shellAccesRestreint": "Not allowed for your role",
-  "produitsTitre": "Products",
   "produitsOngletProduits": "Products",
   "produitsOngletCategories": "Categories",
-  "produitsOngletColis": "Cases",
   "produitsOngletPacks": "Bundles",
   "produitsOngletRemises": "Discounts",
   "produitsNouveau": "New product",
-  "produitsModeIa": "AI mode",
-  "produitsImporter": "Import Excel",
-  "produitsEtiquettes": "Labels",
-  "produitsSynchro": "Sync catalogue",
-  "produitsRecherche": "Search by name, code or barcode…",
   "produitsColCode": "Code",
   "produitsColDesignation": "Name",
   "produitsColCodeBarres": "Barcode",
   "produitsColCategorie": "Category",
   "produitsColPrixAchat": "Purchase price",
   "produitsColPrixVente": "Selling price",
-  "produitsColMarge": "Margin %",
-  "produitsColActif": "Active",
   "produitsColStock": "Stock",
   "produitsAucun": "No products. Create one or import an Excel file.",
   "produitModifier": "Edit product",
-  "produitDesactiver": "Deactivate",
-  "produitActiver": "Activate",
-  "produitGenererCodeBarres": "Generate an internal barcode",
-  "produitChampDesignation": "Name",
-  "produitChampCodeBarres": "Barcode (EAN-13 or internal)",
   "produitChampCategorie": "Category",
   "produitChampSousCategorie": "Sub-category",
   "produitChampPrixAchat": "Purchase price",
   "produitChampPrixVente": "Selling price",
-  "produitChampMarge": "Margin (%)",
   "produitChampUnite": "Unit",
-  "produitChampTva": "VAT (%)",
-  "produitChampSeuil": "Alert threshold (empty = global)",
-  "produitChampSuiviNombre": "Track a second \"count\" stock (pieces)",
-  "produitChampSuiviNombreAide": "The product sells by unit or by piece; stock is kept in both.",
-  "produitChampNombreParUnite": "Pieces per unit",
-  "produitPrixAuto": "The selling price is computed from the margin if left empty.",
   "produitErreurDesignation": "Name is required.",
   "produitErreurCodeBarres": "Invalid barcode.",
   "produitErreurCodeBarresPris": "This barcode is already used.",
   "produitErreurPrix": "Invalid price.",
   "produitErreurQuantite": "Invalid quantity.",
-  "produitCree": "Product \"{nom}\" created ({code}).",
-  "@produitCree": {
-    "placeholders": {
-      "nom": {
-        "type": "String"
-      },
-      "code": {
-        "type": "String"
-      }
-    }
-  },
-  "iaTitre": "New product in AI mode",
   "iaIntro": "Scan or type a barcode: the product sheet is looked up in CaisseDZ, then Mantouj, Open Food Facts and Open Beauty Facts.",
   "iaRechercher": "Search",
-  "iaRechercheEnCours": "Searching…",
   "iaAucun": "No sheet found for this barcode: switch to detailed entry.",
   "iaTrouve": "Sheet found via {source}",
   "@iaTrouve": {
@@ -295,32 +178,10 @@
       }
     }
   },
-  "iaMarque": "Brand",
-  "iaCreer": "Create product",
   "iaSaisieDetaillee": "Detailed entry",
   "importTitre": "Import products from Excel",
   "importIntro": "Expected columns on row 1: designation (required), code_barres, categorie, prix_achat, prix_vente.",
   "importChoisirFichier": "Choose an .xlsx file",
-  "importTelechargerModele": "Save template",
-  "importLignesValides": "{n} valid row(s)",
-  "@importLignesValides": {
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
-  },
-  "importLignesInvalides": "{n} skipped row(s)",
-  "@importLignesInvalides": {
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
-  },
-  "importColLigne": "Row",
-  "importColErreur": "Error",
-  "importLancer": "Import",
   "importResultat": "{importees} product(s) imported, {ignorees} skipped.",
   "@importResultat": {
     "placeholders": {
@@ -343,14 +204,6 @@
   "importErreurDesignationVide": "Empty name",
   "importErreurCodeBarresPris": "Barcode already used",
   "importErreurPrix": "Invalid price",
-  "etiquettesTitre": "Print labels",
-  "etiquettesQuantite": "Quantity",
-  "etiquettesFormatA4": "A4 sheet",
-  "etiquettesFormatRouleau": "Roll",
-  "etiquettesAfficherPrix": "Show price",
-  "etiquettesQr": "QR code instead of barcode",
-  "etiquettesGenerer": "Generate PDF",
-  "etiquettesAucuneSelection": "Select at least one product in the list.",
   "synchroResultat": "Sync: {envoyes} sent, {recus} updated.",
   "@synchroResultat": {
     "placeholders": {
@@ -362,7 +215,6 @@
       }
     }
   },
-  "synchroNonConfiguree": "Set the CaisseDZ server URL in Settings to sync the catalogue.",
   "synchroErreur": "Sync failed: {detail}",
   "@synchroErreur": {
     "placeholders": {
@@ -374,71 +226,29 @@
   "categoriesNouvelle": "New category",
   "categoriesNouvelleSous": "New sub-category",
   "categorieNom": "Name",
-  "categorieRenommer": "Rename",
-  "categorieSupprimer": "Delete",
-  "categorieSousCategories": "Sub-categories",
   "categorieErreurSysteme": "The system category cannot be changed.",
   "categorieErreurUtilisee": "Products are attached to this category.",
-  "categorieConfirmerSuppression": "Delete category \"{nom}\" and its sub-categories?",
-  "@categorieConfirmerSuppression": {
-    "placeholders": {
-      "nom": {
-        "type": "String"
-      }
-    }
-  },
-  "colisNouveau": "New case",
-  "colisProduit": "Product",
-  "colisQuantite": "Units per case",
-  "colisAucun": "No cases.",
   "packNouveau": "New bundle",
-  "packLignes": "Contents",
-  "packAjouterProduit": "Add a product",
-  "packAucun": "No bundles.",
   "packErreurLignes": "Add at least one product to the bundle.",
   "remiseNouvelle": "New discount",
   "remiseType": "Type",
-  "remiseTypePourcentage": "Percentage",
-  "remiseTypeMontant": "Amount",
   "remiseValeur": "Value",
-  "remisePortee": "Scope",
-  "remisePorteeGlobale": "All products",
-  "remisePorteeCategorie": "A category",
-  "remisePorteeProduit": "A product",
-  "remiseDebut": "Start",
-  "remiseFin": "End",
-  "remiseAucune": "No discounts.",
   "communNouveau": "New",
   "communModifier": "Edit",
   "communActif": "Active",
-  "communInactif": "Inactive",
   "communOui": "Yes",
   "communNon": "No",
   "communValider": "Confirm",
   "communApercu": "Preview",
-  "communImprimer": "Print",
   "communAucune": "None",
   "stockTitre": "Stock",
-  "stockOngletNiveaux": "Levels",
-  "stockOngletJournal": "Movements journal",
-  "stockColProduit": "Product",
   "stockColMagasin": "Store",
   "stockColQuantite": "Quantity",
-  "stockColNombre": "Count (pieces)",
   "stockColSeuil": "Threshold",
-  "stockColDate": "Date",
   "stockColType": "Type",
   "stockColMotif": "Reason",
-  "stockColReference": "Reference",
   "stockColUtilisateur": "User",
-  "stockColCommentaire": "Comment",
   "stockColValeur": "Value (cost)",
-  "stockTousMagasins": "All stores",
-  "stockSousSeuil": "Below threshold",
-  "stockEntreeManuelle": "Manual receipt",
-  "stockInventaire": "Stocktake",
-  "stockQuantiteConstatee": "Counted quantity",
-  "stockNombreConstate": "Counted pieces",
   "stockAucunMouvement": "No movements.",
   "stockErreurQuantite": "Invalid quantity.",
   "stockErreurInsuffisant": "Insufficient stock: the stock guard refuses this outflow.",
@@ -456,70 +266,16 @@
   "typeMouvementTransfert": "Transfer",
   "typeMouvementInventaire": "Stocktake",
   "typeMouvementInitial": "Opening stock",
-  "magasinsTitre": "Stores",
-  "magasinNouveau": "New store",
-  "magasinNom": "Name",
-  "magasinAdresse": "Address",
   "magasinPrincipal": "Main",
-  "magasinMesMagasins": "My stores (the first is the main one)",
-  "magasinAjouterAuxMiens": "Add to my stores",
-  "magasinRetirerDesMiens": "Remove from my stores",
-  "magasinDefinirPrincipal": "Set as main",
-  "transfertsTitre": "Transfers",
-  "transfertNouveau": "New transfer",
-  "transfertSource": "Source store",
-  "transfertDestination": "Destination store",
-  "transfertLignes": "Lines",
-  "transfertAjouterLigne": "Add a product",
-  "transfertAucun": "No transfers.",
-  "transfertCree": "Transfer {code} saved: 2 movements per line.",
-  "@transfertCree": {
-    "placeholders": {
-      "code": {
-        "type": "String"
-      }
-    }
-  },
-  "besoinsTitre": "Needs",
-  "besoinNouveau": "New need",
-  "besoinGenerer": "Generate below threshold",
-  "besoinGeneres": "{n} need(s) generated.",
-  "@besoinGeneres": {
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
-  },
-  "besoinStatut": "Status",
-  "besoinPasserCommande": "Mark as Ordered",
-  "besoinPasserDisponible": "Mark as Available",
-  "besoinRemettreAttente": "Back to Pending",
-  "besoinAucun": "No needs.",
   "statutBesoinEnAttente": "Pending",
   "statutBesoinCommande": "Ordered",
   "statutBesoinDisponible": "Available",
-  "sortiesTitre": "Outgoings",
-  "sortiesOngletSorties": "Outgoings",
-  "sortiesOngletVentes": "Sales",
-  "sortieNouvelle": "New outflow",
-  "sortieMotif": "Reason",
-  "sortieAucune": "No outflows.",
   "motifCasse": "Breakage",
   "motifPerime": "Expired",
   "motifPerteVol": "Loss/theft",
   "motifConsommationInterne": "Internal use",
   "motifDon": "Donation",
   "motifEchantillon": "Sample",
-  "communLignes": "{n} line(s)",
-  "@communLignes": {
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
-  },
-  "communCommentaire": "Comment",
   "communDate": "Date",
   "communQuantite": "Quantity",
   "moduleMagasins": "Stores",
@@ -619,26 +375,7 @@
   "modePaiementCheque": "Cheque",
   "modePaiementVirement": "Transfer",
   "modePaiementPoints": "Points",
-  "ventesTitre": "Sales",
-  "ventesColTicket": "Receipt",
-  "ventesColClient": "Customer",
-  "ventesColNet": "Net",
-  "ventesColVerse": "Paid",
-  "ventesColReste": "Due",
-  "ventesColStatut": "Status",
-  "ventesColCaisse": "Register",
-  "ventesColVendeur": "Seller",
   "ventesAucune": "No sales.",
-  "ventesVoirTicket": "View receipt",
-  "ventesAnnuler": "Cancel sale",
-  "ventesConfirmerAnnulation": "Cancel sale {code}? Stock and points are restored; the sealed receipt is kept.",
-  "@ventesConfirmerAnnulation": {
-    "placeholders": {
-      "code": {
-        "type": "String"
-      }
-    }
-  },
   "ventesCreerRetour": "Create a return",
   "ventesVerifierChaine": "Verify sealing",
   "ventesChaineOk": "Receipt chain intact.",
@@ -650,89 +387,19 @@
       }
     }
   },
-  "ventesFiltreToutes": "All",
-  "ventesFiltreValidees": "Completed",
-  "ventesFiltreAnnulees": "Cancelled",
-  "ventesFiltreCredit": "On credit",
-  "statutVenteValidee": "Completed",
-  "statutVenteAnnulee": "Cancelled",
-  "ticketDetail": "Receipt {code}",
-  "@ticketDetail": {
-    "placeholders": {
-      "code": {
-        "type": "String"
-      }
-    }
-  },
-  "retoursTitre": "Returns",
-  "retourNouveau": "New return",
-  "retourVente": "Original sale",
-  "retourMotif": "Reason",
-  "retourRembourser": "Refunded amount",
-  "retourModeRemboursement": "Refund method",
-  "retourAvoir": "The rest is credited to the customer account.",
-  "retourAucun": "No returns.",
-  "retourColTotal": "Returned total",
-  "retourColRembourse": "Refunded",
-  "retourQuantiteMax": "Returned quantity (max {max})",
-  "@retourQuantiteMax": {
-    "placeholders": {
-      "max": {
-        "type": "String"
-      }
-    }
-  },
-  "retourErreurVenteInconnue": "Sale not found.",
-  "retourErreurVenteAnnulee": "This sale is cancelled.",
-  "retourErreurLignes": "Enter at least one quantity to return.",
   "retourErreurQuantite": "Invalid quantity.",
   "retourErreurDepasse": "Quantity exceeds the sold quantity (including previous returns).",
   "retourErreurPeriode": "Closed period: return not possible.",
-  "retourCree": "Return {code} saved: {total} (refunded {rembourse}).",
-  "@retourCree": {
-    "placeholders": {
-      "code": {
-        "type": "String"
-      },
-      "total": {
-        "type": "String"
-      },
-      "rembourse": {
-        "type": "String"
-      }
-    }
-  },
-  "clientsTitre": "Customers",
   "clientNouveau": "New customer",
   "clientNom": "Name",
   "clientTelephone": "Phone",
   "clientAdresse": "Address",
   "clientEmail": "E-mail",
   "clientPoints": "Points",
-  "clientPlafond": "Credit limit",
-  "clientSolde": "Balance due",
-  "clientAucun": "No customers.",
-  "clientFiche": "Customer card",
-  "clientDocumentsOuverts": "Open documents",
-  "clientVersements": "Payments",
-  "clientNouveauVersement": "Receive a payment",
-  "fournisseursTitre": "Suppliers",
   "fournisseurNouveau": "New supplier",
-  "fournisseurAucun": "No suppliers.",
-  "fournisseurFiche": "Supplier card",
-  "fournisseurNouveauVersement": "Pay a supplier",
-  "versementsTitre": "Payments",
   "versementNouveau": "New payment",
-  "versementTiers": "Party",
-  "versementTiersClient": "Customer",
-  "versementTiersFournisseur": "Supplier",
   "versementMontant": "Amount",
   "versementMode": "Method",
-  "versementReference": "Reference",
-  "versementAucun": "No payments.",
-  "versementColSens": "Direction",
-  "versementColImpute": "Allocated",
-  "versementColNonImpute": "Unallocated",
   "versementVerrouille": "Locked (linked to return {retour})",
   "@versementVerrouille": {
     "placeholders": {
@@ -742,80 +409,21 @@
     }
   },
   "versementImputations": "Allocations (oldest first)",
-  "versementSupprimer": "Delete payment",
-  "versementConfirmerSuppression": "Delete payment {code}? Allocations will be reverted.",
-  "@versementConfirmerSuppression": {
-    "placeholders": {
-      "code": {
-        "type": "String"
-      }
-    }
-  },
   "versementErreurMontant": "Invalid amount.",
   "versementErreurMode": "Invalid payment method.",
   "versementErreurSysteme": "Not possible for the system party.",
   "versementErreurVerrouille": "Locked payment: linked to a return, it can neither be edited nor deleted.",
   "versementErreurInconnu": "Payment not found.",
   "versementErreurTiers": "Invalid party.",
-  "versementEnregistre": "Payment {code} saved: {impute} allocated, {reste} as advance.",
-  "@versementEnregistre": {
-    "placeholders": {
-      "code": {
-        "type": "String"
-      },
-      "impute": {
-        "type": "String"
-      },
-      "reste": {
-        "type": "String"
-      }
-    }
-  },
-  "sensEncaissement": "Receipt",
-  "sensDecaissement": "Disbursement",
   "tiersErreurNom": "Name is required.",
   "tiersErreurSysteme": "The system party cannot be changed.",
-  "achatsTitre": "Receipts / Purchases",
   "achatNouveau": "New receipt",
-  "achatSmartScan": "Smart Scan AI",
   "achatFournisseur": "Supplier",
-  "achatReference": "Invoice reference",
-  "achatMagasin": "Store",
-  "achatLignes": "Lines",
-  "achatPrixAchat": "Purchase price",
-  "achatNouveauPrixVente": "New selling price",
-  "achatVerse": "Paid",
-  "achatModePaiement": "Payment method",
-  "achatMettreAJourPrix": "Update product purchase prices",
   "achatAucun": "No receipts.",
-  "achatColTotal": "Total",
   "achatColVerse": "Paid",
   "achatColReste": "Due",
   "achatColSource": "Source",
   "achatColStatut": "Status",
-  "achatAnnuler": "Cancel receipt",
-  "achatConfirmerAnnulation": "Cancel receipt {code}? Stock will be taken out.",
-  "@achatConfirmerAnnulation": {
-    "placeholders": {
-      "code": {
-        "type": "String"
-      }
-    }
-  },
-  "achatEnregistre": "Receipt {code} saved: {total}, due {reste}.",
-  "@achatEnregistre": {
-    "placeholders": {
-      "code": {
-        "type": "String"
-      },
-      "total": {
-        "type": "String"
-      },
-      "reste": {
-        "type": "String"
-      }
-    }
-  },
   "achatErreurLignes": "Add at least one line.",
   "achatErreurQuantite": "Invalid quantity.",
   "achatErreurPrix": "Invalid price or amount.",
@@ -825,31 +433,8 @@
   "achatErreurAnnule": "Receipt already cancelled.",
   "achatErreurPeriode": "Closed period: cannot cancel.",
   "achatErreurStock": "Insufficient stock to cancel (already sold).",
-  "statutAchatValide": "Validated",
-  "statutAchatAnnule": "Cancelled",
-  "sourceManuel": "Manual",
   "sourceSmartScan": "Smart Scan",
-  "smartScanTitre": "Smart Scan AI — supplier invoice",
-  "smartScanIntro": "Photograph or pick the invoice (image or PDF): lines are recognised by the CaisseDZ server and matched with your catalogue.",
-  "smartScanQuota": "Quota: {restant} analysis(es) left out of {total}",
-  "@smartScanQuota": {
-    "placeholders": {
-      "restant": {
-        "type": "int"
-      },
-      "total": {
-        "type": "int"
-      }
-    }
-  },
-  "smartScanChoisir": "Choose an invoice",
-  "smartScanAnalyser": "Analyse",
-  "smartScanAnalyse": "Analysing…",
   "smartScanAucuneLigne": "No line recognised.",
-  "smartScanLigneNonRapprochee": "Unmatched",
-  "smartScanRapprocher": "Link a product",
-  "smartScanCreerEntree": "Create receipt",
-  "smartScanQuotaAtteint": "Smart Scan quota reached",
   "smartScanQuotaAtteintDetail": "You have used all your analyses. Request an offer to continue.",
   "smartScanDemandeOffre": "Request an offer",
   "smartScanEmail": "Your e-mail",
@@ -873,34 +458,19 @@
     }
   },
   "smartScanErreurFichier": "Invalid file.",
-  "gestionCaisseTitre": "Cash management",
-  "gestionCaisseOngletCaisses": "Registers",
-  "gestionCaisseOngletMouvements": "Movements",
-  "gestionCaisseOngletTransferts": "Register transfers",
   "caisseNouvelle": "New register",
   "caisseModifier": "Edit register",
   "caisseNom": "Name",
   "caisseType": "Type",
   "caisseMagasin": "Store",
-  "caisseSansMagasin": "No store",
   "caisseActive": "Active",
   "caisseInactive": "Inactive",
-  "caisseSoldeEspeces": "Cash balance",
-  "caisseSoldeTotal": "Total balance",
   "caisseTypePhysique": "Physical",
   "caisseTypeCompte": "Account",
   "caisseAucune": "No register.",
   "caisseDesactiver": "Deactivate",
-  "caisseActiver": "Activate",
-  "mouvementApport": "Cash in",
-  "mouvementDepense": "Expense",
-  "mouvementColType": "Type",
-  "mouvementColSens": "Direction",
   "mouvementColMontant": "Amount",
-  "mouvementColMode": "Method",
-  "mouvementColReference": "Reference",
   "mouvementAucun": "No movement.",
-  "mouvementToutesCaisses": "All registers",
   "mouvementCaisse": "Register",
   "mvtVente": "Sale",
   "mvtAnnulation": "Sale cancellation",
@@ -913,20 +483,8 @@
   "mvtFondInitial": "Opening",
   "mvtRetrait": "Closing withdrawal",
   "mvtEcart": "Closing variance",
-  "sensEntree": "In",
-  "sensSortie": "Out",
   "transfertCaisseNouveau": "New transfer",
-  "transfertCaisseSource": "Source register",
-  "transfertCaisseDestination": "Destination register",
   "transfertCaisseAucun": "No transfer.",
-  "transfertCaisseCree": "Transfer {code} recorded (2 movements).",
-  "@transfertCaisseCree": {
-    "placeholders": {
-      "code": {
-        "type": "String"
-      }
-    }
-  },
   "caisseErreurNom": "Name is required.",
   "caisseErreurType": "Invalid register type.",
   "caisseErreurMagasin": "Unknown store.",
@@ -938,71 +496,16 @@
   "caisseErreurMemeCaisse": "Choose two different registers.",
   "caisseErreurSolde": "Insufficient balance in the source register.",
   "caisseErreurSessionOuverte": "A session is open on this register.",
-  "cloturesTitre": "Z closures",
-  "clotureNouvelle": "Close (Z)",
-  "clotureApercuTitre": "Z closure — period preview",
   "cloturePeriode": "Period",
-  "clotureDebut": "Start",
-  "clotureFin": "End",
-  "clotureColVentes": "Sales",
-  "clotureColAnnulations": "Cancellations",
   "clotureColTotalVentes": "Sales total",
   "clotureColRemises": "Discounts",
   "clotureColRetours": "Returns",
   "clotureColEncaissements": "Receipts",
   "clotureColDecaissements": "Payments",
-  "clotureColHash": "Seal",
-  "clotureColUtilisateur": "User",
   "clotureAucune": "No closure.",
-  "clotureConfirmer": "Seal the closure",
-  "clotureCreee": "Closure {code} sealed. Hash: {hash}",
-  "@clotureCreee": {
-    "placeholders": {
-      "code": {
-        "type": "String"
-      },
-      "hash": {
-        "type": "String"
-      }
-    }
-  },
-  "clotureDetail": "Closure details",
-  "clotureParMode": "Receipts by method",
-  "clotureSoldes": "Register balances",
   "clotureDerniereVente": "Last receipt",
-  "clotureHashPrecedent": "Previous hash",
-  "clotureHash": "Hash",
-  "clotureVerifier": "Verify chain",
-  "clotureChaineOk": "Closure chain intact.",
-  "clotureChaineKo": "Chain altered from closure {code}.",
-  "@clotureChaineKo": {
-    "placeholders": {
-      "code": {
-        "type": "String"
-      }
-    }
-  },
-  "clotureErreurSession": "Close all register sessions before closing.",
   "clotureErreurRien": "Nothing to close since the last closure.",
-  "clotureAvertissementImmuable": "A closure is final: it can neither be modified nor deleted, and documents of the period can no longer be cancelled.",
-  "exportFiscalTitre": "Fiscal export",
-  "exportFiscalDebut": "From (dd/mm/yyyy)",
-  "exportFiscalFin": "To (dd/mm/yyyy)",
   "exportFiscalGenerer": "Generate archive",
-  "exportFiscalOk": "Archive saved: {chemin} ({ventes} sales, {clotures} closures, fingerprint verified).",
-  "@exportFiscalOk": {
-    "placeholders": {
-      "chemin": {
-        "type": "String"
-      },
-      "ventes": {
-        "type": "int"
-      },
-      "clotures": {
-        "type": "int"
-      }
-    }
-  },
   "exportFiscalErreurDates": "Invalid dates.",
   "exportFiscalVerifier": "Verify an archive",
   "exportFiscalVerifOk": "Valid archive: {ventes} sales, {clotures} closures.",
@@ -1024,29 +527,9 @@
       }
     }
   },
-  "exportFiscalPermission": "Permission “export data” required.",
-  "tableauBordTitre": "Dashboard",
-  "tableauBordCaJour": "Today's revenue",
-  "tableauBordTicketsJour": "Today's receipts",
-  "tableauBordPanierMoyen": "Average basket",
-  "tableauBordCaMois": "Month revenue",
-  "tableauBordSousSeuil": "Products below threshold",
-  "tableauBordCreances": "Customer receivables",
-  "tableauBordCa30Jours": "Revenue over the last 30 days",
-  "tableauBordPaiements": "Receipts by method (30 days)",
   "tableauBordTopProduits": "Top 5 products (30 days)",
-  "tableauBordCategories": "Sales by category (30 days)",
-  "tableauBordCaMensuel": "Monthly revenue (12 months)",
-  "tableauBordActualiser": "Refresh",
-  "situationTitre": "Reports",
-  "situationRapport": "Report",
-  "situationDu": "From (dd/mm/yyyy)",
-  "situationAu": "To (dd/mm/yyyy)",
-  "situationAfficher": "Show",
   "situationExportExcel": "Export to Excel",
   "situationApercuPdf": "PDF preview",
-  "situationAucuneLigne": "No data for the period.",
-  "situationDatesInvalides": "Invalid dates.",
   "situationExportOk": "File saved: {chemin}",
   "@situationExportOk": {
     "placeholders": {
@@ -1055,27 +538,6 @@
       }
     }
   },
-  "situationPeriode": "Period from {debut} to {fin}",
-  "@situationPeriode": {
-    "placeholders": {
-      "debut": {
-        "type": "String"
-      },
-      "fin": {
-        "type": "String"
-      }
-    }
-  },
-  "rapportVentesJour": "Sales by day",
-  "rapportVentesProduit": "Sales by product",
-  "rapportVentesCategorie": "Sales by category",
-  "rapportVentesClient": "Sales by customer",
-  "rapportVentesVendeur": "Sales by seller and register",
-  "rapportEncaissementsMode": "Receipts by method",
-  "rapportAchatsFournisseur": "Purchases by supplier",
-  "rapportRetours": "Customer returns",
-  "rapportEtatStock": "Valued stock status",
-  "rapportCreancesDettes": "Receivables and payables",
   "parametresErreurNom": "Shop name is required.",
   "parametresErreurValeur": "Invalid value.",
   "parametresErreurImprimanteType": "Invalid printer type.",
@@ -1174,19 +636,15 @@
   "dsMenuModules": "Modules menu (Ctrl M)",
   "dsReplier": "Collapse",
   "dsDeplier": "Expand",
-  "dsFavori": "Favourite",
   "dsAjouterFavoris": "Add to favourites",
   "dsRetirerFavoris": "Remove from favourites",
   "dsFavorisComplets": "Favourites full",
-  "dsAucunModule": "No module",
   "dsModules": "Modules",
   "dsRechercherModule": "Search a module…",
   "dsMagasin": "Store",
   "dsPagePrecedente": "Previous page",
   "dsPageSuivante": "Next page",
   "dsChoisirListe": "Choose from the list",
-  "dsRechercher": "Search",
-  "dsSelectionner": "Select",
   "dsAucunResultat": "No results",
   "dsGateLicenceTitre": "Available with the Advanced tier",
   "dsGateLicenceAction": "Upgrade to Advanced",
@@ -1256,7 +714,6 @@
   "dsCalcUtiliser": "Use the result",
   "dsBarcodeAucun": "This product has no barcode.",
   "dsBarcodeGenerer": "Generate",
-  "dsBarcodeFormatLibre": "Free format (not EAN-13)",
   "dsBarcodeCopier": "Copy",
   "dsBarcodeImprimer": "Print label",
   "moduleUtilisateurs": "Users",
@@ -2874,5 +2331,6 @@
   "pmActiveeLe": "Activated on {date}.",
   "pmGererLicence": "Manage the licence",
   "pmGererLicenceDesc": "Enter a new key or upgrade to the Advanced tier.",
-  "posPrixSousAchatInterdit": "Price below cost: forbidden by the settings."
+  "posPrixSousAchatInterdit": "Price below cost: forbidden by the settings.",
+  "alertesExpireDepuis": "Expired {n} d ago"
 }

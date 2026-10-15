@@ -3,19 +3,21 @@
 À recopier intégralement depuis `docs/spec/06_specification_reconstruction.md` §15 et à cocher au fil des lots.
 
 > 2026-10-14 : les sources sont reçues ; le réalignement est en cours (voir `docs/PLAN.md`, « Réalignement DS
-> v2.2 »). Les cases ci-dessous reprennent les exigences de la commande initiale, regroupées par lot ; la recopie
-> intégrale du §15 et son pointage écran par écran sont faits en phase D.
+> v2.2 »). Les cases par lot reprennent les exigences de la commande initiale ; la recopie intégrale du §15 et son
+> pointage figurent à la fin de ce fichier (phase D, 2026-10-15).
 >
 > Phase A / B faites : tokens exacts du DS v2.2 (clair / sombre, typographie, espacements) et composants du
 > bundle (66 + v2.2) traduits en Flutter avec les libellés FR / AR / EN.
 >
 > Phase C faite (2026-10-15) : shell et démarrage conformes au DS v2.2 et aux §4.3 à §5.4 de la spec.
+>
+> Phase D faite (2026-10-15) : les 17 écrans de modules et leurs dialogs suivent le DS v2.2 ; les alias historiques
+> des tokens sont supprimés.
 
 ## Socle (lot 0)
 - [x] Fenêtre Windows minimale 1000×700, barre de titre personnalisée
-- [ ] Tokens du DS v2.2 (clair + sombre) traduits en ThemeExtension — provisoire (DS absent)
-- [ ] Tous les widgets du DS disponibles et vérifiés dans la galerie (clair/sombre/RTL) — primitives, DsButton,
-      DsDataTable et dialogues faits ; widgets métier en attente du DS
+- [x] Tokens du DS v2.2 (clair + sombre) traduits en ThemeExtension, sans alias historiques
+- [x] Widgets du DS (bundle v2.2 + nouveaux composants) disponibles dans la galerie (clair / sombre / RTL)
 - [x] Base SQLite chiffrée SQLCipher, `foreign_keys ON`, migrations versionnées
 - [ ] Clé dérivée de la machine conforme §4.2 — provisoire
 - [ ] Schéma des 45 tables
@@ -42,7 +44,8 @@
       en 3 étapes, réinitialisation du mot de passe, désactivations bloquées (admin principal, rôle utilisé)
 - [ ] Crédit caissier (§7 `utilisateur.credit`) : règle de calcul absente de la spec
 - [x] Fidélité visuelle au DS v2.2 des écrans de démarrage (connexion, activation, configuration, Mon compte,
-      alertes, shell) ; les 17 écrans de modules suivent en phase D
+      alertes, shell) et des 17 écrans de modules (phase D)
+- [x] Alertes « Produits expirés » (date passée) et « Bientôt expirés » (≤ 30 jours), produits en stock
 
 ## Produits (lot 2)
 - [x] Catégories / sous-catégories (système protégé), produits en mode détaillé avec marge, colis, packs, remises
@@ -130,3 +133,79 @@
 - [x] Parcours FR/AR/EN, clair/sombre, Basic/Avancé, Admin/Caissier/Magasinier (`test/recette/parcours_test.dart`)
 - [x] Build Windows (configuration MSIX `msix_config`, script Inno Setup, procédure `docs/BUILD_WINDOWS.md`) — build
       non exécuté ici (poste Linux sans toolchain Windows)
+
+## Pointage intégral du §15 (phase D, 2026-10-15)
+
+Recopie de la checklist de la spec 06. `[x]` = fait et testé ; `[ ]` = manquant ou partiel (écart en note).
+
+### Socle
+- [ ] Windows desktop, offline-first, SQLite chiffré (clé dérivée machine), `.mid` sauvegardé avec la base —
+      fait, sauf : règle de dérivation de la clé provisoire ; la sauvegarde est re-chiffrée par mot de passe
+      (restaurable sur une autre machine) au lieu d'embarquer le `.mid`
+- [x] Schéma des 45 tables (§ 7) ou équivalent, migrations versionnées (v1 → v19), seed des éléments système
+- [ ] Colonnes d'audit + annulation douce avec motif sur les opérations — annulation douce partout ; « modifié le /
+      par » absents du schéma
+- [ ] Historique de toutes les actions — exports et sauvegardes pas encore journalisés
+- [x] Codification lisible par préfixes (§ 8.10)
+- [x] FR / AR (RTL) / EN, valeurs de listes stockées en français
+- [x] Activation par clé machine, paliers Basic / Avancé, mode démo (règle de clé ⚠️ provisoire)
+- [x] Login + « Rester connecté », mot de passe haché, Mon compte
+- [x] Séquence post-login : configuration initiale (1ʳᵉ fois) → alertes → menu modules → ouverture de caisse
+- [x] Sidebar par catégories filtrée par permissions et licence, favoris (7), cloche alertes, témoin Internet
+- [x] Rôles : 16 accès modules + 7 permissions d'action, admin unique non assignable
+
+### Stock
+- [x] Stock calculé uniquement depuis le journal des mouvements (règles de sens § 8.1)
+- [x] Garde de stock (jamais négatif) sur création / modification / annulation
+- [ ] 2ᵉ stock « nombre » (global + par produit), obligatoire quand actif — par produit fait ; pas de paramètre
+      global
+- [x] Petit / grand colis (pièces × prix)
+- [x] Multi-magasin : magasins ordonnés par utilisateur, répartition (§ 8.3), consultation limitée, distribution,
+      transfert
+- [x] Produits service sans stock, dates d'expiration, codes-barres multiples uniques, code-barres auto
+
+### Ventes
+- [x] Caisse multi-paniers persistants, réservation de stock entre paniers
+- [x] Scan code-barres (ajout direct, enchaînement, création si introuvable)
+- [x] Tous les raccourcis clavier (§ 9.1)
+- [x] Remises Par Produit / Par Montant conditionnelle datées, packs
+- [x] Modification de prix avec permission + règle vente sous achat
+- [x] Encaisser ticket / facture / enregistrer, paiement partiel (crédit), 5 modes dont Points, modes visibles
+      paramétrables
+- [x] Bonus fidélité (accrual, reprise à l'annulation)
+- [x] Ticket scellé + journal fiscal ; contenu verrouillé ; annulation avec motif, interdite en période clôturée
+      (période évaluée toutes caisses confondues, ⚠️ provisoire)
+- [x] Liste des paniers avec versé/reste dynamiques, détail, réimpression
+- [x] Retours client/fournisseur depuis le document d'origine, plafond de quantité, versement et mouvements liés
+
+### Achats
+- [x] Smart Scan multi-produits → magasin principal, mise à jour des prix, paiement partiel
+- [ ] Entrée rapide 1 produit payée intégralement (aussi depuis la caisse) — faite dans Entrées ; pas de
+      raccourci `E` depuis la caisse
+- [x] Smart Scan IA 3 étapes avec quota serveur, matching, création de produits (API serveur provisoire)
+- [x] Sorties exceptionnelles (Expiration / Don / Autre)
+- [x] Listes de besoin, ruptures, expirés
+
+### Tiers et argent
+- [x] Clients / fournisseurs avec stats calculées (crédit / dette), situations, versements et conventions de sens
+      (§ 8.5)
+- [x] Versements liés à un retour verrouillés
+- [x] Caisses (Physique / Compte), sessions (1 ouverte max par caisse), grand-livre (§ 8.6), mouvements manuels
+- [ ] Session obligatoire pour vente / achat / retour / versement — l'entrée d'achat ne l'exige pas encore
+- [x] Clôture de session (théorique / réel / écart), clôture Z scellée + PDF, export contrôle fiscal (pas de ligne
+      `CLOTURE_CAISSE` dans un `journal_fiscal` distinct)
+- [x] Transferts d'argent entre caisses (permission dédiée)
+
+### Pilotage
+- [x] Dashboard : 6 KPI, 5 graphiques, ruptures, sélecteur de période
+- [x] 10 rapports de situation
+- [x] Zakat (formule § 9.15)
+- [x] Alertes (§ 5.3)
+
+### Paramètres, sorties
+- [x] Paramètres Système / Boutique / Avancé (§ 9.16) — écarts listés dans `docs/PLAN.md` (Paramètres)
+- [ ] Impression thermique 4 types + facture A4 FR/AR + aperçus — pas d'aperçu du ticket dans Paramètres ;
+      Bluetooth via la file d'impression Windows
+- [x] Exports Excel de tous les modules + PDF dérivé de l'Excel
+- [ ] Sauvegarde zip, auto-backup, restauration — pas de sauvegarde automatique
+- [x] Catalogue partagé + cascade de recherche code-barres

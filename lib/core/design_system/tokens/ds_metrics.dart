@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Espacements du DS v2.2 (`--space-*`). Les alias `xs`…`xxxl` sont ceux des lots 0 à 9.
+/// Espacements du DS v2.2 (`--space-*`).
 @immutable
 class DsSpacing {
   const DsSpacing._();
@@ -17,16 +17,6 @@ class DsSpacing {
   static const double s10 = 40;
   static const double s12 = 48;
   static const double s16 = 64;
-
-  // Alias historiques.
-  static const double xxs = s0_5;
-  static const double xs = s1;
-  static const double sm = s2;
-  static const double md = s3;
-  static const double lg = s4;
-  static const double xl = s6;
-  static const double xxl = s8;
-  static const double xxxl = s12;
 }
 
 /// Rayons du DS v2.2 (`--radius-*`).
@@ -95,12 +85,6 @@ class DsMotion {
 
   /// Échelle d'enfoncement des boutons (`--press-scale`).
   static const double pressScale = .98;
-
-  // Alias historiques.
-  static const Duration rapide = fast;
-  static const Duration normal = base;
-  static const Duration lent = slow;
-  static const Curve courbe = standard;
 }
 
 /// Dimensions structurelles du DS v2.2 (contrôles, lignes, shell, page).

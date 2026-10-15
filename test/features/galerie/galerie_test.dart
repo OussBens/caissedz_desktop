@@ -40,11 +40,11 @@ void main() {
       duration: const Duration(milliseconds: 50),
     );
     await pompe(tester);
-    expect(tester.element(find.text('Couleurs')).ds.colors.fond, DsColors.clair.fond);
+    expect(tester.element(find.text('Couleurs')).ds.colors.surfaceApp, DsColors.clair.surfaceApp);
 
     await tester.tap(find.text('Sombre'));
     await pompe(tester);
-    expect(tester.element(find.text('Couleurs')).ds.colors.fond, DsColors.sombre.fond);
+    expect(tester.element(find.text('Couleurs')).ds.colors.surfaceApp, DsColors.sombre.surfaceApp);
     expect(await container.read(parametresAppRepositoryProvider).lire('theme'), 'sombre');
 
     await tester.tap(find.text('AR'));

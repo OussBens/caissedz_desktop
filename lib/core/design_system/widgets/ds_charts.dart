@@ -5,9 +5,6 @@ import '../tokens/ds_theme.dart';
 import 'ds_page.dart';
 import 'ds_primitives.dart';
 
-/// Point d'une série de graphique (compat lots 0 à 9).
-typedef DsPoint = ({String etiquette, double valeur});
-
 /// Série d'un [DsLineChart].
 class DsSerie {
   const DsSerie({required this.nom, required this.valeurs, this.couleur, this.pointillee = false});
@@ -276,22 +273,6 @@ class DsLineChart extends StatelessWidget {
   }
 }
 
-/// Courbe simple (compat) : une série sur des points étiquetés.
-class DsGraphiqueLignes extends StatelessWidget {
-  const DsGraphiqueLignes({super.key, required this.points, this.pasEtiquettes, this.nom = ''});
-  final List<DsPoint> points;
-  final int? pasEtiquettes;
-  final String nom;
-
-  @override
-  Widget build(BuildContext context) => DsLineChart(
-    etiquettes: [for (final p in points) p.etiquette],
-    series: [
-      DsSerie(nom: nom, valeurs: [for (final p in points) p.valeur]),
-    ],
-  );
-}
-
 /// Élément d'un [DsBarChart] / [DsRankedBars] / [DsDonutChart].
 class DsDonnee {
   const DsDonnee({required this.libelle, required this.valeur, this.legende, this.couleur});
@@ -392,37 +373,6 @@ class _DsBarChartState extends State<DsBarChart> {
         );
       },
     );
-  }
-}
-
-/// Barres verticales (compat) sur des points étiquetés.
-class DsGraphiqueBarres extends StatelessWidget {
-  const DsGraphiqueBarres({super.key, required this.barres, this.couleur, this.largeurEtiquette = 10});
-  final List<DsPoint> barres;
-  final Color? couleur;
-  final int largeurEtiquette;
-
-  @override
-  Widget build(BuildContext context) => DsBarChart(
-    donnees: [
-      for (final b in barres)
-        DsDonnee(
-          libelle: b.etiquette.length > largeurEtiquette
-              ? '${b.etiquette.substring(0, largeurEtiquette)}…'
-              : b.etiquette,
-          valeur: b.valeur,
-        ),
-    ],
-    miseEnAvant: barres.isEmpty ? null : _indexMax(barres),
-    couleur: couleur,
-  );
-
-  static int _indexMax(List<DsPoint> pts) {
-    var k = 0;
-    for (var i = 1; i < pts.length; i++) {
-      if (pts[i].valeur > pts[k].valeur) k = i;
-    }
-    return k;
   }
 }
 
@@ -703,20 +653,4 @@ class _DsDonutChartState extends State<DsDonutChart> {
       ],
     );
   }
-}
-
-/// Secteurs (compat) sur des points étiquetés.
-class DsGraphiqueSecteurs extends StatelessWidget {
-  const DsGraphiqueSecteurs({super.key, required this.parts, this.devise = 'DA', this.formatValeur});
-  final List<DsPoint> parts;
-  final String devise;
-  final String Function(double)? formatValeur;
-
-  @override
-  Widget build(BuildContext context) => DsDonutChart(
-    donnees: [for (final p in parts) DsDonnee(libelle: p.etiquette, valeur: p.valeur)],
-    taille: 150,
-    epaisseur: 20,
-    formater: formatValeur ?? (v) => formaterMontant(v, devise),
-  );
 }

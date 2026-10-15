@@ -10,9 +10,6 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'CaisseDZ';
-
-  @override
   String get shellNavGeneral => 'General';
 
   @override
@@ -25,43 +22,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shellNavGestion => 'Management';
 
   @override
-  String get shellFavoris => 'Favourites';
-
-  @override
-  String get shellFavorisVide => 'No favourites. Right-click a module to add it.';
-
-  @override
-  String get shellFavorisMax => '7 favourites maximum';
-
-  @override
-  String get shellFavorisAjouter => 'Add to favourites';
-
-  @override
-  String get shellFavorisRetirer => 'Remove from favourites';
-
-  @override
   String get shellMenuModules => 'Modules';
-
-  @override
-  String get shellMenuModulesRaccourci => 'Ctrl+M';
-
-  @override
-  String get shellMenuModulesRecherche => 'Search a module…';
-
-  @override
-  String get shellMenuModulesAucun => 'No matching module.';
-
-  @override
-  String get shellAlertes => 'Alerts';
-
-  @override
-  String get shellAlertesAucune => 'No alerts';
-
-  @override
-  String get shellInternetConnecte => 'Internet: online';
-
-  @override
-  String get shellInternetDeconnecte => 'Internet: offline';
 
   @override
   String get shellFenetreReduire => 'Minimise';
@@ -74,20 +35,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shellFenetreFermer => 'Close';
-
-  @override
-  String get shellReduireSidebar => 'Collapse menu';
-
-  @override
-  String get shellEtendreSidebar => 'Expand menu';
-
-  @override
-  String get shellGalerie => 'Design system gallery';
-
-  @override
-  String modulePlaceholder(String nom) {
-    return 'Module \"$nom\": available in a later batch.';
-  }
 
   @override
   String get moduleTableauBord => 'Dashboard';
@@ -147,12 +94,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get moduleParametres => 'Settings';
 
   @override
-  String get moduleMonCompte => 'My account';
-
-  @override
-  String get communOk => 'OK';
-
-  @override
   String get communAnnuler => 'Cancel';
 
   @override
@@ -171,36 +112,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get communRechercher => 'Search';
 
   @override
-  String get communChargement => 'Loading…';
-
-  @override
   String get communAucunResultat => 'No results';
-
-  @override
-  String get communSelectionner => 'Select';
 
   @override
   String get communTotal => 'Total';
 
   @override
-  String get communColonnes => 'Columns';
-
-  @override
   String get communToutSelectionner => 'Select all';
-
-  @override
-  String get communLignesParPage => 'Rows per page';
 
   @override
   String communPagination(int debut, int fin, int total) {
     return '$debut–$fin of $total';
   }
-
-  @override
-  String get communPagePrecedente => 'Previous page';
-
-  @override
-  String get communPageSuivante => 'Next page';
 
   @override
   String communSelectionnes(int n) {
@@ -248,22 +171,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get activationBouton => 'Activate';
 
   @override
-  String get activationDemo => 'Try the demo mode';
-
-  @override
-  String get activationDemoAide =>
-      'Demo mode unlocks every feature (Advanced licence) with the demo / demo account. Data entered is not meant for production.';
-
-  @override
-  String get activationErreurFormat => 'The key must contain exactly 64 hexadecimal characters (0-9, a-f).';
-
-  @override
   String get activationErreurInconnue => 'Invalid key for this computer — check the identifier you sent.';
-
-  @override
-  String activationReussie(String niveau) {
-    return '$niveau licence activated.';
-  }
 
   @override
   String get licenceBasic => 'Basic';
@@ -280,14 +188,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get licenceRequise => 'Feature available with the Advanced licence';
-
-  @override
   String get licenceRequiseDetail =>
       'Your current licence is Basic. Activate an Advanced licence to access this module.';
-
-  @override
-  String get licenceGererCle => 'Activate another key';
 
   @override
   String get connexionTitre => 'Welcome back';
@@ -326,21 +228,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get configTitre => 'Welcome to CaisseDZ';
 
   @override
-  String configEtape(int n, int total) {
-    return 'Step $n of $total';
-  }
-
-  @override
   String get configEtapeBoutique => 'Shop';
 
   @override
-  String get configEtapeAdmin => 'Administrator';
-
-  @override
   String get configEtapeVente => 'Margin and stock';
-
-  @override
-  String get configEtapeRecap => 'Summary';
 
   @override
   String get configBoutiqueNom => 'Shop name';
@@ -359,15 +250,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get configBoutiqueEmail => 'E-mail';
-
-  @override
-  String get configAdminIntro => 'This administrator account will have every right. Choose a username and a password.';
-
-  @override
-  String get configAdminNom => 'Display name';
-
-  @override
-  String get configAdminMotDePasseConfirmation => 'Confirm password';
 
   @override
   String get configMarge => 'Default margin';
@@ -389,9 +271,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get configLangue => 'Language';
-
-  @override
-  String get configRecapIntro => 'Check the information before finishing. You can change it later in Settings.';
 
   @override
   String get configPrecedent => 'Back';
@@ -424,19 +303,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get configErreurNombre => 'Invalid number.';
 
   @override
-  String get configReussie => 'Setup complete. Sign in with your administrator account.';
-
-  @override
   String get compteTitre => 'My account';
-
-  @override
-  String get compteRole => 'Role';
-
-  @override
-  String get compteIdentifiantActuel => 'Current username';
-
-  @override
-  String get compteNouvelIdentifiant => 'New username';
 
   @override
   String get compteMotDePasseActuel => 'Current password';
@@ -468,33 +335,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get compteDemoLectureSeule => 'The demo account cannot be modified.';
 
   @override
-  String get accesRefuseTitre => 'Access denied';
-
-  @override
-  String accesRefuseMessage(String role, String module) {
-    return 'Your role \"$role\" cannot access the \"$module\" module. Ask an administrator.';
-  }
-
-  @override
-  String get accesRefuseRetour => 'Back to dashboard';
-
-  @override
   String get permVoirPrixAchat => 'View purchase price';
 
   @override
-  String get roleAdmin => 'Admin';
-
-  @override
-  String get roleCaissier => 'Cashier';
-
-  @override
-  String get roleMagasinier => 'Storekeeper';
-
-  @override
   String get shellBandeauDemo => 'Demo mode — data is not meant for production';
-
-  @override
-  String get shellMenuUtilisateur => 'User menu';
 
   @override
   String get shellVerrouille => 'Advanced licence only';
@@ -503,16 +347,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shellAccesRestreint => 'Not allowed for your role';
 
   @override
-  String get produitsTitre => 'Products';
-
-  @override
   String get produitsOngletProduits => 'Products';
 
   @override
   String get produitsOngletCategories => 'Categories';
-
-  @override
-  String get produitsOngletColis => 'Cases';
 
   @override
   String get produitsOngletPacks => 'Bundles';
@@ -522,21 +360,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get produitsNouveau => 'New product';
-
-  @override
-  String get produitsModeIa => 'AI mode';
-
-  @override
-  String get produitsImporter => 'Import Excel';
-
-  @override
-  String get produitsEtiquettes => 'Labels';
-
-  @override
-  String get produitsSynchro => 'Sync catalogue';
-
-  @override
-  String get produitsRecherche => 'Search by name, code or barcode…';
 
   @override
   String get produitsColCode => 'Code';
@@ -557,12 +380,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get produitsColPrixVente => 'Selling price';
 
   @override
-  String get produitsColMarge => 'Margin %';
-
-  @override
-  String get produitsColActif => 'Active';
-
-  @override
   String get produitsColStock => 'Stock';
 
   @override
@@ -570,21 +387,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get produitModifier => 'Edit product';
-
-  @override
-  String get produitDesactiver => 'Deactivate';
-
-  @override
-  String get produitActiver => 'Activate';
-
-  @override
-  String get produitGenererCodeBarres => 'Generate an internal barcode';
-
-  @override
-  String get produitChampDesignation => 'Name';
-
-  @override
-  String get produitChampCodeBarres => 'Barcode (EAN-13 or internal)';
 
   @override
   String get produitChampCategorie => 'Category';
@@ -599,28 +401,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get produitChampPrixVente => 'Selling price';
 
   @override
-  String get produitChampMarge => 'Margin (%)';
-
-  @override
   String get produitChampUnite => 'Unit';
-
-  @override
-  String get produitChampTva => 'VAT (%)';
-
-  @override
-  String get produitChampSeuil => 'Alert threshold (empty = global)';
-
-  @override
-  String get produitChampSuiviNombre => 'Track a second \"count\" stock (pieces)';
-
-  @override
-  String get produitChampSuiviNombreAide => 'The product sells by unit or by piece; stock is kept in both.';
-
-  @override
-  String get produitChampNombreParUnite => 'Pieces per unit';
-
-  @override
-  String get produitPrixAuto => 'The selling price is computed from the margin if left empty.';
 
   @override
   String get produitErreurDesignation => 'Name is required.';
@@ -638,22 +419,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get produitErreurQuantite => 'Invalid quantity.';
 
   @override
-  String produitCree(String nom, String code) {
-    return 'Product \"$nom\" created ($code).';
-  }
-
-  @override
-  String get iaTitre => 'New product in AI mode';
-
-  @override
   String get iaIntro =>
       'Scan or type a barcode: the product sheet is looked up in CaisseDZ, then Mantouj, Open Food Facts and Open Beauty Facts.';
 
   @override
   String get iaRechercher => 'Search';
-
-  @override
-  String get iaRechercheEnCours => 'Searching…';
 
   @override
   String get iaAucun => 'No sheet found for this barcode: switch to detailed entry.';
@@ -662,12 +432,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String iaTrouve(String source) {
     return 'Sheet found via $source';
   }
-
-  @override
-  String get iaMarque => 'Brand';
-
-  @override
-  String get iaCreer => 'Create product';
 
   @override
   String get iaSaisieDetaillee => 'Detailed entry';
@@ -681,28 +445,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get importChoisirFichier => 'Choose an .xlsx file';
-
-  @override
-  String get importTelechargerModele => 'Save template';
-
-  @override
-  String importLignesValides(int n) {
-    return '$n valid row(s)';
-  }
-
-  @override
-  String importLignesInvalides(int n) {
-    return '$n skipped row(s)';
-  }
-
-  @override
-  String get importColLigne => 'Row';
-
-  @override
-  String get importColErreur => 'Error';
-
-  @override
-  String get importLancer => 'Import';
 
   @override
   String importResultat(int importees, int ignorees) {
@@ -724,36 +466,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get importErreurPrix => 'Invalid price';
 
   @override
-  String get etiquettesTitre => 'Print labels';
-
-  @override
-  String get etiquettesQuantite => 'Quantity';
-
-  @override
-  String get etiquettesFormatA4 => 'A4 sheet';
-
-  @override
-  String get etiquettesFormatRouleau => 'Roll';
-
-  @override
-  String get etiquettesAfficherPrix => 'Show price';
-
-  @override
-  String get etiquettesQr => 'QR code instead of barcode';
-
-  @override
-  String get etiquettesGenerer => 'Generate PDF';
-
-  @override
-  String get etiquettesAucuneSelection => 'Select at least one product in the list.';
-
-  @override
   String synchroResultat(int envoyes, int recus) {
     return 'Sync: $envoyes sent, $recus updated.';
   }
-
-  @override
-  String get synchroNonConfiguree => 'Set the CaisseDZ server URL in Settings to sync the catalogue.';
 
   @override
   String synchroErreur(String detail) {
@@ -770,48 +485,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get categorieNom => 'Name';
 
   @override
-  String get categorieRenommer => 'Rename';
-
-  @override
-  String get categorieSupprimer => 'Delete';
-
-  @override
-  String get categorieSousCategories => 'Sub-categories';
-
-  @override
   String get categorieErreurSysteme => 'The system category cannot be changed.';
 
   @override
   String get categorieErreurUtilisee => 'Products are attached to this category.';
 
   @override
-  String categorieConfirmerSuppression(String nom) {
-    return 'Delete category \"$nom\" and its sub-categories?';
-  }
-
-  @override
-  String get colisNouveau => 'New case';
-
-  @override
-  String get colisProduit => 'Product';
-
-  @override
-  String get colisQuantite => 'Units per case';
-
-  @override
-  String get colisAucun => 'No cases.';
-
-  @override
   String get packNouveau => 'New bundle';
-
-  @override
-  String get packLignes => 'Contents';
-
-  @override
-  String get packAjouterProduit => 'Add a product';
-
-  @override
-  String get packAucun => 'No bundles.';
 
   @override
   String get packErreurLignes => 'Add at least one product to the bundle.';
@@ -823,34 +503,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get remiseType => 'Type';
 
   @override
-  String get remiseTypePourcentage => 'Percentage';
-
-  @override
-  String get remiseTypeMontant => 'Amount';
-
-  @override
   String get remiseValeur => 'Value';
-
-  @override
-  String get remisePortee => 'Scope';
-
-  @override
-  String get remisePorteeGlobale => 'All products';
-
-  @override
-  String get remisePorteeCategorie => 'A category';
-
-  @override
-  String get remisePorteeProduit => 'A product';
-
-  @override
-  String get remiseDebut => 'Start';
-
-  @override
-  String get remiseFin => 'End';
-
-  @override
-  String get remiseAucune => 'No discounts.';
 
   @override
   String get communNouveau => 'New';
@@ -860,9 +513,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get communActif => 'Active';
-
-  @override
-  String get communInactif => 'Inactive';
 
   @override
   String get communOui => 'Yes';
@@ -877,22 +527,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get communApercu => 'Preview';
 
   @override
-  String get communImprimer => 'Print';
-
-  @override
   String get communAucune => 'None';
 
   @override
   String get stockTitre => 'Stock';
-
-  @override
-  String get stockOngletNiveaux => 'Levels';
-
-  @override
-  String get stockOngletJournal => 'Movements journal';
-
-  @override
-  String get stockColProduit => 'Product';
 
   @override
   String get stockColMagasin => 'Store';
@@ -901,13 +539,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get stockColQuantite => 'Quantity';
 
   @override
-  String get stockColNombre => 'Count (pieces)';
-
-  @override
   String get stockColSeuil => 'Threshold';
-
-  @override
-  String get stockColDate => 'Date';
 
   @override
   String get stockColType => 'Type';
@@ -916,34 +548,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get stockColMotif => 'Reason';
 
   @override
-  String get stockColReference => 'Reference';
-
-  @override
   String get stockColUtilisateur => 'User';
 
   @override
-  String get stockColCommentaire => 'Comment';
-
-  @override
   String get stockColValeur => 'Value (cost)';
-
-  @override
-  String get stockTousMagasins => 'All stores';
-
-  @override
-  String get stockSousSeuil => 'Below threshold';
-
-  @override
-  String get stockEntreeManuelle => 'Manual receipt';
-
-  @override
-  String get stockInventaire => 'Stocktake';
-
-  @override
-  String get stockQuantiteConstatee => 'Counted quantity';
-
-  @override
-  String get stockNombreConstate => 'Counted pieces';
 
   @override
   String get stockAucunMouvement => 'No movements.';
@@ -997,86 +605,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get typeMouvementInitial => 'Opening stock';
 
   @override
-  String get magasinsTitre => 'Stores';
-
-  @override
-  String get magasinNouveau => 'New store';
-
-  @override
-  String get magasinNom => 'Name';
-
-  @override
-  String get magasinAdresse => 'Address';
-
-  @override
   String get magasinPrincipal => 'Main';
-
-  @override
-  String get magasinMesMagasins => 'My stores (the first is the main one)';
-
-  @override
-  String get magasinAjouterAuxMiens => 'Add to my stores';
-
-  @override
-  String get magasinRetirerDesMiens => 'Remove from my stores';
-
-  @override
-  String get magasinDefinirPrincipal => 'Set as main';
-
-  @override
-  String get transfertsTitre => 'Transfers';
-
-  @override
-  String get transfertNouveau => 'New transfer';
-
-  @override
-  String get transfertSource => 'Source store';
-
-  @override
-  String get transfertDestination => 'Destination store';
-
-  @override
-  String get transfertLignes => 'Lines';
-
-  @override
-  String get transfertAjouterLigne => 'Add a product';
-
-  @override
-  String get transfertAucun => 'No transfers.';
-
-  @override
-  String transfertCree(String code) {
-    return 'Transfer $code saved: 2 movements per line.';
-  }
-
-  @override
-  String get besoinsTitre => 'Needs';
-
-  @override
-  String get besoinNouveau => 'New need';
-
-  @override
-  String get besoinGenerer => 'Generate below threshold';
-
-  @override
-  String besoinGeneres(int n) {
-    return '$n need(s) generated.';
-  }
-
-  @override
-  String get besoinStatut => 'Status';
-
-  @override
-  String get besoinPasserCommande => 'Mark as Ordered';
-
-  @override
-  String get besoinPasserDisponible => 'Mark as Available';
-
-  @override
-  String get besoinRemettreAttente => 'Back to Pending';
-
-  @override
-  String get besoinAucun => 'No needs.';
 
   @override
   String get statutBesoinEnAttente => 'Pending';
@@ -1086,24 +615,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get statutBesoinDisponible => 'Available';
-
-  @override
-  String get sortiesTitre => 'Outgoings';
-
-  @override
-  String get sortiesOngletSorties => 'Outgoings';
-
-  @override
-  String get sortiesOngletVentes => 'Sales';
-
-  @override
-  String get sortieNouvelle => 'New outflow';
-
-  @override
-  String get sortieMotif => 'Reason';
-
-  @override
-  String get sortieAucune => 'No outflows.';
 
   @override
   String get motifCasse => 'Breakage';
@@ -1122,14 +633,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get motifEchantillon => 'Sample';
-
-  @override
-  String communLignes(int n) {
-    return '$n line(s)';
-  }
-
-  @override
-  String get communCommentaire => 'Comment';
 
   @override
   String get communDate => 'Date';
@@ -1325,45 +828,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get modePaiementPoints => 'Points';
 
   @override
-  String get ventesTitre => 'Sales';
-
-  @override
-  String get ventesColTicket => 'Receipt';
-
-  @override
-  String get ventesColClient => 'Customer';
-
-  @override
-  String get ventesColNet => 'Net';
-
-  @override
-  String get ventesColVerse => 'Paid';
-
-  @override
-  String get ventesColReste => 'Due';
-
-  @override
-  String get ventesColStatut => 'Status';
-
-  @override
-  String get ventesColCaisse => 'Register';
-
-  @override
-  String get ventesColVendeur => 'Seller';
-
-  @override
   String get ventesAucune => 'No sales.';
-
-  @override
-  String get ventesVoirTicket => 'View receipt';
-
-  @override
-  String get ventesAnnuler => 'Cancel sale';
-
-  @override
-  String ventesConfirmerAnnulation(String code) {
-    return 'Cancel sale $code? Stock and points are restored; the sealed receipt is kept.';
-  }
 
   @override
   String get ventesCreerRetour => 'Create a return';
@@ -1380,73 +845,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get ventesFiltreToutes => 'All';
-
-  @override
-  String get ventesFiltreValidees => 'Completed';
-
-  @override
-  String get ventesFiltreAnnulees => 'Cancelled';
-
-  @override
-  String get ventesFiltreCredit => 'On credit';
-
-  @override
-  String get statutVenteValidee => 'Completed';
-
-  @override
-  String get statutVenteAnnulee => 'Cancelled';
-
-  @override
-  String ticketDetail(String code) {
-    return 'Receipt $code';
-  }
-
-  @override
-  String get retoursTitre => 'Returns';
-
-  @override
-  String get retourNouveau => 'New return';
-
-  @override
-  String get retourVente => 'Original sale';
-
-  @override
-  String get retourMotif => 'Reason';
-
-  @override
-  String get retourRembourser => 'Refunded amount';
-
-  @override
-  String get retourModeRemboursement => 'Refund method';
-
-  @override
-  String get retourAvoir => 'The rest is credited to the customer account.';
-
-  @override
-  String get retourAucun => 'No returns.';
-
-  @override
-  String get retourColTotal => 'Returned total';
-
-  @override
-  String get retourColRembourse => 'Refunded';
-
-  @override
-  String retourQuantiteMax(String max) {
-    return 'Returned quantity (max $max)';
-  }
-
-  @override
-  String get retourErreurVenteInconnue => 'Sale not found.';
-
-  @override
-  String get retourErreurVenteAnnulee => 'This sale is cancelled.';
-
-  @override
-  String get retourErreurLignes => 'Enter at least one quantity to return.';
-
-  @override
   String get retourErreurQuantite => 'Invalid quantity.';
 
   @override
@@ -1454,14 +852,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get retourErreurPeriode => 'Closed period: return not possible.';
-
-  @override
-  String retourCree(String code, String total, String rembourse) {
-    return 'Return $code saved: $total (refunded $rembourse).';
-  }
-
-  @override
-  String get clientsTitre => 'Customers';
 
   @override
   String get clientNouveau => 'New customer';
@@ -1482,55 +872,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clientPoints => 'Points';
 
   @override
-  String get clientPlafond => 'Credit limit';
-
-  @override
-  String get clientSolde => 'Balance due';
-
-  @override
-  String get clientAucun => 'No customers.';
-
-  @override
-  String get clientFiche => 'Customer card';
-
-  @override
-  String get clientDocumentsOuverts => 'Open documents';
-
-  @override
-  String get clientVersements => 'Payments';
-
-  @override
-  String get clientNouveauVersement => 'Receive a payment';
-
-  @override
-  String get fournisseursTitre => 'Suppliers';
-
-  @override
   String get fournisseurNouveau => 'New supplier';
 
   @override
-  String get fournisseurAucun => 'No suppliers.';
-
-  @override
-  String get fournisseurFiche => 'Supplier card';
-
-  @override
-  String get fournisseurNouveauVersement => 'Pay a supplier';
-
-  @override
-  String get versementsTitre => 'Payments';
-
-  @override
   String get versementNouveau => 'New payment';
-
-  @override
-  String get versementTiers => 'Party';
-
-  @override
-  String get versementTiersClient => 'Customer';
-
-  @override
-  String get versementTiersFournisseur => 'Supplier';
 
   @override
   String get versementMontant => 'Amount';
@@ -1539,35 +884,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get versementMode => 'Method';
 
   @override
-  String get versementReference => 'Reference';
-
-  @override
-  String get versementAucun => 'No payments.';
-
-  @override
-  String get versementColSens => 'Direction';
-
-  @override
-  String get versementColImpute => 'Allocated';
-
-  @override
-  String get versementColNonImpute => 'Unallocated';
-
-  @override
   String versementVerrouille(String retour) {
     return 'Locked (linked to return $retour)';
   }
 
   @override
   String get versementImputations => 'Allocations (oldest first)';
-
-  @override
-  String get versementSupprimer => 'Delete payment';
-
-  @override
-  String versementConfirmerSuppression(String code) {
-    return 'Delete payment $code? Allocations will be reverted.';
-  }
 
   @override
   String get versementErreurMontant => 'Invalid amount.';
@@ -1588,63 +910,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get versementErreurTiers => 'Invalid party.';
 
   @override
-  String versementEnregistre(String code, String impute, String reste) {
-    return 'Payment $code saved: $impute allocated, $reste as advance.';
-  }
-
-  @override
-  String get sensEncaissement => 'Receipt';
-
-  @override
-  String get sensDecaissement => 'Disbursement';
-
-  @override
   String get tiersErreurNom => 'Name is required.';
 
   @override
   String get tiersErreurSysteme => 'The system party cannot be changed.';
 
   @override
-  String get achatsTitre => 'Receipts / Purchases';
-
-  @override
   String get achatNouveau => 'New receipt';
-
-  @override
-  String get achatSmartScan => 'Smart Scan AI';
 
   @override
   String get achatFournisseur => 'Supplier';
 
   @override
-  String get achatReference => 'Invoice reference';
-
-  @override
-  String get achatMagasin => 'Store';
-
-  @override
-  String get achatLignes => 'Lines';
-
-  @override
-  String get achatPrixAchat => 'Purchase price';
-
-  @override
-  String get achatNouveauPrixVente => 'New selling price';
-
-  @override
-  String get achatVerse => 'Paid';
-
-  @override
-  String get achatModePaiement => 'Payment method';
-
-  @override
-  String get achatMettreAJourPrix => 'Update product purchase prices';
-
-  @override
   String get achatAucun => 'No receipts.';
-
-  @override
-  String get achatColTotal => 'Total';
 
   @override
   String get achatColVerse => 'Paid';
@@ -1657,19 +935,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get achatColStatut => 'Status';
-
-  @override
-  String get achatAnnuler => 'Cancel receipt';
-
-  @override
-  String achatConfirmerAnnulation(String code) {
-    return 'Cancel receipt $code? Stock will be taken out.';
-  }
-
-  @override
-  String achatEnregistre(String code, String total, String reste) {
-    return 'Receipt $code saved: $total, due $reste.';
-  }
 
   @override
   String get achatErreurLignes => 'Add at least one line.';
@@ -1699,52 +964,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get achatErreurStock => 'Insufficient stock to cancel (already sold).';
 
   @override
-  String get statutAchatValide => 'Validated';
-
-  @override
-  String get statutAchatAnnule => 'Cancelled';
-
-  @override
-  String get sourceManuel => 'Manual';
-
-  @override
   String get sourceSmartScan => 'Smart Scan';
 
   @override
-  String get smartScanTitre => 'Smart Scan AI — supplier invoice';
-
-  @override
-  String get smartScanIntro =>
-      'Photograph or pick the invoice (image or PDF): lines are recognised by the CaisseDZ server and matched with your catalogue.';
-
-  @override
-  String smartScanQuota(int restant, int total) {
-    return 'Quota: $restant analysis(es) left out of $total';
-  }
-
-  @override
-  String get smartScanChoisir => 'Choose an invoice';
-
-  @override
-  String get smartScanAnalyser => 'Analyse';
-
-  @override
-  String get smartScanAnalyse => 'Analysing…';
-
-  @override
   String get smartScanAucuneLigne => 'No line recognised.';
-
-  @override
-  String get smartScanLigneNonRapprochee => 'Unmatched';
-
-  @override
-  String get smartScanRapprocher => 'Link a product';
-
-  @override
-  String get smartScanCreerEntree => 'Create receipt';
-
-  @override
-  String get smartScanQuotaAtteint => 'Smart Scan quota reached';
 
   @override
   String get smartScanQuotaAtteintDetail => 'You have used all your analyses. Request an offer to continue.';
@@ -1778,18 +1001,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get smartScanErreurFichier => 'Invalid file.';
 
   @override
-  String get gestionCaisseTitre => 'Cash management';
-
-  @override
-  String get gestionCaisseOngletCaisses => 'Registers';
-
-  @override
-  String get gestionCaisseOngletMouvements => 'Movements';
-
-  @override
-  String get gestionCaisseOngletTransferts => 'Register transfers';
-
-  @override
   String get caisseNouvelle => 'New register';
 
   @override
@@ -1805,19 +1016,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get caisseMagasin => 'Store';
 
   @override
-  String get caisseSansMagasin => 'No store';
-
-  @override
   String get caisseActive => 'Active';
 
   @override
   String get caisseInactive => 'Inactive';
-
-  @override
-  String get caisseSoldeEspeces => 'Cash balance';
-
-  @override
-  String get caisseSoldeTotal => 'Total balance';
 
   @override
   String get caisseTypePhysique => 'Physical';
@@ -1832,34 +1034,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get caisseDesactiver => 'Deactivate';
 
   @override
-  String get caisseActiver => 'Activate';
-
-  @override
-  String get mouvementApport => 'Cash in';
-
-  @override
-  String get mouvementDepense => 'Expense';
-
-  @override
-  String get mouvementColType => 'Type';
-
-  @override
-  String get mouvementColSens => 'Direction';
-
-  @override
   String get mouvementColMontant => 'Amount';
 
   @override
-  String get mouvementColMode => 'Method';
-
-  @override
-  String get mouvementColReference => 'Reference';
-
-  @override
   String get mouvementAucun => 'No movement.';
-
-  @override
-  String get mouvementToutesCaisses => 'All registers';
 
   @override
   String get mouvementCaisse => 'Register';
@@ -1898,27 +1076,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mvtEcart => 'Closing variance';
 
   @override
-  String get sensEntree => 'In';
-
-  @override
-  String get sensSortie => 'Out';
-
-  @override
   String get transfertCaisseNouveau => 'New transfer';
 
   @override
-  String get transfertCaisseSource => 'Source register';
-
-  @override
-  String get transfertCaisseDestination => 'Destination register';
-
-  @override
   String get transfertCaisseAucun => 'No transfer.';
-
-  @override
-  String transfertCaisseCree(String code) {
-    return 'Transfer $code recorded (2 movements).';
-  }
 
   @override
   String get caisseErreurNom => 'Name is required.';
@@ -1954,28 +1115,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get caisseErreurSessionOuverte => 'A session is open on this register.';
 
   @override
-  String get cloturesTitre => 'Z closures';
-
-  @override
-  String get clotureNouvelle => 'Close (Z)';
-
-  @override
-  String get clotureApercuTitre => 'Z closure — period preview';
-
-  @override
   String get cloturePeriode => 'Period';
-
-  @override
-  String get clotureDebut => 'Start';
-
-  @override
-  String get clotureFin => 'End';
-
-  @override
-  String get clotureColVentes => 'Sales';
-
-  @override
-  String get clotureColAnnulations => 'Cancellations';
 
   @override
   String get clotureColTotalVentes => 'Sales total';
@@ -1993,77 +1133,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clotureColDecaissements => 'Payments';
 
   @override
-  String get clotureColHash => 'Seal';
-
-  @override
-  String get clotureColUtilisateur => 'User';
-
-  @override
   String get clotureAucune => 'No closure.';
-
-  @override
-  String get clotureConfirmer => 'Seal the closure';
-
-  @override
-  String clotureCreee(String code, String hash) {
-    return 'Closure $code sealed. Hash: $hash';
-  }
-
-  @override
-  String get clotureDetail => 'Closure details';
-
-  @override
-  String get clotureParMode => 'Receipts by method';
-
-  @override
-  String get clotureSoldes => 'Register balances';
 
   @override
   String get clotureDerniereVente => 'Last receipt';
 
   @override
-  String get clotureHashPrecedent => 'Previous hash';
-
-  @override
-  String get clotureHash => 'Hash';
-
-  @override
-  String get clotureVerifier => 'Verify chain';
-
-  @override
-  String get clotureChaineOk => 'Closure chain intact.';
-
-  @override
-  String clotureChaineKo(String code) {
-    return 'Chain altered from closure $code.';
-  }
-
-  @override
-  String get clotureErreurSession => 'Close all register sessions before closing.';
-
-  @override
   String get clotureErreurRien => 'Nothing to close since the last closure.';
 
   @override
-  String get clotureAvertissementImmuable =>
-      'A closure is final: it can neither be modified nor deleted, and documents of the period can no longer be cancelled.';
-
-  @override
-  String get exportFiscalTitre => 'Fiscal export';
-
-  @override
-  String get exportFiscalDebut => 'From (dd/mm/yyyy)';
-
-  @override
-  String get exportFiscalFin => 'To (dd/mm/yyyy)';
-
-  @override
   String get exportFiscalGenerer => 'Generate archive';
-
-  @override
-  String exportFiscalOk(String chemin, int ventes, int clotures) {
-    return 'Archive saved: $chemin ($ventes sales, $clotures closures, fingerprint verified).';
-  }
 
   @override
   String get exportFiscalErreurDates => 'Invalid dates.';
@@ -2082,61 +1161,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get exportFiscalPermission => 'Permission “export data” required.';
-
-  @override
-  String get tableauBordTitre => 'Dashboard';
-
-  @override
-  String get tableauBordCaJour => 'Today\'s revenue';
-
-  @override
-  String get tableauBordTicketsJour => 'Today\'s receipts';
-
-  @override
-  String get tableauBordPanierMoyen => 'Average basket';
-
-  @override
-  String get tableauBordCaMois => 'Month revenue';
-
-  @override
-  String get tableauBordSousSeuil => 'Products below threshold';
-
-  @override
-  String get tableauBordCreances => 'Customer receivables';
-
-  @override
-  String get tableauBordCa30Jours => 'Revenue over the last 30 days';
-
-  @override
-  String get tableauBordPaiements => 'Receipts by method (30 days)';
-
-  @override
   String get tableauBordTopProduits => 'Top 5 products (30 days)';
-
-  @override
-  String get tableauBordCategories => 'Sales by category (30 days)';
-
-  @override
-  String get tableauBordCaMensuel => 'Monthly revenue (12 months)';
-
-  @override
-  String get tableauBordActualiser => 'Refresh';
-
-  @override
-  String get situationTitre => 'Reports';
-
-  @override
-  String get situationRapport => 'Report';
-
-  @override
-  String get situationDu => 'From (dd/mm/yyyy)';
-
-  @override
-  String get situationAu => 'To (dd/mm/yyyy)';
-
-  @override
-  String get situationAfficher => 'Show';
 
   @override
   String get situationExportExcel => 'Export to Excel';
@@ -2145,50 +1170,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get situationApercuPdf => 'PDF preview';
 
   @override
-  String get situationAucuneLigne => 'No data for the period.';
-
-  @override
-  String get situationDatesInvalides => 'Invalid dates.';
-
-  @override
   String situationExportOk(String chemin) {
     return 'File saved: $chemin';
   }
-
-  @override
-  String situationPeriode(String debut, String fin) {
-    return 'Period from $debut to $fin';
-  }
-
-  @override
-  String get rapportVentesJour => 'Sales by day';
-
-  @override
-  String get rapportVentesProduit => 'Sales by product';
-
-  @override
-  String get rapportVentesCategorie => 'Sales by category';
-
-  @override
-  String get rapportVentesClient => 'Sales by customer';
-
-  @override
-  String get rapportVentesVendeur => 'Sales by seller and register';
-
-  @override
-  String get rapportEncaissementsMode => 'Receipts by method';
-
-  @override
-  String get rapportAchatsFournisseur => 'Purchases by supplier';
-
-  @override
-  String get rapportRetours => 'Customer returns';
-
-  @override
-  String get rapportEtatStock => 'Valued stock status';
-
-  @override
-  String get rapportCreancesDettes => 'Receivables and payables';
 
   @override
   String get parametresErreurNom => 'Shop name is required.';
@@ -2432,9 +1416,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dsDeplier => 'Expand';
 
   @override
-  String get dsFavori => 'Favourite';
-
-  @override
   String get dsAjouterFavoris => 'Add to favourites';
 
   @override
@@ -2442,9 +1423,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dsFavorisComplets => 'Favourites full';
-
-  @override
-  String get dsAucunModule => 'No module';
 
   @override
   String get dsModules => 'Modules';
@@ -2463,12 +1441,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dsChoisirListe => 'Choose from the list';
-
-  @override
-  String get dsRechercher => 'Search';
-
-  @override
-  String get dsSelectionner => 'Select';
 
   @override
   String get dsAucunResultat => 'No results';
@@ -2694,9 +1666,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dsBarcodeGenerer => 'Generate';
-
-  @override
-  String get dsBarcodeFormatLibre => 'Free format (not EAN-13)';
 
   @override
   String get dsBarcodeCopier => 'Copy';
@@ -7839,4 +6808,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get posPrixSousAchatInterdit => 'Price below cost: forbidden by the settings.';
+
+  @override
+  String alertesExpireDepuis(int n) {
+    return 'Expired $n d ago';
+  }
 }

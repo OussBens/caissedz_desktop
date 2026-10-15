@@ -135,7 +135,7 @@ Future<void> afficherAideRaccourcis(BuildContext context) {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 3),
                 child: Row(
-                  spacing: DsSpacing.md,
+                  spacing: DsSpacing.s3,
                   children: [
                     SizedBox(
                       width: 84,
@@ -267,7 +267,7 @@ Future<void> afficherResultatVente(BuildContext context, WidgetRef ref, Vente ve
               style: t.body.copyWith(color: c.textPrimary),
             ),
             if (vente.monnaie > 0) ...[
-              const SizedBox(height: DsSpacing.sm),
+              const SizedBox(height: DsSpacing.s2),
               Text(
                 formaterMontant(vente.monnaie, devise),
                 style: t.montantXl.copyWith(color: c.infoFg),
@@ -279,10 +279,10 @@ Future<void> afficherResultatVente(BuildContext context, WidgetRef ref, Vente ve
                 '${l10n.posPointsGagnes} : +${vente.pointsGagnes}',
                 style: t.bodySm.copyWith(color: c.textSecondary),
               ),
-            const SizedBox(height: DsSpacing.lg),
+            const SizedBox(height: DsSpacing.s4),
             Wrap(
-              spacing: DsSpacing.sm,
-              runSpacing: DsSpacing.sm,
+              spacing: DsSpacing.s2,
+              runSpacing: DsSpacing.s2,
               children: [
                 DsButton(
                   libelle: l10n.posTicket58,

@@ -47,7 +47,7 @@ void main() {
         expect(tester.takeException(), isNull, reason: route);
         final ctx = tester.element(find.byType(AppShell));
         expect(Theme.of(ctx).brightness, Brightness.dark, reason: route);
-        expect(ctx.ds.colors.fond.computeLuminance() < 0.2, isTrue, reason: route);
+        expect(ctx.ds.colors.surfaceApp.computeLuminance() < 0.2, isTrue, reason: route);
       }
       await c.read(themeModeProvider.notifier).changer(ThemeMode.light);
       await tester.pumpAndSettle();

@@ -58,19 +58,6 @@ class DsTypography extends ThemeExtension<DsTypography> {
   final TextStyle overline;
   final TextStyle mono;
 
-  // ---- Alias historiques (lots 0 à 9) ----
-  TextStyle get titreXl => pageTitle.copyWith(fontSize: 28, fontWeight: FontWeight.w800);
-  TextStyle get titreLg => pageTitle;
-  TextStyle get titreMd => heading;
-  TextStyle get titreSm => cardTitle.copyWith(fontSize: 15);
-  TextStyle get corps => body;
-  TextStyle get corpsFort => bodyStrong;
-  TextStyle get petit => bodySm;
-  TextStyle get petitFort => bodySmStrong;
-  TextStyle get legende => caption.copyWith(fontSize: 11, fontWeight: FontWeight.w500);
-  TextStyle get chiffreXl => montantXl;
-  TextStyle get chiffreLg => kpi.copyWith(fontSize: 20);
-
   static String familleParLocale(Locale locale) => locale.languageCode == 'ar' ? familleArabe : familleLatin;
 
   factory DsTypography.pour(Locale locale, Color couleurTexte) {

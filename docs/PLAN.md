@@ -332,7 +332,7 @@ Référence : `docs/design/CaisseDZ-DS-v2.2/CaisseDZ-DS-v2.2.html`, `bundle-v2.2
 - **Phase A — tokens ✅** : `ds_colors.dart` (clair / sombre exacts, primitives violet / ink / teal, chart-1..6,
   teintes, dégradés brand / night / bar, ombres), `ds_typography.dart` (échelle `--type-*`, chiffres tabulaires,
   Cairo), `ds_metrics.dart` (espacements, rayons, mouvement, dimensions shell / page / contrôles). Alias
-  historiques conservés pour les écrans des lots 0 à 9 (à supprimer en phase D).
+  historiques supprimés en fin de phase D.
 - **Phase B — composants ✅** : réécriture fidèle au bundle, mêmes APIs publiques (ou compatibles) :
   - `ds_button.dart` : variantes primary / secondary / ghost / soft / danger / accent / inverse, tailles 32 / 36 /
     44, puce `kbd`, garde 450 ms, `DsIconButton` (ghost / outline, badge), `DsKbd`, `DsIconBox`.
@@ -363,8 +363,7 @@ Référence : `docs/design/CaisseDZ-DS-v2.2/CaisseDZ-DS-v2.2.html`, `bundle-v2.2
   - `ds_line_items.dart` : `DsLineItemsEditor`. `licence_gate.dart` : genres licence / role / refuse /
     activation. `ds_stepper.dart`, `permission_grid.dart` (+ `DsPermissionTiles` = MODULES / SPECIAL du DS).
   - Libellés des composants : clés ARB `ds*` (FR / AR / EN).
-  - Écarts assumés en attendant la phase D : les écrans des lots 0 à 9 utilisent encore les alias historiques ;
-    `pos_widgets.dart` (ancienne caisse) subsiste jusqu'à la réécriture de `CaisseScreen`.
+  - Écarts de la phase B levés en phase D : alias historiques et `pos_widgets.dart` supprimés.
 - **Phase C — shell et démarrage ✅** (2026-10-15) :
   - Étape 1 (données) : `modules.dart` = 17 modules du DS en 4 groupes (Général : tableau de bord, caisse,
     ventes, retours ; Stock : produits, stock, entrées (badge IA), sorties, magasins, besoins ; Tiers : clients,
@@ -392,10 +391,11 @@ Référence : `docs/design/CaisseDZ-DS-v2.2/CaisseDZ-DS-v2.2.html`, `bundle-v2.2
       en montre 3 ; proposée après la connexion de l'admin, « Plus tard » possible.
     - Seuls Magasins et Transferts exigent le palier Avancé (§6.1) ; Retours et Zakat passent en Basic.
     - Pages rattachées routables mais absentes de la barre latérale et du menu jusqu'à la phase D.
-    - Familles « Produits expirés » et « Bientôt expirés » vides : pas de dates de péremption dans le schéma.
+    - Familles « Produits expirés » et « Bientôt expirés » branchées en phase D sur `produit.date_expiration`
+      (migration v13) : date passée / dans au plus 30 jours, produits en stock seulement.
     - Logo de la boutique non demandé à la configuration (colonne prête, saisie en phase D dans Paramètres).
     - Compte admin / admin provisoire en attendant la création de comptes par l'écran Utilisateurs (phase D).
-- **Phase D — écrans 🔶** : les 17 écrans et leurs dialogs d'après les kits du bundle, listes de `ref.js`,
+- **Phase D — écrans ✅** (2026-10-15) : les 17 écrans et leurs dialogs d'après les kits du bundle, listes de `ref.js`,
   tests réécrits, suppression des alias.
   - ✅ Briques communes : `DsModuleTable`, `DsEntityDetailDialog`, `PageModule` (fil d'Ariane, favori, onglets),
     export Excel / PDF des tableaux, barre de sélection qui passe à la ligne sous 1300 px.
@@ -547,8 +547,7 @@ Référence : `docs/design/CaisseDZ-DS-v2.2/CaisseDZ-DS-v2.2.html`, `bundle-v2.2
     jours avant la prochaine échéance), tableau avec totaux et colonnes masquables, formulaire 860 px pré-rempli
     depuis le patrimoine courant (bouton de reprise par poste) avec résumé capital / obligation / montant, détail
     900 px (calcul et audit). « Exonérée » et « Annulée » sont des statuts d'affichage dérivés.
-    Écarts Zakat : nissab et taux ne sont pas encore éditables dans Paramètres (lot Paramètres de la phase D) ;
-    le taux n'est pas modifiable par calcul (il suit le paramètre au moment de la création).
+    Nissab et taux se règlent dans Paramètres › Système. Écart Zakat : le taux n'est pas modifiable par calcul (il suit le paramètre au moment de la création).
   - ✅ Historique (`HistoriqueScreen`, §9.17) : migration v19 — colonne `historique.poste` (nom de la machine,
     renseigné par `HistoriqueRepository` sur chaque ligne) et index utilisateur. Chaque ligne est rattachée à un
     module (entité → module, connexions et déconnexions sous « Connexion ») et à une famille d'action du DS
@@ -575,9 +574,14 @@ Référence : `docs/design/CaisseDZ-DS-v2.2/CaisseDZ-DS-v2.2.html`, `bundle-v2.2
     Écarts Paramètres : densité, réduction des animations, TVA par défaut, remise ticket maximale, mode de paiement
     par défaut, impression automatique, tiroir-caisse, imprimante A4, dossier et sauvegarde automatique, postes
     activés et quota Smart Scan, marge gros, valeur d'un point et 2ᵉ stock « nombre » non repris (aucune règle
-    ni donnée derrière dans la spec ou le schéma actuel) ; « Bientôt expiré » absent tant que les alertes
-    d'expiration restent vides ; le seuil maximum n'alimente pas encore le calcul des besoins ; la marge en
+    ni donnée derrière dans la spec ou le schéma actuel) ; fenêtre « Bientôt expiré » fixe à 30 jours (§5.3) ; le seuil maximum n'alimente pas encore le calcul des besoins ; la marge en
     pourcentage n'est pas arrondie au multiple de 5 DA (§8) ; pas d'aperçu du ticket.
+  - ✅ Nettoyage final : alias historiques des tokens supprimés (couleurs `fond` / `texte` / `primaire`…,
+    typographie `petit` / `legende`…, espacements, mouvement, variante de bouton `succes`) ; tous les écrans
+    utilisent les noms du DS (`surfaceApp`, `textPrimary`, `bodySm`, `DsSpacing.s4`…). Enveloppes de graphiques
+    `DsGraphique*` et page provisoire de module supprimées (les 17 modules et les 4 pages rattachées sont routés ;
+    Transferts, Versements, Clôtures et Situation ouvrent l'onglet de leur module parent). Clés ARB jamais
+    référencées retirées des trois langues (`tool/arb_nettoyer.py`).
   - Écarts : colonnes d'audit « modifié le / par » absentes du schéma (seuls créé par et annulation) ;
     tendances des KPI calculées seulement pour les ventes ; ventes antérieures à la v10 valorisées au prix
     d'achat actuel ; `mouvement_stock` sans valorisation (prix_achat / prix_vente de §7.3).
