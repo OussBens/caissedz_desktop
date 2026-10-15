@@ -361,7 +361,6 @@ class _VueAnalyseState extends ConsumerState<_VueAnalyse> {
       kpis: [DsStatsStrip(items: _stats(l10n, devise, lignes))],
       periode: widget.analyse.periode ? _periode : null,
       onPeriode: (p) => _maj(() => _periode = p),
-      periodePleineLargeur: true,
       filtresOuverts: true,
       colonnesFiltres: 3,
       nbFiltresActifs: filtresActifs.length,

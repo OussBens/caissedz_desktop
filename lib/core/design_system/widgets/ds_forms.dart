@@ -1256,39 +1256,42 @@ class DsPeriodFilter extends StatelessWidget {
   final bool enLigne;
   final double largeurLibelle;
 
+  /// Champs Du / Au / Période rapide, à placer chacun dans une cellule d'une grille de filtres.
+  List<Widget> get champs => [
+    DsFormRow(
+      libelle: libelleDu,
+      largeurLibelle: largeurLibelle,
+      child: DsDateField(
+        valeur: periode.du,
+        max: periode.au,
+        onChanged: (v) => onChanged(DsPeriode(du: v ?? periode.du, au: periode.au)),
+      ),
+    ),
+    DsFormRow(
+      libelle: libelleAu,
+      largeurLibelle: largeurLibelle,
+      child: DsDateField(
+        valeur: periode.au,
+        min: periode.du,
+        onChanged: (v) => onChanged(DsPeriode(du: periode.du, au: v ?? periode.au)),
+      ),
+    ),
+    DsFormRow(
+      libelle: libellePreset,
+      largeurLibelle: enLigne ? 100 : largeurLibelle,
+      child: DsSelect<String>(
+        valeur: periode.preset,
+        options: DsPeriode.presets,
+        libelle: (k) => libellesPresets[k] ?? k,
+        placeholder: 'Choisir…',
+        onChanged: (k) => k == null ? null : onChanged(DsPeriode.calculer(k)),
+      ),
+    ),
+  ];
+
   @override
   Widget build(BuildContext context) {
-    final champs = [
-      DsFormRow(
-        libelle: libelleDu,
-        largeurLibelle: largeurLibelle,
-        child: DsDateField(
-          valeur: periode.du,
-          max: periode.au,
-          onChanged: (v) => onChanged(DsPeriode(du: v ?? periode.du, au: periode.au)),
-        ),
-      ),
-      DsFormRow(
-        libelle: libelleAu,
-        largeurLibelle: largeurLibelle,
-        child: DsDateField(
-          valeur: periode.au,
-          min: periode.du,
-          onChanged: (v) => onChanged(DsPeriode(du: periode.du, au: v ?? periode.au)),
-        ),
-      ),
-      DsFormRow(
-        libelle: libellePreset,
-        largeurLibelle: enLigne ? 100 : largeurLibelle,
-        child: DsSelect<String>(
-          valeur: periode.preset,
-          options: DsPeriode.presets,
-          libelle: (k) => libellesPresets[k] ?? k,
-          placeholder: 'Choisir…',
-          onChanged: (k) => k == null ? null : onChanged(DsPeriode.calculer(k)),
-        ),
-      ),
-    ];
+    final champs = this.champs;
     if (!enLigne) {
       return Column(crossAxisAlignment: CrossAxisAlignment.stretch, spacing: DsSpacing.s3, children: champs);
     }

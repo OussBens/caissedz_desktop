@@ -17,6 +17,7 @@ class DsColonne<T> {
     required this.valeur,
     this.cellule,
     this.largeur,
+    this.largeurMin,
     this.flex = 1,
     this.numerique = false,
     this.centre = false,
@@ -40,7 +41,13 @@ class DsColonne<T> {
   /// Rendu personnalisé de la cellule (sinon `valeur(ligne).toString()`).
   final Widget Function(BuildContext context, T ligne)? cellule;
   final double? largeur;
+
+  /// Largeur minimale d'une colonne souple : sous la somme des minimums, le tableau défile horizontalement.
+  final double? largeurMin;
   final int flex;
+
+  /// Largeur occupée au minimum par la colonne.
+  double get largeurMinimale => largeur ?? largeurMin ?? (flex > 1 ? 180 : 110);
 
   /// Alignement à droite (montants, quantités).
   final bool numerique;
@@ -193,6 +200,13 @@ class DsDataTableState<T> extends State<DsDataTable<T>> {
   late Set<Object> _selection;
   late Set<String> _masquees;
   Object? _survol;
+  final _defilementH = ScrollController();
+
+  @override
+  void dispose() {
+    _defilementH.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -382,48 +396,12 @@ class DsDataTableState<T> extends State<DsDataTable<T>> {
                 ),
               ),
             ),
-          for (final col in visibles)
-            cellule(
-              col,
-              MouseRegion(
-                cursor: col.triable ? SystemMouseCursors.click : SystemMouseCursors.basic,
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: col.triable ? () => _basculerTri(col) : null,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    spacing: 4,
-                    children: [
-                      Flexible(
-                        child: Text(
-                          col.libelle.toUpperCase(),
-                          style: _tri?.colonneId == col.id ? styleEnTete.copyWith(color: c.textPrimary) : styleEnTete,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      if (col.triable)
-                        Opacity(
-                          opacity: _tri?.colonneId == col.id ? 1 : .5,
-                          child: Icon(
-                            _tri?.colonneId == col.id
-                                ? (_tri!.ascendant ? LucideIcons.chevronUp : LucideIcons.chevronDown)
-                                : LucideIcons.chevronsUpDown,
-                            size: 12,
-                            color: _tri?.colonneId == col.id ? c.textPrimary : c.textMuted,
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
           if (afficherReglage)
             Container(
               width: 44,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                border: BorderDirectional(start: BorderSide(color: c.borderSubtle)),
+                border: BorderDirectional(end: BorderSide(color: c.borderSubtle)),
               ),
               child: Builder(
                 builder: (ctx) => Stack(
@@ -464,6 +442,42 @@ class DsDataTableState<T> extends State<DsDataTable<T>> {
                 ),
               ),
             ),
+          for (final col in visibles)
+            cellule(
+              col,
+              MouseRegion(
+                cursor: col.triable ? SystemMouseCursors.click : SystemMouseCursors.basic,
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: col.triable ? () => _basculerTri(col) : null,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    spacing: 4,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          col.libelle.toUpperCase(),
+                          style: _tri?.colonneId == col.id ? styleEnTete.copyWith(color: c.textPrimary) : styleEnTete,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      if (col.triable)
+                        Opacity(
+                          opacity: _tri?.colonneId == col.id ? 1 : .5,
+                          child: Icon(
+                            _tri?.colonneId == col.id
+                                ? (_tri!.ascendant ? LucideIcons.chevronUp : LucideIcons.chevronDown)
+                                : LucideIcons.chevronsUpDown,
+                            size: 12,
+                            color: _tri?.colonneId == col.id ? c.textPrimary : c.textMuted,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );
@@ -495,6 +509,7 @@ class DsDataTableState<T> extends State<DsDataTable<T>> {
                   ),
                 ),
               ),
+            if (afficherReglage) const SizedBox(width: 44),
             for (final col in visibles)
               cellule(
                 col,
@@ -518,7 +533,6 @@ class DsDataTableState<T> extends State<DsDataTable<T>> {
                         },
                       ),
               ),
-            if (afficherReglage) const SizedBox(width: 44),
           ],
         ),
       );
@@ -556,6 +570,7 @@ class DsDataTableState<T> extends State<DsDataTable<T>> {
             child: Row(
               children: [
                 if (selectionnable) const SizedBox(width: 48),
+                if (afficherReglage) const SizedBox(width: 44),
                 for (var i = 0; i < visibles.length; i++)
                   cellule(
                     visibles[i],
@@ -566,7 +581,6 @@ class DsDataTableState<T> extends State<DsDataTable<T>> {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                if (afficherReglage) const SizedBox(width: 44),
               ],
             ),
           )
@@ -614,9 +628,38 @@ class DsDataTableState<T> extends State<DsDataTable<T>> {
       }),
     );
 
+    // Trop de colonnes pour la largeur disponible : en-tête, lignes et totaux défilent horizontalement ensemble.
+    final double largeurMin =
+        (selectionnable ? 48 : 0) +
+        (afficherReglage ? 44 : 0) +
+        visibles.fold(0.0, (s, col) => s + col.largeurMinimale);
+
     return LayoutBuilder(
       builder: (context, contraintes) {
         final borne = contraintes.hasBoundedHeight || widget.hauteurMax != null;
+        final etire = widget.hauteurFixe && widget.hauteurMax != null;
+        final defilement = contraintes.hasBoundedWidth && contraintes.maxWidth < largeurMin;
+        Widget grille = Column(
+          mainAxisSize: etire ? MainAxisSize.max : MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            enTete,
+            if (etire) Expanded(child: corps) else souple(corps, borne),
+            ?totaux,
+          ],
+        );
+        if (defilement) {
+          grille = Scrollbar(
+            controller: _defilementH,
+            thumbVisibility: true,
+            child: SingleChildScrollView(
+              key: const ValueKey('table_defilement_horizontal'),
+              controller: _defilementH,
+              scrollDirection: Axis.horizontal,
+              child: SizedBox(width: largeurMin, child: grille),
+            ),
+          );
+        }
         // Encadré (`ModuleTable`) : la pagination est dans la carte, sous un filet.
         final paginationInterne = widget.pagine && widget.encadre;
         final tableau = Container(
@@ -633,9 +676,7 @@ class DsDataTableState<T> extends State<DsDataTable<T>> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              enTete,
-              if (widget.hauteurFixe && widget.hauteurMax != null) Expanded(child: corps) else souple(corps, borne),
-              ?totaux,
+              if (etire) Expanded(child: grille) else souple(grille, borne),
               if (paginationInterne)
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: DsSpacing.s4, vertical: DsSpacing.s3),

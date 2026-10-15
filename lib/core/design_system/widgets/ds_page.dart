@@ -287,11 +287,15 @@ class _DsSelectState<T> extends State<DsSelect<T>> {
     if (!widget.actif || _ouvert) return;
     final boite = _cleDeclencheur.currentContext?.findRenderObject() as RenderBox?;
     if (boite == null) return;
-    final origine = boite.localToGlobal(Offset.zero);
+    // Position relative à l'overlay du navigateur qui affiche la liste (navigateur imbriqué du shell, décalé de la
+    // barre latérale et de la barre de titre) : sinon la liste s'ouvre loin du champ.
+    final navigateur = Navigator.of(context);
+    final overlay = navigateur.overlay?.context.findRenderObject() as RenderBox?;
+    final origine = boite.localToGlobal(Offset.zero, ancestor: overlay);
     final rect = origine & boite.size;
     setState(() => _ouvert = true);
     final sel = widget.options.contains(widget.valeur) ? widget.valeur : null;
-    final choix = await Navigator.of(context).push(
+    final choix = await navigateur.push(
       _RoutePopupSelect<T>(
         ancre: rect,
         options: widget.options,
@@ -435,8 +439,11 @@ class _RoutePopupSelect<T> extends PopupRoute<_ChoixSelect<T>> {
 
   @override
   Widget buildPage(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+    return LayoutBuilder(builder: (context, contraintes) => _construire(context, animation, contraintes.biggest));
+  }
+
+  Widget _construire(BuildContext context, Animation<double> animation, Size ecran) {
     final c = context.ds.colors;
-    final ecran = MediaQuery.sizeOf(context);
     const hauteurMax = 280.0;
     final enDessous = ancre.bottom + 6 + hauteurMax <= ecran.height || ancre.top < ecran.height / 2;
     final liste = Material(

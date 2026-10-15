@@ -64,8 +64,7 @@ class DsPeriodeLocalisee extends StatelessWidget {
   final DsPeriode periode;
   final ValueChanged<DsPeriode> onChanged;
 
-  @override
-  Widget build(BuildContext context) {
+  static DsPeriodFilter _filtre(BuildContext context, DsPeriode periode, ValueChanged<DsPeriode> onChanged) {
     final l10n = AppLocalizations.of(context);
     return DsPeriodFilter(
       periode: periode,
@@ -76,6 +75,13 @@ class DsPeriodeLocalisee extends StatelessWidget {
       libellesPresets: libellesPeriodes(l10n),
     );
   }
+
+  /// Du / Au / Période rapide en trois cellules d'une grille de filtres (alignés sur les autres filtres).
+  static List<Widget> champs(BuildContext context, DsPeriode periode, ValueChanged<DsPeriode> onChanged) =>
+      _filtre(context, periode, onChanged).champs;
+
+  @override
+  Widget build(BuildContext context) => _filtre(context, periode, onChanged);
 }
 
 /// `true` si [date] est dans [periode] (bornes incluses, à la journée).
@@ -131,7 +137,6 @@ class DsModuleTable<T> extends StatefulWidget {
     this.messageVide,
     this.cleTable,
     this.apresFiltres,
-    this.periodePleineLargeur,
   });
 
   /// Nom pluriel des éléments (« produits »), affiché avec le compteur des totaux.
@@ -173,9 +178,6 @@ class DsModuleTable<T> extends StatefulWidget {
 
   /// Bloc inséré entre le panneau de filtres et la barre de sélection (graphique d'une analyse…).
   final Widget? apresFiltres;
-
-  /// La période occupe toute la ligne de la grille de filtres (par défaut : à partir de 4 colonnes).
-  final bool? periodePleineLargeur;
 
   @override
   State<DsModuleTable<T>> createState() => _DsModuleTableState<T>();
@@ -249,13 +251,8 @@ class _DsModuleTableState<T> extends State<DsModuleTable<T>> {
           colonnes: widget.colonnesFiltres,
           trailing: export,
           children: [
-            if (widget.periode != null)
-              // DS (PaniersScreen) : la période occupe toute la ligne quand la grille a 4 colonnes.
-              (widget.periodePleineLargeur ?? widget.colonnesFiltres >= 4)
-                  ? DsSpan(
-                      child: DsPeriodeLocalisee(periode: widget.periode!, onChanged: widget.onPeriode!),
-                    )
-                  : DsPeriodeLocalisee(periode: widget.periode!, onChanged: widget.onPeriode!),
+            // Du, Au et Période rapide occupent chacun une cellule : alignés sur les autres filtres.
+            if (widget.periode != null) ...DsPeriodeLocalisee.champs(context, widget.periode!, widget.onPeriode!),
             ...?widget.filtres,
           ],
         ),

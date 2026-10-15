@@ -130,5 +130,32 @@ void main() {
       await pumpDs(tester, DsDataTable<_L>(colonnes: _colonnes(), lignes: const [], cle: (l) => l.code));
       expect(find.text('Aucun élément'), findsOneWidget);
     });
+
+    testWidgets('bouton colonnes au début (après les cases) ; défilement horizontal si trop de colonnes', (
+      tester,
+    ) async {
+      List<DsColonne<_L>> colonnes(int n) => [
+        for (var i = 0; i < n; i++) DsColonne<_L>(id: 'c$i', libelle: 'Col $i', valeur: (l) => '${l.nom} $i'),
+      ];
+      Widget tableau(int n) => SizedBox(
+        width: 700,
+        height: 500,
+        child: DsDataTable<_L>(colonnes: colonnes(n), lignes: _lignes, cle: (l) => l.code, onSelectionChanged: (_) {}),
+      );
+      await pumpDs(tester, tableau(4));
+      final bouton = tester.getCenter(find.byKey(const ValueKey('table_colonnes'))).dx;
+      expect(bouton, lessThan(tester.getCenter(find.text('COL 0')).dx));
+      expect(bouton, greaterThan(tester.getCenter(find.byKey(const ValueKey('table_tout_selectionner'))).dx));
+      expect(find.byKey(const ValueKey('table_defilement_horizontal')), findsNothing);
+
+      // 10 colonnes × 110 px > 700 px : en-tête et lignes défilent ensemble.
+      await pumpDs(tester, tableau(10));
+      expect(find.byKey(const ValueKey('table_defilement_horizontal')), findsOneWidget);
+      final avant = tester.getTopLeft(find.text('COL 9')).dx;
+      await tester.drag(find.byKey(const ValueKey('table_defilement_horizontal')), const Offset(-400, 0));
+      await tester.pumpAndSettle();
+      expect(tester.getTopLeft(find.text('COL 9')).dx, lessThan(avant));
+      expect(tester.takeException(), isNull);
+    });
   });
 }

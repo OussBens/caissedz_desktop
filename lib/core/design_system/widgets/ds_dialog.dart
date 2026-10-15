@@ -1185,7 +1185,7 @@ Future<void> afficherMenuContextuel(
 }) async {
   final c = context.ds.colors;
   final t = context.ds.typo;
-  final overlay = Overlay.of(context).context.findRenderObject()! as RenderBox;
+  final overlay = Navigator.of(context).overlay!.context.findRenderObject()! as RenderBox;
   final choix = await showMenu<int>(
     context: context,
     color: c.surfaceRaised,
@@ -1195,7 +1195,8 @@ Future<void> afficherMenuContextuel(
       side: BorderSide(color: c.borderDefault),
     ),
     constraints: const BoxConstraints(minWidth: 220),
-    position: RelativeRect.fromRect(position & const Size(1, 1), Offset.zero & overlay.size),
+    // [position] est globale ; l'overlay du navigateur imbriqué (shell) est décalé de la barre latérale.
+    position: RelativeRect.fromRect(overlay.globalToLocal(position) & const Size(1, 1), Offset.zero & overlay.size),
     items: [
       if (titre != null)
         PopupMenuItem<int>(
