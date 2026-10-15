@@ -6808,4 +6808,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get posRaccourciE => 'Quick entry (buy one product)';
+
+  @override
+  String get hiActSauvegarde => 'Backup';
+
+  @override
+  String get hiActRestauration => 'Restore';
+
+  @override
+  String get posApercuTicket => 'Receipt preview';
+
+  @override
+  String get posApercuTicketDesc => 'Check the layout before sending it to the printer.';
+
+  @override
+  String get posImprimer => 'Print';
+
+  @override
+  String get posGabaritLatin => 'Latin';
+
+  @override
+  String get pmApercuAucuneVente => 'No sale yet: the preview uses a sample receipt.';
 }

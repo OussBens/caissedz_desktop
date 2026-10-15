@@ -6821,4 +6821,25 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get posRaccourciE => 'Entrée rapide (achat d’un produit)';
+
+  @override
+  String get hiActSauvegarde => 'Sauvegarde';
+
+  @override
+  String get hiActRestauration => 'Restauration';
+
+  @override
+  String get posApercuTicket => 'Aperçu du ticket';
+
+  @override
+  String get posApercuTicketDesc => 'Vérifiez la mise en page avant de l’envoyer à l’imprimante.';
+
+  @override
+  String get posImprimer => 'Imprimer';
+
+  @override
+  String get posGabaritLatin => 'Latin';
+
+  @override
+  String get pmApercuAucuneVente => 'Aucune vente enregistrée : l’aperçu utilise un ticket d’exemple.';
 }

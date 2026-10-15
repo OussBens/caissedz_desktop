@@ -6798,4 +6798,25 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get posRaccourciE => 'إدخال سريع (شراء منتج واحد)';
+
+  @override
+  String get hiActSauvegarde => 'نسخ احتياطي';
+
+  @override
+  String get hiActRestauration => 'استعادة';
+
+  @override
+  String get posApercuTicket => 'معاينة التذكرة';
+
+  @override
+  String get posApercuTicketDesc => 'تحقق من التخطيط قبل إرساله إلى الطابعة.';
+
+  @override
+  String get posImprimer => 'طباعة';
+
+  @override
+  String get posGabaritLatin => 'لاتيني';
+
+  @override
+  String get pmApercuAucuneVente => 'لا توجد مبيعات: تستخدم المعاينة تذكرة نموذجية.';
 }

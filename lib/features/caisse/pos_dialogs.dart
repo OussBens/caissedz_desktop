@@ -286,6 +286,13 @@ Future<void> afficherResultatVente(BuildContext context, WidgetRef ref, Vente ve
               runSpacing: DsSpacing.s2,
               children: [
                 DsButton(
+                  key: const ValueKey('vente_apercu'),
+                  libelle: l10n.posApercuTicket,
+                  icone: LucideIcons.eye,
+                  variante: DsButtonVariante.secondaire,
+                  onPressed: () => afficherApercuTicket(context, ref, vente),
+                ),
+                DsButton(
                   libelle: l10n.posTicket58,
                   icone: LucideIcons.receipt,
                   variante: DsButtonVariante.secondaire,
@@ -387,3 +394,158 @@ Future<bool> imprimerTicketDirect(BuildContext context, WidgetRef ref, Vente ven
     return true;
   }
 }
+
+/// Aperçu du ticket (`PreviewDialog` du DS v2.2, genre « ticket ») : rendu PDF du ticket tel qu'il sera imprimé,
+/// largeur 58 / 80 mm, gabarit latin ou arabe, puis impression (ESC/POS si configurée, sinon spouleur Windows).
+Future<void> afficherApercuTicket(BuildContext context, WidgetRef ref, Vente vente) async {
+  final db = ref.read(appDatabaseProvider).db;
+  final boutique = await BoutiqueRepository(db).lire() ?? const Boutique(nom: 'CaisseDZ');
+  final client = await ClientRepository(db).parCode(vente.clientCode);
+  final imprimante = await lireImprimante(ref);
+  if (!context.mounted) return;
+  await afficherDialog<void>(
+    context,
+    builder: (_) => _ApercuTicket(
+      vente: vente,
+      boutique: boutique,
+      nomClient: client == null || client.estDePassage ? null : client.nom,
+      imprimante: imprimante,
+    ),
+  );
+}
+
+class _ApercuTicket extends ConsumerStatefulWidget {
+  const _ApercuTicket({required this.vente, required this.boutique, required this.imprimante, this.nomClient});
+  final Vente vente;
+  final Boutique boutique;
+  final String? nomClient;
+  final ({String type, String adresse, LargeurTicket largeur}) imprimante;
+
+  @override
+  ConsumerState<_ApercuTicket> createState() => _ApercuTicketState();
+}
+
+class _ApercuTicketState extends ConsumerState<_ApercuTicket> {
+  late LargeurTicket _largeur = widget.imprimante.largeur;
+  late bool _arabe = Localizations.localeOf(context).languageCode == 'ar';
+
+  LibellesTicket get _libelles => _arabe ? LibellesTicket.ar : LibellesTicket.fr;
+
+  Future<Uint8List> _pdf() async => DocumentsPdf(
+    libelles: _libelles,
+    devise: ref.read(deviseProvider),
+    police: await policePdf(_arabe),
+  ).ticket(widget.vente, boutique: widget.boutique, largeur: _largeur, nomClient: widget.nomClient);
+
+  Future<void> _imprimer() async {
+    final l10n = AppLocalizations.of(context);
+    final transport = construireImprimante(widget.imprimante.type, widget.imprimante.adresse);
+    try {
+      if (transport != null) {
+        await transport.envoyer(
+          TicketEscPos(
+            largeur: _largeur,
+            libelles: _libelles,
+            devise: ref.read(deviseProvider),
+          ).generer(widget.vente, boutique: widget.boutique, nomClient: widget.nomClient),
+        );
+        if (mounted) afficherToast(context, titre: l10n.posImpressionOk);
+      } else {
+        final octets = await _pdf();
+        await Printing.layoutPdf(onLayout: (_) async => octets, name: 'ticket_${widget.vente.code}.pdf');
+      }
+    } on ImpressionException catch (e) {
+      if (!mounted) return;
+      await afficherResultat(
+        context,
+        type: DsResultatType.erreur,
+        titre: l10n.posImprimerTicket,
+        message: l10n.posImpressionErreur(e.message),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final c = context.ds.colors;
+    return DsDialog(
+      key: const ValueKey('apercu_ticket'),
+      titre: l10n.posApercuTicket,
+      description: l10n.posApercuTicketDesc,
+      iconeData: LucideIcons.receipt,
+      largeur: 860,
+      actions: [
+        DsButton(
+          libelle: l10n.communFermer,
+          variante: DsButtonVariante.secondaire,
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        DsButton(
+          key: const ValueKey('apercu_imprimer'),
+          libelle: l10n.posImprimer,
+          icone: LucideIcons.printer,
+          onPressed: _imprimer,
+        ),
+      ],
+      contenu: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        spacing: DsSpacing.s3,
+        children: [
+          Wrap(
+            spacing: DsSpacing.s2,
+            runSpacing: DsSpacing.s2,
+            children: [
+              DsSegmentedControl<LargeurTicket>(
+                key: const ValueKey('apercu_largeur'),
+                petit: true,
+                valeur: _largeur,
+                options: const [
+                  DsOption(LargeurTicket.mm58, libelle: '58 mm'),
+                  DsOption(LargeurTicket.mm80, libelle: '80 mm'),
+                ],
+                onChanged: (v) => setState(() => _largeur = v),
+              ),
+              DsSegmentedControl<bool>(
+                key: const ValueKey('apercu_langue'),
+                petit: true,
+                valeur: _arabe,
+                options: [
+                  DsOption(false, libelle: l10n.posGabaritLatin),
+                  const DsOption(true, libelle: 'العربية'),
+                ],
+                onChanged: (v) => setState(() => _arabe = v),
+              ),
+            ],
+          ),
+          Container(
+            height: 520,
+            decoration: BoxDecoration(color: c.surfaceSunken, borderRadius: DsRadius.borderLg),
+            child: ref.read(apercuPdfProvider)(
+              ValueKey('${_largeur.name}_$_arabe'),
+              _pdf,
+              'ticket_${widget.vente.code}.pdf',
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Rendu d'un PDF dans un aperçu (`PdfPreview`), remplacé dans les tests (rastérisation native).
+final apercuPdfProvider = Provider<Widget Function(Key key, Future<Uint8List> Function() pdf, String nom)>(
+  (_) =>
+      (key, pdf, nom) => PdfPreview(
+        key: key,
+        build: (_) => pdf(),
+        useActions: false,
+        canChangePageFormat: false,
+        canChangeOrientation: false,
+        canDebug: false,
+        allowSharing: false,
+        allowPrinting: false,
+        pdfFileName: nom,
+      ),
+);

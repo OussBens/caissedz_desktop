@@ -14,9 +14,12 @@ import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
 import '../../core/print/imprimante.dart';
 import '../../core/print/ticket_escpos.dart';
+import '../../data/vente_repository.dart';
 import '../../domain/models/licence.dart';
+import '../../domain/models/panier.dart';
 import '../../domain/models/parametres_paiement.dart';
 import '../../domain/models/parametres_vente.dart';
+import '../../domain/models/vente.dart';
 import '../../domain/permissions.dart';
 import '../../domain/referentiel/referentiel.dart';
 import '../activation/activation_page.dart';
@@ -971,13 +974,27 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
       DsCard(
         titre: l10n.pmImprimanteTitre,
         icone: LucideIcons.printer,
-        actions: DsButton(
-          key: const ValueKey('param_test'),
-          libelle: l10n.pmTest,
-          icone: LucideIcons.printer,
-          variante: DsButtonVariante.doux,
-          taille: DsButtonTaille.sm,
-          onPressed: escPos ? _imprimerTest : null,
+        actions: Row(
+          mainAxisSize: MainAxisSize.min,
+          spacing: DsSpacing.s2,
+          children: [
+            DsButton(
+              key: const ValueKey('param_apercu'),
+              libelle: l10n.posApercuTicket,
+              icone: LucideIcons.eye,
+              variante: DsButtonVariante.secondaire,
+              taille: DsButtonTaille.sm,
+              onPressed: _apercuTicket,
+            ),
+            DsButton(
+              key: const ValueKey('param_test'),
+              libelle: l10n.pmTest,
+              icone: LucideIcons.printer,
+              variante: DsButtonVariante.doux,
+              taille: DsButtonTaille.sm,
+              onPressed: escPos ? _imprimerTest : null,
+            ),
+          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -1053,6 +1070,60 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
         ),
       ),
     ];
+  }
+
+  /// Aperçu du ticket sur la dernière vente, sinon sur un ticket d'exemple.
+  Future<void> _apercuTicket() async {
+    final derniere = (await VenteRepository(ref.read(appDatabaseProvider).db).ventes(limite: 1)).firstOrNull;
+    final vente = derniere == null
+        ? null
+        : await VenteRepository(ref.read(appDatabaseProvider).db).vente(derniere.code);
+    if (!mounted) return;
+    if (vente == null) afficherToast(context, titre: AppLocalizations.of(context).pmApercuAucuneVente);
+    await afficherApercuTicket(context, ref, vente ?? _venteExemple());
+  }
+
+  static Vente _venteExemple() {
+    const lignes = [
+      VenteLigne(
+        ordre: 1,
+        produitCode: 'PRD0001',
+        designation: 'Lait 1 L',
+        quantite: 3,
+        uniteVente: 'Pièce',
+        prixUnitaire: 100,
+        remise: 0,
+        total: 300,
+      ),
+      VenteLigne(
+        ordre: 2,
+        produitCode: 'PRD0002',
+        designation: 'Huile 1 L',
+        quantite: 2,
+        uniteVente: 'Pièce',
+        prixUnitaire: 420,
+        remise: 0,
+        total: 840,
+      ),
+    ];
+    return Vente(
+      code: 'VTE0000',
+      date: DateTime.now(),
+      sessionCode: '',
+      caisseCode: 'CIS0000',
+      magasinCode: 'MAG0000',
+      clientCode: 'CLN0000',
+      utilisateurCode: '',
+      totalBrut: 1140,
+      totalRemise: 0,
+      totalNet: 1140,
+      verse: 1200,
+      reste: 0,
+      hash: '0' * 64,
+      hashPrecedent: '0' * 64,
+      lignes: lignes,
+      paiements: const [Paiement(mode: 'Espèces', montant: 1200)],
+    );
   }
 
   Future<void> _imprimerTest() async {

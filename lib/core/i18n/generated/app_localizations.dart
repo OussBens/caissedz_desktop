@@ -12956,6 +12956,48 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Entrée rapide (achat d’un produit)'**
   String get posRaccourciE;
+
+  /// No description provided for @hiActSauvegarde.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sauvegarde'**
+  String get hiActSauvegarde;
+
+  /// No description provided for @hiActRestauration.
+  ///
+  /// In fr, this message translates to:
+  /// **'Restauration'**
+  String get hiActRestauration;
+
+  /// No description provided for @posApercuTicket.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aperçu du ticket'**
+  String get posApercuTicket;
+
+  /// No description provided for @posApercuTicketDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vérifiez la mise en page avant de l’envoyer à l’imprimante.'**
+  String get posApercuTicketDesc;
+
+  /// No description provided for @posImprimer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Imprimer'**
+  String get posImprimer;
+
+  /// No description provided for @posGabaritLatin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Latin'**
+  String get posGabaritLatin;
+
+  /// No description provided for @pmApercuAucuneVente.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune vente enregistrée : l’aperçu utilise un ticket d’exemple.'**
+  String get pmApercuAucuneVente;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

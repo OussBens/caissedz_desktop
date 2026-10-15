@@ -4,6 +4,7 @@ import 'package:caissedz_desktop/app/providers.dart';
 import 'package:caissedz_desktop/core/design_system/design_system.dart';
 import 'package:caissedz_desktop/core/print/imprimante.dart';
 import 'package:caissedz_desktop/domain/models/parametres_vente.dart';
+import 'package:caissedz_desktop/features/caisse/pos_dialogs.dart';
 import 'package:caissedz_desktop/features/rapports/rapports_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -101,6 +102,32 @@ void main() {
       await tester.pumpAndSettle();
       expect(File(chemin).existsSync(), isTrue);
       expect(find.text('Sauvegarde terminée'), findsOneWidget);
+      await tester.pump(const Duration(seconds: 5));
+    });
+
+    testWidgets('aperçu du ticket : exemple sans vente, largeur et gabarit', (tester) async {
+      final rendus = <String>[];
+      await pumpApp(
+        tester,
+        routeInitiale: '/parametres',
+        taille: _taille,
+        overrides: [
+          apercuPdfProvider.overrideWithValue((cle, pdf, nom) {
+            rendus.add('$cle');
+            return Text(nom);
+          }),
+        ],
+      );
+      await clic(tester, _cle('param_nav_impression'));
+      await clic(tester, _cle('param_apercu'));
+      expect(_cle('apercu_ticket'), findsOneWidget);
+      expect(find.text('Aucune vente enregistrée : l’aperçu utilise un ticket d’exemple.'), findsOneWidget);
+      await clic(tester, find.descendant(of: _cle('apercu_largeur'), matching: find.text('58 mm')));
+      await clic(tester, find.descendant(of: _cle('apercu_langue'), matching: find.text('العربية')));
+      expect(find.text('ticket_VTE0000.pdf'), findsOneWidget);
+      expect(rendus.toSet(), {"[<'mm80_false'>]", "[<'mm58_false'>]", "[<'mm58_true'>]"});
+      await clic(tester, find.text('Fermer'));
+      expect(_cle('apercu_ticket'), findsNothing);
       await tester.pump(const Duration(seconds: 5));
     });
 

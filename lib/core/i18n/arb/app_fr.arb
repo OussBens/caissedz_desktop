@@ -3531,5 +3531,12 @@
       }
     }
   },
-  "posRaccourciE": "Entrée rapide (achat d’un produit)"
+  "posRaccourciE": "Entrée rapide (achat d’un produit)",
+  "hiActSauvegarde": "Sauvegarde",
+  "hiActRestauration": "Restauration",
+  "posApercuTicket": "Aperçu du ticket",
+  "posApercuTicketDesc": "Vérifiez la mise en page avant de l’envoyer à l’imprimante.",
+  "posImprimer": "Imprimer",
+  "posGabaritLatin": "Latin",
+  "pmApercuAucuneVente": "Aucune vente enregistrée : l’aperçu utilise un ticket d’exemple."
 }

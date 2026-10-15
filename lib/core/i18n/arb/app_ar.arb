@@ -2331,5 +2331,12 @@
   "alertesExpireDepuis": "منتهي منذ {n} ي",
   "communSessionRequise": "لا توجد جلسة صندوق مفتوحة: افتح جلسة قبل التسجيل.",
   "communFermeeDesc": "افتح جلسة لـ « {caisse} » قبل تسجيل هذه العملية.",
-  "posRaccourciE": "إدخال سريع (شراء منتج واحد)"
+  "posRaccourciE": "إدخال سريع (شراء منتج واحد)",
+  "hiActSauvegarde": "نسخ احتياطي",
+  "hiActRestauration": "استعادة",
+  "posApercuTicket": "معاينة التذكرة",
+  "posApercuTicketDesc": "تحقق من التخطيط قبل إرساله إلى الطابعة.",
+  "posImprimer": "طباعة",
+  "posGabaritLatin": "لاتيني",
+  "pmApercuAucuneVente": "لا توجد مبيعات: تستخدم المعاينة تذكرة نموذجية."
 }
