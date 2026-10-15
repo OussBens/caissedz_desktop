@@ -9,18 +9,19 @@ import '../domain/models/parametres_vente.dart';
 import '../domain/models/session.dart';
 
 /// Alertes du jour (§5.3, `AlertesServices.getAlertes`) : chaque famille n'est visible que si le rôle
-/// a accès au module concerné.
-///
-/// ⚠️ PROVISOIRE : les lots et dates d'expiration ne sont pas encore au schéma ; les familles
-/// « Produits expirés » et « Bientôt expirés » restent vides jusqu'à leur ajout.
+/// a accès au module concerné. Expirés : date d'expiration passée ; bientôt expirés : dans au plus
+/// [joursExpiration] jours (produits encore en stock).
 class AlertesService {
   const AlertesService(this.db);
 
   final Database db;
 
   static const int nbTiers = 3;
+  static const int joursExpiration = 30;
 
   static String _cleMasque(String utilisateurCode) => 'alertes_masquees_$utilisateurCode';
+  static String _iso(DateTime d) =>
+      '${d.year.toString().padLeft(4, '0')}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
   static String _jour(DateTime d) => '${d.year}-${d.month}-${d.day}';
 
   Future<AlertesDuJour> calculer(Session session, {DateTime? maintenant}) async {
@@ -46,8 +47,26 @@ class AlertesService {
             critique: (r['stock']! as num) <= 0,
           ),
       ];
-      parFamille[FamilleAlerte.expire] = const [];
-      parFamille[FamilleAlerte.bientot] = const [];
+      final jour = DateTime(now.year, now.month, now.day);
+      final limite = jour.add(const Duration(days: joursExpiration));
+      parFamille[FamilleAlerte.expire] = [];
+      parFamille[FamilleAlerte.bientot] = [];
+      for (final r in await repo.expirations(jusquA: _iso(limite), magasins: magasins)) {
+        final le = DateTime.parse(r['expire_le']! as String);
+        final jours = DateTime(le.year, le.month, le.day).difference(jour).inDays;
+        final famille = jours < 0 ? FamilleAlerte.expire : FamilleAlerte.bientot;
+        parFamille[famille]!.add(
+          Alerte(
+            famille: famille,
+            cle: r['code']! as String,
+            titre: r['designation']! as String,
+            detail: [r['code'], r['categorie']].where((e) => '$e'.isNotEmpty).join(' · '),
+            valeur: jours.toDouble(),
+            date: le,
+            critique: jours < 0,
+          ),
+        );
+      }
     }
     if (session.peutAcceder('gestion_caisse')) {
       parFamille[FamilleAlerte.sessions] = [

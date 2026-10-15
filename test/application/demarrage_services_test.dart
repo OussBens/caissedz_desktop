@@ -304,6 +304,41 @@ void main() {
       expect(await alertes.estMasqueAujourdhui(_admin, maintenant: jour.add(const Duration(days: 1))), isFalse);
     });
 
+    test('expirés (date passée) et bientôt expirés (≤ 30 jours), produits en stock seulement', () async {
+      final base = await ouvrirBaseDeTest();
+      await _activer(base);
+      final db = base.db;
+      final catalogue = CatalogueService(db, utilisateurCode: _admin);
+      final stock = StockService(db, utilisateurCode: _admin);
+      final maintenant = DateTime(2026, 10, 15, 9);
+      Future<void> produit(String nom, DateTime? expire, {double quantite = 5}) async {
+        final p = await catalogue.creerProduit(
+          Produit(
+            code: '',
+            designation: nom,
+            categorieCode: 'CATE0000',
+            sousCategorieCode: 'SC0000',
+            prixAchat: 80,
+            prixVente: 100,
+            dateExpiration: expire,
+          ),
+        );
+        if (quantite > 0) await stock.entrerStock(produitCode: p.code, magasinCode: 'MAG0000', quantite: quantite);
+      }
+
+      await produit('Yaourt', DateTime(2026, 10, 12));
+      await produit('Fromage', DateTime(2026, 10, 25));
+      await produit('Conserve', DateTime(2027, 6, 1));
+      await produit('Lait vide', DateTime(2026, 10, 1), quantite: 0);
+      await produit('Riz', null);
+      final admin = await AuthService(db, hachage: _hachage).connecter('admin', 'admin');
+      final alertes = await AlertesService(db).calculer(admin, maintenant: maintenant);
+      final expire = alertes.de(FamilleAlerte.expire).single;
+      expect((expire.titre, expire.valeur, expire.critique), ('Yaourt', -3, true));
+      final bientot = alertes.de(FamilleAlerte.bientot).single;
+      expect((bientot.titre, bientot.valeur, bientot.critique), ('Fromage', 10, false));
+    });
+
     test('Paramètres › Alertes : ouverture à la connexion, seuil de crédit client', () async {
       final base = await ouvrirBaseDeTest();
       await _activer(base);

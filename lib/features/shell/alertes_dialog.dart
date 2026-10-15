@@ -334,7 +334,12 @@ class _AlertesDialogState extends ConsumerState<AlertesDialog> {
       (x.valeur ?? 0) <= 0 ? l10n.alertesMesureRupture : '${formaterNombre(x.valeur!)} / ${formaterNombre(x.max ?? 0)}',
     FamilleAlerte.sessions => x.date == null ? '' : l10n.alertesOuverteDepuis(_date(context, x.date!)),
     FamilleAlerte.clients || FamilleAlerte.fournisseurs => formaterMontant(x.valeur ?? 0),
-    FamilleAlerte.expire || FamilleAlerte.bientot => x.valeur == null ? '' : l10n.alertesJours(x.valeur!.round()),
+    FamilleAlerte.expire || FamilleAlerte.bientot =>
+      x.valeur == null
+          ? ''
+          : x.valeur! < 0
+          ? l10n.alertesExpireDepuis(-x.valeur!.round())
+          : l10n.alertesJours(x.valeur!.round()),
   };
 }
 

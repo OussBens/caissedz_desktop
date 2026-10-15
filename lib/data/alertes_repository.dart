@@ -29,6 +29,24 @@ class AlertesRepository {
   }
 
   /// Plus gros restes dus par client (ventes validées − imputations), [limite] premiers.
+  /// Produits actifs en stock (magasins [magasins], tous si `null`) dont la date d'expiration
+  /// (`date_empreint` de la spec) est au plus [jusquA] (`AAAA-MM-JJ`) ; les plus proches d'abord.
+  Future<List<Map<String, Object?>>> expirations({required String jusquA, List<String>? magasins}) {
+    final filtre = magasins == null ? '' : 'WHERE magasin_code IN (${List.filled(magasins.length, '?').join(',')})';
+    return db.rawQuery(
+      '''
+      SELECT p.code, p.designation, COALESCE(c.nom, '') categorie, s.q stock, substr(p.date_expiration, 1, 10) expire_le
+      FROM produit p
+      LEFT JOIN categorie c ON c.code = p.categorie_code
+      JOIN (SELECT produit_code, SUM(quantite) q FROM mouvement_stock $filtre GROUP BY produit_code) s
+        ON s.produit_code = p.code
+      WHERE p.actif = 1 AND s.q > 0 AND p.date_expiration IS NOT NULL AND substr(p.date_expiration, 1, 10) <= ?
+      ORDER BY expire_le, p.designation
+      ''',
+      [...?magasins, jusquA],
+    );
+  }
+
   Future<List<Map<String, Object?>>> creditsClients({int limite = 3, double seuil = 0}) => db.rawQuery(
     '''
     SELECT c.code, c.nom, SUM(v.reste - COALESCE((SELECT SUM(i.montant) FROM versement_imputation i
