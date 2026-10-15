@@ -6819,4 +6819,48 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get pmApercuAucuneVente => 'لا توجد مبيعات: تستخدم المعاينة تذكرة نموذجية.';
+
+  @override
+  String get pmSauvegardeIncomplete => 'النسخ التلقائي: اختر مجلدًا وكلمة مرور.';
+
+  @override
+  String get pmSauvegardeDossier => 'مجلد النسخ الاحتياطي';
+
+  @override
+  String get pmSauvegardeDossierDesc => 'قرص محلي أو مفتاح USB أو مجلد متزامن (Google Drive، OneDrive).';
+
+  @override
+  String get pmSauvegardeChanger => 'تغيير';
+
+  @override
+  String get pmSauvegardeAuto => 'النسخ الاحتياطي التلقائي';
+
+  @override
+  String get pmSauvegardeAutoDesc => 'تتم عند فتح التطبيق؛ يُحتفظ بآخر 30 نسخة.';
+
+  @override
+  String get pmFrequenceDesactivee => 'معطّل';
+
+  @override
+  String get pmFrequenceDemarrage => 'عند كل تشغيل';
+
+  @override
+  String get pmFrequenceQuotidienne => 'يومي';
+
+  @override
+  String get pmSauvegardeMdp => 'كلمة مرور النسخ';
+
+  @override
+  String get pmSauvegardeMdpDesc => 'مطلوبة لاستعادة نسخة تلقائية.';
+
+  @override
+  String get pmSauvegardeMdpDefinir => 'تحديد';
+
+  @override
+  String get pmSauvegardeMdpChanger => 'تغيير';
+
+  @override
+  String pmSauvegardeDerniere(String date) {
+    return 'آخر نسخة تلقائية: $date';
+  }
 }

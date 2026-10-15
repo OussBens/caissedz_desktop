@@ -6829,4 +6829,48 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pmApercuAucuneVente => 'No sale yet: the preview uses a sample receipt.';
+
+  @override
+  String get pmSauvegardeIncomplete => 'Automatic backup: choose a folder and a password.';
+
+  @override
+  String get pmSauvegardeDossier => 'Backup folder';
+
+  @override
+  String get pmSauvegardeDossierDesc => 'Local disk, USB drive or synced folder (Google Drive, OneDrive).';
+
+  @override
+  String get pmSauvegardeChanger => 'Change';
+
+  @override
+  String get pmSauvegardeAuto => 'Automatic backup';
+
+  @override
+  String get pmSauvegardeAutoDesc => 'Made when the application opens; the last 30 are kept.';
+
+  @override
+  String get pmFrequenceDesactivee => 'Off';
+
+  @override
+  String get pmFrequenceDemarrage => 'At every start';
+
+  @override
+  String get pmFrequenceQuotidienne => 'Daily';
+
+  @override
+  String get pmSauvegardeMdp => 'Backup password';
+
+  @override
+  String get pmSauvegardeMdpDesc => 'Required to restore an automatic backup.';
+
+  @override
+  String get pmSauvegardeMdpDefinir => 'Set';
+
+  @override
+  String get pmSauvegardeMdpChanger => 'Change';
+
+  @override
+  String pmSauvegardeDerniere(String date) {
+    return 'Last automatic backup: $date';
+  }
 }

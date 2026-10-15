@@ -2338,5 +2338,19 @@
   "posApercuTicketDesc": "تحقق من التخطيط قبل إرساله إلى الطابعة.",
   "posImprimer": "طباعة",
   "posGabaritLatin": "لاتيني",
-  "pmApercuAucuneVente": "لا توجد مبيعات: تستخدم المعاينة تذكرة نموذجية."
+  "pmApercuAucuneVente": "لا توجد مبيعات: تستخدم المعاينة تذكرة نموذجية.",
+  "pmSauvegardeIncomplete": "النسخ التلقائي: اختر مجلدًا وكلمة مرور.",
+  "pmSauvegardeDossier": "مجلد النسخ الاحتياطي",
+  "pmSauvegardeDossierDesc": "قرص محلي أو مفتاح USB أو مجلد متزامن (Google Drive، OneDrive).",
+  "pmSauvegardeChanger": "تغيير",
+  "pmSauvegardeAuto": "النسخ الاحتياطي التلقائي",
+  "pmSauvegardeAutoDesc": "تتم عند فتح التطبيق؛ يُحتفظ بآخر 30 نسخة.",
+  "pmFrequenceDesactivee": "معطّل",
+  "pmFrequenceDemarrage": "عند كل تشغيل",
+  "pmFrequenceQuotidienne": "يومي",
+  "pmSauvegardeMdp": "كلمة مرور النسخ",
+  "pmSauvegardeMdpDesc": "مطلوبة لاستعادة نسخة تلقائية.",
+  "pmSauvegardeMdpDefinir": "تحديد",
+  "pmSauvegardeMdpChanger": "تغيير",
+  "pmSauvegardeDerniere": "آخر نسخة تلقائية: {date}"
 }

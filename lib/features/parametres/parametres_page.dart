@@ -84,6 +84,7 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
   String? _testEnvoye;
   // Alertes
   bool _alertesConnexion = true;
+  ParametresSauvegardeAuto _sauvegardeAuto = const ParametresSauvegardeAuto();
   final _seuilCredit = TextEditingController();
 
   List<TextEditingController> get _champs => [
@@ -182,6 +183,7 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
       _adresseImprimante.text = p.impression.adresse;
       _largeur = p.impression.largeur;
       _alertesConnexion = p.alertes.afficherConnexion;
+      _sauvegardeAuto = p.sauvegarde;
       _seuilCredit.text = _entier(p.alertes.seuilCreditClient);
       _modifie = false;
       _testEnvoye = null;
@@ -225,6 +227,7 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
       serveur: ParametresServeur(url: _url.text, cle: _cle.text, urlMantouj: _mantouj.text),
       zakat: ParametresZakat(nissab: _v(_nissab), tauxPct: _v(_taux)),
       alertes: ParametresAlertes(afficherConnexion: _alertesConnexion, seuilCreditClient: _v(_seuilCredit, defaut: 0)),
+      sauvegarde: _sauvegardeAuto,
     );
   }
 
@@ -1215,8 +1218,64 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             _ligne(
+              l10n.pmSauvegardeDossier,
+              description: l10n.pmSauvegardeDossierDesc,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                spacing: DsSpacing.s2,
+                children: [
+                  SizedBox(
+                    width: 260,
+                    child: DsTextField(
+                      key: ValueKey('param_sauvegarde_dossier_${_sauvegardeAuto.dossier}'),
+                      valeurInitiale: _sauvegardeAuto.dossier,
+                      iconePrefixe: LucideIcons.folder,
+                      actif: false,
+                    ),
+                  ),
+                  DsButton(
+                    key: const ValueKey('param_sauvegarde_changer'),
+                    libelle: l10n.pmSauvegardeChanger,
+                    icone: LucideIcons.folderOpen,
+                    variante: DsButtonVariante.secondaire,
+                    onPressed: _choisirDossierSauvegarde,
+                  ),
+                ],
+              ),
+            ),
+            _ligne(
+              l10n.pmSauvegardeAuto,
+              description: l10n.pmSauvegardeAutoDesc,
+              child: DsSegmentedControl<String>(
+                key: const ValueKey('param_sauvegarde_frequence'),
+                valeur: _sauvegardeAuto.frequence,
+                options: [
+                  for (final f in FrequencesSauvegarde.toutes) DsOption(f, libelle: _libelleFrequence(l10n, f)),
+                ],
+                onChanged: _changerFrequence,
+              ),
+            ),
+            if (_sauvegardeAuto.active)
+              _ligne(
+                l10n.pmSauvegardeMdp,
+                description: l10n.pmSauvegardeMdpDesc,
+                child: DsButton(
+                  key: const ValueKey('param_sauvegarde_mdp'),
+                  libelle: _sauvegardeAuto.motDePasse.isEmpty
+                      ? l10n.pmSauvegardeMdpDefinir
+                      : l10n.pmSauvegardeMdpChanger,
+                  icone: LucideIcons.keyRound,
+                  variante: DsButtonVariante.secondaire,
+                  onPressed: _definirMotDePasseAuto,
+                ),
+              ),
+            _ligne(
               l10n.pmSauverMaintenant,
-              description: l10n.sauvegardeIntro,
+              description: _sauvegardeAuto.derniere == null
+                  ? l10n.sauvegardeIntro
+                  : l10n.pmSauvegardeDerniere(
+                      DateFormat('dd/MM/yyyy HH:mm').format(_sauvegardeAuto.derniere!.toLocal()),
+                    ),
               child: DsButton(
                 key: const ValueKey('param_sauvegarder'),
                 libelle: l10n.pmSauverMaintenant,
@@ -1240,6 +1299,30 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
         ),
       ),
     ];
+  }
+
+  static String _libelleFrequence(AppLocalizations l10n, String f) => switch (f) {
+    FrequencesSauvegarde.demarrage => l10n.pmFrequenceDemarrage,
+    FrequencesSauvegarde.quotidienne => l10n.pmFrequenceQuotidienne,
+    _ => l10n.pmFrequenceDesactivee,
+  };
+
+  Future<void> _choisirDossierSauvegarde() async {
+    final dossier = await ref.read(selecteurDossierProvider)();
+    if (dossier == null || !mounted) return;
+    _changer(() => _sauvegardeAuto = _sauvegardeAuto.copyWith(dossier: dossier));
+  }
+
+  /// Activer la sauvegarde automatique demande le mot de passe des fichiers s'il n'est pas encore défini.
+  Future<void> _changerFrequence(String f) async {
+    _changer(() => _sauvegardeAuto = _sauvegardeAuto.copyWith(frequence: f));
+    if (f != FrequencesSauvegarde.desactivee && _sauvegardeAuto.motDePasse.isEmpty) await _definirMotDePasseAuto();
+  }
+
+  Future<void> _definirMotDePasseAuto() async {
+    final mdp = await _demanderMotDePasse(AppLocalizations.of(context).pmSauvegardeMdp);
+    if (mdp == null || !mounted) return;
+    _changer(() => _sauvegardeAuto = _sauvegardeAuto.copyWith(motDePasse: mdp));
   }
 
   /// Saisie du mot de passe d'une sauvegarde (chiffrement ou déchiffrement).

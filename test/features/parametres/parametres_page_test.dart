@@ -131,6 +131,26 @@ void main() {
       await tester.pump(const Duration(seconds: 5));
     });
 
+    testWidgets('sauvegarde automatique : dossier, fréquence et mot de passe enregistrés', (tester) async {
+      final c = await pumpApp(
+        tester,
+        routeInitiale: '/parametres',
+        taille: _taille,
+        overrides: [selecteurDossierProvider.overrideWithValue(() async => '/sauvegardes')],
+      );
+      await clic(tester, _cle('param_nav_sauvegarde'));
+      await clic(tester, _cle('param_sauvegarde_changer'));
+      await clic(tester, find.descendant(of: _cle('param_sauvegarde_frequence'), matching: find.text('Quotidienne')));
+      await tester.enterText(_champ('sauvegarde_mdp'), 'auto');
+      await tester.pump();
+      await clic(tester, _cle('sauvegarde_mdp_ok'));
+      expect(_cle('param_sauvegarde_mdp'), findsOneWidget);
+      await clic(tester, _cle('param_enregistrer'));
+      final p = await c.read(parametresServiceProvider).lireSauvegardeAuto();
+      expect((p.dossier, p.frequence, p.motDePasse), ('/sauvegardes', 'Quotidienne', 'auto'));
+      await tester.pump(const Duration(seconds: 5));
+    });
+
     testWidgets('arabe : Paramètres en RTL', (tester) async {
       await pumpApp(tester, routeInitiale: '/parametres', locale: const Locale('ar'), taille: _taille);
       final nav = _cle('param_nav_systeme');

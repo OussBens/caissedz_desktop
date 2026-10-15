@@ -10,7 +10,13 @@ import '../domain/models/parametres_vente.dart';
 import '../domain/zakat.dart';
 import 'alertes_service.dart';
 
-enum ErreurParametres { nomBoutiqueVide, valeurInvalide, typeImprimanteInvalide, adresseImprimanteRequise }
+enum ErreurParametres {
+  nomBoutiqueVide,
+  valeurInvalide,
+  typeImprimanteInvalide,
+  adresseImprimanteRequise,
+  sauvegardeIncomplete,
+}
 
 class ParametresException implements Exception {
   const ParametresException(this.erreur, [this.detail]);
@@ -85,6 +91,67 @@ class ParametresAlertes {
   };
 }
 
+/// Fréquences de la sauvegarde automatique (valeurs stockées FR, `backup_param.frequence` §7).
+abstract final class FrequencesSauvegarde {
+  static const String desactivee = 'Désactivée';
+  static const String demarrage = 'À chaque démarrage';
+  static const String quotidienne = 'Quotidienne';
+  static const List<String> toutes = [desactivee, demarrage, quotidienne];
+}
+
+/// Sauvegarde automatique (Paramètres › Sauvegarde, §12.2) : dossier, fréquence, mot de passe des fichiers,
+/// date de la dernière sauvegarde automatique (écrite par [SauvegardeService], jamais par l'écran).
+class ParametresSauvegardeAuto {
+  const ParametresSauvegardeAuto({
+    this.dossier = '',
+    this.frequence = FrequencesSauvegarde.desactivee,
+    this.motDePasse = '',
+    this.derniere,
+  });
+  static const String cleDossier = 'sauvegarde_dossier';
+  static const String cleFrequence = 'sauvegarde_frequence';
+  static const String cleMotDePasse = 'sauvegarde_mdp';
+  static const String cleDerniere = 'sauvegarde_derniere';
+  static const List<String> cles = [cleDossier, cleFrequence, cleMotDePasse, cleDerniere];
+
+  final String dossier;
+  final String frequence;
+
+  /// Stocké dans la base chiffrée (SQLCipher) : la sauvegarde automatique ne peut pas le demander.
+  final String motDePasse;
+  final DateTime? derniere;
+
+  bool get active => frequence != FrequencesSauvegarde.desactivee;
+
+  /// Due au démarrage : toujours (`À chaque démarrage`) ou une fois par jour (`Quotidienne`).
+  bool estDue(DateTime maintenant) {
+    if (!active || dossier.trim().isEmpty || motDePasse.isEmpty) return false;
+    if (frequence == FrequencesSauvegarde.demarrage || derniere == null) return true;
+    final d = derniere!.toLocal();
+    return d.year != maintenant.year || d.month != maintenant.month || d.day != maintenant.day;
+  }
+
+  factory ParametresSauvegardeAuto.depuisCles(Map<String, String?> m) => ParametresSauvegardeAuto(
+    dossier: m[cleDossier] ?? '',
+    frequence: FrequencesSauvegarde.toutes.contains(m[cleFrequence])
+        ? m[cleFrequence]!
+        : FrequencesSauvegarde.desactivee,
+    motDePasse: m[cleMotDePasse] ?? '',
+    derniere: DateTime.tryParse(m[cleDerniere] ?? ''),
+  );
+
+  /// Sans la date de dernière sauvegarde (non éditable).
+  Map<String, String> versCles() => {cleDossier: dossier.trim(), cleFrequence: frequence, cleMotDePasse: motDePasse};
+
+  ParametresSauvegardeAuto copyWith({String? dossier, String? frequence, String? motDePasse}) =>
+      ParametresSauvegardeAuto(
+        dossier: dossier ?? this.dossier,
+        frequence: frequence ?? this.frequence,
+        motDePasse: motDePasse ?? this.motDePasse,
+        derniere: derniere,
+      );
+}
+
 /// Tous les paramètres de l'écran (barre d'enregistrement unique, §9.16).
 class ParametresComplets {
   const ParametresComplets({
@@ -95,6 +162,7 @@ class ParametresComplets {
     required this.serveur,
     required this.zakat,
     required this.alertes,
+    this.sauvegarde = const ParametresSauvegardeAuto(),
   });
   final Boutique boutique;
   final ParametresVente vente;
@@ -103,6 +171,7 @@ class ParametresComplets {
   final ParametresServeur serveur;
   final ParametresZakat zakat;
   final ParametresAlertes alertes;
+  final ParametresSauvegardeAuto sauvegarde;
 }
 
 /// Paramètres (lot 8) : boutique, vente, impression, serveurs, zakat. Chaque écriture = UNE transaction + historique.
@@ -248,6 +317,18 @@ class ParametresService {
     cleZakatTaux: p.tauxPct.toString(),
   };
 
+  Future<ParametresSauvegardeAuto> lireSauvegardeAuto() async =>
+      ParametresSauvegardeAuto.depuisCles(await ParametreRepository(db).lirePlusieurs(ParametresSauvegardeAuto.cles));
+
+  static void _validerSauvegarde(ParametresSauvegardeAuto p) {
+    if (!FrequencesSauvegarde.toutes.contains(p.frequence)) {
+      throw const ParametresException(ErreurParametres.valeurInvalide);
+    }
+    if (p.active && (p.dossier.trim().isEmpty || p.motDePasse.isEmpty)) {
+      throw const ParametresException(ErreurParametres.sauvegardeIncomplete);
+    }
+  }
+
   /// Lecture de tout l'écran Paramètres.
   Future<ParametresComplets> lireTout() async => ParametresComplets(
     boutique: await lireBoutique() ?? const Boutique(nom: ''),
@@ -257,6 +338,7 @@ class ParametresService {
     serveur: await lireServeur(),
     zakat: await lireZakat(),
     alertes: await lireAlertes(),
+    sauvegarde: await lireSauvegardeAuto(),
   );
 
   /// Barre d'enregistrement unique (§9.16) : tout est validé, puis écrit dans UNE transaction avec une ligne
@@ -267,6 +349,7 @@ class ParametresService {
     _validerImpression(p.impression);
     _validerServeur(p.serveur);
     _validerZakat(p.zakat);
+    _validerSauvegarde(p.sauvegarde);
     if (p.alertes.seuilCreditClient < 0) throw const ParametresException(ErreurParametres.valeurInvalide);
     await db.transaction((txn) async {
       await BoutiqueRepository(txn).ecrire(p.boutique.copyWith(nom: p.boutique.nom.trim()));
@@ -277,6 +360,7 @@ class ParametresService {
         ..._clesServeur(p.serveur),
         ..._clesZakat(p.zakat),
         ...p.alertes.versCles(),
+        ...p.sauvegarde.versCles(),
       });
       await _journal(txn, 'tout');
     });

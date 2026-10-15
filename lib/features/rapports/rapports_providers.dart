@@ -47,6 +47,12 @@ final selecteurEnregistrementProvider = Provider<Future<String?> Function(String
       ))?.path,
 );
 
+/// Choix d'un dossier (remplacé dans les tests).
+final selecteurDossierProvider = Provider<Future<String?> Function()>(
+  (_) =>
+      () => getDirectoryPath(),
+);
+
 /// Choix d'un fichier existant (remplacé dans les tests).
 final selecteurFichierProvider = Provider<Future<String?> Function(List<String> extensions)>(
   (_) =>
@@ -66,6 +72,7 @@ String messageErreurParametres(AppLocalizations l10n, ErreurParametres e) => swi
   ErreurParametres.valeurInvalide => l10n.parametresErreurValeur,
   ErreurParametres.typeImprimanteInvalide => l10n.parametresErreurImprimanteType,
   ErreurParametres.adresseImprimanteRequise => l10n.parametresErreurImprimanteAdresse,
+  ErreurParametres.sauvegardeIncomplete => l10n.pmSauvegardeIncomplete,
 };
 
 String messageErreurSauvegarde(AppLocalizations l10n, SauvegardeException e) => switch (e.erreur) {

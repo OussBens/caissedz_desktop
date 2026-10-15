@@ -2338,5 +2338,19 @@
   "posApercuTicketDesc": "Check the layout before sending it to the printer.",
   "posImprimer": "Print",
   "posGabaritLatin": "Latin",
-  "pmApercuAucuneVente": "No sale yet: the preview uses a sample receipt."
+  "pmApercuAucuneVente": "No sale yet: the preview uses a sample receipt.",
+  "pmSauvegardeIncomplete": "Automatic backup: choose a folder and a password.",
+  "pmSauvegardeDossier": "Backup folder",
+  "pmSauvegardeDossierDesc": "Local disk, USB drive or synced folder (Google Drive, OneDrive).",
+  "pmSauvegardeChanger": "Change",
+  "pmSauvegardeAuto": "Automatic backup",
+  "pmSauvegardeAutoDesc": "Made when the application opens; the last 30 are kept.",
+  "pmFrequenceDesactivee": "Off",
+  "pmFrequenceDemarrage": "At every start",
+  "pmFrequenceQuotidienne": "Daily",
+  "pmSauvegardeMdp": "Backup password",
+  "pmSauvegardeMdpDesc": "Required to restore an automatic backup.",
+  "pmSauvegardeMdpDefinir": "Set",
+  "pmSauvegardeMdpChanger": "Change",
+  "pmSauvegardeDerniere": "Last automatic backup: {date}"
 }

@@ -131,6 +131,64 @@ void main() {
   });
 
   group('SauvegardeService', () {
+    test('sauvegarde automatique : due selon la fréquence, 30 fichiers conservés, date et journal', () async {
+      final base = await ouvrirBaseDeTest();
+      final dossier = Directory.systemTemp.createTempSync('caissedz_auto_');
+      addTearDown(() => dossier.deleteSync(recursive: true));
+      final params = ParametresService(base.db, utilisateurCode: 'USR0000');
+      final service = SauvegardeService(base, utilisateurCode: SauvegardeService.utilisateurSysteme);
+      final jour = DateTime(2026, 10, 15, 8);
+      expect(await service.sauvegarderAutoSiDue(maintenant: jour), isNull, reason: 'désactivée par défaut');
+      final tout = await params.lireTout();
+      await expectLater(
+        params.enregistrerTout(
+          ParametresComplets(
+            boutique: const Boutique(nom: 'B'),
+            vente: tout.vente,
+            paiements: tout.paiements,
+            impression: tout.impression,
+            serveur: tout.serveur,
+            zakat: tout.zakat,
+            alertes: tout.alertes,
+            sauvegarde: const ParametresSauvegardeAuto(frequence: FrequencesSauvegarde.quotidienne),
+          ),
+        ),
+        throwsA(isA<ParametresException>().having((e) => e.erreur, 'e', ErreurParametres.sauvegardeIncomplete)),
+      );
+      await params.enregistrerTout(
+        ParametresComplets(
+          boutique: const Boutique(nom: 'B'),
+          vente: tout.vente,
+          paiements: tout.paiements,
+          impression: tout.impression,
+          serveur: tout.serveur,
+          zakat: tout.zakat,
+          alertes: tout.alertes,
+          sauvegarde: ParametresSauvegardeAuto(
+            dossier: dossier.path,
+            frequence: FrequencesSauvegarde.quotidienne,
+            motDePasse: 'auto',
+          ),
+        ),
+      );
+      // Anciennes sauvegardes automatiques : seules les plus récentes sont gardées.
+      for (var i = 1; i <= 3; i++) {
+        File('${dossier.path}/caissedz_auto_2026100${i}_2100.cdz').writeAsStringSync('x');
+      }
+      File('${dossier.path}/manuelle.cdz').writeAsStringSync('x');
+      final chemin = await service.sauvegarderAutoSiDue(maintenant: jour, conserver: 2);
+      expect(chemin, endsWith('caissedz_auto_20261015_0800.cdz'));
+      expect((await service.verifier(chemin: chemin!, motDePasse: 'auto')).boutique, 'B');
+      final restants = dossier.listSync().map((f) => f.path.split(Platform.pathSeparator).last).toSet();
+      expect(restants, {'caissedz_auto_20261015_0800.cdz', 'caissedz_auto_20261003_2100.cdz', 'manuelle.cdz'});
+      expect((await params.lireSauvegardeAuto()).derniere!.toLocal(), jour);
+      expect(await service.sauvegarderAutoSiDue(maintenant: jour.add(const Duration(hours: 3))), isNull);
+      expect(await service.sauvegarderAutoSiDue(maintenant: jour.add(const Duration(days: 1))), isNotNull);
+      final journal = await base.db.query('historique', where: "action = 'Sauvegarde'");
+      expect(journal.map((h) => h['utilisateur_code']).toSet(), {'SYSTEME'});
+      expect(journal, hasLength(2));
+    });
+
     test('sauvegarde avec mot de passe, vérification, mauvais mot de passe, restauration au redémarrage', () async {
       AppDatabase.initialiserMoteur();
       final dossier = Directory.systemTemp.createTempSync('caissedz_sauvegarde_');

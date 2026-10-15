@@ -4,6 +4,8 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../core/db/app_database.dart';
 import '../data/historique_repository.dart';
+import '../data/parametre_repository.dart';
+import 'parametres_service.dart';
 
 enum ErreurSauvegarde { motDePasseVide, fichierIntrouvable, motDePasseInvalide, cheminInvalide }
 
@@ -66,6 +68,43 @@ class SauvegardeService {
       await db.execute('DETACH DATABASE sauvegarde');
     }
     await _journal('Sauvegarde', chemin);
+  }
+
+  /// Préfixe des fichiers de la sauvegarde automatique (les [conserver] plus récents sont gardés).
+  static const String prefixeAuto = 'caissedz_auto_';
+
+  /// Auteur journalisé de la sauvegarde automatique (aucun utilisateur n'est encore connecté).
+  static const String utilisateurSysteme = 'SYSTEME';
+  static const int conserverDefaut = 30;
+
+  /// Sauvegarde automatique au démarrage (§4.1 étape 8, §12.2) si elle est due selon les Paramètres :
+  /// fichier `caissedz_auto_AAAAMMJJ_HHMM.cdz` dans le dossier choisi, chiffré avec le mot de passe enregistré,
+  /// date de dernière sauvegarde mise à jour, anciens fichiers automatiques au-delà de [conserver] supprimés.
+  /// Retourne le chemin écrit, ou `null` si rien n'était dû.
+  Future<String?> sauvegarderAutoSiDue({DateTime? maintenant, int conserver = conserverDefaut}) async {
+    final now = maintenant ?? DateTime.now();
+    final p = ParametresSauvegardeAuto.depuisCles(
+      await ParametreRepository(base.db).lirePlusieurs(ParametresSauvegardeAuto.cles),
+    );
+    if (!p.estDue(now)) return null;
+    final dossier = Directory(p.dossier.trim());
+    if (!dossier.existsSync()) dossier.createSync(recursive: true);
+    String p2(int v) => v.toString().padLeft(2, '0');
+    final nom = '$prefixeAuto${now.year}${p2(now.month)}${p2(now.day)}_${p2(now.hour)}${p2(now.minute)}.cdz';
+    final chemin = '${dossier.path}${Platform.pathSeparator}$nom';
+    await sauvegarder(chemin: chemin, motDePasse: p.motDePasse);
+    await ParametreRepository(base.db).ecrire(ParametresSauvegardeAuto.cleDerniere, now.toUtc().toIso8601String());
+    final anciens =
+        dossier
+            .listSync()
+            .whereType<File>()
+            .where((f) => _nomFichier(f.path).startsWith(prefixeAuto) && f.path.endsWith('.cdz'))
+            .toList()
+          ..sort((a, b) => _nomFichier(b.path).compareTo(_nomFichier(a.path)));
+    for (final f in anciens.skip(conserver)) {
+      f.deleteSync();
+    }
+    return chemin;
   }
 
   /// Ouvre la sauvegarde avec [motDePasse] et en lit le contenu.

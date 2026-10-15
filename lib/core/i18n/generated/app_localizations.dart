@@ -12998,6 +12998,90 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Aucune vente enregistrée : l’aperçu utilise un ticket d’exemple.'**
   String get pmApercuAucuneVente;
+
+  /// No description provided for @pmSauvegardeIncomplete.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sauvegarde automatique : choisissez un dossier et un mot de passe.'**
+  String get pmSauvegardeIncomplete;
+
+  /// No description provided for @pmSauvegardeDossier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dossier de sauvegarde'**
+  String get pmSauvegardeDossier;
+
+  /// No description provided for @pmSauvegardeDossierDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Disque local, clé USB ou dossier synchronisé (Google Drive, OneDrive).'**
+  String get pmSauvegardeDossierDesc;
+
+  /// No description provided for @pmSauvegardeChanger.
+  ///
+  /// In fr, this message translates to:
+  /// **'Changer'**
+  String get pmSauvegardeChanger;
+
+  /// No description provided for @pmSauvegardeAuto.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sauvegarde automatique'**
+  String get pmSauvegardeAuto;
+
+  /// No description provided for @pmSauvegardeAutoDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Faite à l’ouverture de l’application ; les 30 dernières sont conservées.'**
+  String get pmSauvegardeAutoDesc;
+
+  /// No description provided for @pmFrequenceDesactivee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Désactivée'**
+  String get pmFrequenceDesactivee;
+
+  /// No description provided for @pmFrequenceDemarrage.
+  ///
+  /// In fr, this message translates to:
+  /// **'À chaque démarrage'**
+  String get pmFrequenceDemarrage;
+
+  /// No description provided for @pmFrequenceQuotidienne.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quotidienne'**
+  String get pmFrequenceQuotidienne;
+
+  /// No description provided for @pmSauvegardeMdp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mot de passe des sauvegardes'**
+  String get pmSauvegardeMdp;
+
+  /// No description provided for @pmSauvegardeMdpDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Demandé pour restaurer une sauvegarde automatique.'**
+  String get pmSauvegardeMdpDesc;
+
+  /// No description provided for @pmSauvegardeMdpDefinir.
+  ///
+  /// In fr, this message translates to:
+  /// **'Définir'**
+  String get pmSauvegardeMdpDefinir;
+
+  /// No description provided for @pmSauvegardeMdpChanger.
+  ///
+  /// In fr, this message translates to:
+  /// **'Changer'**
+  String get pmSauvegardeMdpChanger;
+
+  /// No description provided for @pmSauvegardeDerniere.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dernière sauvegarde automatique : {date}'**
+  String pmSauvegardeDerniere(String date);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
