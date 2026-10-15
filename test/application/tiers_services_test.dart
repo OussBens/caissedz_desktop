@@ -46,7 +46,9 @@ class _Ctx {
       utilisateurCode: 'USR0000',
     ).entrerStock(produitCode: lait.code, magasinCode: 'MAG0000', quantite: 100);
     tiers = TiersService(db, utilisateurCode: 'USR0000');
-    client = await tiers.creerClient(const Client(code: '', nom: 'Amina', telephone: '0550 12 34 56', plafondCredit: 5000));
+    client = await tiers.creerClient(
+      const Client(code: '', nom: 'Amina', telephone: '0550 12 34 56', plafondCredit: 5000),
+    );
     session = await SessionCaisseService(db, utilisateurCode: 'USR0000').ouvrir(caisseCode: 'CIS0000', fondInitial: 0);
     ventes = VenteService(db, utilisateurCode: 'USR0000', parametres: const ParametresVente());
     versements = VersementService(db, utilisateurCode: 'USR0000');

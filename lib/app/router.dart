@@ -16,7 +16,6 @@ import '../features/produits/produits_page.dart';
 import '../features/roles/roles_page.dart';
 import '../features/shell/app_shell.dart';
 import '../features/shell/module_placeholder_page.dart';
-import '../features/situation/situation_page.dart';
 import '../features/stock/besoins_page.dart';
 import '../features/stock/magasins_page.dart';
 import '../features/stock/sorties_page.dart';
@@ -95,7 +94,7 @@ GoRouter construireRouter(Ref ref, {String routeInitiale = routeAccueil}) {
 Widget pageModule(ModuleApp module) => switch (module.id) {
   'parametres' => const ParametresPage(),
   'tableau_bord' => const TableauBordPage(),
-  'situation' => const SituationPage(),
+  'situation' => const TableauBordPage(ongletInitial: 1),
   'zakat' => const ZakatPage(),
   'historique' => const HistoriquePage(),
   'caisse' => const PosPage(),

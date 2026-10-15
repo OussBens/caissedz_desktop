@@ -68,23 +68,26 @@ Finder _champ(String libelle, {bool premier = false}) => find
     .first;
 
 void main() {
-  testWidgets('tableau de bord : 6 KPI et 5 graphiques', (tester) async {
+  testWidgets('tableau de bord : 6 KPI, 5 graphiques, dernières ventes, navigation des KPI', (tester) async {
     final c = await pumpApp(tester, routeInitiale: '/tableau-de-bord', taille: const Size(1500, 1000));
     await _jeu(c);
     await tester.pumpAndSettle();
-    expect(find.text('CA du jour'), findsOneWidget);
-    expect(find.text('Tickets du jour'), findsOneWidget);
-    expect(find.text('2'), findsWidgets);
-    expect(find.text('Créances clients'), findsOneWidget);
-    expect(find.textContaining('500'), findsWidgets);
-    expect(find.text('Chiffre d\'affaires des 30 derniers jours'), findsOneWidget);
-    expect(find.byType(DsGraphiqueLignes), findsOneWidget);
-    expect(find.byType(DsGraphiqueBarres), findsNWidgets(3));
-    expect(find.byType(DsGraphiqueSecteurs), findsOneWidget);
     expect(find.byType(DsStatCard), findsNWidgets(6));
+    expect(find.text('Dette fournisseurs'), findsOneWidget);
+    expect(find.textContaining('500,00', findRichText: true), findsWidgets); // ventes = net (aucun achat)
+    expect(find.byType(DsLineChart), findsOneWidget);
+    expect(find.byType(DsBarChart), findsOneWidget);
+    expect(find.byType(DsDonutChart), findsOneWidget);
+    expect(find.byType(DsRankedBars), findsNWidgets(2));
+    expect(find.textContaining('Lait 1 L', findRichText: true), findsWidgets); // top produits
+    expect(find.text('VTE0002'), findsOneWidget); // dernières ventes
+    await clic(tester, find.text('Jour'));
+    expect(find.textContaining('500,00', findRichText: true), findsWidgets);
+    await clic(tester, find.byKey(const ValueKey('kpi_credit_clients')));
+    expect(find.text('Amina'), findsOneWidget);
   });
 
-  testWidgets('situation : rapports, changement de rapport, export Excel', (tester) async {
+  testWidgets('situation : 10 analyses, recette par panier, export Excel', (tester) async {
     Uint8List? ecrit;
     final c = await pumpApp(
       tester,
@@ -96,17 +99,22 @@ void main() {
       ],
     );
     await _jeu(c);
-    await clic(tester, find.text('Afficher'));
-    expect(find.text('TICKETS'), findsWidgets);
-    expect(find.text('2'), findsWidgets);
-    await clic(tester, find.text('Ventes par jour').last);
-    await clic(tester, find.text('Ventes par produit').last);
-    expect(find.text('Lait 1 L'), findsOneWidget);
-    await clic(tester, find.text('Exporter Excel'));
-    expect(find.textContaining('Fichier enregistré'), findsOneWidget);
+    await tester.pumpAndSettle();
+    for (final id in ['mvc', 'mvp', 'inv', 'cout', 'rcp', 'rcpr', 'mgp', 'mgper', 'scli', 'sfrn']) {
+      expect(find.byKey(ValueKey('situation_nav_$id')), findsOneWidget, reason: id);
+    }
+    expect(find.text('Vente'), findsWidgets); // mouvement de caisse
+    await clic(tester, find.byKey(const ValueKey('situation_nav_rcp')));
+    expect(find.text('VTE0001'), findsOneWidget);
+    expect(find.text('Amina'), findsOneWidget);
+    expect(find.text('300,00 DA'), findsWidgets); // reste dû
+    await clic(tester, find.text('Excel'));
+    expect(find.textContaining('/exports/situation_rcp_'), findsOneWidget);
     await clic(tester, find.text('Fermer').last);
     final excel = Excel.decodeBytes(ecrit!);
-    expect(excel.tables.values.single.maxRows, 6); // titre, période, vide, en-têtes, Lait, totaux
+    expect(excel.tables.values.single.maxRows, 3 + 2 + 1); // titre, vide, en-têtes, 2 paniers, totaux
+    await clic(tester, find.byKey(const ValueKey('situation_nav_mgp')));
+    expect(find.text('25,0 %'), findsWidgets); // (300 − 240) / 240
   });
 
   testWidgets('zakat : cours de l’or, nissab et assujettissement', (tester) async {

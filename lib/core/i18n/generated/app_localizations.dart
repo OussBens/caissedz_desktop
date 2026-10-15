@@ -7316,6 +7316,648 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Type'**
   String get versementType;
+
+  /// No description provided for @dsChargement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chargement…'**
+  String get dsChargement;
+
+  /// No description provided for @tableauBordOnglet.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tableau de bord'**
+  String get tableauBordOnglet;
+
+  /// No description provided for @situationOnglet.
+  ///
+  /// In fr, this message translates to:
+  /// **'Situation'**
+  String get situationOnglet;
+
+  /// No description provided for @tableauBordDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Du {du} au {au}, comparé aux {n} jours précédents.'**
+  String tableauBordDescription(String au, String du, int n);
+
+  /// No description provided for @situationDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Analyses détaillées sur la période — chaque vue est exportable en Excel et PDF.'**
+  String get situationDescription;
+
+  /// No description provided for @tableauBordJour.
+  ///
+  /// In fr, this message translates to:
+  /// **'Jour'**
+  String get tableauBordJour;
+
+  /// No description provided for @tableauBordSemaine.
+  ///
+  /// In fr, this message translates to:
+  /// **'Semaine'**
+  String get tableauBordSemaine;
+
+  /// No description provided for @tableauBordMois.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mois'**
+  String get tableauBordMois;
+
+  /// No description provided for @tableauBordPeriode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Période'**
+  String get tableauBordPeriode;
+
+  /// No description provided for @tableauBordChoisirPeriode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir la période'**
+  String get tableauBordChoisirPeriode;
+
+  /// No description provided for @tableauBordIndicateur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Indicateur'**
+  String get tableauBordIndicateur;
+
+  /// No description provided for @tableauBordPeriodeCourante.
+  ///
+  /// In fr, this message translates to:
+  /// **'Période'**
+  String get tableauBordPeriodeCourante;
+
+  /// No description provided for @tableauBordPeriodePrecedente.
+  ///
+  /// In fr, this message translates to:
+  /// **'Période précédente'**
+  String get tableauBordPeriodePrecedente;
+
+  /// No description provided for @tableauBordVentes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ventes'**
+  String get tableauBordVentes;
+
+  /// No description provided for @tableauBordVentesInfo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Total des paniers encaissés sur la période'**
+  String get tableauBordVentesInfo;
+
+  /// No description provided for @tableauBordVsPrecedente.
+  ///
+  /// In fr, this message translates to:
+  /// **'vs période précédente'**
+  String get tableauBordVsPrecedente;
+
+  /// No description provided for @tableauBordPrecedenteInfo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Même nombre de jours, juste avant la période'**
+  String get tableauBordPrecedenteInfo;
+
+  /// No description provided for @tableauBordAchats.
+  ///
+  /// In fr, this message translates to:
+  /// **'Achats'**
+  String get tableauBordAchats;
+
+  /// No description provided for @tableauBordAchatsInfo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrées validées (bons d\'achat)'**
+  String get tableauBordAchatsInfo;
+
+  /// No description provided for @tableauBordNet.
+  ///
+  /// In fr, this message translates to:
+  /// **'Net'**
+  String get tableauBordNet;
+
+  /// No description provided for @tableauBordNetInfo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ventes − achats de la période'**
+  String get tableauBordNetInfo;
+
+  /// No description provided for @tableauBordDetteFournisseurs.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dette fournisseurs'**
+  String get tableauBordDetteFournisseurs;
+
+  /// No description provided for @tableauBordDetteInfo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Restes à payer sur les entrées'**
+  String get tableauBordDetteInfo;
+
+  /// No description provided for @tableauBordCreditClients.
+  ///
+  /// In fr, this message translates to:
+  /// **'Crédit clients'**
+  String get tableauBordCreditClients;
+
+  /// No description provided for @tableauBordCreditInfo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Restes dus sur les paniers'**
+  String get tableauBordCreditInfo;
+
+  /// No description provided for @tableauBordCourbeVentes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Courbe des ventes'**
+  String get tableauBordCourbeVentes;
+
+  /// No description provided for @tableauBordModesPaiement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modes de paiement'**
+  String get tableauBordModesPaiement;
+
+  /// No description provided for @tableauBordTotal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Total'**
+  String get tableauBordTotal;
+
+  /// No description provided for @tableauBordCaParJour.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chiffre d\'affaires par jour'**
+  String get tableauBordCaParJour;
+
+  /// No description provided for @tableauBordVentesCaissier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ventes par caissier'**
+  String get tableauBordVentesCaissier;
+
+  /// No description provided for @tableauBordTickets.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n} tickets'**
+  String tableauBordTickets(int n);
+
+  /// No description provided for @tableauBordUnites.
+  ///
+  /// In fr, this message translates to:
+  /// **'{qte} u.'**
+  String tableauBordUnites(String qte);
+
+  /// No description provided for @tableauBordDernieresVentes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dernières ventes'**
+  String get tableauBordDernieresVentes;
+
+  /// No description provided for @tableauBordPanier.
+  ///
+  /// In fr, this message translates to:
+  /// **'N° panier'**
+  String get tableauBordPanier;
+
+  /// No description provided for @tableauBordHeure.
+  ///
+  /// In fr, this message translates to:
+  /// **'Heure'**
+  String get tableauBordHeure;
+
+  /// No description provided for @tableauBordPaiement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paiement'**
+  String get tableauBordPaiement;
+
+  /// No description provided for @tableauBordRuptures.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produits en rupture'**
+  String get tableauBordRuptures;
+
+  /// No description provided for @tableauBordAucuneRupture.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun produit en rupture'**
+  String get tableauBordAucuneRupture;
+
+  /// No description provided for @tableauBordProduit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produit'**
+  String get tableauBordProduit;
+
+  /// No description provided for @tableauBordStock.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock'**
+  String get tableauBordStock;
+
+  /// No description provided for @situationGroupeTresorerie.
+  ///
+  /// In fr, this message translates to:
+  /// **'Trésorerie'**
+  String get situationGroupeTresorerie;
+
+  /// No description provided for @situationGroupeStock.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock'**
+  String get situationGroupeStock;
+
+  /// No description provided for @situationGroupeVentes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ventes'**
+  String get situationGroupeVentes;
+
+  /// No description provided for @situationGroupeMarges.
+  ///
+  /// In fr, this message translates to:
+  /// **'Marges'**
+  String get situationGroupeMarges;
+
+  /// No description provided for @situationGroupeTiers.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tiers'**
+  String get situationGroupeTiers;
+
+  /// No description provided for @situationMvc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mouvement caisse'**
+  String get situationMvc;
+
+  /// No description provided for @situationMvp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mouvement produit'**
+  String get situationMvp;
+
+  /// No description provided for @situationRcp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Recette par panier'**
+  String get situationRcp;
+
+  /// No description provided for @situationRcpr.
+  ///
+  /// In fr, this message translates to:
+  /// **'Recette par produit'**
+  String get situationRcpr;
+
+  /// No description provided for @situationMgp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Marge par panier'**
+  String get situationMgp;
+
+  /// No description provided for @situationMgper.
+  ///
+  /// In fr, this message translates to:
+  /// **'Marge par période'**
+  String get situationMgper;
+
+  /// No description provided for @situationInv.
+  ///
+  /// In fr, this message translates to:
+  /// **'Inventaire'**
+  String get situationInv;
+
+  /// No description provided for @situationCout.
+  ///
+  /// In fr, this message translates to:
+  /// **'Coût produit'**
+  String get situationCout;
+
+  /// No description provided for @situationScli.
+  ///
+  /// In fr, this message translates to:
+  /// **'Situation client'**
+  String get situationScli;
+
+  /// No description provided for @situationSfrn.
+  ///
+  /// In fr, this message translates to:
+  /// **'Situation fournisseur'**
+  String get situationSfrn;
+
+  /// No description provided for @situationEntrees.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrées'**
+  String get situationEntrees;
+
+  /// No description provided for @situationSorties.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sorties'**
+  String get situationSorties;
+
+  /// No description provided for @situationSoldeNet.
+  ///
+  /// In fr, this message translates to:
+  /// **'Solde net'**
+  String get situationSoldeNet;
+
+  /// No description provided for @situationRetours.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retours'**
+  String get situationRetours;
+
+  /// No description provided for @situationStockInitial.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock initial'**
+  String get situationStockInitial;
+
+  /// No description provided for @situationStockFinal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock final'**
+  String get situationStockFinal;
+
+  /// No description provided for @situationCaissier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Caissier'**
+  String get situationCaissier;
+
+  /// No description provided for @situationPaye.
+  ///
+  /// In fr, this message translates to:
+  /// **'Payé'**
+  String get situationPaye;
+
+  /// No description provided for @situationPaniers.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paniers'**
+  String get situationPaniers;
+
+  /// No description provided for @situationRecette.
+  ///
+  /// In fr, this message translates to:
+  /// **'Recette'**
+  String get situationRecette;
+
+  /// No description provided for @situationPanierMoyen.
+  ///
+  /// In fr, this message translates to:
+  /// **'Panier moyen'**
+  String get situationPanierMoyen;
+
+  /// No description provided for @situationCategorie.
+  ///
+  /// In fr, this message translates to:
+  /// **'Catégorie'**
+  String get situationCategorie;
+
+  /// No description provided for @situationQuantite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quantité'**
+  String get situationQuantite;
+
+  /// No description provided for @situationPrixMoyen.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix moyen'**
+  String get situationPrixMoyen;
+
+  /// No description provided for @situationProduitsVendus.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produits vendus'**
+  String get situationProduitsVendus;
+
+  /// No description provided for @situationVente.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vente'**
+  String get situationVente;
+
+  /// No description provided for @situationCoutLibelle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Coût'**
+  String get situationCoutLibelle;
+
+  /// No description provided for @situationMarge.
+  ///
+  /// In fr, this message translates to:
+  /// **'Marge'**
+  String get situationMarge;
+
+  /// No description provided for @situationTaux.
+  ///
+  /// In fr, this message translates to:
+  /// **'Taux'**
+  String get situationTaux;
+
+  /// No description provided for @situationCa.
+  ///
+  /// In fr, this message translates to:
+  /// **'CA'**
+  String get situationCa;
+
+  /// No description provided for @situationTauxMoyen.
+  ///
+  /// In fr, this message translates to:
+  /// **'Taux moyen'**
+  String get situationTauxMoyen;
+
+  /// No description provided for @situationMargeParPeriode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Marge par période'**
+  String get situationMargeParPeriode;
+
+  /// No description provided for @situationRegrouper.
+  ///
+  /// In fr, this message translates to:
+  /// **'Regrouper'**
+  String get situationRegrouper;
+
+  /// No description provided for @situationParJour.
+  ///
+  /// In fr, this message translates to:
+  /// **'Par jour'**
+  String get situationParJour;
+
+  /// No description provided for @situationParSemaine.
+  ///
+  /// In fr, this message translates to:
+  /// **'Par semaine'**
+  String get situationParSemaine;
+
+  /// No description provided for @situationParMois.
+  ///
+  /// In fr, this message translates to:
+  /// **'Par mois'**
+  String get situationParMois;
+
+  /// No description provided for @situationMagasin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Magasin'**
+  String get situationMagasin;
+
+  /// No description provided for @situationTheorique.
+  ///
+  /// In fr, this message translates to:
+  /// **'Théorique'**
+  String get situationTheorique;
+
+  /// No description provided for @situationCompte.
+  ///
+  /// In fr, this message translates to:
+  /// **'Compté'**
+  String get situationCompte;
+
+  /// No description provided for @situationEcart.
+  ///
+  /// In fr, this message translates to:
+  /// **'Écart'**
+  String get situationEcart;
+
+  /// No description provided for @situationValeur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Valeur'**
+  String get situationValeur;
+
+  /// No description provided for @situationProduitsComptes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produits comptés'**
+  String get situationProduitsComptes;
+
+  /// No description provided for @situationEcarts.
+  ///
+  /// In fr, this message translates to:
+  /// **'Écarts'**
+  String get situationEcarts;
+
+  /// No description provided for @situationValeurEcart.
+  ///
+  /// In fr, this message translates to:
+  /// **'Valeur de l\'écart'**
+  String get situationValeurEcart;
+
+  /// No description provided for @situationValiderInventaire.
+  ///
+  /// In fr, this message translates to:
+  /// **'Valider l\'inventaire'**
+  String get situationValiderInventaire;
+
+  /// No description provided for @situationInventaireMagasin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisissez un magasin pour valider l\'inventaire.'**
+  String get situationInventaireMagasin;
+
+  /// No description provided for @situationAucunEcart.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun écart à enregistrer.'**
+  String get situationAucunEcart;
+
+  /// No description provided for @situationConfirmerInventaire.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n} produit(s) seront ajustés au stock compté. Continuer ?'**
+  String situationConfirmerInventaire(int n);
+
+  /// No description provided for @situationInventaireValide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Inventaire validé'**
+  String get situationInventaireValide;
+
+  /// No description provided for @situationProduitsAjustes.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n} produit(s) ajusté(s)'**
+  String situationProduitsAjustes(int n);
+
+  /// No description provided for @situationDernierAchat.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dernier achat'**
+  String get situationDernierAchat;
+
+  /// No description provided for @situationCmp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Coût moyen pondéré'**
+  String get situationCmp;
+
+  /// No description provided for @situationMin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Min'**
+  String get situationMin;
+
+  /// No description provided for @situationMax.
+  ///
+  /// In fr, this message translates to:
+  /// **'Max'**
+  String get situationMax;
+
+  /// No description provided for @situationPrixVente.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix de vente'**
+  String get situationPrixVente;
+
+  /// No description provided for @situationProduits.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produits'**
+  String get situationProduits;
+
+  /// No description provided for @situationMargeMoyenne.
+  ///
+  /// In fr, this message translates to:
+  /// **'Marge moyenne'**
+  String get situationMargeMoyenne;
+
+  /// No description provided for @situationSous15.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sous 15 %'**
+  String get situationSous15;
+
+  /// No description provided for @situationAchats.
+  ///
+  /// In fr, this message translates to:
+  /// **'Achats'**
+  String get situationAchats;
+
+  /// No description provided for @situationDette.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dette'**
+  String get situationDette;
+
+  /// No description provided for @situationDettes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dettes'**
+  String get situationDettes;
+
+  /// No description provided for @situationCreditTotal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Crédit total'**
+  String get situationCreditTotal;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

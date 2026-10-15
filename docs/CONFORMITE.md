@@ -80,7 +80,12 @@
 - [x] Export fiscal : archive + JSON vérifiable
 
 ## Rapports et paramètres (lot 8)
-- [x] Tableau de bord 6 KPI / 5 graphiques ; Situation 10 rapports ; Zakat
+- [x] Tableau de bord §9.14 (phase D) : période Jour / Semaine / Mois / Période, 6 KPI (ventes, période précédente,
+      achats, net, dette fournisseurs, crédit clients), 5 graphiques, dernières ventes, produits en rupture
+- [x] Situation : les 10 analyses de la spec (recette par panier / produit, mouvement caisse / produit, marge par
+      panier / période sur coût figé à la vente, inventaire validable, coût produit, situation client / fournisseur),
+      filtres, export Excel / PDF ; analyses de coût réservées à `voirPrixAchat`
+- [x] Zakat
 - [x] Historique (journal d'audit) ; Paramètres complets (boutique, vente, impression, serveurs)
 - [x] Sauvegarde / restauration ; exports Excel / PDF avec aperçu
 

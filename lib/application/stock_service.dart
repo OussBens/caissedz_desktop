@@ -168,6 +168,36 @@ class StockService {
     });
   }
 
+  /// Inventaire d'un magasin : un mouvement d'écart par produit compté, dans UNE transaction.
+  /// Retourne le nombre de produits ajustés.
+  Future<int> inventorierLot({
+    required String magasinCode,
+    required Map<String, double> quantitesConstatees,
+    String? commentaire,
+  }) => db.transaction((txn) async {
+    final repo = StockRepository(txn);
+    var n = 0;
+    final maintenant = DateTime.now();
+    for (final MapEntry(key: produitCode, value: constate) in quantitesConstatees.entries) {
+      await _verifierProduit(txn, produitCode);
+      final ecart = constate - (await repo.niveau(produitCode, magasinCode)).quantite;
+      if (ecart.abs() < 1e-9) continue;
+      await repo.insererMouvement(
+        MouvementStock(
+          date: maintenant,
+          produitCode: produitCode,
+          magasinCode: magasinCode,
+          type: TypesMouvement.inventaire,
+          quantite: ecart,
+          utilisateurCode: utilisateurCode,
+          commentaire: commentaire,
+        ),
+      );
+      n++;
+    }
+    return n;
+  });
+
   /// Sortie de stock liée à un document (vente, sortie…) — utilisée par les autres services dans leur transaction.
   Future<void> sortirDansTransaction(
     Transaction txn, {

@@ -133,6 +133,25 @@ class VenteService {
       } on StockException catch (e) {
         throw VenteException(ErreurVente.stockInsuffisant, e.detail);
       }
+      // Coût d'achat figé (§7.4) : composants pour un pack, unités de stock sinon.
+      final codesCout = {
+        for (final l in panier.lignes)
+          if (l.pack != null) ...l.pack!.lignes.map((c) => c.produitCode) else l.produit.code,
+      };
+      final prixAchat = {
+        for (final r in await txn.query(
+          'produit',
+          columns: ['code', 'prix_achat'],
+          where: 'code IN (${List.filled(codesCout.length, '?').join(',')})',
+          whereArgs: codesCout.toList(),
+        ))
+          r['code'] as String: ((r['prix_achat'] as num?) ?? 0).toDouble(),
+      };
+      double coutLigne(PanierLigne l) => CalculsPrix.arrondir(
+        l.pack != null
+            ? l.pack!.lignes.fold(0.0, (s, c) => s + (prixAchat[c.produitCode] ?? 0) * c.quantite * l.quantite)
+            : (prixAchat[l.produit.code] ?? 0) * l.unitesStock,
+      );
       final lignes = [
         for (final (i, l) in panier.lignes.indexed)
           VenteLigne(
@@ -149,6 +168,8 @@ class VenteService {
               l.remise + (panier.remiseGlobalePct > 0 ? l.total * panier.remiseGlobalePct / 100 : 0),
             ),
             total: CalculsPrix.arrondir(l.total * (1 - panier.remiseGlobalePct / 100)),
+            prixAchat: l.quantite == 0 ? 0 : CalculsPrix.arrondir(coutLigne(l) / l.quantite),
+            totalAchat: coutLigne(l),
           ),
       ];
       final hashPrecedent = await repo.dernierHash() ?? Scellement.genese;

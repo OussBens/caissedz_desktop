@@ -333,9 +333,12 @@ class _DsBarChartState extends State<DsBarChart> {
     return LayoutBuilder(
       builder: (context, contraintes) {
         final hauteur = (contraintes.maxHeight - 54).clamp(10.0, double.infinity);
+        // Espacement et étiquettes adaptés au nombre de barres (30 jours dans une carte d'un tiers).
+        final espace = (contraintes.maxWidth / d.length * 0.3).clamp(1.0, 12.0);
+        final pas = (d.length / (contraintes.maxWidth / 28).floor().clamp(1, 1000)).ceil().clamp(1, 1000);
         return Row(
           crossAxisAlignment: CrossAxisAlignment.end,
-          spacing: 12,
+          spacing: espace,
           children: [
             for (final (i, x) in d.indexed)
               Expanded(
@@ -372,7 +375,8 @@ class _DsBarChartState extends State<DsBarChart> {
                         ),
                       ),
                       Text(
-                        x.libelle,
+                        i % pas == 0 || actif == i ? x.libelle : '',
+                        softWrap: false,
                         style: t.caption.copyWith(
                           fontWeight: actif == i ? FontWeight.w600 : FontWeight.w400,
                           color: actif == i ? c.textPrimary : c.textMuted,

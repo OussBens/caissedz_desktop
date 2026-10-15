@@ -3794,4 +3794,335 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get versementType => 'Type';
+
+  @override
+  String get dsChargement => 'Loading…';
+
+  @override
+  String get tableauBordOnglet => 'Dashboard';
+
+  @override
+  String get situationOnglet => 'Statements';
+
+  @override
+  String tableauBordDescription(String au, String du, int n) {
+    return 'From $du to $au, compared with the previous $n days.';
+  }
+
+  @override
+  String get situationDescription => 'Detailed analyses for the period — each view can be exported to Excel and PDF.';
+
+  @override
+  String get tableauBordJour => 'Day';
+
+  @override
+  String get tableauBordSemaine => 'Week';
+
+  @override
+  String get tableauBordMois => 'Month';
+
+  @override
+  String get tableauBordPeriode => 'Period';
+
+  @override
+  String get tableauBordChoisirPeriode => 'Choose the period';
+
+  @override
+  String get tableauBordIndicateur => 'Indicator';
+
+  @override
+  String get tableauBordPeriodeCourante => 'Period';
+
+  @override
+  String get tableauBordPeriodePrecedente => 'Previous period';
+
+  @override
+  String get tableauBordVentes => 'Sales';
+
+  @override
+  String get tableauBordVentesInfo => 'Total of baskets cashed in over the period';
+
+  @override
+  String get tableauBordVsPrecedente => 'vs previous period';
+
+  @override
+  String get tableauBordPrecedenteInfo => 'Same number of days, just before the period';
+
+  @override
+  String get tableauBordAchats => 'Purchases';
+
+  @override
+  String get tableauBordAchatsInfo => 'Validated receipts (purchase notes)';
+
+  @override
+  String get tableauBordNet => 'Net';
+
+  @override
+  String get tableauBordNetInfo => 'Sales − purchases for the period';
+
+  @override
+  String get tableauBordDetteFournisseurs => 'Supplier debt';
+
+  @override
+  String get tableauBordDetteInfo => 'Amounts left to pay on receipts';
+
+  @override
+  String get tableauBordCreditClients => 'Customer credit';
+
+  @override
+  String get tableauBordCreditInfo => 'Amounts due on baskets';
+
+  @override
+  String get tableauBordCourbeVentes => 'Sales curve';
+
+  @override
+  String get tableauBordModesPaiement => 'Payment methods';
+
+  @override
+  String get tableauBordTotal => 'Total';
+
+  @override
+  String get tableauBordCaParJour => 'Revenue per day';
+
+  @override
+  String get tableauBordVentesCaissier => 'Sales per cashier';
+
+  @override
+  String tableauBordTickets(int n) {
+    return '$n tickets';
+  }
+
+  @override
+  String tableauBordUnites(String qte) {
+    return '$qte u.';
+  }
+
+  @override
+  String get tableauBordDernieresVentes => 'Latest sales';
+
+  @override
+  String get tableauBordPanier => 'Basket no.';
+
+  @override
+  String get tableauBordHeure => 'Time';
+
+  @override
+  String get tableauBordPaiement => 'Payment';
+
+  @override
+  String get tableauBordRuptures => 'Out-of-stock products';
+
+  @override
+  String get tableauBordAucuneRupture => 'No product out of stock';
+
+  @override
+  String get tableauBordProduit => 'Product';
+
+  @override
+  String get tableauBordStock => 'Stock';
+
+  @override
+  String get situationGroupeTresorerie => 'Cash';
+
+  @override
+  String get situationGroupeStock => 'Stock';
+
+  @override
+  String get situationGroupeVentes => 'Sales';
+
+  @override
+  String get situationGroupeMarges => 'Margins';
+
+  @override
+  String get situationGroupeTiers => 'Third parties';
+
+  @override
+  String get situationMvc => 'Till movements';
+
+  @override
+  String get situationMvp => 'Product movements';
+
+  @override
+  String get situationRcp => 'Revenue per basket';
+
+  @override
+  String get situationRcpr => 'Revenue per product';
+
+  @override
+  String get situationMgp => 'Margin per basket';
+
+  @override
+  String get situationMgper => 'Margin per period';
+
+  @override
+  String get situationInv => 'Stock count';
+
+  @override
+  String get situationCout => 'Product cost';
+
+  @override
+  String get situationScli => 'Customer statement';
+
+  @override
+  String get situationSfrn => 'Supplier statement';
+
+  @override
+  String get situationEntrees => 'In';
+
+  @override
+  String get situationSorties => 'Out';
+
+  @override
+  String get situationSoldeNet => 'Net balance';
+
+  @override
+  String get situationRetours => 'Returns';
+
+  @override
+  String get situationStockInitial => 'Opening stock';
+
+  @override
+  String get situationStockFinal => 'Closing stock';
+
+  @override
+  String get situationCaissier => 'Cashier';
+
+  @override
+  String get situationPaye => 'Paid';
+
+  @override
+  String get situationPaniers => 'Baskets';
+
+  @override
+  String get situationRecette => 'Revenue';
+
+  @override
+  String get situationPanierMoyen => 'Average basket';
+
+  @override
+  String get situationCategorie => 'Category';
+
+  @override
+  String get situationQuantite => 'Quantity';
+
+  @override
+  String get situationPrixMoyen => 'Average price';
+
+  @override
+  String get situationProduitsVendus => 'Products sold';
+
+  @override
+  String get situationVente => 'Sale';
+
+  @override
+  String get situationCoutLibelle => 'Cost';
+
+  @override
+  String get situationMarge => 'Margin';
+
+  @override
+  String get situationTaux => 'Rate';
+
+  @override
+  String get situationCa => 'Revenue';
+
+  @override
+  String get situationTauxMoyen => 'Average rate';
+
+  @override
+  String get situationMargeParPeriode => 'Margin per period';
+
+  @override
+  String get situationRegrouper => 'Group by';
+
+  @override
+  String get situationParJour => 'By day';
+
+  @override
+  String get situationParSemaine => 'By week';
+
+  @override
+  String get situationParMois => 'By month';
+
+  @override
+  String get situationMagasin => 'Store';
+
+  @override
+  String get situationTheorique => 'Expected';
+
+  @override
+  String get situationCompte => 'Counted';
+
+  @override
+  String get situationEcart => 'Difference';
+
+  @override
+  String get situationValeur => 'Value';
+
+  @override
+  String get situationProduitsComptes => 'Products counted';
+
+  @override
+  String get situationEcarts => 'Differences';
+
+  @override
+  String get situationValeurEcart => 'Difference value';
+
+  @override
+  String get situationValiderInventaire => 'Validate the count';
+
+  @override
+  String get situationInventaireMagasin => 'Choose a store to validate the count.';
+
+  @override
+  String get situationAucunEcart => 'No difference to record.';
+
+  @override
+  String situationConfirmerInventaire(int n) {
+    return '$n product(s) will be adjusted to the counted stock. Continue?';
+  }
+
+  @override
+  String get situationInventaireValide => 'Count validated';
+
+  @override
+  String situationProduitsAjustes(int n) {
+    return '$n product(s) adjusted';
+  }
+
+  @override
+  String get situationDernierAchat => 'Last purchase';
+
+  @override
+  String get situationCmp => 'Weighted average cost';
+
+  @override
+  String get situationMin => 'Min';
+
+  @override
+  String get situationMax => 'Max';
+
+  @override
+  String get situationPrixVente => 'Selling price';
+
+  @override
+  String get situationProduits => 'Products';
+
+  @override
+  String get situationMargeMoyenne => 'Average margin';
+
+  @override
+  String get situationSous15 => 'Below 15 %';
+
+  @override
+  String get situationAchats => 'Purchases';
+
+  @override
+  String get situationDette => 'Debt';
+
+  @override
+  String get situationDettes => 'Debts';
+
+  @override
+  String get situationCreditTotal => 'Total credit';
 }

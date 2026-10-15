@@ -67,6 +67,8 @@ class VenteLigne {
     required this.prixUnitaire,
     required this.remise,
     required this.total,
+    this.prixAchat = 0,
+    this.totalAchat = 0,
   });
   final int ordre;
   final String produitCode;
@@ -79,6 +81,10 @@ class VenteLigne {
   final double prixUnitaire;
   final double remise;
   final double total;
+
+  /// Coût d'achat unitaire figé à la vente et coût total de la ligne (§7.4, marges).
+  final double prixAchat;
+  final double totalAchat;
 
   Map<String, Object?> versLigne(String venteCode) => {
     'vente_code': venteCode,
@@ -93,6 +99,8 @@ class VenteLigne {
     'prix_unitaire': prixUnitaire,
     'remise': remise,
     'total': total,
+    'prix_achat': prixAchat,
+    'total_achat': totalAchat,
   };
   factory VenteLigne.depuisLigne(Map<String, Object?> r) => VenteLigne(
     ordre: r['ordre'] as int,
@@ -106,6 +114,8 @@ class VenteLigne {
     prixUnitaire: (r['prix_unitaire'] as num).toDouble(),
     remise: (r['remise'] as num).toDouble(),
     total: (r['total'] as num).toDouble(),
+    prixAchat: ((r['prix_achat'] as num?) ?? 0).toDouble(),
+    totalAchat: ((r['total_achat'] as num?) ?? 0).toDouble(),
   );
   Map<String, Object?> versCanonique() => {
     'o': ordre,

@@ -404,5 +404,9 @@ Référence : `docs/design/CaisseDZ-DS-v2.2/CaisseDZ-DS-v2.2.html`, `bundle-v2.2
     détail (5 derniers documents), Situation (relevé débit / crédit / solde), annulation avec motif.
     Versements : sens reçu / retour, modification, annulation douce (motif, caisse rétablie), versement retour.
     La route `/versements` ouvre l'onglet Versements des clients.
+  - ✅ Tableau de bord (`DashboardV22`) + onglet Situation (`SituationScreen`) : `SituationRepository` (10 analyses
+    de §9.14), migration v10 (coût d'achat figé sur `vente_ligne`), inventaire validé en une transaction
+    (`StockService.inventorierLot`). Les anciens rapports génériques sont retirés ; `/situation` ouvre l'onglet.
   - Écarts : colonnes d'audit « modifié le / par » absentes du schéma (seuls créé par et annulation) ;
-    tendances des KPI non calculées.
+    tendances des KPI calculées seulement pour les ventes ; ventes antérieures à la v10 valorisées au prix
+    d'achat actuel ; `mouvement_stock` sans valorisation (prix_achat / prix_vente de §7.3).

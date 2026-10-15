@@ -54,20 +54,6 @@ final ecrivainFichierProvider = Provider<Future<void> Function(String chemin, Ui
       (chemin, octets) => File(chemin).writeAsBytes(octets, flush: true),
 );
 
-String libelleRapport(AppLocalizations l10n, String id) => switch (id) {
-  'ventes_jour' => l10n.rapportVentesJour,
-  'ventes_produit' => l10n.rapportVentesProduit,
-  'ventes_categorie' => l10n.rapportVentesCategorie,
-  'ventes_client' => l10n.rapportVentesClient,
-  'ventes_vendeur' => l10n.rapportVentesVendeur,
-  'encaissements_mode' => l10n.rapportEncaissementsMode,
-  'achats_fournisseur' => l10n.rapportAchatsFournisseur,
-  'retours' => l10n.rapportRetours,
-  'etat_stock' => l10n.rapportEtatStock,
-  'creances_dettes' => l10n.rapportCreancesDettes,
-  _ => id,
-};
-
 String messageErreurParametres(AppLocalizations l10n, ErreurParametres e) => switch (e) {
   ErreurParametres.nomBoutiqueVide => l10n.parametresErreurNom,
   ErreurParametres.valeurInvalide => l10n.parametresErreurValeur,

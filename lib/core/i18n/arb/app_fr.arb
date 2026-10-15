@@ -1891,5 +1891,153 @@
   "versementSensRecu": "Reçu",
   "versementSensRetour": "Retour",
   "versementTitre": "Versement",
-  "versementType": "Type"
+  "versementType": "Type",
+  "dsChargement": "Chargement…",
+  "tableauBordOnglet": "Tableau de bord",
+  "situationOnglet": "Situation",
+  "tableauBordDescription": "Du {du} au {au}, comparé aux {n} jours précédents.",
+  "@tableauBordDescription": {
+    "placeholders": {
+      "au": {
+        "type": "String"
+      },
+      "du": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "situationDescription": "Analyses détaillées sur la période — chaque vue est exportable en Excel et PDF.",
+  "tableauBordJour": "Jour",
+  "tableauBordSemaine": "Semaine",
+  "tableauBordMois": "Mois",
+  "tableauBordPeriode": "Période",
+  "tableauBordChoisirPeriode": "Choisir la période",
+  "tableauBordIndicateur": "Indicateur",
+  "tableauBordPeriodeCourante": "Période",
+  "tableauBordPeriodePrecedente": "Période précédente",
+  "tableauBordVentes": "Ventes",
+  "tableauBordVentesInfo": "Total des paniers encaissés sur la période",
+  "tableauBordVsPrecedente": "vs période précédente",
+  "tableauBordPrecedenteInfo": "Même nombre de jours, juste avant la période",
+  "tableauBordAchats": "Achats",
+  "tableauBordAchatsInfo": "Entrées validées (bons d'achat)",
+  "tableauBordNet": "Net",
+  "tableauBordNetInfo": "Ventes − achats de la période",
+  "tableauBordDetteFournisseurs": "Dette fournisseurs",
+  "tableauBordDetteInfo": "Restes à payer sur les entrées",
+  "tableauBordCreditClients": "Crédit clients",
+  "tableauBordCreditInfo": "Restes dus sur les paniers",
+  "tableauBordCourbeVentes": "Courbe des ventes",
+  "tableauBordModesPaiement": "Modes de paiement",
+  "tableauBordTotal": "Total",
+  "tableauBordCaParJour": "Chiffre d'affaires par jour",
+  "tableauBordVentesCaissier": "Ventes par caissier",
+  "tableauBordTickets": "{n} tickets",
+  "@tableauBordTickets": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "tableauBordUnites": "{qte} u.",
+  "@tableauBordUnites": {
+    "placeholders": {
+      "qte": {
+        "type": "String"
+      }
+    }
+  },
+  "tableauBordDernieresVentes": "Dernières ventes",
+  "tableauBordPanier": "N° panier",
+  "tableauBordHeure": "Heure",
+  "tableauBordPaiement": "Paiement",
+  "tableauBordRuptures": "Produits en rupture",
+  "tableauBordAucuneRupture": "Aucun produit en rupture",
+  "tableauBordProduit": "Produit",
+  "tableauBordStock": "Stock",
+  "situationGroupeTresorerie": "Trésorerie",
+  "situationGroupeStock": "Stock",
+  "situationGroupeVentes": "Ventes",
+  "situationGroupeMarges": "Marges",
+  "situationGroupeTiers": "Tiers",
+  "situationMvc": "Mouvement caisse",
+  "situationMvp": "Mouvement produit",
+  "situationRcp": "Recette par panier",
+  "situationRcpr": "Recette par produit",
+  "situationMgp": "Marge par panier",
+  "situationMgper": "Marge par période",
+  "situationInv": "Inventaire",
+  "situationCout": "Coût produit",
+  "situationScli": "Situation client",
+  "situationSfrn": "Situation fournisseur",
+  "situationEntrees": "Entrées",
+  "situationSorties": "Sorties",
+  "situationSoldeNet": "Solde net",
+  "situationRetours": "Retours",
+  "situationStockInitial": "Stock initial",
+  "situationStockFinal": "Stock final",
+  "situationCaissier": "Caissier",
+  "situationPaye": "Payé",
+  "situationPaniers": "Paniers",
+  "situationRecette": "Recette",
+  "situationPanierMoyen": "Panier moyen",
+  "situationCategorie": "Catégorie",
+  "situationQuantite": "Quantité",
+  "situationPrixMoyen": "Prix moyen",
+  "situationProduitsVendus": "Produits vendus",
+  "situationVente": "Vente",
+  "situationCoutLibelle": "Coût",
+  "situationMarge": "Marge",
+  "situationTaux": "Taux",
+  "situationCa": "CA",
+  "situationTauxMoyen": "Taux moyen",
+  "situationMargeParPeriode": "Marge par période",
+  "situationRegrouper": "Regrouper",
+  "situationParJour": "Par jour",
+  "situationParSemaine": "Par semaine",
+  "situationParMois": "Par mois",
+  "situationMagasin": "Magasin",
+  "situationTheorique": "Théorique",
+  "situationCompte": "Compté",
+  "situationEcart": "Écart",
+  "situationValeur": "Valeur",
+  "situationProduitsComptes": "Produits comptés",
+  "situationEcarts": "Écarts",
+  "situationValeurEcart": "Valeur de l'écart",
+  "situationValiderInventaire": "Valider l'inventaire",
+  "situationInventaireMagasin": "Choisissez un magasin pour valider l'inventaire.",
+  "situationAucunEcart": "Aucun écart à enregistrer.",
+  "situationConfirmerInventaire": "{n} produit(s) seront ajustés au stock compté. Continuer ?",
+  "@situationConfirmerInventaire": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "situationInventaireValide": "Inventaire validé",
+  "situationProduitsAjustes": "{n} produit(s) ajusté(s)",
+  "@situationProduitsAjustes": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "situationDernierAchat": "Dernier achat",
+  "situationCmp": "Coût moyen pondéré",
+  "situationMin": "Min",
+  "situationMax": "Max",
+  "situationPrixVente": "Prix de vente",
+  "situationProduits": "Produits",
+  "situationMargeMoyenne": "Marge moyenne",
+  "situationSous15": "Sous 15 %",
+  "situationAchats": "Achats",
+  "situationDette": "Dette",
+  "situationDettes": "Dettes",
+  "situationCreditTotal": "Crédit total"
 }

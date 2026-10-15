@@ -3790,4 +3790,335 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get versementType => 'النوع';
+
+  @override
+  String get dsChargement => 'جار التحميل…';
+
+  @override
+  String get tableauBordOnglet => 'لوحة القيادة';
+
+  @override
+  String get situationOnglet => 'الوضعية';
+
+  @override
+  String tableauBordDescription(String au, String du, int n) {
+    return 'من $du إلى $au، مقارنة بالأيام الـ $n السابقة.';
+  }
+
+  @override
+  String get situationDescription => 'تحليلات مفصلة للفترة — كل عرض قابل للتصدير بصيغة Excel وPDF.';
+
+  @override
+  String get tableauBordJour => 'يوم';
+
+  @override
+  String get tableauBordSemaine => 'أسبوع';
+
+  @override
+  String get tableauBordMois => 'شهر';
+
+  @override
+  String get tableauBordPeriode => 'فترة';
+
+  @override
+  String get tableauBordChoisirPeriode => 'اختيار الفترة';
+
+  @override
+  String get tableauBordIndicateur => 'المؤشر';
+
+  @override
+  String get tableauBordPeriodeCourante => 'الفترة';
+
+  @override
+  String get tableauBordPeriodePrecedente => 'الفترة السابقة';
+
+  @override
+  String get tableauBordVentes => 'المبيعات';
+
+  @override
+  String get tableauBordVentesInfo => 'مجموع السلال المحصلة خلال الفترة';
+
+  @override
+  String get tableauBordVsPrecedente => 'مقارنة بالفترة السابقة';
+
+  @override
+  String get tableauBordPrecedenteInfo => 'نفس عدد الأيام، قبل الفترة مباشرة';
+
+  @override
+  String get tableauBordAchats => 'المشتريات';
+
+  @override
+  String get tableauBordAchatsInfo => 'الإدخالات المصادق عليها (وصولات الشراء)';
+
+  @override
+  String get tableauBordNet => 'الصافي';
+
+  @override
+  String get tableauBordNetInfo => 'المبيعات − مشتريات الفترة';
+
+  @override
+  String get tableauBordDetteFournisseurs => 'ديون الموردين';
+
+  @override
+  String get tableauBordDetteInfo => 'المبالغ المتبقية للدفع على الإدخالات';
+
+  @override
+  String get tableauBordCreditClients => 'ديون الزبائن';
+
+  @override
+  String get tableauBordCreditInfo => 'المبالغ المستحقة على السلال';
+
+  @override
+  String get tableauBordCourbeVentes => 'منحنى المبيعات';
+
+  @override
+  String get tableauBordModesPaiement => 'طرق الدفع';
+
+  @override
+  String get tableauBordTotal => 'المجموع';
+
+  @override
+  String get tableauBordCaParJour => 'رقم الأعمال اليومي';
+
+  @override
+  String get tableauBordVentesCaissier => 'المبيعات حسب أمين الصندوق';
+
+  @override
+  String tableauBordTickets(int n) {
+    return '$n تذكرة';
+  }
+
+  @override
+  String tableauBordUnites(String qte) {
+    return '$qte وحدة';
+  }
+
+  @override
+  String get tableauBordDernieresVentes => 'آخر المبيعات';
+
+  @override
+  String get tableauBordPanier => 'رقم السلة';
+
+  @override
+  String get tableauBordHeure => 'الوقت';
+
+  @override
+  String get tableauBordPaiement => 'الدفع';
+
+  @override
+  String get tableauBordRuptures => 'منتجات نافدة';
+
+  @override
+  String get tableauBordAucuneRupture => 'لا توجد منتجات نافدة';
+
+  @override
+  String get tableauBordProduit => 'المنتج';
+
+  @override
+  String get tableauBordStock => 'المخزون';
+
+  @override
+  String get situationGroupeTresorerie => 'الخزينة';
+
+  @override
+  String get situationGroupeStock => 'المخزون';
+
+  @override
+  String get situationGroupeVentes => 'المبيعات';
+
+  @override
+  String get situationGroupeMarges => 'الهوامش';
+
+  @override
+  String get situationGroupeTiers => 'الأطراف';
+
+  @override
+  String get situationMvc => 'حركة الصندوق';
+
+  @override
+  String get situationMvp => 'حركة المنتج';
+
+  @override
+  String get situationRcp => 'الإيراد حسب السلة';
+
+  @override
+  String get situationRcpr => 'الإيراد حسب المنتج';
+
+  @override
+  String get situationMgp => 'الهامش حسب السلة';
+
+  @override
+  String get situationMgper => 'الهامش حسب الفترة';
+
+  @override
+  String get situationInv => 'الجرد';
+
+  @override
+  String get situationCout => 'تكلفة المنتج';
+
+  @override
+  String get situationScli => 'وضعية الزبائن';
+
+  @override
+  String get situationSfrn => 'وضعية الموردين';
+
+  @override
+  String get situationEntrees => 'المداخيل';
+
+  @override
+  String get situationSorties => 'المخارج';
+
+  @override
+  String get situationSoldeNet => 'الرصيد الصافي';
+
+  @override
+  String get situationRetours => 'المرتجعات';
+
+  @override
+  String get situationStockInitial => 'المخزون الأولي';
+
+  @override
+  String get situationStockFinal => 'المخزون النهائي';
+
+  @override
+  String get situationCaissier => 'أمين الصندوق';
+
+  @override
+  String get situationPaye => 'المدفوع';
+
+  @override
+  String get situationPaniers => 'السلال';
+
+  @override
+  String get situationRecette => 'الإيراد';
+
+  @override
+  String get situationPanierMoyen => 'متوسط السلة';
+
+  @override
+  String get situationCategorie => 'الفئة';
+
+  @override
+  String get situationQuantite => 'الكمية';
+
+  @override
+  String get situationPrixMoyen => 'متوسط السعر';
+
+  @override
+  String get situationProduitsVendus => 'المنتجات المباعة';
+
+  @override
+  String get situationVente => 'البيع';
+
+  @override
+  String get situationCoutLibelle => 'التكلفة';
+
+  @override
+  String get situationMarge => 'الهامش';
+
+  @override
+  String get situationTaux => 'النسبة';
+
+  @override
+  String get situationCa => 'رقم الأعمال';
+
+  @override
+  String get situationTauxMoyen => 'متوسط النسبة';
+
+  @override
+  String get situationMargeParPeriode => 'الهامش حسب الفترة';
+
+  @override
+  String get situationRegrouper => 'تجميع';
+
+  @override
+  String get situationParJour => 'حسب اليوم';
+
+  @override
+  String get situationParSemaine => 'حسب الأسبوع';
+
+  @override
+  String get situationParMois => 'حسب الشهر';
+
+  @override
+  String get situationMagasin => 'المخزن';
+
+  @override
+  String get situationTheorique => 'النظري';
+
+  @override
+  String get situationCompte => 'المعدود';
+
+  @override
+  String get situationEcart => 'الفرق';
+
+  @override
+  String get situationValeur => 'القيمة';
+
+  @override
+  String get situationProduitsComptes => 'المنتجات المعدودة';
+
+  @override
+  String get situationEcarts => 'الفروقات';
+
+  @override
+  String get situationValeurEcart => 'قيمة الفرق';
+
+  @override
+  String get situationValiderInventaire => 'تأكيد الجرد';
+
+  @override
+  String get situationInventaireMagasin => 'اختر مخزنا لتأكيد الجرد.';
+
+  @override
+  String get situationAucunEcart => 'لا يوجد فرق للتسجيل.';
+
+  @override
+  String situationConfirmerInventaire(int n) {
+    return 'سيتم تعديل $n منتج(ات) وفق المخزون المعدود. هل تريد المتابعة؟';
+  }
+
+  @override
+  String get situationInventaireValide => 'تم تأكيد الجرد';
+
+  @override
+  String situationProduitsAjustes(int n) {
+    return 'تم تعديل $n منتج(ات)';
+  }
+
+  @override
+  String get situationDernierAchat => 'آخر شراء';
+
+  @override
+  String get situationCmp => 'التكلفة المتوسطة المرجحة';
+
+  @override
+  String get situationMin => 'الأدنى';
+
+  @override
+  String get situationMax => 'الأقصى';
+
+  @override
+  String get situationPrixVente => 'سعر البيع';
+
+  @override
+  String get situationProduits => 'المنتجات';
+
+  @override
+  String get situationMargeMoyenne => 'متوسط الهامش';
+
+  @override
+  String get situationSous15 => 'أقل من 15 %';
+
+  @override
+  String get situationAchats => 'المشتريات';
+
+  @override
+  String get situationDette => 'الدين';
+
+  @override
+  String get situationDettes => 'الديون';
+
+  @override
+  String get situationCreditTotal => 'مجموع الديون';
 }
