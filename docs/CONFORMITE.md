@@ -94,6 +94,13 @@
 - [x] Caisses Physique / Compte, caisse sans magasin ; journal des mouvements ; transferts TRF = 2 mouvements
 - [x] Clôtures Z chaînées immuables ; annulation refusée en période clôturée
 - [x] Export fiscal : archive + JSON vérifiable
+- [x] Gestion caisse DS v2.2 (phase D, migration v16) : 5 onglets Caisses · Transferts · Clôtures Z · Mouvements ·
+      Sessions ; solde initial pré-rempli à l'ouverture (§9.13) ; transferts annulables avec motif ; désactivation
+      bloquée (session ouverte, solde non nul, caisse système)
+- [x] Clôture Z par caisse, chaînage par caisse (§12.3), tickets annulés et répartition des paiements ; export de
+      contrôle fiscal en archive / JSON / PDF / CSV avec état de la chaîne
+- [ ] Permission `gererTransfertsCaisse` (§9.13) ; journal fiscal `journal_fiscal` avec ligne `CLOTURE_CAISSE` (§12.3)
+- [ ] Période clôturée évaluée par caisse (aujourd'hui : toute clôture couvrant la date bloque, ⚠️ PROVISOIRE)
 
 ## Rapports et paramètres (lot 8)
 - [x] Tableau de bord §9.14 (phase D) : période Jour / Semaine / Mois / Période, 6 KPI (ventes, période précédente,

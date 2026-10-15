@@ -918,16 +918,16 @@
   "mouvementToutesCaisses": "Toutes les caisses",
   "mouvementCaisse": "Caisse",
   "mvtVente": "Vente",
-  "mvtAnnulation": "Annulation",
-  "mvtRemboursement": "Remboursement",
-  "mvtEncaissement": "Encaissement",
-  "mvtDecaissement": "Décaissement",
-  "mvtApport": "Apport",
-  "mvtDepense": "Dépense",
+  "mvtAnnulation": "Annulation vente",
+  "mvtRemboursement": "Remboursement retour",
+  "mvtEncaissement": "Versement client",
+  "mvtDecaissement": "Versement fournisseur",
+  "mvtApport": "Entrée manuelle",
+  "mvtDepense": "Sortie manuelle",
   "mvtTransfert": "Transfert",
-  "mvtFondInitial": "Fond initial",
-  "mvtRetrait": "Retrait",
-  "mvtEcart": "Écart",
+  "mvtFondInitial": "Ouverture",
+  "mvtRetrait": "Retrait de clôture",
+  "mvtEcart": "Écart de clôture",
   "sensEntree": "Entrée",
   "sensSortie": "Sortie",
   "transfertCaisseNouveau": "Nouveau transfert",
@@ -3422,5 +3422,251 @@
     }
   },
   "entCreerEntree": "Créer l'entrée",
-  "statutErreur": "Erreur"
+  "statutErreur": "Erreur",
+  "gcDescription": "Caisses, transferts, clôtures Z, mouvements et sessions",
+  "gcOngletCaisses": "Caisses",
+  "gcOngletTransferts": "Transferts",
+  "gcOngletClotures": "Clôtures Z",
+  "gcOngletMouvements": "Mouvements",
+  "gcOngletSessions": "Sessions",
+  "gcEntiteCaisse": "caisse",
+  "gcEntiteCaisses": "caisses",
+  "gcEntiteTransfert": "transfert",
+  "gcEntiteTransferts": "transferts",
+  "gcEntiteClotures": "clôtures",
+  "gcEntiteMouvements": "mouvements",
+  "gcEntiteSessions": "sessions",
+  "gcColCaisse": "Caisse",
+  "gcColSoldeInitial": "Solde initial",
+  "gcColSoldeActuel": "Solde actuel",
+  "gcColSession": "Session",
+  "gcColEtat": "État",
+  "gcColStatut": "Statut",
+  "gcColDepuis": "Depuis",
+  "gcColVers": "Vers",
+  "gcColTickets": "Tickets",
+  "gcColAnnules": "Annulés",
+  "gcColTotalAnnule": "Annulé",
+  "gcColPar": "Par",
+  "gcColEmpreinte": "Empreinte",
+  "gcColCreeLe": "Créé le",
+  "gcColReference": "Réf.",
+  "gcColEntree": "Entrée",
+  "gcColSortie": "Sortie",
+  "gcColUtilisateur": "Utilisateur",
+  "gcColMode": "Mode",
+  "gcColOuverture": "Ouverture",
+  "gcColCloture": "Clôture",
+  "gcColFond": "Fond",
+  "gcColTheorique": "Théorique",
+  "gcColReel": "Réel",
+  "gcColEcart": "Écart",
+  "gcColOuvertePar": "Ouverte par",
+  "gcToutesCaisses": "Toutes caisses",
+  "gcRechercheCaisses": "Rechercher une caisse…",
+  "gcRechercheTransferts": "Rechercher un transfert…",
+  "gcRechercheClotures": "Rechercher une clôture…",
+  "gcRechercheMouvements": "Rechercher un mouvement…",
+  "gcRechercheSessions": "Rechercher une session…",
+  "gcAucuneSession": "Aucune session.",
+  "gcExportFiscal": "Export contrôle fiscal",
+  "gcNouvelleClotureZ": "Nouvelle clôture Z",
+  "gcMouvementManuel": "Mouvement manuel",
+  "gcVoirMouvements": "Voir les mouvements",
+  "gcCloturer": "Clôturer",
+  "gcOuvrirSession": "Ouvrir une session",
+  "gcFormDescription": "Une caisse (tiroir, coffre) a son propre solde et ses sessions.",
+  "gcFormNomIndice": "Ex. Caisse 3",
+  "gcFormSoldeInitialAide": "Proposé comme fond de caisse à chaque ouverture",
+  "gcCaisseEnregistree": "Caisse enregistrée",
+  "gcSessions30j": "Sessions (30 j)",
+  "gcEcartCumule": "Écart cumulé",
+  "gcDernieresSessions": "Dernières sessions",
+  "gcBloqueSession": "Session ouverte — clôturez-la d'abord",
+  "gcBloqueSolde": "Solde non nul — transférez-le",
+  "gcBloqueSysteme": "Caisse principale",
+  "gcBloqueInactive": "Déjà inactive",
+  "gcErreurSoldeNonNul": "Le solde de la caisse doit être nul : transférez-le d'abord.",
+  "gcToastDesactivees": "Caisses désactivées",
+  "gcTrfTitre": "Transfert entre caisses",
+  "gcTrfDescription": "Ex. remise de la recette au coffre en fin de journée.",
+  "gcTrfDisponible": "Solde disponible : {montant}",
+  "@gcTrfDisponible": {
+    "placeholders": {
+      "montant": {
+        "type": "String"
+      }
+    }
+  },
+  "gcTrfMemeCaisse": "Choisissez une caisse différente",
+  "gcTrfSuperieur": "Supérieur au solde de {caisse}",
+  "@gcTrfSuperieur": {
+    "placeholders": {
+      "caisse": {
+        "type": "String"
+      }
+    }
+  },
+  "gcTrfMotifIndice": "Ex. remise de recette",
+  "gcTrfValider": "Transférer {montant}",
+  "@gcTrfValider": {
+    "placeholders": {
+      "montant": {
+        "type": "String"
+      }
+    }
+  },
+  "gcToastTransfert": "Transfert enregistré",
+  "gcToastTransfertsAnnules": "Transferts annulés",
+  "gcToastSoldesRetablis": "Soldes rétablis",
+  "gcBloqueDejaAnnule": "Déjà annulé",
+  "gcErreurDejaAnnule": "Ce transfert est déjà annulé.",
+  "gcErreurTransfertInconnu": "Transfert introuvable.",
+  "gcErreurPeriodeCloturee": "Cette date appartient à une période clôturée.",
+  "gcZDescription": "Rapport figé de la période : une fois créé, il ne peut plus être modifié ni supprimé.",
+  "gcZPeriodeValeur": "{debut} → maintenant",
+  "@gcZPeriodeValeur": {
+    "placeholders": {
+      "debut": {
+        "type": "String"
+      }
+    }
+  },
+  "gcZDepuisDerniere": "Depuis la dernière clôture ({code})",
+  "@gcZDepuisDerniere": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "gcZPremiere": "Première clôture de cette caisse",
+  "gcZTicketsAnnules": "Tickets annulés",
+  "gcZTotalAnnule": "Total annulé",
+  "gcZMoyen": "Moyen de paiement",
+  "gcZPart": "Part",
+  "gcZChainee": "Chaînée à {code} · empreinte précédente",
+  "@gcZChainee": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "gcZGenese": "Début de la chaîne de cette caisse · empreinte de genèse",
+  "gcZConfirmer": "Je confirme les totaux : la clôture sera définitive et signée.",
+  "gcZCreer": "Créer la clôture {code}",
+  "@gcZCreer": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "gcZCreee": "Clôture {code} créée",
+  "@gcZCreee": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "gcZCreeeDetail": "Rapport signé et chaîné",
+  "gcZAucunPaiement": "Aucun paiement sur la période.",
+  "gcZDetailTitre": "Clôture {code}",
+  "@gcZDetailTitre": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "gcZDetailDescription": "{caisse} · {du} → {au} · par {par}",
+  "@gcZDetailDescription": {
+    "placeholders": {
+      "au": {
+        "type": "String"
+      },
+      "caisse": {
+        "type": "String"
+      },
+      "du": {
+        "type": "String"
+      },
+      "par": {
+        "type": "String"
+      }
+    }
+  },
+  "gcZDefinitive": "Définitive",
+  "gcZEmpreinteValide": "Empreinte valide",
+  "gcZEmpreinteAlteree": "Empreinte altérée",
+  "gcZRepartition": "Répartition des paiements",
+  "gcZIntegrite": "Intégrité",
+  "gcZEmpreintePrecedente": "Empreinte précédente",
+  "gcZTotaux": "Totaux de la période",
+  "gcZSoldeFin": "Solde en fin de période",
+  "gcFiscalTitre": "Export pour contrôle fiscal",
+  "gcFiscalDescription": "Archive des clôtures Z et des tickets de la période, avec la chaîne d'empreintes vérifiée.",
+  "gcFiscalZip": "Archive complète",
+  "gcFiscalZipDesc": "JSON de contrôle + CSV + empreintes (.zip)",
+  "gcFiscalJson": "JSON de contrôle",
+  "gcFiscalJsonDesc": "Chaîne vérifiable (§12.3)",
+  "gcFiscalPdf": "Rapport PDF",
+  "gcFiscalPdfDesc": "Clôtures Z uniquement",
+  "gcFiscalCsv": "CSV",
+  "gcFiscalCsvDesc": "Tickets ligne à ligne",
+  "gcFiscalChaineOk": "Chaîne d'empreintes intègre · {n} clôtures, aucune rupture",
+  "@gcFiscalChaineOk": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "gcFiscalChaineKo": "Chaîne rompue à la clôture {code}",
+  "@gcFiscalChaineKo": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "gcFiscalGenere": "Archive générée",
+  "gcSesMvtTitre": "Mouvements · {code}",
+  "@gcSesMvtTitre": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "gcSesMvtOuverte": "{caisse} · ouverte {ouverture}",
+  "@gcSesMvtOuverte": {
+    "placeholders": {
+      "caisse": {
+        "type": "String"
+      },
+      "ouverture": {
+        "type": "String"
+      }
+    }
+  },
+  "gcSesMvtCloturee": "{caisse} · ouverte {ouverture} · clôturée {cloture}",
+  "@gcSesMvtCloturee": {
+    "placeholders": {
+      "caisse": {
+        "type": "String"
+      },
+      "cloture": {
+        "type": "String"
+      },
+      "ouverture": {
+        "type": "String"
+      }
+    }
+  },
+  "gcEntrees": "Entrées",
+  "gcSorties": "Sorties",
+  "gcSolde": "Solde"
 }

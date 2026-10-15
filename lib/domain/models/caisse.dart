@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+import '../scellement.dart';
+
 /// Types de caisse (§13, valeur stockée FR) : `Physique` ou `Compte`.
 class TypesCaisse {
   const TypesCaisse._();
@@ -53,10 +55,16 @@ class Caisse {
     this.magasinCode,
     this.actif = true,
     this.systeme = false,
+    this.soldeInitial = 0,
+    this.observation,
   });
   final String code;
   final String nom;
   final String type;
+
+  /// Proposé comme fond de caisse à chaque ouverture de session.
+  final double soldeInitial;
+  final String? observation;
 
   /// `null` = caisse sans magasin.
   final String? magasinCode;
@@ -70,6 +78,8 @@ class Caisse {
     magasinCode: r['magasin_code'] as String?,
     actif: (r['actif'] as int) == 1,
     systeme: (r['systeme'] as int) == 1,
+    soldeInitial: ((r['solde_initial'] as num?) ?? 0).toDouble(),
+    observation: r['observation'] as String?,
   );
 
   Map<String, Object?> versLigne() => {
@@ -79,15 +89,27 @@ class Caisse {
     'magasin_code': magasinCode,
     'actif': actif ? 1 : 0,
     'systeme': systeme ? 1 : 0,
+    'solde_initial': soldeInitial,
+    'observation': observation,
   };
 
-  Caisse copyWith({String? nom, String? type, String? magasinCode, bool sansMagasin = false, bool? actif}) => Caisse(
+  Caisse copyWith({
+    String? nom,
+    String? type,
+    String? magasinCode,
+    bool sansMagasin = false,
+    bool? actif,
+    double? soldeInitial,
+    String? Function()? observation,
+  }) => Caisse(
     code: code,
     nom: nom ?? this.nom,
     type: type ?? this.type,
     magasinCode: sansMagasin ? null : (magasinCode ?? this.magasinCode),
     actif: actif ?? this.actif,
     systeme: systeme,
+    soldeInitial: soldeInitial ?? this.soldeInitial,
+    observation: observation != null ? observation() : this.observation,
   );
 }
 
@@ -172,6 +194,9 @@ class TransfertCaisse {
     this.mode = 'Espèces',
     required this.utilisateurCode,
     this.commentaire,
+    this.actif = true,
+    this.annulePar,
+    this.motifAnnulation,
   });
   final String code;
   final DateTime date;
@@ -182,6 +207,10 @@ class TransfertCaisse {
   final String utilisateurCode;
   final String? commentaire;
 
+  final bool actif;
+  final String? annulePar;
+  final String? motifAnnulation;
+
   factory TransfertCaisse.depuisLigne(Map<String, Object?> r) => TransfertCaisse(
     code: r['code'] as String,
     date: DateTime.parse(r['date'] as String).toLocal(),
@@ -191,6 +220,9 @@ class TransfertCaisse {
     mode: r['mode'] as String,
     utilisateurCode: r['utilisateur_code'] as String,
     commentaire: r['commentaire'] as String?,
+    actif: ((r['actif'] as int?) ?? 1) == 1,
+    annulePar: r['annule_par'] as String?,
+    motifAnnulation: r['motif_annulation'] as String?,
   );
 
   Map<String, Object?> versLigne() => {
@@ -228,6 +260,8 @@ class Cloture {
     required this.hashDerniereVente,
     required this.hashPrecedent,
     required this.hash,
+    this.caisseCode,
+    this.totalAnnule = 0,
   });
   final String code;
   final DateTime date;
@@ -249,6 +283,28 @@ class Cloture {
   final String hashPrecedent;
   final String hash;
 
+  /// Caisse clôturée (`null` : clôture globale antérieure à la v16).
+  final String? caisseCode;
+
+  /// Montant des ventes annulées sur la période.
+  final double totalAnnule;
+
+  /// Vérifie des clôtures données dans l'ordre de chaînage, une chaîne par caisse (les clôtures globales
+  /// antérieures à la v16 forment la leur) ; `null` = intactes, sinon code de la première clôture altérée.
+  static String? verifierChaines(Iterable<Cloture> croissantes) {
+    final parCaisse = <String?, List<Cloture>>{};
+    for (final c in croissantes) {
+      (parCaisse[c.caisseCode] ??= []).add(c);
+    }
+    for (final cs in parCaisse.values) {
+      final i = Scellement.verifier([
+        for (final c in cs) (doc: c.versCanonique(), hashPrecedent: c.hashPrecedent, hash: c.hash),
+      ]);
+      if (i != null) return cs[i].code;
+    }
+    return null;
+  }
+
   /// Contenu scellé (tout sauf le hash lui-même).
   Map<String, Object?> versCanonique() => {
     'code': code,
@@ -268,6 +324,8 @@ class Cloture {
     'premiere_vente': premiereVente,
     'derniere_vente': derniereVente,
     'hash_derniere_vente': hashDerniereVente,
+    // Clôtures par caisse (v16) : caisse et total annulé scellés ; absents des clôtures globales antérieures.
+    if (caisseCode != null) ...{'caisse': caisseCode, 'total_annule': totalAnnule},
   };
 
   Map<String, Object?> versLigne() => {
@@ -290,6 +348,8 @@ class Cloture {
     'hash_derniere_vente': hashDerniereVente,
     'hash_precedent': hashPrecedent,
     'hash': hash,
+    'caisse_code': caisseCode,
+    'total_annule': totalAnnule,
   };
 
   factory Cloture.depuisLigne(Map<String, Object?> r) => Cloture(
@@ -312,6 +372,8 @@ class Cloture {
     hashDerniereVente: r['hash_derniere_vente'] as String,
     hashPrecedent: r['hash_precedent'] as String,
     hash: r['hash'] as String,
+    caisseCode: r['caisse_code'] as String?,
+    totalAnnule: ((r['total_annule'] as num?) ?? 0).toDouble(),
   );
 
   Cloture copyWith({String? hash}) => Cloture(
@@ -334,6 +396,8 @@ class Cloture {
     hashDerniereVente: hashDerniereVente,
     hashPrecedent: hashPrecedent,
     hash: hash ?? this.hash,
+    caisseCode: caisseCode,
+    totalAnnule: totalAnnule,
   );
 
   /// Encodage stable `cle=valeur;...` (clés triées) ; `valeur` au centime.

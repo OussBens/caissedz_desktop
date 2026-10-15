@@ -1,3 +1,7 @@
+import 'dart:io';
+import 'dart:typed_data';
+
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/providers.dart';
@@ -5,6 +9,8 @@ import '../../application/caisse_service.dart';
 import '../../application/cloture_service.dart';
 import '../../core/i18n/generated/app_localizations.dart';
 import '../../domain/models/caisse.dart';
+import '../../domain/models/vente.dart';
+import '../caisse/pos_controller.dart';
 import '../produits/produits_providers.dart';
 
 final caisseServiceProvider = Provider<CaisseService>(
@@ -47,6 +53,34 @@ final cloturesProvider = FutureProvider<List<Cloture>>((ref) {
   return ref.watch(clotureServiceProvider).clotures();
 });
 
+/// Historique des sessions de caisse, plus récentes d'abord.
+final sessionsCaisseProvider = FutureProvider<List<SessionCaisse>>((ref) {
+  ref.watch(caisseVersionProvider);
+  return ref.watch(sessionCaisseServiceProvider).sessions();
+});
+
+/// Choix de l'emplacement d'enregistrement d'un export (remplacé dans les tests).
+final selecteurExportProvider = Provider<Future<String?> Function(String nomSuggere)>(
+  (_) =>
+      (nom) async => (await getSaveLocation(suggestedName: nom))?.path,
+);
+
+/// Écriture d'un export sur disque (remplacée dans les tests : les E/S fichier ne s'achèvent pas en zone de test).
+final ecrivainExportProvider = Provider<Future<void> Function(String chemin, Uint8List octets)>(
+  (_) =>
+      (chemin, octets) => File(chemin).writeAsBytes(octets, flush: true),
+);
+
+/// Choix d'une archive fiscale à vérifier (remplacé dans les tests).
+final selecteurArchiveProvider = Provider<Future<XFile?> Function()>(
+  (_) =>
+      () => openFile(
+        acceptedTypeGroups: const [
+          XTypeGroup(label: 'ZIP / JSON', extensions: ['zip', 'json']),
+        ],
+      ),
+);
+
 String libelleTypeCaisse(AppLocalizations l10n, String type) =>
     type == TypesCaisse.compte ? l10n.caisseTypeCompte : l10n.caisseTypePhysique;
 
@@ -77,9 +111,14 @@ String messageErreurCaisse(AppLocalizations l10n, ErreurCaisse e) => switch (e) 
   ErreurCaisse.memeCaisse => l10n.caisseErreurMemeCaisse,
   ErreurCaisse.soldeInsuffisant => l10n.caisseErreurSolde,
   ErreurCaisse.sessionOuverte => l10n.caisseErreurSessionOuverte,
+  ErreurCaisse.soldeNonNul => l10n.gcErreurSoldeNonNul,
+  ErreurCaisse.transfertInconnu => l10n.gcErreurTransfertInconnu,
+  ErreurCaisse.dejaAnnule => l10n.gcErreurDejaAnnule,
+  ErreurCaisse.motifObligatoire => l10n.entErreurMotif,
+  ErreurCaisse.periodeCloturee => l10n.gcErreurPeriodeCloturee,
 };
 
 String messageErreurCloture(AppLocalizations l10n, ErreurCloture e) => switch (e) {
-  ErreurCloture.sessionOuverte => l10n.clotureErreurSession,
+  ErreurCloture.caisseInconnue => l10n.caisseErreurInconnue,
   ErreurCloture.rienACloturer => l10n.clotureErreurRien,
 };

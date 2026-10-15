@@ -486,6 +486,32 @@ Référence : `docs/design/CaisseDZ-DS-v2.2/CaisseDZ-DS-v2.2.html`, `bundle-v2.2
     (règle §8 « vente > achat », colonne en lecture seule dans le DS) ; « Imprimer » produit le PDF du tableau
     des lignes (pas encore de bon de réception mis en page) ; l'annulation exige la permission « Annuler »
     (`annulerVente`, ⚠️ PROVISOIRE en attendant `annulerOperations`).
+  - ✅ Gestion caisse (`GestionCaisseScreen` + `GestionKit`) : migration v16 (caisse : solde initial proposé comme
+    fond d'ouverture, observation ; transfert entre caisses : annulation douce ; clôture : `caisse_code`,
+    `total_annule`). Clôture Z **par caisse** (§9.13, §12.3) : agrège les tickets de la caisse depuis sa dernière
+    clôture (validés, annulés, montant annulé, répartition des paiements, espèces nettes de la monnaie rendue),
+    chaîne SHA-256 propre à chaque caisse ; les clôtures globales des lots 7–9 forment leur propre chaîne et bornent
+    la première clôture par caisse ; `Cloture.verifierChaines` (service et export fiscal) vérifie chaque chaîne.
+    La clôture Z n'exige plus que les sessions soient fermées (le DS clôture une caisse dont la session est
+    ouverte). Préfixes §8.10 : caisses créées `CS` (la caisse système reste `CIS0000`), clôtures `CLT`.
+    `CaisseService` : solde initial / observation, `desactiver` en lot et `blocageDesactivation` (caisse système,
+    session ouverte, solde non nul), transfert daté (refusé en période clôturée), `annulerTransferts` avec motif
+    (mouvements retirés du journal, refus si la caisse destinataire n'a plus le montant). `SessionCaisseService`
+    ferme une session désignée (onglet Sessions). Écrans : onglets Caisses (cartes de session par caisse
+    physique : ouvrir avec fond pré-rempli, mouvement, clôturer ; tableau avec soldes, détail 940 px, formulaire
+    620 px, désactivation en lot), Transferts (620 px avec solde disponible et aperçu, annulation avec motif),
+    Clôtures Z (filtre caisse, nouvelle clôture 820 px avec confirmation explicite, détail 940 px avec intégrité,
+    PDF, export de contrôle fiscal 760 px : archive complète, JSON, PDF des clôtures ou CSV des tickets, état de la
+    chaîne, vérification d'une archive), Mouvements (grand-livre filtrable par caisse, session déduite, type ;
+    mouvement manuel avec choix de la caisse) et Sessions (théorique, réel, écart ; mouvements de la session,
+    clôture). La route `/clotures` ouvre l'onglet Clôtures Z ; l'ancien écran Clôtures est supprimé. Libellés des
+    types de mouvement alignés sur le DS (Versement client, Entrée manuelle, Ouverture…).
+    Écarts Gestion caisse : la permission `gererTransfertsCaisse` (§9.13) n'existe pas encore (onglet ouvert à qui
+    accède au module) ; pas de journal fiscal (`journal_fiscal`, ligne `CLOTURE_CAISSE`) ; une date reste
+    « clôturée » dès qu'une clôture de n'importe quelle caisse la couvre (⚠️ PROVISOIRE, plus strict que par
+    caisse) ; colonnes Client / Fournisseur / Code versement du grand-livre absentes (le mouvement ne porte que la
+    référence) ; l'archive complète contient JSON + CSV + LISEZMOI, sans PDF ; l'écart cumulé et les sessions du
+    détail portent sur l'historique chargé.
   - Écarts : colonnes d'audit « modifié le / par » absentes du schéma (seuls créé par et annulation) ;
     tendances des KPI calculées seulement pour les ventes ; ventes antérieures à la v10 valorisées au prix
     d'achat actuel ; `mouvement_stock` sans valorisation (prix_achat / prix_vente de §7.3).

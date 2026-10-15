@@ -7,7 +7,7 @@ import '../domain/code_generator.dart';
 import '../domain/models/caisse.dart';
 import '../domain/scellement.dart';
 
-enum ErreurCloture { sessionOuverte, rienACloturer }
+enum ErreurCloture { caisseInconnue, rienACloturer }
 
 class ClotureException implements Exception {
   const ClotureException(this.erreur, [this.detail]);
@@ -17,10 +17,12 @@ class ClotureException implements Exception {
   String toString() => 'ClotureException($erreur${detail == null ? '' : ', $detail'})';
 }
 
-/// Clôtures Z : récapitulatif immuable de la période écoulée depuis la clôture précédente,
-/// scellé SHA-256 et chaîné (§12). Une période clôturée interdit toute annulation (ventes, retours, achats).
+/// Clôtures Z (§9.13, §12.3) : rapport figé d'UNE caisse depuis sa clôture précédente (ventes validées et
+/// annulées, tickets, répartition des paiements), scellé SHA-256 et chaîné par caisse. Une période clôturée
+/// interdit toute annulation (ventes, retours, achats). Aucune modification ni suppression (déclencheurs SQL).
 ///
-/// ⚠️ PROVISOIRE : clôture globale (toutes caisses), exige qu'aucune session ne soit ouverte.
+/// Les clôtures globales antérieures à la v16 (`caisse_code` nul) forment leur propre chaîne ; la première
+/// clôture d'une caisse part de la fin de la dernière clôture globale.
 class ClotureService {
   const ClotureService(this.db, {required this.utilisateurCode});
 
@@ -30,28 +32,25 @@ class ClotureService {
   CaisseRepository get _repo => CaisseRepository(db);
 
   /// Vérificateur à brancher sur `VenteService`, `RetourService`, `AchatService`.
+  ///
+  /// ⚠️ PROVISOIRE : une date est « clôturée » dès qu'une clôture (toutes caisses) la couvre.
   static Future<bool> periodeCloturee(DatabaseExecutor ex, DateTime date) => CaisseRepository(ex).periodeCloturee(date);
 
-  Future<List<Cloture>> clotures() => _repo.clotures();
+  Future<List<Cloture>> clotures({String? caisseCode}) => _repo.clotures(caisseCode: caisseCode);
 
-  Future<Cloture?> derniere() => _repo.derniereCloture();
+  Future<Cloture?> derniere(String caisseCode) => _repo.derniereCloture(caisseCode: caisseCode);
 
-  /// Récapitulatif de la période à clôturer (sans écriture).
-  Future<Cloture> apercu({DateTime? fin}) => db.transaction((txn) => _calculer(txn, fin ?? DateTime.now()));
+  /// Récapitulatif de la période à clôturer pour [caisseCode] (sans écriture).
+  Future<Cloture> apercu({required String caisseCode, DateTime? fin}) =>
+      db.transaction((txn) => _calculer(txn, caisseCode, fin ?? DateTime.now()));
 
-  /// Clôture Z : calcule, scelle, chaîne et enregistre dans UNE transaction.
-  Future<Cloture> cloturer({DateTime? fin}) async {
+  /// Clôture Z d'une caisse : calcule, scelle, chaîne et enregistre dans UNE transaction.
+  Future<Cloture> cloturer({required String caisseCode, DateTime? fin}) async {
     final f = fin ?? DateTime.now();
     return db.transaction((txn) async {
-      final ouvertes = await txn.query(
-        'session_caisse',
-        columns: ['code'],
-        where: 'statut = ?',
-        whereArgs: ['Ouverte'],
-      );
-      if (ouvertes.isNotEmpty) throw const ClotureException(ErreurCloture.sessionOuverte);
-      final c = await _calculer(txn, f);
-      final mouvements = await CaisseRepository(txn).mouvements(debut: c.debut, fin: c.fin, limite: 1);
+      final c = await _calculer(txn, caisseCode, f);
+      final mouvements = await CaisseRepository(txn)
+          .mouvements(caisseCode: caisseCode, debut: c.debut, fin: c.fin, limite: 1);
       if (c.nbVentes == 0 && c.nbAnnulations == 0 && mouvements.isEmpty) {
         throw const ClotureException(ErreurCloture.rienACloturer);
       }
@@ -61,16 +60,17 @@ class ClotureService {
         action: 'Clôture Z',
         entite: 'cloture',
         entiteCode: c.code,
-        detail: 'ventes ${c.totalVentes}',
+        detail: '$caisseCode · ${c.nbVentes} tickets · ventes ${c.totalVentes}',
       );
       return c;
     });
   }
 
-  Future<Cloture> _calculer(DatabaseExecutor txn, DateTime fin) async {
+  Future<Cloture> _calculer(DatabaseExecutor txn, String caisseCode, DateTime fin) async {
     final repo = CaisseRepository(txn);
-    final precedente = await repo.derniereCloture();
-    final debut = precedente?.fin ?? DateTime.utc(1970);
+    if (await repo.caisse(caisseCode) == null) throw const ClotureException(ErreurCloture.caisseInconnue);
+    final precedente = await repo.derniereCloture(caisseCode: caisseCode);
+    final debut = precedente?.fin ?? (await repo.derniereCloture())?.fin ?? DateTime.utc(1970);
     final dIso = debut.toUtc().toIso8601String();
     final fIso = fin.toUtc().toIso8601String();
     final v = (await txn.rawQuery(
@@ -79,19 +79,33 @@ class ClotureService {
              COUNT(CASE WHEN statut = 'Annulée' THEN 1 END) nba,
              COALESCE(SUM(CASE WHEN statut = 'Validée' THEN total_net END), 0) net,
              COALESCE(SUM(CASE WHEN statut = 'Validée' THEN total_remise END), 0) remise,
+             COALESCE(SUM(CASE WHEN statut = 'Annulée' THEN total_net END), 0) annule,
+             COALESCE(SUM(CASE WHEN statut = 'Validée' AND verse > total_net THEN verse - total_net END), 0) rendu,
              MIN(code) premiere, MAX(code) derniere
-      FROM vente WHERE date > ? AND date <= ?
+      FROM vente WHERE caisse_code = ? AND date > ? AND date <= ?
       ''',
-      [dIso, fIso],
+      [caisseCode, dIso, fIso],
     )).first;
     final retours = (await txn.rawQuery(
-      "SELECT COALESCE(SUM(total), 0) t FROM retour WHERE type = 'Client' AND etat = 1 AND date > ? AND date <= ?",
-      [dIso, fIso],
+      '''
+      SELECT COALESCE(SUM(r.total), 0) t FROM retour r JOIN vente v ON v.code = r.document_code
+      WHERE r.type = 'Client' AND r.etat = 1 AND v.caisse_code = ? AND r.date > ? AND r.date <= ?
+      ''',
+      [caisseCode, dIso, fIso],
     )).first;
-    final totaux = await repo.totauxPeriode(debut, fin);
-    final soldes = <String, double>{
-      for (final c in await repo.caisses()) c.code: CalculsPrix.arrondir((await repo.solde(c.code, fin: fin)).total),
-    };
+    // Répartition des paiements des tickets validés ; la monnaie rendue est déduite des espèces.
+    final paiements = await txn.rawQuery(
+      '''
+      SELECT p.mode mode, COALESCE(SUM(p.montant), 0) m FROM vente_paiement p JOIN vente v ON v.code = p.vente_code
+      WHERE v.caisse_code = ? AND v.statut = 'Validée' AND v.date > ? AND v.date <= ? GROUP BY p.mode
+      ''',
+      [caisseCode, dIso, fIso],
+    );
+    final parMode = <String, double>{for (final r in paiements) r['mode'] as String: (r['m'] as num).toDouble()};
+    final rendu = (v['rendu'] as num).toDouble();
+    if (rendu > 0) parMode['Espèces'] = (parMode['Espèces'] ?? 0) - rendu;
+    parMode.removeWhere((_, m) => m.abs() < 0.005);
+    final totaux = await repo.totauxPeriode(debut, fin, caisseCode: caisseCode);
     final derniere = v['derniere'] as String?;
     final hashDerniere = derniere == null
         ? (precedente?.hashDerniereVente ?? Scellement.genese)
@@ -112,23 +126,19 @@ class ClotureService {
       totalRetours: CalculsPrix.arrondir((retours['t'] as num).toDouble()),
       totalEncaissements: CalculsPrix.arrondir(totaux.entrees),
       totalDecaissements: CalculsPrix.arrondir(totaux.sorties),
-      encaissementsParMode: {for (final e in totaux.parMode.entries) e.key: CalculsPrix.arrondir(e.value)},
-      soldesCaisses: soldes,
+      encaissementsParMode: {for (final e in parMode.entries) e.key: CalculsPrix.arrondir(e.value)},
+      soldesCaisses: {caisseCode: CalculsPrix.arrondir((await repo.solde(caisseCode, fin: fin)).total)},
       premiereVente: v['premiere'] as String?,
       derniereVente: derniere,
       hashDerniereVente: hashDerniere,
       hashPrecedent: hashPrecedent,
       hash: '',
+      caisseCode: caisseCode,
+      totalAnnule: CalculsPrix.arrondir((v['annule'] as num).toDouble()),
     );
     return c.copyWith(hash: Scellement.hacher(c.versCanonique(), hashPrecedent));
   }
 
-  /// Vérifie la chaîne des clôtures ; `null` = intacte, sinon code de la première clôture altérée.
-  Future<String?> verifierChaine() async {
-    final cs = await _repo.clotures(croissant: true);
-    final i = Scellement.verifier([
-      for (final c in cs) (doc: c.versCanonique(), hashPrecedent: c.hashPrecedent, hash: c.hash),
-    ]);
-    return i == null ? null : cs[i].code;
-  }
+  /// Vérifie les chaînes des clôtures (une par caisse) ; `null` = intactes, sinon code de la première altérée.
+  Future<String?> verifierChaine() async => Cloture.verifierChaines(await _repo.clotures(croissant: true));
 }

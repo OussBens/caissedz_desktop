@@ -1911,34 +1911,34 @@ class AppLocalizationsAr extends AppLocalizations {
   String get mvtVente => 'بيع';
 
   @override
-  String get mvtAnnulation => 'إلغاء';
+  String get mvtAnnulation => 'إلغاء بيع';
 
   @override
-  String get mvtRemboursement => 'استرجاع';
+  String get mvtRemboursement => 'استرجاع مرتجع';
 
   @override
-  String get mvtEncaissement => 'تحصيل';
+  String get mvtEncaissement => 'دفعة زبون';
 
   @override
-  String get mvtDecaissement => 'صرف';
+  String get mvtDecaissement => 'دفعة مورد';
 
   @override
-  String get mvtApport => 'إيداع';
+  String get mvtApport => 'إدخال يدوي';
 
   @override
-  String get mvtDepense => 'مصروف';
+  String get mvtDepense => 'إخراج يدوي';
 
   @override
   String get mvtTransfert => 'تحويل';
 
   @override
-  String get mvtFondInitial => 'رصيد افتتاحي';
+  String get mvtFondInitial => 'افتتاح';
 
   @override
-  String get mvtRetrait => 'سحب';
+  String get mvtRetrait => 'سحب عند الإقفال';
 
   @override
-  String get mvtEcart => 'فرق';
+  String get mvtEcart => 'فرق الإقفال';
 
   @override
   String get sensEntree => 'دخول';
@@ -6504,4 +6504,403 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get statutErreur => 'خطأ';
+
+  @override
+  String get gcDescription => 'الصناديق، التحويلات، إقفالات Z، الحركات والجلسات';
+
+  @override
+  String get gcOngletCaisses => 'الصناديق';
+
+  @override
+  String get gcOngletTransferts => 'التحويلات';
+
+  @override
+  String get gcOngletClotures => 'إقفالات Z';
+
+  @override
+  String get gcOngletMouvements => 'الحركات';
+
+  @override
+  String get gcOngletSessions => 'الجلسات';
+
+  @override
+  String get gcEntiteCaisse => 'صندوق';
+
+  @override
+  String get gcEntiteCaisses => 'صناديق';
+
+  @override
+  String get gcEntiteTransfert => 'تحويل';
+
+  @override
+  String get gcEntiteTransferts => 'تحويلات';
+
+  @override
+  String get gcEntiteClotures => 'إقفالات';
+
+  @override
+  String get gcEntiteMouvements => 'حركات';
+
+  @override
+  String get gcEntiteSessions => 'جلسات';
+
+  @override
+  String get gcColCaisse => 'الصندوق';
+
+  @override
+  String get gcColSoldeInitial => 'الرصيد الأولي';
+
+  @override
+  String get gcColSoldeActuel => 'الرصيد الحالي';
+
+  @override
+  String get gcColSession => 'الجلسة';
+
+  @override
+  String get gcColEtat => 'الحالة';
+
+  @override
+  String get gcColStatut => 'الوضعية';
+
+  @override
+  String get gcColDepuis => 'من';
+
+  @override
+  String get gcColVers => 'إلى';
+
+  @override
+  String get gcColTickets => 'التذاكر';
+
+  @override
+  String get gcColAnnules => 'الملغاة';
+
+  @override
+  String get gcColTotalAnnule => 'الملغى';
+
+  @override
+  String get gcColPar => 'بواسطة';
+
+  @override
+  String get gcColEmpreinte => 'البصمة';
+
+  @override
+  String get gcColCreeLe => 'أنشئ في';
+
+  @override
+  String get gcColReference => 'المرجع';
+
+  @override
+  String get gcColEntree => 'دخول';
+
+  @override
+  String get gcColSortie => 'خروج';
+
+  @override
+  String get gcColUtilisateur => 'المستخدم';
+
+  @override
+  String get gcColMode => 'الطريقة';
+
+  @override
+  String get gcColOuverture => 'الافتتاح';
+
+  @override
+  String get gcColCloture => 'الإقفال';
+
+  @override
+  String get gcColFond => 'الرصيد الافتتاحي';
+
+  @override
+  String get gcColTheorique => 'النظري';
+
+  @override
+  String get gcColReel => 'الفعلي';
+
+  @override
+  String get gcColEcart => 'الفرق';
+
+  @override
+  String get gcColOuvertePar => 'افتتحها';
+
+  @override
+  String get gcToutesCaisses => 'كل الصناديق';
+
+  @override
+  String get gcRechercheCaisses => 'ابحث عن صندوق…';
+
+  @override
+  String get gcRechercheTransferts => 'ابحث عن تحويل…';
+
+  @override
+  String get gcRechercheClotures => 'ابحث عن إقفال…';
+
+  @override
+  String get gcRechercheMouvements => 'ابحث عن حركة…';
+
+  @override
+  String get gcRechercheSessions => 'ابحث عن جلسة…';
+
+  @override
+  String get gcAucuneSession => 'لا توجد جلسات.';
+
+  @override
+  String get gcExportFiscal => 'تصدير للمراقبة الجبائية';
+
+  @override
+  String get gcNouvelleClotureZ => 'إقفال Z جديد';
+
+  @override
+  String get gcMouvementManuel => 'حركة يدوية';
+
+  @override
+  String get gcVoirMouvements => 'عرض الحركات';
+
+  @override
+  String get gcCloturer => 'إقفال';
+
+  @override
+  String get gcOuvrirSession => 'فتح جلسة';
+
+  @override
+  String get gcFormDescription => 'لكل صندوق (درج، خزنة) رصيده وجلساته.';
+
+  @override
+  String get gcFormNomIndice => 'مثال: الصندوق 3';
+
+  @override
+  String get gcFormSoldeInitialAide => 'يُقترح كرصيد افتتاحي عند كل فتح';
+
+  @override
+  String get gcCaisseEnregistree => 'تم حفظ الصندوق';
+
+  @override
+  String get gcSessions30j => 'الجلسات (30 يوماً)';
+
+  @override
+  String get gcEcartCumule => 'الفرق التراكمي';
+
+  @override
+  String get gcDernieresSessions => 'آخر الجلسات';
+
+  @override
+  String get gcBloqueSession => 'جلسة مفتوحة — أقفلها أولاً';
+
+  @override
+  String get gcBloqueSolde => 'رصيد غير صفري — حوّله أولاً';
+
+  @override
+  String get gcBloqueSysteme => 'الصندوق الرئيسي';
+
+  @override
+  String get gcBloqueInactive => 'معطل مسبقاً';
+
+  @override
+  String get gcErreurSoldeNonNul => 'يجب أن يكون رصيد الصندوق صفراً: حوّله أولاً.';
+
+  @override
+  String get gcToastDesactivees => 'تم تعطيل الصناديق';
+
+  @override
+  String get gcTrfTitre => 'تحويل بين الصناديق';
+
+  @override
+  String get gcTrfDescription => 'مثال: إيداع مداخيل اليوم في الخزنة في نهاية اليوم.';
+
+  @override
+  String gcTrfDisponible(String montant) {
+    return 'الرصيد المتاح: $montant';
+  }
+
+  @override
+  String get gcTrfMemeCaisse => 'اختر صندوقاً مختلفاً';
+
+  @override
+  String gcTrfSuperieur(String caisse) {
+    return 'أكبر من رصيد $caisse';
+  }
+
+  @override
+  String get gcTrfMotifIndice => 'مثال: إيداع المداخيل';
+
+  @override
+  String gcTrfValider(String montant) {
+    return 'تحويل $montant';
+  }
+
+  @override
+  String get gcToastTransfert => 'تم تسجيل التحويل';
+
+  @override
+  String get gcToastTransfertsAnnules => 'تم إلغاء التحويلات';
+
+  @override
+  String get gcToastSoldesRetablis => 'تمت استعادة الأرصدة';
+
+  @override
+  String get gcBloqueDejaAnnule => 'ملغى مسبقاً';
+
+  @override
+  String get gcErreurDejaAnnule => 'هذا التحويل ملغى مسبقاً.';
+
+  @override
+  String get gcErreurTransfertInconnu => 'التحويل غير موجود.';
+
+  @override
+  String get gcErreurPeriodeCloturee => 'هذا التاريخ ضمن فترة مقفلة.';
+
+  @override
+  String get gcZDescription => 'تقرير ثابت للفترة: بعد إنشائه لا يمكن تعديله أو حذفه.';
+
+  @override
+  String gcZPeriodeValeur(String debut) {
+    return 'من $debut إلى الآن';
+  }
+
+  @override
+  String gcZDepuisDerniere(String code) {
+    return 'منذ آخر إقفال ($code)';
+  }
+
+  @override
+  String get gcZPremiere => 'أول إقفال لهذا الصندوق';
+
+  @override
+  String get gcZTicketsAnnules => 'التذاكر الملغاة';
+
+  @override
+  String get gcZTotalAnnule => 'مجموع الملغى';
+
+  @override
+  String get gcZMoyen => 'وسيلة الدفع';
+
+  @override
+  String get gcZPart => 'الحصة';
+
+  @override
+  String gcZChainee(String code) {
+    return 'مرتبط بـ $code · البصمة السابقة';
+  }
+
+  @override
+  String get gcZGenese => 'بداية سلسلة هذا الصندوق · بصمة البداية';
+
+  @override
+  String get gcZConfirmer => 'أؤكد المجاميع: سيكون الإقفال نهائياً وموقّعاً.';
+
+  @override
+  String gcZCreer(String code) {
+    return 'إنشاء الإقفال $code';
+  }
+
+  @override
+  String gcZCreee(String code) {
+    return 'تم إنشاء الإقفال $code';
+  }
+
+  @override
+  String get gcZCreeeDetail => 'تقرير موقّع ومتسلسل';
+
+  @override
+  String get gcZAucunPaiement => 'لا توجد مدفوعات في هذه الفترة.';
+
+  @override
+  String gcZDetailTitre(String code) {
+    return 'الإقفال $code';
+  }
+
+  @override
+  String gcZDetailDescription(String au, String caisse, String du, String par) {
+    return '$caisse · من $du إلى $au · بواسطة $par';
+  }
+
+  @override
+  String get gcZDefinitive => 'نهائي';
+
+  @override
+  String get gcZEmpreinteValide => 'بصمة صالحة';
+
+  @override
+  String get gcZEmpreinteAlteree => 'بصمة معدّلة';
+
+  @override
+  String get gcZRepartition => 'توزيع المدفوعات';
+
+  @override
+  String get gcZIntegrite => 'السلامة';
+
+  @override
+  String get gcZEmpreintePrecedente => 'البصمة السابقة';
+
+  @override
+  String get gcZTotaux => 'مجاميع الفترة';
+
+  @override
+  String get gcZSoldeFin => 'الرصيد في نهاية الفترة';
+
+  @override
+  String get gcFiscalTitre => 'تصدير للمراقبة الجبائية';
+
+  @override
+  String get gcFiscalDescription => 'أرشيف إقفالات Z وتذاكر الفترة مع سلسلة بصمات متحقق منها.';
+
+  @override
+  String get gcFiscalZip => 'أرشيف كامل';
+
+  @override
+  String get gcFiscalZipDesc => 'JSON المراقبة + CSV + البصمات (.zip)';
+
+  @override
+  String get gcFiscalJson => 'JSON المراقبة';
+
+  @override
+  String get gcFiscalJsonDesc => 'سلسلة قابلة للتحقق (§12.3)';
+
+  @override
+  String get gcFiscalPdf => 'تقرير PDF';
+
+  @override
+  String get gcFiscalPdfDesc => 'إقفالات Z فقط';
+
+  @override
+  String get gcFiscalCsv => 'CSV';
+
+  @override
+  String get gcFiscalCsvDesc => 'التذاكر سطراً بسطر';
+
+  @override
+  String gcFiscalChaineOk(int n) {
+    return 'سلسلة البصمات سليمة · $n إقفال، دون انقطاع';
+  }
+
+  @override
+  String gcFiscalChaineKo(String code) {
+    return 'السلسلة منقطعة عند الإقفال $code';
+  }
+
+  @override
+  String get gcFiscalGenere => 'تم إنشاء الأرشيف';
+
+  @override
+  String gcSesMvtTitre(String code) {
+    return 'الحركات · $code';
+  }
+
+  @override
+  String gcSesMvtOuverte(String caisse, String ouverture) {
+    return '$caisse · فُتحت $ouverture';
+  }
+
+  @override
+  String gcSesMvtCloturee(String caisse, String cloture, String ouverture) {
+    return '$caisse · فُتحت $ouverture · أُقفلت $cloture';
+  }
+
+  @override
+  String get gcEntrees => 'المداخيل';
+
+  @override
+  String get gcSorties => 'المخارج';
+
+  @override
+  String get gcSolde => 'الرصيد';
 }

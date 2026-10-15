@@ -13,7 +13,10 @@ class CodeGenerator {
   static const int chiffres = 4;
 
   static const String magasin = 'MAG';
-  static const String caisse = 'CIS';
+  static const String caisse = 'CS';
+
+  /// Préfixe de la caisse système `CIS0000` (les caisses créées sont en `CS`).
+  static const String caisseSysteme = 'CIS';
   static const String client = 'CLN';
   static const String fournisseur = 'FOR';
   static const String categorie = 'CATE';
@@ -33,7 +36,7 @@ class CodeGenerator {
   static const String versement = 'VER';
   static const String achat = 'SS';
   static const String bonReception = 'BON';
-  static const String cloture = 'CLZ';
+  static const String cloture = 'CLT';
   static const String inventaire = 'INV';
 
   static final RegExp _format = RegExp(r'^([A-Z]+)(\d+)$');

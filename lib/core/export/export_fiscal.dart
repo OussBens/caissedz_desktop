@@ -97,6 +97,28 @@ class ExportFiscal {
     return Uint8List.fromList(ZipEncoder().encode(archive)!);
   }
 
+  /// JSON de contrôle seul (`export.json`).
+  Future<Uint8List> genererJson({
+    required DateTime debut,
+    required DateTime fin,
+    required String utilisateurCode,
+    DateTime? genereLe,
+  }) async {
+    final doc = await document(debut: debut, fin: fin, utilisateurCode: utilisateurCode, genereLe: genereLe);
+    return Uint8List.fromList(utf8.encode(const JsonEncoder.withIndent('  ').convert(doc)));
+  }
+
+  /// Tickets ligne à ligne (`ventes.csv`, UTF-8 avec BOM pour Excel).
+  Future<Uint8List> genererCsv({
+    required DateTime debut,
+    required DateTime fin,
+    required String utilisateurCode,
+  }) async {
+    final doc = await document(debut: debut, fin: fin, utilisateurCode: utilisateurCode);
+    final ventes = (doc['donnees'] as Map<String, Object?>)['ventes'] as List;
+    return Uint8List.fromList([0xEF, 0xBB, 0xBF, ...utf8.encode(_csvVentes(ventes))]);
+  }
+
   /// Empreinte SHA-256 du bloc de données canonique.
   static String empreinte(Map<String, Object?> donnees) =>
       sha256.convert(utf8.encode(Scellement.canonique(donnees))).toString();
@@ -153,10 +175,8 @@ class ExportFiscal {
     final iv = Scellement.verifier(chaineVentes);
     if (iv != null) erreurs.add('vente ${ventes[iv]['code']}');
     final clotures = (donnees['clotures'] as List).cast<Map>().map((m) => Cloture.depuisLigne(m.cast())).toList();
-    final ic = Scellement.verifier([
-      for (final c in clotures) (doc: c.versCanonique(), hashPrecedent: c.hashPrecedent, hash: c.hash),
-    ]);
-    if (ic != null) erreurs.add('clôture ${clotures[ic].code}');
+    final ic = Cloture.verifierChaines(clotures);
+    if (ic != null) erreurs.add('clôture $ic');
     return VerificationExport(
       empreinteOk: empreinteOk,
       chaineVentesOk: iv == null,
@@ -213,15 +233,31 @@ class ExportFiscal {
   ]);
 
   static String _csvClotures(List clotures) => _csv([
-    ['code', 'date', 'debut', 'fin', 'nb_ventes', 'total_ventes', 'encaissements', 'decaissements', 'hash'],
+    [
+      'code',
+      'caisse',
+      'date',
+      'debut',
+      'fin',
+      'nb_ventes',
+      'nb_annulations',
+      'total_ventes',
+      'total_annule',
+      'encaissements',
+      'decaissements',
+      'hash',
+    ],
     for (final c in clotures.cast<Map>())
       [
         c['code'],
+        c['caisse_code'],
         c['date'],
         c['debut'],
         c['fin'],
         c['nb_ventes'],
+        c['nb_annulations'],
         c['total_ventes'],
+        c['total_annule'],
         c['total_encaissements'],
         c['total_decaissements'],
         c['hash'],
@@ -236,7 +272,7 @@ Période : ${p['debut']} → ${p['fin']}
 Généré le : ${doc['genere_le']} par ${doc['genere_par']}
 Empreinte SHA-256 des données : ${doc['empreinte']}
 
-export.json : ventes scellées (hash chaîné SHA-256) et clôtures Z chaînées, vérifiables hors ligne.
+export.json : ventes scellées (hash chaîné SHA-256) et clôtures Z chaînées par caisse, vérifiables hors ligne.
 ventes.csv / clotures.csv : extraits lisibles des mêmes données.
 ''';
   }

@@ -22,7 +22,7 @@ void main() {
       final base = await ouvrirBaseDeTest();
       final s = CaisseService(base.db, utilisateurCode: 'USR0000');
       final banque = await s.creer(nom: 'Compte BNA', type: TypesCaisse.compte);
-      expect(banque.code, 'CIS0001');
+      expect(banque.code, 'CS0001');
       expect(banque.magasinCode, isNull);
       final c2 = await s.creer(nom: 'Caisse 2', magasinCode: 'MAG0000');
       expect(c2.magasinCode, 'MAG0000');
@@ -47,7 +47,7 @@ void main() {
         s.modifier(principale.copyWith(actif: false)),
         throwsA(isA<CaisseException>().having((e) => e.erreur, 'e', ErreurCaisse.caisseSysteme)),
       );
-      expect((await s.caisses(actives: true)).map((c) => c.code), ['CIS0000', 'CIS0001']);
+      expect((await s.caisses(actives: true)).map((c) => c.code), ['CIS0000', 'CS0001']);
     });
 
     test('journal : apport, dépense, transfert TRF = 2 mouvements, solde insuffisant, même caisse', () async {
@@ -77,7 +77,12 @@ void main() {
       expect((await s.solde('CIS0000')).especes, 799.5);
       expect((await s.solde(banque.code)).especes, 3000);
       expect((await s.transferts()).single.caisseDestination, banque.code);
-      // Une caisse inactive ne reçoit rien.
+      // Désactivation refusée tant que le solde n'est pas nul ; une caisse inactive ne reçoit rien.
+      await expectLater(
+        s.modifier(banque.copyWith(actif: false)),
+        throwsA(isA<CaisseException>().having((e) => e.erreur, 'e', ErreurCaisse.soldeNonNul)),
+      );
+      await s.transferer(caisseSource: banque.code, caisseDestination: 'CIS0000', montant: 3000);
       await s.modifier(banque.copyWith(actif: false));
       await expectLater(
         s.transferer(caisseSource: 'CIS0000', caisseDestination: banque.code, montant: 1),
@@ -159,6 +164,61 @@ void main() {
           TypesMouvementCaisse.retrait,
         ]),
       );
+    });
+
+    test('DS v2.2 : solde initial, observation, désactivation en lot bloquée, annulation de transferts', () async {
+      final base = await ouvrirBaseDeTest();
+      final s = CaisseService(base.db, utilisateurCode: 'USR0000');
+      expect(await s.prochainCode(), 'CS0001');
+      final c1 = await s.creer(nom: 'Caisse 1', soldeInitial: 3000, observation: '  Comptoir  ');
+      expect(c1.soldeInitial, 3000);
+      expect(c1.observation, 'Comptoir');
+      await expectLater(
+        s.creer(nom: 'X', soldeInitial: -1),
+        throwsA(isA<CaisseException>().having((e) => e.erreur, 'e', ErreurCaisse.montantInvalide)),
+      );
+      final coffre = await s.creer(nom: 'Coffre');
+      final relue = (await s.caisses()).firstWhere((c) => c.code == c1.code);
+      expect(relue.soldeInitial, 3000);
+      expect(relue.observation, 'Comptoir');
+      // Session ouverte → désactivation bloquée.
+      final sessions = SessionCaisseService(base.db, utilisateurCode: 'USR0000');
+      await sessions.ouvrir(caisseCode: c1.code, fondInitial: 3000);
+      expect(await s.blocageDesactivation(c1), ErreurCaisse.sessionOuverte);
+      expect(await s.blocageDesactivation(coffre), isNull);
+      final principale = (await s.caisses()).firstWhere((c) => c.systeme);
+      expect(await s.blocageDesactivation(principale), ErreurCaisse.caisseSysteme);
+      await expectLater(
+        s.desactiver([coffre.code, c1.code]),
+        throwsA(isA<CaisseException>().having((e) => e.erreur, 'e', ErreurCaisse.sessionOuverte)),
+      );
+      expect((await s.caisses(actives: true)).map((c) => c.code), contains(coffre.code), reason: 'tout ou rien');
+      // Transfert vers le coffre puis annulation : mouvements retirés, transfert conservé avec son motif.
+      final t = await s.transferer(caisseSource: c1.code, caisseDestination: coffre.code, montant: 2000);
+      expect((await s.solde(coffre.code)).especes, 2000);
+      expect(await s.blocageDesactivation(coffre), ErreurCaisse.soldeNonNul);
+      await expectLater(
+        s.annulerTransferts([t.code], motif: ' '),
+        throwsA(isA<CaisseException>().having((e) => e.erreur, 'e', ErreurCaisse.motifObligatoire)),
+      );
+      // Le coffre a dépensé une partie : l'annulation ne peut plus reprendre le montant.
+      await s.mouvementManuel(caisseCode: coffre.code, apport: false, montant: 500);
+      expect(await s.blocageAnnulationTransfert(t), ErreurCaisse.soldeInsuffisant);
+      await s.mouvementManuel(caisseCode: coffre.code, apport: true, montant: 500);
+      await s.annulerTransferts([t.code], motif: 'Erreur de caisse');
+      expect((await s.solde(coffre.code)).especes, 0);
+      expect((await s.solde(c1.code)).especes, 3000);
+      final annule = (await s.transferts()).single;
+      expect(annule.actif, isFalse);
+      expect(annule.motifAnnulation, 'Erreur de caisse');
+      expect(annule.annulePar, 'USR0000');
+      expect(await s.blocageAnnulationTransfert(annule), ErreurCaisse.dejaAnnule);
+      await expectLater(
+        s.annulerTransferts([t.code], motif: 'x'),
+        throwsA(isA<CaisseException>().having((e) => e.erreur, 'e', ErreurCaisse.dejaAnnule)),
+      );
+      await s.desactiver([coffre.code]);
+      expect((await s.caisses(actives: true)).map((c) => c.code), isNot(contains(coffre.code)));
     });
   });
 }

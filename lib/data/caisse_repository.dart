@@ -45,7 +45,7 @@ class CaisseRepository {
       whereArgs: ['Ouverte', utilisateurCode],
       limit: 1,
     );
-    return rows.isEmpty ? CodeGenerator.systeme(CodeGenerator.caisse) : rows.first['caisse_code'] as String;
+    return rows.isEmpty ? CodeGenerator.systeme(CodeGenerator.caisseSysteme) : rows.first['caisse_code'] as String;
   }
 
   // ---- Mouvements ----
@@ -112,17 +112,19 @@ class CaisseRepository {
     );
   }
 
-  /// Totaux entrées / sorties de la période (transferts internes exclus).
+  /// Totaux entrées / sorties de la période (transferts internes exclus), toutes caisses ou une seule.
   Future<({double entrees, double sorties, Map<String, double> parMode})> totauxPeriode(
     DateTime debut,
-    DateTime fin,
-  ) async {
+    DateTime fin, {
+    String? caisseCode,
+  }) async {
     final rows = await db.rawQuery(
       '''
       SELECT sens, mode, COALESCE(SUM(montant), 0) m FROM mouvement_caisse
-      WHERE date > ? AND date <= ? AND type <> 'Transfert' GROUP BY sens, mode
+      WHERE date > ? AND date <= ? AND type <> 'Transfert' ${caisseCode == null ? '' : 'AND caisse_code = ?'}
+      GROUP BY sens, mode
       ''',
-      [debut.toUtc().toIso8601String(), fin.toUtc().toIso8601String()],
+      [debut.toUtc().toIso8601String(), fin.toUtc().toIso8601String(), ?caisseCode],
     );
     var entrees = 0.0;
     var sorties = 0.0;
@@ -147,10 +149,25 @@ class CaisseRepository {
     return rows.map(TransfertCaisse.depuisLigne).toList();
   }
 
+  Future<TransfertCaisse?> transfert(String code) async {
+    final rows = await db.query('transfert_caisse', where: 'code = ?', whereArgs: [code]);
+    return rows.isEmpty ? null : TransfertCaisse.depuisLigne(rows.first);
+  }
+
+  /// Annulation douce d'un transfert (la ligne reste, marquée inactive avec son motif).
+  Future<void> annulerTransfert(String code, {required String par, required String motif, required DateTime le}) =>
+      db.update(
+        'transfert_caisse',
+        {'actif': 0, 'annule_par': par, 'motif_annulation': motif, 'date_annulation': le.toUtc().toIso8601String()},
+        where: 'code = ?',
+        whereArgs: [code],
+      );
+
   // ---- Clôtures Z ----
   Future<void> insererCloture(Cloture c) => db.insert('cloture', c.versLigne());
 
-  Future<List<Cloture>> clotures({DateTime? debut, DateTime? fin, bool croissant = false}) async {
+  /// Clôtures (plus récentes d'abord, ou ordre de chaînage si [croissant]), d'une caisse si [caisseCode].
+  Future<List<Cloture>> clotures({DateTime? debut, DateTime? fin, bool croissant = false, String? caisseCode}) async {
     final where = <String>[];
     final args = <Object>[];
     if (debut != null) {
@@ -161,17 +178,28 @@ class CaisseRepository {
       where.add('fin <= ?');
       args.add(fin.toUtc().toIso8601String());
     }
+    if (caisseCode != null) {
+      where.add('caisse_code = ?');
+      args.add(caisseCode);
+    }
     final rows = await db.query(
       'cloture',
       where: where.isEmpty ? null : where.join(' AND '),
       whereArgs: where.isEmpty ? null : args,
-      orderBy: croissant ? 'code' : 'code DESC',
+      orderBy: croissant ? 'fin, code' : 'fin DESC, code DESC',
     );
     return rows.map(Cloture.depuisLigne).toList();
   }
 
-  Future<Cloture?> derniereCloture() async {
-    final rows = await db.query('cloture', orderBy: 'code DESC', limit: 1);
+  /// Dernière clôture d'une caisse ; sans [caisseCode], dernière clôture globale (antérieure à la v16).
+  Future<Cloture?> derniereCloture({String? caisseCode}) async {
+    final rows = await db.query(
+      'cloture',
+      where: caisseCode == null ? 'caisse_code IS NULL' : 'caisse_code = ?',
+      whereArgs: caisseCode == null ? null : [caisseCode],
+      orderBy: 'fin DESC, code DESC',
+      limit: 1,
+    );
     return rows.isEmpty ? null : Cloture.depuisLigne(rows.first);
   }
 

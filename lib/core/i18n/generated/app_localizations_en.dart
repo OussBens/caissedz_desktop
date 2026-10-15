@@ -1914,34 +1914,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mvtVente => 'Sale';
 
   @override
-  String get mvtAnnulation => 'Cancellation';
+  String get mvtAnnulation => 'Sale cancellation';
 
   @override
-  String get mvtRemboursement => 'Refund';
+  String get mvtRemboursement => 'Return refund';
 
   @override
-  String get mvtEncaissement => 'Receipt';
+  String get mvtEncaissement => 'Customer payment';
 
   @override
-  String get mvtDecaissement => 'Payment';
+  String get mvtDecaissement => 'Supplier payment';
 
   @override
-  String get mvtApport => 'Cash in';
+  String get mvtApport => 'Manual cash in';
 
   @override
-  String get mvtDepense => 'Expense';
+  String get mvtDepense => 'Manual cash out';
 
   @override
   String get mvtTransfert => 'Transfer';
 
   @override
-  String get mvtFondInitial => 'Opening float';
+  String get mvtFondInitial => 'Opening';
 
   @override
-  String get mvtRetrait => 'Withdrawal';
+  String get mvtRetrait => 'Closing withdrawal';
 
   @override
-  String get mvtEcart => 'Variance';
+  String get mvtEcart => 'Closing variance';
 
   @override
   String get sensEntree => 'In';
@@ -6513,4 +6513,404 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get statutErreur => 'Error';
+
+  @override
+  String get gcDescription => 'Registers, transfers, Z reports, movements and sessions';
+
+  @override
+  String get gcOngletCaisses => 'Registers';
+
+  @override
+  String get gcOngletTransferts => 'Transfers';
+
+  @override
+  String get gcOngletClotures => 'Z reports';
+
+  @override
+  String get gcOngletMouvements => 'Movements';
+
+  @override
+  String get gcOngletSessions => 'Sessions';
+
+  @override
+  String get gcEntiteCaisse => 'register';
+
+  @override
+  String get gcEntiteCaisses => 'registers';
+
+  @override
+  String get gcEntiteTransfert => 'transfer';
+
+  @override
+  String get gcEntiteTransferts => 'transfers';
+
+  @override
+  String get gcEntiteClotures => 'Z reports';
+
+  @override
+  String get gcEntiteMouvements => 'movements';
+
+  @override
+  String get gcEntiteSessions => 'sessions';
+
+  @override
+  String get gcColCaisse => 'Register';
+
+  @override
+  String get gcColSoldeInitial => 'Opening balance';
+
+  @override
+  String get gcColSoldeActuel => 'Current balance';
+
+  @override
+  String get gcColSession => 'Session';
+
+  @override
+  String get gcColEtat => 'Status';
+
+  @override
+  String get gcColStatut => 'Status';
+
+  @override
+  String get gcColDepuis => 'From';
+
+  @override
+  String get gcColVers => 'To';
+
+  @override
+  String get gcColTickets => 'Tickets';
+
+  @override
+  String get gcColAnnules => 'Cancelled';
+
+  @override
+  String get gcColTotalAnnule => 'Cancelled amount';
+
+  @override
+  String get gcColPar => 'By';
+
+  @override
+  String get gcColEmpreinte => 'Fingerprint';
+
+  @override
+  String get gcColCreeLe => 'Created on';
+
+  @override
+  String get gcColReference => 'Ref.';
+
+  @override
+  String get gcColEntree => 'In';
+
+  @override
+  String get gcColSortie => 'Out';
+
+  @override
+  String get gcColUtilisateur => 'User';
+
+  @override
+  String get gcColMode => 'Method';
+
+  @override
+  String get gcColOuverture => 'Opened';
+
+  @override
+  String get gcColCloture => 'Closed';
+
+  @override
+  String get gcColFond => 'Float';
+
+  @override
+  String get gcColTheorique => 'Expected';
+
+  @override
+  String get gcColReel => 'Counted';
+
+  @override
+  String get gcColEcart => 'Variance';
+
+  @override
+  String get gcColOuvertePar => 'Opened by';
+
+  @override
+  String get gcToutesCaisses => 'All registers';
+
+  @override
+  String get gcRechercheCaisses => 'Search a register…';
+
+  @override
+  String get gcRechercheTransferts => 'Search a transfer…';
+
+  @override
+  String get gcRechercheClotures => 'Search a Z report…';
+
+  @override
+  String get gcRechercheMouvements => 'Search a movement…';
+
+  @override
+  String get gcRechercheSessions => 'Search a session…';
+
+  @override
+  String get gcAucuneSession => 'No sessions.';
+
+  @override
+  String get gcExportFiscal => 'Tax audit export';
+
+  @override
+  String get gcNouvelleClotureZ => 'New Z report';
+
+  @override
+  String get gcMouvementManuel => 'Manual movement';
+
+  @override
+  String get gcVoirMouvements => 'View movements';
+
+  @override
+  String get gcCloturer => 'Close';
+
+  @override
+  String get gcOuvrirSession => 'Open a session';
+
+  @override
+  String get gcFormDescription => 'Each register (drawer, safe) has its own balance and sessions.';
+
+  @override
+  String get gcFormNomIndice => 'E.g. Register 3';
+
+  @override
+  String get gcFormSoldeInitialAide => 'Suggested as the float at each opening';
+
+  @override
+  String get gcCaisseEnregistree => 'Register saved';
+
+  @override
+  String get gcSessions30j => 'Sessions (30 d)';
+
+  @override
+  String get gcEcartCumule => 'Cumulative variance';
+
+  @override
+  String get gcDernieresSessions => 'Latest sessions';
+
+  @override
+  String get gcBloqueSession => 'Open session — close it first';
+
+  @override
+  String get gcBloqueSolde => 'Non-zero balance — transfer it first';
+
+  @override
+  String get gcBloqueSysteme => 'Main register';
+
+  @override
+  String get gcBloqueInactive => 'Already inactive';
+
+  @override
+  String get gcErreurSoldeNonNul => 'The register balance must be zero: transfer it first.';
+
+  @override
+  String get gcToastDesactivees => 'Registers deactivated';
+
+  @override
+  String get gcTrfTitre => 'Transfer between registers';
+
+  @override
+  String get gcTrfDescription => 'E.g. moving the day\'s takings to the safe at closing.';
+
+  @override
+  String gcTrfDisponible(String montant) {
+    return 'Available balance: $montant';
+  }
+
+  @override
+  String get gcTrfMemeCaisse => 'Choose a different register';
+
+  @override
+  String gcTrfSuperieur(String caisse) {
+    return 'Exceeds the balance of $caisse';
+  }
+
+  @override
+  String get gcTrfMotifIndice => 'E.g. takings deposit';
+
+  @override
+  String gcTrfValider(String montant) {
+    return 'Transfer $montant';
+  }
+
+  @override
+  String get gcToastTransfert => 'Transfer recorded';
+
+  @override
+  String get gcToastTransfertsAnnules => 'Transfers cancelled';
+
+  @override
+  String get gcToastSoldesRetablis => 'Balances restored';
+
+  @override
+  String get gcBloqueDejaAnnule => 'Already cancelled';
+
+  @override
+  String get gcErreurDejaAnnule => 'This transfer is already cancelled.';
+
+  @override
+  String get gcErreurTransfertInconnu => 'Transfer not found.';
+
+  @override
+  String get gcErreurPeriodeCloturee => 'This date falls in a closed period.';
+
+  @override
+  String get gcZDescription => 'Frozen report for the period: once created it can be neither edited nor deleted.';
+
+  @override
+  String gcZPeriodeValeur(String debut) {
+    return '$debut → now';
+  }
+
+  @override
+  String gcZDepuisDerniere(String code) {
+    return 'Since the last Z report ($code)';
+  }
+
+  @override
+  String get gcZPremiere => 'First Z report for this register';
+
+  @override
+  String get gcZTicketsAnnules => 'Cancelled tickets';
+
+  @override
+  String get gcZTotalAnnule => 'Total cancelled';
+
+  @override
+  String get gcZMoyen => 'Payment method';
+
+  @override
+  String get gcZPart => 'Share';
+
+  @override
+  String gcZChainee(String code) {
+    return 'Chained to $code · previous fingerprint';
+  }
+
+  @override
+  String get gcZGenese => 'Start of this register\'s chain · genesis fingerprint';
+
+  @override
+  String get gcZConfirmer => 'I confirm the totals: the report will be final and signed.';
+
+  @override
+  String gcZCreer(String code) {
+    return 'Create report $code';
+  }
+
+  @override
+  String gcZCreee(String code) {
+    return 'Report $code created';
+  }
+
+  @override
+  String get gcZCreeeDetail => 'Signed and chained report';
+
+  @override
+  String get gcZAucunPaiement => 'No payments in this period.';
+
+  @override
+  String gcZDetailTitre(String code) {
+    return 'Z report $code';
+  }
+
+  @override
+  String gcZDetailDescription(String au, String caisse, String du, String par) {
+    return '$caisse · $du → $au · by $par';
+  }
+
+  @override
+  String get gcZDefinitive => 'Final';
+
+  @override
+  String get gcZEmpreinteValide => 'Valid fingerprint';
+
+  @override
+  String get gcZEmpreinteAlteree => 'Altered fingerprint';
+
+  @override
+  String get gcZRepartition => 'Payment breakdown';
+
+  @override
+  String get gcZIntegrite => 'Integrity';
+
+  @override
+  String get gcZEmpreintePrecedente => 'Previous fingerprint';
+
+  @override
+  String get gcZTotaux => 'Period totals';
+
+  @override
+  String get gcZSoldeFin => 'Closing balance';
+
+  @override
+  String get gcFiscalTitre => 'Export for tax audit';
+
+  @override
+  String get gcFiscalDescription =>
+      'Archive of the period\'s Z reports and tickets, with the verified fingerprint chain.';
+
+  @override
+  String get gcFiscalZip => 'Full archive';
+
+  @override
+  String get gcFiscalZipDesc => 'Audit JSON + CSV + fingerprints (.zip)';
+
+  @override
+  String get gcFiscalJson => 'Audit JSON';
+
+  @override
+  String get gcFiscalJsonDesc => 'Verifiable chain (§12.3)';
+
+  @override
+  String get gcFiscalPdf => 'PDF report';
+
+  @override
+  String get gcFiscalPdfDesc => 'Z reports only';
+
+  @override
+  String get gcFiscalCsv => 'CSV';
+
+  @override
+  String get gcFiscalCsvDesc => 'Tickets line by line';
+
+  @override
+  String gcFiscalChaineOk(int n) {
+    return 'Fingerprint chain intact · $n reports, no break';
+  }
+
+  @override
+  String gcFiscalChaineKo(String code) {
+    return 'Chain broken at report $code';
+  }
+
+  @override
+  String get gcFiscalGenere => 'Archive generated';
+
+  @override
+  String gcSesMvtTitre(String code) {
+    return 'Movements · $code';
+  }
+
+  @override
+  String gcSesMvtOuverte(String caisse, String ouverture) {
+    return '$caisse · opened $ouverture';
+  }
+
+  @override
+  String gcSesMvtCloturee(String caisse, String cloture, String ouverture) {
+    return '$caisse · opened $ouverture · closed $cloture';
+  }
+
+  @override
+  String get gcEntrees => 'In';
+
+  @override
+  String get gcSorties => 'Out';
+
+  @override
+  String get gcSolde => 'Balance';
 }

@@ -797,14 +797,15 @@ Future<void> _erreurSession(BuildContext context, String titre, SessionException
   );
 }
 
-/// Ouvre une session (OuvertureCaisseDialog, 560 px). Retourne `true` si la session est ouverte.
-Future<bool> afficherOuvertureCaisse(BuildContext context, WidgetRef ref) async {
+/// Ouvre une session (OuvertureCaisseDialog, 560 px) sur [caisseCode] ou la caisse du poste ; le fond est
+/// pré-rempli par le solde initial de la caisse (§9.13). Retourne `true` si la session est ouverte.
+Future<bool> afficherOuvertureCaisse(BuildContext context, WidgetRef ref, {String? caisseCode}) async {
   final l10n = AppLocalizations.of(context);
   final caisses = (await ref.read(caissesListeProvider.future)).where((c) => c.actif).toList();
   if (!context.mounted || caisses.isEmpty) return false;
-  final preferee = ref.read(posControllerProvider).caisseCode;
+  final preferee = caisseCode ?? ref.read(posControllerProvider).caisseCode;
   var caisse = caisses.where((c) => c.code == preferee).firstOrNull ?? caisses.first;
-  final fond = TextEditingController(text: formaterNombre(0, decimales: 2));
+  final fond = TextEditingController(text: formaterNombre(caisse.soldeInitial, decimales: 2));
   final session = ref.read(sessionProvider);
   final ok = await afficherDialog<bool>(
     context,
@@ -839,7 +840,10 @@ Future<bool> afficherOuvertureCaisse(BuildContext context, WidgetRef ref) async 
                 valeur: caisse,
                 options: caisses,
                 libelle: (c) => c.nom,
-                onChanged: (v) => setState(() => caisse = v ?? caisse),
+                onChanged: (v) => setState(() {
+                  caisse = v ?? caisse;
+                  fond.text = formaterNombre(caisse.soldeInitial, decimales: 2);
+                }),
               ),
             ),
             DsFormRow(
@@ -882,9 +886,16 @@ Future<bool> afficherOuvertureCaisse(BuildContext context, WidgetRef ref) async 
 }
 
 /// Clôture la session (ClotureSessionDialog, 680 px) : solde théorique, solde réel compté, écart.
-Future<void> afficherClotureSession(BuildContext context, WidgetRef ref, {required String nomCaisse}) async {
+/// Sans [sessionCible], clôture la session du poste.
+Future<void> afficherClotureSession(
+  BuildContext context,
+  WidgetRef ref, {
+  required String nomCaisse,
+  SessionCaisse? sessionCible,
+}) async {
   final l10n = AppLocalizations.of(context);
-  final session = ref.read(posControllerProvider).session;
+  final duPoste = ref.read(posControllerProvider).session;
+  final session = sessionCible ?? duPoste;
   if (session == null) return;
   final attendu = await ref.read(sessionCaisseServiceProvider).especesAttendues(session.code);
   if (!context.mounted) return;
@@ -1002,7 +1013,10 @@ Future<void> afficherClotureSession(BuildContext context, WidgetRef ref, {requir
   );
   if (ok != true || !context.mounted) return;
   try {
-    final s = await ref.read(posControllerProvider.notifier).fermerSession(montantCompte: lireNombre(reel.text) ?? -1);
+    final montant = lireNombre(reel.text) ?? -1;
+    final s = session.code == duPoste?.code
+        ? await ref.read(posControllerProvider.notifier).fermerSession(montantCompte: montant)
+        : await ref.read(sessionCaisseServiceProvider).fermer(montantCompte: montant, sessionCode: session.code);
     rafraichirCaisse(ref);
     if (!context.mounted) return;
     final e = s.ecart ?? 0;
@@ -1017,9 +1031,14 @@ Future<void> afficherClotureSession(BuildContext context, WidgetRef ref, {requir
   }
 }
 
-/// Mouvement manuel de caisse (MouvementManuelDialog, 620 px) sur la caisse de la session.
-Future<void> afficherMouvementManuel(BuildContext context, WidgetRef ref, {required String caisseCode}) async {
+/// Mouvement manuel de caisse (MouvementManuelDialog, 620 px) sur [caisseCode], sinon sur la caisse choisie.
+Future<void> afficherMouvementManuel(BuildContext context, WidgetRef ref, {String? caisseCode}) async {
   final l10n = AppLocalizations.of(context);
+  final caisses = caisseCode != null
+      ? const <Caisse>[]
+      : (await ref.read(caissesListeProvider.future)).where((c) => c.actif).toList();
+  if (!context.mounted || (caisseCode == null && caisses.isEmpty)) return;
+  var caisse = caisseCode ?? caisses.first.code;
   var entree = true;
   var mode = 'Espèces';
   final montant = TextEditingController();
@@ -1056,6 +1075,18 @@ Future<void> afficherMouvementManuel(BuildContext context, WidgetRef ref, {requi
           crossAxisAlignment: CrossAxisAlignment.stretch,
           spacing: 12,
           children: [
+            if (caisses.isNotEmpty)
+              DsFormRow(
+                libelle: l10n.posSessionCaisse,
+                obligatoire: true,
+                child: DsSelect<String>(
+                  cle: const ValueKey('mouvement_caisse'),
+                  valeur: caisse,
+                  options: [for (final c in caisses) c.code],
+                  libelle: (code) => caisses.firstWhere((c) => c.code == code).nom,
+                  onChanged: (v) => setState(() => caisse = v ?? caisse),
+                ),
+              ),
             DsFormRow(
               libelle: l10n.posMvtType,
               obligatoire: true,
@@ -1110,13 +1141,7 @@ Future<void> afficherMouvementManuel(BuildContext context, WidgetRef ref, {requi
   try {
     await ref
         .read(caisseServiceProvider)
-        .mouvementManuel(
-          caisseCode: caisseCode,
-          apport: entree,
-          montant: m,
-          mode: mode,
-          commentaire: motif.text.trim(),
-        );
+        .mouvementManuel(caisseCode: caisse, apport: entree, montant: m, mode: mode, commentaire: motif.text.trim());
     rafraichirCaisse(ref);
     if (!context.mounted) return;
     afficherToast(

@@ -125,7 +125,7 @@ void main() {
         'retour_code': 'RET0001',
       });
 
-      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [12, 13, 14, 15]);
+      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [12, 13, 14, 15, 16]);
       final r = (await db.query('retour')).single;
       expect(r['type'], 'Client');
       expect(r['document_code'], 'VTE0001');
@@ -166,7 +166,7 @@ void main() {
         'sous_categorie_code': 'SC0000',
         'code_barres': '6130000000015',
       });
-      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [13, 14, 15]);
+      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [13, 14, 15, 16]);
       final p = (await db.query('produit')).single;
       expect(p['service'], 0);
       expect(p['suivi_serie'], 0);
@@ -212,7 +212,7 @@ void main() {
         'utilisateur_code': 'USR0000',
       });
       await db.insert('sortie_stock_ligne', {'sortie_code': 'SOR0001', 'produit_code': 'PRD0001', 'quantite': 2});
-      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [14, 15]);
+      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [14, 15, 16]);
       final b = (await db.query('besoin')).single;
       expect(b['fournisseur_code'], 'FOR0000');
       expect(b['statut'], 'Commande');
@@ -243,7 +243,7 @@ void main() {
         'utilisateur_code': 'USR0000',
         'total': 100,
       });
-      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [15]);
+      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [15, 16]);
       final a = (await db.query('achat')).single;
       expect(a['annule_par'], isNull);
       expect(a['besoin_code'], isNull);
@@ -265,6 +265,36 @@ void main() {
         }),
         throwsA(anything),
       );
+    });
+  });
+
+  group('Migration v16 (gestion caisse DS)', () {
+    test('solde initial des caisses, annulation des transferts, clôtures par caisse', () async {
+      final base = await AppDatabase.ouvrirEnMemoire(
+        cleHex: cleTestHex,
+        migrations: toutesLesMigrations.sublist(0, 15),
+      );
+      addTearDown(base.fermer);
+      final db = base.db;
+      await db.insert('transfert_caisse', {
+        'code': 'TRF0001',
+        'date': '2026-10-01T10:00:00Z',
+        'caisse_source': 'CIS0000',
+        'caisse_destination': 'CIS0000',
+        'montant': 10,
+        'mode': 'Espèces',
+        'utilisateur_code': 'USR0000',
+      });
+      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [16]);
+      final c = (await db.query('caisse', where: "code = 'CIS0000'")).single;
+      expect(c['solde_initial'], 0);
+      expect(c['observation'], isNull);
+      final t = (await db.query('transfert_caisse')).single;
+      expect(t['actif'], 1);
+      expect(t['motif_annulation'], isNull);
+      final cols = (await db.rawQuery('PRAGMA table_info(cloture)')).map((r) => r['name']).toSet();
+      expect(cols, containsAll(['caisse_code', 'total_annule']));
+      expect(await db.rawQuery('PRAGMA foreign_key_check'), isEmpty);
     });
   });
 

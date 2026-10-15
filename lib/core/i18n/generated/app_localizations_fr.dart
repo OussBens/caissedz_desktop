@@ -1920,34 +1920,34 @@ class AppLocalizationsFr extends AppLocalizations {
   String get mvtVente => 'Vente';
 
   @override
-  String get mvtAnnulation => 'Annulation';
+  String get mvtAnnulation => 'Annulation vente';
 
   @override
-  String get mvtRemboursement => 'Remboursement';
+  String get mvtRemboursement => 'Remboursement retour';
 
   @override
-  String get mvtEncaissement => 'Encaissement';
+  String get mvtEncaissement => 'Versement client';
 
   @override
-  String get mvtDecaissement => 'Décaissement';
+  String get mvtDecaissement => 'Versement fournisseur';
 
   @override
-  String get mvtApport => 'Apport';
+  String get mvtApport => 'Entrée manuelle';
 
   @override
-  String get mvtDepense => 'Dépense';
+  String get mvtDepense => 'Sortie manuelle';
 
   @override
   String get mvtTransfert => 'Transfert';
 
   @override
-  String get mvtFondInitial => 'Fond initial';
+  String get mvtFondInitial => 'Ouverture';
 
   @override
-  String get mvtRetrait => 'Retrait';
+  String get mvtRetrait => 'Retrait de clôture';
 
   @override
-  String get mvtEcart => 'Écart';
+  String get mvtEcart => 'Écart de clôture';
 
   @override
   String get sensEntree => 'Entrée';
@@ -6526,4 +6526,404 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get statutErreur => 'Erreur';
+
+  @override
+  String get gcDescription => 'Caisses, transferts, clôtures Z, mouvements et sessions';
+
+  @override
+  String get gcOngletCaisses => 'Caisses';
+
+  @override
+  String get gcOngletTransferts => 'Transferts';
+
+  @override
+  String get gcOngletClotures => 'Clôtures Z';
+
+  @override
+  String get gcOngletMouvements => 'Mouvements';
+
+  @override
+  String get gcOngletSessions => 'Sessions';
+
+  @override
+  String get gcEntiteCaisse => 'caisse';
+
+  @override
+  String get gcEntiteCaisses => 'caisses';
+
+  @override
+  String get gcEntiteTransfert => 'transfert';
+
+  @override
+  String get gcEntiteTransferts => 'transferts';
+
+  @override
+  String get gcEntiteClotures => 'clôtures';
+
+  @override
+  String get gcEntiteMouvements => 'mouvements';
+
+  @override
+  String get gcEntiteSessions => 'sessions';
+
+  @override
+  String get gcColCaisse => 'Caisse';
+
+  @override
+  String get gcColSoldeInitial => 'Solde initial';
+
+  @override
+  String get gcColSoldeActuel => 'Solde actuel';
+
+  @override
+  String get gcColSession => 'Session';
+
+  @override
+  String get gcColEtat => 'État';
+
+  @override
+  String get gcColStatut => 'Statut';
+
+  @override
+  String get gcColDepuis => 'Depuis';
+
+  @override
+  String get gcColVers => 'Vers';
+
+  @override
+  String get gcColTickets => 'Tickets';
+
+  @override
+  String get gcColAnnules => 'Annulés';
+
+  @override
+  String get gcColTotalAnnule => 'Annulé';
+
+  @override
+  String get gcColPar => 'Par';
+
+  @override
+  String get gcColEmpreinte => 'Empreinte';
+
+  @override
+  String get gcColCreeLe => 'Créé le';
+
+  @override
+  String get gcColReference => 'Réf.';
+
+  @override
+  String get gcColEntree => 'Entrée';
+
+  @override
+  String get gcColSortie => 'Sortie';
+
+  @override
+  String get gcColUtilisateur => 'Utilisateur';
+
+  @override
+  String get gcColMode => 'Mode';
+
+  @override
+  String get gcColOuverture => 'Ouverture';
+
+  @override
+  String get gcColCloture => 'Clôture';
+
+  @override
+  String get gcColFond => 'Fond';
+
+  @override
+  String get gcColTheorique => 'Théorique';
+
+  @override
+  String get gcColReel => 'Réel';
+
+  @override
+  String get gcColEcart => 'Écart';
+
+  @override
+  String get gcColOuvertePar => 'Ouverte par';
+
+  @override
+  String get gcToutesCaisses => 'Toutes caisses';
+
+  @override
+  String get gcRechercheCaisses => 'Rechercher une caisse…';
+
+  @override
+  String get gcRechercheTransferts => 'Rechercher un transfert…';
+
+  @override
+  String get gcRechercheClotures => 'Rechercher une clôture…';
+
+  @override
+  String get gcRechercheMouvements => 'Rechercher un mouvement…';
+
+  @override
+  String get gcRechercheSessions => 'Rechercher une session…';
+
+  @override
+  String get gcAucuneSession => 'Aucune session.';
+
+  @override
+  String get gcExportFiscal => 'Export contrôle fiscal';
+
+  @override
+  String get gcNouvelleClotureZ => 'Nouvelle clôture Z';
+
+  @override
+  String get gcMouvementManuel => 'Mouvement manuel';
+
+  @override
+  String get gcVoirMouvements => 'Voir les mouvements';
+
+  @override
+  String get gcCloturer => 'Clôturer';
+
+  @override
+  String get gcOuvrirSession => 'Ouvrir une session';
+
+  @override
+  String get gcFormDescription => 'Une caisse (tiroir, coffre) a son propre solde et ses sessions.';
+
+  @override
+  String get gcFormNomIndice => 'Ex. Caisse 3';
+
+  @override
+  String get gcFormSoldeInitialAide => 'Proposé comme fond de caisse à chaque ouverture';
+
+  @override
+  String get gcCaisseEnregistree => 'Caisse enregistrée';
+
+  @override
+  String get gcSessions30j => 'Sessions (30 j)';
+
+  @override
+  String get gcEcartCumule => 'Écart cumulé';
+
+  @override
+  String get gcDernieresSessions => 'Dernières sessions';
+
+  @override
+  String get gcBloqueSession => 'Session ouverte — clôturez-la d\'abord';
+
+  @override
+  String get gcBloqueSolde => 'Solde non nul — transférez-le';
+
+  @override
+  String get gcBloqueSysteme => 'Caisse principale';
+
+  @override
+  String get gcBloqueInactive => 'Déjà inactive';
+
+  @override
+  String get gcErreurSoldeNonNul => 'Le solde de la caisse doit être nul : transférez-le d\'abord.';
+
+  @override
+  String get gcToastDesactivees => 'Caisses désactivées';
+
+  @override
+  String get gcTrfTitre => 'Transfert entre caisses';
+
+  @override
+  String get gcTrfDescription => 'Ex. remise de la recette au coffre en fin de journée.';
+
+  @override
+  String gcTrfDisponible(String montant) {
+    return 'Solde disponible : $montant';
+  }
+
+  @override
+  String get gcTrfMemeCaisse => 'Choisissez une caisse différente';
+
+  @override
+  String gcTrfSuperieur(String caisse) {
+    return 'Supérieur au solde de $caisse';
+  }
+
+  @override
+  String get gcTrfMotifIndice => 'Ex. remise de recette';
+
+  @override
+  String gcTrfValider(String montant) {
+    return 'Transférer $montant';
+  }
+
+  @override
+  String get gcToastTransfert => 'Transfert enregistré';
+
+  @override
+  String get gcToastTransfertsAnnules => 'Transferts annulés';
+
+  @override
+  String get gcToastSoldesRetablis => 'Soldes rétablis';
+
+  @override
+  String get gcBloqueDejaAnnule => 'Déjà annulé';
+
+  @override
+  String get gcErreurDejaAnnule => 'Ce transfert est déjà annulé.';
+
+  @override
+  String get gcErreurTransfertInconnu => 'Transfert introuvable.';
+
+  @override
+  String get gcErreurPeriodeCloturee => 'Cette date appartient à une période clôturée.';
+
+  @override
+  String get gcZDescription => 'Rapport figé de la période : une fois créé, il ne peut plus être modifié ni supprimé.';
+
+  @override
+  String gcZPeriodeValeur(String debut) {
+    return '$debut → maintenant';
+  }
+
+  @override
+  String gcZDepuisDerniere(String code) {
+    return 'Depuis la dernière clôture ($code)';
+  }
+
+  @override
+  String get gcZPremiere => 'Première clôture de cette caisse';
+
+  @override
+  String get gcZTicketsAnnules => 'Tickets annulés';
+
+  @override
+  String get gcZTotalAnnule => 'Total annulé';
+
+  @override
+  String get gcZMoyen => 'Moyen de paiement';
+
+  @override
+  String get gcZPart => 'Part';
+
+  @override
+  String gcZChainee(String code) {
+    return 'Chaînée à $code · empreinte précédente';
+  }
+
+  @override
+  String get gcZGenese => 'Début de la chaîne de cette caisse · empreinte de genèse';
+
+  @override
+  String get gcZConfirmer => 'Je confirme les totaux : la clôture sera définitive et signée.';
+
+  @override
+  String gcZCreer(String code) {
+    return 'Créer la clôture $code';
+  }
+
+  @override
+  String gcZCreee(String code) {
+    return 'Clôture $code créée';
+  }
+
+  @override
+  String get gcZCreeeDetail => 'Rapport signé et chaîné';
+
+  @override
+  String get gcZAucunPaiement => 'Aucun paiement sur la période.';
+
+  @override
+  String gcZDetailTitre(String code) {
+    return 'Clôture $code';
+  }
+
+  @override
+  String gcZDetailDescription(String au, String caisse, String du, String par) {
+    return '$caisse · $du → $au · par $par';
+  }
+
+  @override
+  String get gcZDefinitive => 'Définitive';
+
+  @override
+  String get gcZEmpreinteValide => 'Empreinte valide';
+
+  @override
+  String get gcZEmpreinteAlteree => 'Empreinte altérée';
+
+  @override
+  String get gcZRepartition => 'Répartition des paiements';
+
+  @override
+  String get gcZIntegrite => 'Intégrité';
+
+  @override
+  String get gcZEmpreintePrecedente => 'Empreinte précédente';
+
+  @override
+  String get gcZTotaux => 'Totaux de la période';
+
+  @override
+  String get gcZSoldeFin => 'Solde en fin de période';
+
+  @override
+  String get gcFiscalTitre => 'Export pour contrôle fiscal';
+
+  @override
+  String get gcFiscalDescription =>
+      'Archive des clôtures Z et des tickets de la période, avec la chaîne d\'empreintes vérifiée.';
+
+  @override
+  String get gcFiscalZip => 'Archive complète';
+
+  @override
+  String get gcFiscalZipDesc => 'JSON de contrôle + CSV + empreintes (.zip)';
+
+  @override
+  String get gcFiscalJson => 'JSON de contrôle';
+
+  @override
+  String get gcFiscalJsonDesc => 'Chaîne vérifiable (§12.3)';
+
+  @override
+  String get gcFiscalPdf => 'Rapport PDF';
+
+  @override
+  String get gcFiscalPdfDesc => 'Clôtures Z uniquement';
+
+  @override
+  String get gcFiscalCsv => 'CSV';
+
+  @override
+  String get gcFiscalCsvDesc => 'Tickets ligne à ligne';
+
+  @override
+  String gcFiscalChaineOk(int n) {
+    return 'Chaîne d\'empreintes intègre · $n clôtures, aucune rupture';
+  }
+
+  @override
+  String gcFiscalChaineKo(String code) {
+    return 'Chaîne rompue à la clôture $code';
+  }
+
+  @override
+  String get gcFiscalGenere => 'Archive générée';
+
+  @override
+  String gcSesMvtTitre(String code) {
+    return 'Mouvements · $code';
+  }
+
+  @override
+  String gcSesMvtOuverte(String caisse, String ouverture) {
+    return '$caisse · ouverte $ouverture';
+  }
+
+  @override
+  String gcSesMvtCloturee(String caisse, String cloture, String ouverture) {
+    return '$caisse · ouverte $ouverture · clôturée $cloture';
+  }
+
+  @override
+  String get gcEntrees => 'Entrées';
+
+  @override
+  String get gcSorties => 'Sorties';
+
+  @override
+  String get gcSolde => 'Solde';
 }

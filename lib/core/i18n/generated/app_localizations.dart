@@ -3738,37 +3738,37 @@ abstract class AppLocalizations {
   /// No description provided for @mvtAnnulation.
   ///
   /// In fr, this message translates to:
-  /// **'Annulation'**
+  /// **'Annulation vente'**
   String get mvtAnnulation;
 
   /// No description provided for @mvtRemboursement.
   ///
   /// In fr, this message translates to:
-  /// **'Remboursement'**
+  /// **'Remboursement retour'**
   String get mvtRemboursement;
 
   /// No description provided for @mvtEncaissement.
   ///
   /// In fr, this message translates to:
-  /// **'Encaissement'**
+  /// **'Versement client'**
   String get mvtEncaissement;
 
   /// No description provided for @mvtDecaissement.
   ///
   /// In fr, this message translates to:
-  /// **'Décaissement'**
+  /// **'Versement fournisseur'**
   String get mvtDecaissement;
 
   /// No description provided for @mvtApport.
   ///
   /// In fr, this message translates to:
-  /// **'Apport'**
+  /// **'Entrée manuelle'**
   String get mvtApport;
 
   /// No description provided for @mvtDepense.
   ///
   /// In fr, this message translates to:
-  /// **'Dépense'**
+  /// **'Sortie manuelle'**
   String get mvtDepense;
 
   /// No description provided for @mvtTransfert.
@@ -3780,19 +3780,19 @@ abstract class AppLocalizations {
   /// No description provided for @mvtFondInitial.
   ///
   /// In fr, this message translates to:
-  /// **'Fond initial'**
+  /// **'Ouverture'**
   String get mvtFondInitial;
 
   /// No description provided for @mvtRetrait.
   ///
   /// In fr, this message translates to:
-  /// **'Retrait'**
+  /// **'Retrait de clôture'**
   String get mvtRetrait;
 
   /// No description provided for @mvtEcart.
   ///
   /// In fr, this message translates to:
-  /// **'Écart'**
+  /// **'Écart de clôture'**
   String get mvtEcart;
 
   /// No description provided for @sensEntree.
@@ -12380,6 +12380,744 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Erreur'**
   String get statutErreur;
+
+  /// No description provided for @gcDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Caisses, transferts, clôtures Z, mouvements et sessions'**
+  String get gcDescription;
+
+  /// No description provided for @gcOngletCaisses.
+  ///
+  /// In fr, this message translates to:
+  /// **'Caisses'**
+  String get gcOngletCaisses;
+
+  /// No description provided for @gcOngletTransferts.
+  ///
+  /// In fr, this message translates to:
+  /// **'Transferts'**
+  String get gcOngletTransferts;
+
+  /// No description provided for @gcOngletClotures.
+  ///
+  /// In fr, this message translates to:
+  /// **'Clôtures Z'**
+  String get gcOngletClotures;
+
+  /// No description provided for @gcOngletMouvements.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mouvements'**
+  String get gcOngletMouvements;
+
+  /// No description provided for @gcOngletSessions.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sessions'**
+  String get gcOngletSessions;
+
+  /// No description provided for @gcEntiteCaisse.
+  ///
+  /// In fr, this message translates to:
+  /// **'caisse'**
+  String get gcEntiteCaisse;
+
+  /// No description provided for @gcEntiteCaisses.
+  ///
+  /// In fr, this message translates to:
+  /// **'caisses'**
+  String get gcEntiteCaisses;
+
+  /// No description provided for @gcEntiteTransfert.
+  ///
+  /// In fr, this message translates to:
+  /// **'transfert'**
+  String get gcEntiteTransfert;
+
+  /// No description provided for @gcEntiteTransferts.
+  ///
+  /// In fr, this message translates to:
+  /// **'transferts'**
+  String get gcEntiteTransferts;
+
+  /// No description provided for @gcEntiteClotures.
+  ///
+  /// In fr, this message translates to:
+  /// **'clôtures'**
+  String get gcEntiteClotures;
+
+  /// No description provided for @gcEntiteMouvements.
+  ///
+  /// In fr, this message translates to:
+  /// **'mouvements'**
+  String get gcEntiteMouvements;
+
+  /// No description provided for @gcEntiteSessions.
+  ///
+  /// In fr, this message translates to:
+  /// **'sessions'**
+  String get gcEntiteSessions;
+
+  /// No description provided for @gcColCaisse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Caisse'**
+  String get gcColCaisse;
+
+  /// No description provided for @gcColSoldeInitial.
+  ///
+  /// In fr, this message translates to:
+  /// **'Solde initial'**
+  String get gcColSoldeInitial;
+
+  /// No description provided for @gcColSoldeActuel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Solde actuel'**
+  String get gcColSoldeActuel;
+
+  /// No description provided for @gcColSession.
+  ///
+  /// In fr, this message translates to:
+  /// **'Session'**
+  String get gcColSession;
+
+  /// No description provided for @gcColEtat.
+  ///
+  /// In fr, this message translates to:
+  /// **'État'**
+  String get gcColEtat;
+
+  /// No description provided for @gcColStatut.
+  ///
+  /// In fr, this message translates to:
+  /// **'Statut'**
+  String get gcColStatut;
+
+  /// No description provided for @gcColDepuis.
+  ///
+  /// In fr, this message translates to:
+  /// **'Depuis'**
+  String get gcColDepuis;
+
+  /// No description provided for @gcColVers.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vers'**
+  String get gcColVers;
+
+  /// No description provided for @gcColTickets.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tickets'**
+  String get gcColTickets;
+
+  /// No description provided for @gcColAnnules.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annulés'**
+  String get gcColAnnules;
+
+  /// No description provided for @gcColTotalAnnule.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annulé'**
+  String get gcColTotalAnnule;
+
+  /// No description provided for @gcColPar.
+  ///
+  /// In fr, this message translates to:
+  /// **'Par'**
+  String get gcColPar;
+
+  /// No description provided for @gcColEmpreinte.
+  ///
+  /// In fr, this message translates to:
+  /// **'Empreinte'**
+  String get gcColEmpreinte;
+
+  /// No description provided for @gcColCreeLe.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créé le'**
+  String get gcColCreeLe;
+
+  /// No description provided for @gcColReference.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réf.'**
+  String get gcColReference;
+
+  /// No description provided for @gcColEntree.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrée'**
+  String get gcColEntree;
+
+  /// No description provided for @gcColSortie.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sortie'**
+  String get gcColSortie;
+
+  /// No description provided for @gcColUtilisateur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Utilisateur'**
+  String get gcColUtilisateur;
+
+  /// No description provided for @gcColMode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mode'**
+  String get gcColMode;
+
+  /// No description provided for @gcColOuverture.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouverture'**
+  String get gcColOuverture;
+
+  /// No description provided for @gcColCloture.
+  ///
+  /// In fr, this message translates to:
+  /// **'Clôture'**
+  String get gcColCloture;
+
+  /// No description provided for @gcColFond.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fond'**
+  String get gcColFond;
+
+  /// No description provided for @gcColTheorique.
+  ///
+  /// In fr, this message translates to:
+  /// **'Théorique'**
+  String get gcColTheorique;
+
+  /// No description provided for @gcColReel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réel'**
+  String get gcColReel;
+
+  /// No description provided for @gcColEcart.
+  ///
+  /// In fr, this message translates to:
+  /// **'Écart'**
+  String get gcColEcart;
+
+  /// No description provided for @gcColOuvertePar.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouverte par'**
+  String get gcColOuvertePar;
+
+  /// No description provided for @gcToutesCaisses.
+  ///
+  /// In fr, this message translates to:
+  /// **'Toutes caisses'**
+  String get gcToutesCaisses;
+
+  /// No description provided for @gcRechercheCaisses.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher une caisse…'**
+  String get gcRechercheCaisses;
+
+  /// No description provided for @gcRechercheTransferts.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher un transfert…'**
+  String get gcRechercheTransferts;
+
+  /// No description provided for @gcRechercheClotures.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher une clôture…'**
+  String get gcRechercheClotures;
+
+  /// No description provided for @gcRechercheMouvements.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher un mouvement…'**
+  String get gcRechercheMouvements;
+
+  /// No description provided for @gcRechercheSessions.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher une session…'**
+  String get gcRechercheSessions;
+
+  /// No description provided for @gcAucuneSession.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune session.'**
+  String get gcAucuneSession;
+
+  /// No description provided for @gcExportFiscal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Export contrôle fiscal'**
+  String get gcExportFiscal;
+
+  /// No description provided for @gcNouvelleClotureZ.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouvelle clôture Z'**
+  String get gcNouvelleClotureZ;
+
+  /// No description provided for @gcMouvementManuel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mouvement manuel'**
+  String get gcMouvementManuel;
+
+  /// No description provided for @gcVoirMouvements.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir les mouvements'**
+  String get gcVoirMouvements;
+
+  /// No description provided for @gcCloturer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Clôturer'**
+  String get gcCloturer;
+
+  /// No description provided for @gcOuvrirSession.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouvrir une session'**
+  String get gcOuvrirSession;
+
+  /// No description provided for @gcFormDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une caisse (tiroir, coffre) a son propre solde et ses sessions.'**
+  String get gcFormDescription;
+
+  /// No description provided for @gcFormNomIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex. Caisse 3'**
+  String get gcFormNomIndice;
+
+  /// No description provided for @gcFormSoldeInitialAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Proposé comme fond de caisse à chaque ouverture'**
+  String get gcFormSoldeInitialAide;
+
+  /// No description provided for @gcCaisseEnregistree.
+  ///
+  /// In fr, this message translates to:
+  /// **'Caisse enregistrée'**
+  String get gcCaisseEnregistree;
+
+  /// No description provided for @gcSessions30j.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sessions (30 j)'**
+  String get gcSessions30j;
+
+  /// No description provided for @gcEcartCumule.
+  ///
+  /// In fr, this message translates to:
+  /// **'Écart cumulé'**
+  String get gcEcartCumule;
+
+  /// No description provided for @gcDernieresSessions.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dernières sessions'**
+  String get gcDernieresSessions;
+
+  /// No description provided for @gcBloqueSession.
+  ///
+  /// In fr, this message translates to:
+  /// **'Session ouverte — clôturez-la d\'abord'**
+  String get gcBloqueSession;
+
+  /// No description provided for @gcBloqueSolde.
+  ///
+  /// In fr, this message translates to:
+  /// **'Solde non nul — transférez-le'**
+  String get gcBloqueSolde;
+
+  /// No description provided for @gcBloqueSysteme.
+  ///
+  /// In fr, this message translates to:
+  /// **'Caisse principale'**
+  String get gcBloqueSysteme;
+
+  /// No description provided for @gcBloqueInactive.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déjà inactive'**
+  String get gcBloqueInactive;
+
+  /// No description provided for @gcErreurSoldeNonNul.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le solde de la caisse doit être nul : transférez-le d\'abord.'**
+  String get gcErreurSoldeNonNul;
+
+  /// No description provided for @gcToastDesactivees.
+  ///
+  /// In fr, this message translates to:
+  /// **'Caisses désactivées'**
+  String get gcToastDesactivees;
+
+  /// No description provided for @gcTrfTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Transfert entre caisses'**
+  String get gcTrfTitre;
+
+  /// No description provided for @gcTrfDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex. remise de la recette au coffre en fin de journée.'**
+  String get gcTrfDescription;
+
+  /// No description provided for @gcTrfDisponible.
+  ///
+  /// In fr, this message translates to:
+  /// **'Solde disponible : {montant}'**
+  String gcTrfDisponible(String montant);
+
+  /// No description provided for @gcTrfMemeCaisse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisissez une caisse différente'**
+  String get gcTrfMemeCaisse;
+
+  /// No description provided for @gcTrfSuperieur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supérieur au solde de {caisse}'**
+  String gcTrfSuperieur(String caisse);
+
+  /// No description provided for @gcTrfMotifIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex. remise de recette'**
+  String get gcTrfMotifIndice;
+
+  /// No description provided for @gcTrfValider.
+  ///
+  /// In fr, this message translates to:
+  /// **'Transférer {montant}'**
+  String gcTrfValider(String montant);
+
+  /// No description provided for @gcToastTransfert.
+  ///
+  /// In fr, this message translates to:
+  /// **'Transfert enregistré'**
+  String get gcToastTransfert;
+
+  /// No description provided for @gcToastTransfertsAnnules.
+  ///
+  /// In fr, this message translates to:
+  /// **'Transferts annulés'**
+  String get gcToastTransfertsAnnules;
+
+  /// No description provided for @gcToastSoldesRetablis.
+  ///
+  /// In fr, this message translates to:
+  /// **'Soldes rétablis'**
+  String get gcToastSoldesRetablis;
+
+  /// No description provided for @gcBloqueDejaAnnule.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déjà annulé'**
+  String get gcBloqueDejaAnnule;
+
+  /// No description provided for @gcErreurDejaAnnule.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce transfert est déjà annulé.'**
+  String get gcErreurDejaAnnule;
+
+  /// No description provided for @gcErreurTransfertInconnu.
+  ///
+  /// In fr, this message translates to:
+  /// **'Transfert introuvable.'**
+  String get gcErreurTransfertInconnu;
+
+  /// No description provided for @gcErreurPeriodeCloturee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette date appartient à une période clôturée.'**
+  String get gcErreurPeriodeCloturee;
+
+  /// No description provided for @gcZDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rapport figé de la période : une fois créé, il ne peut plus être modifié ni supprimé.'**
+  String get gcZDescription;
+
+  /// No description provided for @gcZPeriodeValeur.
+  ///
+  /// In fr, this message translates to:
+  /// **'{debut} → maintenant'**
+  String gcZPeriodeValeur(String debut);
+
+  /// No description provided for @gcZDepuisDerniere.
+  ///
+  /// In fr, this message translates to:
+  /// **'Depuis la dernière clôture ({code})'**
+  String gcZDepuisDerniere(String code);
+
+  /// No description provided for @gcZPremiere.
+  ///
+  /// In fr, this message translates to:
+  /// **'Première clôture de cette caisse'**
+  String get gcZPremiere;
+
+  /// No description provided for @gcZTicketsAnnules.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tickets annulés'**
+  String get gcZTicketsAnnules;
+
+  /// No description provided for @gcZTotalAnnule.
+  ///
+  /// In fr, this message translates to:
+  /// **'Total annulé'**
+  String get gcZTotalAnnule;
+
+  /// No description provided for @gcZMoyen.
+  ///
+  /// In fr, this message translates to:
+  /// **'Moyen de paiement'**
+  String get gcZMoyen;
+
+  /// No description provided for @gcZPart.
+  ///
+  /// In fr, this message translates to:
+  /// **'Part'**
+  String get gcZPart;
+
+  /// No description provided for @gcZChainee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chaînée à {code} · empreinte précédente'**
+  String gcZChainee(String code);
+
+  /// No description provided for @gcZGenese.
+  ///
+  /// In fr, this message translates to:
+  /// **'Début de la chaîne de cette caisse · empreinte de genèse'**
+  String get gcZGenese;
+
+  /// No description provided for @gcZConfirmer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Je confirme les totaux : la clôture sera définitive et signée.'**
+  String get gcZConfirmer;
+
+  /// No description provided for @gcZCreer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créer la clôture {code}'**
+  String gcZCreer(String code);
+
+  /// No description provided for @gcZCreee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Clôture {code} créée'**
+  String gcZCreee(String code);
+
+  /// No description provided for @gcZCreeeDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rapport signé et chaîné'**
+  String get gcZCreeeDetail;
+
+  /// No description provided for @gcZAucunPaiement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun paiement sur la période.'**
+  String get gcZAucunPaiement;
+
+  /// No description provided for @gcZDetailTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Clôture {code}'**
+  String gcZDetailTitre(String code);
+
+  /// No description provided for @gcZDetailDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'{caisse} · {du} → {au} · par {par}'**
+  String gcZDetailDescription(String au, String caisse, String du, String par);
+
+  /// No description provided for @gcZDefinitive.
+  ///
+  /// In fr, this message translates to:
+  /// **'Définitive'**
+  String get gcZDefinitive;
+
+  /// No description provided for @gcZEmpreinteValide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Empreinte valide'**
+  String get gcZEmpreinteValide;
+
+  /// No description provided for @gcZEmpreinteAlteree.
+  ///
+  /// In fr, this message translates to:
+  /// **'Empreinte altérée'**
+  String get gcZEmpreinteAlteree;
+
+  /// No description provided for @gcZRepartition.
+  ///
+  /// In fr, this message translates to:
+  /// **'Répartition des paiements'**
+  String get gcZRepartition;
+
+  /// No description provided for @gcZIntegrite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Intégrité'**
+  String get gcZIntegrite;
+
+  /// No description provided for @gcZEmpreintePrecedente.
+  ///
+  /// In fr, this message translates to:
+  /// **'Empreinte précédente'**
+  String get gcZEmpreintePrecedente;
+
+  /// No description provided for @gcZTotaux.
+  ///
+  /// In fr, this message translates to:
+  /// **'Totaux de la période'**
+  String get gcZTotaux;
+
+  /// No description provided for @gcZSoldeFin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Solde en fin de période'**
+  String get gcZSoldeFin;
+
+  /// No description provided for @gcFiscalTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Export pour contrôle fiscal'**
+  String get gcFiscalTitre;
+
+  /// No description provided for @gcFiscalDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Archive des clôtures Z et des tickets de la période, avec la chaîne d\'empreintes vérifiée.'**
+  String get gcFiscalDescription;
+
+  /// No description provided for @gcFiscalZip.
+  ///
+  /// In fr, this message translates to:
+  /// **'Archive complète'**
+  String get gcFiscalZip;
+
+  /// No description provided for @gcFiscalZipDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'JSON de contrôle + CSV + empreintes (.zip)'**
+  String get gcFiscalZipDesc;
+
+  /// No description provided for @gcFiscalJson.
+  ///
+  /// In fr, this message translates to:
+  /// **'JSON de contrôle'**
+  String get gcFiscalJson;
+
+  /// No description provided for @gcFiscalJsonDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chaîne vérifiable (§12.3)'**
+  String get gcFiscalJsonDesc;
+
+  /// No description provided for @gcFiscalPdf.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rapport PDF'**
+  String get gcFiscalPdf;
+
+  /// No description provided for @gcFiscalPdfDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Clôtures Z uniquement'**
+  String get gcFiscalPdfDesc;
+
+  /// No description provided for @gcFiscalCsv.
+  ///
+  /// In fr, this message translates to:
+  /// **'CSV'**
+  String get gcFiscalCsv;
+
+  /// No description provided for @gcFiscalCsvDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tickets ligne à ligne'**
+  String get gcFiscalCsvDesc;
+
+  /// No description provided for @gcFiscalChaineOk.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chaîne d\'empreintes intègre · {n} clôtures, aucune rupture'**
+  String gcFiscalChaineOk(int n);
+
+  /// No description provided for @gcFiscalChaineKo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chaîne rompue à la clôture {code}'**
+  String gcFiscalChaineKo(String code);
+
+  /// No description provided for @gcFiscalGenere.
+  ///
+  /// In fr, this message translates to:
+  /// **'Archive générée'**
+  String get gcFiscalGenere;
+
+  /// No description provided for @gcSesMvtTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mouvements · {code}'**
+  String gcSesMvtTitre(String code);
+
+  /// No description provided for @gcSesMvtOuverte.
+  ///
+  /// In fr, this message translates to:
+  /// **'{caisse} · ouverte {ouverture}'**
+  String gcSesMvtOuverte(String caisse, String ouverture);
+
+  /// No description provided for @gcSesMvtCloturee.
+  ///
+  /// In fr, this message translates to:
+  /// **'{caisse} · ouverte {ouverture} · clôturée {cloture}'**
+  String gcSesMvtCloturee(String caisse, String cloture, String ouverture);
+
+  /// No description provided for @gcEntrees.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrées'**
+  String get gcEntrees;
+
+  /// No description provided for @gcSorties.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sorties'**
+  String get gcSorties;
+
+  /// No description provided for @gcSolde.
+  ///
+  /// In fr, this message translates to:
+  /// **'Solde'**
+  String get gcSolde;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -70,12 +70,19 @@ class SessionCaisseService {
     });
   }
 
-  /// Ferme la session ouverte de l'utilisateur. Écart = compté − (fond + espèces encaissées).
-  Future<SessionCaisse> fermer({required double montantCompte}) async {
+  /// Historique des sessions, plus récentes d'abord.
+  Future<List<SessionCaisse>> sessions() => _repo.sessions();
+
+  /// Ferme la session ouverte de l'utilisateur, ou la session [sessionCode] (Gestion caisse).
+  /// Écart = compté − (fond + espèces encaissées − monnaie rendue).
+  Future<SessionCaisse> fermer({required double montantCompte, String? sessionCode}) async {
     if (montantCompte < 0) throw const SessionException(ErreurSession.montantInvalide);
     return db.transaction((txn) async {
       final repo = VenteRepository(txn);
-      final s = await repo.sessionOuverte(utilisateurCode: utilisateurCode);
+      final trouvee = sessionCode == null
+          ? await repo.sessionOuverte(utilisateurCode: utilisateurCode)
+          : await repo.session(sessionCode);
+      final s = trouvee != null && trouvee.statut == StatutsSession.ouverte ? trouvee : null;
       if (s == null) throw const SessionException(ErreurSession.aucuneOuverte);
       final especes = (await repo.encaissementsSession(s.code))['Espèces'] ?? 0;
       final attendu = s.fondInitial + especes - await repo.monnaieRendueSession(s.code);

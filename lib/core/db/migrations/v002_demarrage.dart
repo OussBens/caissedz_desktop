@@ -141,7 +141,7 @@ class MigrationV002Demarrage extends Migration {
       'systeme': 1,
     });
     await txn.insert('caisse', {
-      'code': CodeGenerator.systeme(CodeGenerator.caisse),
+      'code': CodeGenerator.systeme(CodeGenerator.caisseSysteme),
       'nom': 'Caisse principale',
       'type': 'Physique',
       'magasin_code': CodeGenerator.systeme(CodeGenerator.magasin),
