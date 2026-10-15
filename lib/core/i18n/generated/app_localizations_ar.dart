@@ -2198,50 +2198,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get rapportCreancesDettes => 'الديون والمستحقات';
 
   @override
-  String get zakatTitre => 'الزكاة';
-
-  @override
-  String get zakatIntro => 'زكاة عروض التجارة: 2.5٪ من الوعاء إذا بلغ النصاب (85 غ ذهب).';
-
-  @override
-  String zakatPrixOr(String devise) {
-    return 'سعر غرام الذهب ($devise)';
-  }
-
-  @override
-  String get zakatEnregistrerPrix => 'حفظ السعر';
-
-  @override
-  String get zakatStock => 'المخزون (سعر الشراء)';
-
-  @override
-  String get zakatCaisses => 'الصناديق';
-
-  @override
-  String get zakatCreances => 'ديون الزبائن';
-
-  @override
-  String get zakatDettes => 'مستحقات الموردين';
-
-  @override
-  String get zakatAssiette => 'الوعاء';
-
-  @override
-  String get zakatNissab => 'النصاب (85 غ)';
-
-  @override
-  String get zakatMontant => 'الزكاة الواجبة (2.5٪)';
-
-  @override
-  String get zakatAssujetti => 'واجبة: الوعاء بلغ النصاب.';
-
-  @override
-  String get zakatNonAssujetti => 'غير واجبة: الوعاء أقل من النصاب.';
-
-  @override
-  String get zakatPrixManquant => 'أدخل سعر الذهب لحساب النصاب.';
-
-  @override
   String get historiqueTitre => 'السجل';
 
   @override
@@ -7259,4 +7215,238 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get usrAucunRole => 'لا توجد أدوار.';
+
+  @override
+  String get zkDescription => 'حساب سنوي على المخزون والسيولة والديون المستحقة';
+
+  @override
+  String get zkEntite => 'حسابات';
+
+  @override
+  String get zkEntiteUn => 'حساب';
+
+  @override
+  String zkKpiCapital(int annee) {
+    return 'رأس المال $annee (مؤقت)';
+  }
+
+  @override
+  String get zkKpiNissab => 'النصاب الحالي';
+
+  @override
+  String zkKpiEstimee(int annee) {
+    return 'الزكاة المقدرة $annee';
+  }
+
+  @override
+  String get zkKpiEcheance => 'الاستحقاق';
+
+  @override
+  String get zkJours => 'يوم';
+
+  @override
+  String get zkColCode => 'الرمز';
+
+  @override
+  String get zkColAnnee => 'السنة';
+
+  @override
+  String get zkColCapital => 'رأس المال';
+
+  @override
+  String get zkColNissab => 'النصاب';
+
+  @override
+  String get zkColObligatoire => 'واجبة';
+
+  @override
+  String get zkOui => 'نعم';
+
+  @override
+  String get zkNon => 'لا';
+
+  @override
+  String get zkColZakat => 'الزكاة';
+
+  @override
+  String get zkColDue => 'تستحق في';
+
+  @override
+  String get zkColPayee => 'دفعت في';
+
+  @override
+  String get zkColStatut => 'الحالة';
+
+  @override
+  String get zkColStock => 'المخزون';
+
+  @override
+  String get zkColLiquidites => 'السيولة';
+
+  @override
+  String get zkColCreances => 'الديون المستحقة';
+
+  @override
+  String get zkColDettes => 'الديون';
+
+  @override
+  String get zkColTaux => 'النسبة';
+
+  @override
+  String get zkColHawl => 'بداية الحول';
+
+  @override
+  String get zkColObservation => 'ملاحظة';
+
+  @override
+  String get zkColCreePar => 'أنشأه';
+
+  @override
+  String get zkExoneree => 'معفاة';
+
+  @override
+  String get zkAnnulee => 'ملغاة';
+
+  @override
+  String get zkMarquerPayee => 'تعليم كمدفوعة';
+
+  @override
+  String get zkAnnuler => 'إلغاء';
+
+  @override
+  String get zkNouveau => 'حساب جديد';
+
+  @override
+  String get zkNouveauTitre => 'حساب زكاة جديد';
+
+  @override
+  String get zkModifierTitre => 'تعديل الزكاة';
+
+  @override
+  String get zkFormDescription => 'المبالغ معبأة مسبقًا من المخزون والصناديق والديون؛ عدّلها عند الحاجة.';
+
+  @override
+  String get zkSectionPeriode => 'الفترة (الحول)';
+
+  @override
+  String get zkSectionPatrimoine => 'الذمة المالية';
+
+  @override
+  String get zkDebutHawl => 'بداية الحول';
+
+  @override
+  String get zkDueLe => 'تستحق الزكاة في';
+
+  @override
+  String get zkDueIndice => 'البداية + 354 يومًا (سنة قمرية)';
+
+  @override
+  String get zkValeurStock => 'قيمة المخزون';
+
+  @override
+  String get zkStockIndice => 'بسعر الشراء';
+
+  @override
+  String get zkLiquiditesIndice => 'الصناديق + البنك';
+
+  @override
+  String get zkCreancesIndice => 'ديون العملاء القابلة للتحصيل';
+
+  @override
+  String get zkDettesCourt => 'الديون قصيرة الأجل';
+
+  @override
+  String get zkDettesIndice => 'ديون الموردين';
+
+  @override
+  String get zkNissabIndice => '85 غ ذهب × سعر اليوم';
+
+  @override
+  String zkReprendre(String libelle) {
+    return 'استرجاع: $libelle';
+  }
+
+  @override
+  String get zkRepValeurStock => 'قيمة المخزون';
+
+  @override
+  String get zkRepSoldes => 'أرصدة الصناديق';
+
+  @override
+  String get zkRepCreances => 'ديون العملاء';
+
+  @override
+  String get zkRepDettes => 'ديون الموردين';
+
+  @override
+  String get zkCapitalSoumis => 'رأس المال الخاضع';
+
+  @override
+  String get zkAuDessus => 'فوق النصاب';
+
+  @override
+  String get zkEnDessous => 'دون النصاب';
+
+  @override
+  String get zkObligatoire => 'الزكاة واجبة';
+
+  @override
+  String get zkMontant => 'مبلغ الزكاة';
+
+  @override
+  String zkFormule(String taux) {
+    return 'رأس المال = المخزون + السيولة + الديون المستحقة − الديون. المبلغ = رأس المال × $taux % إذا بلغ النصاب.';
+  }
+
+  @override
+  String get zkEnregistre => 'تم حفظ الحساب';
+
+  @override
+  String get zkPayeeToast => 'تم تعليم الزكاة كمدفوعة';
+
+  @override
+  String get zkAnnules => 'تم إلغاء الحسابات';
+
+  @override
+  String zkDetailTitre(int annee) {
+    return 'زكاة $annee';
+  }
+
+  @override
+  String zkDetailDescription(String code, String debut, String fin) {
+    return '$code · الحول $debut ← $fin';
+  }
+
+  @override
+  String get zkCalcul => 'الحساب';
+
+  @override
+  String get zkPoste => 'البند';
+
+  @override
+  String get zkMontantCol => 'المبلغ';
+
+  @override
+  String get zkAudit => 'التدقيق';
+
+  @override
+  String get zkMotif => 'السبب';
+
+  @override
+  String get zkBloqueePayee => 'مدفوعة مسبقًا';
+
+  @override
+  String get zkBloqueeAnnulee => 'ملغاة مسبقًا';
+
+  @override
+  String get zkErrValeur => 'قيم غير صالحة (مبالغ موجبة، الاستحقاق بعد بداية الحول)';
+
+  @override
+  String get zkErrInconnue => 'الحساب غير موجود';
+
+  @override
+  String get zkErrMotif => 'السبب إلزامي';
+
+  @override
+  String get zkAucun => 'لا يوجد حساب زكاة.';
 }

@@ -16,6 +16,7 @@ import 'v014_stock_ds.dart';
 import 'v015_entrees.dart';
 import 'v016_gestion_caisse.dart';
 import 'v017_utilisateurs_roles.dart';
+import 'v018_zakat.dart';
 
 export 'migration.dart';
 
@@ -38,4 +39,5 @@ const List<Migration> toutesLesMigrations = [
   MigrationV015Entrees(),
   MigrationV016GestionCaisse(),
   MigrationV017UtilisateursRoles(),
+  MigrationV018Zakat(),
 ];

@@ -13,6 +13,7 @@ import 'package:caissedz_desktop/domain/models/parametres_vente.dart';
 import 'package:caissedz_desktop/domain/models/produit.dart';
 import 'package:caissedz_desktop/domain/models/tiers.dart';
 import 'package:caissedz_desktop/features/rapports/rapports_providers.dart';
+import 'package:caissedz_desktop/features/zakat/zakat_dialogs.dart';
 import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -67,6 +68,8 @@ Finder _champ(String libelle, {bool premier = false}) => find
     )
     .first;
 
+Finder _dansCle(String cle) => find.descendant(of: find.byKey(ValueKey(cle)), matching: find.byType(TextField)).first;
+
 void main() {
   testWidgets('tableau de bord : 6 KPI, 5 graphiques, dernières ventes, navigation des KPI', (tester) async {
     final c = await pumpApp(tester, routeInitiale: '/tableau-de-bord', taille: const Size(1500, 1000));
@@ -117,17 +120,17 @@ void main() {
     expect(find.text('25,0 %'), findsWidgets); // (300 − 240) / 240
   });
 
-  testWidgets('zakat : cours de l’or, nissab et assujettissement', (tester) async {
+  testWidgets('zakat : patrimoine repris du stock, des caisses et des créances', (tester) async {
     final c = await pumpApp(tester, routeInitiale: '/zakat', taille: const Size(1400, 900));
     await _jeu(c);
+    c.read(zakatVersionProvider.notifier).incrementer();
     await tester.pumpAndSettle();
-    expect(find.text('Renseignez le cours de l\'or pour calculer le nissab.'), findsOneWidget);
-    await tester.enterText(_champ('Prix du gramme d\'or (DA)'), '10');
-    await tester.pump();
-    await clic(tester, find.text('Enregistrer le cours'));
-    // Assiette = stock 5 × 80 + caisse 200 + créances 300 = 900 ≥ nissab 850.
-    expect(find.text('Assujetti : l\'assiette atteint le nissab.'), findsOneWidget);
-    expect(find.textContaining('22,50'), findsOneWidget);
+    // Capital = stock 5 × 80 + caisse 200 + créances 300 = 900.
+    expect(find.textContaining('900,00'), findsWidgets);
+    await clic(tester, find.byKey(const ValueKey('zakat_nouveau')));
+    expect(tester.widget<TextField>(_dansCle('zakat_stock')).controller!.text, '400,00');
+    expect(tester.widget<TextField>(_dansCle('zakat_liquidites')).controller!.text, '200,00');
+    expect(tester.widget<TextField>(_dansCle('zakat_creances')).controller!.text, '300,00');
   });
 
   testWidgets('historique : journal filtrable', (tester) async {

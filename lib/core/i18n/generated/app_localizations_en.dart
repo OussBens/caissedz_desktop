@@ -2200,50 +2200,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rapportCreancesDettes => 'Receivables and payables';
 
   @override
-  String get zakatTitre => 'Zakat';
-
-  @override
-  String get zakatIntro => 'Zakat on trade goods: 2.5% of the base when it reaches the nisab (85 g of gold).';
-
-  @override
-  String zakatPrixOr(String devise) {
-    return 'Gold price per gram ($devise)';
-  }
-
-  @override
-  String get zakatEnregistrerPrix => 'Save price';
-
-  @override
-  String get zakatStock => 'Stock (purchase price)';
-
-  @override
-  String get zakatCaisses => 'Registers';
-
-  @override
-  String get zakatCreances => 'Customer receivables';
-
-  @override
-  String get zakatDettes => 'Supplier payables';
-
-  @override
-  String get zakatAssiette => 'Base';
-
-  @override
-  String get zakatNissab => 'Nisab (85 g)';
-
-  @override
-  String get zakatMontant => 'Zakat due (2.5%)';
-
-  @override
-  String get zakatAssujetti => 'Due: the base reaches the nisab.';
-
-  @override
-  String get zakatNonAssujetti => 'Not due: the base is below the nisab.';
-
-  @override
-  String get zakatPrixManquant => 'Enter the gold price to compute the nisab.';
-
-  @override
   String get historiqueTitre => 'History';
 
   @override
@@ -7269,4 +7225,238 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get usrAucunRole => 'No roles.';
+
+  @override
+  String get zkDescription => 'Yearly calculation on stock, cash and receivables';
+
+  @override
+  String get zkEntite => 'calculations';
+
+  @override
+  String get zkEntiteUn => 'calculation';
+
+  @override
+  String zkKpiCapital(int annee) {
+    return 'Capital $annee (provisional)';
+  }
+
+  @override
+  String get zkKpiNissab => 'Current nissab';
+
+  @override
+  String zkKpiEstimee(int annee) {
+    return 'Estimated zakat $annee';
+  }
+
+  @override
+  String get zkKpiEcheance => 'Due in';
+
+  @override
+  String get zkJours => 'days';
+
+  @override
+  String get zkColCode => 'Code';
+
+  @override
+  String get zkColAnnee => 'Year';
+
+  @override
+  String get zkColCapital => 'Capital';
+
+  @override
+  String get zkColNissab => 'Nissab';
+
+  @override
+  String get zkColObligatoire => 'Due';
+
+  @override
+  String get zkOui => 'Yes';
+
+  @override
+  String get zkNon => 'No';
+
+  @override
+  String get zkColZakat => 'Zakat';
+
+  @override
+  String get zkColDue => 'Due on';
+
+  @override
+  String get zkColPayee => 'Paid on';
+
+  @override
+  String get zkColStatut => 'Status';
+
+  @override
+  String get zkColStock => 'Stock';
+
+  @override
+  String get zkColLiquidites => 'Cash';
+
+  @override
+  String get zkColCreances => 'Receivables';
+
+  @override
+  String get zkColDettes => 'Debts';
+
+  @override
+  String get zkColTaux => 'Rate';
+
+  @override
+  String get zkColHawl => 'Hawl start';
+
+  @override
+  String get zkColObservation => 'Note';
+
+  @override
+  String get zkColCreePar => 'Created by';
+
+  @override
+  String get zkExoneree => 'Exempt';
+
+  @override
+  String get zkAnnulee => 'Cancelled';
+
+  @override
+  String get zkMarquerPayee => 'Mark as paid';
+
+  @override
+  String get zkAnnuler => 'Cancel';
+
+  @override
+  String get zkNouveau => 'New calculation';
+
+  @override
+  String get zkNouveauTitre => 'New zakat calculation';
+
+  @override
+  String get zkModifierTitre => 'Edit zakat';
+
+  @override
+  String get zkFormDescription => 'Amounts are prefilled from stock, tills and credits; adjust them if needed.';
+
+  @override
+  String get zkSectionPeriode => 'Period (hawl)';
+
+  @override
+  String get zkSectionPatrimoine => 'Assets';
+
+  @override
+  String get zkDebutHawl => 'Hawl start';
+
+  @override
+  String get zkDueLe => 'Zakat due on';
+
+  @override
+  String get zkDueIndice => 'Start + 354 days (lunar year)';
+
+  @override
+  String get zkValeurStock => 'Stock value';
+
+  @override
+  String get zkStockIndice => 'At purchase price';
+
+  @override
+  String get zkLiquiditesIndice => 'Tills + bank';
+
+  @override
+  String get zkCreancesIndice => 'Recoverable customer credit';
+
+  @override
+  String get zkDettesCourt => 'Short-term debts';
+
+  @override
+  String get zkDettesIndice => 'Supplier credit';
+
+  @override
+  String get zkNissabIndice => '85 g of gold × today\'s price';
+
+  @override
+  String zkReprendre(String libelle) {
+    return 'Reload: $libelle';
+  }
+
+  @override
+  String get zkRepValeurStock => 'stock value';
+
+  @override
+  String get zkRepSoldes => 'till balances';
+
+  @override
+  String get zkRepCreances => 'customer credit';
+
+  @override
+  String get zkRepDettes => 'supplier credit';
+
+  @override
+  String get zkCapitalSoumis => 'Taxable capital';
+
+  @override
+  String get zkAuDessus => 'Above nissab';
+
+  @override
+  String get zkEnDessous => 'Below nissab';
+
+  @override
+  String get zkObligatoire => 'Zakat due';
+
+  @override
+  String get zkMontant => 'Zakat amount';
+
+  @override
+  String zkFormule(String taux) {
+    return 'Capital = stock + cash + receivables − debts. Amount = capital × $taux % if capital ≥ nissab.';
+  }
+
+  @override
+  String get zkEnregistre => 'Calculation saved';
+
+  @override
+  String get zkPayeeToast => 'Zakat marked as paid';
+
+  @override
+  String get zkAnnules => 'Calculations cancelled';
+
+  @override
+  String zkDetailTitre(int annee) {
+    return 'Zakat $annee';
+  }
+
+  @override
+  String zkDetailDescription(String code, String debut, String fin) {
+    return '$code · hawl $debut → $fin';
+  }
+
+  @override
+  String get zkCalcul => 'Calculation';
+
+  @override
+  String get zkPoste => 'Item';
+
+  @override
+  String get zkMontantCol => 'Amount';
+
+  @override
+  String get zkAudit => 'Audit';
+
+  @override
+  String get zkMotif => 'Reason';
+
+  @override
+  String get zkBloqueePayee => 'Already paid';
+
+  @override
+  String get zkBloqueeAnnulee => 'Already cancelled';
+
+  @override
+  String get zkErrValeur => 'Invalid values (positive amounts, due date after hawl start)';
+
+  @override
+  String get zkErrInconnue => 'Calculation not found';
+
+  @override
+  String get zkErrMotif => 'Reason required';
+
+  @override
+  String get zkAucun => 'No zakat calculation.';
 }

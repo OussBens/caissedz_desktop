@@ -6,6 +6,7 @@ import '../data/historique_repository.dart';
 import '../data/parametre_repository.dart';
 import '../domain/models/boutique.dart';
 import '../domain/models/parametres_vente.dart';
+import '../domain/zakat.dart';
 
 enum ErreurParametres { nomBoutiqueVide, valeurInvalide, typeImprimanteInvalide, adresseImprimanteRequise }
 
@@ -54,6 +55,13 @@ class ParametresServeur {
   Map<String, String> versCles() => {cleUrl: url, cleCle: cle, cleMantouj: urlMantouj};
 }
 
+/// Nissab et taux de la zakat (Paramètres › Système).
+class ParametresZakat {
+  const ParametresZakat({this.nissab = 0, this.tauxPct = CalculZakat.tauxDefautPct});
+  final double nissab;
+  final double tauxPct;
+}
+
 /// Paramètres (lot 8) : boutique, vente, impression, serveurs, zakat. Chaque écriture = UNE transaction + historique.
 ///
 /// ⚠️ PROVISOIRE : la garde de stock est toujours active (non paramétrable, §8) ; liste des clés déduite de la commande.
@@ -63,7 +71,8 @@ class ParametresService {
   final Database db;
   final String utilisateurCode;
 
-  static const String clePrixGrammeOr = 'zakat_prix_gramme_or';
+  static const String cleZakatNissab = 'zakat_nissab';
+  static const String cleZakatTaux = 'zakat_taux';
 
   Future<Boutique?> lireBoutique() => BoutiqueRepository(db).lire();
 
@@ -137,13 +146,22 @@ class ParametresService {
     });
   }
 
-  Future<double> lirePrixGrammeOr() async =>
-      double.tryParse(await ParametreRepository(db).lire(clePrixGrammeOr) ?? '') ?? 0;
+  /// Paramètres zakat (`zakatParam`, §9.15) : nissab (DA) et taux (%), 2,5 % par défaut.
+  Future<ParametresZakat> lireZakat() async {
+    final v = await ParametreRepository(db).lirePlusieurs([cleZakatNissab, cleZakatTaux]);
+    return ParametresZakat(
+      nissab: double.tryParse(v[cleZakatNissab] ?? '') ?? 0,
+      tauxPct: double.tryParse(v[cleZakatTaux] ?? '') ?? CalculZakat.tauxDefautPct,
+    );
+  }
 
-  Future<void> enregistrerPrixGrammeOr(double prix) async {
-    if (prix < 0) throw const ParametresException(ErreurParametres.valeurInvalide);
+  Future<void> enregistrerZakat(ParametresZakat p) async {
+    if (p.nissab < 0 || p.tauxPct <= 0 || p.tauxPct > 100) {
+      throw const ParametresException(ErreurParametres.valeurInvalide);
+    }
     await db.transaction((txn) async {
-      await ParametreRepository(txn).ecrire(clePrixGrammeOr, prix.toString());
+      await ParametreRepository(txn)
+          .ecrirePlusieurs({cleZakatNissab: p.nissab.toString(), cleZakatTaux: p.tauxPct.toString()});
       await _journal(txn, 'zakat');
     });
   }

@@ -36,7 +36,7 @@ void main() {
 
     testWidgets('admin Avancé : Zakat accessible', (tester) async {
       await pumpApp(tester, etat: EtatApp.connecteeAdmin, routeInitiale: '/zakat');
-      expect(find.textContaining('Zakat sur les biens commerciaux'), findsOneWidget);
+      expect(find.textContaining('Calcul annuel sur le stock, les liquidités et les créances'), findsOneWidget);
       expect(find.text('Disponible avec le palier Avancé'), findsNothing);
     });
   });

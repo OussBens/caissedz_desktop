@@ -537,6 +537,18 @@ Référence : `docs/design/CaisseDZ-DS-v2.2/CaisseDZ-DS-v2.2.html`, `bundle-v2.2
     temporaire affiché à l'administrateur, sans obligation de le changer à la connexion ; `userparam` /
     `caisseparam` ne sont pas créés (préférences et poste gérés ailleurs) ; marges de Situation non soumises à
     `voirMarge` (elles suivent `voirPrixAchat`).
+  - ✅ Zakat (`ZakatScreen` + `ZakatFormDialog` / `ZakatDetailDialog`, §9.15) : migration v18 — table `zakat`
+    (codes `ZKT`, année, début du hawl, échéance, stock, liquidités, créances, dettes, nissab, taux, statut
+    Brouillon / Non payé / Payée, date de paiement, observation, annulation avec motif, audit) ; l'ancien
+    paramètre « prix du gramme d'or » devient `zakat_nissab` (prix × 85 g) et le taux `zakat_taux` (2,5 % par
+    défaut). `ZakatService` (créer / modifier / marquer payée / annuler, une transaction, journal Historique) ;
+    capital = stock + liquidités + créances − dettes, obligatoire si capital ≥ nissab > 0, montant = capital ×
+    taux, échéance = début + 354 jours. Écran : 4 KPI (capital provisoire de l'année, nissab, zakat estimée,
+    jours avant la prochaine échéance), tableau avec totaux et colonnes masquables, formulaire 860 px pré-rempli
+    depuis le patrimoine courant (bouton de reprise par poste) avec résumé capital / obligation / montant, détail
+    900 px (calcul et audit). « Exonérée » et « Annulée » sont des statuts d'affichage dérivés.
+    Écarts Zakat : nissab et taux ne sont pas encore éditables dans Paramètres (lot Paramètres de la phase D) ;
+    le taux n'est pas modifiable par calcul (il suit le paramètre au moment de la création).
   - Écarts : colonnes d'audit « modifié le / par » absentes du schéma (seuls créé par et annulation) ;
     tendances des KPI calculées seulement pour les ventes ; ventes antérieures à la v10 valorisées au prix
     d'achat actuel ; `mouvement_stock` sans valorisation (prix_achat / prix_vente de §7.3).

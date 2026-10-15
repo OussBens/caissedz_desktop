@@ -64,8 +64,13 @@ void main() {
       );
       await s.enregistrerServeur(const ParametresServeur(url: 'https://api.caissedz.dz/', cle: 'k', urlMantouj: ''));
       expect((await s.lireServeur()).url, 'https://api.caissedz.dz');
-      await s.enregistrerPrixGrammeOr(12500);
-      expect(await s.lirePrixGrammeOr(), 12500);
+      expect((await s.lireZakat()).tauxPct, 2.5);
+      await s.enregistrerZakat(const ParametresZakat(nissab: 1062500, tauxPct: 2.5));
+      expect((await s.lireZakat()).nissab, 1062500);
+      await expectLater(
+        s.enregistrerZakat(const ParametresZakat(nissab: 1, tauxPct: 0)),
+        throwsA(isA<ParametresException>()),
+      );
       final h = await base.db.query('historique', where: 'entite = ?', whereArgs: ['parametre']);
       expect(h.length, 5);
     });

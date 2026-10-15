@@ -4275,90 +4275,6 @@ abstract class AppLocalizations {
   /// **'Créances et dettes'**
   String get rapportCreancesDettes;
 
-  /// No description provided for @zakatTitre.
-  ///
-  /// In fr, this message translates to:
-  /// **'Zakat'**
-  String get zakatTitre;
-
-  /// No description provided for @zakatIntro.
-  ///
-  /// In fr, this message translates to:
-  /// **'Zakat sur les biens commerciaux : 2,5 % de l\'assiette si elle atteint le nissab (85 g d\'or).'**
-  String get zakatIntro;
-
-  /// No description provided for @zakatPrixOr.
-  ///
-  /// In fr, this message translates to:
-  /// **'Prix du gramme d\'or ({devise})'**
-  String zakatPrixOr(String devise);
-
-  /// No description provided for @zakatEnregistrerPrix.
-  ///
-  /// In fr, this message translates to:
-  /// **'Enregistrer le cours'**
-  String get zakatEnregistrerPrix;
-
-  /// No description provided for @zakatStock.
-  ///
-  /// In fr, this message translates to:
-  /// **'Stock (prix d\'achat)'**
-  String get zakatStock;
-
-  /// No description provided for @zakatCaisses.
-  ///
-  /// In fr, this message translates to:
-  /// **'Caisses'**
-  String get zakatCaisses;
-
-  /// No description provided for @zakatCreances.
-  ///
-  /// In fr, this message translates to:
-  /// **'Créances clients'**
-  String get zakatCreances;
-
-  /// No description provided for @zakatDettes.
-  ///
-  /// In fr, this message translates to:
-  /// **'Dettes fournisseurs'**
-  String get zakatDettes;
-
-  /// No description provided for @zakatAssiette.
-  ///
-  /// In fr, this message translates to:
-  /// **'Assiette'**
-  String get zakatAssiette;
-
-  /// No description provided for @zakatNissab.
-  ///
-  /// In fr, this message translates to:
-  /// **'Nissab (85 g)'**
-  String get zakatNissab;
-
-  /// No description provided for @zakatMontant.
-  ///
-  /// In fr, this message translates to:
-  /// **'Zakat due (2,5 %)'**
-  String get zakatMontant;
-
-  /// No description provided for @zakatAssujetti.
-  ///
-  /// In fr, this message translates to:
-  /// **'Assujetti : l\'assiette atteint le nissab.'**
-  String get zakatAssujetti;
-
-  /// No description provided for @zakatNonAssujetti.
-  ///
-  /// In fr, this message translates to:
-  /// **'Non assujetti : l\'assiette est inférieure au nissab.'**
-  String get zakatNonAssujetti;
-
-  /// No description provided for @zakatPrixManquant.
-  ///
-  /// In fr, this message translates to:
-  /// **'Renseignez le cours de l\'or pour calculer le nissab.'**
-  String get zakatPrixManquant;
-
   /// No description provided for @historiqueTitre.
   ///
   /// In fr, this message translates to:
@@ -13796,6 +13712,450 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Aucun rôle.'**
   String get usrAucunRole;
+
+  /// No description provided for @zkDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Calcul annuel sur le stock, les liquidités et les créances'**
+  String get zkDescription;
+
+  /// No description provided for @zkEntite.
+  ///
+  /// In fr, this message translates to:
+  /// **'calculs'**
+  String get zkEntite;
+
+  /// No description provided for @zkEntiteUn.
+  ///
+  /// In fr, this message translates to:
+  /// **'calcul'**
+  String get zkEntiteUn;
+
+  /// No description provided for @zkKpiCapital.
+  ///
+  /// In fr, this message translates to:
+  /// **'Capital {annee} (provisoire)'**
+  String zkKpiCapital(int annee);
+
+  /// No description provided for @zkKpiNissab.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nissab actuel'**
+  String get zkKpiNissab;
+
+  /// No description provided for @zkKpiEstimee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Zakat estimée {annee}'**
+  String zkKpiEstimee(int annee);
+
+  /// No description provided for @zkKpiEcheance.
+  ///
+  /// In fr, this message translates to:
+  /// **'Échéance'**
+  String get zkKpiEcheance;
+
+  /// No description provided for @zkJours.
+  ///
+  /// In fr, this message translates to:
+  /// **'jours'**
+  String get zkJours;
+
+  /// No description provided for @zkColCode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code'**
+  String get zkColCode;
+
+  /// No description provided for @zkColAnnee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Année'**
+  String get zkColAnnee;
+
+  /// No description provided for @zkColCapital.
+  ///
+  /// In fr, this message translates to:
+  /// **'Capital'**
+  String get zkColCapital;
+
+  /// No description provided for @zkColNissab.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nissab'**
+  String get zkColNissab;
+
+  /// No description provided for @zkColObligatoire.
+  ///
+  /// In fr, this message translates to:
+  /// **'Obligatoire'**
+  String get zkColObligatoire;
+
+  /// No description provided for @zkOui.
+  ///
+  /// In fr, this message translates to:
+  /// **'Oui'**
+  String get zkOui;
+
+  /// No description provided for @zkNon.
+  ///
+  /// In fr, this message translates to:
+  /// **'Non'**
+  String get zkNon;
+
+  /// No description provided for @zkColZakat.
+  ///
+  /// In fr, this message translates to:
+  /// **'Zakat'**
+  String get zkColZakat;
+
+  /// No description provided for @zkColDue.
+  ///
+  /// In fr, this message translates to:
+  /// **'Due le'**
+  String get zkColDue;
+
+  /// No description provided for @zkColPayee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Payée le'**
+  String get zkColPayee;
+
+  /// No description provided for @zkColStatut.
+  ///
+  /// In fr, this message translates to:
+  /// **'Statut'**
+  String get zkColStatut;
+
+  /// No description provided for @zkColStock.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock'**
+  String get zkColStock;
+
+  /// No description provided for @zkColLiquidites.
+  ///
+  /// In fr, this message translates to:
+  /// **'Liquidités'**
+  String get zkColLiquidites;
+
+  /// No description provided for @zkColCreances.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créances'**
+  String get zkColCreances;
+
+  /// No description provided for @zkColDettes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dettes'**
+  String get zkColDettes;
+
+  /// No description provided for @zkColTaux.
+  ///
+  /// In fr, this message translates to:
+  /// **'Taux'**
+  String get zkColTaux;
+
+  /// No description provided for @zkColHawl.
+  ///
+  /// In fr, this message translates to:
+  /// **'Début du hawl'**
+  String get zkColHawl;
+
+  /// No description provided for @zkColObservation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Observation'**
+  String get zkColObservation;
+
+  /// No description provided for @zkColCreePar.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créé par'**
+  String get zkColCreePar;
+
+  /// No description provided for @zkExoneree.
+  ///
+  /// In fr, this message translates to:
+  /// **'Exonérée'**
+  String get zkExoneree;
+
+  /// No description provided for @zkAnnulee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annulée'**
+  String get zkAnnulee;
+
+  /// No description provided for @zkMarquerPayee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Marquer payée'**
+  String get zkMarquerPayee;
+
+  /// No description provided for @zkAnnuler.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annuler'**
+  String get zkAnnuler;
+
+  /// No description provided for @zkNouveau.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau calcul'**
+  String get zkNouveau;
+
+  /// No description provided for @zkNouveauTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau calcul de zakat'**
+  String get zkNouveauTitre;
+
+  /// No description provided for @zkModifierTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier la zakat'**
+  String get zkModifierTitre;
+
+  /// No description provided for @zkFormDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les montants sont pré-remplis depuis le stock, les caisses et les crédits ; ajustez-les si besoin.'**
+  String get zkFormDescription;
+
+  /// No description provided for @zkSectionPeriode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Période (hawl)'**
+  String get zkSectionPeriode;
+
+  /// No description provided for @zkSectionPatrimoine.
+  ///
+  /// In fr, this message translates to:
+  /// **'Patrimoine'**
+  String get zkSectionPatrimoine;
+
+  /// No description provided for @zkDebutHawl.
+  ///
+  /// In fr, this message translates to:
+  /// **'Début du hawl'**
+  String get zkDebutHawl;
+
+  /// No description provided for @zkDueLe.
+  ///
+  /// In fr, this message translates to:
+  /// **'Zakat due le'**
+  String get zkDueLe;
+
+  /// No description provided for @zkDueIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Début + 354 jours (année lunaire)'**
+  String get zkDueIndice;
+
+  /// No description provided for @zkValeurStock.
+  ///
+  /// In fr, this message translates to:
+  /// **'Valeur du stock'**
+  String get zkValeurStock;
+
+  /// No description provided for @zkStockIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Au prix d\'achat'**
+  String get zkStockIndice;
+
+  /// No description provided for @zkLiquiditesIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Caisses + banque'**
+  String get zkLiquiditesIndice;
+
+  /// No description provided for @zkCreancesIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Crédits clients recouvrables'**
+  String get zkCreancesIndice;
+
+  /// No description provided for @zkDettesCourt.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dettes à court terme'**
+  String get zkDettesCourt;
+
+  /// No description provided for @zkDettesIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Crédits fournisseurs'**
+  String get zkDettesIndice;
+
+  /// No description provided for @zkNissabIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'85 g d\'or × cours du jour'**
+  String get zkNissabIndice;
+
+  /// No description provided for @zkReprendre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Reprendre : {libelle}'**
+  String zkReprendre(String libelle);
+
+  /// No description provided for @zkRepValeurStock.
+  ///
+  /// In fr, this message translates to:
+  /// **'valeur du stock'**
+  String get zkRepValeurStock;
+
+  /// No description provided for @zkRepSoldes.
+  ///
+  /// In fr, this message translates to:
+  /// **'soldes des caisses'**
+  String get zkRepSoldes;
+
+  /// No description provided for @zkRepCreances.
+  ///
+  /// In fr, this message translates to:
+  /// **'crédits clients'**
+  String get zkRepCreances;
+
+  /// No description provided for @zkRepDettes.
+  ///
+  /// In fr, this message translates to:
+  /// **'crédits fournisseurs'**
+  String get zkRepDettes;
+
+  /// No description provided for @zkCapitalSoumis.
+  ///
+  /// In fr, this message translates to:
+  /// **'Capital soumis'**
+  String get zkCapitalSoumis;
+
+  /// No description provided for @zkAuDessus.
+  ///
+  /// In fr, this message translates to:
+  /// **'Au-dessus du nissab'**
+  String get zkAuDessus;
+
+  /// No description provided for @zkEnDessous.
+  ///
+  /// In fr, this message translates to:
+  /// **'En dessous du nissab'**
+  String get zkEnDessous;
+
+  /// No description provided for @zkObligatoire.
+  ///
+  /// In fr, this message translates to:
+  /// **'Zakat obligatoire'**
+  String get zkObligatoire;
+
+  /// No description provided for @zkMontant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montant de la zakat'**
+  String get zkMontant;
+
+  /// No description provided for @zkFormule.
+  ///
+  /// In fr, this message translates to:
+  /// **'Capital = stock + liquidités + créances − dettes. Montant = capital × {taux} % si capital ≥ nissab.'**
+  String zkFormule(String taux);
+
+  /// No description provided for @zkEnregistre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Calcul enregistré'**
+  String get zkEnregistre;
+
+  /// No description provided for @zkPayeeToast.
+  ///
+  /// In fr, this message translates to:
+  /// **'Zakat marquée payée'**
+  String get zkPayeeToast;
+
+  /// No description provided for @zkAnnules.
+  ///
+  /// In fr, this message translates to:
+  /// **'Calculs annulés'**
+  String get zkAnnules;
+
+  /// No description provided for @zkDetailTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Zakat {annee}'**
+  String zkDetailTitre(int annee);
+
+  /// No description provided for @zkDetailDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'{code} · hawl {debut} → {fin}'**
+  String zkDetailDescription(String code, String debut, String fin);
+
+  /// No description provided for @zkCalcul.
+  ///
+  /// In fr, this message translates to:
+  /// **'Calcul'**
+  String get zkCalcul;
+
+  /// No description provided for @zkPoste.
+  ///
+  /// In fr, this message translates to:
+  /// **'Poste'**
+  String get zkPoste;
+
+  /// No description provided for @zkMontantCol.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montant'**
+  String get zkMontantCol;
+
+  /// No description provided for @zkAudit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Audit'**
+  String get zkAudit;
+
+  /// No description provided for @zkMotif.
+  ///
+  /// In fr, this message translates to:
+  /// **'Motif'**
+  String get zkMotif;
+
+  /// No description provided for @zkBloqueePayee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déjà payée'**
+  String get zkBloqueePayee;
+
+  /// No description provided for @zkBloqueeAnnulee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déjà annulée'**
+  String get zkBloqueeAnnulee;
+
+  /// No description provided for @zkErrValeur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Valeurs invalides (montants positifs, échéance après le début du hawl)'**
+  String get zkErrValeur;
+
+  /// No description provided for @zkErrInconnue.
+  ///
+  /// In fr, this message translates to:
+  /// **'Calcul introuvable'**
+  String get zkErrInconnue;
+
+  /// No description provided for @zkErrMotif.
+  ///
+  /// In fr, this message translates to:
+  /// **'Motif obligatoire'**
+  String get zkErrMotif;
+
+  /// No description provided for @zkAucun.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun calcul de zakat.'**
+  String get zkAucun;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

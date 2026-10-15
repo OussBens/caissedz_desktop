@@ -113,7 +113,9 @@
 - [x] Situation : les 10 analyses de la spec (recette par panier / produit, mouvement caisse / produit, marge par
       panier / période sur coût figé à la vente, inventaire validable, coût produit, situation client / fournisseur),
       filtres, export Excel / PDF ; analyses de coût réservées à `voirPrixAchat`
-- [x] Zakat
+- [x] Zakat DS v2.2 (phase D, migration v18) : calculs annuels enregistrés (codes `ZKT`), nissab et taux en
+      paramètres, statut Brouillon / Non payé / Payée, annulation avec motif, KPI provisoires de l'année
+- [ ] Nissab et taux de la Zakat éditables dans Paramètres
 - [x] Historique (journal d'audit) ; Paramètres complets (boutique, vente, impression, serveurs)
 - [x] Sauvegarde / restauration ; exports Excel / PDF avec aperçu
 

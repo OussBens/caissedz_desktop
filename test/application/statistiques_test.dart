@@ -14,7 +14,6 @@ import 'package:caissedz_desktop/domain/models/parametres_vente.dart';
 import 'package:caissedz_desktop/domain/models/produit.dart';
 import 'package:caissedz_desktop/domain/models/rapport.dart';
 import 'package:caissedz_desktop/domain/models/tiers.dart';
-import 'package:caissedz_desktop/domain/zakat.dart';
 import 'package:excel/excel.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common/sqlite_api.dart';
@@ -192,26 +191,6 @@ void main() {
       expect(excel.tables.values.single.maxRows, 4 + 2 + 1);
       final pdf = await const RapportPdf().generer(r, boutique: 'Test', periode: 'p');
       expect(pdf.length, greaterThan(500));
-    });
-  });
-
-  group('Zakat', () {
-    test('nissab 85 g, taux 2,5 %, assujettissement', () {
-      final r = CalculZakat.calculer(
-        stock: 900000,
-        caisses: 300000,
-        creances: 100000,
-        dettes: 200000,
-        prixGrammeOr: 12000,
-      );
-      expect(r.assiette, 1100000);
-      expect(r.nissab, 1020000);
-      expect(r.assujetti, isTrue);
-      expect(r.montant, 27500);
-      final sous = CalculZakat.calculer(stock: 100000, caisses: 0, creances: 0, dettes: 0, prixGrammeOr: 12000);
-      expect(sous.assujetti, isFalse);
-      expect(sous.montant, 0);
-      expect(CalculZakat.calculer(stock: 1, caisses: 1, creances: 1, dettes: 0, prixGrammeOr: 0).assujetti, isFalse);
     });
   });
 }

@@ -1079,27 +1079,6 @@
   "rapportRetours": "Retours clients",
   "rapportEtatStock": "État du stock valorisé",
   "rapportCreancesDettes": "Créances et dettes",
-  "zakatTitre": "Zakat",
-  "zakatIntro": "Zakat sur les biens commerciaux : 2,5 % de l'assiette si elle atteint le nissab (85 g d'or).",
-  "zakatPrixOr": "Prix du gramme d'or ({devise})",
-  "@zakatPrixOr": {
-    "placeholders": {
-      "devise": {
-        "type": "String"
-      }
-    }
-  },
-  "zakatEnregistrerPrix": "Enregistrer le cours",
-  "zakatStock": "Stock (prix d'achat)",
-  "zakatCaisses": "Caisses",
-  "zakatCreances": "Créances clients",
-  "zakatDettes": "Dettes fournisseurs",
-  "zakatAssiette": "Assiette",
-  "zakatNissab": "Nissab (85 g)",
-  "zakatMontant": "Zakat due (2,5 %)",
-  "zakatAssujetti": "Assujetti : l'assiette atteint le nissab.",
-  "zakatNonAssujetti": "Non assujetti : l'assiette est inférieure au nissab.",
-  "zakatPrixManquant": "Renseignez le cours de l'or pour calculer le nissab.",
   "historiqueTitre": "Historique",
   "historiqueColUtilisateur": "Utilisateur",
   "historiqueColAction": "Action",
@@ -3843,5 +3822,127 @@
   "usrRoleErrModules": "Cochez au moins un module",
   "usrRoleErrInconnu": "Rôle introuvable",
   "usrAucunUtilisateur": "Aucun utilisateur.",
-  "usrAucunRole": "Aucun rôle."
+  "usrAucunRole": "Aucun rôle.",
+  "zkDescription": "Calcul annuel sur le stock, les liquidités et les créances",
+  "zkEntite": "calculs",
+  "zkEntiteUn": "calcul",
+  "zkKpiCapital": "Capital {annee} (provisoire)",
+  "@zkKpiCapital": {
+    "placeholders": {
+      "annee": {
+        "type": "int"
+      }
+    }
+  },
+  "zkKpiNissab": "Nissab actuel",
+  "zkKpiEstimee": "Zakat estimée {annee}",
+  "@zkKpiEstimee": {
+    "placeholders": {
+      "annee": {
+        "type": "int"
+      }
+    }
+  },
+  "zkKpiEcheance": "Échéance",
+  "zkJours": "jours",
+  "zkColCode": "Code",
+  "zkColAnnee": "Année",
+  "zkColCapital": "Capital",
+  "zkColNissab": "Nissab",
+  "zkColObligatoire": "Obligatoire",
+  "zkOui": "Oui",
+  "zkNon": "Non",
+  "zkColZakat": "Zakat",
+  "zkColDue": "Due le",
+  "zkColPayee": "Payée le",
+  "zkColStatut": "Statut",
+  "zkColStock": "Stock",
+  "zkColLiquidites": "Liquidités",
+  "zkColCreances": "Créances",
+  "zkColDettes": "Dettes",
+  "zkColTaux": "Taux",
+  "zkColHawl": "Début du hawl",
+  "zkColObservation": "Observation",
+  "zkColCreePar": "Créé par",
+  "zkExoneree": "Exonérée",
+  "zkAnnulee": "Annulée",
+  "zkMarquerPayee": "Marquer payée",
+  "zkAnnuler": "Annuler",
+  "zkNouveau": "Nouveau calcul",
+  "zkNouveauTitre": "Nouveau calcul de zakat",
+  "zkModifierTitre": "Modifier la zakat",
+  "zkFormDescription": "Les montants sont pré-remplis depuis le stock, les caisses et les crédits ; ajustez-les si besoin.",
+  "zkSectionPeriode": "Période (hawl)",
+  "zkSectionPatrimoine": "Patrimoine",
+  "zkDebutHawl": "Début du hawl",
+  "zkDueLe": "Zakat due le",
+  "zkDueIndice": "Début + 354 jours (année lunaire)",
+  "zkValeurStock": "Valeur du stock",
+  "zkStockIndice": "Au prix d'achat",
+  "zkLiquiditesIndice": "Caisses + banque",
+  "zkCreancesIndice": "Crédits clients recouvrables",
+  "zkDettesCourt": "Dettes à court terme",
+  "zkDettesIndice": "Crédits fournisseurs",
+  "zkNissabIndice": "85 g d'or × cours du jour",
+  "zkReprendre": "Reprendre : {libelle}",
+  "@zkReprendre": {
+    "placeholders": {
+      "libelle": {
+        "type": "String"
+      }
+    }
+  },
+  "zkRepValeurStock": "valeur du stock",
+  "zkRepSoldes": "soldes des caisses",
+  "zkRepCreances": "crédits clients",
+  "zkRepDettes": "crédits fournisseurs",
+  "zkCapitalSoumis": "Capital soumis",
+  "zkAuDessus": "Au-dessus du nissab",
+  "zkEnDessous": "En dessous du nissab",
+  "zkObligatoire": "Zakat obligatoire",
+  "zkMontant": "Montant de la zakat",
+  "zkFormule": "Capital = stock + liquidités + créances − dettes. Montant = capital × {taux} % si capital ≥ nissab.",
+  "@zkFormule": {
+    "placeholders": {
+      "taux": {
+        "type": "String"
+      }
+    }
+  },
+  "zkEnregistre": "Calcul enregistré",
+  "zkPayeeToast": "Zakat marquée payée",
+  "zkAnnules": "Calculs annulés",
+  "zkDetailTitre": "Zakat {annee}",
+  "@zkDetailTitre": {
+    "placeholders": {
+      "annee": {
+        "type": "int"
+      }
+    }
+  },
+  "zkDetailDescription": "{code} · hawl {debut} → {fin}",
+  "@zkDetailDescription": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "debut": {
+        "type": "String"
+      },
+      "fin": {
+        "type": "String"
+      }
+    }
+  },
+  "zkCalcul": "Calcul",
+  "zkPoste": "Poste",
+  "zkMontantCol": "Montant",
+  "zkAudit": "Audit",
+  "zkMotif": "Motif",
+  "zkBloqueePayee": "Déjà payée",
+  "zkBloqueeAnnulee": "Déjà annulée",
+  "zkErrValeur": "Valeurs invalides (montants positifs, échéance après le début du hawl)",
+  "zkErrInconnue": "Calcul introuvable",
+  "zkErrMotif": "Motif obligatoire",
+  "zkAucun": "Aucun calcul de zakat."
 }

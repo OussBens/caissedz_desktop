@@ -39,6 +39,7 @@ class CodeGenerator {
   static const String bonReception = 'BON';
   static const String cloture = 'CLT';
   static const String inventaire = 'INV';
+  static const String zakat = 'ZKT';
 
   static final RegExp _format = RegExp(r'^([A-Z]+)(\d+)$');
 
