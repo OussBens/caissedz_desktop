@@ -6,6 +6,7 @@ import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
 import '../../domain/models/utilisateur.dart';
 import '../../domain/permissions.dart';
+import '../commun/carte_entite.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
 import '../commun/statuts.dart';
@@ -220,6 +221,19 @@ class _UtilisateursPageState extends ConsumerState<UtilisateursPage> {
               format: format,
             )
           : null,
+      carte: (context, l, etatCarte) => CarteEntite(
+        etat: etatCarte,
+        titre: l.nom,
+        sousTitre: '@${l.u.identifiant} · ${libelleRole(context, l.u.roleNom)}',
+        icone: LucideIcons.user,
+        statut: l.u.actif ? 'actif' : 'inactif',
+        montant: formaterMontant(l.totalVendu, devise),
+        libelleMontant: l10n.usrColVentes,
+        lignes: [
+          (LucideIcons.monitor, l.u.caisseCode == null ? l10n.usrLibre : (caisses[l.u.caisseCode] ?? l.u.caisseCode!)),
+          (LucideIcons.clock, l.u.dernierAcces == null ? '—' : formatAcces.format(l.u.dernierAcces!)),
+        ],
+      ),
       onOuvrir: (l) => afficherDetailUtilisateur(context, ref, l),
       actions: [
         DsActionModule(

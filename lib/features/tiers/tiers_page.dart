@@ -8,6 +8,7 @@ import '../../domain/models/retour.dart';
 import '../../domain/models/tiers.dart';
 import '../../domain/referentiel/referentiel.dart';
 import '../../domain/referentiel/wilayas.dart';
+import '../commun/carte_entite.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
 import '../commun/referentiel_ui.dart';
@@ -297,6 +298,20 @@ class _TiersPageState extends ConsumerState<TiersPage> {
               format: format,
             )
           : null,
+      carte: (context, t, etatCarte) => CarteEntite(
+        etat: etatCarte,
+        titre: t.nom,
+        sousTitre: '${t.code} · ${t.telephone}',
+        icone: _client ? LucideIcons.user : LucideIcons.truck,
+        statut: !t.actif ? 'inactif' : (t.stats.credit > 0.004 ? 'credit' : 'actif'),
+        montant: da(t.stats.credit),
+        libelleMontant: l10n.tiersCredit,
+        couleurMontant: t.stats.credit > 0.004 ? context.ds.colors.dangerFg : null,
+        lignes: [
+          (LucideIcons.mapPin, t.adresse),
+          _client ? (LucideIcons.star, l10n.selPoints(t.points)) : (LucideIcons.mail, t.email),
+        ],
+      ),
       actions: [
         DsActionModule(
           libelle: l10n.tiersDetail,

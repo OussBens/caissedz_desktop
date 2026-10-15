@@ -9,6 +9,7 @@ import 'package:caissedz_desktop/domain/models/panier.dart';
 import 'package:caissedz_desktop/domain/models/parametres_vente.dart';
 import 'package:caissedz_desktop/domain/models/produit.dart';
 import 'package:caissedz_desktop/domain/models/tiers.dart';
+import 'package:caissedz_desktop/features/commun/carte_entite.dart';
 import 'package:caissedz_desktop/features/tiers/tiers_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -79,6 +80,23 @@ void main() {
       await doubleClic(tester, find.text('Amina'));
       expect(find.text('Informations générales'), findsOneWidget);
       expect(find.text('VTE0001'), findsOneWidget);
+    });
+
+    testWidgets('clients et fournisseurs : affichage liste ou grille', (tester) async {
+      final c = await pumpApp(tester, routeInitiale: '/clients', taille: const Size(1600, 1000));
+      await _donnees(c);
+      await tester.pumpAndSettle();
+      final vue = find.byKey(const ValueKey('module_vue'));
+      await clic(tester, find.descendant(of: vue, matching: find.byTooltip('Affichage grille')));
+      final carte = find.widgetWithText(CarteEntite, 'Amina');
+      expect(carte, findsOneWidget);
+      expect(find.descendant(of: carte, matching: find.text('300,00 DA')), findsOneWidget);
+      await doubleClic(tester, carte);
+      expect(find.text('Informations générales'), findsOneWidget);
+      await clic(tester, find.text('Fermer').last);
+      await clic(tester, find.descendant(of: vue, matching: find.byTooltip('Affichage liste')));
+      expect(find.byType(CarteEntite), findsNothing);
+      expect(find.text('Amina'), findsOneWidget);
     });
 
     testWidgets('versement client depuis le détail : imputé au plus ancien, onglet Versements', (tester) async {
