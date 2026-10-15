@@ -414,14 +414,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get produitErreurQuantite => 'كمية غير صالحة.';
 
   @override
-  String get iaIntro =>
-      'امسح أو أدخل باركودًا: يُبحث عن البطاقة في CaisseDZ ثم Mantouj ثم Open Food Facts ثم Open Beauty Facts.';
+  String get iaIntro => 'امسح رمزًا شريطيًا: يتم العثور على البطاقة تلقائيًا.';
 
   @override
   String get iaRechercher => 'بحث';
 
   @override
-  String get iaAucun => 'لم يُعثر على بطاقة لهذا الباركود: انتقل إلى الإدخال التفصيلي.';
+  String get iaAucun => 'لم يتم العثور على أي بطاقة.';
 
   @override
   String iaTrouve(String source) {
@@ -3927,10 +3926,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get prdDisponibles => 'المتاحة';
 
   @override
-  String get prdFormDescription =>
-      'سريع: صفحة واحدة للأساسيات. مفصل: 3 مراحل (الصور والتعريف والأسعار · المخزون والتغليف · المتغيرات والخيارات). الذكاء الاصطناعي: بطاقة يعثر عليها بالرمز الشريطي.';
-
-  @override
   String get prdModeRapide => 'سريع';
 
   @override
@@ -3979,10 +3974,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get prdPhotosFin => 'الأولى هي الصورة الرئيسية';
-
-  @override
-  String get prdPhotosAide =>
-      'تظهر الصورة الأولى في الصندوق (بطاقة المنتج ونافذة الكمية والطرد). JPG أو PNG، 4 كحد أقصى.';
 
   @override
   String get prdIdentification => 'التعريف';
@@ -4149,15 +4140,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String prdNComposants(int n) {
     return '$n مكون(ات)';
   }
-
-  @override
-  String get prdContientProduits => 'تحتوي على منتجات — أعد تعيينها أولا';
-
-  @override
-  String get prdDejaInactif => 'غير نشط مسبقا';
-
-  @override
-  String get prdToastAnnulation => 'تم الإلغاء';
 
   @override
   String get prdPorteeProduit => 'حسب المنتج';
@@ -7064,4 +7046,36 @@ class AppLocalizationsAr extends AppLocalizations {
   String prdMontantPanierAide(String devise) {
     return 'مثال: −500 $devise على السلة';
   }
+
+  @override
+  String get auditCreeLe => 'أُنشئ في';
+
+  @override
+  String get auditModifieLe => 'عُدّل في';
+
+  @override
+  String get auditModifiePar => 'عدّله';
+
+  @override
+  String get prdDescRapide => 'الأساسي في صفحة واحدة.';
+
+  @override
+  String get prdDescDetaille => 'في 3 خطوات: التعريف، المخزون، المتغيرات.';
+
+  @override
+  String get prdDescIa => 'بطاقة مسترجعة بالرمز الشريطي.';
+
+  @override
+  String get prdFiltreQuantite => 'الكمية';
+
+  @override
+  String get prdToastSuppression => 'تم الحذف';
+
+  @override
+  String prdVersSansCategorie(int n) {
+    return '$n منتج(ات) ← بدون فئة';
+  }
+
+  @override
+  String get prdPackVendu => 'مُباع سابقًا: يُحتفظ به لسجل المبيعات';
 }

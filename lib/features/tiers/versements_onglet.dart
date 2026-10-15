@@ -11,6 +11,7 @@ import '../../domain/models/caisse.dart';
 import '../../domain/models/retour.dart';
 import '../../domain/referentiel/referentiel.dart';
 import '../caisse/caisse_dialogs.dart';
+import '../commun/colonnes_audit.dart';
 import '../commun/export_module.dart';
 import '../commun/referentiel_ui.dart';
 import '../commun/selecteurs.dart';
@@ -111,7 +112,6 @@ class _VersementsOngletState extends ConsumerState<VersementsOnglet> {
         valeur: (v) => libelleRef(context, Referentiel.typesVersement, v.type),
       ),
       DsColonne(id: 'obs', libelle: l10n.tiersObservation, visibleParDefaut: false, valeur: (v) => v.commentaire),
-      DsColonne(id: 'creePar', libelle: l10n.auditCreePar, visibleParDefaut: false, valeur: (v) => v.utilisateurCode),
       DsColonne(
         id: 'annuleLe',
         libelle: l10n.auditAnnuleLe,
@@ -120,6 +120,7 @@ class _VersementsOngletState extends ConsumerState<VersementsOnglet> {
       ),
       DsColonne(id: 'annulePar', libelle: l10n.auditAnnulePar, visibleParDefaut: false, valeur: (v) => v.annulePar),
       DsColonne(id: 'motif', libelle: l10n.auditMotif, visibleParDefaut: false, valeur: (v) => v.motifAnnulation),
+      ...colonnesAudit(context, ref, (Versement x) => x.audit),
     ];
     return DsModuleTable<Versement>(
       entite: l10n.versementEntites,

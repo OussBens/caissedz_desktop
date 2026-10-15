@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+import 'audit.dart';
+
 /// Produit du catalogue (table `produit`).
 ///
 /// ⚠️ PROVISOIRE : colonnes à aligner sur la spec 06. `suiviNombre` active le
@@ -7,6 +9,7 @@ import 'package:flutter/foundation.dart';
 @immutable
 class Produit {
   const Produit({
+    this.audit = Audit.vide,
     required this.code,
     required this.designation,
     this.codeBarres,
@@ -34,6 +37,9 @@ class Produit {
     this.suiviSerie = false,
     this.remiseCode,
   });
+
+  /// Colonnes d'audit (créé / modifié le / par), en lecture seule.
+  final Audit audit;
 
   final String code;
   final String designation;
@@ -108,6 +114,7 @@ class Produit {
     String? remiseCode,
     bool effacerRemise = false,
   }) => Produit(
+    audit: audit,
     code: code,
     designation: designation ?? this.designation,
     codeBarres: effacerCodeBarres ? null : (codeBarres ?? this.codeBarres),
@@ -168,6 +175,7 @@ class Produit {
   static String? _vide(String? s) => s == null || s.trim().isEmpty ? null : s.trim();
 
   factory Produit.depuisLigne(Map<String, Object?> r) => Produit(
+    audit: Audit.depuisLigne(r),
     code: r['code'] as String,
     designation: r['designation'] as String,
     codeBarres: r['code_barres'] as String?,
@@ -227,7 +235,17 @@ class Produit {
 /// Catégorie / sous-catégorie.
 @immutable
 class Categorie {
-  const Categorie({required this.code, required this.nom, this.systeme = false, this.description, this.actif = true});
+  const Categorie({
+    this.audit = Audit.vide,
+    required this.code,
+    required this.nom,
+    this.systeme = false,
+    this.description,
+    this.actif = true,
+  });
+
+  /// Colonnes d'audit (créé / modifié le / par), en lecture seule.
+  final Audit audit;
   final String code;
   final String nom;
   final bool systeme;
@@ -236,6 +254,7 @@ class Categorie {
   /// Visible en caisse et dans les listes de choix.
   final bool actif;
   factory Categorie.depuisLigne(Map<String, Object?> r) => Categorie(
+    audit: Audit.depuisLigne(r),
     code: r['code'] as String,
     nom: r['nom'] as String,
     systeme: (r['systeme'] as int) == 1,
@@ -251,6 +270,7 @@ class Categorie {
 @immutable
 class SousCategorie {
   const SousCategorie({
+    this.audit = Audit.vide,
     required this.code,
     required this.categorieCode,
     required this.nom,
@@ -258,6 +278,9 @@ class SousCategorie {
     this.description,
     this.actif = true,
   });
+
+  /// Colonnes d'audit (créé / modifié le / par), en lecture seule.
+  final Audit audit;
   final String code;
   final String categorieCode;
   final String nom;
@@ -265,6 +288,7 @@ class SousCategorie {
   final String? description;
   final bool actif;
   factory SousCategorie.depuisLigne(Map<String, Object?> r) => SousCategorie(
+    audit: Audit.depuisLigne(r),
     code: r['code'] as String,
     categorieCode: r['categorie_code'] as String,
     nom: r['nom'] as String,
@@ -341,6 +365,7 @@ class Colis {
 @immutable
 class Pack {
   const Pack({
+    this.audit = Audit.vide,
     required this.code,
     required this.designation,
     this.codeBarres,
@@ -349,6 +374,9 @@ class Pack {
     this.lignes = const [],
     this.description,
   });
+
+  /// Colonnes d'audit (créé / modifié le / par), en lecture seule.
+  final Audit audit;
   final String code;
   final String designation;
   final String? codeBarres;
@@ -357,6 +385,7 @@ class Pack {
   final List<PackLigne> lignes;
   final String? description;
   Pack copyWith({List<PackLigne>? lignes, bool? actif}) => Pack(
+    audit: audit,
     code: code,
     designation: designation,
     codeBarres: codeBarres,
@@ -374,6 +403,7 @@ class Pack {
     'description': description,
   };
   factory Pack.depuisLigne(Map<String, Object?> r, [List<PackLigne> lignes = const []]) => Pack(
+    audit: Audit.depuisLigne(r),
     code: r['code'] as String,
     designation: r['designation'] as String,
     codeBarres: r['code_barres'] as String?,
@@ -400,6 +430,7 @@ class PackLigne {
 @immutable
 class Remise {
   const Remise({
+    this.audit = Audit.vide,
     required this.code,
     required this.designation,
     required this.type,
@@ -414,6 +445,9 @@ class Remise {
     this.portee = porteeProduit,
     this.seuil = 0,
   });
+
+  /// Colonnes d'audit (créé / modifié le / par), en lecture seule.
+  final Audit audit;
   final String code;
   final String designation;
 
@@ -442,6 +476,7 @@ class Remise {
   bool get parMontant => portee == porteeMontant;
 
   Remise copyWith({String? code, bool? actif}) => Remise(
+    audit: audit,
     code: code ?? this.code,
     designation: designation,
     type: type,
@@ -499,6 +534,7 @@ class Remise {
     'seuil': seuil,
   };
   factory Remise.depuisLigne(Map<String, Object?> r) => Remise(
+    audit: Audit.depuisLigne(r),
     code: r['code'] as String,
     designation: r['designation'] as String,
     type: r['type'] as String,

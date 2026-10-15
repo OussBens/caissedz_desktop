@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+import 'audit.dart';
+
 /// Fiche administrative commune aux clients et fournisseurs (§7.6) : wilaya, type (référentiel
 /// `typeClient` / `typeFournisseur`), activité, contact, identifiants fiscaux, banque.
 @immutable
@@ -61,6 +63,7 @@ class FicheTiers {
 @immutable
 class Client {
   const Client({
+    this.audit = Audit.vide,
     required this.code,
     required this.nom,
     this.telephone = '',
@@ -72,6 +75,9 @@ class Client {
     this.systeme = false,
     this.fiche = const FicheTiers(type: 'Consommateur'),
   });
+
+  /// Colonnes d'audit (créé / modifié le / par), en lecture seule.
+  final Audit audit;
   final String code;
   final String nom;
   final String telephone;
@@ -97,6 +103,7 @@ class Client {
     bool? actif,
     FicheTiers? fiche,
   }) => Client(
+    audit: audit,
     code: code,
     nom: nom ?? this.nom,
     telephone: telephone ?? this.telephone,
@@ -123,6 +130,7 @@ class Client {
   };
 
   factory Client.depuisLigne(Map<String, Object?> r) => Client(
+    audit: Audit.depuisLigne(r),
     code: r['code'] as String,
     nom: r['nom'] as String,
     telephone: (r['telephone'] as String?) ?? '',
@@ -146,6 +154,7 @@ class Client {
 @immutable
 class Fournisseur {
   const Fournisseur({
+    this.audit = Audit.vide,
     required this.code,
     required this.nom,
     this.telephone = '',
@@ -155,6 +164,9 @@ class Fournisseur {
     this.systeme = false,
     this.fiche = const FicheTiers(type: 'Grossiste'),
   });
+
+  /// Colonnes d'audit (créé / modifié le / par), en lecture seule.
+  final Audit audit;
   final String code;
   final String nom;
   final String telephone;
@@ -172,6 +184,7 @@ class Fournisseur {
     bool? actif,
     FicheTiers? fiche,
   }) => Fournisseur(
+    audit: audit,
     code: code,
     nom: nom ?? this.nom,
     telephone: telephone ?? this.telephone,
@@ -193,6 +206,7 @@ class Fournisseur {
     ...fiche.versLigne(),
   };
   factory Fournisseur.depuisLigne(Map<String, Object?> r) => Fournisseur(
+    audit: Audit.depuisLigne(r),
     code: r['code'] as String,
     nom: r['nom'] as String,
     telephone: (r['telephone'] as String?) ?? '',

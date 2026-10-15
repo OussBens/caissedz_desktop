@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import '../scellement.dart';
+import 'audit.dart';
 
 /// Types de caisse (§13, valeur stockée FR) : `Physique` ou `Compte`.
 class TypesCaisse {
@@ -49,6 +50,7 @@ class TypesMouvementCaisse {
 @immutable
 class Caisse {
   const Caisse({
+    this.audit = Audit.vide,
     required this.code,
     required this.nom,
     this.type = TypesCaisse.physique,
@@ -58,6 +60,9 @@ class Caisse {
     this.soldeInitial = 0,
     this.observation,
   });
+
+  /// Colonnes d'audit (créé / modifié le / par), en lecture seule.
+  final Audit audit;
   final String code;
   final String nom;
   final String type;
@@ -72,6 +77,7 @@ class Caisse {
   final bool systeme;
 
   factory Caisse.depuisLigne(Map<String, Object?> r) => Caisse(
+    audit: Audit.depuisLigne(r),
     code: r['code'] as String,
     nom: r['nom'] as String,
     type: r['type'] as String,
@@ -102,6 +108,7 @@ class Caisse {
     double? soldeInitial,
     String? Function()? observation,
   }) => Caisse(
+    audit: audit,
     code: code,
     nom: nom ?? this.nom,
     type: type ?? this.type,
@@ -117,6 +124,7 @@ class Caisse {
 @immutable
 class MouvementCaisse {
   const MouvementCaisse({
+    this.audit = Audit.vide,
     this.id,
     required this.date,
     required this.caisseCode,
@@ -129,6 +137,9 @@ class MouvementCaisse {
     required this.utilisateurCode,
     this.commentaire,
   });
+
+  /// Colonnes d'audit (créé / modifié le / par), en lecture seule.
+  final Audit audit;
   final int? id;
   final DateTime date;
   final String caisseCode;
@@ -145,6 +156,7 @@ class MouvementCaisse {
   double get signe => sens == SensMouvementCaisse.entree ? montant : -montant;
 
   factory MouvementCaisse.depuisLigne(Map<String, Object?> r) => MouvementCaisse(
+    audit: Audit.depuisLigne(r),
     id: r['id'] as int?,
     date: DateTime.parse(r['date'] as String).toLocal(),
     caisseCode: r['caisse_code'] as String,
@@ -186,6 +198,7 @@ class SoldeCaisse {
 @immutable
 class TransfertCaisse {
   const TransfertCaisse({
+    this.audit = Audit.vide,
     required this.code,
     required this.date,
     required this.caisseSource,
@@ -198,6 +211,9 @@ class TransfertCaisse {
     this.annulePar,
     this.motifAnnulation,
   });
+
+  /// Colonnes d'audit (créé / modifié le / par), en lecture seule.
+  final Audit audit;
   final String code;
   final DateTime date;
   final String caisseSource;
@@ -212,6 +228,7 @@ class TransfertCaisse {
   final String? motifAnnulation;
 
   factory TransfertCaisse.depuisLigne(Map<String, Object?> r) => TransfertCaisse(
+    audit: Audit.depuisLigne(r),
     code: r['code'] as String,
     date: DateTime.parse(r['date'] as String).toLocal(),
     caisseSource: r['caisse_source'] as String,
@@ -241,6 +258,7 @@ class TransfertCaisse {
 @immutable
 class Cloture {
   const Cloture({
+    this.audit = Audit.vide,
     required this.code,
     required this.date,
     required this.debut,
@@ -263,6 +281,9 @@ class Cloture {
     this.caisseCode,
     this.totalAnnule = 0,
   });
+
+  /// Colonnes d'audit (créé / modifié le / par), en lecture seule.
+  final Audit audit;
   final String code;
   final DateTime date;
   final DateTime debut;
@@ -353,6 +374,8 @@ class Cloture {
   };
 
   factory Cloture.depuisLigne(Map<String, Object?> r) => Cloture(
+    // Clôture immuable (pas de modification) : création = date et auteur de la clôture.
+    audit: Audit(creeLe: DateTime.parse(r['date'] as String).toLocal(), creePar: r['utilisateur_code'] as String),
     code: r['code'] as String,
     date: DateTime.parse(r['date'] as String).toLocal(),
     debut: DateTime.parse(r['debut'] as String).toLocal(),
@@ -377,6 +400,7 @@ class Cloture {
   );
 
   Cloture copyWith({String? hash}) => Cloture(
+    audit: audit,
     code: code,
     date: date,
     debut: debut,

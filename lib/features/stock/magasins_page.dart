@@ -7,6 +7,7 @@ import '../../core/i18n/generated/app_localizations.dart';
 import '../../domain/models/produit.dart';
 import '../../domain/models/stock.dart';
 import '../../domain/permissions.dart';
+import '../commun/colonnes_audit.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
 import '../commun/selecteurs.dart';
@@ -103,6 +104,7 @@ class _MagasinsPageState extends ConsumerState<MagasinsPage> {
         valeur: (m) => m.responsableCode == null ? '' : (noms[m.responsableCode] ?? m.responsableCode!),
       ),
       DsColonne(id: 'obs', libelle: l10n.retoursObservation, visibleParDefaut: false, valeur: (m) => m.observation),
+      ...colonnesAudit(context, ref, (Magasin x) => x.audit),
     ];
     final achat = permissionsSession(ref).contains(Permission.voirPrixAchat.code);
     return DsModuleTable<Magasin>(
@@ -177,7 +179,6 @@ class _MagasinsPageState extends ConsumerState<MagasinsPage> {
 
   Widget _transferts(AppLocalizations l10n, List<Magasin> magasins, List<TransfertStock> tous) {
     final noms = {for (final m in magasins) m.code: m.nom};
-    final utilisateurs = ref.watch(nomsUtilisateursProvider).value ?? const <String, String>{};
     final lignes = tous
         .where(
           (t) =>
@@ -226,17 +227,12 @@ class _MagasinsPageState extends ConsumerState<MagasinsPage> {
         valeur: (t) => t.commentaire ?? '',
       ),
       DsColonne(
-        id: 'cree_par',
-        libelle: l10n.ventesCreePar,
-        visibleParDefaut: false,
-        valeur: (t) => utilisateurs[t.utilisateurCode] ?? t.utilisateurCode,
-      ),
-      DsColonne(
         id: 'motif_annulation',
         libelle: l10n.ventesMotifAnnulation,
         visibleParDefaut: false,
         valeur: (t) => t.annulation?.motif ?? '',
       ),
+      ...colonnesAudit(context, ref, (TransfertStock x) => x.audit),
     ];
     return DsModuleTable<TransfertStock>(
       key: const ValueKey('transferts'),

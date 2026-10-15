@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
+import 'audit.dart';
 import 'stock.dart';
 
 class StatutsAchat {
@@ -55,6 +56,7 @@ class AchatLigne {
 @immutable
 class Achat {
   const Achat({
+    this.audit = Audit.vide,
     required this.code,
     required this.date,
     required this.fournisseurCode,
@@ -72,6 +74,9 @@ class Achat {
     this.besoinCode,
     this.nbVersements = 0,
   });
+
+  /// Colonnes d'audit (créé / modifié le / par), en lecture seule.
+  final Audit audit;
   final String code;
   final DateTime date;
   final String fournisseurCode;
@@ -108,6 +113,7 @@ class Achat {
       : 'credit';
 
   factory Achat.depuisLigne(Map<String, Object?> r, [List<AchatLigne> lignes = const []]) => Achat(
+    audit: Audit.depuisLigne(r),
     code: r['code'] as String,
     date: DateTime.parse(r['date'] as String).toLocal(),
     fournisseurCode: r['fournisseur_code'] as String,
@@ -198,6 +204,7 @@ class LigneDetectee {
 @immutable
 class BonReception {
   const BonReception({
+    this.audit = Audit.vide,
     required this.code,
     required this.date,
     required this.fichier,
@@ -212,6 +219,9 @@ class BonReception {
     this.traitePar,
     this.achatCode,
   });
+
+  /// Colonnes d'audit (créé / modifié le / par), en lecture seule.
+  final Audit audit;
   final String code;
   final DateTime date;
   final String fichier;
@@ -236,6 +246,7 @@ class BonReception {
   factory BonReception.depuisLigne(Map<String, Object?> r) {
     final json = r['lignes_json'] as String?;
     return BonReception(
+      audit: Audit.depuisLigne(r),
       code: r['code']! as String,
       date: DateTime.parse(r['date_reception']! as String).toLocal(),
       fichier: r['fichier']! as String,

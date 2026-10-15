@@ -12,6 +12,7 @@ import '../../domain/models/achat.dart';
 import '../../domain/models/stock.dart';
 import '../../domain/models/tiers.dart';
 import '../../domain/permissions.dart';
+import '../commun/colonnes_audit.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
 import '../commun/selecteurs.dart';
@@ -169,12 +170,6 @@ class _EntreesPageState extends ConsumerState<EntreesPage> {
         valeur: (a) => a.commentaire ?? '',
       ),
       DsColonne(
-        id: 'cree_par',
-        libelle: l10n.ventesCreePar,
-        visibleParDefaut: false,
-        valeur: (a) => utilisateurs[a.utilisateurCode] ?? a.utilisateurCode,
-      ),
-      DsColonne(
         id: 'annule_par',
         libelle: l10n.ventesAnnulePar,
         visibleParDefaut: false,
@@ -186,6 +181,7 @@ class _EntreesPageState extends ConsumerState<EntreesPage> {
         visibleParDefaut: false,
         valeur: (a) => a.annulation?.motif ?? '',
       ),
+      ...colonnesAudit(context, ref, (Achat x) => x.audit),
     ];
 
     return DsModuleTable<Achat>(
@@ -324,7 +320,6 @@ class _EntreesPageState extends ConsumerState<EntreesPage> {
     final t = context.ds.typo;
     final fournisseurs = ref.watch(fournisseursProvider).value ?? const <Fournisseur>[];
     final nomsFrn = {for (final f in fournisseurs) f.code: f.nom};
-    final utilisateurs = ref.watch(nomsUtilisateursProvider).value ?? const <String, String>{};
     final quota = ref.watch(quotaSmartScanProvider);
     String frn(BonReception b) =>
         b.fournisseurCode != null ? (nomsFrn[b.fournisseurCode] ?? b.fournisseurCode!) : (b.fournisseurDetecte ?? '—');
@@ -471,17 +466,12 @@ class _EntreesPageState extends ConsumerState<EntreesPage> {
               cellule: (_, b) => BadgeStatut(b.statutDs),
             ),
             DsColonne(
-              id: 'cree_par',
-              libelle: l10n.ventesCreePar,
-              visibleParDefaut: false,
-              valeur: (b) => utilisateurs[b.utilisateurCode] ?? b.utilisateurCode,
-            ),
-            DsColonne(
               id: 'obs',
               libelle: l10n.retoursObservation,
               visibleParDefaut: false,
               valeur: (b) => b.commentaire ?? '',
             ),
+            ...colonnesAudit(context, ref, (BonReception x) => x.audit),
           ],
           onOuvrir: (b) => afficherBon(context, ref, b),
           actions: [

@@ -14,6 +14,7 @@ import '../../domain/models/vente.dart';
 import '../../domain/permissions.dart';
 import '../caisse/pos_controller.dart';
 import '../commun/carte_entite.dart';
+import '../commun/colonnes_audit.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
 import '../commun/selecteurs.dart';
@@ -209,6 +210,7 @@ class _VentesPageState extends ConsumerState<VentesPage> {
         valeur: (p) => p.annuleeLe,
         cellule: (_, p) => Text(p.annuleeLe == null ? '' : formatDateHeure.format(p.annuleeLe!)),
       ),
+      ...colonnesAudit(context, ref, (PanierResume x) => x.vente.audit),
     ];
 
     Future<void> modifier(PanierResume p) => afficherModifPanier(context, ref, p, nomsClients: nomsClients);

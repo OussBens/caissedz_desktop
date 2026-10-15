@@ -156,28 +156,67 @@ class CatalogueService {
     await _repo.renommerSousCategorie(code, nom.trim());
   }
 
-  /// Suppression refusée si la catégorie est système ou si des produits y sont rattachés.
-  Future<void> supprimerCategorie(String code) async {
-    if (code == CodeGenerator.systeme(CodeGenerator.categorie)) {
-      throw const CatalogueException(ErreurCatalogue.categorieSysteme);
+  /// Supprime des catégories (les catégories système sont ignorées), dans UNE transaction : leurs produits
+  /// passent dans « Sans catégorie » (`CATE0000` / `SC0000`), leurs sous-catégories sont supprimées et les remises
+  /// qui les visaient n'ont plus de catégorie. Retourne le nombre de produits déplacés.
+  Future<int> supprimerCategories(List<String> codes) async {
+    final systeme = CodeGenerator.systeme(CodeGenerator.categorie);
+    final cibles = codes.where((c) => c != systeme).toList();
+    if (cibles.isEmpty) {
+      if (codes.isNotEmpty) throw const CatalogueException(ErreurCatalogue.categorieSysteme);
+      return 0;
     }
-    if (await _repo.nbProduitsCategorie(code) > 0) throw const CatalogueException(ErreurCatalogue.categorieUtilisee);
-    await db.transaction((txn) async {
-      await CatalogueRepository(txn).supprimerCategorie(code);
-      await HistoriqueRepository(txn)
-          .journaliser(utilisateurCode: utilisateurCode, action: 'Suppression', entite: 'categorie', entiteCode: code);
+    return db.transaction((txn) async {
+      var deplaces = 0;
+      for (final code in cibles) {
+        deplaces += await txn.update(
+          'produit',
+          {'categorie_code': systeme, 'sous_categorie_code': CodeGenerator.systeme(CodeGenerator.sousCategorie)},
+          where: 'categorie_code = ?',
+          whereArgs: [code],
+        );
+        await txn.update('remise', {'categorie_code': null}, where: 'categorie_code = ?', whereArgs: [code]);
+        await CatalogueRepository(txn).supprimerCategorie(code);
+        await HistoriqueRepository(
+          txn,
+        ).journaliser(utilisateurCode: utilisateurCode, action: 'Suppression', entite: 'categorie', entiteCode: code);
+      }
+      return deplaces;
     });
   }
 
-  Future<void> supprimerSousCategorie(String code) async {
-    if (code == CodeGenerator.systeme(CodeGenerator.sousCategorie)) {
-      throw const CatalogueException(ErreurCatalogue.categorieSysteme);
+  Future<void> supprimerCategorie(String code) => supprimerCategories([code]);
+
+  /// Supprime des sous-catégories (système ignorée) ; leurs produits passent dans « Sans catégorie ».
+  Future<int> supprimerSousCategories(List<String> codes) async {
+    final systeme = CodeGenerator.systeme(CodeGenerator.sousCategorie);
+    final cibles = codes.where((c) => c != systeme).toList();
+    if (cibles.isEmpty) {
+      if (codes.isNotEmpty) throw const CatalogueException(ErreurCatalogue.categorieSysteme);
+      return 0;
     }
-    if (await _repo.nbProduitsSousCategorie(code) > 0) {
-      throw const CatalogueException(ErreurCatalogue.categorieUtilisee);
-    }
-    await _repo.supprimerSousCategorie(code);
+    return db.transaction((txn) async {
+      var deplaces = 0;
+      for (final code in cibles) {
+        deplaces += await txn.update(
+          'produit',
+          {'categorie_code': CodeGenerator.systeme(CodeGenerator.categorie), 'sous_categorie_code': systeme},
+          where: 'sous_categorie_code = ?',
+          whereArgs: [code],
+        );
+        await CatalogueRepository(txn).supprimerSousCategorie(code);
+        await HistoriqueRepository(txn).journaliser(
+          utilisateurCode: utilisateurCode,
+          action: 'Suppression',
+          entite: 'sous_categorie',
+          entiteCode: code,
+        );
+      }
+      return deplaces;
+    });
   }
+
+  Future<void> supprimerSousCategorie(String code) => supprimerSousCategories([code]);
 
   // ---------------- Produits ----------------
   /// Valide et complète un produit : marge ↔ prix de vente, code-barres.
@@ -554,6 +593,25 @@ class CatalogueService {
     await db.transaction((txn) => CatalogueRepository(txn).mettreAJourPack(p));
   }
 
+  /// Packs déjà vendus : gardés pour l'historique des ventes (lignes scellées), donc non supprimables.
+  Future<Set<String>> packsVendus() async => {
+    for (final r in await db.rawQuery('SELECT DISTINCT pack_code FROM vente_ligne WHERE pack_code IS NOT NULL'))
+      r['pack_code']! as String,
+  };
+
+  /// Supprime des packs jamais vendus (leurs lignes partent avec eux) ; un pack vendu est refusé.
+  Future<void> supprimerPacks(List<String> codes) async {
+    final vendus = await packsVendus();
+    if (codes.any(vendus.contains)) throw const CatalogueException(ErreurCatalogue.produitUtilise);
+    await db.transaction((txn) async {
+      for (final code in codes) {
+        await txn.delete('pack', where: 'code = ?', whereArgs: [code]);
+        await HistoriqueRepository(txn)
+            .journaliser(utilisateurCode: utilisateurCode, action: 'Suppression', entite: 'pack', entiteCode: code);
+      }
+    });
+  }
+
   Future<void> activerPack(String code, bool actif) async {
     final p = (await _repo.packs()).where((k) => k.code == code).firstOrNull;
     if (p == null) return;
@@ -625,7 +683,18 @@ class CatalogueService {
     await _repo.mettreAJourRemise(r.copyWith(actif: actif));
   }
 
-  Future<void> supprimerRemise(String code) => _repo.supprimerRemise(code);
+  /// Supprime des remises : les produits qui la portaient n'ont plus de remise. Les ventes passées gardent le
+  /// code et le montant de la remise accordée.
+  Future<void> supprimerRemises(List<String> codes) => db.transaction((txn) async {
+    for (final code in codes) {
+      await txn.update('produit', {'remise_code': null}, where: 'remise_code = ?', whereArgs: [code]);
+      await CatalogueRepository(txn).supprimerRemise(code);
+      await HistoriqueRepository(txn)
+          .journaliser(utilisateurCode: utilisateurCode, action: 'Suppression', entite: 'remise', entiteCode: code);
+    }
+  });
+
+  Future<void> supprimerRemise(String code) => supprimerRemises([code]);
 
   /// Meilleure remise applicable à un produit à une date donnée (montant de remise sur [montant]).
   Future<double> remiseApplicable(Produit p, double montant, {DateTime? date}) async {

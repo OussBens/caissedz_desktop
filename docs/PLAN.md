@@ -674,3 +674,16 @@ Référence : `docs/design/CaisseDZ-DS-v2.2/CaisseDZ-DS-v2.2.html`, `bundle-v2.2
 - ✅ Remises : état calculé sur la période (`Remise.estActive`, bornes incluses à la journée) : Active / Inactive,
   Annulée si annulée. Une remise inactive n'est proposée ni dans les listes, ni dans le dialog de sélection, ni en
   caisse, et ne s'applique pas aux produits.
+
+## Retours utilisateur — Audit, détails, produits et suppressions ✅ (2026-10-15)
+
+- ✅ Audit : tous les modèles affichés en tableau portent `Audit` (créé le / par, modifié le / par) ; migration v22
+  (sessions, mouvements de caisse et de stock, bons de réception, zakat) ; quatre colonnes masquées par défaut
+  (`colonnesAudit`) dans tous les tableaux. Les clôtures, immuables, prennent leur création de `date` / auteur.
+- ✅ Double-clic sur une ligne ou une carte : détail du module, ou à défaut dialog de détail générique
+  (`afficherDetailLigne`) listant toutes les colonnes autorisées.
+- ✅ Formulaires : titres de section colorés avec icône (`DsSubHead`) ; nouveau produit : description par mode, textes
+  IA raccourcis ; filtres Produits : quantité en stock et prix d'achat (le prix de vente existait).
+- ✅ Catégorie, sous-catégorie, remise, pack : « Supprimer » remplace « Annuler » (suppression réelle, une
+  transaction, journalisée). Produits d'une catégorie / sous-catégorie supprimée basculés vers Sans catégorie
+  (CATE0000 / SC0000) ; remise supprimée retirée des produits ; un pack déjà vendu ne peut pas être supprimé.

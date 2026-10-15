@@ -1,6 +1,7 @@
 import 'package:sqflite_common/sqlite_api.dart';
 
 import '../domain/code_generator.dart';
+import '../domain/models/audit.dart';
 import '../domain/models/stock.dart';
 
 /// Accès SQL au stock : journal des mouvements, niveaux calculés, magasins, documents.
@@ -301,6 +302,7 @@ class StockRepository {
     return rows.map((r) {
       final code = r['code'] as String;
       return TransfertStock(
+        audit: Audit.depuisLigne(r),
         code: code,
         date: DateTime.parse(r['date'] as String).toLocal(),
         magasinSource: r['magasin_source'] as String,
@@ -435,6 +437,7 @@ class StockRepository {
     return rows.map((r) {
       final code = r['code'] as String;
       return SortieStock(
+        audit: Audit.depuisLigne(r),
         code: code,
         date: DateTime.parse(r['date'] as String).toLocal(),
         magasinCode: r['magasin_code'] as String,

@@ -308,9 +308,9 @@ Future<void> afficherDetailSousCategorie(
   );
 }
 
-/// Annulation en lot (désactivation) de catégories : bloquée pour la catégorie système et celles
-/// qui contiennent des produits (à réaffecter d'abord).
-Future<void> annulerCategories(
+/// Suppression en lot de catégories (la catégorie système est bloquée) : leurs produits passent dans
+/// « Sans catégorie ».
+Future<void> supprimerCategories(
   BuildContext context,
   WidgetRef ref,
   List<Categorie> choix,
@@ -320,7 +320,7 @@ Future<void> annulerCategories(
   final l10n = AppLocalizations.of(context);
   final ok = await afficherActionLot(
     context,
-    action: DsActionLot.annuler,
+    action: DsActionLot.supprimer,
     entite: l10n.prdEntiteCategorie,
     entitePluriel: l10n.prdEntiteCategories,
     elements: [
@@ -329,24 +329,24 @@ Future<void> annulerCategories(
           id: c.code,
           titre: c.nom,
           sousTitre: c.code,
-          meta: l10n.prdNProduits(nbProduits(c)),
-          motifBlocage: c.systeme
-              ? l10n.categorieErreurSysteme
-              : (nbProduits(c) > 0 ? l10n.prdContientProduits : (!c.actif ? l10n.prdDejaInactif : null)),
+          meta: nbProduits(c) > 0 ? l10n.prdVersSansCategorie(nbProduits(c)) : l10n.prdNProduits(0),
+          motifBlocage: c.systeme ? l10n.categorieErreurSysteme : null,
         ),
     ],
   );
   if (ok == null) return;
-  final s = ref.read(catalogueServiceProvider);
-  for (final c in choix.where((c) => !c.systeme && c.actif && nbProduits(c) == 0)) {
-    await s.modifierCategorie(Categorie(code: c.code, nom: c.nom, description: c.description, actif: false));
-  }
+  await ref.read(catalogueServiceProvider).supprimerCategories([
+    for (final c in choix)
+      if (!c.systeme) c.code,
+  ]);
   rafraichirCatalogue(ref);
   effacer();
-  if (context.mounted) afficherToast(context, titre: l10n.prdToastAnnulation, ton: DsToastTon.succes);
+  if (context.mounted) afficherToast(context, titre: l10n.prdToastSuppression, ton: DsToastTon.succes);
 }
 
-Future<void> annulerSousCategories(
+/// Suppression en lot de sous-catégories (la sous-catégorie système est bloquée) : leurs produits passent dans
+/// « Sans catégorie ».
+Future<void> supprimerSousCategories(
   BuildContext context,
   WidgetRef ref,
   List<SousCategorie> choix,
@@ -356,7 +356,7 @@ Future<void> annulerSousCategories(
   final l10n = AppLocalizations.of(context);
   final ok = await afficherActionLot(
     context,
-    action: DsActionLot.annuler,
+    action: DsActionLot.supprimer,
     entite: l10n.prdEntiteSousCategorie,
     entitePluriel: l10n.prdEntiteSousCategories,
     elements: [
@@ -365,23 +365,19 @@ Future<void> annulerSousCategories(
           id: s.code,
           titre: s.nom,
           sousTitre: s.code,
-          meta: l10n.prdNProduits(nbProduits(s)),
-          motifBlocage: s.systeme
-              ? l10n.categorieErreurSysteme
-              : (nbProduits(s) > 0 ? l10n.prdContientProduits : (!s.actif ? l10n.prdDejaInactif : null)),
+          meta: nbProduits(s) > 0 ? l10n.prdVersSansCategorie(nbProduits(s)) : l10n.prdNProduits(0),
+          motifBlocage: s.systeme ? l10n.categorieErreurSysteme : null,
         ),
     ],
   );
   if (ok == null) return;
-  final service = ref.read(catalogueServiceProvider);
-  for (final s in choix.where((s) => !s.systeme && s.actif && nbProduits(s) == 0)) {
-    await service.modifierSousCategorie(
-      SousCategorie(code: s.code, categorieCode: s.categorieCode, nom: s.nom, description: s.description, actif: false),
-    );
-  }
+  await ref.read(catalogueServiceProvider).supprimerSousCategories([
+    for (final s in choix)
+      if (!s.systeme) s.code,
+  ]);
   rafraichirCatalogue(ref);
   effacer();
-  if (context.mounted) afficherToast(context, titre: l10n.prdToastAnnulation, ton: DsToastTon.succes);
+  if (context.mounted) afficherToast(context, titre: l10n.prdToastSuppression, ton: DsToastTon.succes);
 }
 
 // ============================================================ Remises
@@ -736,7 +732,8 @@ Future<void> afficherDetailRemise(BuildContext context, WidgetRef ref, Remise r,
   );
 }
 
-Future<void> annulerRemises(
+/// Suppression en lot de remises : les produits qui la portaient n'ont plus de remise.
+Future<void> supprimerRemises(
   BuildContext context,
   WidgetRef ref,
   List<Remise> choix,
@@ -746,27 +743,19 @@ Future<void> annulerRemises(
   final l10n = AppLocalizations.of(context);
   final ok = await afficherActionLot(
     context,
-    action: DsActionLot.annuler,
+    action: DsActionLot.supprimer,
     entite: l10n.prdEntiteRemise,
     entitePluriel: l10n.prdEntiteRemises,
     elements: [
       for (final r in choix)
-        DsElementLot(
-          id: r.code,
-          titre: r.designation,
-          sousTitre: r.code,
-          meta: l10n.prdNProduits(nbProduits(r)),
-          motifBlocage: r.actif ? null : l10n.prdDejaInactif,
-        ),
+        DsElementLot(id: r.code, titre: r.designation, sousTitre: r.code, meta: l10n.prdNProduits(nbProduits(r))),
     ],
   );
   if (ok == null) return;
-  for (final r in choix.where((r) => r.actif)) {
-    await ref.read(catalogueServiceProvider).activerRemise(r.code, false);
-  }
+  await ref.read(catalogueServiceProvider).supprimerRemises([for (final r in choix) r.code]);
   rafraichirCatalogue(ref);
   effacer();
-  if (context.mounted) afficherToast(context, titre: l10n.prdToastAnnulation, ton: DsToastTon.succes);
+  if (context.mounted) afficherToast(context, titre: l10n.prdToastSuppression, ton: DsToastTon.succes);
 }
 
 // ============================================================ Packs
@@ -1090,11 +1079,15 @@ Future<void> afficherDetailPack(BuildContext context, WidgetRef ref, Pack k, {Vo
   );
 }
 
-Future<void> annulerPacks(BuildContext context, WidgetRef ref, List<Pack> choix, VoidCallback effacer) async {
+/// Suppression en lot de packs ; un pack déjà vendu est bloqué (ventes scellées).
+Future<void> supprimerPacks(BuildContext context, WidgetRef ref, List<Pack> choix, VoidCallback effacer) async {
   final l10n = AppLocalizations.of(context);
+  final service = ref.read(catalogueServiceProvider);
+  final vendus = await service.packsVendus();
+  if (!context.mounted) return;
   final ok = await afficherActionLot(
     context,
-    action: DsActionLot.annuler,
+    action: DsActionLot.supprimer,
     entite: l10n.prdEntitePack,
     entitePluriel: l10n.prdEntitePacks,
     elements: [
@@ -1104,15 +1097,16 @@ Future<void> annulerPacks(BuildContext context, WidgetRef ref, List<Pack> choix,
           titre: k.designation,
           sousTitre: k.code,
           meta: l10n.prdNComposants(k.lignes.length),
-          motifBlocage: k.actif ? null : l10n.prdDejaInactif,
+          motifBlocage: vendus.contains(k.code) ? l10n.prdPackVendu : null,
         ),
     ],
   );
   if (ok == null) return;
-  for (final k in choix.where((k) => k.actif)) {
-    await ref.read(catalogueServiceProvider).activerPack(k.code, false);
-  }
+  await service.supprimerPacks([
+    for (final k in choix)
+      if (!vendus.contains(k.code)) k.code,
+  ]);
   rafraichirCatalogue(ref);
   effacer();
-  if (context.mounted) afficherToast(context, titre: l10n.prdToastAnnulation, ton: DsToastTon.succes);
+  if (context.mounted) afficherToast(context, titre: l10n.prdToastSuppression, ton: DsToastTon.succes);
 }

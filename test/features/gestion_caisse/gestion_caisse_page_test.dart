@@ -139,6 +139,14 @@ void main() {
       expect((await CaisseRepository(db).solde('CIS0000')).especes, 5000);
       expect(find.text('Annulé'), findsWidgets);
       await tester.pump(const Duration(seconds: 5));
+      // Sans détail propre : le double-clic affiche toutes les colonnes de la ligne, audit compris.
+      await doubleClic(tester, find.text('TRF0001').first);
+      final detail = _cle('detail_ligne');
+      expect(detail, findsOneWidget);
+      expect(find.descendant(of: detail, matching: find.text('Créé par')), findsOneWidget);
+      expect(find.descendant(of: detail, matching: find.text('Erreur de caisse')), findsOneWidget);
+      await clic(tester, find.descendant(of: detail, matching: find.text('Fermer')));
+      expect(detail, findsNothing);
     });
 
     testWidgets('clôtures Z : confirmation obligatoire, rapport par caisse, détail, export fiscal vérifié', (

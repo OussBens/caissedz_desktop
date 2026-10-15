@@ -46,6 +46,13 @@ class MigrationV020Audit extends Migration {
     await txn.execute('CREATE TABLE audit_contexte (id INTEGER PRIMARY KEY CHECK (id = 1), utilisateur_code TEXT)');
     await txn.insert('audit_contexte', {'id': 1});
     for (final t in tables) {
+      await ajouterAudit(txn, t);
+    }
+  }
+
+  /// Ajoute les colonnes d'audit manquantes de [t] et ses déclencheurs de création / modification.
+  static Future<void> ajouterAudit(Transaction txn, String t) async {
+    {
       final colonnes = {for (final c in await txn.rawQuery('PRAGMA table_info($t)')) c['name']! as String};
       for (final c in ['cree_le', 'cree_par', 'modifie_le', 'modifie_par']) {
         if (!colonnes.contains(c)) await txn.execute('ALTER TABLE $t ADD COLUMN $c TEXT');

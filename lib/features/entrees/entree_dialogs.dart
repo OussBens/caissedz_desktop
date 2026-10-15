@@ -454,7 +454,7 @@ class _EntreeFormState extends ConsumerState<_EntreeForm> {
           if (_etape == 0)
             DsGrilleFormulaire(
               children: [
-                DsSpan(child: DsSubHead(l10n.entBonReception)),
+                DsSpan(child: DsSubHead(l10n.entBonReception, icone: LucideIcons.scanLine)),
                 DsFormRow(
                   libelle: l10n.produitsColCode,
                   largeurLibelle: _lw,
@@ -512,7 +512,7 @@ class _EntreeFormState extends ConsumerState<_EntreeForm> {
                     onChanged: (v) => setState(() => _majPrix = v ?? _majPrix),
                   ),
                 ),
-                DsSpan(child: DsSubHead(l10n.entPaiement)),
+                DsSpan(child: DsSubHead(l10n.entPaiement, icone: LucideIcons.banknote)),
                 ...lignesPaiement(
                   context,
                   etat: _paiement,

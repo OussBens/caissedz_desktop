@@ -226,6 +226,16 @@ class _DsModuleTableState<T> extends State<DsModuleTable<T>> {
         detail.onPressed([l], _effacer);
       };
     }
+    // Sans détail propre au module : le double-clic affiche toutes les colonnes de la ligne (masquées comprises).
+    ouvrir ??= (l) => afficherDetailLigne<T>(
+      context,
+      entite: widget.entite,
+      colonnes: [
+        for (final c in widget.colonnes)
+          if (c.permission == null || widget.permissions.contains(c.permission)) c,
+      ],
+      ligne: l,
+    );
 
     final export = widget.onExport == null
         ? null
@@ -551,22 +561,41 @@ Future<void> afficherDetailEntite(BuildContext context, DsEntityDetailDialog dia
 
 /// Intertitre de formulaire (`SubHead`) : capitales 11 px atténuées.
 class DsSubHead extends StatelessWidget {
-  const DsSubHead(this.texte, {super.key});
+  const DsSubHead(this.texte, {super.key, this.icone});
   final String texte;
+
+  /// Icône de section (pastille teintée devant le titre).
+  final IconData? icone;
 
   @override
   Widget build(BuildContext context) {
     final t = context.ds.typo;
+    final c = context.ds.colors;
+    // Titre de section coloré, suivi d'un filet : les blocs d'un formulaire se repèrent d'un coup d'œil.
     return Padding(
-      padding: const EdgeInsets.only(top: 4),
-      child: Text(
-        texte.toUpperCase(),
-        style: t.caption.copyWith(
-          fontSize: 11,
-          fontWeight: FontWeight.w600,
-          letterSpacing: .66,
-          color: context.ds.colors.textMuted,
-        ),
+      padding: const EdgeInsets.only(top: 6),
+      child: Row(
+        spacing: DsSpacing.s2,
+        children: [
+          if (icone != null)
+            Container(
+              width: 24,
+              height: 24,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(color: c.primaryTint, borderRadius: BorderRadius.circular(6)),
+              child: Icon(icone, size: 14, color: c.primaryTintFg),
+            ),
+          Text(
+            texte.toUpperCase(),
+            style: t.caption.copyWith(
+              fontSize: 11.5,
+              fontWeight: FontWeight.w700,
+              letterSpacing: .66,
+              color: c.primary,
+            ),
+          ),
+          Expanded(child: Container(height: 1, color: c.borderSubtle)),
+        ],
       ),
     );
   }
@@ -625,4 +654,62 @@ class DsSpan extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => child;
+}
+
+/// Détail générique d'une ligne de tableau : chaque colonne (masquées comprises) en libellé / valeur, sur deux
+/// colonnes ; titre = valeur de la première colonne.
+Future<void> afficherDetailLigne<T>(
+  BuildContext context, {
+  required String entite,
+  required List<DsColonne<T>> colonnes,
+  required T ligne,
+}) {
+  final l10n = AppLocalizations.of(context);
+  Widget valeur(BuildContext context, DsColonne<T> c) {
+    if (c.cellule != null) return c.cellule!(context, ligne);
+    final v = c.valeur(ligne)?.toString() ?? '';
+    return Text(v.isEmpty ? '—' : v, style: context.ds.typo.bodySm.copyWith(color: context.ds.colors.textPrimary));
+  }
+
+  final premiere = colonnes.isEmpty ? null : colonnes.first.valeur(ligne)?.toString();
+  return afficherDialog<void>(
+    context,
+    builder: (ctx) => DsDialog(
+      key: const ValueKey('detail_ligne'),
+      titre: premiere == null || premiere.isEmpty ? entite : premiere,
+      description: entite,
+      iconeData: LucideIcons.fileText,
+      largeur: 720,
+      actions: [
+        DsButton(
+          libelle: l10n.communFermer,
+          variante: DsButtonVariante.secondaire,
+          onPressed: () => Navigator.of(ctx).pop(),
+        ),
+      ],
+      contenu: LayoutBuilder(
+        builder: (context, c) {
+          final largeur = (c.maxWidth - DsSpacing.s5) / 2;
+          return Wrap(
+            spacing: DsSpacing.s5,
+            runSpacing: DsSpacing.s3,
+            children: [
+              for (final col in colonnes)
+                SizedBox(
+                  width: largeur,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 2,
+                    children: [
+                      Text(col.libelle, style: context.ds.typo.caption.copyWith(color: context.ds.colors.textMuted)),
+                      Align(alignment: AlignmentDirectional.centerStart, child: valeur(context, col)),
+                    ],
+                  ),
+                ),
+            ],
+          );
+        },
+      ),
+    ),
+  );
 }

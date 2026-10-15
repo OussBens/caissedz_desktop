@@ -7,6 +7,7 @@ import '../../core/i18n/generated/app_localizations.dart';
 import '../../domain/models/stock.dart';
 import '../../domain/permissions.dart';
 import '../../domain/referentiel/referentiel.dart';
+import '../commun/colonnes_audit.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
 import '../commun/selecteurs.dart';
@@ -99,12 +100,6 @@ class _SortiesPageState extends ConsumerState<SortiesPage> {
       ),
       DsColonne(id: 'obs', libelle: l10n.stkMotif, visibleParDefaut: false, valeur: (s) => s.commentaire ?? ''),
       DsColonne(
-        id: 'cree_par',
-        libelle: l10n.ventesCreePar,
-        visibleParDefaut: false,
-        valeur: (s) => utilisateurs[s.utilisateurCode] ?? s.utilisateurCode,
-      ),
-      DsColonne(
         id: 'annule_par',
         libelle: l10n.ventesAnnulePar,
         visibleParDefaut: false,
@@ -116,6 +111,7 @@ class _SortiesPageState extends ConsumerState<SortiesPage> {
         visibleParDefaut: false,
         valeur: (s) => s.annulation?.motif ?? '',
       ),
+      ...colonnesAudit(context, ref, (SortieStock x) => x.audit),
     ];
 
     return PageModule(

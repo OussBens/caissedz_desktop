@@ -166,9 +166,9 @@
   "produitErreurCodeBarresPris": "Ce code-barres est déjà utilisé.",
   "produitErreurPrix": "Prix invalide.",
   "produitErreurQuantite": "Quantité invalide.",
-  "iaIntro": "Scannez ou saisissez un code-barres : la fiche est recherchée dans CaisseDZ, puis Mantouj, Open Food Facts et Open Beauty Facts.",
+  "iaIntro": "Scannez un code-barres : la fiche est retrouvée automatiquement.",
   "iaRechercher": "Rechercher",
-  "iaAucun": "Aucune fiche trouvée pour ce code-barres : passez en saisie détaillée.",
+  "iaAucun": "Aucune fiche trouvée.",
   "iaTrouve": "Fiche trouvée via {source}",
   "@iaTrouve": {
     "placeholders": {
@@ -2087,7 +2087,6 @@
   "prdPrixPack": "Prix du pack",
   "prdEconomie": "Économie",
   "prdDisponibles": "Disponibles",
-  "prdFormDescription": "Rapide : une page pour l'essentiel. Détaillé : 3 étapes (photos, identification et prix · stock et emballages · variantes et options). IA : fiche retrouvée par le code-barres.",
   "prdModeRapide": "Rapide",
   "prdModeDetaille": "Détaillé · 3 étapes",
   "prdModeIa": "IA",
@@ -2111,7 +2110,6 @@
   "prdPrincipale": "Principale",
   "prdPhotosFormat": "JPG ou PNG · 4 max",
   "prdPhotosFin": "la première est la photo principale",
-  "prdPhotosAide": "La 1re photo s'affiche en caisse (carte produit et dialog Quantité et colis). JPG ou PNG, 4 max.",
   "prdIdentification": "Identification",
   "prdCodeAuto": "Attribué à l'enregistrement",
   "prdDesignationIndice": "Ex. Huile Elio 1 L",
@@ -2199,9 +2197,6 @@
       }
     }
   },
-  "prdContientProduits": "Contient des produits — réaffectez-les d'abord",
-  "prdDejaInactif": "Déjà inactif",
-  "prdToastAnnulation": "Annulation effectuée",
   "prdPorteeProduit": "Par produit",
   "prdPorteeMontant": "Par montant (panier)",
   "prdProgrammee": "Programmée",
@@ -3664,5 +3659,22 @@
         "type": "String"
       }
     }
-  }
+  },
+  "auditCreeLe": "Créé le",
+  "auditModifieLe": "Modifié le",
+  "auditModifiePar": "Modifié par",
+  "prdDescRapide": "L'essentiel sur une seule page.",
+  "prdDescDetaille": "En 3 étapes : identification, stock, variantes.",
+  "prdDescIa": "Fiche retrouvée par le code-barres.",
+  "prdFiltreQuantite": "Quantité",
+  "prdToastSuppression": "Suppression effectuée",
+  "prdVersSansCategorie": "{n} produit(s) → Sans catégorie",
+  "@prdVersSansCategorie": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "prdPackVendu": "Déjà vendu : conservé pour l'historique des ventes"
 }

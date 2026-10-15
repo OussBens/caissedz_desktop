@@ -417,14 +417,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get produitErreurQuantite => 'Quantité invalide.';
 
   @override
-  String get iaIntro =>
-      'Scannez ou saisissez un code-barres : la fiche est recherchée dans CaisseDZ, puis Mantouj, Open Food Facts et Open Beauty Facts.';
+  String get iaIntro => 'Scannez un code-barres : la fiche est retrouvée automatiquement.';
 
   @override
   String get iaRechercher => 'Rechercher';
 
   @override
-  String get iaAucun => 'Aucune fiche trouvée pour ce code-barres : passez en saisie détaillée.';
+  String get iaAucun => 'Aucune fiche trouvée.';
 
   @override
   String iaTrouve(String source) {
@@ -3939,10 +3938,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get prdDisponibles => 'Disponibles';
 
   @override
-  String get prdFormDescription =>
-      'Rapide : une page pour l\'essentiel. Détaillé : 3 étapes (photos, identification et prix · stock et emballages · variantes et options). IA : fiche retrouvée par le code-barres.';
-
-  @override
   String get prdModeRapide => 'Rapide';
 
   @override
@@ -3991,10 +3986,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get prdPhotosFin => 'la première est la photo principale';
-
-  @override
-  String get prdPhotosAide =>
-      'La 1re photo s\'affiche en caisse (carte produit et dialog Quantité et colis). JPG ou PNG, 4 max.';
 
   @override
   String get prdIdentification => 'Identification';
@@ -4162,15 +4153,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String prdNComposants(int n) {
     return '$n composant(s)';
   }
-
-  @override
-  String get prdContientProduits => 'Contient des produits — réaffectez-les d\'abord';
-
-  @override
-  String get prdDejaInactif => 'Déjà inactif';
-
-  @override
-  String get prdToastAnnulation => 'Annulation effectuée';
 
   @override
   String get prdPorteeProduit => 'Par produit';
@@ -7090,4 +7072,36 @@ class AppLocalizationsFr extends AppLocalizations {
   String prdMontantPanierAide(String devise) {
     return 'Ex. −500 $devise sur le panier';
   }
+
+  @override
+  String get auditCreeLe => 'Créé le';
+
+  @override
+  String get auditModifieLe => 'Modifié le';
+
+  @override
+  String get auditModifiePar => 'Modifié par';
+
+  @override
+  String get prdDescRapide => 'L\'essentiel sur une seule page.';
+
+  @override
+  String get prdDescDetaille => 'En 3 étapes : identification, stock, variantes.';
+
+  @override
+  String get prdDescIa => 'Fiche retrouvée par le code-barres.';
+
+  @override
+  String get prdFiltreQuantite => 'Quantité';
+
+  @override
+  String get prdToastSuppression => 'Suppression effectuée';
+
+  @override
+  String prdVersSansCategorie(int n) {
+    return '$n produit(s) → Sans catégorie';
+  }
+
+  @override
+  String get prdPackVendu => 'Déjà vendu : conservé pour l\'historique des ventes';
 }

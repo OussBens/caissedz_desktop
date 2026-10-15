@@ -9,6 +9,7 @@ import '../../domain/models/tiers.dart';
 import '../../domain/referentiel/referentiel.dart';
 import '../../domain/referentiel/wilayas.dart';
 import '../commun/carte_entite.dart';
+import '../commun/colonnes_audit.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
 import '../commun/referentiel_ui.dart';
@@ -185,6 +186,7 @@ class _TiersPageState extends ConsumerState<TiersPage> {
       DsColonne(id: 'rib', libelle: 'RIB', visibleParDefaut: false, valeur: (t) => t.fiche.rib),
       DsColonne(id: 'banque', libelle: l10n.tiersBanque, visibleParDefaut: false, valeur: (t) => t.fiche.banque),
       DsColonne(id: 'obs', libelle: l10n.tiersObservation, visibleParDefaut: false, valeur: (t) => t.fiche.observation),
+      ...colonnesAudit(context, ref, (LigneTiers x) => x.audit),
     ];
 
     final actifs = tous.where((t) => t.actif);

@@ -8,6 +8,7 @@ import '../../domain/models/produit.dart';
 import '../../domain/models/retour.dart';
 import '../../domain/models/tiers.dart';
 import '../../domain/permissions.dart';
+import '../commun/colonnes_audit.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
 import '../commun/selecteurs.dart';
@@ -138,7 +139,6 @@ class _RetoursPageState extends ConsumerState<RetoursPage> {
         visibleParDefaut: false,
         valeur: (r) => r.numeroSerie ?? '',
       ),
-      DsColonne(id: 'cree_par', libelle: l10n.ventesCreePar, visibleParDefaut: false, valeur: (r) => r.utilisateurCode),
       DsColonne(
         id: 'annule_par',
         libelle: l10n.ventesAnnulePar,
@@ -151,6 +151,7 @@ class _RetoursPageState extends ConsumerState<RetoursPage> {
         visibleParDefaut: false,
         valeur: (r) => r.motifAnnulation ?? '',
       ),
+      ...colonnesAudit(context, ref, (Retour x) => x.audit),
     ];
 
     Future<void> modifier(Retour r) => afficherFormulaireRetour(context, ref, retour: r);

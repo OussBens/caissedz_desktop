@@ -4,14 +4,15 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
+import '../../domain/models/audit.dart';
 import '../../domain/models/utilisateur.dart';
 import '../../domain/permissions.dart';
 import '../commun/carte_entite.dart';
+import '../commun/colonnes_audit.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
 import '../commun/statuts.dart';
 import '../gestion_caisse/gestion_caisse_providers.dart';
-import '../historique/historique_providers.dart';
 import '../produits/produits_providers.dart';
 import 'utilisateurs_dialogs.dart';
 import 'utilisateurs_providers.dart';
@@ -51,7 +52,6 @@ class _UtilisateursPageState extends ConsumerState<UtilisateursPage> {
   Widget _utilisateurs(AppLocalizations l10n, List<LigneUtilisateur> toutes, List<Role> roles) {
     final devise = ref.watch(deviseProvider);
     final caisses = {for (final c in ref.watch(caissesListeProvider).value ?? const []) c.code: c.nom};
-    final noms = ref.watch(nomsUtilisateursProvider).value ?? const <String, String>{};
     final lignes = toutes
         .where((l) => (_role == null || l.u.roleCode == _role) && (_actif == null || l.u.actif == _actif))
         .toList();
@@ -129,24 +129,11 @@ class _UtilisateursPageState extends ConsumerState<UtilisateursPage> {
         valeur: (l) => l.totalVendu,
         cellule: (_, l) => Text(formaterMontant(l.totalVendu, devise)),
       ),
-      DsColonne(
-        id: 'cree_par',
-        libelle: l10n.usrCreePar,
-        visibleParDefaut: false,
-        valeur: (l) => l.u.creePar == null ? '' : (noms[l.u.creePar] ?? l.u.creePar!),
-      ),
-      DsColonne(
-        id: 'cree_le',
-        libelle: l10n.usrCreeLe,
-        visibleParDefaut: false,
-        valeur: (l) => l.u.creeLe,
-        cellule: (_, l) => Text(l.u.creeLe == null ? '—' : formatAcces.format(l.u.creeLe!)),
-      ),
-      DsColonne(
-        id: 'modifie_par',
-        libelle: l10n.usrModifiePar,
-        visibleParDefaut: false,
-        valeur: (l) => l.u.modifiePar == null ? '' : (noms[l.u.modifiePar] ?? l.u.modifiePar!),
+      ...colonnesAudit(
+        context,
+        ref,
+        (LigneUtilisateur x) =>
+            Audit(creeLe: x.u.creeLe, creePar: x.u.creePar, modifieLe: x.u.modifieLe, modifiePar: x.u.modifiePar),
       ),
     ];
     return DsModuleTable<LigneUtilisateur>(
@@ -275,7 +262,6 @@ class _UtilisateursPageState extends ConsumerState<UtilisateursPage> {
   }
 
   Widget _roles(AppLocalizations l10n, List<Role> roles) {
-    final noms = ref.watch(nomsUtilisateursProvider).value ?? const <String, String>{};
     final nbModules = itemsModules(l10n).length;
     final colonnes = <DsColonne<Role>>[
       DsColonne(id: 'code', libelle: l10n.usrCode, valeur: (r) => r.code, attenue: true),
@@ -315,18 +301,10 @@ class _UtilisateursPageState extends ConsumerState<UtilisateursPage> {
         valeur: (r) => r.actif ? 1 : 0,
         cellule: (_, r) => BadgeStatut(r.actif ? 'actif' : 'inactif'),
       ),
-      DsColonne(
-        id: 'cree_par',
-        libelle: l10n.usrCreePar,
-        visibleParDefaut: false,
-        valeur: (r) => r.creePar == null ? '' : (noms[r.creePar] ?? r.creePar!),
-      ),
-      DsColonne(
-        id: 'cree_le',
-        libelle: l10n.usrCreeLe,
-        visibleParDefaut: false,
-        valeur: (r) => r.creeLe,
-        cellule: (_, r) => Text(r.creeLe == null ? '—' : formatAcces.format(r.creeLe!)),
+      ...colonnesAudit(
+        context,
+        ref,
+        (Role x) => Audit(creeLe: x.creeLe, creePar: x.creePar, modifieLe: x.modifieLe, modifiePar: x.modifiePar),
       ),
     ];
     return DsModuleTable<Role>(

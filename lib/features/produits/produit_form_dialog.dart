@@ -491,7 +491,13 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
     return DsDialog(
       titre: _edition ? l10n.produitModifier : l10n.produitsNouveau,
       iconeData: _edition ? LucideIcons.pencil : LucideIcons.packagePlus,
-      description: _edition ? '${p!.designation} · ${p.code}' : l10n.prdFormDescription,
+      description: _edition
+          ? '${p!.designation} · ${p.code}'
+          : switch (_mode) {
+              ModeFormulaireProduit.rapide => l10n.prdDescRapide,
+              ModeFormulaireProduit.detaille => l10n.prdDescDetaille,
+              ModeFormulaireProduit.ia => l10n.prdDescIa,
+            },
       largeur: 960,
       piedDebut: Text(
         det ? l10n.prdEtapeObligatoire(_etape) : l10n.prdObligatoire,
@@ -605,8 +611,6 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
   }
 
   List<Widget> _etape1(AppLocalizations l10n, String devise, bool eanInvalide) {
-    final c = context.ds.colors;
-    final t = context.ds.typo;
     final det = _detaille;
     final categories = (ref.watch(categoriesProvider).value ?? const <Categorie>[])
         .where((x) => x.actif || x.code == _categorie)
@@ -616,30 +620,22 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
         .toList();
     final fournisseurs = ref.watch(fournisseursProvider).value ?? const <Fournisseur>[];
     return [
-      DsSpan(child: DsSubHead(l10n.prdPhotos)),
+      DsSpan(child: DsSubHead(l10n.prdPhotos, icone: LucideIcons.image)),
       DsSpan(
-        child: Wrap(
-          spacing: 16,
-          runSpacing: 8,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: [
-            DsPhotoUploader(
-              photos: _photos,
-              onAjouter: _ajouterPhoto,
-              onRetirer: (x) => setState(() => _photos = _photos.where((y) => y != x).toList()),
-              libelleAjouter: l10n.dsAjouter,
-              libellePrincipale: l10n.prdPrincipale,
-              aide: l10n.prdPhotosFormat,
-              libelleFin: l10n.prdPhotosFin,
-            ),
-            ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 280),
-              child: Text(l10n.prdPhotosAide, style: t.bodySm.copyWith(color: c.textMuted, height: 1.5)),
-            ),
-          ],
+        child: Align(
+          alignment: AlignmentDirectional.centerStart,
+          child: DsPhotoUploader(
+            photos: _photos,
+            onAjouter: _ajouterPhoto,
+            onRetirer: (x) => setState(() => _photos = _photos.where((y) => y != x).toList()),
+            libelleAjouter: l10n.dsAjouter,
+            libellePrincipale: l10n.prdPrincipale,
+            aide: l10n.prdPhotosFormat,
+            libelleFin: l10n.prdPhotosFin,
+          ),
         ),
       ),
-      DsSpan(child: DsSubHead(l10n.prdIdentification)),
+      DsSpan(child: DsSubHead(l10n.prdIdentification, icone: LucideIcons.tag)),
       DsFormRow(
         libelle: l10n.produitsColCode,
         largeurLibelle: _lw,
@@ -750,7 +746,7 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
           ),
         ),
       ],
-      DsSpan(child: DsSubHead(l10n.prdPrix)),
+      DsSpan(child: DsSubHead(l10n.prdPrix, icone: LucideIcons.banknote)),
       DsFormRow(
         libelle: l10n.produitChampPrixAchat,
         obligatoire: true,
@@ -855,7 +851,7 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
       ),
     );
     return [
-      DsSpan(child: DsSubHead(l10n.produitsColStock)),
+      DsSpan(child: DsSubHead(l10n.produitsColStock, icone: LucideIcons.boxes)),
       DsFormRow(
         libelle: _edition ? l10n.prdStockActuel : l10n.prdStockInitial,
         largeurLibelle: _lw,
@@ -903,7 +899,7 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
       else
         const SizedBox.shrink(),
       if (det) ...[
-        DsSpan(child: DsSubHead(l10n.prdEmballages)),
+        DsSpan(child: DsSubHead(l10n.prdEmballages, icone: LucideIcons.package)),
         DsSpan(
           child: Text(l10n.prdEmballagesAide, style: t.bodySm.copyWith(color: c.textMuted, height: 1.5)),
         ),
@@ -918,7 +914,7 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
     final t = context.ds.typo;
     final tailles = _typeTaille == null ? const <String>[] : taillesParType[_typeTaille]!;
     return [
-      DsSpan(child: DsSubHead(l10n.prdVariantes)),
+      DsSpan(child: DsSubHead(l10n.prdVariantes, icone: LucideIcons.layers)),
       DsSpan(
         child: DsFormRow(
           libelle: l10n.prdTypeTaille,
@@ -998,7 +994,7 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
           ),
         ),
       ),
-      DsSpan(child: DsSubHead(l10n.prdOptions)),
+      DsSpan(child: DsSubHead(l10n.prdOptions, icone: LucideIcons.settings2)),
       DsSpan(
         child: DsFormRow(
           libelle: l10n.prdCodesMultiples,

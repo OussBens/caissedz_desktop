@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 
+import 'audit.dart';
 import 'panier.dart';
 
 class StatutsVente {
@@ -18,6 +19,7 @@ class StatutsSession {
 @immutable
 class SessionCaisse {
   const SessionCaisse({
+    this.audit = Audit.vide,
     required this.code,
     required this.caisseCode,
     required this.utilisateurCode,
@@ -28,6 +30,9 @@ class SessionCaisse {
     this.ecart,
     this.statut = StatutsSession.ouverte,
   });
+
+  /// Colonnes d'audit (créé / modifié le / par), en lecture seule.
+  final Audit audit;
   final String code;
   final String caisseCode;
   final String utilisateurCode;
@@ -40,6 +45,7 @@ class SessionCaisse {
   bool get estOuverte => statut == StatutsSession.ouverte;
 
   factory SessionCaisse.depuisLigne(Map<String, Object?> r) => SessionCaisse(
+    audit: Audit.depuisLigne(r),
     code: r['code'] as String,
     caisseCode: r['caisse_code'] as String,
     utilisateurCode: r['utilisateur_code'] as String,
@@ -139,6 +145,7 @@ class VenteLigne {
 @immutable
 class Vente {
   const Vente({
+    this.audit = Audit.vide,
     required this.code,
     required this.date,
     required this.sessionCode,
@@ -161,6 +168,9 @@ class Vente {
     this.commentaire,
     this.typePanier = 'Ticket',
   });
+
+  /// Colonnes d'audit (créé / modifié le / par), en lecture seule.
+  final Audit audit;
   final String code;
   final DateTime date;
   final String sessionCode;
@@ -216,6 +226,7 @@ class Vente {
     List<VenteLigne> lignes = const [],
     List<Paiement> paiements = const [],
   }) => Vente(
+    audit: Audit.depuisLigne(r),
     code: r['code'] as String,
     date: DateTime.parse(r['date'] as String).toLocal(),
     sessionCode: r['session_code'] as String,

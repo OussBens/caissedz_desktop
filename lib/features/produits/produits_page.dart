@@ -7,6 +7,7 @@ import '../../core/i18n/generated/app_localizations.dart';
 import '../../domain/models/produit.dart';
 import '../../domain/permissions.dart';
 import '../../domain/referentiel/referentiel.dart';
+import '../commun/colonnes_audit.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
 import '../commun/referentiel_ui.dart';
@@ -37,6 +38,8 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
   String? _categorie;
   String? _etat;
   DsIntervalle _prix = const DsIntervalle();
+  DsIntervalle _prixAchat = const DsIntervalle();
+  DsIntervalle _quantite = const DsIntervalle();
   String? _marque;
 
   // Filtre de l'onglet Sous-catégories.
@@ -46,6 +49,8 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
     _categorie = null;
     _etat = null;
     _prix = const DsIntervalle();
+    _prixAchat = const DsIntervalle();
+    _quantite = const DsIntervalle();
     _marque = null;
   });
 
@@ -123,6 +128,10 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
               (_marque == null || p.marque == _marque) &&
               (_prix.min == null || p.prixVente >= _prix.min!) &&
               (_prix.max == null || p.prixVente <= _prix.max!) &&
+              (_prixAchat.min == null || p.prixAchat >= _prixAchat.min!) &&
+              (_prixAchat.max == null || p.prixAchat <= _prixAchat.max!) &&
+              (_quantite.min == null || stock(p) >= _quantite.min!) &&
+              (_quantite.max == null || stock(p) <= _quantite.max!) &&
               switch (_etat) {
                 'rupture' => !p.service && stock(p) <= 0,
                 'seuil' => etat(p) == 'seuil',
@@ -278,6 +287,7 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
         valeur: (p) => p.dateExpiration,
         cellule: (_, p) => Text(dateOuTiret(p.dateExpiration)),
       ),
+      ...colonnesAudit(context, ref, (Produit x) => x.audit),
     ];
 
     Future<void> modifier(Produit p) => afficherFormulaireProduit(context, produit: p, detaille: true);
@@ -296,7 +306,9 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
       messageVide: l10n.produitsAucun,
       filtresOuverts: true,
       colonnesFiltres: 4,
-      nbFiltresActifs: [_categorie, _etat, _marque].where((f) => f != null).length + (_prix.estVide ? 0 : 1),
+      nbFiltresActifs:
+          [_categorie, _etat, _marque].where((f) => f != null).length +
+          [_prix, _prixAchat, _quantite].where((i) => !i.estVide).length,
       onReinitialiser: _reinitialiser,
       kpis: [
         DsStatCard(libelle: l10n.prdKpiActifs, valeur: '${actifs.length}', icone: LucideIcons.package),
@@ -353,6 +365,30 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
             libelleEffacer: l10n.dsEffacer,
             libelleValider: l10n.communValider,
             onChanged: (v) => setState(() => _prix = v),
+          ),
+        ),
+        if (voirAchat)
+          DsFormRow(
+            libelle: l10n.produitsColPrixAchat,
+            largeurLibelle: 90,
+            child: DsRangeFilter(
+              key: const ValueKey('filtre_prix_achat'),
+              valeur: _prixAchat,
+              unite: devise,
+              libelleEffacer: l10n.dsEffacer,
+              libelleValider: l10n.communValider,
+              onChanged: (v) => setState(() => _prixAchat = v),
+            ),
+          ),
+        DsFormRow(
+          libelle: l10n.prdFiltreQuantite,
+          largeurLibelle: 90,
+          child: DsRangeFilter(
+            key: const ValueKey('filtre_quantite'),
+            valeur: _quantite,
+            libelleEffacer: l10n.dsEffacer,
+            libelleValider: l10n.communValider,
+            onChanged: (v) => setState(() => _quantite = v),
           ),
         ),
         DsFormRow(
@@ -467,6 +503,7 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
         valeur: (c) => c.actif ? 1 : 0,
         cellule: (_, c) => BadgeStatut(c.actif ? 'actif' : 'inactif'),
       ),
+      ...colonnesAudit(context, ref, (Categorie x) => x.audit),
     ];
     Future<void> modifier(Categorie c) => afficherFormulaireCategorie(context, ref, categorie: c);
     Future<void> detail(Categorie c) =>
@@ -498,10 +535,10 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
           onPressed: (choix, _) => modifier(choix.first),
         ),
         DsActionModule(
-          libelle: l10n.dsAnnuler,
-          icone: LucideIcons.ban,
+          libelle: l10n.communSupprimer,
+          icone: LucideIcons.trash2,
           danger: true,
-          onPressed: (choix, effacer) => annulerCategories(context, ref, choix, effacer, nbProduits: nbProduits),
+          onPressed: (choix, effacer) => supprimerCategories(context, ref, choix, effacer, nbProduits: nbProduits),
         ),
       ],
       primaire: DsButton(
@@ -540,6 +577,7 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
         visibleParDefaut: false,
         valeur: (s) => s.description ?? '',
       ),
+      ...colonnesAudit(context, ref, (SousCategorie x) => x.audit),
     ];
     Future<void> modifier(SousCategorie s) => afficherFormulaireSousCategorie(context, ref, sousCategorie: s);
     Future<void> detail(SousCategorie s) => afficherDetailSousCategorie(
@@ -592,10 +630,10 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
           onPressed: (choix, _) => modifier(choix.first),
         ),
         DsActionModule(
-          libelle: l10n.dsAnnuler,
-          icone: LucideIcons.ban,
+          libelle: l10n.communSupprimer,
+          icone: LucideIcons.trash2,
           danger: true,
-          onPressed: (choix, effacer) => annulerSousCategories(context, ref, choix, effacer, nbProduits: nbProduits),
+          onPressed: (choix, effacer) => supprimerSousCategories(context, ref, choix, effacer, nbProduits: nbProduits),
         ),
       ],
       primaire: DsButton(
@@ -665,6 +703,7 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
         cellule: (_, r) => Text(r.parMontant ? formaterMontant(r.seuil, devise) : '—'),
       ),
       DsColonne(id: 'obs', libelle: l10n.retoursObservation, visibleParDefaut: false, valeur: (r) => r.observation),
+      ...colonnesAudit(context, ref, (Remise x) => x.audit),
     ];
     Future<void> modifier(Remise r) => afficherFormulaireRemise(context, ref, remise: r);
     Future<void> detail(Remise r) => afficherDetailRemise(context, ref, r, onModifier: () => modifier(r));
@@ -694,10 +733,10 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
           onPressed: (choix, _) => modifier(choix.first),
         ),
         DsActionModule(
-          libelle: l10n.dsAnnuler,
-          icone: LucideIcons.ban,
+          libelle: l10n.communSupprimer,
+          icone: LucideIcons.trash2,
           danger: true,
-          onPressed: (choix, effacer) => annulerRemises(context, ref, choix, effacer, nbProduits: nbProduits),
+          onPressed: (choix, effacer) => supprimerRemises(context, ref, choix, effacer, nbProduits: nbProduits),
         ),
       ],
       primaire: DsButton(
@@ -759,6 +798,7 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
         visibleParDefaut: false,
         valeur: (k) => k.description ?? '',
       ),
+      ...colonnesAudit(context, ref, (Pack x) => x.audit),
     ];
     Future<void> modifier(Pack k) => afficherFormulairePack(context, ref, pack: k);
     Future<void> detail(Pack k) => afficherDetailPack(context, ref, k, onModifier: () => modifier(k));
@@ -788,10 +828,10 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
           onPressed: (choix, _) => modifier(choix.first),
         ),
         DsActionModule(
-          libelle: l10n.dsAnnuler,
-          icone: LucideIcons.ban,
+          libelle: l10n.communSupprimer,
+          icone: LucideIcons.trash2,
           danger: true,
-          onPressed: (choix, effacer) => annulerPacks(context, ref, choix, effacer),
+          onPressed: (choix, effacer) => supprimerPacks(context, ref, choix, effacer),
         ),
       ],
       primaire: DsButton(

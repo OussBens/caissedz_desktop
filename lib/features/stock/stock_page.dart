@@ -9,6 +9,7 @@ import '../../domain/models/produit.dart';
 import '../../domain/models/stock.dart';
 import '../../domain/permissions.dart';
 import '../../domain/referentiel/referentiel.dart';
+import '../commun/colonnes_audit.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
 import '../commun/referentiel_ui.dart';
@@ -432,6 +433,7 @@ class _StockPageState extends ConsumerState<StockPage> {
         visibleParDefaut: false,
         valeur: (m) => m.commentaire ?? '',
       ),
+      ...colonnesAudit(context, ref, (MouvementStock x) => x.audit),
     ];
     final codesUtilisateurs = tous.map((m) => m.utilisateurCode).toSet().toList()..sort();
     return DsModuleTable<MouvementStock>(

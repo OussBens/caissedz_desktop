@@ -5,10 +5,10 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
 import '../../domain/zakat.dart';
+import '../commun/colonnes_audit.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
 import '../commun/statuts.dart';
-import '../historique/historique_providers.dart';
 import '../produits/produits_providers.dart';
 import 'zakat_dialogs.dart';
 
@@ -23,7 +23,6 @@ class ZakatPage extends ConsumerWidget {
     final calculs = ref.watch(calculsZakatProvider).value ?? const <Zakat>[];
     final patrimoine = ref.watch(patrimoineZakatProvider).value ?? const PatrimoineZakat();
     final parametres = ref.watch(parametresZakatProvider).value;
-    final noms = ref.watch(nomsUtilisateursProvider).value ?? const <String, String>{};
     final annee = DateTime.now().year;
     final nissab = parametres?.nissab ?? 0;
     final taux = parametres?.tauxPct ?? CalculZakat.tauxDefautPct;
@@ -122,12 +121,7 @@ class ZakatPage extends ConsumerWidget {
         cellule: (_, z) => Text(formatJour.format(z.debutHawl)),
       ),
       DsColonne(id: 'obs', libelle: l10n.zkColObservation, visibleParDefaut: false, valeur: (z) => z.observation),
-      DsColonne(
-        id: 'cree_par',
-        libelle: l10n.zkColCreePar,
-        visibleParDefaut: false,
-        valeur: (z) => z.creePar == null ? '' : (noms[z.creePar] ?? z.creePar!),
-      ),
+      ...colonnesAudit(context, ref, (Zakat x) => x.audit),
     ];
     return PageModule(
       moduleId: 'zakat',

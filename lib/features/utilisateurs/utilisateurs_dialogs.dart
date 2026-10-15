@@ -237,7 +237,7 @@ class _UtilisateurFormState extends ConsumerState<_UtilisateurForm> {
       ],
       contenu: DsGrilleFormulaire(
         children: [
-          DsSpan(child: DsSubHead(l10n.usrSectionCompte)),
+          DsSpan(child: DsSubHead(l10n.usrSectionCompte, icone: LucideIcons.user)),
           DsFormRow(
             libelle: l10n.usrCode,
             largeurLibelle: lw,
@@ -317,7 +317,7 @@ class _UtilisateurFormState extends ConsumerState<_UtilisateurForm> {
             ),
           ),
           const SizedBox.shrink(),
-          DsSpan(child: DsSubHead(l10n.usrSectionAcces)),
+          DsSpan(child: DsSubHead(l10n.usrSectionAcces, icone: LucideIcons.shieldCheck)),
           DsFormRow(
             libelle: l10n.usrRole,
             obligatoire: true,

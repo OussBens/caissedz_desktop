@@ -10,11 +10,11 @@ import '../../domain/models/retour.dart';
 import '../../domain/models/stock.dart';
 import '../../domain/models/tiers.dart';
 import '../../domain/permissions.dart';
+import '../commun/colonnes_audit.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
 import '../commun/statuts.dart';
 import '../entrees/entree_dialogs.dart';
-import '../historique/historique_providers.dart';
 import '../produits/produits_donnees.dart';
 import '../produits/produits_providers.dart';
 import '../retours/retours_dialogs.dart';
@@ -101,7 +101,6 @@ class _BesoinsPageState extends ConsumerState<BesoinsPage> {
     final fournisseurs = {
       for (final f in ref.watch(fournisseursProvider).value ?? const <Fournisseur>[]) f.code: f.nom,
     };
-    final utilisateurs = ref.watch(nomsUtilisateursProvider).value ?? const <String, String>{};
     final lignes = tous
         .where((b) => dansPeriode(b.date, _periode) && (_statut == null || statutBesoinDs(b) == _statut))
         .toList();
@@ -157,12 +156,7 @@ class _BesoinsPageState extends ConsumerState<BesoinsPage> {
         visibleParDefaut: false,
         valeur: (b) => b.observation ?? '',
       ),
-      DsColonne(
-        id: 'cree_par',
-        libelle: l10n.ventesCreePar,
-        visibleParDefaut: false,
-        valeur: (b) => utilisateurs[b.utilisateurCode] ?? b.utilisateurCode,
-      ),
+      ...colonnesAudit(context, ref, (Besoin x) => x.audit),
     ];
     bool fige(Besoin b) => !b.actif || b.statut == StatutsBesoin.disponible;
     return DsModuleTable<Besoin>(

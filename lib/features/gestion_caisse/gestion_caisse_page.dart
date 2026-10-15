@@ -9,6 +9,7 @@ import '../../domain/models/caisse.dart';
 import '../../domain/models/vente.dart';
 import '../../domain/permissions.dart';
 import '../caisse/caisse_dialogs.dart';
+import '../commun/colonnes_audit.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
 import '../commun/selecteurs.dart';
@@ -200,6 +201,7 @@ class _GestionCaissePageState extends ConsumerState<GestionCaissePage> {
               visibleParDefaut: false,
               valeur: (c) => c.observation ?? '',
             ),
+            ...colonnesAudit(context, ref, (Caisse x) => x.audit),
           ],
           onOuvrir: (c) => afficherDetailCaisse(context, ref, c),
           actions: [
@@ -297,12 +299,6 @@ class _GestionCaissePageState extends ConsumerState<GestionCaissePage> {
           valeur: (t) => t.commentaire ?? '',
         ),
         DsColonne(
-          id: 'cree_par',
-          libelle: l10n.ventesCreePar,
-          visibleParDefaut: false,
-          valeur: (t) => utilisateurs[t.utilisateurCode] ?? t.utilisateurCode,
-        ),
-        DsColonne(
           id: 'annule_par',
           libelle: l10n.ventesAnnulePar,
           visibleParDefaut: false,
@@ -314,6 +310,7 @@ class _GestionCaissePageState extends ConsumerState<GestionCaissePage> {
           visibleParDefaut: false,
           valeur: (t) => t.motifAnnulation ?? '',
         ),
+        ...colonnesAudit(context, ref, (TransfertCaisse x) => x.audit),
       ],
       actions: [
         DsActionModule(
@@ -348,7 +345,10 @@ class _GestionCaissePageState extends ConsumerState<GestionCaissePage> {
           (z) => dansPeriode(z.fin, _periodeClotures) && (_caisseClotures == null || z.caisseCode == _caisseClotures),
         )
         .toList();
-    final colonnes = colonnesClotures(l10n, devise, noms, utilisateurs);
+    final colonnes = [
+      ...colonnesClotures(l10n, devise, noms, utilisateurs),
+      ...colonnesAudit(context, ref, (Cloture x) => x.audit),
+    ];
     return DsModuleTable<Cloture>(
       key: const ValueKey('gc_clotures'),
       entite: l10n.gcEntiteClotures,
@@ -444,7 +444,10 @@ class _GestionCaissePageState extends ConsumerState<GestionCaissePage> {
               (_typeMouvements == null || m.type == _typeMouvements),
         )
         .toList();
-    final colonnes = colonnesMouvements(l10n, devise, noms, utilisateurs, session: (m) => sessionsDe[m]);
+    final colonnes = [
+      ...colonnesMouvements(l10n, devise, noms, utilisateurs, session: (m) => sessionsDe[m]),
+      ...colonnesAudit(context, ref, (MouvementCaisse x) => x.audit),
+    ];
     return DsModuleTable<MouvementCaisse>(
       key: const ValueKey('gc_mouvements'),
       entite: l10n.gcEntiteMouvements,
@@ -621,6 +624,7 @@ class _GestionCaissePageState extends ConsumerState<GestionCaissePage> {
           visibleParDefaut: false,
           valeur: (s) => utilisateurs[s.utilisateurCode] ?? s.utilisateurCode,
         ),
+        ...colonnesAudit(context, ref, (SessionCaisse x) => x.audit),
       ],
       onOuvrir: (s) => afficherMouvementsSession(context, ref, s),
       actions: [

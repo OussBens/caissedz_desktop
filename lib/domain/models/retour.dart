@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+import 'audit.dart';
+
 /// Ligne d'un retour (le DS v2.2 saisit un produit par retour).
 @immutable
 class RetourLigne {
@@ -49,6 +51,7 @@ class ReglementsRetour {
 @immutable
 class Retour {
   const Retour({
+    this.audit = Audit.vide,
     required this.code,
     required this.date,
     this.type = TypesTiers.client,
@@ -70,6 +73,9 @@ class Retour {
     this.motifAnnulation,
     this.lignes = const [],
   });
+
+  /// Colonnes d'audit (créé / modifié le / par), en lecture seule.
+  final Audit audit;
   final String code;
   final DateTime date;
 
@@ -127,6 +133,7 @@ class Retour {
   };
 
   factory Retour.depuisLigne(Map<String, Object?> r, [List<RetourLigne> lignes = const []]) => Retour(
+    audit: Audit.depuisLigne(r),
     code: r['code'] as String,
     date: DateTime.parse(r['date'] as String).toLocal(),
     type: r['type'] as String? ?? TypesTiers.client,
@@ -177,6 +184,7 @@ class TypesVersement {
 @immutable
 class Versement {
   const Versement({
+    this.audit = Audit.vide,
     required this.code,
     required this.date,
     required this.tiersType,
@@ -197,6 +205,9 @@ class Versement {
     this.annulePar,
     this.motifAnnulation,
   });
+
+  /// Colonnes d'audit (créé / modifié le / par), en lecture seule.
+  final Audit audit;
   final String code;
   final DateTime date;
   final String tiersType;
@@ -253,6 +264,7 @@ class Versement {
   };
 
   factory Versement.depuisLigne(Map<String, Object?> r, [List<Imputation> imputations = const []]) => Versement(
+    audit: Audit.depuisLigne(r),
     code: r['code'] as String,
     date: DateTime.parse(r['date'] as String).toLocal(),
     tiersType: r['tiers_type'] as String,

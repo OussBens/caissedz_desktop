@@ -888,7 +888,7 @@ abstract class AppLocalizations {
   /// No description provided for @iaIntro.
   ///
   /// In fr, this message translates to:
-  /// **'Scannez ou saisissez un code-barres : la fiche est recherchée dans CaisseDZ, puis Mantouj, Open Food Facts et Open Beauty Facts.'**
+  /// **'Scannez un code-barres : la fiche est retrouvée automatiquement.'**
   String get iaIntro;
 
   /// No description provided for @iaRechercher.
@@ -900,7 +900,7 @@ abstract class AppLocalizations {
   /// No description provided for @iaAucun.
   ///
   /// In fr, this message translates to:
-  /// **'Aucune fiche trouvée pour ce code-barres : passez en saisie détaillée.'**
+  /// **'Aucune fiche trouvée.'**
   String get iaAucun;
 
   /// No description provided for @iaTrouve.
@@ -7497,12 +7497,6 @@ abstract class AppLocalizations {
   /// **'Disponibles'**
   String get prdDisponibles;
 
-  /// No description provided for @prdFormDescription.
-  ///
-  /// In fr, this message translates to:
-  /// **'Rapide : une page pour l\'essentiel. Détaillé : 3 étapes (photos, identification et prix · stock et emballages · variantes et options). IA : fiche retrouvée par le code-barres.'**
-  String get prdFormDescription;
-
   /// No description provided for @prdModeRapide.
   ///
   /// In fr, this message translates to:
@@ -7598,12 +7592,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'la première est la photo principale'**
   String get prdPhotosFin;
-
-  /// No description provided for @prdPhotosAide.
-  ///
-  /// In fr, this message translates to:
-  /// **'La 1re photo s\'affiche en caisse (carte produit et dialog Quantité et colis). JPG ou PNG, 4 max.'**
-  String get prdPhotosAide;
 
   /// No description provided for @prdIdentification.
   ///
@@ -7916,24 +7904,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'{n} composant(s)'**
   String prdNComposants(int n);
-
-  /// No description provided for @prdContientProduits.
-  ///
-  /// In fr, this message translates to:
-  /// **'Contient des produits — réaffectez-les d\'abord'**
-  String get prdContientProduits;
-
-  /// No description provided for @prdDejaInactif.
-  ///
-  /// In fr, this message translates to:
-  /// **'Déjà inactif'**
-  String get prdDejaInactif;
-
-  /// No description provided for @prdToastAnnulation.
-  ///
-  /// In fr, this message translates to:
-  /// **'Annulation effectuée'**
-  String get prdToastAnnulation;
 
   /// No description provided for @prdPorteeProduit.
   ///
@@ -13460,6 +13430,66 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Ex. −500 {devise} sur le panier'**
   String prdMontantPanierAide(String devise);
+
+  /// No description provided for @auditCreeLe.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créé le'**
+  String get auditCreeLe;
+
+  /// No description provided for @auditModifieLe.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifié le'**
+  String get auditModifieLe;
+
+  /// No description provided for @auditModifiePar.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifié par'**
+  String get auditModifiePar;
+
+  /// No description provided for @prdDescRapide.
+  ///
+  /// In fr, this message translates to:
+  /// **'L\'essentiel sur une seule page.'**
+  String get prdDescRapide;
+
+  /// No description provided for @prdDescDetaille.
+  ///
+  /// In fr, this message translates to:
+  /// **'En 3 étapes : identification, stock, variantes.'**
+  String get prdDescDetaille;
+
+  /// No description provided for @prdDescIa.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fiche retrouvée par le code-barres.'**
+  String get prdDescIa;
+
+  /// No description provided for @prdFiltreQuantite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quantité'**
+  String get prdFiltreQuantite;
+
+  /// No description provided for @prdToastSuppression.
+  ///
+  /// In fr, this message translates to:
+  /// **'Suppression effectuée'**
+  String get prdToastSuppression;
+
+  /// No description provided for @prdVersSansCategorie.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n} produit(s) → Sans catégorie'**
+  String prdVersSansCategorie(int n);
+
+  /// No description provided for @prdPackVendu.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déjà vendu : conservé pour l\'historique des ventes'**
+  String get prdPackVendu;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

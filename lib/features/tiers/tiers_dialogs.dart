@@ -7,6 +7,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../application/tiers_service.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
+import '../../domain/models/audit.dart';
 import '../../domain/models/retour.dart';
 import '../../domain/models/tiers.dart';
 import '../../domain/referentiel/referentiel.dart';
@@ -33,6 +34,7 @@ class LigneTiers {
     required this.fiche,
     required this.stats,
     this.points = 0,
+    this.audit = Audit.vide,
   });
 
   factory LigneTiers.client(Client c, StatsTiers s) => LigneTiers(
@@ -47,6 +49,7 @@ class LigneTiers {
     fiche: c.fiche,
     stats: s,
     points: c.points,
+    audit: c.audit,
   );
 
   factory LigneTiers.fournisseur(Fournisseur f, StatsTiers s) => LigneTiers(
@@ -60,6 +63,7 @@ class LigneTiers {
     systeme: f.systeme,
     fiche: f.fiche,
     stats: s,
+    audit: f.audit,
   );
 
   final String type;
@@ -71,6 +75,9 @@ class LigneTiers {
   final bool actif;
   final bool systeme;
   final FicheTiers fiche;
+
+  /// Colonnes d'audit de la fiche client / fournisseur.
+  final Audit audit;
   final StatsTiers stats;
   final int points;
 
@@ -218,7 +225,7 @@ class _FormulaireTiersState extends ConsumerState<_FormulaireTiers> {
       ],
       contenu: DsGrilleFormulaire(
         children: [
-          DsSpan(child: DsSubHead(l10n.tiersInfosGenerales)),
+          DsSpan(child: DsSubHead(l10n.tiersInfosGenerales, icone: LucideIcons.idCard)),
           DsFormRow(
             libelle: l10n.produitsColCode,
             largeurLibelle: lw,
@@ -289,7 +296,7 @@ class _FormulaireTiersState extends ConsumerState<_FormulaireTiers> {
               child: DsTextField(controller: _activite, indice: l10n.tiersActiviteIndice),
             ),
           ),
-          DsSpan(child: DsSubHead(l10n.tiersContact)),
+          DsSpan(child: DsSubHead(l10n.tiersContact, icone: LucideIcons.phone)),
           DsSpan(
             child: DsFormRow(
               libelle: l10n.clientAdresse,
@@ -307,7 +314,7 @@ class _FormulaireTiersState extends ConsumerState<_FormulaireTiers> {
             largeurLibelle: lw,
             child: DsTextField(controller: _fax, indice: '023 xx xx xx'),
           ),
-          DsSpan(child: DsSubHead(l10n.tiersInfosAdministratives)),
+          DsSpan(child: DsSubHead(l10n.tiersInfosAdministratives, icone: LucideIcons.fileText)),
           DsFormRow(
             libelle: 'NIF',
             largeurLibelle: lw,
@@ -325,7 +332,7 @@ class _FormulaireTiersState extends ConsumerState<_FormulaireTiers> {
             child: DsTextField(controller: _nrc, indice: '16/00-1234567B12'),
           ),
           const SizedBox(),
-          DsSpan(child: DsSubHead(l10n.tiersInfosBancaires)),
+          DsSpan(child: DsSubHead(l10n.tiersInfosBancaires, icone: LucideIcons.landmark)),
           DsFormRow(
             libelle: l10n.tiersBanque,
             largeurLibelle: lw,

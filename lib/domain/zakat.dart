@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import 'calculs_prix.dart';
+import 'models/audit.dart';
 
 /// Calcul de la zakat (§9.15) :
 /// capital = stock + liquidités + créances − dettes ;
@@ -56,6 +57,7 @@ class StatutsZakat {
 @immutable
 class Zakat {
   const Zakat({
+    this.audit = Audit.vide,
     required this.code,
     required this.annee,
     required this.debutHawl,
@@ -75,6 +77,9 @@ class Zakat {
     this.creeLe,
     this.modifiePar,
   });
+
+  /// Colonnes d'audit (créé / modifié le / par), en lecture seule.
+  final Audit audit;
 
   final String code;
   final int annee;
@@ -125,6 +130,7 @@ class Zakat {
   };
 
   factory Zakat.depuisLigne(Map<String, Object?> r) => Zakat(
+    audit: Audit.depuisLigne(r),
     code: r['code'] as String,
     annee: r['annee'] as int,
     debutHawl: DateTime.parse(r['date_debut_hawl'] as String),

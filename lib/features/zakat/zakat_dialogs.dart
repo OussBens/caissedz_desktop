@@ -272,7 +272,7 @@ class _ZakatFormState extends ConsumerState<_ZakatForm> {
         children: [
           DsGrilleFormulaire(
             children: [
-              DsSpan(child: DsSubHead(l10n.zkSectionPeriode)),
+              DsSpan(child: DsSubHead(l10n.zkSectionPeriode, icone: LucideIcons.calendar)),
               DsFormRow(
                 libelle: l10n.zkColAnnee,
                 obligatoire: true,
@@ -314,7 +314,7 @@ class _ZakatFormState extends ConsumerState<_ZakatForm> {
                 aide: l10n.zkDueIndice,
                 child: DsDateField(valeur: _due, onChanged: (d) => setState(() => _due = d ?? _due)),
               ),
-              DsSpan(child: DsSubHead(l10n.zkSectionPatrimoine)),
+              DsSpan(child: DsSubHead(l10n.zkSectionPatrimoine, icone: LucideIcons.wallet)),
               DsFormRow(
                 libelle: l10n.zkValeurStock,
                 obligatoire: true,

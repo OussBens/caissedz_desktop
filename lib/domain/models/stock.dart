@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+import 'audit.dart';
+
 /// Types de mouvement de stock (valeur stockée FR, §13).
 class TypesMouvement {
   const TypesMouvement._();
@@ -17,6 +19,7 @@ class TypesMouvement {
 @immutable
 class MouvementStock {
   const MouvementStock({
+    this.audit = Audit.vide,
     this.id,
     required this.date,
     required this.produitCode,
@@ -30,6 +33,9 @@ class MouvementStock {
     required this.utilisateurCode,
     this.commentaire,
   });
+
+  /// Colonnes d'audit (créé / modifié le / par), en lecture seule.
+  final Audit audit;
 
   final int? id;
   final DateTime date;
@@ -63,6 +69,7 @@ class MouvementStock {
   };
 
   factory MouvementStock.depuisLigne(Map<String, Object?> r) => MouvementStock(
+    audit: Audit.depuisLigne(r),
     id: r['id'] as int?,
     date: DateTime.parse(r['date'] as String).toLocal(),
     produitCode: r['produit_code'] as String,
@@ -96,6 +103,7 @@ class NiveauStock {
 @immutable
 class Magasin {
   const Magasin({
+    this.audit = Audit.vide,
     required this.code,
     required this.nom,
     this.actif = true,
@@ -105,6 +113,9 @@ class Magasin {
     this.responsableCode,
     this.observation = '',
   });
+
+  /// Colonnes d'audit (créé / modifié le / par), en lecture seule.
+  final Audit audit;
   final String code;
   final String nom;
   final bool actif;
@@ -122,6 +133,7 @@ class Magasin {
     String? Function()? responsableCode,
     String? observation,
   }) => Magasin(
+    audit: audit,
     code: code,
     nom: nom ?? this.nom,
     actif: actif ?? this.actif,
@@ -133,6 +145,7 @@ class Magasin {
   );
 
   factory Magasin.depuisLigne(Map<String, Object?> r) => Magasin(
+    audit: Audit.depuisLigne(r),
     code: r['code'] as String,
     nom: r['nom'] as String,
     actif: (r['actif'] as int) == 1,
@@ -199,6 +212,7 @@ class LigneStock {
 @immutable
 class TransfertStock {
   const TransfertStock({
+    this.audit = Audit.vide,
     required this.code,
     required this.date,
     required this.magasinSource,
@@ -208,6 +222,9 @@ class TransfertStock {
     this.lignes = const [],
     this.annulation,
   });
+
+  /// Colonnes d'audit (créé / modifié le / par), en lecture seule.
+  final Audit audit;
   final String code;
   final DateTime date;
   final String magasinSource;
@@ -233,6 +250,7 @@ class StatutsBesoin {
 @immutable
 class Besoin {
   const Besoin({
+    this.audit = Audit.vide,
     required this.code,
     required this.date,
     required this.fournisseurCode,
@@ -243,6 +261,9 @@ class Besoin {
     this.lignes = const [],
     this.annulation,
   });
+
+  /// Colonnes d'audit (créé / modifié le / par), en lecture seule.
+  final Audit audit;
   final String code;
   final DateTime date;
   final String fournisseurCode;
@@ -257,6 +278,7 @@ class Besoin {
   double get quantite => lignes.fold(0.0, (s, l) => s + l.quantite);
 
   Besoin copyWith({String? statut}) => Besoin(
+    audit: audit,
     code: code,
     date: date,
     fournisseurCode: fournisseurCode,
@@ -278,6 +300,7 @@ class Besoin {
     'utilisateur_code': utilisateurCode,
   };
   factory Besoin.depuisLigne(Map<String, Object?> r, List<LigneStock> lignes) => Besoin(
+    audit: Audit.depuisLigne(r),
     code: r['code'] as String,
     date: DateTime.parse(r['date'] as String).toLocal(),
     fournisseurCode: r['fournisseur_code'] as String,
@@ -294,6 +317,7 @@ class Besoin {
 @immutable
 class SortieStock {
   const SortieStock({
+    this.audit = Audit.vide,
     required this.code,
     required this.date,
     required this.magasinCode,
@@ -303,6 +327,9 @@ class SortieStock {
     this.lignes = const [],
     this.annulation,
   });
+
+  /// Colonnes d'audit (créé / modifié le / par), en lecture seule.
+  final Audit audit;
   final String code;
   final DateTime date;
   final String magasinCode;

@@ -416,14 +416,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get produitErreurQuantite => 'Invalid quantity.';
 
   @override
-  String get iaIntro =>
-      'Scan or type a barcode: the product sheet is looked up in CaisseDZ, then Mantouj, Open Food Facts and Open Beauty Facts.';
+  String get iaIntro => 'Scan a barcode: the product sheet is found automatically.';
 
   @override
   String get iaRechercher => 'Search';
 
   @override
-  String get iaAucun => 'No sheet found for this barcode: switch to detailed entry.';
+  String get iaAucun => 'No product sheet found.';
 
   @override
   String iaTrouve(String source) {
@@ -3930,10 +3929,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get prdDisponibles => 'Available';
 
   @override
-  String get prdFormDescription =>
-      'Quick: one page for the essentials. Detailed: 3 steps (photos, identification and prices · stock and packaging · variants and options). AI: record found from the barcode.';
-
-  @override
   String get prdModeRapide => 'Quick';
 
   @override
@@ -3982,10 +3977,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get prdPhotosFin => 'the first one is the main photo';
-
-  @override
-  String get prdPhotosAide =>
-      'The 1st photo shows at the till (product card and Quantity and pack dialog). JPG or PNG, 4 max.';
 
   @override
   String get prdIdentification => 'Identification';
@@ -4153,15 +4144,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String prdNComposants(int n) {
     return '$n component(s)';
   }
-
-  @override
-  String get prdContientProduits => 'Contains products — reassign them first';
-
-  @override
-  String get prdDejaInactif => 'Already inactive';
-
-  @override
-  String get prdToastAnnulation => 'Cancellation done';
 
   @override
   String get prdPorteeProduit => 'Per product';
@@ -7076,4 +7058,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String prdMontantPanierAide(String devise) {
     return 'E.g. −500 $devise off the basket';
   }
+
+  @override
+  String get auditCreeLe => 'Created on';
+
+  @override
+  String get auditModifieLe => 'Modified on';
+
+  @override
+  String get auditModifiePar => 'Modified by';
+
+  @override
+  String get prdDescRapide => 'The essentials on a single page.';
+
+  @override
+  String get prdDescDetaille => 'In 3 steps: identification, stock, variants.';
+
+  @override
+  String get prdDescIa => 'Product sheet found from the barcode.';
+
+  @override
+  String get prdFiltreQuantite => 'Quantity';
+
+  @override
+  String get prdToastSuppression => 'Deleted';
+
+  @override
+  String prdVersSansCategorie(int n) {
+    return '$n product(s) → No category';
+  }
+
+  @override
+  String get prdPackVendu => 'Already sold: kept for the sales history';
 }

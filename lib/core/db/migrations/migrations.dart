@@ -20,6 +20,7 @@ import 'v018_zakat.dart';
 import 'v019_historique.dart';
 import 'v020_audit.dart';
 import 'v021_vente_montant.dart';
+import 'v022_audit_complement.dart';
 
 export 'migration.dart';
 
@@ -46,4 +47,5 @@ const List<Migration> toutesLesMigrations = [
   MigrationV019Historique(),
   MigrationV020Audit(),
   MigrationV021VenteMontant(),
+  MigrationV022AuditComplement(),
 ];
