@@ -22,6 +22,7 @@ import '../commun/referentiel_ui.dart';
 import '../commun/statuts.dart';
 import '../historique/historique_providers.dart';
 import '../produits/produits_providers.dart';
+import '../rapports/rapports_providers.dart';
 import '../stock/stock_providers.dart';
 import 'gestion_caisse_providers.dart';
 
@@ -1027,6 +1028,7 @@ class _ExportFiscalDialogState extends ConsumerState<_ExportFiscalDialog> {
       _ => await export.generer(debut: du, fin: au, utilisateurCode: utilisateur),
     };
     await ref.read(ecrivainExportProvider)(chemin, octets);
+    await ref.read(journalServiceProvider).export(id: 'controle_fiscal', format: ext.toUpperCase(), fichier: nom);
     final verif = _format == _FormatFiscal.csv ? null : ExportFiscal.verifier(octets);
     if (!mounted) return;
     if (verif != null && !verif.valide) {

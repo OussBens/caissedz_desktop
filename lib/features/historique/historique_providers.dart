@@ -94,6 +94,8 @@ String libelleAction(AppLocalizations l10n, String action) => switch (action) {
   'Dépense' => l10n.hiActDepense,
   'Paiement' => l10n.hiActPaiement,
   'Export' => l10n.hiActExport,
+  'Sauvegarde' => l10n.hiActSauvegarde,
+  'Restauration' => l10n.hiActRestauration,
   _ => action,
 };
 

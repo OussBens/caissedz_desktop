@@ -146,7 +146,7 @@ void main() {
           prixVente: 100,
         ),
       );
-      final service = SauvegardeService(base);
+      final service = SauvegardeService(base, utilisateurCode: 'USR0000');
       final chemin = '${dossier.path}/sauvegarde.cdz';
       await expectLater(
         service.sauvegarder(chemin: chemin, motDePasse: ''),
@@ -154,6 +154,7 @@ void main() {
       );
       await service.sauvegarder(chemin: chemin, motDePasse: "secret 'dz'");
       expect(File(chemin).existsSync(), isTrue);
+      expect((await base.db.query('historique', where: "action = 'Sauvegarde'")).single['detail'], 'sauvegarde.cdz');
       expect(await AppDatabase.fichierEstChiffre(chemin), isTrue);
       final info = await service.verifier(chemin: chemin, motDePasse: "secret 'dz'");
       expect(info.boutique, 'Avant');
@@ -177,6 +178,9 @@ void main() {
       expect((await BoutiqueRepository(base.db).lire())!.nom, 'Avant');
       expect((await base.db.query('produit')).length, 1);
       expect(SauvegardeService(base).restaurationEnAttente, isFalse);
+      // La ligne « Sauvegarde » est écrite après la copie ; la restauration est journalisée dans la base restaurée.
+      final journal = await base.db.query('historique', where: "entite = 'sauvegarde'", orderBy: 'id');
+      expect([for (final h in journal) (h['action'], h['detail'])], [('Restauration', 'sauvegarde.cdz')]);
       await base.fermer();
     });
   });

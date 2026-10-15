@@ -5,6 +5,7 @@ import 'package:file_selector/file_selector.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/providers.dart';
+import '../../application/journal_service.dart';
 import '../../application/parametres_service.dart';
 import '../../application/sauvegarde_service.dart';
 import '../../core/i18n/generated/app_localizations.dart';
@@ -21,7 +22,13 @@ final parametresServiceProvider = Provider<ParametresService>(
 );
 
 final sauvegardeServiceProvider = Provider<SauvegardeService>(
-  (ref) => SauvegardeService(ref.watch(appDatabaseProvider)),
+  (ref) =>
+      SauvegardeService(ref.watch(appDatabaseProvider), utilisateurCode: ref.watch(utilisateurCourantCodeProvider)),
+);
+
+final journalServiceProvider = Provider<JournalService>(
+  (ref) =>
+      JournalService(ref.watch(appDatabaseProvider).db, utilisateurCode: ref.watch(utilisateurCourantCodeProvider)),
 );
 
 /// Version des données de rapport (incrémentée après toute écriture métier pour recalculer).

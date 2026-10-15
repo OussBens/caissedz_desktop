@@ -62,6 +62,7 @@ Future<void> exporterRapport(BuildContext context, WidgetRef ref, Rapport r, DsF
     final chemin = await ref.read(selecteurEnregistrementProvider)('${r.id}_$date.xlsx', 'xlsx');
     if (chemin == null || !context.mounted) return;
     await ref.read(ecrivainFichierProvider)(chemin, ExportExcel.rapport(r));
+    await ref.read(journalServiceProvider).export(id: r.id, format: 'Excel', fichier: '${r.id}_$date.xlsx');
     if (!context.mounted) return;
     unawaited(
       afficherResultat(
@@ -77,6 +78,7 @@ Future<void> exporterRapport(BuildContext context, WidgetRef ref, Rapport r, DsF
   final boutique = (await ref.read(parametresServiceProvider).lireBoutique())?.nom ?? '';
   final devise = ref.read(deviseProvider);
   final police = await policePdf(arabe);
+  await ref.read(journalServiceProvider).export(id: r.id, format: 'PDF', fichier: '${r.id}_$date.pdf');
   if (!context.mounted) return;
   await afficherDialog<void>(
     context,

@@ -7,6 +7,7 @@ import 'package:caissedz_desktop/application/stock_service.dart';
 import 'package:caissedz_desktop/application/tiers_service.dart';
 import 'package:caissedz_desktop/application/vente_service.dart';
 import 'package:caissedz_desktop/core/design_system/design_system.dart';
+import 'package:caissedz_desktop/domain/historique.dart';
 import 'package:caissedz_desktop/domain/models/panier.dart';
 import 'package:caissedz_desktop/domain/models/parametres_vente.dart';
 import 'package:caissedz_desktop/domain/models/produit.dart';
@@ -106,6 +107,9 @@ void main() {
     await clic(tester, find.text('Fermer').last);
     final excel = Excel.decodeBytes(ecrit!);
     expect(excel.tables.values.single.maxRows, 3 + 2 + 1); // titre, vide, en-têtes, 2 paniers, totaux
+    final journal = (await c.read(appDatabaseProvider).db.query('historique', where: "action = 'Export'")).single;
+    expect((journal['entite_code'], journal['utilisateur_code']), ('situation_rcp', 'USR0000'));
+    expect(ModulesHistorique.module('export', 'Export', 'situation_rcp'), 'situation');
     await clic(tester, find.byKey(const ValueKey('situation_nav_mgp')));
     expect(find.text('25,0 %'), findsWidgets); // (300 − 240) / 240
   });

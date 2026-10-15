@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../core/db/app_database.dart';
+import '../data/historique_repository.dart';
 
 enum ErreurSauvegarde { motDePasseVide, fichierIntrouvable, motDePasseInvalide, cheminInvalide }
 
@@ -35,8 +36,20 @@ class InfoSauvegarde {
 /// de la machine dans `<base>.restaurer`, puis appliquée au prochain démarrage (la base ouverte n'est jamais
 /// remplacée à chaud).
 class SauvegardeService {
-  const SauvegardeService(this.base);
+  const SauvegardeService(this.base, {this.utilisateurCode});
   final AppDatabase base;
+
+  /// Auteur journalisé dans l'Historique (sauvegarde, restauration) ; rien n'est journalisé sans lui.
+  final String? utilisateurCode;
+
+  static String _nomFichier(String chemin) => chemin.split(RegExp(r'[\\/]')).last;
+
+  Future<void> _journal(String action, String chemin) async {
+    if (utilisateurCode == null) return;
+    await HistoriqueRepository(
+      base.db,
+    ).journaliser(utilisateurCode: utilisateurCode!, action: action, entite: 'sauvegarde', detail: _nomFichier(chemin));
+  }
 
   static String _echapper(String s) => s.replaceAll("'", "''");
 
@@ -52,6 +65,7 @@ class SauvegardeService {
     } finally {
       await db.execute('DETACH DATABASE sauvegarde');
     }
+    await _journal('Sauvegarde', chemin);
   }
 
   /// Ouvre la sauvegarde avec [motDePasse] et en lit le contenu.
@@ -86,6 +100,19 @@ class SauvegardeService {
       await db.execute("ATTACH DATABASE '${_echapper(cible)}' AS cible KEY \"x'${base.cleHex}'\"");
       await db.rawQuery("SELECT sqlcipher_export('cible')");
       await db.execute('PRAGMA cible.user_version = ${info.version}');
+      // Journalisée dans la base restaurée, celle qui sera ouverte au prochain démarrage.
+      if (utilisateurCode != null && info.version >= 3) {
+        await db.rawInsert(
+          'INSERT INTO cible.historique (utilisateur_code, action, entite, detail, date) VALUES (?, ?, ?, ?, ?)',
+          [
+            utilisateurCode,
+            'Restauration',
+            'sauvegarde',
+            _nomFichier(chemin),
+            DateTime.now().toUtc().toIso8601String(),
+          ],
+        );
+      }
       await db.execute('DETACH DATABASE cible');
     } finally {
       await db.close();

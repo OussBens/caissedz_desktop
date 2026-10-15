@@ -29,7 +29,7 @@ class EntreeHistorique {
   /// Code affiché `H…` (§8.10, format fixe), dérivé de l'identifiant séquentiel.
   String get code => 'H${id.toString().padLeft(6, '0')}';
 
-  String get module => ModulesHistorique.module(entite, action);
+  String get module => ModulesHistorique.module(entite, action, entiteCode);
 
   CategorieAction get categorie => ModulesHistorique.categorie(action);
 
@@ -77,11 +77,32 @@ abstract final class ModulesHistorique {
     'cloture': 'gestion_caisse',
     'zakat': 'zakat',
     'parametre': 'parametres',
+    'sauvegarde': 'parametres',
+  };
+
+  /// Exports (`entite = export`, `entite_code` = identifiant du tableau) : tableau → module.
+  static const Map<String, String> _parExport = {
+    'clotures_z': 'gestion_caisse',
+    'controle_fiscal': 'gestion_caisse',
+    'mouvements_caisse': 'gestion_caisse',
+    'sessions': 'gestion_caisse',
+    'mouvements': 'stock',
+    'transferts': 'magasins',
+    'roles': 'utilisateurs',
+    'categories': 'produits',
+    'sous_categories': 'produits',
+    'remises': 'produits',
+    'packs': 'produits',
   };
 
   /// Identifiant du module (§5) auquel rattacher une ligne ; l'entité brute si elle est inconnue.
-  static String module(String entite, String action) =>
-      action == 'Connexion' || action == 'Déconnexion' ? connexion : (_parEntite[entite] ?? entite);
+  static String module(String entite, String action, [String? entiteCode]) {
+    if (action == 'Connexion' || action == 'Déconnexion') return connexion;
+    if (entite == 'export' && entiteCode != null) {
+      return entiteCode.startsWith('situation_') ? 'situation' : (_parExport[entiteCode] ?? entiteCode);
+    }
+    return _parEntite[entite] ?? entite;
+  }
 
   static const Map<String, CategorieAction> _parAction = {
     'Modification': CategorieAction.modification,
@@ -95,6 +116,8 @@ abstract final class ModulesHistorique {
     'Fermeture': CategorieAction.connexion,
     'Clôture Z': CategorieAction.connexion,
     'Export': CategorieAction.export,
+    'Sauvegarde': CategorieAction.export,
+    'Restauration': CategorieAction.modification,
   };
 
   /// Famille d'une action ; toute autre action (création, encaissement, versement, ouverture…) est une création.

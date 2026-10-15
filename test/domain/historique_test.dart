@@ -9,6 +9,9 @@ void main() {
       expect(ModulesHistorique.module('utilisateur', 'Modification'), 'utilisateurs');
       expect(ModulesHistorique.module('utilisateur', 'Connexion'), ModulesHistorique.connexion);
       expect(ModulesHistorique.module('inconnue', 'Création'), 'inconnue');
+      expect(ModulesHistorique.module('export', 'Export', 'clotures_z'), 'gestion_caisse');
+      expect(ModulesHistorique.module('export', 'Export', 'ventes'), 'ventes');
+      expect(ModulesHistorique.module('sauvegarde', 'Sauvegarde'), 'parametres');
     });
 
     test('familles d’actions du DS', () {
@@ -17,6 +20,7 @@ void main() {
       expect(ModulesHistorique.categorie('Désactivation'), CategorieAction.annulation);
       expect(ModulesHistorique.categorie('Déconnexion'), CategorieAction.connexion);
       expect(ModulesHistorique.categorie('Export'), CategorieAction.export);
+      expect(ModulesHistorique.categorie('Sauvegarde'), CategorieAction.export);
     });
 
     test('code H à 6 chiffres', () {
