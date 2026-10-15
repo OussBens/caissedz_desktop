@@ -3449,7 +3449,7 @@
   "pmMessage": "Message du ticket",
   "pmMessageAide": "Imprimé en bas de chaque ticket",
   "pmModesTitre": "Moyens de paiement",
-  "pmModesInfo": "Proposés à l'encaissement ; les espèces sont toujours acceptées",
+  "pmModesInfo": "Proposés dans le dialog d'encaissement ; les espèces sont toujours acceptées, les points seulement avec le bonus fidélité actif et un client identifié",
   "pmReglesTitre": "Règles de vente",
   "pmSousAchat": "Vente sous le prix d'achat",
   "pmSousAchatDesc": "Autoriser, avertir ou interdire un prix de vente inférieur au prix d'achat.",
@@ -3584,5 +3584,8 @@
     }
   },
   "shellChoisirFavoris": "Choisir les favoris",
-  "communTermine": "Terminé"
+  "communTermine": "Terminé",
+  "posRechMin": "Min",
+  "posRechMax": "Max",
+  "posRechToutesCategories": "Toutes les catégories"
 }

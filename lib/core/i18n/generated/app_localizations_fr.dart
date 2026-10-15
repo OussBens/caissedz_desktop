@@ -6649,7 +6649,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get pmModesTitre => 'Moyens de paiement';
 
   @override
-  String get pmModesInfo => 'Proposés à l\'encaissement ; les espèces sont toujours acceptées';
+  String get pmModesInfo =>
+      'Proposés dans le dialog d\'encaissement ; les espèces sont toujours acceptées, les points seulement avec le bonus fidélité actif et un client identifié';
 
   @override
   String get pmReglesTitre => 'Règles de vente';
@@ -6924,4 +6925,13 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get communTermine => 'Terminé';
+
+  @override
+  String get posRechMin => 'Min';
+
+  @override
+  String get posRechMax => 'Max';
+
+  @override
+  String get posRechToutesCategories => 'Toutes les catégories';
 }

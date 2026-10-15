@@ -892,10 +892,11 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
                 _paiements.virement,
                 onChanged: (v) => _changer(() => _paiements = _paiements.copyWith(virement: v)),
               ),
+              // Les points ne se proposent qu'avec le bonus fidélité actif (Caisse et ventes › Fidélité).
               mode(
                 'Points',
-                _paiements.points,
-                onChanged: (v) => _changer(() => _paiements = _paiements.copyWith(points: v)),
+                _paiements.points && _fidelite,
+                onChanged: _fidelite ? (v) => _changer(() => _paiements = _paiements.copyWith(points: v)) : null,
               ),
             ];
             return Wrap(

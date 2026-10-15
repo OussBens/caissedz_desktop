@@ -121,6 +121,7 @@ class DsDataTable<T> extends StatefulWidget {
     this.reglageColonnes,
     this.encadre = true,
     this.hauteurMax,
+    this.hauteurFixe = false,
   });
 
   final List<DsColonne<T>> colonnes;
@@ -160,6 +161,9 @@ class DsDataTable<T> extends StatefulWidget {
 
   /// Hauteur maximale (le corps défile au-delà).
   final double? hauteurMax;
+
+  /// Le tableau occupe toujours [hauteurMax] (dialogs : la hauteur ne varie pas avec le nombre de lignes).
+  final bool hauteurFixe;
 
   /// Colonnes que l'utilisateur a le droit de voir.
   List<DsColonne<T>> get colonnesAutorisees =>
@@ -616,6 +620,7 @@ class DsDataTableState<T> extends State<DsDataTable<T>> {
         // Encadré (`ModuleTable`) : la pagination est dans la carte, sous un filet.
         final paginationInterne = widget.pagine && widget.encadre;
         final tableau = Container(
+          height: widget.hauteurFixe ? widget.hauteurMax : null,
           constraints: widget.hauteurMax != null ? BoxConstraints(maxHeight: widget.hauteurMax!) : null,
           decoration: BoxDecoration(
             color: c.surfaceCard,
@@ -629,7 +634,7 @@ class DsDataTableState<T> extends State<DsDataTable<T>> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               enTete,
-              souple(corps, borne),
+              if (widget.hauteurFixe && widget.hauteurMax != null) Expanded(child: corps) else souple(corps, borne),
               ?totaux,
               if (paginationInterne)
                 Container(

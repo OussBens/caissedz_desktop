@@ -2277,7 +2277,7 @@
   "pmMessage": "رسالة التذكرة",
   "pmMessageAide": "يطبع أسفل كل تذكرة",
   "pmModesTitre": "وسائل الدفع",
-  "pmModesInfo": "تقترح عند التحصيل؛ النقد مقبول دائما",
+  "pmModesInfo": "تقترح في نافذة التحصيل؛ النقد مقبول دائما، والنقاط فقط مع تفعيل مكافأة الوفاء وزبون معروف",
   "pmReglesTitre": "قواعد البيع",
   "pmSousAchat": "البيع بأقل من سعر الشراء",
   "pmSousAchatDesc": "السماح أو التنبيه أو منع سعر بيع أقل من سعر الشراء.",
@@ -2363,5 +2363,8 @@
   "dsFavorisAide": "انقر على وحدة لإضافتها إلى المفضلة أو إزالتها ({max} كحد أقصى).",
   "dsFavorisAideComplets": "تم اختيار {max} مفضلات: أزل واحدة لإضافة أخرى.",
   "shellChoisirFavoris": "اختيار المفضلة",
-  "communTermine": "تم"
+  "communTermine": "تم",
+  "posRechMin": "أدنى",
+  "posRechMax": "أقصى",
+  "posRechToutesCategories": "كل الفئات"
 }

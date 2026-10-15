@@ -6637,7 +6637,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pmModesTitre => 'Payment methods';
 
   @override
-  String get pmModesInfo => 'Offered at checkout; cash is always accepted';
+  String get pmModesInfo =>
+      'Offered in the checkout dialog; cash is always accepted, points only with the loyalty bonus on and a known customer';
 
   @override
   String get pmReglesTitre => 'Sales rules';
@@ -6911,4 +6912,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get communTermine => 'Done';
+
+  @override
+  String get posRechMin => 'Min';
+
+  @override
+  String get posRechMax => 'Max';
+
+  @override
+  String get posRechToutesCategories => 'All categories';
 }

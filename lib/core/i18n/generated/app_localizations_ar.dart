@@ -6627,7 +6627,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get pmModesTitre => 'وسائل الدفع';
 
   @override
-  String get pmModesInfo => 'تقترح عند التحصيل؛ النقد مقبول دائما';
+  String get pmModesInfo => 'تقترح في نافذة التحصيل؛ النقد مقبول دائما، والنقاط فقط مع تفعيل مكافأة الوفاء وزبون معروف';
 
   @override
   String get pmReglesTitre => 'قواعد البيع';
@@ -6900,4 +6900,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get communTermine => 'تم';
+
+  @override
+  String get posRechMin => 'أدنى';
+
+  @override
+  String get posRechMax => 'أقصى';
+
+  @override
+  String get posRechToutesCategories => 'كل الفئات';
 }

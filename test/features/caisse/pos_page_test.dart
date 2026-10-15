@@ -140,6 +140,33 @@ void main() {
       expect(find.byKey(const ValueKey('ligne_0')), findsNothing);
     });
 
+    testWidgets('recherche produit (F3) : filtres catégorie, fourchettes de stock et de prix', (tester) async {
+      final c = await pumpApp(tester, routeInitiale: '/caisse', taille: const Size(1600, 1000));
+      await _donnees(c);
+      await tester.pumpAndSettle();
+      await _touche(tester, LogicalKeyboardKey.f3);
+      final dialog = find.byType(DsPickerDialog<Produit>);
+      Finder dans(String t) => find.descendant(of: dialog, matching: find.text(t));
+      expect(dans('Lait 1 L'), findsOneWidget);
+      expect(dans('Eau 1,5 L'), findsOneWidget);
+      await tester.enterText(
+        find.descendant(of: find.byKey(const ValueKey('recherche_prix_min')), matching: find.byType(TextField)),
+        '50',
+      );
+      await tester.pump();
+      expect(dans('Eau 1,5 L'), findsNothing);
+      expect(dans('Lait 1 L'), findsOneWidget);
+      await tester.enterText(
+        find.descendant(of: find.byKey(const ValueKey('recherche_qte_max')), matching: find.byType(TextField)),
+        '5',
+      );
+      await tester.pump();
+      expect(dans('Lait 1 L'), findsNothing);
+      await clic(tester, find.descendant(of: dialog, matching: find.text('Réinitialiser')));
+      expect(dans('Eau 1,5 L'), findsOneWidget);
+      expect(dans('Lait 1 L'), findsOneWidget);
+    });
+
     testWidgets('scan : code-barres → dialog, code inconnu → produit introuvable', (tester) async {
       final c = await pumpApp(tester, routeInitiale: '/caisse', taille: const Size(1600, 1000));
       await _donnees(c);
@@ -210,12 +237,7 @@ void main() {
         ..invalidate(parametresVenteProvider);
       await _donnees(c);
       await tester.pumpAndSettle();
-      await clic(tester, find.byKey(const ValueKey('panier_mode')));
-      expect(find.text('Chèque'), findsWidgets);
-      expect(find.text('Carte CIB'), findsNothing);
-      expect(find.text('Points fidélité'), findsNothing, reason: 'bonus fidélité inactif');
-      await tester.sendKeyEvent(LogicalKeyboardKey.escape);
-      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('panier_mode')), findsNothing, reason: 'le mode se choisit à l\'encaissement');
       await tester.tap(find.byKey(const ValueKey('tuile_PRD0001')));
       await tester.pumpAndSettle();
       await doubleClic(tester, find.byKey(const ValueKey('ligne_0')));
@@ -229,6 +251,28 @@ void main() {
       );
       await clic(tester, find.byKey(const ValueKey('prix_enregistrer')));
       expect(find.text('Prix inférieur au prix d\'achat : interdit par les paramètres.'), findsOneWidget);
+      await clic(tester, find.text('Annuler').last);
+
+      // Dialog d'encaissement : seuls les moyens visibles, choix du chèque.
+      await clic(tester, find.byKey(const ValueKey('caisse_encaisser')));
+      await clic(tester, find.byKey(const ValueKey('caisse_fermee_ouvrir')));
+      await tester.enterText(find.byKey(const ValueKey('ouverture_fond')), '0');
+      await clic(tester, find.byKey(const ValueKey('ouverture_valider')));
+      final modes = find.byKey(const ValueKey('encaisser_mode'));
+      expect(find.descendant(of: modes, matching: find.text('Espèces')), findsOneWidget);
+      expect(find.descendant(of: modes, matching: find.text('Chèque')), findsOneWidget);
+      expect(find.descendant(of: modes, matching: find.text('Carte CIB')), findsNothing);
+      expect(
+        find.descendant(of: modes, matching: find.text('Points fidélité')),
+        findsNothing,
+        reason: 'fidélité off',
+      );
+      await clic(tester, find.descendant(of: modes, matching: find.text('Chèque')));
+      await clic(tester, find.byKey(const ValueKey('encaisser_valider')));
+      await clic(tester, find.text('Fermer').last);
+      await tester.pump(const Duration(seconds: 5));
+      final v = (await VenteRepository(c.read(appDatabaseProvider).db).vente('VTE0001'))!;
+      expect(v.paiements.single.mode, 'Chèque');
     });
 
     testWidgets('arabe : écran caisse en RTL', (tester) async {

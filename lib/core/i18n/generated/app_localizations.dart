@@ -12630,7 +12630,7 @@ abstract class AppLocalizations {
   /// No description provided for @pmModesInfo.
   ///
   /// In fr, this message translates to:
-  /// **'Proposés à l\'encaissement ; les espèces sont toujours acceptées'**
+  /// **'Proposés dans le dialog d\'encaissement ; les espèces sont toujours acceptées, les points seulement avec le bonus fidélité actif et un client identifié'**
   String get pmModesInfo;
 
   /// No description provided for @pmReglesTitre.
@@ -13148,6 +13148,24 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Terminé'**
   String get communTermine;
+
+  /// No description provided for @posRechMin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Min'**
+  String get posRechMin;
+
+  /// No description provided for @posRechMax.
+  ///
+  /// In fr, this message translates to:
+  /// **'Max'**
+  String get posRechMax;
+
+  /// No description provided for @posRechToutesCategories.
+  ///
+  /// In fr, this message translates to:
+  /// **'Toutes les catégories'**
+  String get posRechToutesCategories;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

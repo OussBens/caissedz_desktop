@@ -355,6 +355,9 @@ class DsPickerDialog<T> extends StatefulWidget {
     this.hauteurMax = 340,
     this.selectionInitiale = const [],
     this.cle,
+    this.hauteurFixe = false,
+    this.filtres,
+    this.filtre,
   });
   final String titre;
   final String? description;
@@ -375,6 +378,14 @@ class DsPickerDialog<T> extends StatefulWidget {
   /// Clé stable d'un élément (par défaut l'objet lui-même).
   final Object Function(T)? cle;
 
+  /// La liste garde la hauteur [hauteurMax] même avec peu de résultats (le dialog ne saute pas à la saisie).
+  final bool hauteurFixe;
+
+  /// Filtres complémentaires affichés sous la recherche ; [filtre] retient les éléments affichés (la sélection
+  /// des éléments masqués est conservée).
+  final Widget? filtres;
+  final bool Function(T)? filtre;
+
   @override
   State<DsPickerDialog<T>> createState() => _DsPickerDialogState<T>();
 }
@@ -387,8 +398,9 @@ class _DsPickerDialogState<T> extends State<DsPickerDialog<T>> {
 
   List<T> get _filtres {
     final q = _filtre.trim().toLowerCase();
-    if (q.isEmpty) return widget.elements;
-    return widget.elements.where((e) {
+    final base = widget.filtre == null ? widget.elements : widget.elements.where(widget.filtre!).toList();
+    if (q.isEmpty) return base;
+    return base.where((e) {
       if (widget.libelle(e).toLowerCase().contains(q)) return true;
       if (widget.sousLibelle?.call(e).toLowerCase().contains(q) ?? false) return true;
       return widget.colonnes?.any((c) => c.valeur(e).toLowerCase().contains(q)) ?? false;
@@ -468,7 +480,9 @@ class _DsPickerDialogState<T> extends State<DsPickerDialog<T>> {
             indice: widget.indiceRecherche ?? l10n.communRechercher,
             onChanged: (v) => setState(() => _filtre = v),
           ),
+          ?widget.filtres,
           Container(
+            height: widget.hauteurFixe ? widget.hauteurMax : null,
             constraints: BoxConstraints(maxHeight: widget.hauteurMax),
             clipBehavior: Clip.antiAlias,
             decoration: BoxDecoration(

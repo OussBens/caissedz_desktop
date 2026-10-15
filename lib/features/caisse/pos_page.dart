@@ -16,8 +16,6 @@ import '../../domain/models/retour.dart';
 import '../../domain/models/tiers.dart';
 import '../../domain/models/vente.dart';
 import '../../domain/permissions.dart';
-import '../../domain/referentiel/referentiel.dart';
-import '../commun/referentiel_ui.dart';
 import '../entrees/entree_dialogs.dart';
 import '../gestion_caisse/gestion_caisse_providers.dart';
 import '../produits/produit_form_dialog.dart';
@@ -327,6 +325,7 @@ class _PosPageState extends ConsumerState<PosPage> {
       vente = await ctrl.encaisser(
         creditAutorise: panier.clientCode != 'CLN0000',
         montantPaye: r.paye,
+        mode: r.mode,
         typePanier: nature == NatureEncaissement.blsc ? 'BL_SC' : 'Ticket',
       );
     });
@@ -778,15 +777,6 @@ class _PosPageState extends ConsumerState<PosPage> {
       ],
     );
 
-    // Moyens visibles (Paramètres) ; les points seulement si le bonus fidélité est actif.
-    final visibles = ref.watch(parametresPaiementProvider).value?.modes;
-    final fidelite = ref.watch(parametresVenteProvider).value?.fideliteActive ?? false;
-    final modes = [
-      for (final v in Referentiel.modesPaiement.valeurs)
-        if (v.stocke == panier.modePaiement ||
-            ((visibles == null || visibles.contains(v.stocke)) && (v.stocke != 'Points' || fidelite)))
-          v.stocke,
-    ];
     final selects = Row(
       spacing: DsSpacing.s2,
       children: [
@@ -799,8 +789,9 @@ class _PosPageState extends ConsumerState<PosPage> {
             valeur: panier.clientCode,
             options: [
               'CLN0000',
+              // Clients inactifs masqués (le client déjà choisi reste affiché).
               for (final cl in clients)
-                if (!cl.estDePassage) cl.code,
+                if (!cl.estDePassage && (cl.actif || cl.code == panier.clientCode)) cl.code,
             ],
             libelle: _nomClient,
             onChanged: (v) => ctrl.choisirClient(v ?? 'CLN0000'),
@@ -821,25 +812,6 @@ class _PosPageState extends ConsumerState<PosPage> {
             onChanged: (code) => ctrl.appliquerRemise(remises.where((r) => r.code == code).firstOrNull),
             onLookup: () => unawaited(_choisirRemise()),
             lookupTooltip: l10n.posChoisirRemise,
-          ),
-        ),
-        Expanded(
-          flex: 80,
-          child: DsSelect<String>(
-            key: const ValueKey('panier_mode'),
-            taille: DsTailles.controleSm,
-            icone: LucideIcons.wallet,
-            valeur: panier.modePaiement,
-            options: modes,
-            libelle: (m) => libelleRef(context, Referentiel.modesPaiement, m),
-            iconeOption: (m) => switch (m) {
-              'Espèces' => LucideIcons.banknote,
-              'Carte' => LucideIcons.creditCard,
-              'Chèque' => LucideIcons.fileSignature,
-              'Virement' => LucideIcons.landmark,
-              _ => LucideIcons.star,
-            },
-            onChanged: (m) => ctrl.choisirModePaiement(m ?? 'Espèces'),
           ),
         ),
       ],

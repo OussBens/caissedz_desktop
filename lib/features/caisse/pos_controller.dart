@@ -351,10 +351,15 @@ class PosController extends Notifier<PosEtat> {
   ///
   /// [montantPaye] (dialog Encaisser du DS) remplace les paiements saisis par un paiement unique dans le mode
   /// du panier ; un trop-perçu en espèces devient la monnaie rendue. [typePanier] : `Ticket` ou `BL_SC`.
-  Future<Vente> encaisser({bool creditAutorise = false, double? montantPaye, String typePanier = 'Ticket'}) async {
+  Future<Vente> encaisser({
+    bool creditAutorise = false,
+    double? montantPaye,
+    String? mode,
+    String typePanier = 'Ticket',
+  }) async {
     final session = state.session;
     if (session == null) throw const PosException(ErreurPos.sessionRequise);
-    var panier = state.panier;
+    var panier = mode == null ? state.panier : state.panier.copyWith(modePaiement: mode);
     if (montantPaye != null) {
       final mode = panier.modePaiement;
       final m = mode == 'Espèces' ? montantPaye : montantPaye.clamp(0, panier.totalNet).toDouble();

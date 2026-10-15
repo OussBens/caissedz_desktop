@@ -13,6 +13,7 @@ import '../../core/i18n/generated/app_localizations.dart';
 import '../../domain/codes_barres.dart';
 import '../../domain/models/caisse.dart';
 import '../../domain/models/panier.dart';
+import '../../domain/models/parametres_paiement.dart';
 import '../../domain/models/parametres_vente.dart';
 import '../../domain/models/produit.dart';
 import '../../domain/models/stock.dart';
@@ -39,6 +40,9 @@ import 'pos_dialogs.dart';
 String formatHeure(DateTime d) => '${d.hour.toString().padLeft(2, '0')}:${d.minute.toString().padLeft(2, '0')}';
 
 String _da(WidgetRef ref, double v) => formaterMontant(v, ref.read(deviseProvider));
+
+/// Hauteur stable des tableaux des dialogs de caisse (ventes du jour, recette) : suit la fenêtre.
+double _hauteurTable(BuildContext context) => (MediaQuery.sizeOf(context).height - 440).clamp(280.0, 600.0);
 
 String _qte(double v) => v == v.roundToDouble() ? v.toInt().toString() : formaterNombre(v, decimales: 2);
 
@@ -422,8 +426,27 @@ enum NatureEncaissement { ticket, blsc, enregistrer }
 /// Sortie d'un BL / SC.
 enum SortieDocument { imprimer, pdf }
 
-/// Montant payé et sortie choisis ; `null` si annulé.
-typedef ResultatEncaissement = ({double paye, SortieDocument sortie});
+/// Montant payé, moyen de paiement et sortie choisis ; `null` si annulé.
+typedef ResultatEncaissement = ({double paye, String mode, SortieDocument sortie});
+
+/// Moyens de paiement proposés à l'encaissement (§9.16) : ceux rendus visibles dans Paramètres ; « Points »
+/// seulement si le bonus fidélité est actif et le client identifié.
+List<String> modesPaiementProposes(WidgetRef ref, {required bool comptoir}) {
+  final visibles = ref.watch(parametresPaiementProvider).value?.modes ?? const ParametresPaiement().modes;
+  final fidelite = ref.watch(parametresVenteProvider).value?.fideliteActive ?? false;
+  return [
+    for (final v in Referentiel.modesPaiement.valeurs)
+      if (visibles.contains(v.stocke) && (v.stocke != 'Points' || (fidelite && !comptoir))) v.stocke,
+  ];
+}
+
+IconData iconeModePaiement(String mode) => switch (mode) {
+  'Espèces' => LucideIcons.banknote,
+  'Carte' => LucideIcons.creditCard,
+  'Chèque' => LucideIcons.fileSignature,
+  'Virement' => LucideIcons.landmark,
+  _ => LucideIcons.star,
+};
 
 Future<ResultatEncaissement?> afficherEncaisser(
   BuildContext context, {
@@ -466,6 +489,7 @@ class _EncaisserDialogState extends ConsumerState<_EncaisserDialog> {
   late String _paye = _enregistrer ? '0' : formaterNombre(widget.panier.totalNet, decimales: 2);
   late bool _complet = !_enregistrer;
   SortieDocument _sortie = SortieDocument.imprimer;
+  late String _mode = widget.panier.modePaiement;
 
   bool get _comptoir => widget.panier.clientCode == 'CLN0000';
   double get _total => widget.panier.totalNet;
@@ -475,13 +499,15 @@ class _EncaisserDialogState extends ConsumerState<_EncaisserDialog> {
 
   void _valider() {
     if (_bloque) return;
-    Navigator.of(context).pop((paye: _payeN, sortie: _sortie));
+    Navigator.of(context).pop((paye: _payeN, mode: _mode, sortie: _sortie));
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final p = widget.panier;
+    final modes = modesPaiementProposes(ref, comptoir: _comptoir);
+    if (!modes.contains(_mode)) _mode = modes.first;
     final (titre, icone, ok) = switch (widget.nature) {
       NatureEncaissement.ticket => (l10n.posEncTicketTitre, LucideIcons.receipt, l10n.posEncTicketOk),
       NatureEncaissement.blsc => (l10n.posEncBlscTitre, LucideIcons.fileText, l10n.posEncBlscOk),
@@ -520,6 +546,25 @@ class _EncaisserDialogState extends ConsumerState<_EncaisserDialog> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           spacing: 14,
           children: [
+            if (!_enregistrer)
+              DsFormRow(
+                libelle: l10n.posInfoPaiement,
+                largeurLibelle: 110,
+                child: DsChoiceCards<String>(
+                  key: const ValueKey('encaisser_mode'),
+                  petit: true,
+                  valeur: _mode,
+                  onChanged: (m) => setState(() => _mode = m),
+                  options: [
+                    for (final m in modes)
+                      DsOption(
+                        m,
+                        libelle: libelleRef(context, Referentiel.modesPaiement, m),
+                        icone: iconeModePaiement(m),
+                      ),
+                  ],
+                ),
+              ),
             DsPaymentPanel(
               total: _total,
               sousTotal: p.totalRemise > 0 ? p.totalBrut : null,
@@ -539,7 +584,6 @@ class _EncaisserDialogState extends ConsumerState<_EncaisserDialog> {
                 DsInfoPaiement(l10n.posInfoDate, formatDateHeure.format(DateTime.now())),
                 DsInfoPaiement(l10n.posInfoProduits, '${p.lignes.length}'),
                 DsInfoPaiement(l10n.posInfoPieces, _qte(p.pieces)),
-                DsInfoPaiement(l10n.posInfoPaiement, libelleRef(context, Referentiel.modesPaiement, p.modePaiement)),
                 DsInfoPaiement(l10n.posInfoCaissier, widget.caissier),
               ],
             ),
@@ -749,17 +793,139 @@ Future<List<Produit>?> afficherRechercheProduit(
   WidgetRef ref, {
   required List<Produit> produits,
   required Map<String, double> stocks,
-}) {
-  final l10n = AppLocalizations.of(context);
-  final categories = {for (final c in ref.read(categoriesProvider).value ?? const <Categorie>[]) c.code: c.nom};
-  return afficherDialog<List<Produit>>(
-    context,
-    builder: (_) => DsPickerDialog<Produit>(
+}) => afficherDialog<List<Produit>>(
+  context,
+  builder: (_) => _RechercheProduitDialog(produits: produits, stocks: stocks),
+);
+
+/// Recherche avancée (F3) : texte, catégorie, fourchettes de quantité en stock et de prix de vente.
+class _RechercheProduitDialog extends ConsumerStatefulWidget {
+  const _RechercheProduitDialog({required this.produits, required this.stocks});
+  final List<Produit> produits;
+  final Map<String, double> stocks;
+
+  @override
+  ConsumerState<_RechercheProduitDialog> createState() => _RechercheProduitDialogState();
+}
+
+class _RechercheProduitDialogState extends ConsumerState<_RechercheProduitDialog> {
+  String? _categorie;
+  final _qteMin = TextEditingController();
+  final _qteMax = TextEditingController();
+  final _prixMin = TextEditingController();
+  final _prixMax = TextEditingController();
+
+  @override
+  void dispose() {
+    for (final c in [_qteMin, _qteMax, _prixMin, _prixMax]) {
+      c.dispose();
+    }
+    super.dispose();
+  }
+
+  double? _lire(TextEditingController c) => lireNombre(c.text);
+
+  bool get _actifs => _categorie != null || [_qteMin, _qteMax, _prixMin, _prixMax].any((c) => c.text.trim().isNotEmpty);
+
+  bool _retenu(Produit p) {
+    if (_categorie != null && p.categorieCode != _categorie) return false;
+    final q = widget.stocks[p.code] ?? 0;
+    if (_lire(_qteMin) case final m? when q < m) return false;
+    if (_lire(_qteMax) case final m? when q > m) return false;
+    if (_lire(_prixMin) case final m? when p.prixVente < m) return false;
+    if (_lire(_prixMax) case final m? when p.prixVente > m) return false;
+    return true;
+  }
+
+  void _reinitialiser() => setState(() {
+    _categorie = null;
+    for (final c in [_qteMin, _qteMax, _prixMin, _prixMax]) {
+      c.clear();
+    }
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final t = context.ds.typo;
+    final c = context.ds.colors;
+    final listeCategories = ref.watch(categoriesProvider).value ?? const <Categorie>[];
+    final categories = {for (final c in listeCategories) c.code: c.nom};
+    final hauteur = (MediaQuery.sizeOf(context).height - 420).clamp(260.0, 560.0);
+    Widget fourchette(
+      String libelle,
+      String cle,
+      TextEditingController min,
+      TextEditingController max,
+      String? suffixe,
+    ) => Row(
+      mainAxisSize: MainAxisSize.min,
+      spacing: 6,
+      children: [
+        Text(libelle, style: t.label.copyWith(color: c.textSecondary)),
+        SizedBox(
+          width: 92,
+          child: DsTextField(
+            key: ValueKey('${cle}_min'),
+            controller: min,
+            numerique: true,
+            indice: l10n.posRechMin,
+            suffixeTexte: suffixe,
+            onChanged: (_) => setState(() {}),
+          ),
+        ),
+        Text('–', style: t.label.copyWith(color: c.textMuted)),
+        SizedBox(
+          width: 92,
+          child: DsTextField(
+            key: ValueKey('${cle}_max'),
+            controller: max,
+            numerique: true,
+            indice: l10n.posRechMax,
+            suffixeTexte: suffixe,
+            onChanged: (_) => setState(() {}),
+          ),
+        ),
+      ],
+    );
+    return DsPickerDialog<Produit>(
       titre: l10n.posRechTitre,
       description: l10n.posRechDesc,
       icone: LucideIcons.search,
       multiple: true,
-      elements: produits,
+      largeur: 980,
+      hauteurMax: hauteur,
+      hauteurFixe: true,
+      cle: (p) => p.code,
+      elements: widget.produits,
+      filtre: _retenu,
+      filtres: Wrap(
+        spacing: DsSpacing.s4,
+        runSpacing: DsSpacing.s2,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          SizedBox(
+            width: 220,
+            child: DsSelect<String?>(
+              key: const ValueKey('recherche_categorie'),
+              icone: LucideIcons.tag,
+              valeur: _categorie,
+              options: [null, for (final c in listeCategories) c.code],
+              libelle: (v) => v == null ? l10n.posRechToutesCategories : (categories[v] ?? v),
+              onChanged: (v) => setState(() => _categorie = v),
+            ),
+          ),
+          fourchette(l10n.produitsColStock, 'recherche_qte', _qteMin, _qteMax, null),
+          fourchette(l10n.dsPosPrix, 'recherche_prix', _prixMin, _prixMax, ref.read(deviseProvider)),
+          DsButton(
+            libelle: l10n.dsReinitialiser,
+            icone: LucideIcons.rotateCcw,
+            variante: DsButtonVariante.fantome,
+            taille: DsButtonTaille.sm,
+            onPressed: _actifs ? _reinitialiser : null,
+          ),
+        ],
+      ),
       libelle: (p) => p.designation,
       indiceRecherche: l10n.posRechIndice,
       libelleConfirmer: l10n.posRechAjouter,
@@ -770,11 +936,11 @@ Future<List<Produit>?> afficherRechercheProduit(
           libelle: l10n.produitsColCategorie,
           valeur: (p) => categories[p.categorieCode] ?? p.categorieCode,
         ),
-        DsColonnePicker(libelle: l10n.produitsColStock, valeur: (p) => _qte(stocks[p.code] ?? 0), largeur: 80),
+        DsColonnePicker(libelle: l10n.produitsColStock, valeur: (p) => _qte(widget.stocks[p.code] ?? 0), largeur: 80),
         DsColonnePicker(libelle: l10n.dsPosPrix, valeur: (p) => _da(ref, p.prixVente), largeur: 110),
       ],
-    ),
-  );
+    );
+  }
 }
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -1380,7 +1546,8 @@ class _VentesDuJourDialogState extends ConsumerState<_VentesDuJourDialog> {
             lignes: lignes,
             cle: (p) => p.vente.code,
             dense: true,
-            hauteurMax: 360,
+            hauteurMax: _hauteurTable(context),
+            hauteurFixe: true,
             taillePage: 50,
             messageVide: l10n.posVdjAucune,
             onDoubleClic: (p) => afficherDetailPanier(context, ref, p, nomsClients: noms),
@@ -1528,7 +1695,8 @@ class _RecetteProduitDialogState extends ConsumerState<_RecetteProduitDialog> {
             lignes: lignes,
             cle: (l) => '${l.vente.code}|${l.ligne.ordre}',
             dense: true,
-            hauteurMax: 380,
+            hauteurMax: _hauteurTable(context),
+            hauteurFixe: true,
             taillePage: 50,
             afficherTotaux: true,
             messageVide: l10n.posRecAucune,
