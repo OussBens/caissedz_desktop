@@ -11,7 +11,16 @@ import '../domain/referentiel/referentiel.dart';
 
 import 'caisse_service.dart';
 
-enum ErreurVersement { montantInvalide, modeInvalide, tiersSysteme, verrouille, inconnu, tiersInvalide }
+enum ErreurVersement {
+  montantInvalide,
+  modeInvalide,
+  tiersSysteme,
+  verrouille,
+  inconnu,
+  tiersInvalide,
+  motifObligatoire,
+  dejaAnnule,
+}
 
 class VersementException implements Exception {
   const VersementException(this.erreur);
@@ -52,6 +61,7 @@ class VersementService {
     String? commentaire,
     DateTime? date,
     String? sens,
+    String type = TypesVersement.paiement,
   }) async {
     if (montant <= 0) throw const VersementException(ErreurVersement.montantInvalide);
     if (!Referentiel.modesPaiement.contient(mode) || mode == 'Points') {
@@ -68,7 +78,11 @@ class VersementService {
     return db.transaction((txn) async {
       final repo = TiersRepository(txn);
       final code = await repo.prochainCode('versement', CodeGenerator.versement);
-      final docs = tiersType == TypesTiers.client
+      final retour = s != (tiersType == TypesTiers.client ? SensVersement.encaissement : SensVersement.decaissement);
+      // Un versement « retour » (argent rendu) n'est imputé sur aucun document.
+      final docs = retour
+          ? const <DocumentOuvert>[]
+          : tiersType == TypesTiers.client
           ? await repo.documentsOuvertsClient(tiersCode)
           : await repo.documentsOuvertsFournisseur(tiersCode);
       final imputations = repartir(code, montant, docs);
@@ -86,6 +100,7 @@ class VersementService {
         reference: reference,
         commentaire: commentaire,
         imputations: imputations,
+        type: type,
       );
       await repo.insererVersement(v);
       await journaliserVersement(txn, v);
@@ -123,6 +138,7 @@ class VersementService {
       commentaire: 'Remboursement ${retour.code}',
       retourCode: retour.code,
       verrouille: true,
+      type: TypesVersement.remboursement,
     );
     await repo.insererVersement(v);
     await repo.lierVersementRetour(retour.code, code);
@@ -130,17 +146,81 @@ class VersementService {
     return v;
   }
 
-  /// Suppression refusée pour un versement verrouillé (lié à un retour).
-  Future<void> supprimer(String code) async {
+  /// Annulation douce (motif obligatoire) : refusée pour un versement verrouillé (lié à un retour) ;
+  /// les imputations sont libérées et le mouvement de caisse retiré.
+  Future<void> annuler(String code, {required String motif}) async {
+    if (motif.trim().isEmpty) throw const VersementException(ErreurVersement.motifObligatoire);
     await db.transaction((txn) async {
       final repo = TiersRepository(txn);
       final v = await repo.versement(code);
       if (v == null) throw const VersementException(ErreurVersement.inconnu);
       if (v.verrouille) throw const VersementException(ErreurVersement.verrouille);
-      await repo.supprimerVersement(code);
+      if (!v.actif) throw const VersementException(ErreurVersement.dejaAnnule);
+      await repo.annulerVersement(code, par: utilisateurCode, motif: motif.trim());
       await CaisseRepository(txn).supprimerMouvementsReference('versement', code);
-      await HistoriqueRepository(txn)
-          .journaliser(utilisateurCode: utilisateurCode, action: 'Suppression', entite: 'versement', entiteCode: code);
+      await HistoriqueRepository(txn).journaliser(
+        utilisateurCode: utilisateurCode,
+        action: 'Annulation',
+        entite: 'versement',
+        entiteCode: code,
+        detail: motif.trim(),
+      );
+    });
+  }
+
+  /// Modification d'un versement non verrouillé : montant, mode, date, caisse, type, observation.
+  /// Les imputations sont recalculées (plus ancien d'abord) et le journal de caisse réécrit.
+  Future<Versement> modifier(
+    String code, {
+    required double montant,
+    required String mode,
+    required DateTime date,
+    String? caisseCode,
+    String? type,
+    String? commentaire,
+  }) async {
+    if (montant <= 0) throw const VersementException(ErreurVersement.montantInvalide);
+    if (!Referentiel.modesPaiement.contient(mode) || mode == 'Points') {
+      throw const VersementException(ErreurVersement.modeInvalide);
+    }
+    return db.transaction((txn) async {
+      final repo = TiersRepository(txn);
+      final ancien = await repo.versement(code);
+      if (ancien == null) throw const VersementException(ErreurVersement.inconnu);
+      if (ancien.verrouille) throw const VersementException(ErreurVersement.verrouille);
+      if (!ancien.actif) throw const VersementException(ErreurVersement.dejaAnnule);
+      await txn.delete('versement_imputation', where: 'versement_code = ?', whereArgs: [code]);
+      await CaisseRepository(txn).supprimerMouvementsReference('versement', code);
+      final docs = ancien.estRetour
+          ? const <DocumentOuvert>[]
+          : ancien.tiersType == TypesTiers.client
+          ? await repo.documentsOuvertsClient(ancien.tiersCode)
+          : await repo.documentsOuvertsFournisseur(ancien.tiersCode);
+      final v = Versement(
+        code: code,
+        date: date,
+        tiersType: ancien.tiersType,
+        tiersCode: ancien.tiersCode,
+        sens: ancien.sens,
+        montant: CalculsPrix.arrondir(montant),
+        mode: mode,
+        utilisateurCode: ancien.utilisateurCode,
+        caisseCode: caisseCode ?? ancien.caisseCode,
+        reference: ancien.reference,
+        commentaire: commentaire ?? ancien.commentaire,
+        type: type ?? ancien.type,
+        imputations: repartir(code, montant, docs),
+      );
+      await repo.remplacerVersement(v);
+      await journaliserVersement(txn, v);
+      await HistoriqueRepository(txn).journaliser(
+        utilisateurCode: utilisateurCode,
+        action: 'Modification',
+        entite: 'versement',
+        entiteCode: code,
+        detail: '${ancien.montant} → ${v.montant}',
+      );
+      return v;
     });
   }
 

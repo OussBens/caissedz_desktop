@@ -46,7 +46,7 @@ class _Ctx {
       utilisateurCode: 'USR0000',
     ).entrerStock(produitCode: lait.code, magasinCode: 'MAG0000', quantite: 100);
     tiers = TiersService(db, utilisateurCode: 'USR0000');
-    client = await tiers.creerClient(const Client(code: '', nom: 'Amina', telephone: '0550', plafondCredit: 5000));
+    client = await tiers.creerClient(const Client(code: '', nom: 'Amina', telephone: '0550 12 34 56', plafondCredit: 5000));
     session = await SessionCaisseService(db, utilisateurCode: 'USR0000').ouvrir(caisseCode: 'CIS0000', fondInitial: 0);
     ventes = VenteService(db, utilisateurCode: 'USR0000', parametres: const ParametresVente());
     versements = VersementService(db, utilisateurCode: 'USR0000');
@@ -75,8 +75,8 @@ void main() {
       final c = await s.creerClient(const Client(code: '', nom: '  Karim  '));
       expect(c.code, 'CLN0001');
       expect(c.nom, 'Karim');
-      await s.modifierClient(c.copyWith(telephone: '0661'));
-      expect((await ClientRepository(base.db).parCode(c.code))!.telephone, '0661');
+      await s.modifierClient(c.copyWith(telephone: '0661 12 34 56'));
+      expect((await ClientRepository(base.db).parCode(c.code))!.telephone, '0661 12 34 56');
       await expectLater(
         s.creerClient(const Client(code: '', nom: ' ')),
         throwsA(isA<TiersException>().having((e) => e.erreur, 'e', ErreurTiers.nomVide)),
@@ -135,8 +135,57 @@ void main() {
         c.versements.imputer(tiersType: TypesTiers.client, tiersCode: c.client.code, montant: 0, mode: 'Espèces'),
         throwsA(isA<VersementException>()),
       );
-      await c.versements.supprimer(avance.code);
+      await expectLater(
+        c.versements.annuler(avance.code, motif: ' '),
+        throwsA(isA<VersementException>().having((e) => e.erreur, 'e', ErreurVersement.motifObligatoire)),
+      );
+      await c.versements.annuler(avance.code, motif: 'Montant erroné');
       expect(await repo.soldeClient(c.client.code), 250);
+      final annule = (await repo.versement(avance.code))!;
+      expect(annule.actif, isFalse);
+      expect(annule.motifAnnulation, 'Montant erroné');
+      expect(annule.imputations, isEmpty);
+      await expectLater(
+        c.versements.annuler(avance.code, motif: 'x'),
+        throwsA(isA<VersementException>().having((e) => e.erreur, 'e', ErreurVersement.dejaAnnule)),
+      );
+    });
+
+    test('modification : imputations recalculées ; versement retour non imputé ; statistiques et relevé', () async {
+      final base = await ouvrirBaseDeTest();
+      final c = _Ctx(base.db);
+      await c.preparer();
+      await c.venteCredit(3, 0); // reste 300
+      final repo = TiersRepository(base.db);
+      final v = await c.versements.imputer(
+        tiersType: TypesTiers.client,
+        tiersCode: c.client.code,
+        montant: 100,
+        mode: 'Espèces',
+      );
+      expect(v.impute, 100);
+      final m = await c.versements.modifier(v.code, montant: 350, mode: 'Chèque', date: v.date);
+      expect(m.impute, 300);
+      expect(m.mode, 'Chèque');
+      expect(await repo.soldeClient(c.client.code), -50);
+      // Argent rendu au client : décaissement non imputé, l'avance disparaît.
+      final rendu = await c.versements.imputer(
+        tiersType: TypesTiers.client,
+        tiersCode: c.client.code,
+        montant: 50,
+        mode: 'Espèces',
+        sens: SensVersement.decaissement,
+      );
+      expect(rendu.imputations, isEmpty);
+      expect(rendu.estRetour, isTrue);
+      final stats = (await repo.statistiques(TypesTiers.client))[c.client.code]!;
+      expect(stats.achats, 300);
+      expect(stats.du, 0);
+      expect(stats.solde, 0);
+      expect(stats.paye, 300);
+      final releve = await repo.releve(TypesTiers.client, c.client.code);
+      expect(releve.fold(0.0, (s, l) => s + l.credit - l.debit), 0);
+      expect(releve.map((l) => l.nature), contains(NatureReleve.versementRetour));
     });
   });
 
@@ -164,7 +213,7 @@ void main() {
       expect(rembours.sens, SensVersement.decaissement);
       expect(rembours.retourCode, r.code);
       await expectLater(
-        c.versements.supprimer('VER0001'),
+        c.versements.annuler('VER0001', motif: 'Erreur'),
         throwsA(isA<VersementException>().having((e) => e.erreur, 'e', ErreurVersement.verrouille)),
       );
       // Avoir de 200 imputé sur la vente ouverte v2

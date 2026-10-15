@@ -49,7 +49,7 @@ class StatistiquesRepository {
     final avances = await _somme('''
       SELECT COALESCE(SUM(v.montant - COALESCE((SELECT SUM(i.montant) FROM versement_imputation i
         WHERE i.versement_code = v.code), 0)), 0)
-      FROM versement v WHERE v.tiers_type = 'client' AND v.sens = 'Encaissement'
+      FROM versement v WHERE v.tiers_type = 'Client' AND v.sens = 'Encaissement' AND v.etat = 1
       ''', const []);
     return CalculsPrix.arrondir(du - avances);
   }
@@ -64,7 +64,7 @@ class StatistiquesRepository {
     final avances = await _somme('''
       SELECT COALESCE(SUM(v.montant - COALESCE((SELECT SUM(i.montant) FROM versement_imputation i
         WHERE i.versement_code = v.code), 0)), 0)
-      FROM versement v WHERE v.tiers_type = 'fournisseur' AND v.sens = 'Décaissement'
+      FROM versement v WHERE v.tiers_type = 'Fournisseur' AND v.sens = 'Décaissement' AND v.etat = 1
       ''', const []);
     return CalculsPrix.arrondir(du - avances);
   }
@@ -490,7 +490,7 @@ class StatistiquesRepository {
             WHERE i.document_type = 'vente' AND i.document_code = v.code), 0))
           FROM vente v WHERE v.client_code = cl.code AND v.statut = 'Validée' AND v.reste > 0), 0)
         - COALESCE((SELECT SUM(ve.montant - COALESCE((SELECT SUM(i.montant) FROM versement_imputation i WHERE i.versement_code = ve.code), 0))
-          FROM versement ve WHERE ve.tiers_type = 'client' AND ve.tiers_code = cl.code AND ve.sens = 'Encaissement'), 0) s
+          FROM versement ve WHERE ve.tiers_type = 'Client' AND ve.tiers_code = cl.code AND ve.sens = 'Encaissement' AND ve.etat = 1), 0) s
       FROM client cl WHERE cl.systeme = 0
       ''');
     final fournisseurs = await db.rawQuery('''
@@ -499,7 +499,7 @@ class StatistiquesRepository {
             WHERE i.document_type = 'achat' AND i.document_code = a.code), 0))
           FROM achat a WHERE a.fournisseur_code = f.code AND a.statut = 'Validé'), 0)
         - COALESCE((SELECT SUM(ve.montant - COALESCE((SELECT SUM(i.montant) FROM versement_imputation i WHERE i.versement_code = ve.code), 0))
-          FROM versement ve WHERE ve.tiers_type = 'fournisseur' AND ve.tiers_code = f.code AND ve.sens = 'Décaissement'), 0) s
+          FROM versement ve WHERE ve.tiers_type = 'Fournisseur' AND ve.tiers_code = f.code AND ve.sens = 'Décaissement' AND ve.etat = 1), 0) s
       FROM fournisseur f WHERE f.systeme = 0
       ''');
     final lignes = <List<Object?>>[

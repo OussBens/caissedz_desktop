@@ -203,3 +203,69 @@ class Fournisseur {
     fiche: FicheTiers.depuisLigne(r),
   );
 }
+
+/// Statistiques calculées d'un tiers (jamais stockées, §7.6).
+@immutable
+class StatsTiers {
+  const StatsTiers({this.achats = 0, this.du = 0, this.avance = 0, this.rendu = 0, this.retours = 0, this.dernier});
+
+  static const StatsTiers vide = StatsTiers();
+
+  /// Total des documents validés (ventes du client, achats du fournisseur).
+  final double achats;
+
+  /// Restes ouverts des documents (crédit du client, dette envers le fournisseur).
+  final double du;
+
+  /// Versements non imputés (avances, trop-perçus).
+  final double avance;
+
+  /// Versements « retour » non liés à un retour (argent rendu au client / remboursé par le fournisseur).
+  final double rendu;
+  final double retours;
+  final DateTime? dernier;
+
+  /// Solde dû par le client (ou au fournisseur) : positif = crédit, négatif = avance.
+  double get solde => du - avance + rendu;
+  double get credit => solde > 0 ? solde : 0;
+  double get avanceNette => solde < 0 ? -solde : 0;
+
+  /// Total réglé des documents.
+  double get paye => achats - du;
+
+  StatsTiers copyWith({
+    double? achats,
+    double? du,
+    double? avance,
+    double? rendu,
+    double? retours,
+    DateTime? dernier,
+  }) => StatsTiers(
+    achats: achats ?? this.achats,
+    du: du ?? this.du,
+    avance: avance ?? this.avance,
+    rendu: rendu ?? this.rendu,
+    retours: retours ?? this.retours,
+    dernier: dernier ?? this.dernier,
+  );
+}
+
+/// Nature d'une ligne de relevé (Situation d'un tiers).
+enum NatureReleve { achat, versement, retour, versementRetour }
+
+/// Ligne du relevé d'un tiers : le débit réduit le solde (paiement, retour), le crédit l'augmente (achat).
+@immutable
+class LigneReleve {
+  const LigneReleve({
+    required this.date,
+    required this.nature,
+    required this.reference,
+    this.debit = 0,
+    this.credit = 0,
+  });
+  final DateTime date;
+  final NatureReleve nature;
+  final String reference;
+  final double debit;
+  final double credit;
+}

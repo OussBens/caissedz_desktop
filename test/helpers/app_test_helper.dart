@@ -34,6 +34,17 @@ Future<void> clic(WidgetTester tester, Finder finder) async {
   await tester.pump(const Duration(milliseconds: 700));
 }
 
+/// Double-clic sur une ligne de tableau (ouvre le détail d'un `DsModuleTable`).
+Future<void> doubleClic(WidgetTester tester, Finder finder) async {
+  await tester.ensureVisible(finder);
+  await tester.pumpAndSettle();
+  await tester.tap(finder);
+  await tester.pump(const Duration(milliseconds: 50));
+  await tester.tap(finder);
+  await tester.pumpAndSettle();
+  await tester.pump(const Duration(milliseconds: 700));
+}
+
 /// Identifiant machine fixe des tests.
 const String machineTest = 'POSTE-TEST';
 

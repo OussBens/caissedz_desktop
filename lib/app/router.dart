@@ -23,9 +23,7 @@ import '../features/stock/sorties_page.dart';
 import '../features/stock/stock_page.dart';
 import '../features/stock/transferts_page.dart';
 import '../features/tableau_bord/tableau_bord_page.dart';
-import '../features/tiers/clients_page.dart';
-import '../features/tiers/fournisseurs_page.dart';
-import '../features/tiers/versements_page.dart';
+import '../features/tiers/tiers_page.dart';
 import '../features/ventes/retour_dialog.dart';
 import '../features/ventes/ventes_page.dart';
 import '../features/zakat/zakat_page.dart';
@@ -108,7 +106,7 @@ Widget pageModule(ModuleApp module) => switch (module.id) {
   'retours' => const RetoursPage(),
   'clients' => const ClientsPage(),
   'fournisseurs' => const FournisseursPage(),
-  'versements' => const VersementsPage(),
+  'versements' => const ClientsPage(ongletInitial: 1),
   'produits' => const ProduitsPage(),
   'stock' => const StockPage(),
   'magasins' => const MagasinsPage(),

@@ -64,8 +64,10 @@
 ## Ventes, retours, tiers (lot 5)
 - [x] Ventes : liste, ticket, annulation (permission), vérification du scellement
 - [x] Retours : stock restitué, avoir, remboursement
-- [x] Clients / fournisseurs : fiches, soldes
-- [x] Versements imputés aux documents ouverts, plus ancien d'abord
+- [x] Clients / fournisseurs : fiches complètes §7.6 (wilaya, type, NIF / NIS / RC, banque), soldes calculés,
+      situation (relevé), annulation avec motif — écrans DS v2.2 (phase D)
+- [x] Versements imputés aux documents ouverts, plus ancien d'abord ; versement retour ; annulation douce
+      avec motif (phase D)
 - [x] Versement lié à un retour verrouillé
 
 ## Achats (lot 6)

@@ -395,5 +395,14 @@ Référence : `docs/design/CaisseDZ-DS-v2.2/CaisseDZ-DS-v2.2.html`, `bundle-v2.2
     - Familles « Produits expirés » et « Bientôt expirés » vides : pas de dates de péremption dans le schéma.
     - Logo de la boutique non demandé à la configuration (colonne prête, saisie en phase D dans Paramètres).
     - Compte admin / admin provisoire en attendant la création de comptes par l'écran Utilisateurs (phase D).
-- **Phase D — écrans ⬜** : les 17 écrans et leurs dialogs d'après les kits du bundle, listes de `ref.js`,
+- **Phase D — écrans 🔶** : les 17 écrans et leurs dialogs d'après les kits du bundle, listes de `ref.js`,
   tests réécrits, suppression des alias.
+  - ✅ Briques communes : `DsModuleTable`, `DsEntityDetailDialog`, `PageModule` (fil d'Ariane, favori, onglets),
+    export Excel / PDF des tableaux, barre de sélection qui passe à la ligne sous 1300 px.
+  - ✅ Clients / Fournisseurs (`TiersKit`) : onglets [Tiers | Versements], KPI, filtres Type / Wilaya / Crédit,
+    colonnes masquables (fiche §7.6), formulaire 920 px (téléphone algérien, NIF 15 chiffres, nom unique),
+    détail (5 derniers documents), Situation (relevé débit / crédit / solde), annulation avec motif.
+    Versements : sens reçu / retour, modification, annulation douce (motif, caisse rétablie), versement retour.
+    La route `/versements` ouvre l'onglet Versements des clients.
+  - Écarts : colonnes d'audit « modifié le / par » absentes du schéma (seuls créé par et annulation) ;
+    tendances des KPI non calculées.

@@ -65,6 +65,18 @@ final versementsProvider = FutureProvider<List<Versement>>((ref) {
   return ref.watch(tiersRepositoryProvider).versements();
 });
 
+/// Statistiques calculées des clients (total achats, crédit, avance…), par code.
+final statsClientsProvider = FutureProvider<Map<String, StatsTiers>>((ref) {
+  ref.watch(commerceVersionProvider);
+  return ref.watch(tiersRepositoryProvider).statistiques(TypesTiers.client);
+});
+
+/// Statistiques calculées des fournisseurs, par code.
+final statsFournisseursProvider = FutureProvider<Map<String, StatsTiers>>((ref) {
+  ref.watch(commerceVersionProvider);
+  return ref.watch(tiersRepositoryProvider).statistiques(TypesTiers.fournisseur);
+});
+
 final soldeClientProvider = FutureProvider.family<double, String>((ref, code) {
   ref.watch(commerceVersionProvider);
   return ref.watch(tiersRepositoryProvider).soldeClient(code);
@@ -82,6 +94,8 @@ String messageErreurVersement(AppLocalizations l10n, ErreurVersement e) => switc
   ErreurVersement.verrouille => l10n.versementErreurVerrouille,
   ErreurVersement.inconnu => l10n.versementErreurInconnu,
   ErreurVersement.tiersInvalide => l10n.versementErreurTiers,
+  ErreurVersement.motifObligatoire => l10n.dsMotifAnnulation,
+  ErreurVersement.dejaAnnule => l10n.tiersBloqueDejaAnnule,
 };
 
 String messageErreurRetour(AppLocalizations l10n, ErreurRetour e) => switch (e) {
@@ -98,4 +112,8 @@ String messageErreurTiers(AppLocalizations l10n, ErreurTiers e) => switch (e) {
   ErreurTiers.nomVide => l10n.tiersErreurNom,
   ErreurTiers.systeme => l10n.tiersErreurSysteme,
   ErreurTiers.inconnu => l10n.communAucunResultat,
+  ErreurTiers.nomExistant => l10n.tiersErreurNomExistant,
+  ErreurTiers.telephoneInvalide => l10n.tiersFormatTelephone,
+  ErreurTiers.nifInvalide => l10n.tiersFormatNif,
+  ErreurTiers.motifObligatoire => l10n.dsMotifAnnulation,
 };

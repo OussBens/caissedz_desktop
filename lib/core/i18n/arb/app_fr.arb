@@ -1713,5 +1713,183 @@
   "dsRechercherIndice": "Rechercher…",
   "dsAffichageGrille": "Affichage grille",
   "dsAffichageListe": "Affichage liste",
-  "dsModifiezRecherche": "Modifiez la recherche ou les filtres."
+  "dsModifiezRecherche": "Modifiez la recherche ou les filtres.",
+  "auditTitre": "Traçabilité",
+  "auditCreePar": "Créé par",
+  "auditAnnuleLe": "Annulé le",
+  "auditAnnulePar": "Annulé par",
+  "auditMotif": "Motif",
+  "dsAnnuler": "Annuler",
+  "dsValider": "Valider",
+  "statutActif": "Actif",
+  "statutInactif": "Inactif",
+  "statutPaye": "Payé",
+  "statutPartiel": "Partiel",
+  "statutCredit": "Crédit",
+  "statutAnnule": "Annulé",
+  "statutOuverte": "Ouverte",
+  "statutFermee": "Fermée",
+  "statutCloturee": "Clôturée",
+  "statutRupture": "Rupture",
+  "statutSeuil": "Sous seuil",
+  "statutExpire": "Expiré",
+  "statutBientotExpire": "Expire bientôt",
+  "statutBrouillon": "Brouillon",
+  "statutValide": "Validé",
+  "statutEntree": "Entrée",
+  "statutSortie": "Sortie",
+  "statutRetourne": "Retourné",
+  "statutClient": "Client",
+  "statutFournisseur": "Fournisseur",
+  "statutRecu": "Reçu",
+  "statutTraite": "Traité",
+  "tiers15Chiffres": "15 chiffres",
+  "tiers20Chiffres": "20 chiffres",
+  "tiersActivite": "Activité",
+  "tiersActiviteIndice": "Ex. alimentation générale",
+  "tiersAdministratifBanque": "Administratif & banque",
+  "tiersAdresseIndice": "Rue, commune",
+  "tiersAvance": "Avance",
+  "tiersBanque": "Banque",
+  "tiersBloqueCredit": "Crédit en cours — soldez-le d'abord",
+  "tiersBloqueDejaAnnule": "Déjà annulé",
+  "tiersBloqueSysteme": "Élément système",
+  "tiersChampsObligatoires": "Les champs marqués * sont obligatoires",
+  "tiersChoisir": "Choisir…",
+  "tiersChoisirClient": "Choisir un client",
+  "tiersChoisirFournisseur": "Choisir un fournisseur",
+  "tiersCodeAuto": "Généré automatiquement",
+  "tiersContact": "Contact",
+  "tiersCredit": "Crédit",
+  "tiersCreditAide": "Crédit (achats)",
+  "tiersDebit": "Débit",
+  "tiersDebitAide": "Débit (paiements, retours)",
+  "tiersDernierAchat": "Dernier achat",
+  "tiersDerniereEntree": "Dernière entrée",
+  "tiersDernieresEntrees": "Dernières entrées",
+  "tiersDerniersPaniers": "Derniers paniers",
+  "tiersDescriptionClients": "{n} clients · {nb} avec un crédit en cours",
+  "@tiersDescriptionClients": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "nb": {
+        "type": "int"
+      }
+    }
+  },
+  "tiersDescriptionFournisseurs": "{n} fournisseurs · {nb} avec un crédit en cours",
+  "@tiersDescriptionFournisseurs": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "nb": {
+        "type": "int"
+      }
+    }
+  },
+  "tiersDetail": "Détail",
+  "tiersEntiteClient": "client",
+  "tiersEntiteClientMaj": "Client",
+  "tiersEntiteClients": "clients",
+  "tiersEntiteFournisseur": "fournisseur",
+  "tiersEntiteFournisseurMaj": "Fournisseur",
+  "tiersEntiteFournisseurs": "fournisseurs",
+  "tiersErreurNomExistant": "Ce nom existe déjà",
+  "tiersEtat": "État",
+  "tiersFax": "Fax",
+  "tiersFormatNif": "Le NIF doit contenir 15 chiffres",
+  "tiersFormatTelephone": "Format attendu : 0X XX XX XX XX",
+  "tiersInfosAdministratives": "Informations administratives",
+  "tiersInfosBancaires": "Informations bancaires",
+  "tiersInfosGenerales": "Informations générales",
+  "tiersKpiClientsActifs": "Clients actifs",
+  "tiersKpiCreditClients": "Crédit clients",
+  "tiersKpiCreditFournisseurs": "Crédit fournisseurs",
+  "tiersKpiFournisseursActifs": "Fournisseurs actifs",
+  "tiersKpiPoints": "Points fidélité",
+  "tiersModifierClient": "Modifier le client",
+  "tiersModifierFournisseur": "Modifier le fournisseur",
+  "tiersNatureAchat": "Achat",
+  "tiersNatureRetour": "Retour",
+  "tiersNatureVente": "Vente",
+  "tiersNatureVersement": "Versement",
+  "tiersNatureVersementRetour": "Versement retour",
+  "tiersNomIndice": "Nom ou raison sociale",
+  "tiersNoteInterne": "Note interne",
+  "tiersNrc": "N° RC",
+  "tiersObservation": "Observation",
+  "tiersPanier": "Panier",
+  "tiersPoints": "{n} points",
+  "@tiersPoints": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "tiersRechercheIndice": "Nom, code ou téléphone…",
+  "tiersReference": "Référence",
+  "tiersReleveClient": "Relevé client",
+  "tiersReleveFournisseur": "Relevé fournisseur",
+  "tiersReste": "Reste",
+  "tiersSituation": "Situation",
+  "tiersSituationDe": "Situation — {nom}",
+  "@tiersSituationDe": {
+    "placeholders": {
+      "nom": {
+        "type": "String"
+      }
+    }
+  },
+  "tiersSolde": "Solde",
+  "tiersSoldeDu": "Solde dû",
+  "tiersStatut": "Statut",
+  "tiersTotalAchats": "Total achats",
+  "tiersTotalPaye": "Total payé",
+  "tiersTotalRetours": "Total retours",
+  "tiersTous": "Tous",
+  "tiersToutes": "Toutes",
+  "tiersType": "Type",
+  "tiersVersement": "Versement",
+  "tiersWilaya": "Wilaya",
+  "versementAideClient": "Le montant est imputé sur les paniers à crédit du client, du plus ancien au plus récent.",
+  "versementAideFournisseur": "Le montant est imputé sur les entrées à crédit du fournisseur, de la plus ancienne à la plus récente.",
+  "versementAideRetourClient": "Argent rendu au client (avance ou trop-perçu) : sortie de caisse.",
+  "versementAideRetourFournisseur": "Argent remboursé par le fournisseur : entrée en caisse.",
+  "versementAucunBeneficiaire": "Aucun bénéficiaire choisi",
+  "versementAvanceTropPercu": "Avance / trop-perçu après ce versement",
+  "versementBeneficiaire": "Bénéficiaire",
+  "versementCaisse": "Caisse",
+  "versementCliquezChoisir": "Cliquez pour choisir",
+  "versementCompteSolde": "Compte soldé après ce versement",
+  "versementCreditActuel": "Crédit actuel : {montant}",
+  "@versementCreditActuel": {
+    "placeholders": {
+      "montant": {
+        "type": "String"
+      }
+    }
+  },
+  "versementCreditRestant": "Crédit restant après ce versement",
+  "versementEntite": "versement",
+  "versementEntites": "versements",
+  "versementKpiEncaisse": "Montant encaissé",
+  "versementKpiNombre": "Versements",
+  "versementKpiPaye": "Montant payé",
+  "versementKpiRetour": "Versements retour",
+  "versementModifier": "Modifier le versement",
+  "versementNumero": "Numéro",
+  "versementObsIndice": "Observation (facultatif)",
+  "versementRetourModifier": "Modifier le versement retour",
+  "versementRetourNouveau": "Versement retour",
+  "versementRetourTitre": "Versement retour",
+  "versementSens": "Sens",
+  "versementSensPaye": "Payé",
+  "versementSensRecu": "Reçu",
+  "versementSensRetour": "Retour",
+  "versementTitre": "Versement",
+  "versementType": "Type"
 }

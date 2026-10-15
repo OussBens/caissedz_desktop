@@ -6494,6 +6494,828 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Modifiez la recherche ou les filtres.'**
   String get dsModifiezRecherche;
+
+  /// No description provided for @auditTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Traçabilité'**
+  String get auditTitre;
+
+  /// No description provided for @auditCreePar.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créé par'**
+  String get auditCreePar;
+
+  /// No description provided for @auditAnnuleLe.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annulé le'**
+  String get auditAnnuleLe;
+
+  /// No description provided for @auditAnnulePar.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annulé par'**
+  String get auditAnnulePar;
+
+  /// No description provided for @auditMotif.
+  ///
+  /// In fr, this message translates to:
+  /// **'Motif'**
+  String get auditMotif;
+
+  /// No description provided for @dsAnnuler.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annuler'**
+  String get dsAnnuler;
+
+  /// No description provided for @dsValider.
+  ///
+  /// In fr, this message translates to:
+  /// **'Valider'**
+  String get dsValider;
+
+  /// No description provided for @statutActif.
+  ///
+  /// In fr, this message translates to:
+  /// **'Actif'**
+  String get statutActif;
+
+  /// No description provided for @statutInactif.
+  ///
+  /// In fr, this message translates to:
+  /// **'Inactif'**
+  String get statutInactif;
+
+  /// No description provided for @statutPaye.
+  ///
+  /// In fr, this message translates to:
+  /// **'Payé'**
+  String get statutPaye;
+
+  /// No description provided for @statutPartiel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Partiel'**
+  String get statutPartiel;
+
+  /// No description provided for @statutCredit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Crédit'**
+  String get statutCredit;
+
+  /// No description provided for @statutAnnule.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annulé'**
+  String get statutAnnule;
+
+  /// No description provided for @statutOuverte.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouverte'**
+  String get statutOuverte;
+
+  /// No description provided for @statutFermee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fermée'**
+  String get statutFermee;
+
+  /// No description provided for @statutCloturee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Clôturée'**
+  String get statutCloturee;
+
+  /// No description provided for @statutRupture.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rupture'**
+  String get statutRupture;
+
+  /// No description provided for @statutSeuil.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sous seuil'**
+  String get statutSeuil;
+
+  /// No description provided for @statutExpire.
+  ///
+  /// In fr, this message translates to:
+  /// **'Expiré'**
+  String get statutExpire;
+
+  /// No description provided for @statutBientotExpire.
+  ///
+  /// In fr, this message translates to:
+  /// **'Expire bientôt'**
+  String get statutBientotExpire;
+
+  /// No description provided for @statutBrouillon.
+  ///
+  /// In fr, this message translates to:
+  /// **'Brouillon'**
+  String get statutBrouillon;
+
+  /// No description provided for @statutValide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Validé'**
+  String get statutValide;
+
+  /// No description provided for @statutEntree.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrée'**
+  String get statutEntree;
+
+  /// No description provided for @statutSortie.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sortie'**
+  String get statutSortie;
+
+  /// No description provided for @statutRetourne.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retourné'**
+  String get statutRetourne;
+
+  /// No description provided for @statutClient.
+  ///
+  /// In fr, this message translates to:
+  /// **'Client'**
+  String get statutClient;
+
+  /// No description provided for @statutFournisseur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fournisseur'**
+  String get statutFournisseur;
+
+  /// No description provided for @statutRecu.
+  ///
+  /// In fr, this message translates to:
+  /// **'Reçu'**
+  String get statutRecu;
+
+  /// No description provided for @statutTraite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Traité'**
+  String get statutTraite;
+
+  /// No description provided for @tiers15Chiffres.
+  ///
+  /// In fr, this message translates to:
+  /// **'15 chiffres'**
+  String get tiers15Chiffres;
+
+  /// No description provided for @tiers20Chiffres.
+  ///
+  /// In fr, this message translates to:
+  /// **'20 chiffres'**
+  String get tiers20Chiffres;
+
+  /// No description provided for @tiersActivite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Activité'**
+  String get tiersActivite;
+
+  /// No description provided for @tiersActiviteIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex. alimentation générale'**
+  String get tiersActiviteIndice;
+
+  /// No description provided for @tiersAdministratifBanque.
+  ///
+  /// In fr, this message translates to:
+  /// **'Administratif & banque'**
+  String get tiersAdministratifBanque;
+
+  /// No description provided for @tiersAdresseIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rue, commune'**
+  String get tiersAdresseIndice;
+
+  /// No description provided for @tiersAvance.
+  ///
+  /// In fr, this message translates to:
+  /// **'Avance'**
+  String get tiersAvance;
+
+  /// No description provided for @tiersBanque.
+  ///
+  /// In fr, this message translates to:
+  /// **'Banque'**
+  String get tiersBanque;
+
+  /// No description provided for @tiersBloqueCredit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Crédit en cours — soldez-le d\'abord'**
+  String get tiersBloqueCredit;
+
+  /// No description provided for @tiersBloqueDejaAnnule.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déjà annulé'**
+  String get tiersBloqueDejaAnnule;
+
+  /// No description provided for @tiersBloqueSysteme.
+  ///
+  /// In fr, this message translates to:
+  /// **'Élément système'**
+  String get tiersBloqueSysteme;
+
+  /// No description provided for @tiersChampsObligatoires.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les champs marqués * sont obligatoires'**
+  String get tiersChampsObligatoires;
+
+  /// No description provided for @tiersChoisir.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir…'**
+  String get tiersChoisir;
+
+  /// No description provided for @tiersChoisirClient.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir un client'**
+  String get tiersChoisirClient;
+
+  /// No description provided for @tiersChoisirFournisseur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir un fournisseur'**
+  String get tiersChoisirFournisseur;
+
+  /// No description provided for @tiersCodeAuto.
+  ///
+  /// In fr, this message translates to:
+  /// **'Généré automatiquement'**
+  String get tiersCodeAuto;
+
+  /// No description provided for @tiersContact.
+  ///
+  /// In fr, this message translates to:
+  /// **'Contact'**
+  String get tiersContact;
+
+  /// No description provided for @tiersCredit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Crédit'**
+  String get tiersCredit;
+
+  /// No description provided for @tiersCreditAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Crédit (achats)'**
+  String get tiersCreditAide;
+
+  /// No description provided for @tiersDebit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Débit'**
+  String get tiersDebit;
+
+  /// No description provided for @tiersDebitAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Débit (paiements, retours)'**
+  String get tiersDebitAide;
+
+  /// No description provided for @tiersDernierAchat.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dernier achat'**
+  String get tiersDernierAchat;
+
+  /// No description provided for @tiersDerniereEntree.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dernière entrée'**
+  String get tiersDerniereEntree;
+
+  /// No description provided for @tiersDernieresEntrees.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dernières entrées'**
+  String get tiersDernieresEntrees;
+
+  /// No description provided for @tiersDerniersPaniers.
+  ///
+  /// In fr, this message translates to:
+  /// **'Derniers paniers'**
+  String get tiersDerniersPaniers;
+
+  /// No description provided for @tiersDescriptionClients.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n} clients · {nb} avec un crédit en cours'**
+  String tiersDescriptionClients(int n, int nb);
+
+  /// No description provided for @tiersDescriptionFournisseurs.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n} fournisseurs · {nb} avec un crédit en cours'**
+  String tiersDescriptionFournisseurs(int n, int nb);
+
+  /// No description provided for @tiersDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Détail'**
+  String get tiersDetail;
+
+  /// No description provided for @tiersEntiteClient.
+  ///
+  /// In fr, this message translates to:
+  /// **'client'**
+  String get tiersEntiteClient;
+
+  /// No description provided for @tiersEntiteClientMaj.
+  ///
+  /// In fr, this message translates to:
+  /// **'Client'**
+  String get tiersEntiteClientMaj;
+
+  /// No description provided for @tiersEntiteClients.
+  ///
+  /// In fr, this message translates to:
+  /// **'clients'**
+  String get tiersEntiteClients;
+
+  /// No description provided for @tiersEntiteFournisseur.
+  ///
+  /// In fr, this message translates to:
+  /// **'fournisseur'**
+  String get tiersEntiteFournisseur;
+
+  /// No description provided for @tiersEntiteFournisseurMaj.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fournisseur'**
+  String get tiersEntiteFournisseurMaj;
+
+  /// No description provided for @tiersEntiteFournisseurs.
+  ///
+  /// In fr, this message translates to:
+  /// **'fournisseurs'**
+  String get tiersEntiteFournisseurs;
+
+  /// No description provided for @tiersErreurNomExistant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce nom existe déjà'**
+  String get tiersErreurNomExistant;
+
+  /// No description provided for @tiersEtat.
+  ///
+  /// In fr, this message translates to:
+  /// **'État'**
+  String get tiersEtat;
+
+  /// No description provided for @tiersFax.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fax'**
+  String get tiersFax;
+
+  /// No description provided for @tiersFormatNif.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le NIF doit contenir 15 chiffres'**
+  String get tiersFormatNif;
+
+  /// No description provided for @tiersFormatTelephone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Format attendu : 0X XX XX XX XX'**
+  String get tiersFormatTelephone;
+
+  /// No description provided for @tiersInfosAdministratives.
+  ///
+  /// In fr, this message translates to:
+  /// **'Informations administratives'**
+  String get tiersInfosAdministratives;
+
+  /// No description provided for @tiersInfosBancaires.
+  ///
+  /// In fr, this message translates to:
+  /// **'Informations bancaires'**
+  String get tiersInfosBancaires;
+
+  /// No description provided for @tiersInfosGenerales.
+  ///
+  /// In fr, this message translates to:
+  /// **'Informations générales'**
+  String get tiersInfosGenerales;
+
+  /// No description provided for @tiersKpiClientsActifs.
+  ///
+  /// In fr, this message translates to:
+  /// **'Clients actifs'**
+  String get tiersKpiClientsActifs;
+
+  /// No description provided for @tiersKpiCreditClients.
+  ///
+  /// In fr, this message translates to:
+  /// **'Crédit clients'**
+  String get tiersKpiCreditClients;
+
+  /// No description provided for @tiersKpiCreditFournisseurs.
+  ///
+  /// In fr, this message translates to:
+  /// **'Crédit fournisseurs'**
+  String get tiersKpiCreditFournisseurs;
+
+  /// No description provided for @tiersKpiFournisseursActifs.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fournisseurs actifs'**
+  String get tiersKpiFournisseursActifs;
+
+  /// No description provided for @tiersKpiPoints.
+  ///
+  /// In fr, this message translates to:
+  /// **'Points fidélité'**
+  String get tiersKpiPoints;
+
+  /// No description provided for @tiersModifierClient.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier le client'**
+  String get tiersModifierClient;
+
+  /// No description provided for @tiersModifierFournisseur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier le fournisseur'**
+  String get tiersModifierFournisseur;
+
+  /// No description provided for @tiersNatureAchat.
+  ///
+  /// In fr, this message translates to:
+  /// **'Achat'**
+  String get tiersNatureAchat;
+
+  /// No description provided for @tiersNatureRetour.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retour'**
+  String get tiersNatureRetour;
+
+  /// No description provided for @tiersNatureVente.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vente'**
+  String get tiersNatureVente;
+
+  /// No description provided for @tiersNatureVersement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Versement'**
+  String get tiersNatureVersement;
+
+  /// No description provided for @tiersNatureVersementRetour.
+  ///
+  /// In fr, this message translates to:
+  /// **'Versement retour'**
+  String get tiersNatureVersementRetour;
+
+  /// No description provided for @tiersNomIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom ou raison sociale'**
+  String get tiersNomIndice;
+
+  /// No description provided for @tiersNoteInterne.
+  ///
+  /// In fr, this message translates to:
+  /// **'Note interne'**
+  String get tiersNoteInterne;
+
+  /// No description provided for @tiersNrc.
+  ///
+  /// In fr, this message translates to:
+  /// **'N° RC'**
+  String get tiersNrc;
+
+  /// No description provided for @tiersObservation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Observation'**
+  String get tiersObservation;
+
+  /// No description provided for @tiersPanier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Panier'**
+  String get tiersPanier;
+
+  /// No description provided for @tiersPoints.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n} points'**
+  String tiersPoints(int n);
+
+  /// No description provided for @tiersRechercheIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom, code ou téléphone…'**
+  String get tiersRechercheIndice;
+
+  /// No description provided for @tiersReference.
+  ///
+  /// In fr, this message translates to:
+  /// **'Référence'**
+  String get tiersReference;
+
+  /// No description provided for @tiersReleveClient.
+  ///
+  /// In fr, this message translates to:
+  /// **'Relevé client'**
+  String get tiersReleveClient;
+
+  /// No description provided for @tiersReleveFournisseur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Relevé fournisseur'**
+  String get tiersReleveFournisseur;
+
+  /// No description provided for @tiersReste.
+  ///
+  /// In fr, this message translates to:
+  /// **'Reste'**
+  String get tiersReste;
+
+  /// No description provided for @tiersSituation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Situation'**
+  String get tiersSituation;
+
+  /// No description provided for @tiersSituationDe.
+  ///
+  /// In fr, this message translates to:
+  /// **'Situation — {nom}'**
+  String tiersSituationDe(String nom);
+
+  /// No description provided for @tiersSolde.
+  ///
+  /// In fr, this message translates to:
+  /// **'Solde'**
+  String get tiersSolde;
+
+  /// No description provided for @tiersSoldeDu.
+  ///
+  /// In fr, this message translates to:
+  /// **'Solde dû'**
+  String get tiersSoldeDu;
+
+  /// No description provided for @tiersStatut.
+  ///
+  /// In fr, this message translates to:
+  /// **'Statut'**
+  String get tiersStatut;
+
+  /// No description provided for @tiersTotalAchats.
+  ///
+  /// In fr, this message translates to:
+  /// **'Total achats'**
+  String get tiersTotalAchats;
+
+  /// No description provided for @tiersTotalPaye.
+  ///
+  /// In fr, this message translates to:
+  /// **'Total payé'**
+  String get tiersTotalPaye;
+
+  /// No description provided for @tiersTotalRetours.
+  ///
+  /// In fr, this message translates to:
+  /// **'Total retours'**
+  String get tiersTotalRetours;
+
+  /// No description provided for @tiersTous.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tous'**
+  String get tiersTous;
+
+  /// No description provided for @tiersToutes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Toutes'**
+  String get tiersToutes;
+
+  /// No description provided for @tiersType.
+  ///
+  /// In fr, this message translates to:
+  /// **'Type'**
+  String get tiersType;
+
+  /// No description provided for @tiersVersement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Versement'**
+  String get tiersVersement;
+
+  /// No description provided for @tiersWilaya.
+  ///
+  /// In fr, this message translates to:
+  /// **'Wilaya'**
+  String get tiersWilaya;
+
+  /// No description provided for @versementAideClient.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le montant est imputé sur les paniers à crédit du client, du plus ancien au plus récent.'**
+  String get versementAideClient;
+
+  /// No description provided for @versementAideFournisseur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le montant est imputé sur les entrées à crédit du fournisseur, de la plus ancienne à la plus récente.'**
+  String get versementAideFournisseur;
+
+  /// No description provided for @versementAideRetourClient.
+  ///
+  /// In fr, this message translates to:
+  /// **'Argent rendu au client (avance ou trop-perçu) : sortie de caisse.'**
+  String get versementAideRetourClient;
+
+  /// No description provided for @versementAideRetourFournisseur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Argent remboursé par le fournisseur : entrée en caisse.'**
+  String get versementAideRetourFournisseur;
+
+  /// No description provided for @versementAucunBeneficiaire.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun bénéficiaire choisi'**
+  String get versementAucunBeneficiaire;
+
+  /// No description provided for @versementAvanceTropPercu.
+  ///
+  /// In fr, this message translates to:
+  /// **'Avance / trop-perçu après ce versement'**
+  String get versementAvanceTropPercu;
+
+  /// No description provided for @versementBeneficiaire.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bénéficiaire'**
+  String get versementBeneficiaire;
+
+  /// No description provided for @versementCaisse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Caisse'**
+  String get versementCaisse;
+
+  /// No description provided for @versementCliquezChoisir.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cliquez pour choisir'**
+  String get versementCliquezChoisir;
+
+  /// No description provided for @versementCompteSolde.
+  ///
+  /// In fr, this message translates to:
+  /// **'Compte soldé après ce versement'**
+  String get versementCompteSolde;
+
+  /// No description provided for @versementCreditActuel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Crédit actuel : {montant}'**
+  String versementCreditActuel(String montant);
+
+  /// No description provided for @versementCreditRestant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Crédit restant après ce versement'**
+  String get versementCreditRestant;
+
+  /// No description provided for @versementEntite.
+  ///
+  /// In fr, this message translates to:
+  /// **'versement'**
+  String get versementEntite;
+
+  /// No description provided for @versementEntites.
+  ///
+  /// In fr, this message translates to:
+  /// **'versements'**
+  String get versementEntites;
+
+  /// No description provided for @versementKpiEncaisse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montant encaissé'**
+  String get versementKpiEncaisse;
+
+  /// No description provided for @versementKpiNombre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Versements'**
+  String get versementKpiNombre;
+
+  /// No description provided for @versementKpiPaye.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montant payé'**
+  String get versementKpiPaye;
+
+  /// No description provided for @versementKpiRetour.
+  ///
+  /// In fr, this message translates to:
+  /// **'Versements retour'**
+  String get versementKpiRetour;
+
+  /// No description provided for @versementModifier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier le versement'**
+  String get versementModifier;
+
+  /// No description provided for @versementNumero.
+  ///
+  /// In fr, this message translates to:
+  /// **'Numéro'**
+  String get versementNumero;
+
+  /// No description provided for @versementObsIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Observation (facultatif)'**
+  String get versementObsIndice;
+
+  /// No description provided for @versementRetourModifier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier le versement retour'**
+  String get versementRetourModifier;
+
+  /// No description provided for @versementRetourNouveau.
+  ///
+  /// In fr, this message translates to:
+  /// **'Versement retour'**
+  String get versementRetourNouveau;
+
+  /// No description provided for @versementRetourTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Versement retour'**
+  String get versementRetourTitre;
+
+  /// No description provided for @versementSens.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sens'**
+  String get versementSens;
+
+  /// No description provided for @versementSensPaye.
+  ///
+  /// In fr, this message translates to:
+  /// **'Payé'**
+  String get versementSensPaye;
+
+  /// No description provided for @versementSensRecu.
+  ///
+  /// In fr, this message translates to:
+  /// **'Reçu'**
+  String get versementSensRecu;
+
+  /// No description provided for @versementSensRetour.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retour'**
+  String get versementSensRetour;
+
+  /// No description provided for @versementTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Versement'**
+  String get versementTitre;
+
+  /// No description provided for @versementType.
+  ///
+  /// In fr, this message translates to:
+  /// **'Type'**
+  String get versementType;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

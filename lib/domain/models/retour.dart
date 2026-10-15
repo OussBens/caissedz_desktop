@@ -88,6 +88,15 @@ class SensVersement {
   static const String decaissement = 'Décaissement';
 }
 
+/// Types de versement (valeur stockée FR, référentiel `typeVersement`).
+class TypesVersement {
+  const TypesVersement._();
+  static const String paiement = 'Paiement';
+  static const String avancement = 'Avancement';
+  static const String acompte = 'Acompte';
+  static const String remboursement = 'Remboursement';
+}
+
 /// Versement (VER) : paiement d'un tiers imputé aux documents ouverts (plus ancien d'abord).
 @immutable
 class Versement {
@@ -106,6 +115,11 @@ class Versement {
     this.retourCode,
     this.verrouille = false,
     this.imputations = const [],
+    this.type = TypesVersement.paiement,
+    this.actif = true,
+    this.annuleLe,
+    this.annulePar,
+    this.motifAnnulation,
   });
   final String code;
   final DateTime date;
@@ -124,6 +138,20 @@ class Versement {
   final bool verrouille;
   final List<Imputation> imputations;
 
+  /// Type de versement (référentiel `typeVersement` : Paiement, Avancement, Remboursement…).
+  final String type;
+
+  /// `false` : versement annulé (exclu des soldes et du journal de caisse).
+  final bool actif;
+  final DateTime? annuleLe;
+  final String? annulePar;
+  final String? motifAnnulation;
+
+  /// Versement « retour » : sens inverse du paiement habituel du tiers (argent rendu au client,
+  /// remboursé par le fournisseur).
+  bool get estRetour =>
+      tiersType == TypesTiers.client ? sens == SensVersement.decaissement : sens == SensVersement.encaissement;
+
   double get impute => imputations.fold(0.0, (s, i) => s + i.montant);
   double get nonImpute => montant - impute;
 
@@ -141,6 +169,11 @@ class Versement {
     'commentaire': commentaire,
     'retour_code': retourCode,
     'verrouille': verrouille ? 1 : 0,
+    'type': type,
+    'etat': actif ? 1 : 0,
+    'annule_le': annuleLe?.toUtc().toIso8601String(),
+    'annule_par': annulePar,
+    'motif_annulation': motifAnnulation,
   };
 
   factory Versement.depuisLigne(Map<String, Object?> r, [List<Imputation> imputations = const []]) => Versement(
@@ -158,6 +191,11 @@ class Versement {
     retourCode: r['retour_code'] as String?,
     verrouille: (r['verrouille'] as int) == 1,
     imputations: imputations,
+    type: (r['type'] as String?) ?? TypesVersement.paiement,
+    actif: ((r['etat'] as int?) ?? 1) == 1,
+    annuleLe: r['annule_le'] == null ? null : DateTime.parse(r['annule_le'] as String).toLocal(),
+    annulePar: r['annule_par'] as String?,
+    motifAnnulation: r['motif_annulation'] as String?,
   );
 }
 

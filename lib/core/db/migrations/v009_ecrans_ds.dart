@@ -5,6 +5,7 @@ import 'migration.dart';
 /// Version 9 : écrans de modules du DS v2.2 (phase D).
 ///
 /// - Tiers (§7.6) : wilaya, type, activité, fax, NIF / NIS / N° RC, banque, RIB, observation.
+/// - Versements (§7.7) : type (référentiel `typeVersement`), annulation douce (`etat`, date, auteur, motif).
 /// - Référentiel (`donnees/ref.js`) : valeurs stockées « Perte / vol » et « En Attente ».
 class MigrationV009EcransDs extends Migration {
   const MigrationV009EcransDs();
@@ -35,6 +36,12 @@ class MigrationV009EcransDs extends Migration {
         await txn.execute("ALTER TABLE $table ADD COLUMN $colonne TEXT NOT NULL DEFAULT ''");
       }
     }
+    await txn.execute("ALTER TABLE versement ADD COLUMN type TEXT NOT NULL DEFAULT 'Paiement'");
+    await txn.execute('ALTER TABLE versement ADD COLUMN etat INTEGER NOT NULL DEFAULT 1');
+    for (final colonne in ['annule_le', 'annule_par', 'motif_annulation']) {
+      await txn.execute('ALTER TABLE versement ADD COLUMN $colonne TEXT');
+    }
+    await txn.update('versement', {'type': 'Remboursement'}, where: 'retour_code IS NOT NULL');
     await txn.update('client', {'type': 'Consommateur'});
     await txn.update('fournisseur', {'type': 'Grossiste'});
     await txn.update('sortie_stock', {'motif': 'Perte / vol'}, where: 'motif = ?', whereArgs: ['Perte/vol']);

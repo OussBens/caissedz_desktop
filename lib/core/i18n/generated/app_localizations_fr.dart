@@ -3384,4 +3384,427 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get dsModifiezRecherche => 'Modifiez la recherche ou les filtres.';
+
+  @override
+  String get auditTitre => 'Traçabilité';
+
+  @override
+  String get auditCreePar => 'Créé par';
+
+  @override
+  String get auditAnnuleLe => 'Annulé le';
+
+  @override
+  String get auditAnnulePar => 'Annulé par';
+
+  @override
+  String get auditMotif => 'Motif';
+
+  @override
+  String get dsAnnuler => 'Annuler';
+
+  @override
+  String get dsValider => 'Valider';
+
+  @override
+  String get statutActif => 'Actif';
+
+  @override
+  String get statutInactif => 'Inactif';
+
+  @override
+  String get statutPaye => 'Payé';
+
+  @override
+  String get statutPartiel => 'Partiel';
+
+  @override
+  String get statutCredit => 'Crédit';
+
+  @override
+  String get statutAnnule => 'Annulé';
+
+  @override
+  String get statutOuverte => 'Ouverte';
+
+  @override
+  String get statutFermee => 'Fermée';
+
+  @override
+  String get statutCloturee => 'Clôturée';
+
+  @override
+  String get statutRupture => 'Rupture';
+
+  @override
+  String get statutSeuil => 'Sous seuil';
+
+  @override
+  String get statutExpire => 'Expiré';
+
+  @override
+  String get statutBientotExpire => 'Expire bientôt';
+
+  @override
+  String get statutBrouillon => 'Brouillon';
+
+  @override
+  String get statutValide => 'Validé';
+
+  @override
+  String get statutEntree => 'Entrée';
+
+  @override
+  String get statutSortie => 'Sortie';
+
+  @override
+  String get statutRetourne => 'Retourné';
+
+  @override
+  String get statutClient => 'Client';
+
+  @override
+  String get statutFournisseur => 'Fournisseur';
+
+  @override
+  String get statutRecu => 'Reçu';
+
+  @override
+  String get statutTraite => 'Traité';
+
+  @override
+  String get tiers15Chiffres => '15 chiffres';
+
+  @override
+  String get tiers20Chiffres => '20 chiffres';
+
+  @override
+  String get tiersActivite => 'Activité';
+
+  @override
+  String get tiersActiviteIndice => 'Ex. alimentation générale';
+
+  @override
+  String get tiersAdministratifBanque => 'Administratif & banque';
+
+  @override
+  String get tiersAdresseIndice => 'Rue, commune';
+
+  @override
+  String get tiersAvance => 'Avance';
+
+  @override
+  String get tiersBanque => 'Banque';
+
+  @override
+  String get tiersBloqueCredit => 'Crédit en cours — soldez-le d\'abord';
+
+  @override
+  String get tiersBloqueDejaAnnule => 'Déjà annulé';
+
+  @override
+  String get tiersBloqueSysteme => 'Élément système';
+
+  @override
+  String get tiersChampsObligatoires => 'Les champs marqués * sont obligatoires';
+
+  @override
+  String get tiersChoisir => 'Choisir…';
+
+  @override
+  String get tiersChoisirClient => 'Choisir un client';
+
+  @override
+  String get tiersChoisirFournisseur => 'Choisir un fournisseur';
+
+  @override
+  String get tiersCodeAuto => 'Généré automatiquement';
+
+  @override
+  String get tiersContact => 'Contact';
+
+  @override
+  String get tiersCredit => 'Crédit';
+
+  @override
+  String get tiersCreditAide => 'Crédit (achats)';
+
+  @override
+  String get tiersDebit => 'Débit';
+
+  @override
+  String get tiersDebitAide => 'Débit (paiements, retours)';
+
+  @override
+  String get tiersDernierAchat => 'Dernier achat';
+
+  @override
+  String get tiersDerniereEntree => 'Dernière entrée';
+
+  @override
+  String get tiersDernieresEntrees => 'Dernières entrées';
+
+  @override
+  String get tiersDerniersPaniers => 'Derniers paniers';
+
+  @override
+  String tiersDescriptionClients(int n, int nb) {
+    return '$n clients · $nb avec un crédit en cours';
+  }
+
+  @override
+  String tiersDescriptionFournisseurs(int n, int nb) {
+    return '$n fournisseurs · $nb avec un crédit en cours';
+  }
+
+  @override
+  String get tiersDetail => 'Détail';
+
+  @override
+  String get tiersEntiteClient => 'client';
+
+  @override
+  String get tiersEntiteClientMaj => 'Client';
+
+  @override
+  String get tiersEntiteClients => 'clients';
+
+  @override
+  String get tiersEntiteFournisseur => 'fournisseur';
+
+  @override
+  String get tiersEntiteFournisseurMaj => 'Fournisseur';
+
+  @override
+  String get tiersEntiteFournisseurs => 'fournisseurs';
+
+  @override
+  String get tiersErreurNomExistant => 'Ce nom existe déjà';
+
+  @override
+  String get tiersEtat => 'État';
+
+  @override
+  String get tiersFax => 'Fax';
+
+  @override
+  String get tiersFormatNif => 'Le NIF doit contenir 15 chiffres';
+
+  @override
+  String get tiersFormatTelephone => 'Format attendu : 0X XX XX XX XX';
+
+  @override
+  String get tiersInfosAdministratives => 'Informations administratives';
+
+  @override
+  String get tiersInfosBancaires => 'Informations bancaires';
+
+  @override
+  String get tiersInfosGenerales => 'Informations générales';
+
+  @override
+  String get tiersKpiClientsActifs => 'Clients actifs';
+
+  @override
+  String get tiersKpiCreditClients => 'Crédit clients';
+
+  @override
+  String get tiersKpiCreditFournisseurs => 'Crédit fournisseurs';
+
+  @override
+  String get tiersKpiFournisseursActifs => 'Fournisseurs actifs';
+
+  @override
+  String get tiersKpiPoints => 'Points fidélité';
+
+  @override
+  String get tiersModifierClient => 'Modifier le client';
+
+  @override
+  String get tiersModifierFournisseur => 'Modifier le fournisseur';
+
+  @override
+  String get tiersNatureAchat => 'Achat';
+
+  @override
+  String get tiersNatureRetour => 'Retour';
+
+  @override
+  String get tiersNatureVente => 'Vente';
+
+  @override
+  String get tiersNatureVersement => 'Versement';
+
+  @override
+  String get tiersNatureVersementRetour => 'Versement retour';
+
+  @override
+  String get tiersNomIndice => 'Nom ou raison sociale';
+
+  @override
+  String get tiersNoteInterne => 'Note interne';
+
+  @override
+  String get tiersNrc => 'N° RC';
+
+  @override
+  String get tiersObservation => 'Observation';
+
+  @override
+  String get tiersPanier => 'Panier';
+
+  @override
+  String tiersPoints(int n) {
+    return '$n points';
+  }
+
+  @override
+  String get tiersRechercheIndice => 'Nom, code ou téléphone…';
+
+  @override
+  String get tiersReference => 'Référence';
+
+  @override
+  String get tiersReleveClient => 'Relevé client';
+
+  @override
+  String get tiersReleveFournisseur => 'Relevé fournisseur';
+
+  @override
+  String get tiersReste => 'Reste';
+
+  @override
+  String get tiersSituation => 'Situation';
+
+  @override
+  String tiersSituationDe(String nom) {
+    return 'Situation — $nom';
+  }
+
+  @override
+  String get tiersSolde => 'Solde';
+
+  @override
+  String get tiersSoldeDu => 'Solde dû';
+
+  @override
+  String get tiersStatut => 'Statut';
+
+  @override
+  String get tiersTotalAchats => 'Total achats';
+
+  @override
+  String get tiersTotalPaye => 'Total payé';
+
+  @override
+  String get tiersTotalRetours => 'Total retours';
+
+  @override
+  String get tiersTous => 'Tous';
+
+  @override
+  String get tiersToutes => 'Toutes';
+
+  @override
+  String get tiersType => 'Type';
+
+  @override
+  String get tiersVersement => 'Versement';
+
+  @override
+  String get tiersWilaya => 'Wilaya';
+
+  @override
+  String get versementAideClient =>
+      'Le montant est imputé sur les paniers à crédit du client, du plus ancien au plus récent.';
+
+  @override
+  String get versementAideFournisseur =>
+      'Le montant est imputé sur les entrées à crédit du fournisseur, de la plus ancienne à la plus récente.';
+
+  @override
+  String get versementAideRetourClient => 'Argent rendu au client (avance ou trop-perçu) : sortie de caisse.';
+
+  @override
+  String get versementAideRetourFournisseur => 'Argent remboursé par le fournisseur : entrée en caisse.';
+
+  @override
+  String get versementAucunBeneficiaire => 'Aucun bénéficiaire choisi';
+
+  @override
+  String get versementAvanceTropPercu => 'Avance / trop-perçu après ce versement';
+
+  @override
+  String get versementBeneficiaire => 'Bénéficiaire';
+
+  @override
+  String get versementCaisse => 'Caisse';
+
+  @override
+  String get versementCliquezChoisir => 'Cliquez pour choisir';
+
+  @override
+  String get versementCompteSolde => 'Compte soldé après ce versement';
+
+  @override
+  String versementCreditActuel(String montant) {
+    return 'Crédit actuel : $montant';
+  }
+
+  @override
+  String get versementCreditRestant => 'Crédit restant après ce versement';
+
+  @override
+  String get versementEntite => 'versement';
+
+  @override
+  String get versementEntites => 'versements';
+
+  @override
+  String get versementKpiEncaisse => 'Montant encaissé';
+
+  @override
+  String get versementKpiNombre => 'Versements';
+
+  @override
+  String get versementKpiPaye => 'Montant payé';
+
+  @override
+  String get versementKpiRetour => 'Versements retour';
+
+  @override
+  String get versementModifier => 'Modifier le versement';
+
+  @override
+  String get versementNumero => 'Numéro';
+
+  @override
+  String get versementObsIndice => 'Observation (facultatif)';
+
+  @override
+  String get versementRetourModifier => 'Modifier le versement retour';
+
+  @override
+  String get versementRetourNouveau => 'Versement retour';
+
+  @override
+  String get versementRetourTitre => 'Versement retour';
+
+  @override
+  String get versementSens => 'Sens';
+
+  @override
+  String get versementSensPaye => 'Payé';
+
+  @override
+  String get versementSensRecu => 'Reçu';
+
+  @override
+  String get versementSensRetour => 'Retour';
+
+  @override
+  String get versementTitre => 'Versement';
+
+  @override
+  String get versementType => 'Type';
 }

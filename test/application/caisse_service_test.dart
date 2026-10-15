@@ -137,7 +137,7 @@ void main() {
       ).imputer(tiersType: TypesTiers.client, tiersCode: client.code, montant: 150, mode: 'Espèces');
       expect(ver.caisseCode, 'CIS0000');
       expect((await caisse.solde('CIS0000')).especes, 1450);
-      await VersementService(db, utilisateurCode: 'USR0000').supprimer(ver.code);
+      await VersementService(db, utilisateurCode: 'USR0000').annuler(ver.code, motif: 'Erreur');
       expect((await caisse.solde('CIS0000')).especes, 1300);
       // Annulation de la vente espèces → sortie 300.
       await ventes.annuler(v1.code);

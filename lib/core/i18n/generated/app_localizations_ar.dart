@@ -3369,4 +3369,425 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get dsModifiezRecherche => 'عدّل البحث أو عوامل التصفية.';
+
+  @override
+  String get auditTitre => 'التتبع';
+
+  @override
+  String get auditCreePar => 'أنشئ بواسطة';
+
+  @override
+  String get auditAnnuleLe => 'أُلغي في';
+
+  @override
+  String get auditAnnulePar => 'أُلغي بواسطة';
+
+  @override
+  String get auditMotif => 'السبب';
+
+  @override
+  String get dsAnnuler => 'إلغاء';
+
+  @override
+  String get dsValider => 'تأكيد';
+
+  @override
+  String get statutActif => 'نشط';
+
+  @override
+  String get statutInactif => 'غير نشط';
+
+  @override
+  String get statutPaye => 'مدفوع';
+
+  @override
+  String get statutPartiel => 'جزئي';
+
+  @override
+  String get statutCredit => 'دين';
+
+  @override
+  String get statutAnnule => 'ملغى';
+
+  @override
+  String get statutOuverte => 'مفتوحة';
+
+  @override
+  String get statutFermee => 'مغلقة';
+
+  @override
+  String get statutCloturee => 'مقفلة';
+
+  @override
+  String get statutRupture => 'نفاد';
+
+  @override
+  String get statutSeuil => 'تحت الحد';
+
+  @override
+  String get statutExpire => 'منتهي الصلاحية';
+
+  @override
+  String get statutBientotExpire => 'ينتهي قريبا';
+
+  @override
+  String get statutBrouillon => 'مسودة';
+
+  @override
+  String get statutValide => 'مصادق';
+
+  @override
+  String get statutEntree => 'دخول';
+
+  @override
+  String get statutSortie => 'خروج';
+
+  @override
+  String get statutRetourne => 'مُرجع';
+
+  @override
+  String get statutClient => 'زبون';
+
+  @override
+  String get statutFournisseur => 'مورد';
+
+  @override
+  String get statutRecu => 'مستلم';
+
+  @override
+  String get statutTraite => 'معالج';
+
+  @override
+  String get tiers15Chiffres => '15 رقما';
+
+  @override
+  String get tiers20Chiffres => '20 رقما';
+
+  @override
+  String get tiersActivite => 'النشاط';
+
+  @override
+  String get tiersActiviteIndice => 'مثال: مواد غذائية عامة';
+
+  @override
+  String get tiersAdministratifBanque => 'الإداري والبنك';
+
+  @override
+  String get tiersAdresseIndice => 'الشارع، البلدية';
+
+  @override
+  String get tiersAvance => 'تسبيق';
+
+  @override
+  String get tiersBanque => 'البنك';
+
+  @override
+  String get tiersBloqueCredit => 'دين جار — قم بتسويته أولا';
+
+  @override
+  String get tiersBloqueDejaAnnule => 'ملغى مسبقا';
+
+  @override
+  String get tiersBloqueSysteme => 'عنصر نظام';
+
+  @override
+  String get tiersChampsObligatoires => 'الحقول المعلمة بـ * إلزامية';
+
+  @override
+  String get tiersChoisir => 'اختر…';
+
+  @override
+  String get tiersChoisirClient => 'اختر زبونا';
+
+  @override
+  String get tiersChoisirFournisseur => 'اختر موردا';
+
+  @override
+  String get tiersCodeAuto => 'يُنشأ تلقائيا';
+
+  @override
+  String get tiersContact => 'الاتصال';
+
+  @override
+  String get tiersCredit => 'الدين';
+
+  @override
+  String get tiersCreditAide => 'دائن (مشتريات)';
+
+  @override
+  String get tiersDebit => 'مدين';
+
+  @override
+  String get tiersDebitAide => 'مدين (دفعات، مرتجعات)';
+
+  @override
+  String get tiersDernierAchat => 'آخر شراء';
+
+  @override
+  String get tiersDerniereEntree => 'آخر إدخال';
+
+  @override
+  String get tiersDernieresEntrees => 'آخر الإدخالات';
+
+  @override
+  String get tiersDerniersPaniers => 'آخر السلال';
+
+  @override
+  String tiersDescriptionClients(int n, int nb) {
+    return '$n زبون · $nb بدين جار';
+  }
+
+  @override
+  String tiersDescriptionFournisseurs(int n, int nb) {
+    return '$n مورد · $nb بدين جار';
+  }
+
+  @override
+  String get tiersDetail => 'التفاصيل';
+
+  @override
+  String get tiersEntiteClient => 'زبون';
+
+  @override
+  String get tiersEntiteClientMaj => 'الزبون';
+
+  @override
+  String get tiersEntiteClients => 'زبائن';
+
+  @override
+  String get tiersEntiteFournisseur => 'مورد';
+
+  @override
+  String get tiersEntiteFournisseurMaj => 'المورد';
+
+  @override
+  String get tiersEntiteFournisseurs => 'موردين';
+
+  @override
+  String get tiersErreurNomExistant => 'هذا الاسم موجود مسبقا';
+
+  @override
+  String get tiersEtat => 'الحالة';
+
+  @override
+  String get tiersFax => 'الفاكس';
+
+  @override
+  String get tiersFormatNif => 'يجب أن يحتوي الرقم الجبائي على 15 رقما';
+
+  @override
+  String get tiersFormatTelephone => 'الصيغة المتوقعة: 0X XX XX XX XX';
+
+  @override
+  String get tiersInfosAdministratives => 'المعلومات الإدارية';
+
+  @override
+  String get tiersInfosBancaires => 'المعلومات البنكية';
+
+  @override
+  String get tiersInfosGenerales => 'معلومات عامة';
+
+  @override
+  String get tiersKpiClientsActifs => 'الزبائن النشطون';
+
+  @override
+  String get tiersKpiCreditClients => 'ديون الزبائن';
+
+  @override
+  String get tiersKpiCreditFournisseurs => 'ديون الموردين';
+
+  @override
+  String get tiersKpiFournisseursActifs => 'الموردون النشطون';
+
+  @override
+  String get tiersKpiPoints => 'نقاط الولاء';
+
+  @override
+  String get tiersModifierClient => 'تعديل الزبون';
+
+  @override
+  String get tiersModifierFournisseur => 'تعديل المورد';
+
+  @override
+  String get tiersNatureAchat => 'شراء';
+
+  @override
+  String get tiersNatureRetour => 'إرجاع';
+
+  @override
+  String get tiersNatureVente => 'بيع';
+
+  @override
+  String get tiersNatureVersement => 'دفعة';
+
+  @override
+  String get tiersNatureVersementRetour => 'دفعة مرتجعة';
+
+  @override
+  String get tiersNomIndice => 'الاسم أو التسمية التجارية';
+
+  @override
+  String get tiersNoteInterne => 'ملاحظة داخلية';
+
+  @override
+  String get tiersNrc => 'رقم السجل التجاري';
+
+  @override
+  String get tiersObservation => 'ملاحظة';
+
+  @override
+  String get tiersPanier => 'السلة';
+
+  @override
+  String tiersPoints(int n) {
+    return '$n نقطة';
+  }
+
+  @override
+  String get tiersRechercheIndice => 'الاسم أو الرمز أو الهاتف…';
+
+  @override
+  String get tiersReference => 'المرجع';
+
+  @override
+  String get tiersReleveClient => 'كشف حساب الزبون';
+
+  @override
+  String get tiersReleveFournisseur => 'كشف حساب المورد';
+
+  @override
+  String get tiersReste => 'الباقي';
+
+  @override
+  String get tiersSituation => 'الوضعية';
+
+  @override
+  String tiersSituationDe(String nom) {
+    return 'الوضعية — $nom';
+  }
+
+  @override
+  String get tiersSolde => 'الرصيد';
+
+  @override
+  String get tiersSoldeDu => 'الرصيد المستحق';
+
+  @override
+  String get tiersStatut => 'الحالة';
+
+  @override
+  String get tiersTotalAchats => 'مجموع المشتريات';
+
+  @override
+  String get tiersTotalPaye => 'مجموع المدفوع';
+
+  @override
+  String get tiersTotalRetours => 'مجموع المرتجعات';
+
+  @override
+  String get tiersTous => 'الكل';
+
+  @override
+  String get tiersToutes => 'الكل';
+
+  @override
+  String get tiersType => 'النوع';
+
+  @override
+  String get tiersVersement => 'دفعة';
+
+  @override
+  String get tiersWilaya => 'الولاية';
+
+  @override
+  String get versementAideClient => 'يُخصم المبلغ من سلال الزبون الآجلة، من الأقدم إلى الأحدث.';
+
+  @override
+  String get versementAideFournisseur => 'يُخصم المبلغ من إدخالات المورد الآجلة، من الأقدم إلى الأحدث.';
+
+  @override
+  String get versementAideRetourClient => 'مبلغ يُعاد إلى الزبون (تسبيق أو فائض): خروج من الصندوق.';
+
+  @override
+  String get versementAideRetourFournisseur => 'مبلغ يرده المورد: دخول إلى الصندوق.';
+
+  @override
+  String get versementAucunBeneficiaire => 'لم يتم اختيار مستفيد';
+
+  @override
+  String get versementAvanceTropPercu => 'تسبيق / فائض بعد هذه الدفعة';
+
+  @override
+  String get versementBeneficiaire => 'المستفيد';
+
+  @override
+  String get versementCaisse => 'الصندوق';
+
+  @override
+  String get versementCliquezChoisir => 'انقر للاختيار';
+
+  @override
+  String get versementCompteSolde => 'حساب مسوّى بعد هذه الدفعة';
+
+  @override
+  String versementCreditActuel(String montant) {
+    return 'الدين الحالي: $montant';
+  }
+
+  @override
+  String get versementCreditRestant => 'الدين المتبقي بعد هذه الدفعة';
+
+  @override
+  String get versementEntite => 'دفعة';
+
+  @override
+  String get versementEntites => 'دفعات';
+
+  @override
+  String get versementKpiEncaisse => 'المبلغ المحصل';
+
+  @override
+  String get versementKpiNombre => 'الدفعات';
+
+  @override
+  String get versementKpiPaye => 'المبلغ المدفوع';
+
+  @override
+  String get versementKpiRetour => 'الدفعات المرتجعة';
+
+  @override
+  String get versementModifier => 'تعديل الدفعة';
+
+  @override
+  String get versementNumero => 'الرقم';
+
+  @override
+  String get versementObsIndice => 'ملاحظة (اختياري)';
+
+  @override
+  String get versementRetourModifier => 'تعديل الدفعة المرتجعة';
+
+  @override
+  String get versementRetourNouveau => 'دفعة مرتجعة';
+
+  @override
+  String get versementRetourTitre => 'دفعة مرتجعة';
+
+  @override
+  String get versementSens => 'الاتجاه';
+
+  @override
+  String get versementSensPaye => 'مدفوع';
+
+  @override
+  String get versementSensRecu => 'مستلم';
+
+  @override
+  String get versementSensRetour => 'إرجاع';
+
+  @override
+  String get versementTitre => 'دفعة';
+
+  @override
+  String get versementType => 'النوع';
 }

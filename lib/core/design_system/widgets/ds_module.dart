@@ -421,65 +421,76 @@ class DsSelectionBar extends StatelessWidget {
     final c = context.ds.colors;
     final t = context.ds.typo;
     final l10n = AppLocalizations.of(context);
+    // Recherche à gauche, compteur + actions à droite ; les actions passent à la ligne quand la
+    // largeur manque (fenêtre minimale 1000 px, modules à 5 actions).
     return ConstrainedBox(
       constraints: const BoxConstraints(minHeight: 40),
-      child: Row(
-        spacing: DsSpacing.s2,
+      child: Wrap(
+        alignment: WrapAlignment.spaceBetween,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: DsSpacing.s4,
+        runSpacing: DsSpacing.s2,
         children: [
-          if (leading != null) Flexible(child: leading!),
-          const Spacer(),
-          if (nb > 0)
-            Container(
-              height: 32,
-              padding: const EdgeInsetsDirectional.only(start: 12, end: 6),
-              decoration: BoxDecoration(color: c.primaryTint, borderRadius: DsRadius.borderMd),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                spacing: DsSpacing.s2,
-                children: [
-                  Icon(LucideIcons.listChecks, size: 16, color: c.primaryTintFg),
-                  Text(
-                    total != null ? l10n.dsSelectionneSur(nb, total!) : l10n.communSelectionnes(nb),
-                    style: t.bodySmStrong.copyWith(color: c.primaryTintFg),
+          ?leading,
+          Wrap(
+            spacing: DsSpacing.s2,
+            runSpacing: DsSpacing.s2,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              if (nb > 0)
+                Container(
+                  height: 32,
+                  padding: const EdgeInsetsDirectional.only(start: 12, end: 6),
+                  decoration: BoxDecoration(color: c.primaryTint, borderRadius: DsRadius.borderMd),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    spacing: DsSpacing.s2,
+                    children: [
+                      Icon(LucideIcons.listChecks, size: 16, color: c.primaryTintFg),
+                      Text(
+                        total != null ? l10n.dsSelectionneSur(nb, total!) : l10n.communSelectionnes(nb),
+                        style: t.bodySmStrong.copyWith(color: c.primaryTintFg),
+                      ),
+                      if (onEffacer != null)
+                        DsIconButton(
+                          icone: LucideIcons.x,
+                          tooltip: l10n.dsToutDeselectionner,
+                          taille: 24,
+                          couleur: c.primaryTintFg,
+                          onPressed: onEffacer,
+                        ),
+                    ],
                   ),
-                  if (onEffacer != null)
-                    DsIconButton(
-                      icone: LucideIcons.x,
-                      tooltip: l10n.dsToutDeselectionner,
-                      taille: 24,
-                      couleur: c.primaryTintFg,
-                      onPressed: onEffacer,
-                    ),
-                ],
-              ),
-            ),
-          for (final a in actions)
-            Builder(
-              builder: (context) {
-                final ok = switch (a.regle) {
-                  DsRegleSelection.une => nb == 1,
-                  DsRegleSelection.plusieurs => nb >= 1,
-                  DsRegleSelection.toujours => true,
-                };
-                final actif = ok && !a.desactive;
-                return Tooltip(
-                  message: actif
-                      ? a.libelle
-                      : (a.regle == DsRegleSelection.une ? l10n.dsSelectionnezUne : l10n.dsSelectionnezAuMoins),
-                  child: KeyedSubtree(
-                    key: a.cle,
-                    child: DsButton(
-                      libelle: a.libelle,
-                      icone: a.icone,
-                      taille: petit ? DsButtonTaille.sm : DsButtonTaille.md,
-                      variante: a.danger && actif ? DsButtonVariante.danger : a.variante,
-                      onPressed: actif ? a.onPressed : null,
-                    ),
-                  ),
-                );
-              },
-            ),
-          ?trailing,
+                ),
+              for (final a in actions)
+                Builder(
+                  builder: (context) {
+                    final ok = switch (a.regle) {
+                      DsRegleSelection.une => nb == 1,
+                      DsRegleSelection.plusieurs => nb >= 1,
+                      DsRegleSelection.toujours => true,
+                    };
+                    final actif = ok && !a.desactive;
+                    return Tooltip(
+                      message: actif
+                          ? a.libelle
+                          : (a.regle == DsRegleSelection.une ? l10n.dsSelectionnezUne : l10n.dsSelectionnezAuMoins),
+                      child: KeyedSubtree(
+                        key: a.cle,
+                        child: DsButton(
+                          libelle: a.libelle,
+                          icone: a.icone,
+                          taille: petit ? DsButtonTaille.sm : DsButtonTaille.md,
+                          variante: a.danger && actif ? DsButtonVariante.danger : a.variante,
+                          onPressed: actif ? a.onPressed : null,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ?trailing,
+            ],
+          ),
         ],
       ),
     );
