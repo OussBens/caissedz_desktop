@@ -140,7 +140,7 @@ void main() {
       await VersementService(db, utilisateurCode: 'USR0000').annuler(ver.code, motif: 'Erreur');
       expect((await caisse.solde('CIS0000')).especes, 1300);
       // Annulation de la vente espèces → sortie 300.
-      await ventes.annuler(v1.code);
+      await ventes.annuler(v1.code, motif: 'test');
       expect((await caisse.solde('CIS0000')).especes, 1000);
       // Fermeture : compté 1050 → écart +50 journalisé, retrait 1050 ; solde espèces = 0.
       final fermee = await sessions.fermer(montantCompte: 1050);

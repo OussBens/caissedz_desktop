@@ -4125,4 +4125,210 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get situationCreditTotal => 'Total credit';
+
+  @override
+  String get ventesDescription => 'All cashed baskets — receipts and DN / SC';
+
+  @override
+  String get ventesKpiNombre => 'Number of sales';
+
+  @override
+  String get ventesKpiCa => 'Revenue';
+
+  @override
+  String get ventesKpiMarge => 'Margin';
+
+  @override
+  String get ventesKpiEncaisse => 'Collected';
+
+  @override
+  String get ventesKpiCredit => 'Customer credit';
+
+  @override
+  String get ventesType => 'Type';
+
+  @override
+  String get ventesTous => 'All';
+
+  @override
+  String get ventesToutes => 'All';
+
+  @override
+  String get ventesStatut => 'Status';
+
+  @override
+  String get ventesCaissier => 'Cashier';
+
+  @override
+  String get ventesClient => 'Customer';
+
+  @override
+  String get ventesCaisse => 'Till';
+
+  @override
+  String get ventesSession => 'Session';
+
+  @override
+  String get ventesMontant => 'Amount';
+
+  @override
+  String get ventesPaye => 'Paid';
+
+  @override
+  String get ventesReste => 'Balance';
+
+  @override
+  String get ventesPaiement => 'Payment';
+
+  @override
+  String get ventesArticles => 'Items';
+
+  @override
+  String get ventesQuantite => 'Quantity';
+
+  @override
+  String get ventesNbVersements => 'No. of payments';
+
+  @override
+  String get ventesMontantAchat => 'Purchase amount';
+
+  @override
+  String get ventesAnnuleLe => 'Cancelled on';
+
+  @override
+  String get ventesAnnulePar => 'Cancelled by';
+
+  @override
+  String get ventesRechercheIndice => 'Basket no. or customer…';
+
+  @override
+  String get ventesNouvelle => 'New sale';
+
+  @override
+  String get ventesEntite => 'basket';
+
+  @override
+  String get ventesEntitePluriel => 'baskets';
+
+  @override
+  String ventesPanierTitre(String code) {
+    return 'Basket $code';
+  }
+
+  @override
+  String get ventesReimprimer => 'Reprint';
+
+  @override
+  String get ventesMontantTotal => 'Total amount';
+
+  @override
+  String get ventesVersements => 'Payments';
+
+  @override
+  String get ventesInfosGenerales => 'General information';
+
+  @override
+  String get ventesPaiementMarge => 'Payment & margin';
+
+  @override
+  String get ventesTotalAchat => 'Purchase total';
+
+  @override
+  String get ventesMontantPaye => 'Amount paid';
+
+  @override
+  String get ventesNombreVersements => 'Number of payments';
+
+  @override
+  String get ventesModePaiement => 'Payment method';
+
+  @override
+  String get ventesProduitsPanier => 'Basket products';
+
+  @override
+  String get ventesProduits => 'Products';
+
+  @override
+  String get ventesProduit => 'Product';
+
+  @override
+  String get ventesQte => 'Qty';
+
+  @override
+  String get ventesNumSerie => 'Serial no.';
+
+  @override
+  String get ventesPrix => 'Price';
+
+  @override
+  String get ventesTotal => 'Total';
+
+  @override
+  String get ventesAudit => 'Audit';
+
+  @override
+  String get ventesCreePar => 'Created by';
+
+  @override
+  String get ventesCreeLe => 'Created on';
+
+  @override
+  String get ventesMotifAnnulation => 'Cancellation reason';
+
+  @override
+  String get ventesEmpreinte => 'Fiscal fingerprint';
+
+  @override
+  String get ventesModifierTitre => 'Edit basket';
+
+  @override
+  String ventesModifierDescription(String code) {
+    return '$code · lines cannot be edited — use a return.';
+  }
+
+  @override
+  String get ventesClientScelle => 'Sealed receipt customer: for another customer, make a return then a new sale.';
+
+  @override
+  String get ventesComplementIndice => 'The difference will be recorded as a payment allocated to this basket.';
+
+  @override
+  String get ventesNoteInterne => 'Internal note';
+
+  @override
+  String get ventesModifie => 'Basket updated';
+
+  @override
+  String get ventesBloqueDejaAnnule => 'Already cancelled';
+
+  @override
+  String get ventesBloqueRetour => 'A return is linked to this basket';
+
+  @override
+  String get ventesAnnulesTitre => 'Baskets cancelled';
+
+  @override
+  String get ventesAnnulesMessage => 'Product stock has been restored and amounts removed from the session.';
+
+  @override
+  String ventesAnnulesPartiel(String detail, int ok) {
+    return '$ok basket(s) cancelled. Failed: $detail';
+  }
+
+  @override
+  String get statutTicket => 'Receipt';
+
+  @override
+  String get statutFacture => 'DN / SC';
+
+  @override
+  String get posErreurMotif => 'A reason is required.';
+
+  @override
+  String posErreurMontantPaye(String montant) {
+    return 'The paid amount cannot decrease (already paid: $montant). Use a return.';
+  }
+
+  @override
+  String get posErreurRetourLie => 'A return is linked to this basket: it cannot be cancelled.';
 }

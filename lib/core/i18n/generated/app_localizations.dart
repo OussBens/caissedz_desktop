@@ -7958,6 +7958,402 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Crédit total'**
   String get situationCreditTotal;
+
+  /// No description provided for @ventesDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tous les paniers encaissés — tickets et BL / SC'**
+  String get ventesDescription;
+
+  /// No description provided for @ventesKpiNombre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nombre de ventes'**
+  String get ventesKpiNombre;
+
+  /// No description provided for @ventesKpiCa.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chiffre d\'affaires'**
+  String get ventesKpiCa;
+
+  /// No description provided for @ventesKpiMarge.
+  ///
+  /// In fr, this message translates to:
+  /// **'Marge'**
+  String get ventesKpiMarge;
+
+  /// No description provided for @ventesKpiEncaisse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Encaissé'**
+  String get ventesKpiEncaisse;
+
+  /// No description provided for @ventesKpiCredit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Crédit clients'**
+  String get ventesKpiCredit;
+
+  /// No description provided for @ventesType.
+  ///
+  /// In fr, this message translates to:
+  /// **'Type'**
+  String get ventesType;
+
+  /// No description provided for @ventesTous.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tous'**
+  String get ventesTous;
+
+  /// No description provided for @ventesToutes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Toutes'**
+  String get ventesToutes;
+
+  /// No description provided for @ventesStatut.
+  ///
+  /// In fr, this message translates to:
+  /// **'Statut'**
+  String get ventesStatut;
+
+  /// No description provided for @ventesCaissier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Caissier'**
+  String get ventesCaissier;
+
+  /// No description provided for @ventesClient.
+  ///
+  /// In fr, this message translates to:
+  /// **'Client'**
+  String get ventesClient;
+
+  /// No description provided for @ventesCaisse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Caisse'**
+  String get ventesCaisse;
+
+  /// No description provided for @ventesSession.
+  ///
+  /// In fr, this message translates to:
+  /// **'Session'**
+  String get ventesSession;
+
+  /// No description provided for @ventesMontant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montant'**
+  String get ventesMontant;
+
+  /// No description provided for @ventesPaye.
+  ///
+  /// In fr, this message translates to:
+  /// **'Payé'**
+  String get ventesPaye;
+
+  /// No description provided for @ventesReste.
+  ///
+  /// In fr, this message translates to:
+  /// **'Reste'**
+  String get ventesReste;
+
+  /// No description provided for @ventesPaiement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paiement'**
+  String get ventesPaiement;
+
+  /// No description provided for @ventesArticles.
+  ///
+  /// In fr, this message translates to:
+  /// **'Articles'**
+  String get ventesArticles;
+
+  /// No description provided for @ventesQuantite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quantité'**
+  String get ventesQuantite;
+
+  /// No description provided for @ventesNbVersements.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nb versements'**
+  String get ventesNbVersements;
+
+  /// No description provided for @ventesMontantAchat.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montant achat'**
+  String get ventesMontantAchat;
+
+  /// No description provided for @ventesAnnuleLe.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annulé le'**
+  String get ventesAnnuleLe;
+
+  /// No description provided for @ventesAnnulePar.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annulé par'**
+  String get ventesAnnulePar;
+
+  /// No description provided for @ventesRechercheIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'N° panier ou client…'**
+  String get ventesRechercheIndice;
+
+  /// No description provided for @ventesNouvelle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouvelle vente'**
+  String get ventesNouvelle;
+
+  /// No description provided for @ventesEntite.
+  ///
+  /// In fr, this message translates to:
+  /// **'panier'**
+  String get ventesEntite;
+
+  /// No description provided for @ventesEntitePluriel.
+  ///
+  /// In fr, this message translates to:
+  /// **'paniers'**
+  String get ventesEntitePluriel;
+
+  /// No description provided for @ventesPanierTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Panier {code}'**
+  String ventesPanierTitre(String code);
+
+  /// No description provided for @ventesReimprimer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réimprimer'**
+  String get ventesReimprimer;
+
+  /// No description provided for @ventesMontantTotal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montant total'**
+  String get ventesMontantTotal;
+
+  /// No description provided for @ventesVersements.
+  ///
+  /// In fr, this message translates to:
+  /// **'Versements'**
+  String get ventesVersements;
+
+  /// No description provided for @ventesInfosGenerales.
+  ///
+  /// In fr, this message translates to:
+  /// **'Informations générales'**
+  String get ventesInfosGenerales;
+
+  /// No description provided for @ventesPaiementMarge.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paiement & marge'**
+  String get ventesPaiementMarge;
+
+  /// No description provided for @ventesTotalAchat.
+  ///
+  /// In fr, this message translates to:
+  /// **'Total achat'**
+  String get ventesTotalAchat;
+
+  /// No description provided for @ventesMontantPaye.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montant payé'**
+  String get ventesMontantPaye;
+
+  /// No description provided for @ventesNombreVersements.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nombre de versements'**
+  String get ventesNombreVersements;
+
+  /// No description provided for @ventesModePaiement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mode de paiement'**
+  String get ventesModePaiement;
+
+  /// No description provided for @ventesProduitsPanier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produits du panier'**
+  String get ventesProduitsPanier;
+
+  /// No description provided for @ventesProduits.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produits'**
+  String get ventesProduits;
+
+  /// No description provided for @ventesProduit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produit'**
+  String get ventesProduit;
+
+  /// No description provided for @ventesQte.
+  ///
+  /// In fr, this message translates to:
+  /// **'Qté'**
+  String get ventesQte;
+
+  /// No description provided for @ventesNumSerie.
+  ///
+  /// In fr, this message translates to:
+  /// **'N° série'**
+  String get ventesNumSerie;
+
+  /// No description provided for @ventesPrix.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix'**
+  String get ventesPrix;
+
+  /// No description provided for @ventesTotal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Total'**
+  String get ventesTotal;
+
+  /// No description provided for @ventesAudit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Audit'**
+  String get ventesAudit;
+
+  /// No description provided for @ventesCreePar.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créé par'**
+  String get ventesCreePar;
+
+  /// No description provided for @ventesCreeLe.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créé le'**
+  String get ventesCreeLe;
+
+  /// No description provided for @ventesMotifAnnulation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Motif d\'annulation'**
+  String get ventesMotifAnnulation;
+
+  /// No description provided for @ventesEmpreinte.
+  ///
+  /// In fr, this message translates to:
+  /// **'Empreinte fiscale'**
+  String get ventesEmpreinte;
+
+  /// No description provided for @ventesModifierTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier le panier'**
+  String get ventesModifierTitre;
+
+  /// No description provided for @ventesModifierDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'{code} · les lignes ne sont pas modifiables — utilisez un retour.'**
+  String ventesModifierDescription(String code);
+
+  /// No description provided for @ventesClientScelle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Client du ticket scellé : pour un autre client, faites un retour puis une nouvelle vente.'**
+  String get ventesClientScelle;
+
+  /// No description provided for @ventesComplementIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le complément sera enregistré comme versement imputé sur ce panier.'**
+  String get ventesComplementIndice;
+
+  /// No description provided for @ventesNoteInterne.
+  ///
+  /// In fr, this message translates to:
+  /// **'Note interne'**
+  String get ventesNoteInterne;
+
+  /// No description provided for @ventesModifie.
+  ///
+  /// In fr, this message translates to:
+  /// **'Panier modifié'**
+  String get ventesModifie;
+
+  /// No description provided for @ventesBloqueDejaAnnule.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déjà annulé'**
+  String get ventesBloqueDejaAnnule;
+
+  /// No description provided for @ventesBloqueRetour.
+  ///
+  /// In fr, this message translates to:
+  /// **'Un retour est lié à ce panier'**
+  String get ventesBloqueRetour;
+
+  /// No description provided for @ventesAnnulesTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paniers annulés'**
+  String get ventesAnnulesTitre;
+
+  /// No description provided for @ventesAnnulesMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le stock des produits a été réintégré et les montants retirés de la session.'**
+  String get ventesAnnulesMessage;
+
+  /// No description provided for @ventesAnnulesPartiel.
+  ///
+  /// In fr, this message translates to:
+  /// **'{ok} panier(s) annulé(s). Échec : {detail}'**
+  String ventesAnnulesPartiel(String detail, int ok);
+
+  /// No description provided for @statutTicket.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ticket'**
+  String get statutTicket;
+
+  /// No description provided for @statutFacture.
+  ///
+  /// In fr, this message translates to:
+  /// **'BL / SC'**
+  String get statutFacture;
+
+  /// No description provided for @posErreurMotif.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le motif est obligatoire.'**
+  String get posErreurMotif;
+
+  /// No description provided for @posErreurMontantPaye.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le montant payé ne peut pas baisser (déjà payé : {montant}). Utilisez un retour.'**
+  String posErreurMontantPaye(String montant);
+
+  /// No description provided for @posErreurRetourLie.
+  ///
+  /// In fr, this message translates to:
+  /// **'Un retour est lié à ce panier : annulation impossible.'**
+  String get posErreurRetourLie;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

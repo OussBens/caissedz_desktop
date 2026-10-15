@@ -407,6 +407,14 @@ Référence : `docs/design/CaisseDZ-DS-v2.2/CaisseDZ-DS-v2.2.html`, `bundle-v2.2
   - ✅ Tableau de bord (`DashboardV22`) + onglet Situation (`SituationScreen`) : `SituationRepository` (10 analyses
     de §9.14), migration v10 (coût d'achat figé sur `vente_ligne`), inventaire validé en une transaction
     (`StockService.inventorierLot`). Les anciens rapports génériques sont retirés ; `/situation` ouvre l'onglet.
+  - ✅ Ventes (`PaniersScreen`) : KPI (nombre, CA, marge si `voirPrixAchat`, encaissé, crédit), période du jour
+    par défaut, filtres Type / Statut / Caissier / Client / Caisse / Session / Montant, colonnes masquables,
+    détail 1100 px (stats, paiement et marge, produits, audit avec empreinte), modification 980 px, annulation
+    en lot avec motif (bloquée si déjà annulé ou retour lié), « Nouvelle vente » ouvre la caisse.
+    Migration v11 : `vente.type_panier` (Ticket / BL / BL_SC, hors scellement). `VenteService.modifier` : le
+    complément payé devient un versement imputé d'abord sur ce panier ; `annuler` annule les versements liés.
   - Écarts : colonnes d'audit « modifié le / par » absentes du schéma (seuls créé par et annulation) ;
     tendances des KPI calculées seulement pour les ventes ; ventes antérieures à la v10 valorisées au prix
     d'achat actuel ; `mouvement_stock` sans valorisation (prix_achat / prix_vente de §7.3).
+    Ventes : le client d'un panier n'est pas modifiable (§9.2 le permet, mais il fait partie du ticket scellé ;
+    décision : retour puis nouvelle vente) et le montant payé ne peut que monter (une baisse passe par un retour).

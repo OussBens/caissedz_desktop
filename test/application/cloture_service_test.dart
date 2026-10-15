@@ -151,7 +151,7 @@ void main() {
       );
       await ClotureService(base.db, utilisateurCode: 'USR0000').cloturer();
       await expectLater(
-        ctx.ventes.annuler(ctx.tickets.first.code),
+        ctx.ventes.annuler(ctx.tickets.first.code, motif: 'test'),
         throwsA(isA<VenteException>().having((e) => e.erreur, 'e', ErreurVente.periodeCloturee)),
       );
       final retours = RetourService(
@@ -172,7 +172,7 @@ void main() {
       );
       // Une vente postérieure à la clôture reste annulable.
       await ctx.journee(1);
-      final v = await ctx.ventes.annuler(ctx.tickets.last.code);
+      final v = await ctx.ventes.annuler(ctx.tickets.last.code, motif: 'test');
       expect(v.statut, StatutsVente.annulee);
     });
   });

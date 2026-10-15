@@ -152,6 +152,7 @@ class Vente {
     this.lignes = const [],
     this.paiements = const [],
     this.commentaire,
+    this.typePanier = 'Ticket',
   });
   final String code;
   final DateTime date;
@@ -176,6 +177,9 @@ class Vente {
   final List<Paiement> paiements;
   final String? commentaire;
 
+  /// Type de panier (référentiel `typePannier`) ; hors document scellé.
+  final String typePanier;
+
   double get monnaie => (verse - totalNet) > 0 ? verse - totalNet : 0;
 
   Map<String, Object?> versLigne() => {
@@ -197,6 +201,7 @@ class Vente {
     'hash': hash,
     'hash_precedent': hashPrecedent,
     'commentaire': commentaire,
+    'type_panier': typePanier,
   };
 
   factory Vente.depuisLigne(
@@ -222,6 +227,7 @@ class Vente {
     hash: r['hash'] as String,
     hashPrecedent: r['hash_precedent'] as String,
     commentaire: r['commentaire'] as String?,
+    typePanier: r['type_panier'] as String? ?? 'Ticket',
     lignes: lignes,
     paiements: paiements,
   );
@@ -245,4 +251,67 @@ class Vente {
     'lignes': lignes.map((l) => l.versCanonique()).toList(),
     'paiements': paiements.map((p) => {'m': p.mode, 'v': p.montant}).toList(),
   };
+}
+
+/// Vue d'un panier pour l'écran Ventes (`PaniersScreen` du DS) : la vente scellée et ses agrégats
+/// (lignes, coût, versements imputés, retours, caissier, motif d'annulation).
+@immutable
+class PanierResume {
+  const PanierResume({
+    required this.vente,
+    required this.caissier,
+    required this.nbArticles,
+    required this.quantite,
+    required this.totalAchat,
+    required this.impute,
+    required this.nbVersements,
+    required this.nbRetours,
+    required this.modes,
+    this.annuleeLe,
+    this.annuleePar,
+    this.motifAnnulation,
+  });
+
+  final Vente vente;
+  final String caissier;
+  final int nbArticles;
+  final double quantite;
+  final double totalAchat;
+
+  /// Montant des versements imputés sur ce panier après l'encaissement.
+  final double impute;
+  final int nbVersements;
+  final int nbRetours;
+
+  /// Modes de paiement de l'encaissement (valeurs stockées).
+  final List<String> modes;
+  final DateTime? annuleeLe;
+  final String? annuleePar;
+  final String? motifAnnulation;
+
+  String get code => vente.code;
+  bool get annule => vente.statut == StatutsVente.annulee;
+
+  /// Montant payé à ce jour (encaissement + versements imputés).
+  double get paye => vente.totalNet - resteActuel;
+
+  /// Reste dû à ce jour.
+  double get resteActuel {
+    final r = vente.reste - impute;
+    return r > 0.004 ? r : 0;
+  }
+
+  double get marge => vente.totalNet - totalAchat;
+
+  /// Statut d'affichage (`StatusBadge` du DS) : `annule`, `retourne`, `credit` ou `paye`.
+  String get statut => annule
+      ? 'annule'
+      : nbRetours > 0
+      ? 'retourne'
+      : resteActuel > 0
+      ? 'credit'
+      : 'paye';
+
+  /// `ticket` ou `facture` (BL / BL_SC).
+  String get type => vente.typePanier == 'Ticket' ? 'ticket' : 'facture';
 }

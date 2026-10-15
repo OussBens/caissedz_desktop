@@ -241,7 +241,13 @@ class _DsModuleTableState<T> extends State<DsModuleTable<T>> {
           colonnes: widget.colonnesFiltres,
           trailing: export,
           children: [
-            if (widget.periode != null) DsPeriodeLocalisee(periode: widget.periode!, onChanged: widget.onPeriode!),
+            if (widget.periode != null)
+              // DS (PaniersScreen) : la période occupe toute la ligne quand la grille a 4 colonnes.
+              widget.colonnesFiltres >= 4
+                  ? DsSpan(
+                      child: DsPeriodeLocalisee(periode: widget.periode!, onChanged: widget.onPeriode!),
+                    )
+                  : DsPeriodeLocalisee(periode: widget.periode!, onChanged: widget.onPeriode!),
             ...?widget.filtres,
           ],
         ),

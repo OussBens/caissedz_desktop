@@ -4138,4 +4138,211 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get situationCreditTotal => 'Crédit total';
+
+  @override
+  String get ventesDescription => 'Tous les paniers encaissés — tickets et BL / SC';
+
+  @override
+  String get ventesKpiNombre => 'Nombre de ventes';
+
+  @override
+  String get ventesKpiCa => 'Chiffre d\'affaires';
+
+  @override
+  String get ventesKpiMarge => 'Marge';
+
+  @override
+  String get ventesKpiEncaisse => 'Encaissé';
+
+  @override
+  String get ventesKpiCredit => 'Crédit clients';
+
+  @override
+  String get ventesType => 'Type';
+
+  @override
+  String get ventesTous => 'Tous';
+
+  @override
+  String get ventesToutes => 'Toutes';
+
+  @override
+  String get ventesStatut => 'Statut';
+
+  @override
+  String get ventesCaissier => 'Caissier';
+
+  @override
+  String get ventesClient => 'Client';
+
+  @override
+  String get ventesCaisse => 'Caisse';
+
+  @override
+  String get ventesSession => 'Session';
+
+  @override
+  String get ventesMontant => 'Montant';
+
+  @override
+  String get ventesPaye => 'Payé';
+
+  @override
+  String get ventesReste => 'Reste';
+
+  @override
+  String get ventesPaiement => 'Paiement';
+
+  @override
+  String get ventesArticles => 'Articles';
+
+  @override
+  String get ventesQuantite => 'Quantité';
+
+  @override
+  String get ventesNbVersements => 'Nb versements';
+
+  @override
+  String get ventesMontantAchat => 'Montant achat';
+
+  @override
+  String get ventesAnnuleLe => 'Annulé le';
+
+  @override
+  String get ventesAnnulePar => 'Annulé par';
+
+  @override
+  String get ventesRechercheIndice => 'N° panier ou client…';
+
+  @override
+  String get ventesNouvelle => 'Nouvelle vente';
+
+  @override
+  String get ventesEntite => 'panier';
+
+  @override
+  String get ventesEntitePluriel => 'paniers';
+
+  @override
+  String ventesPanierTitre(String code) {
+    return 'Panier $code';
+  }
+
+  @override
+  String get ventesReimprimer => 'Réimprimer';
+
+  @override
+  String get ventesMontantTotal => 'Montant total';
+
+  @override
+  String get ventesVersements => 'Versements';
+
+  @override
+  String get ventesInfosGenerales => 'Informations générales';
+
+  @override
+  String get ventesPaiementMarge => 'Paiement & marge';
+
+  @override
+  String get ventesTotalAchat => 'Total achat';
+
+  @override
+  String get ventesMontantPaye => 'Montant payé';
+
+  @override
+  String get ventesNombreVersements => 'Nombre de versements';
+
+  @override
+  String get ventesModePaiement => 'Mode de paiement';
+
+  @override
+  String get ventesProduitsPanier => 'Produits du panier';
+
+  @override
+  String get ventesProduits => 'Produits';
+
+  @override
+  String get ventesProduit => 'Produit';
+
+  @override
+  String get ventesQte => 'Qté';
+
+  @override
+  String get ventesNumSerie => 'N° série';
+
+  @override
+  String get ventesPrix => 'Prix';
+
+  @override
+  String get ventesTotal => 'Total';
+
+  @override
+  String get ventesAudit => 'Audit';
+
+  @override
+  String get ventesCreePar => 'Créé par';
+
+  @override
+  String get ventesCreeLe => 'Créé le';
+
+  @override
+  String get ventesMotifAnnulation => 'Motif d\'annulation';
+
+  @override
+  String get ventesEmpreinte => 'Empreinte fiscale';
+
+  @override
+  String get ventesModifierTitre => 'Modifier le panier';
+
+  @override
+  String ventesModifierDescription(String code) {
+    return '$code · les lignes ne sont pas modifiables — utilisez un retour.';
+  }
+
+  @override
+  String get ventesClientScelle =>
+      'Client du ticket scellé : pour un autre client, faites un retour puis une nouvelle vente.';
+
+  @override
+  String get ventesComplementIndice => 'Le complément sera enregistré comme versement imputé sur ce panier.';
+
+  @override
+  String get ventesNoteInterne => 'Note interne';
+
+  @override
+  String get ventesModifie => 'Panier modifié';
+
+  @override
+  String get ventesBloqueDejaAnnule => 'Déjà annulé';
+
+  @override
+  String get ventesBloqueRetour => 'Un retour est lié à ce panier';
+
+  @override
+  String get ventesAnnulesTitre => 'Paniers annulés';
+
+  @override
+  String get ventesAnnulesMessage => 'Le stock des produits a été réintégré et les montants retirés de la session.';
+
+  @override
+  String ventesAnnulesPartiel(String detail, int ok) {
+    return '$ok panier(s) annulé(s). Échec : $detail';
+  }
+
+  @override
+  String get statutTicket => 'Ticket';
+
+  @override
+  String get statutFacture => 'BL / SC';
+
+  @override
+  String get posErreurMotif => 'Le motif est obligatoire.';
+
+  @override
+  String posErreurMontantPaye(String montant) {
+    return 'Le montant payé ne peut pas baisser (déjà payé : $montant). Utilisez un retour.';
+  }
+
+  @override
+  String get posErreurRetourLie => 'Un retour est lié à ce panier : annulation impossible.';
 }

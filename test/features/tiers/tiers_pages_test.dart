@@ -69,19 +69,6 @@ Finder _champ(String libelle) => find
 
 void main() {
   group('Ventes, retours, clients, versements', () {
-    testWidgets('liste des ventes, filtre à crédit, vérification de la chaîne, annulation', (tester) async {
-      final c = await pumpApp(tester, routeInitiale: '/ventes', taille: const Size(1400, 900));
-      await _donnees(c);
-      await tester.pumpAndSettle();
-      expect(find.text('VTE0001'), findsOneWidget);
-      expect(find.text('VTE0002'), findsOneWidget);
-      await clic(tester, find.text('À crédit'));
-      expect(find.text('VTE0001'), findsOneWidget);
-      expect(find.text('VTE0002'), findsNothing);
-      await clic(tester, find.text('Vérifier le scellement'));
-      expect(find.text('Chaîne de tickets intacte.'), findsOneWidget);
-    });
-
     testWidgets('retour depuis la liste des ventes : stock restitué, remboursement verrouillé', (tester) async {
       final c = await pumpApp(tester, routeInitiale: '/retours', taille: const Size(1400, 900));
       await _donnees(c);

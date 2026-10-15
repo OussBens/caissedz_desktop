@@ -40,9 +40,14 @@ String messageErreurVente(AppLocalizations l10n, VenteException e, String devise
   ErreurVente.stockInsuffisant => l10n.posErreurStock(e.detail ?? ''),
   ErreurVente.creditNonAutorise => l10n.posErreurCredit,
   ErreurVente.venteInconnue => l10n.communAucunResultat,
-  ErreurVente.dejaAnnulee => l10n.communAucunResultat,
+  ErreurVente.dejaAnnulee => l10n.ventesBloqueDejaAnnule,
   ErreurVente.periodeCloturee => l10n.posErreurPeriodeCloturee,
   ErreurVente.quantiteInvalide => l10n.posErreurQuantite,
+  ErreurVente.motifObligatoire => l10n.posErreurMotif,
+  ErreurVente.montantPayeInferieur => l10n.posErreurMontantPaye(
+    formaterMontant(double.tryParse(e.detail ?? '') ?? 0, devise),
+  ),
+  ErreurVente.retourLie => l10n.posErreurRetourLie,
 };
 
 String libelleModePaiement(AppLocalizations l10n, String mode) => switch (mode) {

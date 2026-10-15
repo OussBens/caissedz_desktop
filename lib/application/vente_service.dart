@@ -4,18 +4,21 @@ import '../data/caisse_repository.dart';
 import '../data/catalogue_repository.dart';
 import '../data/historique_repository.dart';
 import '../data/stock_repository.dart';
+import '../data/tiers_repository.dart';
 import '../data/vente_repository.dart';
 import '../domain/calculs_prix.dart';
 import '../domain/code_generator.dart';
 import '../domain/models/caisse.dart';
 import '../domain/models/panier.dart';
 import '../domain/models/parametres_vente.dart';
+import '../domain/models/retour.dart';
 import '../domain/models/stock.dart';
 import '../domain/models/vente.dart';
 import '../domain/referentiel/referentiel.dart';
 import '../domain/scellement.dart';
 import 'caisse_service.dart';
 import 'stock_service.dart';
+import 'versement_service.dart';
 
 enum ErreurVente {
   sessionRequise,
@@ -29,6 +32,9 @@ enum ErreurVente {
   dejaAnnulee,
   periodeCloturee,
   quantiteInvalide,
+  motifObligatoire,
+  montantPayeInferieur,
+  retourLie,
 }
 
 class VenteException implements Exception {
@@ -61,6 +67,7 @@ class VenteService {
     required String magasinCode,
     bool creditAutorise = false,
     DateTime? date,
+    String typePanier = 'Ticket',
   }) async {
     if (!session.estOuverte) throw const VenteException(ErreurVente.sessionRequise);
     if (panier.estVide) throw const VenteException(ErreurVente.panierVide);
@@ -193,6 +200,7 @@ class VenteService {
         lignes: lignes,
         paiements: panier.paiements,
         commentaire: panier.commentaire,
+        typePanier: Referentiel.typesPanier.contient(typePanier) ? typePanier : 'Ticket',
       );
       final hash = Scellement.hacher(vente.versCanonique(), hashPrecedent);
       vente = Vente.depuisLigne({...vente.versLigne(), 'hash': hash}, lignes: lignes, paiements: panier.paiements);
@@ -234,9 +242,16 @@ class VenteService {
     });
   }
 
-  /// Annule une vente : stock restitué, points repris, statut Annulée (le ticket scellé est conservé).
-  /// Refusée si la vente est dans une période clôturée (lot 7).
-  Future<Vente> annuler(String code, {String? motif}) async {
+  /// Modifie un panier (§9.2) sans toucher au ticket scellé : le complément payé devient un versement
+  /// imputé d'abord sur ce panier (mode et caisse choisis), l'observation est mise à jour.
+  /// Le montant payé ne peut pas baisser (utiliser un retour) ; client et lignes restent ceux du ticket.
+  Future<Vente> modifier(
+    String code, {
+    required double montantPaye,
+    required String mode,
+    String? caisseCode,
+    String? commentaire,
+  }) async {
     return db.transaction((txn) async {
       final repo = VenteRepository(txn);
       final v = await repo.vente(code);
@@ -245,6 +260,64 @@ class VenteService {
       if (periodeCloturee != null && await periodeCloturee!(txn, v.date)) {
         throw const VenteException(ErreurVente.periodeCloturee);
       }
+      final impute = await TiersRepository(txn).imputeSur('vente', code);
+      final payeActuel = CalculsPrix.arrondir(v.totalNet - v.reste + impute);
+      final complement = CalculsPrix.arrondir(montantPaye - payeActuel);
+      if (complement < -0.004) throw VenteException(ErreurVente.montantPayeInferieur, '$payeActuel');
+      if (complement > 0.004) {
+        if (v.clientCode == CodeGenerator.systeme(CodeGenerator.client)) {
+          throw const VenteException(ErreurVente.creditNonAutorise);
+        }
+        try {
+          await VersementService(txn.database, utilisateurCode: utilisateurCode).imputerDansTransaction(
+            txn,
+            tiersType: TypesTiers.client,
+            tiersCode: v.clientCode,
+            montant: complement,
+            mode: mode,
+            caisseCode: caisseCode,
+            reference: code,
+            documentCible: code,
+          );
+        } on VersementException {
+          throw const VenteException(ErreurVente.modePaiementInvalide);
+        }
+      }
+      final note = commentaire?.trim();
+      if ((note ?? '') != (v.commentaire ?? '')) {
+        await txn.update(
+          'vente',
+          {'commentaire': (note?.isEmpty ?? true) ? null : note},
+          where: 'code = ?',
+          whereArgs: [code],
+        );
+      }
+      await HistoriqueRepository(txn).journaliser(
+        utilisateurCode: utilisateurCode,
+        action: 'Modification',
+        entite: 'vente',
+        entiteCode: code,
+        detail: complement > 0.004 ? 'versement $complement $mode' : null,
+      );
+      return (await repo.vente(code))!;
+    });
+  }
+
+  /// Annule une vente (motif obligatoire, refusée si un retour y est lié) : stock restitué, points repris, versements imputés uniquement
+  /// sur ce panier annulés (les autres libèrent leur imputation), statut Annulée (le ticket scellé est
+  /// conservé). Refusée si la vente est dans une période clôturée (lot 7).
+  Future<Vente> annuler(String code, {required String motif}) async {
+    if (motif.trim().isEmpty) throw const VenteException(ErreurVente.motifObligatoire);
+    return db.transaction((txn) async {
+      final repo = VenteRepository(txn);
+      final v = await repo.vente(code);
+      if (v == null) throw const VenteException(ErreurVente.venteInconnue);
+      if (v.statut == StatutsVente.annulee) throw const VenteException(ErreurVente.dejaAnnulee);
+      if (periodeCloturee != null && await periodeCloturee!(txn, v.date)) {
+        throw const VenteException(ErreurVente.periodeCloturee);
+      }
+      final retours = await txn.rawQuery('SELECT COUNT(*) n FROM retour WHERE vente_code = ?', [code]);
+      if ((retours.first['n']! as int) > 0) throw const VenteException(ErreurVente.retourLie);
       final stock = StockService(txn.database, utilisateurCode: utilisateurCode);
       final catalogue = CatalogueRepository(txn);
       for (final l in v.lignes) {
@@ -295,13 +368,38 @@ class VenteService {
           utilisateurCode: utilisateurCode,
         );
       }
+      // Versements liés (§9.2) : annulés s'ils ne portent que sur ce panier, sinon imputation libérée.
+      final tiers = TiersRepository(txn);
+      final lies = await txn.rawQuery(
+        '''
+        SELECT DISTINCT i.versement_code c,
+          (SELECT COUNT(*) FROM versement_imputation j WHERE j.versement_code = i.versement_code
+            AND NOT (j.document_type = 'vente' AND j.document_code = ?)) autres
+        FROM versement_imputation i JOIN versement ve ON ve.code = i.versement_code
+        WHERE i.document_type = 'vente' AND i.document_code = ? AND ve.etat = 1
+        ''',
+        [code, code],
+      );
+      for (final l in lies) {
+        final vc = l['c']! as String;
+        if ((l['autres']! as int) == 0) {
+          await tiers.annulerVersement(vc, par: utilisateurCode, motif: motif.trim());
+          await CaisseRepository(txn).supprimerMouvementsReference('versement', vc);
+        } else {
+          await txn.delete(
+            'versement_imputation',
+            where: "versement_code = ? AND document_type = 'vente' AND document_code = ?",
+            whereArgs: [vc, code],
+          );
+        }
+      }
       await repo.annulerVente(code, par: utilisateurCode, le: DateTime.now());
       await HistoriqueRepository(txn).journaliser(
         utilisateurCode: utilisateurCode,
         action: 'Annulation',
         entite: 'vente',
         entiteCode: code,
-        detail: motif,
+        detail: motif.trim(),
       );
       return (await repo.vente(code))!;
     });

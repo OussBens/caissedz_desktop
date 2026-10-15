@@ -259,7 +259,7 @@ void main() {
       final c = _Ctx(base.db);
       await c.preparer();
       final v = await c.venteCredit(1, 100);
-      await c.ventes.annuler(v.code);
+      await c.ventes.annuler(v.code, motif: 'test');
       await expectLater(
         c.retours.creer(
           venteCode: v.code,

@@ -62,7 +62,33 @@ class VersementService {
     DateTime? date,
     String? sens,
     String type = TypesVersement.paiement,
+    String? documentCible,
   }) async {
+    _controler(tiersType: tiersType, tiersCode: tiersCode, montant: montant, mode: mode);
+    return db.transaction(
+      (txn) => imputerDansTransaction(
+        txn,
+        tiersType: tiersType,
+        tiersCode: tiersCode,
+        montant: montant,
+        mode: mode,
+        caisseCode: caisseCode,
+        reference: reference,
+        commentaire: commentaire,
+        date: date,
+        sens: sens,
+        type: type,
+        documentCible: documentCible,
+      ),
+    );
+  }
+
+  void _controler({
+    required String tiersType,
+    required String tiersCode,
+    required double montant,
+    required String mode,
+  }) {
     if (montant <= 0) throw const VersementException(ErreurVersement.montantInvalide);
     if (!Referentiel.modesPaiement.contient(mode) || mode == 'Points') {
       throw const VersementException(ErreurVersement.modeInvalide);
@@ -74,8 +100,26 @@ class VersementService {
         tiersCode == CodeGenerator.systeme(CodeGenerator.fournisseur)) {
       throw const VersementException(ErreurVersement.tiersSysteme);
     }
+  }
+
+  /// Versement imputé (plus ancien d'abord, [documentCible] en premier) dans la transaction d'un autre service.
+  Future<Versement> imputerDansTransaction(
+    Transaction txn, {
+    required String tiersType,
+    required String tiersCode,
+    required double montant,
+    required String mode,
+    String? caisseCode,
+    String? reference,
+    String? commentaire,
+    DateTime? date,
+    String? sens,
+    String type = TypesVersement.paiement,
+    String? documentCible,
+  }) async {
+    _controler(tiersType: tiersType, tiersCode: tiersCode, montant: montant, mode: mode);
     final s = sens ?? (tiersType == TypesTiers.client ? SensVersement.encaissement : SensVersement.decaissement);
-    return db.transaction((txn) async {
+    {
       final repo = TiersRepository(txn);
       final code = await repo.prochainCode('versement', CodeGenerator.versement);
       final retour = s != (tiersType == TypesTiers.client ? SensVersement.encaissement : SensVersement.decaissement);
@@ -85,6 +129,9 @@ class VersementService {
           : tiersType == TypesTiers.client
           ? await repo.documentsOuvertsClient(tiersCode)
           : await repo.documentsOuvertsFournisseur(tiersCode);
+      if (documentCible != null && !retour) {
+        docs.sort((a, b) => (a.code == documentCible ? 0 : 1).compareTo(b.code == documentCible ? 0 : 1));
+      }
       final imputations = repartir(code, montant, docs);
       final caisse = caisseCode ?? await CaisseRepository(txn).caisseParDefaut(utilisateurCode);
       final v = Versement(
@@ -112,7 +159,7 @@ class VersementService {
         detail: '$tiersType $tiersCode $montant',
       );
       return v;
-    });
+    }
   }
 
   /// Versement de remboursement lié à un retour : créé verrouillé, non modifiable ni supprimable.

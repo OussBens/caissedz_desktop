@@ -5,6 +5,7 @@ import '../../i18n/generated/app_localizations.dart';
 import '../tokens/ds_theme.dart';
 import 'ds_button.dart';
 import 'ds_dialog.dart';
+import 'ds_module_kit.dart' show DsSpan;
 import 'ds_page.dart';
 
 /// Panneau de filtres repliable (`FilterPanel`) : en-tête 52 px, compteur de filtres actifs,
@@ -154,7 +155,15 @@ class _DsFilterPanelState extends State<DsFilterPanel> {
                             return Wrap(
                               spacing: gapX,
                               runSpacing: gapY,
-                              children: [for (final ch in widget.children) SizedBox(width: largeur, child: ch)],
+                              children: [
+                                for (final ch in widget.children)
+                                  SizedBox(
+                                    width: ch is DsSpan
+                                        ? largeur * ch.span.clamp(1, n) + gapX * (ch.span.clamp(1, n) - 1)
+                                        : largeur,
+                                    child: ch,
+                                  ),
+                              ],
                             );
                           },
                         ),

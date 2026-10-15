@@ -179,6 +179,59 @@ class VenteRepository {
     return [for (final r in rows) await _charger(r)];
   }
 
+  /// Paniers de la période (écran Ventes) avec leurs agrégats, plus récents d'abord.
+  Future<List<PanierResume>> paniers({DateTime? depuis, DateTime? jusqua, int limite = 5000}) async {
+    final where = <String>[];
+    final args = <Object>[];
+    if (depuis != null) {
+      where.add('v.date >= ?');
+      args.add(depuis.toUtc().toIso8601String());
+    }
+    if (jusqua != null) {
+      where.add('v.date < ?');
+      args.add(jusqua.toUtc().toIso8601String());
+    }
+    final rows = await db.rawQuery(
+      '''
+      SELECT v.*,
+        COALESCE(u.nom, v.utilisateur_code) caissier_nom,
+        (SELECT COUNT(*) FROM vente_ligne l WHERE l.vente_code = v.code) nb_articles,
+        (SELECT COALESCE(SUM(l.quantite), 0) FROM vente_ligne l WHERE l.vente_code = v.code) quantite_totale,
+        (SELECT COALESCE(SUM(l.total_achat), 0) FROM vente_ligne l WHERE l.vente_code = v.code) total_achat,
+        (SELECT COALESCE(SUM(i.montant), 0) FROM versement_imputation i
+          WHERE i.document_type = 'vente' AND i.document_code = v.code) impute,
+        (SELECT COUNT(DISTINCT i.versement_code) FROM versement_imputation i
+          WHERE i.document_type = 'vente' AND i.document_code = v.code) nb_versements,
+        (SELECT COUNT(*) FROM retour r WHERE r.vente_code = v.code) nb_retours,
+        (SELECT GROUP_CONCAT(p.mode, '|') FROM vente_paiement p WHERE p.vente_code = v.code) modes,
+        (SELECT h.detail FROM historique h WHERE h.entite = 'vente' AND h.entite_code = v.code
+          AND h.action = 'Annulation' ORDER BY h.id DESC LIMIT 1) motif_annulation,
+        (SELECT COALESCE(ua.nom, v.annulee_par) FROM utilisateur ua WHERE ua.code = v.annulee_par) annulee_par_nom
+      FROM vente v LEFT JOIN utilisateur u ON u.code = v.utilisateur_code
+      ${where.isEmpty ? '' : 'WHERE ${where.join(' AND ')}'}
+      ORDER BY v.date DESC, v.code DESC LIMIT ?
+      ''',
+      [...args, limite],
+    );
+    return [
+      for (final r in rows)
+        PanierResume(
+          vente: Vente.depuisLigne(r),
+          caissier: r['caissier_nom']! as String,
+          nbArticles: r['nb_articles']! as int,
+          quantite: (r['quantite_totale']! as num).toDouble(),
+          totalAchat: (r['total_achat']! as num).toDouble(),
+          impute: (r['impute']! as num).toDouble(),
+          nbVersements: r['nb_versements']! as int,
+          nbRetours: r['nb_retours']! as int,
+          modes: ((r['modes'] as String?) ?? '').split('|').where((m) => m.isNotEmpty).toSet().toList(),
+          annuleeLe: r['annulee_le'] == null ? null : DateTime.parse(r['annulee_le']! as String).toLocal(),
+          annuleePar: (r['annulee_par_nom'] ?? r['annulee_par']) as String?,
+          motifAnnulation: r['motif_annulation'] as String?,
+        ),
+    ];
+  }
+
   /// Toutes les ventes dans l'ordre de la chaîne (par code), avec lignes et paiements.
   Future<List<Vente>> chaine() async {
     final rows = await db.query('vente', orderBy: 'code');

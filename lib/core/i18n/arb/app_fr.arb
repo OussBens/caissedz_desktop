@@ -2039,5 +2039,102 @@
   "situationAchats": "Achats",
   "situationDette": "Dette",
   "situationDettes": "Dettes",
-  "situationCreditTotal": "Crédit total"
+  "situationCreditTotal": "Crédit total",
+  "ventesDescription": "Tous les paniers encaissés — tickets et BL / SC",
+  "ventesKpiNombre": "Nombre de ventes",
+  "ventesKpiCa": "Chiffre d'affaires",
+  "ventesKpiMarge": "Marge",
+  "ventesKpiEncaisse": "Encaissé",
+  "ventesKpiCredit": "Crédit clients",
+  "ventesType": "Type",
+  "ventesTous": "Tous",
+  "ventesToutes": "Toutes",
+  "ventesStatut": "Statut",
+  "ventesCaissier": "Caissier",
+  "ventesClient": "Client",
+  "ventesCaisse": "Caisse",
+  "ventesSession": "Session",
+  "ventesMontant": "Montant",
+  "ventesPaye": "Payé",
+  "ventesReste": "Reste",
+  "ventesPaiement": "Paiement",
+  "ventesArticles": "Articles",
+  "ventesQuantite": "Quantité",
+  "ventesNbVersements": "Nb versements",
+  "ventesMontantAchat": "Montant achat",
+  "ventesAnnuleLe": "Annulé le",
+  "ventesAnnulePar": "Annulé par",
+  "ventesRechercheIndice": "N° panier ou client…",
+  "ventesNouvelle": "Nouvelle vente",
+  "ventesEntite": "panier",
+  "ventesEntitePluriel": "paniers",
+  "ventesPanierTitre": "Panier {code}",
+  "@ventesPanierTitre": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "ventesReimprimer": "Réimprimer",
+  "ventesMontantTotal": "Montant total",
+  "ventesVersements": "Versements",
+  "ventesInfosGenerales": "Informations générales",
+  "ventesPaiementMarge": "Paiement & marge",
+  "ventesTotalAchat": "Total achat",
+  "ventesMontantPaye": "Montant payé",
+  "ventesNombreVersements": "Nombre de versements",
+  "ventesModePaiement": "Mode de paiement",
+  "ventesProduitsPanier": "Produits du panier",
+  "ventesProduits": "Produits",
+  "ventesProduit": "Produit",
+  "ventesQte": "Qté",
+  "ventesNumSerie": "N° série",
+  "ventesPrix": "Prix",
+  "ventesTotal": "Total",
+  "ventesAudit": "Audit",
+  "ventesCreePar": "Créé par",
+  "ventesCreeLe": "Créé le",
+  "ventesMotifAnnulation": "Motif d'annulation",
+  "ventesEmpreinte": "Empreinte fiscale",
+  "ventesModifierTitre": "Modifier le panier",
+  "ventesModifierDescription": "{code} · les lignes ne sont pas modifiables — utilisez un retour.",
+  "@ventesModifierDescription": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "ventesClientScelle": "Client du ticket scellé : pour un autre client, faites un retour puis une nouvelle vente.",
+  "ventesComplementIndice": "Le complément sera enregistré comme versement imputé sur ce panier.",
+  "ventesNoteInterne": "Note interne",
+  "ventesModifie": "Panier modifié",
+  "ventesBloqueDejaAnnule": "Déjà annulé",
+  "ventesBloqueRetour": "Un retour est lié à ce panier",
+  "ventesAnnulesTitre": "Paniers annulés",
+  "ventesAnnulesMessage": "Le stock des produits a été réintégré et les montants retirés de la session.",
+  "ventesAnnulesPartiel": "{ok} panier(s) annulé(s). Échec : {detail}",
+  "@ventesAnnulesPartiel": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      },
+      "ok": {
+        "type": "int"
+      }
+    }
+  },
+  "statutTicket": "Ticket",
+  "statutFacture": "BL / SC",
+  "posErreurMotif": "Le motif est obligatoire.",
+  "posErreurMontantPaye": "Le montant payé ne peut pas baisser (déjà payé : {montant}). Utilisez un retour.",
+  "@posErreurMontantPaye": {
+    "placeholders": {
+      "montant": {
+        "type": "String"
+      }
+    }
+  },
+  "posErreurRetourLie": "Un retour est lié à ce panier : annulation impossible."
 }

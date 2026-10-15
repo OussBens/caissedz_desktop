@@ -214,7 +214,7 @@ void main() {
         expect(await VenteRepository(base.db).pointsClient('CLN0001'), 20);
         expect(await c.ventes.verifierChaine(), isNull);
         await expectLater(
-          c.ventes.annuler(v.code),
+          c.ventes.annuler(v.code, motif: 'test'),
           throwsA(isA<VenteException>().having((e) => e.erreur, 'e', ErreurVente.dejaAnnulee)),
         );
         final v2 = await c.ventes.encaisser(panier.copyWith(id: 2), session: c.session, magasinCode: 'MAG0000');
@@ -225,7 +225,7 @@ void main() {
           periodeCloturee: (_, _) async => true,
         );
         await expectLater(
-          verrouille.annuler(v2.code),
+          verrouille.annuler(v2.code, motif: 'test'),
           throwsA(isA<VenteException>().having((e) => e.erreur, 'e', ErreurVente.periodeCloturee)),
         );
       },
@@ -242,6 +242,102 @@ void main() {
       await c.ventes.encaisser(panier.copyWith(id: 2), session: c.session, magasinCode: 'MAG0000');
       await base.db.update('vente', {'total_net': 1}, where: 'code = ?', whereArgs: ['VTE0001']);
       expect(await c.ventes.verifierChaine(), 'VTE0001');
+    });
+  });
+
+  group('VenteService — écran Ventes (§9.2)', () {
+    test('modifier : complément en versement imputé, observation, refus si baisse ou client de passage', () async {
+      final base = await ouvrirBaseDeTest();
+      final c = _Ctx(base.db);
+      await c.preparer();
+      final credit = await c.ventes.encaisser(
+        const Panier(id: 1, clientCode: 'CLN0001')
+            .ajouter(PanierLigne(produit: c.lait, quantite: 3, prixUnitaire: 100))
+            .ajouterPaiement(const Paiement(mode: 'Espèces', montant: 100)),
+        session: c.session,
+        magasinCode: 'MAG0000',
+        creditAutorise: true,
+        typePanier: 'BL_SC',
+      );
+      expect(credit.typePanier, 'BL_SC');
+      expect(credit.reste, 200);
+      await expectLater(
+        c.ventes.modifier(credit.code, montantPaye: 50, mode: 'Espèces'),
+        throwsA(isA<VenteException>().having((e) => e.erreur, 'e', ErreurVente.montantPayeInferieur)),
+      );
+      final m = await c.ventes.modifier(
+        credit.code,
+        montantPaye: 250,
+        mode: 'Chèque',
+        caisseCode: 'CIS0000',
+        commentaire: 'Chèque n° 12',
+      );
+      expect(m.commentaire, 'Chèque n° 12');
+      expect(m.hash, credit.hash); // ticket scellé intact
+      expect(await c.ventes.verifierChaine(), isNull);
+      final panier = (await VenteRepository(base.db).paniers()).single;
+      expect(panier.paye, 250);
+      expect(panier.resteActuel, 50);
+      expect(panier.nbVersements, 1);
+      expect(panier.statut, 'credit');
+      expect(panier.type, 'facture');
+      expect(panier.totalAchat, 240);
+      expect(panier.marge, 60);
+
+      final passage = await c.ventes.encaisser(
+        const Panier(id: 2)
+            .ajouter(PanierLigne(produit: c.lait, quantite: 1, prixUnitaire: 100))
+            .ajouterPaiement(const Paiement(mode: 'Espèces', montant: 100)),
+        session: c.session,
+        magasinCode: 'MAG0000',
+      );
+      await expectLater(
+        c.ventes.modifier(passage.code, montantPaye: 150, mode: 'Espèces'),
+        throwsA(isA<VenteException>().having((e) => e.erreur, 'e', ErreurVente.creditNonAutorise)),
+      );
+      expect((await c.ventes.modifier(passage.code, montantPaye: 100, mode: 'Espèces')).statut, 'Validée');
+    });
+
+    test('annuler : motif obligatoire, versement lié annulé, refus si un retour est lié', () async {
+      final base = await ouvrirBaseDeTest();
+      final c = _Ctx(base.db);
+      await c.preparer();
+      Future<Vente> aCredit(int id) => c.ventes.encaisser(
+        Panier(id: id, clientCode: 'CLN0001').ajouter(PanierLigne(produit: c.lait, quantite: 1, prixUnitaire: 100)),
+        session: c.session,
+        magasinCode: 'MAG0000',
+        creditAutorise: true,
+      );
+      final v = await aCredit(1);
+      await c.ventes.modifier(v.code, montantPaye: 100, mode: 'Espèces', caisseCode: 'CIS0000');
+      await expectLater(
+        c.ventes.annuler(v.code, motif: '  '),
+        throwsA(isA<VenteException>().having((e) => e.erreur, 'e', ErreurVente.motifObligatoire)),
+      );
+      await c.ventes.annuler(v.code, motif: 'Erreur client');
+      final versement = (await base.db.query('versement')).single;
+      expect(versement['etat'], 0);
+      expect(await base.db.query('versement_imputation'), isEmpty);
+      final p = (await VenteRepository(base.db).paniers()).single;
+      expect(p.statut, 'annule');
+      expect(p.motifAnnulation, 'Erreur client');
+      expect(p.annuleeLe, isNotNull);
+
+      final v2 = await aCredit(2);
+      await base.db.insert('retour', {
+        'code': 'RET0001',
+        'date': DateTime.now().toUtc().toIso8601String(),
+        'vente_code': v2.code,
+        'client_code': 'CLN0001',
+        'magasin_code': 'MAG0000',
+        'utilisateur_code': 'USR0000',
+        'total': 100,
+      });
+      await expectLater(
+        c.ventes.annuler(v2.code, motif: 'test'),
+        throwsA(isA<VenteException>().having((e) => e.erreur, 'e', ErreurVente.retourLie)),
+      );
+      expect((await VenteRepository(base.db).paniers()).first.statut, 'retourne');
     });
   });
 

@@ -4121,4 +4121,210 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get situationCreditTotal => 'مجموع الديون';
+
+  @override
+  String get ventesDescription => 'كل السلال المحصلة — تذاكر ووصولات BL / SC';
+
+  @override
+  String get ventesKpiNombre => 'عدد المبيعات';
+
+  @override
+  String get ventesKpiCa => 'رقم الأعمال';
+
+  @override
+  String get ventesKpiMarge => 'الهامش';
+
+  @override
+  String get ventesKpiEncaisse => 'المحصل';
+
+  @override
+  String get ventesKpiCredit => 'ديون الزبائن';
+
+  @override
+  String get ventesType => 'النوع';
+
+  @override
+  String get ventesTous => 'الكل';
+
+  @override
+  String get ventesToutes => 'الكل';
+
+  @override
+  String get ventesStatut => 'الحالة';
+
+  @override
+  String get ventesCaissier => 'أمين الصندوق';
+
+  @override
+  String get ventesClient => 'الزبون';
+
+  @override
+  String get ventesCaisse => 'الصندوق';
+
+  @override
+  String get ventesSession => 'الجلسة';
+
+  @override
+  String get ventesMontant => 'المبلغ';
+
+  @override
+  String get ventesPaye => 'المدفوع';
+
+  @override
+  String get ventesReste => 'الباقي';
+
+  @override
+  String get ventesPaiement => 'الدفع';
+
+  @override
+  String get ventesArticles => 'المواد';
+
+  @override
+  String get ventesQuantite => 'الكمية';
+
+  @override
+  String get ventesNbVersements => 'عدد الدفعات';
+
+  @override
+  String get ventesMontantAchat => 'مبلغ الشراء';
+
+  @override
+  String get ventesAnnuleLe => 'أُلغي في';
+
+  @override
+  String get ventesAnnulePar => 'أُلغي بواسطة';
+
+  @override
+  String get ventesRechercheIndice => 'رقم السلة أو الزبون…';
+
+  @override
+  String get ventesNouvelle => 'بيع جديد';
+
+  @override
+  String get ventesEntite => 'سلة';
+
+  @override
+  String get ventesEntitePluriel => 'سلال';
+
+  @override
+  String ventesPanierTitre(String code) {
+    return 'السلة $code';
+  }
+
+  @override
+  String get ventesReimprimer => 'إعادة الطباعة';
+
+  @override
+  String get ventesMontantTotal => 'المبلغ الإجمالي';
+
+  @override
+  String get ventesVersements => 'الدفعات';
+
+  @override
+  String get ventesInfosGenerales => 'معلومات عامة';
+
+  @override
+  String get ventesPaiementMarge => 'الدفع والهامش';
+
+  @override
+  String get ventesTotalAchat => 'إجمالي الشراء';
+
+  @override
+  String get ventesMontantPaye => 'المبلغ المدفوع';
+
+  @override
+  String get ventesNombreVersements => 'عدد الدفعات';
+
+  @override
+  String get ventesModePaiement => 'طريقة الدفع';
+
+  @override
+  String get ventesProduitsPanier => 'منتجات السلة';
+
+  @override
+  String get ventesProduits => 'المنتجات';
+
+  @override
+  String get ventesProduit => 'المنتج';
+
+  @override
+  String get ventesQte => 'الكمية';
+
+  @override
+  String get ventesNumSerie => 'الرقم التسلسلي';
+
+  @override
+  String get ventesPrix => 'السعر';
+
+  @override
+  String get ventesTotal => 'المجموع';
+
+  @override
+  String get ventesAudit => 'التدقيق';
+
+  @override
+  String get ventesCreePar => 'أنشئ بواسطة';
+
+  @override
+  String get ventesCreeLe => 'أنشئ في';
+
+  @override
+  String get ventesMotifAnnulation => 'سبب الإلغاء';
+
+  @override
+  String get ventesEmpreinte => 'البصمة الجبائية';
+
+  @override
+  String get ventesModifierTitre => 'تعديل السلة';
+
+  @override
+  String ventesModifierDescription(String code) {
+    return '$code · لا يمكن تعديل الأسطر — استعمل الإرجاع.';
+  }
+
+  @override
+  String get ventesClientScelle => 'زبون التذكرة المختومة: لزبون آخر، قم بإرجاع ثم بيع جديد.';
+
+  @override
+  String get ventesComplementIndice => 'سيسجل الفرق كدفعة مخصصة لهذه السلة.';
+
+  @override
+  String get ventesNoteInterne => 'ملاحظة داخلية';
+
+  @override
+  String get ventesModifie => 'تم تعديل السلة';
+
+  @override
+  String get ventesBloqueDejaAnnule => 'ملغى مسبقا';
+
+  @override
+  String get ventesBloqueRetour => 'يوجد إرجاع مرتبط بهذه السلة';
+
+  @override
+  String get ventesAnnulesTitre => 'السلال الملغاة';
+
+  @override
+  String get ventesAnnulesMessage => 'أعيد إدماج مخزون المنتجات وسُحبت المبالغ من الجلسة.';
+
+  @override
+  String ventesAnnulesPartiel(String detail, int ok) {
+    return 'أُلغيت $ok سلة. فشل: $detail';
+  }
+
+  @override
+  String get statutTicket => 'تذكرة';
+
+  @override
+  String get statutFacture => 'BL / SC';
+
+  @override
+  String get posErreurMotif => 'السبب إلزامي.';
+
+  @override
+  String posErreurMontantPaye(String montant) {
+    return 'لا يمكن تخفيض المبلغ المدفوع (المدفوع: $montant). استعمل الإرجاع.';
+  }
+
+  @override
+  String get posErreurRetourLie => 'يوجد إرجاع مرتبط بهذه السلة: الإلغاء غير ممكن.';
 }
