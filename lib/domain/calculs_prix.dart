@@ -1,10 +1,21 @@
 /// Calculs de prix et de marge (§8).
 ///
-/// Marge exprimée en pourcentage du prix d'achat : PV = PA × (1 + marge/100).
+/// Marge exprimée en pourcentage du prix d'achat : PV = PA × (1 + marge/100), arrondi au multiple de 5 DA supérieur.
 class CalculsPrix {
   const CalculsPrix._();
 
-  static double prixVenteDepuisMarge(double prixAchat, double margePct) => arrondir(prixAchat * (1 + margePct / 100));
+  /// Marge en pourcentage (§8.8, `PrixVenteCalculator`) : arrondi au multiple de [pasArrondi] DA supérieur.
+  static double prixVenteDepuisMarge(double prixAchat, double margePct) =>
+      arrondirAuPasSuperieur(prixAchat * (1 + margePct / 100));
+
+  /// Marge en montant fixe : prix exact.
+  static double prixVenteDepuisMontant(double prixAchat, double marge) => arrondir(prixAchat + marge);
+
+  static const double pasArrondi = 5;
+
+  /// Plus petit multiple de [pas] supérieur ou égal à [v] (tolérance des flottants).
+  static double arrondirAuPasSuperieur(double v, {double pas = pasArrondi}) =>
+      v <= 0 ? 0 : ((v - 1e-6) / pas).ceil() * pas;
 
   static double margeDepuisPrix(double prixAchat, double prixVente) =>
       prixAchat <= 0 ? 0 : arrondir((prixVente - prixAchat) / prixAchat * 100);

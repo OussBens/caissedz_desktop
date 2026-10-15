@@ -7,6 +7,7 @@ import '../../application/catalogue_ia_service.dart';
 import '../../application/catalogue_service.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
+import '../../domain/calculs_prix.dart';
 import '../../domain/code_generator.dart';
 import '../../domain/codes_barres.dart';
 import '../../domain/models/produit.dart';
@@ -259,7 +260,8 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
 
   double get _a => _d(_achat.text);
   double get _m => _d(_marge.text);
-  double get _vente => _modeMarge == '%' ? _a * (1 + _m / 100) : _a + _m;
+  double get _vente =>
+      _modeMarge == '%' ? CalculsPrix.prixVenteDepuisMarge(_a, _m) : CalculsPrix.prixVenteDepuisMontant(_a, _m);
   bool get _sousAchat => _a > 0 && _vente < _a;
   bool get _ok1 => _designation.text.trim().isNotEmpty && _a > 0 && !_sousAchat;
 

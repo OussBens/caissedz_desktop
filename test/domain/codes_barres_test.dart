@@ -41,7 +41,10 @@ void main() {
   group('CalculsPrix', () {
     test('marge ↔ prix de vente', () {
       expect(CalculsPrix.prixVenteDepuisMarge(100, 25), 125);
-      expect(CalculsPrix.prixVenteDepuisMarge(80, 20), 96);
+      expect(CalculsPrix.prixVenteDepuisMarge(80, 20), 100); // 96 → multiple de 5 DA supérieur (§8.8)
+      expect(CalculsPrix.prixVenteDepuisMarge(84, 25), 105);
+      expect(CalculsPrix.prixVenteDepuisMarge(0, 25), 0);
+      expect(CalculsPrix.prixVenteDepuisMontant(83, 50), 133);
       expect(CalculsPrix.margeDepuisPrix(100, 125), 25);
       expect(CalculsPrix.margeDepuisPrix(0, 125), 0);
       expect(CalculsPrix.arrondir(1.005), 1.01);
