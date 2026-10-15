@@ -9572,6 +9572,1248 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Ce nom est déjà utilisé.'**
   String get catalogueErreurNomPris;
+
+  /// No description provided for @prdDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Catalogue, catégories, remises et packs'**
+  String get prdDescription;
+
+  /// No description provided for @prdOngletSousCategories.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sous-catégories'**
+  String get prdOngletSousCategories;
+
+  /// No description provided for @prdAchat.
+  ///
+  /// In fr, this message translates to:
+  /// **'Achat'**
+  String get prdAchat;
+
+  /// No description provided for @prdVente.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vente'**
+  String get prdVente;
+
+  /// No description provided for @prdMarge.
+  ///
+  /// In fr, this message translates to:
+  /// **'Marge'**
+  String get prdMarge;
+
+  /// No description provided for @prdMarque.
+  ///
+  /// In fr, this message translates to:
+  /// **'Marque'**
+  String get prdMarque;
+
+  /// No description provided for @prdMarqueIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex. Elio'**
+  String get prdMarqueIndice;
+
+  /// No description provided for @prdDescriptionChamp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Description'**
+  String get prdDescriptionChamp;
+
+  /// No description provided for @prdTaille.
+  ///
+  /// In fr, this message translates to:
+  /// **'Taille'**
+  String get prdTaille;
+
+  /// No description provided for @prdCouleur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Couleur'**
+  String get prdCouleur;
+
+  /// No description provided for @prdRemise.
+  ///
+  /// In fr, this message translates to:
+  /// **'Remise'**
+  String get prdRemise;
+
+  /// No description provided for @prdService.
+  ///
+  /// In fr, this message translates to:
+  /// **'Service'**
+  String get prdService;
+
+  /// No description provided for @prdEmballageN.
+  ///
+  /// In fr, this message translates to:
+  /// **'Emballage {n}'**
+  String prdEmballageN(int n);
+
+  /// No description provided for @prdPrixEmballageN.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix emballage {n}'**
+  String prdPrixEmballageN(int n);
+
+  /// No description provided for @prdEmballagePieces.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n} pcs'**
+  String prdEmballagePieces(int n);
+
+  /// No description provided for @prdNumeroSerie.
+  ///
+  /// In fr, this message translates to:
+  /// **'N° série'**
+  String get prdNumeroSerie;
+
+  /// No description provided for @prdMultiCodes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Multi code-barres'**
+  String get prdMultiCodes;
+
+  /// No description provided for @prdPhotos.
+  ///
+  /// In fr, this message translates to:
+  /// **'Photos'**
+  String get prdPhotos;
+
+  /// No description provided for @prdTva.
+  ///
+  /// In fr, this message translates to:
+  /// **'TVA'**
+  String get prdTva;
+
+  /// No description provided for @prdDateExpiration.
+  ///
+  /// In fr, this message translates to:
+  /// **'Date d\'expiration'**
+  String get prdDateExpiration;
+
+  /// No description provided for @prdEntiteProduits.
+  ///
+  /// In fr, this message translates to:
+  /// **'produits'**
+  String get prdEntiteProduits;
+
+  /// No description provided for @prdEntiteProduit.
+  ///
+  /// In fr, this message translates to:
+  /// **'produit'**
+  String get prdEntiteProduit;
+
+  /// No description provided for @prdEntiteCategories.
+  ///
+  /// In fr, this message translates to:
+  /// **'catégories'**
+  String get prdEntiteCategories;
+
+  /// No description provided for @prdEntiteCategorie.
+  ///
+  /// In fr, this message translates to:
+  /// **'catégorie'**
+  String get prdEntiteCategorie;
+
+  /// No description provided for @prdEntiteSousCategories.
+  ///
+  /// In fr, this message translates to:
+  /// **'sous-catégories'**
+  String get prdEntiteSousCategories;
+
+  /// No description provided for @prdEntiteSousCategorie.
+  ///
+  /// In fr, this message translates to:
+  /// **'sous-catégorie'**
+  String get prdEntiteSousCategorie;
+
+  /// No description provided for @prdEntiteRemises.
+  ///
+  /// In fr, this message translates to:
+  /// **'remises'**
+  String get prdEntiteRemises;
+
+  /// No description provided for @prdEntiteRemise.
+  ///
+  /// In fr, this message translates to:
+  /// **'remise'**
+  String get prdEntiteRemise;
+
+  /// No description provided for @prdEntitePacks.
+  ///
+  /// In fr, this message translates to:
+  /// **'packs'**
+  String get prdEntitePacks;
+
+  /// No description provided for @prdEntitePack.
+  ///
+  /// In fr, this message translates to:
+  /// **'pack'**
+  String get prdEntitePack;
+
+  /// No description provided for @prdKpiActifs.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produits actifs'**
+  String get prdKpiActifs;
+
+  /// No description provided for @prdKpiValeurStock.
+  ///
+  /// In fr, this message translates to:
+  /// **'Valeur du stock'**
+  String get prdKpiValeurStock;
+
+  /// No description provided for @prdKpiSousSeuil.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sous le seuil'**
+  String get prdKpiSousSeuil;
+
+  /// No description provided for @prdKpiRupture.
+  ///
+  /// In fr, this message translates to:
+  /// **'En rupture'**
+  String get prdKpiRupture;
+
+  /// No description provided for @prdToutes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Toutes'**
+  String get prdToutes;
+
+  /// No description provided for @prdDisponible.
+  ///
+  /// In fr, this message translates to:
+  /// **'Disponible'**
+  String get prdDisponible;
+
+  /// No description provided for @prdRechercheProduits.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom, code ou code-barres…'**
+  String get prdRechercheProduits;
+
+  /// No description provided for @prdRechercheCategorie.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher une catégorie…'**
+  String get prdRechercheCategorie;
+
+  /// No description provided for @prdRechercheSousCategorie.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher une sous-catégorie…'**
+  String get prdRechercheSousCategorie;
+
+  /// No description provided for @prdRechercheRemise.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher une remise…'**
+  String get prdRechercheRemise;
+
+  /// No description provided for @prdRecherchePack.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher un pack…'**
+  String get prdRecherchePack;
+
+  /// No description provided for @prdEtiquette.
+  ///
+  /// In fr, this message translates to:
+  /// **'Étiquette'**
+  String get prdEtiquette;
+
+  /// No description provided for @prdEtiquettes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Étiquettes'**
+  String get prdEtiquettes;
+
+  /// No description provided for @prdAffecter.
+  ///
+  /// In fr, this message translates to:
+  /// **'Affecter'**
+  String get prdAffecter;
+
+  /// No description provided for @prdImporter.
+  ///
+  /// In fr, this message translates to:
+  /// **'Importer'**
+  String get prdImporter;
+
+  /// No description provided for @prdAchatMontant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Achat {montant}'**
+  String prdAchatMontant(String montant);
+
+  /// No description provided for @prdStockN.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock {quantite}'**
+  String prdStockN(String quantite);
+
+  /// No description provided for @prdMargeN.
+  ///
+  /// In fr, this message translates to:
+  /// **'Marge {n} %'**
+  String prdMargeN(int n);
+
+  /// No description provided for @prdStatut.
+  ///
+  /// In fr, this message translates to:
+  /// **'Statut'**
+  String get prdStatut;
+
+  /// No description provided for @prdTypeTaux.
+  ///
+  /// In fr, this message translates to:
+  /// **'Type de taux'**
+  String get prdTypeTaux;
+
+  /// No description provided for @prdSeuilMontant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Seuil du panier'**
+  String get prdSeuilMontant;
+
+  /// No description provided for @prdPack.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pack'**
+  String get prdPack;
+
+  /// No description provided for @prdComposants.
+  ///
+  /// In fr, this message translates to:
+  /// **'Composants'**
+  String get prdComposants;
+
+  /// No description provided for @prdComposant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Composant'**
+  String get prdComposant;
+
+  /// No description provided for @prdValeurSeparee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Valeur séparée'**
+  String get prdValeurSeparee;
+
+  /// No description provided for @prdPrixPack.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix du pack'**
+  String get prdPrixPack;
+
+  /// No description provided for @prdEconomie.
+  ///
+  /// In fr, this message translates to:
+  /// **'Économie'**
+  String get prdEconomie;
+
+  /// No description provided for @prdDisponibles.
+  ///
+  /// In fr, this message translates to:
+  /// **'Disponibles'**
+  String get prdDisponibles;
+
+  /// No description provided for @prdFormDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rapide : une page pour l\'essentiel. Détaillé : 3 étapes (photos, identification et prix · stock et emballages · variantes et options). IA : fiche retrouvée par le code-barres.'**
+  String get prdFormDescription;
+
+  /// No description provided for @prdModeRapide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rapide'**
+  String get prdModeRapide;
+
+  /// No description provided for @prdModeDetaille.
+  ///
+  /// In fr, this message translates to:
+  /// **'Détaillé · 3 étapes'**
+  String get prdModeDetaille;
+
+  /// No description provided for @prdModeIa.
+  ///
+  /// In fr, this message translates to:
+  /// **'IA'**
+  String get prdModeIa;
+
+  /// No description provided for @prdEtape1.
+  ///
+  /// In fr, this message translates to:
+  /// **'Photos, identification et prix'**
+  String get prdEtape1;
+
+  /// No description provided for @prdEtape1Desc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Photos, nom, codes, marge'**
+  String get prdEtape1Desc;
+
+  /// No description provided for @prdEtape2.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock et emballages'**
+  String get prdEtape2;
+
+  /// No description provided for @prdEtape2Desc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Magasin, seuil, boîte, carton'**
+  String get prdEtape2Desc;
+
+  /// No description provided for @prdEtape3.
+  ///
+  /// In fr, this message translates to:
+  /// **'Variantes et options'**
+  String get prdEtape3;
+
+  /// No description provided for @prdEtape3Desc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tailles, couleurs, séries'**
+  String get prdEtape3Desc;
+
+  /// No description provided for @prdEtapeObligatoire.
+  ///
+  /// In fr, this message translates to:
+  /// **'Étape {n} / 3 · * obligatoire'**
+  String prdEtapeObligatoire(int n);
+
+  /// No description provided for @prdObligatoire.
+  ///
+  /// In fr, this message translates to:
+  /// **'* obligatoire'**
+  String get prdObligatoire;
+
+  /// No description provided for @prdEnregistrerNouveau.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrer et nouveau'**
+  String get prdEnregistrerNouveau;
+
+  /// No description provided for @prdSuivant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Suivant'**
+  String get prdSuivant;
+
+  /// No description provided for @prdPrincipale.
+  ///
+  /// In fr, this message translates to:
+  /// **'Principale'**
+  String get prdPrincipale;
+
+  /// No description provided for @prdPhotosFormat.
+  ///
+  /// In fr, this message translates to:
+  /// **'JPG ou PNG · 4 max'**
+  String get prdPhotosFormat;
+
+  /// No description provided for @prdPhotosFin.
+  ///
+  /// In fr, this message translates to:
+  /// **'la première est la photo principale'**
+  String get prdPhotosFin;
+
+  /// No description provided for @prdPhotosAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'La 1re photo s\'affiche en caisse (carte produit et dialog Quantité et colis). JPG ou PNG, 4 max.'**
+  String get prdPhotosAide;
+
+  /// No description provided for @prdIdentification.
+  ///
+  /// In fr, this message translates to:
+  /// **'Identification'**
+  String get prdIdentification;
+
+  /// No description provided for @prdCodeAuto.
+  ///
+  /// In fr, this message translates to:
+  /// **'Attribué à l\'enregistrement'**
+  String get prdCodeAuto;
+
+  /// No description provided for @prdDesignationIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex. Huile Elio 1 L'**
+  String get prdDesignationIndice;
+
+  /// No description provided for @prdEanInvalide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Clé de contrôle EAN-13 invalide'**
+  String get prdEanInvalide;
+
+  /// No description provided for @prdScannerOuSaisir.
+  ///
+  /// In fr, this message translates to:
+  /// **'Scanner ou saisir'**
+  String get prdScannerOuSaisir;
+
+  /// No description provided for @prdGenererEan.
+  ///
+  /// In fr, this message translates to:
+  /// **'Générer un EAN-13'**
+  String get prdGenererEan;
+
+  /// No description provided for @prdFournisseur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fournisseur'**
+  String get prdFournisseur;
+
+  /// No description provided for @prdPrix.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix'**
+  String get prdPrix;
+
+  /// No description provided for @prdSousAchat.
+  ///
+  /// In fr, this message translates to:
+  /// **'Inférieur au prix d\'achat'**
+  String get prdSousAchat;
+
+  /// No description provided for @prdMargeUnitaire.
+  ///
+  /// In fr, this message translates to:
+  /// **'Marge unitaire : {montant}'**
+  String prdMargeUnitaire(String montant);
+
+  /// No description provided for @prdStockActuel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock actuel'**
+  String get prdStockActuel;
+
+  /// No description provided for @prdStockInitial.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock initial'**
+  String get prdStockInitial;
+
+  /// No description provided for @prdStockAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifiable via Entrées / Sorties'**
+  String get prdStockAide;
+
+  /// No description provided for @prdSeuilAlerte.
+  ///
+  /// In fr, this message translates to:
+  /// **'Seuil d\'alerte'**
+  String get prdSeuilAlerte;
+
+  /// No description provided for @prdEmballages.
+  ///
+  /// In fr, this message translates to:
+  /// **'Emballages'**
+  String get prdEmballages;
+
+  /// No description provided for @prdEmballagesAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Colis proposés en caisse (dialog Quantité et colis) : nombre de pièces par colis et prix du colis.'**
+  String get prdEmballagesAide;
+
+  /// No description provided for @prdBoite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Boîte'**
+  String get prdBoite;
+
+  /// No description provided for @prdCarton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Carton'**
+  String get prdCarton;
+
+  /// No description provided for @prdPcs.
+  ///
+  /// In fr, this message translates to:
+  /// **'pcs'**
+  String get prdPcs;
+
+  /// No description provided for @prdVariantes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Variantes'**
+  String get prdVariantes;
+
+  /// No description provided for @prdTypeTaille.
+  ///
+  /// In fr, this message translates to:
+  /// **'Type de taille'**
+  String get prdTypeTaille;
+
+  /// No description provided for @prdTailles.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tailles'**
+  String get prdTailles;
+
+  /// No description provided for @prdTaillesAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cliquez les tailles disponibles'**
+  String get prdTaillesAide;
+
+  /// No description provided for @prdTaillesN.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n} taille(s) sélectionnée(s)'**
+  String prdTaillesN(int n);
+
+  /// No description provided for @prdCouleurs.
+  ///
+  /// In fr, this message translates to:
+  /// **'Couleurs'**
+  String get prdCouleurs;
+
+  /// No description provided for @prdCouleursAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'16 couleurs · plusieurs choix possibles'**
+  String get prdCouleursAide;
+
+  /// No description provided for @prdOptions.
+  ///
+  /// In fr, this message translates to:
+  /// **'Options'**
+  String get prdOptions;
+
+  /// No description provided for @prdCodesMultiples.
+  ///
+  /// In fr, this message translates to:
+  /// **'Codes multiples'**
+  String get prdCodesMultiples;
+
+  /// No description provided for @prdCodesMultiplesAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Autres codes-barres reconnus en caisse pour ce produit'**
+  String get prdCodesMultiplesAide;
+
+  /// No description provided for @prdAjouterCode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter un code'**
+  String get prdAjouterCode;
+
+  /// No description provided for @prdSuiviSerie.
+  ///
+  /// In fr, this message translates to:
+  /// **'Suivi par n° de série'**
+  String get prdSuiviSerie;
+
+  /// No description provided for @prdSuiviSerieAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Saisie obligatoire à la vente'**
+  String get prdSuiviSerieAide;
+
+  /// No description provided for @prdServiceSansStock.
+  ///
+  /// In fr, this message translates to:
+  /// **'Service (sans stock)'**
+  String get prdServiceSansStock;
+
+  /// No description provided for @prdServiceAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réparation, livraison, main d\'œuvre'**
+  String get prdServiceAide;
+
+  /// No description provided for @prdExpirationAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Alerte avant péremption'**
+  String get prdExpirationAide;
+
+  /// No description provided for @prdNoteInterne.
+  ///
+  /// In fr, this message translates to:
+  /// **'Note interne'**
+  String get prdNoteInterne;
+
+  /// No description provided for @prdToastEnregistre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produit enregistré'**
+  String get prdToastEnregistre;
+
+  /// No description provided for @prdToastModifie.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produit modifié'**
+  String get prdToastModifie;
+
+  /// No description provided for @prdToastAjoute.
+  ///
+  /// In fr, this message translates to:
+  /// **'{code} · ajouté au catalogue'**
+  String prdToastAjoute(String code);
+
+  /// No description provided for @prdModifierCategorie.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier la catégorie'**
+  String get prdModifierCategorie;
+
+  /// No description provided for @prdModifierSousCategorie.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier la sous-catégorie'**
+  String get prdModifierSousCategorie;
+
+  /// No description provided for @prdCategorieParente.
+  ///
+  /// In fr, this message translates to:
+  /// **'Catégorie parente'**
+  String get prdCategorieParente;
+
+  /// No description provided for @prdCategorieExiste.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette catégorie existe déjà'**
+  String get prdCategorieExiste;
+
+  /// No description provided for @prdSousCategorieExiste.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette sous-catégorie existe déjà'**
+  String get prdSousCategorieExiste;
+
+  /// No description provided for @prdCategorieIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex. Épicerie'**
+  String get prdCategorieIndice;
+
+  /// No description provided for @prdSousCategorieIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex. Huiles'**
+  String get prdSousCategorieIndice;
+
+  /// No description provided for @prdVisibleCaisse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Visible en caisse'**
+  String get prdVisibleCaisse;
+
+  /// No description provided for @prdToastCategorie.
+  ///
+  /// In fr, this message translates to:
+  /// **'Catégorie enregistrée'**
+  String get prdToastCategorie;
+
+  /// No description provided for @prdToastSousCategorie.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sous-catégorie enregistrée'**
+  String get prdToastSousCategorie;
+
+  /// No description provided for @prdInformations.
+  ///
+  /// In fr, this message translates to:
+  /// **'Informations'**
+  String get prdInformations;
+
+  /// No description provided for @prdNProduits.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n} produit(s)'**
+  String prdNProduits(int n);
+
+  /// No description provided for @prdNComposants.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n} composant(s)'**
+  String prdNComposants(int n);
+
+  /// No description provided for @prdContientProduits.
+  ///
+  /// In fr, this message translates to:
+  /// **'Contient des produits — réaffectez-les d\'abord'**
+  String get prdContientProduits;
+
+  /// No description provided for @prdDejaInactif.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déjà inactif'**
+  String get prdDejaInactif;
+
+  /// No description provided for @prdToastAnnulation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annulation effectuée'**
+  String get prdToastAnnulation;
+
+  /// No description provided for @prdPorteeProduit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Par produit'**
+  String get prdPorteeProduit;
+
+  /// No description provided for @prdPorteeMontant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Par montant (panier)'**
+  String get prdPorteeMontant;
+
+  /// No description provided for @prdProgrammee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Programmée'**
+  String get prdProgrammee;
+
+  /// No description provided for @prdModifierRemise.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier la remise'**
+  String get prdModifierRemise;
+
+  /// No description provided for @prdRemiseDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une remise s\'applique automatiquement en caisse pendant sa période.'**
+  String get prdRemiseDescription;
+
+  /// No description provided for @prdProduitsConcernes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produits concernés'**
+  String get prdProduitsConcernes;
+
+  /// No description provided for @prdRemiseAccordee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Remise accordée'**
+  String get prdRemiseAccordee;
+
+  /// No description provided for @prdPrixNormal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix normal'**
+  String get prdPrixNormal;
+
+  /// No description provided for @prdPrixRemise.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix remisé'**
+  String get prdPrixRemise;
+
+  /// No description provided for @prdRemiseNomIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex. Fin de série'**
+  String get prdRemiseNomIndice;
+
+  /// No description provided for @prdPourcentageAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex. −10 % sur le prix'**
+  String get prdPourcentageAide;
+
+  /// No description provided for @prdMontantFixe.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montant fixe'**
+  String get prdMontantFixe;
+
+  /// No description provided for @prdMontantFixeAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex. −50 {devise} par article'**
+  String prdMontantFixeAide(String devise);
+
+  /// No description provided for @prdCumulable.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cumulable'**
+  String get prdCumulable;
+
+  /// No description provided for @prdAvecRemiseTicket.
+  ///
+  /// In fr, this message translates to:
+  /// **'Avec la remise ticket'**
+  String get prdAvecRemiseTicket;
+
+  /// No description provided for @prdSeuilAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'La remise s\'active quand le sous-total atteint ce montant'**
+  String get prdSeuilAide;
+
+  /// No description provided for @prdParMontantAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Remise « Par montant » : choisie sur le panier en caisse (Ctrl+R / F8), sans liste de produits.'**
+  String get prdParMontantAide;
+
+  /// No description provided for @prdToastRemise.
+  ///
+  /// In fr, this message translates to:
+  /// **'Remise enregistrée'**
+  String get prdToastRemise;
+
+  /// No description provided for @prdToastRemiseDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Appliquée en caisse pendant sa période'**
+  String get prdToastRemiseDesc;
+
+  /// No description provided for @prdVentesRemisees.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ventes remisées'**
+  String get prdVentesRemisees;
+
+  /// No description provided for @prdModifierPack.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier le pack'**
+  String get prdModifierPack;
+
+  /// No description provided for @prdPackDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Un pack se vend comme un seul article et déstocke chaque composant.'**
+  String get prdPackDescription;
+
+  /// No description provided for @prdEnregistrerPack.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrer le pack'**
+  String get prdEnregistrerPack;
+
+  /// No description provided for @prdComposantsPack.
+  ///
+  /// In fr, this message translates to:
+  /// **'Composants du pack'**
+  String get prdComposantsPack;
+
+  /// No description provided for @prdQteParPack.
+  ///
+  /// In fr, this message translates to:
+  /// **'Qté / pack'**
+  String get prdQteParPack;
+
+  /// No description provided for @prdPrixUnitaire.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix unitaire'**
+  String get prdPrixUnitaire;
+
+  /// No description provided for @prdOptionnel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Optionnel'**
+  String get prdOptionnel;
+
+  /// No description provided for @prdNomPack.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom du pack'**
+  String get prdNomPack;
+
+  /// No description provided for @prdPackNomIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex. Pack petit-déjeuner'**
+  String get prdPackNomIndice;
+
+  /// No description provided for @prdPacksPossibles.
+  ///
+  /// In fr, this message translates to:
+  /// **'Packs possibles'**
+  String get prdPacksPossibles;
+
+  /// No description provided for @prdPacksPossiblesAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Selon le stock du composant le plus limitant'**
+  String get prdPacksPossiblesAide;
+
+  /// No description provided for @prdEconomieClient.
+  ///
+  /// In fr, this message translates to:
+  /// **'Économie pour le client'**
+  String get prdEconomieClient;
+
+  /// No description provided for @prdPackPlusCher.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le pack coûte plus cher que ses composants'**
+  String get prdPackPlusCher;
+
+  /// No description provided for @prdValeurSepareeMontant.
+  ///
+  /// In fr, this message translates to:
+  /// **'valeur séparée {montant}'**
+  String prdValeurSepareeMontant(String montant);
+
+  /// No description provided for @prdToastPack.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pack enregistré'**
+  String get prdToastPack;
+
+  /// No description provided for @prdValeur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Valeur'**
+  String get prdValeur;
+
+  /// No description provided for @prdStockTotal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock total'**
+  String get prdStockTotal;
+
+  /// No description provided for @prdPrixMoyenAchat.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix moyen d\'achat'**
+  String get prdPrixMoyenAchat;
+
+  /// No description provided for @prdVendus30.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vendus (30 j)'**
+  String get prdVendus30;
+
+  /// No description provided for @prdStockParMagasin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock par magasin'**
+  String get prdStockParMagasin;
+
+  /// No description provided for @prdDerniersMouvements.
+  ///
+  /// In fr, this message translates to:
+  /// **'Derniers mouvements'**
+  String get prdDerniersMouvements;
+
+  /// No description provided for @prdReference.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réf.'**
+  String get prdReference;
+
+  /// No description provided for @prdCodeBarreTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code-barres & étiquettes'**
+  String get prdCodeBarreTitre;
+
+  /// No description provided for @prdEanAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Standard commerce — préfixe 613 (Algérie)'**
+  String get prdEanAide;
+
+  /// No description provided for @prdCodeInterne.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code interne'**
+  String get prdCodeInterne;
+
+  /// No description provided for @prdCodeInterneAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pour les produits sans code fabricant'**
+  String get prdCodeInterneAide;
+
+  /// No description provided for @prdFormat.
+  ///
+  /// In fr, this message translates to:
+  /// **'Format'**
+  String get prdFormat;
+
+  /// No description provided for @prdFormatA4.
+  ///
+  /// In fr, this message translates to:
+  /// **'A4 · 3 × 8 (38 × 21 mm)'**
+  String get prdFormatA4;
+
+  /// No description provided for @prdFormatRouleau40.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rouleau 40 × 30 mm'**
+  String get prdFormatRouleau40;
+
+  /// No description provided for @prdFormatRouleau58.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rouleau 58 mm'**
+  String get prdFormatRouleau58;
+
+  /// No description provided for @prdImprimerEtiquettes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Imprimer {n} étiquette(s)'**
+  String prdImprimerEtiquettes(int n);
+
+  /// No description provided for @prdAffecterN.
+  ///
+  /// In fr, this message translates to:
+  /// **'Affecter {n} produit(s)'**
+  String prdAffecterN(int n);
+
+  /// No description provided for @prdRemplacerAffectation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Remplacer l\'affectation existante'**
+  String get prdRemplacerAffectation;
+
+  /// No description provided for @prdRemplacerPackAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sinon le produit est ajouté au pack avec la quantité 1'**
+  String get prdRemplacerPackAide;
+
+  /// No description provided for @prdRemplacerCategorieAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sinon seuls les produits sans catégorie sont modifiés'**
+  String get prdRemplacerCategorieAide;
+
+  /// No description provided for @prdRemplacerRemiseAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sinon seuls les produits sans remise sont modifiés'**
+  String get prdRemplacerRemiseAide;
+
+  /// No description provided for @prdToastAffectation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Affectation enregistrée'**
+  String get prdToastAffectation;
+
+  /// No description provided for @prdToastAffectationDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n} produit(s) · {nom}'**
+  String prdToastAffectationDesc(int n, String nom);
+
+  /// No description provided for @prdSuppressionBloquee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock ou mouvements liés — désactivez-le plutôt'**
+  String get prdSuppressionBloquee;
+
+  /// No description provided for @prdToastSupprimes.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n} produit(s) supprimé(s)'**
+  String prdToastSupprimes(int n);
+
+  /// No description provided for @prdToastRefuses.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n} refusé(s) : mouvements liés'**
+  String prdToastRefuses(int n);
+
+  /// No description provided for @prdImportFichier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fichier'**
+  String get prdImportFichier;
+
+  /// No description provided for @prdImportFichierDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'.xlsx'**
+  String get prdImportFichierDesc;
+
+  /// No description provided for @prdImportColonnes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Colonnes'**
+  String get prdImportColonnes;
+
+  /// No description provided for @prdImportColonnesDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Correspondance'**
+  String get prdImportColonnesDesc;
+
+  /// No description provided for @prdImportApercuDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Contrôle'**
+  String get prdImportApercuDesc;
+
+  /// No description provided for @prdImportInfos.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n} colonne(s) · {total} Ko'**
+  String prdImportInfos(int n, int total);
+
+  /// No description provided for @prdChangerFichier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Changer de fichier'**
+  String get prdChangerFichier;
+
+  /// No description provided for @prdTelechargerModele.
+  ///
+  /// In fr, this message translates to:
+  /// **'Télécharger le modèle'**
+  String get prdTelechargerModele;
+
+  /// No description provided for @prdColonneN.
+  ///
+  /// In fr, this message translates to:
+  /// **'Colonne {lettre} · {nom}'**
+  String prdColonneN(String lettre, String nom);
+
+  /// No description provided for @prdIgnorer.
+  ///
+  /// In fr, this message translates to:
+  /// **'— Ignorer —'**
+  String get prdIgnorer;
+
+  /// No description provided for @prdImportDesignationRequise.
+  ///
+  /// In fr, this message translates to:
+  /// **'Associez une colonne à la désignation.'**
+  String get prdImportDesignationRequise;
+
+  /// No description provided for @prdGenere.
+  ///
+  /// In fr, this message translates to:
+  /// **'— généré —'**
+  String get prdGenere;
+
+  /// No description provided for @prdControle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Contrôle'**
+  String get prdControle;
+
+  /// No description provided for @prdImporterN.
+  ///
+  /// In fr, this message translates to:
+  /// **'Importer {n} produit(s)'**
+  String prdImporterN(int n);
+
+  /// No description provided for @prdImportTermine.
+  ///
+  /// In fr, this message translates to:
+  /// **'Import terminé'**
+  String get prdImportTermine;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

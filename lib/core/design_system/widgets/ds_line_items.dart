@@ -144,6 +144,7 @@ class DsLineItemsEditor<T> extends StatelessWidget {
                     children: [
                       for (final l in lignes)
                         Container(
+                          key: cle == null ? null : ValueKey(cle!(l)),
                           constraints: const BoxConstraints(minHeight: 44),
                           decoration: BoxDecoration(
                             border: Border(bottom: BorderSide(color: c.borderSubtle)),

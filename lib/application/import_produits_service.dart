@@ -17,6 +17,7 @@ class LigneImport {
     this.categorie,
     this.prixAchat,
     this.prixVente,
+    this.stock,
     this.erreur,
   });
   final int numero;
@@ -25,6 +26,9 @@ class LigneImport {
   final String? categorie;
   final double? prixAchat;
   final double? prixVente;
+
+  /// Stock initial, entré dans le magasin choisi à l'import.
+  final double? stock;
   final String? erreur;
   bool get valide => erreur == null;
 }
@@ -39,7 +43,8 @@ class RapportImport {
 /// Import de produits depuis un classeur Excel (.xlsx).
 ///
 /// Colonnes attendues (en-tête ligne 1, insensible à la casse) :
-/// `designation` (obligatoire), `code_barres`, `categorie`, `prix_achat`, `prix_vente`.
+/// `designation` (obligatoire), `code_barres`, `categorie`, `prix_achat`, `prix_vente`, `stock`.
+/// Une correspondance champ → colonne peut remplacer la détection par en-tête (étape « Colonnes »).
 /// Les catégories inconnues sont créées ; les codes-barres déjà utilisés sont ignorés.
 class ImportProduitsService {
   const ImportProduitsService(this.db, {required this.catalogue, this.margeDefautPct});
@@ -48,28 +53,50 @@ class ImportProduitsService {
   final CatalogueService catalogue;
   final double? margeDefautPct;
 
-  static const List<String> colonnes = ['designation', 'code_barres', 'categorie', 'prix_achat', 'prix_vente'];
+  static const List<String> colonnes = ['designation', 'code_barres', 'categorie', 'prix_achat', 'prix_vente', 'stock'];
+
+  static Sheet? _feuille(Uint8List octets) {
+    final classeur = Excel.decodeBytes(octets);
+    return classeur.tables.isEmpty ? null : classeur.tables.values.first;
+  }
+
+  /// En-têtes (ligne 1) du classeur, tels qu'écrits.
+  List<String> entetes(Uint8List octets) =>
+      _feuille(octets)?.rows.firstOrNull?.map((c) => (c?.value?.toString() ?? '').trim()).toList() ?? const [];
+
+  /// Correspondance proposée champ → colonne d'après les en-têtes (insensible à la casse et aux accents
+  /// usuels) ; `null` = colonne ignorée.
+  Map<String, int?> correspondanceAuto(List<String> entetes) {
+    String norm(String s) => s
+        .toLowerCase()
+        .replaceAll(' ', '_')
+        .replaceAll('é', 'e')
+        .replaceAll("'", '_')
+        .replaceAll('quantite', 'stock')
+        .replaceAll('prix_de_', 'prix_')
+        .replaceAll('prix_d_', 'prix_');
+    final n = entetes.map(norm).toList();
+    return {
+      for (final c in colonnes)
+        c: switch (n.indexOf(c)) {
+          < 0 => null,
+          final i => i,
+        },
+    };
+  }
 
   /// Lit et valide le classeur, sans rien écrire.
-  Future<List<LigneImport>> analyser(Uint8List octets) async {
-    final classeur = Excel.decodeBytes(octets);
-    if (classeur.tables.isEmpty) return const [];
-    final feuille = classeur.tables.values.first;
-    if (feuille.maxRows < 2) return const [];
-    final entetes = feuille.rows.first
-        .map((c) => (c?.value?.toString() ?? '').trim().toLowerCase().replaceAll(' ', '_'))
-        .toList();
-    int? idx(String nom) {
-      final i = entetes.indexOf(nom);
-      return i < 0 ? null : i;
-    }
-
-    final iDes = idx('designation') ?? idx('désignation');
+  Future<List<LigneImport>> analyser(Uint8List octets, {Map<String, int?>? correspondance}) async {
+    final feuille = _feuille(octets);
+    if (feuille == null || feuille.maxRows < 2) return const [];
+    final map = correspondance ?? correspondanceAuto(entetes(octets));
+    final iDes = map['designation'];
     if (iDes == null) throw const FormatException('Colonne « designation » absente');
-    final iCb = idx('code_barres');
-    final iCat = idx('categorie') ?? idx('catégorie');
-    final iPa = idx('prix_achat');
-    final iPv = idx('prix_vente');
+    final iCb = map['code_barres'];
+    final iCat = map['categorie'];
+    final iPa = map['prix_achat'];
+    final iPv = map['prix_vente'];
+    final iSt = map['stock'];
     final repo = CatalogueRepository(db);
     final resultat = <LigneImport>[];
     final codesVus = <String>{};
@@ -85,7 +112,7 @@ class ImportProduitsService {
         erreur = 'designation_vide';
       } else if (cbNet != null && (codesVus.contains(cbNet) || !await repo.codeBarresDisponible(cbNet))) {
         erreur = 'code_barres_deja_utilise';
-      } else if ((nombre(iPa) ?? 0) < 0 || (nombre(iPv) ?? 0) < 0) {
+      } else if ((nombre(iPa) ?? 0) < 0 || (nombre(iPv) ?? 0) < 0 || (nombre(iSt) ?? 0) < 0) {
         erreur = 'prix_invalide';
       }
       if (cbNet != null) codesVus.add(cbNet);
@@ -97,6 +124,7 @@ class ImportProduitsService {
           categorie: cell(iCat),
           prixAchat: nombre(iPa),
           prixVente: nombre(iPv),
+          stock: nombre(iSt),
           erreur: erreur,
         ),
       );
@@ -106,7 +134,7 @@ class ImportProduitsService {
 
   /// Importe les lignes valides. Chaque produit est créé via [CatalogueService] ;
   /// l'ensemble est exécuté ligne à ligne (un échec ignore la ligne, le reste continue).
-  Future<RapportImport> importer(List<LigneImport> lignes) async {
+  Future<RapportImport> importer(List<LigneImport> lignes, {String magasinCode = 'MAG0000'}) async {
     final repo = CatalogueRepository(db);
     final categories = {for (final c in await repo.categories()) c.nom.toLowerCase(): c};
     var importees = 0;
@@ -137,6 +165,8 @@ class ImportProduitsService {
             prixVente: l.prixVente ?? 0,
           ),
           margeDefautPct: margeDefautPct,
+          stockInitial: l.stock ?? 0,
+          magasinCode: magasinCode,
         );
         importees++;
       } on CatalogueException {
@@ -157,6 +187,7 @@ class ImportProduitsService {
       TextCellValue('Boissons'),
       const DoubleCellValue(80),
       const DoubleCellValue(100),
+      const DoubleCellValue(24),
     ]);
     return Uint8List.fromList(classeur.encode()!);
   }

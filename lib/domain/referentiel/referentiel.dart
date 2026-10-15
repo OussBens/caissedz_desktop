@@ -154,6 +154,58 @@ class Referentiel {
     ValeurReferentiel(stocke: 'Magasinier', fr: 'Magasinier', ar: 'أمين المخزن', en: 'Storekeeper'),
   ]);
 
+  /// Couleurs proposées pour un produit (`PRODUCT_COLORS` du DS v2.2, 16 couleurs).
+  static const ListeReferentiel couleursProduit = ListeReferentiel('couleurProduit', [
+    ValeurReferentiel(stocke: 'Blanc', fr: 'Blanc', ar: 'أبيض', en: 'White'),
+    ValeurReferentiel(stocke: 'Noir', fr: 'Noir', ar: 'أسود', en: 'Black'),
+    ValeurReferentiel(stocke: 'Gris', fr: 'Gris', ar: 'رمادي', en: 'Grey'),
+    ValeurReferentiel(stocke: 'Beige', fr: 'Beige', ar: 'بيج', en: 'Beige'),
+    ValeurReferentiel(stocke: 'Marron', fr: 'Marron', ar: 'بني', en: 'Brown'),
+    ValeurReferentiel(stocke: 'Rouge', fr: 'Rouge', ar: 'أحمر', en: 'Red'),
+    ValeurReferentiel(stocke: 'Bordeaux', fr: 'Bordeaux', ar: 'عنابي', en: 'Burgundy'),
+    ValeurReferentiel(stocke: 'Rose', fr: 'Rose', ar: 'وردي', en: 'Pink'),
+    ValeurReferentiel(stocke: 'Orange', fr: 'Orange', ar: 'برتقالي', en: 'Orange'),
+    ValeurReferentiel(stocke: 'Jaune', fr: 'Jaune', ar: 'أصفر', en: 'Yellow'),
+    ValeurReferentiel(stocke: 'Vert', fr: 'Vert', ar: 'أخضر', en: 'Green'),
+    ValeurReferentiel(stocke: 'Kaki', fr: 'Kaki', ar: 'كاكي', en: 'Khaki'),
+    ValeurReferentiel(stocke: 'Bleu ciel', fr: 'Bleu ciel', ar: 'أزرق سماوي', en: 'Sky blue'),
+    ValeurReferentiel(stocke: 'Bleu', fr: 'Bleu', ar: 'أزرق', en: 'Blue'),
+    ValeurReferentiel(stocke: 'Marine', fr: 'Marine', ar: 'كحلي', en: 'Navy'),
+    ValeurReferentiel(stocke: 'Violet', fr: 'Violet', ar: 'بنفسجي', en: 'Purple'),
+  ]);
+
+  /// Types de taille du formulaire produit (`SIZE_TYPES` du DS v2.2).
+  static const ListeReferentiel typesTaille = ListeReferentiel('typeTaille', [
+    ValeurReferentiel(
+      stocke: 'Lettres (vêtements)',
+      fr: 'Lettres (vêtements)',
+      ar: 'حروف (ملابس)',
+      en: 'Letters (clothing)',
+    ),
+    ValeurReferentiel(stocke: 'Pointure', fr: 'Pointure', ar: 'مقاس الحذاء', en: 'Shoe size'),
+    ValeurReferentiel(
+      stocke: 'Numérique (pantalon)',
+      fr: 'Numérique (pantalon)',
+      ar: 'رقمي (سروال)',
+      en: 'Numeric (trousers)',
+    ),
+    ValeurReferentiel(stocke: 'Enfant (âge)', fr: 'Enfant (âge)', ar: 'طفل (العمر)', en: 'Child (age)'),
+    ValeurReferentiel(stocke: 'Contenance', fr: 'Contenance', ar: 'السعة', en: 'Capacity'),
+    ValeurReferentiel(stocke: 'Poids', fr: 'Poids', ar: 'الوزن', en: 'Weight'),
+    ValeurReferentiel(stocke: 'Taille unique', fr: 'Taille unique', ar: 'مقاس واحد', en: 'One size'),
+  ]);
+
+  /// Types de remise (§7 `remises.type`, §8.9).
+  static const ListeReferentiel typesRemise = ListeReferentiel('typeRemise', [
+    ValeurReferentiel(stocke: 'Par Produit', fr: 'Par produit', ar: 'حسب المنتج', en: 'Per product'),
+    ValeurReferentiel(
+      stocke: 'Par Montant',
+      fr: 'Par montant (panier)',
+      ar: 'حسب المبلغ (السلة)',
+      en: 'By amount (basket)',
+    ),
+  ]);
+
   static const List<ListeReferentiel> toutes = [
     modesPaiement,
     typesPanier,

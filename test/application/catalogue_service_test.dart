@@ -129,12 +129,24 @@ void main() {
       final relu = (await CatalogueRepository(base.db).packs()).single;
       expect(relu.lignes.length, 2);
       final r = await s.creerRemise(
-        Remise(code: '', designation: '-10 % lait', type: 'Pourcentage', valeur: 10, produitCode: lait.code),
+        const Remise(code: '', designation: '-10 % lait', type: 'Pourcentage', valeur: 10),
+        produits: [lait.code],
       );
       expect(r.code, 'REM0001');
-      await s.creerRemise(const Remise(code: '', designation: '-5 DA tout', type: 'Montant', valeur: 5, dateFin: null));
-      expect(await s.remiseApplicable(lait, 100), 10);
-      expect(await s.remiseApplicable(eau, 30), 5);
+      final laitRemise = (await CatalogueRepository(base.db).produitParCode(lait.code))!;
+      expect(laitRemise.remiseCode, r.code);
+      // Remise « Par Montant » : choisie sur le panier, jamais appliquée automatiquement au produit.
+      await s.creerRemise(
+        const Remise(code: '', designation: '-5 DA panier', type: 'Montant', valeur: 5, portee: Remise.porteeMontant),
+      );
+      expect(await s.remiseApplicable(laitRemise, 100), 10);
+      expect(await s.remiseApplicable(eau, 30), 0);
+      // Modification : la liste des produits remplace l'assignation.
+      await s.modifierRemise(r, produits: [eau.code]);
+      expect((await CatalogueRepository(base.db).produitParCode(lait.code))!.remiseCode, isNull);
+      expect((await CatalogueRepository(base.db).produitParCode(eau.code))!.remiseCode, r.code);
+      await s.activerRemise(r.code, false);
+      expect(await s.remiseApplicable((await CatalogueRepository(base.db).produitParCode(eau.code))!, 30), 0);
       await expectLater(
         s.creerRemise(const Remise(code: '', designation: 'x', type: 'Pourcentage', valeur: 150)),
         throwsA(isA<CatalogueException>()),
@@ -216,6 +228,25 @@ void main() {
       final lignes2 = await s.analyser(ImportProduitsService.modele());
       expect(lignes2.first.erreur, 'code_barres_deja_utilise');
       expect((await s.importer(lignes2)).ignorees, 1);
+      final stock = await base.db.query('mouvement_stock', where: 'produit_code = ?', whereArgs: [p.code]);
+      expect(stock.single['quantite'], 24);
+    });
+
+    test('correspondance des colonnes : détection par en-tête puis choix manuel', () async {
+      final base = await ouvrirBaseDeTest();
+      final s = ImportProduitsService(base.db, catalogue: CatalogueService(base.db, utilisateurCode: 'USR0000'));
+      final octets = ImportProduitsService.modele();
+      final entetes = s.entetes(octets);
+      expect(entetes.first, 'designation');
+      final auto = s.correspondanceAuto(['Désignation', 'Prix de vente', 'Quantité']);
+      expect(auto['designation'], 0);
+      expect(auto['prix_vente'], 1);
+      expect(auto['stock'], 2);
+      expect(auto['code_barres'], isNull);
+      // Prix de vente ignoré, désignation lue dans la colonne « categorie ».
+      final lignes = await s.analyser(octets, correspondance: {'designation': 2, 'prix_vente': null});
+      expect(lignes.single.designation, 'Boissons');
+      expect(lignes.single.prixVente, isNull);
     });
   });
 

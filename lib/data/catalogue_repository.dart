@@ -51,15 +51,14 @@ class CatalogueRepository {
   );
   Future<void> renommerCategorie(String code, String nom) =>
       db.update('categorie', {'nom': nom}, where: 'code = ? AND systeme = 0', whereArgs: [code]);
-  Future<void> insererSousCategorie(SousCategorie s) =>
-      db.insert('sous_categorie', {
-        'code': s.code,
-        'categorie_code': s.categorieCode,
-        'nom': s.nom,
-        'systeme': 0,
-        'description': s.description,
-        'actif': s.actif ? 1 : 0,
-      });
+  Future<void> insererSousCategorie(SousCategorie s) => db.insert('sous_categorie', {
+    'code': s.code,
+    'categorie_code': s.categorieCode,
+    'nom': s.nom,
+    'systeme': 0,
+    'description': s.description,
+    'actif': s.actif ? 1 : 0,
+  });
   Future<void> renommerSousCategorie(String code, String nom) =>
       db.update('sous_categorie', {'nom': nom}, where: 'code = ? AND systeme = 0', whereArgs: [code]);
   Future<int> nbProduitsCategorie(String code) async =>
@@ -148,6 +147,63 @@ class CatalogueRepository {
     }
   }
 
+  /// Statistiques de la fiche produit : prix moyen d'achat pondéré (entrées validées, `null` sans achat) et
+  /// quantité vendue depuis [depuis] (ventes validées).
+  Future<({double? prixMoyenAchat, double vendus})> statsProduit(String code, DateTime depuis) async {
+    final a = (await db.rawQuery(
+      'SELECT SUM(l.quantite) q, SUM(l.quantite * l.prix_achat) m FROM achat_ligne l '
+      "JOIN achat a ON a.code = l.achat_code WHERE l.produit_code = ? AND a.statut = 'Validé'",
+      [code],
+    )).first;
+    final v = (await db.rawQuery(
+      'SELECT COALESCE(SUM(l.quantite), 0) q FROM vente_ligne l JOIN vente v ON v.code = l.vente_code '
+      "WHERE l.produit_code = ? AND v.statut = 'Validée' AND v.date >= ?",
+      [code, depuis.toUtc().toIso8601String()],
+    )).first;
+    final q = (a['q'] as num?)?.toDouble() ?? 0;
+    return (prixMoyenAchat: q > 0 ? ((a['m'] as num).toDouble() / q) : null, vendus: (v['q'] as num).toDouble());
+  }
+
+  /// Ventes remisées par une remise « Par Produit » sur sa période : nombre de ventes validées dont une
+  /// ligne d'un produit assigné porte une remise, et montant total remisé sur ces lignes.
+  Future<({int nombre, double montant})> statsRemise(String remiseCode) async {
+    final r = (await db.rawQuery(
+      'SELECT count(DISTINCT v.code) n, COALESCE(SUM(l.remise), 0) m '
+      'FROM vente_ligne l JOIN vente v ON v.code = l.vente_code '
+      'JOIN produit p ON p.code = l.produit_code JOIN remise r ON r.code = ? '
+      "WHERE p.remise_code = r.code AND l.remise > 0 AND v.statut = 'Validée' "
+      'AND (r.date_debut IS NULL OR v.date >= r.date_debut) AND (r.date_fin IS NULL OR v.date <= r.date_fin)',
+      [remiseCode],
+    )).first;
+    return (nombre: r['n'] as int, montant: (r['m'] as num).toDouble());
+  }
+
+  /// Nombre de lignes par produit dans `produit_code_detail` ou `produit_photo`.
+  Future<Map<String, int>> compterParProduit(String table) async {
+    assert(table == 'produit_code_detail' || table == 'produit_photo');
+    return {
+      for (final r in await db.rawQuery('SELECT produit_code, count(*) n FROM $table GROUP BY produit_code'))
+        r['produit_code'] as String: r['n'] as int,
+    };
+  }
+
+  Future<List<String>> photos(String produitCode) async => [
+    for (final r in await db.query(
+      'produit_photo',
+      where: 'produit_code = ?',
+      whereArgs: [produitCode],
+      orderBy: 'ordre',
+    ))
+      r['chemin'] as String,
+  ];
+
+  Future<void> remplacerPhotos(String produitCode, List<String> chemins) async {
+    await db.delete('produit_photo', where: 'produit_code = ?', whereArgs: [produitCode]);
+    for (final (i, c) in chemins.indexed) {
+      await db.insert('produit_photo', {'produit_code': produitCode, 'ordre': i, 'chemin': c});
+    }
+  }
+
   /// Nombre de mouvements de stock et de compositions de packs qui référencent un produit.
   Future<int> nbUsagesProduit(String code) async =>
       (await db.rawQuery(
@@ -159,6 +215,7 @@ class CatalogueRepository {
 
   Future<void> supprimerProduit(String code) async {
     await db.delete('produit_code_detail', where: 'produit_code = ?', whereArgs: [code]);
+    await db.delete('produit_photo', where: 'produit_code = ?', whereArgs: [code]);
     await db.delete('colis', where: 'produit_code = ?', whereArgs: [code]);
     await db.delete('produit', where: 'code = ?', whereArgs: [code]);
   }

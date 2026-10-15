@@ -2638,5 +2638,375 @@
     }
   },
   "produitErreurUtilise": "Ce produit est utilisé (ventes, achats ou stock) : il ne peut pas être supprimé.",
-  "catalogueErreurNomPris": "Ce nom est déjà utilisé."
+  "catalogueErreurNomPris": "Ce nom est déjà utilisé.",
+  "prdDescription": "Catalogue, catégories, remises et packs",
+  "prdOngletSousCategories": "Sous-catégories",
+  "prdAchat": "Achat",
+  "prdVente": "Vente",
+  "prdMarge": "Marge",
+  "prdMarque": "Marque",
+  "prdMarqueIndice": "Ex. Elio",
+  "prdDescriptionChamp": "Description",
+  "prdTaille": "Taille",
+  "prdCouleur": "Couleur",
+  "prdRemise": "Remise",
+  "prdService": "Service",
+  "prdEmballageN": "Emballage {n}",
+  "@prdEmballageN": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "prdPrixEmballageN": "Prix emballage {n}",
+  "@prdPrixEmballageN": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "prdEmballagePieces": "{n} pcs",
+  "@prdEmballagePieces": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "prdNumeroSerie": "N° série",
+  "prdMultiCodes": "Multi code-barres",
+  "prdPhotos": "Photos",
+  "prdTva": "TVA",
+  "prdDateExpiration": "Date d'expiration",
+  "prdEntiteProduits": "produits",
+  "prdEntiteProduit": "produit",
+  "prdEntiteCategories": "catégories",
+  "prdEntiteCategorie": "catégorie",
+  "prdEntiteSousCategories": "sous-catégories",
+  "prdEntiteSousCategorie": "sous-catégorie",
+  "prdEntiteRemises": "remises",
+  "prdEntiteRemise": "remise",
+  "prdEntitePacks": "packs",
+  "prdEntitePack": "pack",
+  "prdKpiActifs": "Produits actifs",
+  "prdKpiValeurStock": "Valeur du stock",
+  "prdKpiSousSeuil": "Sous le seuil",
+  "prdKpiRupture": "En rupture",
+  "prdToutes": "Toutes",
+  "prdDisponible": "Disponible",
+  "prdRechercheProduits": "Nom, code ou code-barres…",
+  "prdRechercheCategorie": "Rechercher une catégorie…",
+  "prdRechercheSousCategorie": "Rechercher une sous-catégorie…",
+  "prdRechercheRemise": "Rechercher une remise…",
+  "prdRecherchePack": "Rechercher un pack…",
+  "prdEtiquette": "Étiquette",
+  "prdEtiquettes": "Étiquettes",
+  "prdAffecter": "Affecter",
+  "prdImporter": "Importer",
+  "prdAchatMontant": "Achat {montant}",
+  "@prdAchatMontant": {
+    "placeholders": {
+      "montant": {
+        "type": "String"
+      }
+    }
+  },
+  "prdStockN": "Stock {quantite}",
+  "@prdStockN": {
+    "placeholders": {
+      "quantite": {
+        "type": "String"
+      }
+    }
+  },
+  "prdMargeN": "Marge {n} %",
+  "@prdMargeN": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "prdStatut": "Statut",
+  "prdTypeTaux": "Type de taux",
+  "prdSeuilMontant": "Seuil du panier",
+  "prdPack": "Pack",
+  "prdComposants": "Composants",
+  "prdComposant": "Composant",
+  "prdValeurSeparee": "Valeur séparée",
+  "prdPrixPack": "Prix du pack",
+  "prdEconomie": "Économie",
+  "prdDisponibles": "Disponibles",
+  "prdFormDescription": "Rapide : une page pour l'essentiel. Détaillé : 3 étapes (photos, identification et prix · stock et emballages · variantes et options). IA : fiche retrouvée par le code-barres.",
+  "prdModeRapide": "Rapide",
+  "prdModeDetaille": "Détaillé · 3 étapes",
+  "prdModeIa": "IA",
+  "prdEtape1": "Photos, identification et prix",
+  "prdEtape1Desc": "Photos, nom, codes, marge",
+  "prdEtape2": "Stock et emballages",
+  "prdEtape2Desc": "Magasin, seuil, boîte, carton",
+  "prdEtape3": "Variantes et options",
+  "prdEtape3Desc": "Tailles, couleurs, séries",
+  "prdEtapeObligatoire": "Étape {n} / 3 · * obligatoire",
+  "@prdEtapeObligatoire": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "prdObligatoire": "* obligatoire",
+  "prdEnregistrerNouveau": "Enregistrer et nouveau",
+  "prdSuivant": "Suivant",
+  "prdPrincipale": "Principale",
+  "prdPhotosFormat": "JPG ou PNG · 4 max",
+  "prdPhotosFin": "la première est la photo principale",
+  "prdPhotosAide": "La 1re photo s'affiche en caisse (carte produit et dialog Quantité et colis). JPG ou PNG, 4 max.",
+  "prdIdentification": "Identification",
+  "prdCodeAuto": "Attribué à l'enregistrement",
+  "prdDesignationIndice": "Ex. Huile Elio 1 L",
+  "prdEanInvalide": "Clé de contrôle EAN-13 invalide",
+  "prdScannerOuSaisir": "Scanner ou saisir",
+  "prdGenererEan": "Générer un EAN-13",
+  "prdFournisseur": "Fournisseur",
+  "prdPrix": "Prix",
+  "prdSousAchat": "Inférieur au prix d'achat",
+  "prdMargeUnitaire": "Marge unitaire : {montant}",
+  "@prdMargeUnitaire": {
+    "placeholders": {
+      "montant": {
+        "type": "String"
+      }
+    }
+  },
+  "prdStockActuel": "Stock actuel",
+  "prdStockInitial": "Stock initial",
+  "prdStockAide": "Modifiable via Entrées / Sorties",
+  "prdSeuilAlerte": "Seuil d'alerte",
+  "prdEmballages": "Emballages",
+  "prdEmballagesAide": "Colis proposés en caisse (dialog Quantité et colis) : nombre de pièces par colis et prix du colis.",
+  "prdBoite": "Boîte",
+  "prdCarton": "Carton",
+  "prdPcs": "pcs",
+  "prdVariantes": "Variantes",
+  "prdTypeTaille": "Type de taille",
+  "prdTailles": "Tailles",
+  "prdTaillesAide": "Cliquez les tailles disponibles",
+  "prdTaillesN": "{n} taille(s) sélectionnée(s)",
+  "@prdTaillesN": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "prdCouleurs": "Couleurs",
+  "prdCouleursAide": "16 couleurs · plusieurs choix possibles",
+  "prdOptions": "Options",
+  "prdCodesMultiples": "Codes multiples",
+  "prdCodesMultiplesAide": "Autres codes-barres reconnus en caisse pour ce produit",
+  "prdAjouterCode": "Ajouter un code",
+  "prdSuiviSerie": "Suivi par n° de série",
+  "prdSuiviSerieAide": "Saisie obligatoire à la vente",
+  "prdServiceSansStock": "Service (sans stock)",
+  "prdServiceAide": "Réparation, livraison, main d'œuvre",
+  "prdExpirationAide": "Alerte avant péremption",
+  "prdNoteInterne": "Note interne",
+  "prdToastEnregistre": "Produit enregistré",
+  "prdToastModifie": "Produit modifié",
+  "prdToastAjoute": "{code} · ajouté au catalogue",
+  "@prdToastAjoute": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "prdModifierCategorie": "Modifier la catégorie",
+  "prdModifierSousCategorie": "Modifier la sous-catégorie",
+  "prdCategorieParente": "Catégorie parente",
+  "prdCategorieExiste": "Cette catégorie existe déjà",
+  "prdSousCategorieExiste": "Cette sous-catégorie existe déjà",
+  "prdCategorieIndice": "Ex. Épicerie",
+  "prdSousCategorieIndice": "Ex. Huiles",
+  "prdVisibleCaisse": "Visible en caisse",
+  "prdToastCategorie": "Catégorie enregistrée",
+  "prdToastSousCategorie": "Sous-catégorie enregistrée",
+  "prdInformations": "Informations",
+  "prdNProduits": "{n} produit(s)",
+  "@prdNProduits": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "prdNComposants": "{n} composant(s)",
+  "@prdNComposants": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "prdContientProduits": "Contient des produits — réaffectez-les d'abord",
+  "prdDejaInactif": "Déjà inactif",
+  "prdToastAnnulation": "Annulation effectuée",
+  "prdPorteeProduit": "Par produit",
+  "prdPorteeMontant": "Par montant (panier)",
+  "prdProgrammee": "Programmée",
+  "prdModifierRemise": "Modifier la remise",
+  "prdRemiseDescription": "Une remise s'applique automatiquement en caisse pendant sa période.",
+  "prdProduitsConcernes": "Produits concernés",
+  "prdRemiseAccordee": "Remise accordée",
+  "prdPrixNormal": "Prix normal",
+  "prdPrixRemise": "Prix remisé",
+  "prdRemiseNomIndice": "Ex. Fin de série",
+  "prdPourcentageAide": "Ex. −10 % sur le prix",
+  "prdMontantFixe": "Montant fixe",
+  "prdMontantFixeAide": "Ex. −50 {devise} par article",
+  "@prdMontantFixeAide": {
+    "placeholders": {
+      "devise": {
+        "type": "String"
+      }
+    }
+  },
+  "prdCumulable": "Cumulable",
+  "prdAvecRemiseTicket": "Avec la remise ticket",
+  "prdSeuilAide": "La remise s'active quand le sous-total atteint ce montant",
+  "prdParMontantAide": "Remise « Par montant » : choisie sur le panier en caisse (Ctrl+R / F8), sans liste de produits.",
+  "prdToastRemise": "Remise enregistrée",
+  "prdToastRemiseDesc": "Appliquée en caisse pendant sa période",
+  "prdVentesRemisees": "Ventes remisées",
+  "prdModifierPack": "Modifier le pack",
+  "prdPackDescription": "Un pack se vend comme un seul article et déstocke chaque composant.",
+  "prdEnregistrerPack": "Enregistrer le pack",
+  "prdComposantsPack": "Composants du pack",
+  "prdQteParPack": "Qté / pack",
+  "prdPrixUnitaire": "Prix unitaire",
+  "prdOptionnel": "Optionnel",
+  "prdNomPack": "Nom du pack",
+  "prdPackNomIndice": "Ex. Pack petit-déjeuner",
+  "prdPacksPossibles": "Packs possibles",
+  "prdPacksPossiblesAide": "Selon le stock du composant le plus limitant",
+  "prdEconomieClient": "Économie pour le client",
+  "prdPackPlusCher": "Le pack coûte plus cher que ses composants",
+  "prdValeurSepareeMontant": "valeur séparée {montant}",
+  "@prdValeurSepareeMontant": {
+    "placeholders": {
+      "montant": {
+        "type": "String"
+      }
+    }
+  },
+  "prdToastPack": "Pack enregistré",
+  "prdValeur": "Valeur",
+  "prdStockTotal": "Stock total",
+  "prdPrixMoyenAchat": "Prix moyen d'achat",
+  "prdVendus30": "Vendus (30 j)",
+  "prdStockParMagasin": "Stock par magasin",
+  "prdDerniersMouvements": "Derniers mouvements",
+  "prdReference": "Réf.",
+  "prdCodeBarreTitre": "Code-barres & étiquettes",
+  "prdEanAide": "Standard commerce — préfixe 613 (Algérie)",
+  "prdCodeInterne": "Code interne",
+  "prdCodeInterneAide": "Pour les produits sans code fabricant",
+  "prdFormat": "Format",
+  "prdFormatA4": "A4 · 3 × 8 (38 × 21 mm)",
+  "prdFormatRouleau40": "Rouleau 40 × 30 mm",
+  "prdFormatRouleau58": "Rouleau 58 mm",
+  "prdImprimerEtiquettes": "Imprimer {n} étiquette(s)",
+  "@prdImprimerEtiquettes": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "prdAffecterN": "Affecter {n} produit(s)",
+  "@prdAffecterN": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "prdRemplacerAffectation": "Remplacer l'affectation existante",
+  "prdRemplacerPackAide": "Sinon le produit est ajouté au pack avec la quantité 1",
+  "prdRemplacerCategorieAide": "Sinon seuls les produits sans catégorie sont modifiés",
+  "prdRemplacerRemiseAide": "Sinon seuls les produits sans remise sont modifiés",
+  "prdToastAffectation": "Affectation enregistrée",
+  "prdToastAffectationDesc": "{n} produit(s) · {nom}",
+  "@prdToastAffectationDesc": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "nom": {
+        "type": "String"
+      }
+    }
+  },
+  "prdSuppressionBloquee": "Stock ou mouvements liés — désactivez-le plutôt",
+  "prdToastSupprimes": "{n} produit(s) supprimé(s)",
+  "@prdToastSupprimes": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "prdToastRefuses": "{n} refusé(s) : mouvements liés",
+  "@prdToastRefuses": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "prdImportFichier": "Fichier",
+  "prdImportFichierDesc": ".xlsx",
+  "prdImportColonnes": "Colonnes",
+  "prdImportColonnesDesc": "Correspondance",
+  "prdImportApercuDesc": "Contrôle",
+  "prdImportInfos": "{n} colonne(s) · {total} Ko",
+  "@prdImportInfos": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "prdChangerFichier": "Changer de fichier",
+  "prdTelechargerModele": "Télécharger le modèle",
+  "prdColonneN": "Colonne {lettre} · {nom}",
+  "@prdColonneN": {
+    "placeholders": {
+      "lettre": {
+        "type": "String"
+      },
+      "nom": {
+        "type": "String"
+      }
+    }
+  },
+  "prdIgnorer": "— Ignorer —",
+  "prdImportDesignationRequise": "Associez une colonne à la désignation.",
+  "prdGenere": "— généré —",
+  "prdControle": "Contrôle",
+  "prdImporterN": "Importer {n} produit(s)",
+  "@prdImporterN": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "prdImportTermine": "Import terminé"
 }

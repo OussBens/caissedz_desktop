@@ -5017,4 +5017,673 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get catalogueErreurNomPris => 'This name is already in use.';
+
+  @override
+  String get prdDescription => 'Catalogue, categories, discounts and bundles';
+
+  @override
+  String get prdOngletSousCategories => 'Subcategories';
+
+  @override
+  String get prdAchat => 'Cost';
+
+  @override
+  String get prdVente => 'Price';
+
+  @override
+  String get prdMarge => 'Margin';
+
+  @override
+  String get prdMarque => 'Brand';
+
+  @override
+  String get prdMarqueIndice => 'e.g. Elio';
+
+  @override
+  String get prdDescriptionChamp => 'Description';
+
+  @override
+  String get prdTaille => 'Size';
+
+  @override
+  String get prdCouleur => 'Colour';
+
+  @override
+  String get prdRemise => 'Discount';
+
+  @override
+  String get prdService => 'Service';
+
+  @override
+  String prdEmballageN(int n) {
+    return 'Packaging $n';
+  }
+
+  @override
+  String prdPrixEmballageN(int n) {
+    return 'Packaging $n price';
+  }
+
+  @override
+  String prdEmballagePieces(int n) {
+    return '$n pcs';
+  }
+
+  @override
+  String get prdNumeroSerie => 'Serial no.';
+
+  @override
+  String get prdMultiCodes => 'Multiple barcodes';
+
+  @override
+  String get prdPhotos => 'Photos';
+
+  @override
+  String get prdTva => 'VAT';
+
+  @override
+  String get prdDateExpiration => 'Expiry date';
+
+  @override
+  String get prdEntiteProduits => 'products';
+
+  @override
+  String get prdEntiteProduit => 'product';
+
+  @override
+  String get prdEntiteCategories => 'categories';
+
+  @override
+  String get prdEntiteCategorie => 'category';
+
+  @override
+  String get prdEntiteSousCategories => 'subcategories';
+
+  @override
+  String get prdEntiteSousCategorie => 'subcategory';
+
+  @override
+  String get prdEntiteRemises => 'discounts';
+
+  @override
+  String get prdEntiteRemise => 'discount';
+
+  @override
+  String get prdEntitePacks => 'bundles';
+
+  @override
+  String get prdEntitePack => 'bundle';
+
+  @override
+  String get prdKpiActifs => 'Active products';
+
+  @override
+  String get prdKpiValeurStock => 'Stock value';
+
+  @override
+  String get prdKpiSousSeuil => 'Below threshold';
+
+  @override
+  String get prdKpiRupture => 'Out of stock';
+
+  @override
+  String get prdToutes => 'All';
+
+  @override
+  String get prdDisponible => 'Available';
+
+  @override
+  String get prdRechercheProduits => 'Name, code or barcode…';
+
+  @override
+  String get prdRechercheCategorie => 'Search a category…';
+
+  @override
+  String get prdRechercheSousCategorie => 'Search a subcategory…';
+
+  @override
+  String get prdRechercheRemise => 'Search a discount…';
+
+  @override
+  String get prdRecherchePack => 'Search a bundle…';
+
+  @override
+  String get prdEtiquette => 'Label';
+
+  @override
+  String get prdEtiquettes => 'Labels';
+
+  @override
+  String get prdAffecter => 'Assign';
+
+  @override
+  String get prdImporter => 'Import';
+
+  @override
+  String prdAchatMontant(String montant) {
+    return 'Cost $montant';
+  }
+
+  @override
+  String prdStockN(String quantite) {
+    return 'Stock $quantite';
+  }
+
+  @override
+  String prdMargeN(int n) {
+    return 'Margin $n %';
+  }
+
+  @override
+  String get prdStatut => 'Status';
+
+  @override
+  String get prdTypeTaux => 'Rate type';
+
+  @override
+  String get prdSeuilMontant => 'Basket threshold';
+
+  @override
+  String get prdPack => 'Bundle';
+
+  @override
+  String get prdComposants => 'Components';
+
+  @override
+  String get prdComposant => 'Component';
+
+  @override
+  String get prdValeurSeparee => 'Separate value';
+
+  @override
+  String get prdPrixPack => 'Bundle price';
+
+  @override
+  String get prdEconomie => 'Saving';
+
+  @override
+  String get prdDisponibles => 'Available';
+
+  @override
+  String get prdFormDescription =>
+      'Quick: one page for the essentials. Detailed: 3 steps (photos, identification and prices · stock and packaging · variants and options). AI: record found from the barcode.';
+
+  @override
+  String get prdModeRapide => 'Quick';
+
+  @override
+  String get prdModeDetaille => 'Detailed · 3 steps';
+
+  @override
+  String get prdModeIa => 'AI';
+
+  @override
+  String get prdEtape1 => 'Photos, identification and prices';
+
+  @override
+  String get prdEtape1Desc => 'Photos, name, codes, margin';
+
+  @override
+  String get prdEtape2 => 'Stock and packaging';
+
+  @override
+  String get prdEtape2Desc => 'Store, threshold, box, carton';
+
+  @override
+  String get prdEtape3 => 'Variants and options';
+
+  @override
+  String get prdEtape3Desc => 'Sizes, colours, serials';
+
+  @override
+  String prdEtapeObligatoire(int n) {
+    return 'Step $n / 3 · * required';
+  }
+
+  @override
+  String get prdObligatoire => '* required';
+
+  @override
+  String get prdEnregistrerNouveau => 'Save and new';
+
+  @override
+  String get prdSuivant => 'Next';
+
+  @override
+  String get prdPrincipale => 'Main';
+
+  @override
+  String get prdPhotosFormat => 'JPG or PNG · 4 max';
+
+  @override
+  String get prdPhotosFin => 'the first one is the main photo';
+
+  @override
+  String get prdPhotosAide =>
+      'The 1st photo shows at the till (product card and Quantity and pack dialog). JPG or PNG, 4 max.';
+
+  @override
+  String get prdIdentification => 'Identification';
+
+  @override
+  String get prdCodeAuto => 'Assigned on save';
+
+  @override
+  String get prdDesignationIndice => 'e.g. Elio oil 1 L';
+
+  @override
+  String get prdEanInvalide => 'Invalid EAN-13 check digit';
+
+  @override
+  String get prdScannerOuSaisir => 'Scan or type';
+
+  @override
+  String get prdGenererEan => 'Generate an EAN-13';
+
+  @override
+  String get prdFournisseur => 'Supplier';
+
+  @override
+  String get prdPrix => 'Prices';
+
+  @override
+  String get prdSousAchat => 'Below the cost price';
+
+  @override
+  String prdMargeUnitaire(String montant) {
+    return 'Unit margin: $montant';
+  }
+
+  @override
+  String get prdStockActuel => 'Current stock';
+
+  @override
+  String get prdStockInitial => 'Opening stock';
+
+  @override
+  String get prdStockAide => 'Change it through Purchases / Stock-outs';
+
+  @override
+  String get prdSeuilAlerte => 'Alert threshold';
+
+  @override
+  String get prdEmballages => 'Packaging';
+
+  @override
+  String get prdEmballagesAide =>
+      'Packs offered at the till (Quantity and pack dialog): pieces per pack and pack price.';
+
+  @override
+  String get prdBoite => 'Box';
+
+  @override
+  String get prdCarton => 'Carton';
+
+  @override
+  String get prdPcs => 'pcs';
+
+  @override
+  String get prdVariantes => 'Variants';
+
+  @override
+  String get prdTypeTaille => 'Size type';
+
+  @override
+  String get prdTailles => 'Sizes';
+
+  @override
+  String get prdTaillesAide => 'Click the available sizes';
+
+  @override
+  String prdTaillesN(int n) {
+    return '$n size(s) selected';
+  }
+
+  @override
+  String get prdCouleurs => 'Colours';
+
+  @override
+  String get prdCouleursAide => '16 colours · several choices allowed';
+
+  @override
+  String get prdOptions => 'Options';
+
+  @override
+  String get prdCodesMultiples => 'Multiple codes';
+
+  @override
+  String get prdCodesMultiplesAide => 'Other barcodes recognised at the till for this product';
+
+  @override
+  String get prdAjouterCode => 'Add a code';
+
+  @override
+  String get prdSuiviSerie => 'Serial number tracking';
+
+  @override
+  String get prdSuiviSerieAide => 'Required at sale';
+
+  @override
+  String get prdServiceSansStock => 'Service (no stock)';
+
+  @override
+  String get prdServiceAide => 'Repair, delivery, labour';
+
+  @override
+  String get prdExpirationAide => 'Alert before expiry';
+
+  @override
+  String get prdNoteInterne => 'Internal note';
+
+  @override
+  String get prdToastEnregistre => 'Product saved';
+
+  @override
+  String get prdToastModifie => 'Product updated';
+
+  @override
+  String prdToastAjoute(String code) {
+    return '$code · added to the catalogue';
+  }
+
+  @override
+  String get prdModifierCategorie => 'Edit category';
+
+  @override
+  String get prdModifierSousCategorie => 'Edit subcategory';
+
+  @override
+  String get prdCategorieParente => 'Parent category';
+
+  @override
+  String get prdCategorieExiste => 'This category already exists';
+
+  @override
+  String get prdSousCategorieExiste => 'This subcategory already exists';
+
+  @override
+  String get prdCategorieIndice => 'e.g. Grocery';
+
+  @override
+  String get prdSousCategorieIndice => 'e.g. Oils';
+
+  @override
+  String get prdVisibleCaisse => 'Visible at the till';
+
+  @override
+  String get prdToastCategorie => 'Category saved';
+
+  @override
+  String get prdToastSousCategorie => 'Subcategory saved';
+
+  @override
+  String get prdInformations => 'Information';
+
+  @override
+  String prdNProduits(int n) {
+    return '$n product(s)';
+  }
+
+  @override
+  String prdNComposants(int n) {
+    return '$n component(s)';
+  }
+
+  @override
+  String get prdContientProduits => 'Contains products — reassign them first';
+
+  @override
+  String get prdDejaInactif => 'Already inactive';
+
+  @override
+  String get prdToastAnnulation => 'Cancellation done';
+
+  @override
+  String get prdPorteeProduit => 'Per product';
+
+  @override
+  String get prdPorteeMontant => 'By amount (basket)';
+
+  @override
+  String get prdProgrammee => 'Scheduled';
+
+  @override
+  String get prdModifierRemise => 'Edit discount';
+
+  @override
+  String get prdRemiseDescription => 'A discount applies automatically at the till during its period.';
+
+  @override
+  String get prdProduitsConcernes => 'Products concerned';
+
+  @override
+  String get prdRemiseAccordee => 'Discount granted';
+
+  @override
+  String get prdPrixNormal => 'Regular price';
+
+  @override
+  String get prdPrixRemise => 'Discounted price';
+
+  @override
+  String get prdRemiseNomIndice => 'e.g. End of line';
+
+  @override
+  String get prdPourcentageAide => 'e.g. −10 % off the price';
+
+  @override
+  String get prdMontantFixe => 'Fixed amount';
+
+  @override
+  String prdMontantFixeAide(String devise) {
+    return 'e.g. −50 $devise per item';
+  }
+
+  @override
+  String get prdCumulable => 'Stackable';
+
+  @override
+  String get prdAvecRemiseTicket => 'With the receipt discount';
+
+  @override
+  String get prdSeuilAide => 'The discount applies once the subtotal reaches this amount';
+
+  @override
+  String get prdParMontantAide =>
+      '\"By amount\" discount: chosen on the basket at the till (Ctrl+R / F8), with no product list.';
+
+  @override
+  String get prdToastRemise => 'Discount saved';
+
+  @override
+  String get prdToastRemiseDesc => 'Applied at the till during its period';
+
+  @override
+  String get prdVentesRemisees => 'Discounted sales';
+
+  @override
+  String get prdModifierPack => 'Edit bundle';
+
+  @override
+  String get prdPackDescription => 'A bundle sells as a single item and destocks each component.';
+
+  @override
+  String get prdEnregistrerPack => 'Save bundle';
+
+  @override
+  String get prdComposantsPack => 'Bundle components';
+
+  @override
+  String get prdQteParPack => 'Qty / bundle';
+
+  @override
+  String get prdPrixUnitaire => 'Unit price';
+
+  @override
+  String get prdOptionnel => 'Optional';
+
+  @override
+  String get prdNomPack => 'Bundle name';
+
+  @override
+  String get prdPackNomIndice => 'e.g. Breakfast bundle';
+
+  @override
+  String get prdPacksPossibles => 'Possible bundles';
+
+  @override
+  String get prdPacksPossiblesAide => 'Based on the stock of the scarcest component';
+
+  @override
+  String get prdEconomieClient => 'Customer saving';
+
+  @override
+  String get prdPackPlusCher => 'The bundle costs more than its components';
+
+  @override
+  String prdValeurSepareeMontant(String montant) {
+    return 'separate value $montant';
+  }
+
+  @override
+  String get prdToastPack => 'Bundle saved';
+
+  @override
+  String get prdValeur => 'Value';
+
+  @override
+  String get prdStockTotal => 'Total stock';
+
+  @override
+  String get prdPrixMoyenAchat => 'Average cost';
+
+  @override
+  String get prdVendus30 => 'Sold (30 d)';
+
+  @override
+  String get prdStockParMagasin => 'Stock by store';
+
+  @override
+  String get prdDerniersMouvements => 'Latest movements';
+
+  @override
+  String get prdReference => 'Ref.';
+
+  @override
+  String get prdCodeBarreTitre => 'Barcode & labels';
+
+  @override
+  String get prdEanAide => 'Retail standard — prefix 613 (Algeria)';
+
+  @override
+  String get prdCodeInterne => 'Internal code';
+
+  @override
+  String get prdCodeInterneAide => 'For products without a manufacturer code';
+
+  @override
+  String get prdFormat => 'Format';
+
+  @override
+  String get prdFormatA4 => 'A4 · 3 × 8 (38 × 21 mm)';
+
+  @override
+  String get prdFormatRouleau40 => 'Roll 40 × 30 mm';
+
+  @override
+  String get prdFormatRouleau58 => 'Roll 58 mm';
+
+  @override
+  String prdImprimerEtiquettes(int n) {
+    return 'Print $n label(s)';
+  }
+
+  @override
+  String prdAffecterN(int n) {
+    return 'Assign $n product(s)';
+  }
+
+  @override
+  String get prdRemplacerAffectation => 'Replace the existing assignment';
+
+  @override
+  String get prdRemplacerPackAide => 'Otherwise the product is added to the bundle with quantity 1';
+
+  @override
+  String get prdRemplacerCategorieAide => 'Otherwise only products without a category change';
+
+  @override
+  String get prdRemplacerRemiseAide => 'Otherwise only products without a discount change';
+
+  @override
+  String get prdToastAffectation => 'Assignment saved';
+
+  @override
+  String prdToastAffectationDesc(int n, String nom) {
+    return '$n product(s) · $nom';
+  }
+
+  @override
+  String get prdSuppressionBloquee => 'Linked stock or movements — deactivate it instead';
+
+  @override
+  String prdToastSupprimes(int n) {
+    return '$n product(s) deleted';
+  }
+
+  @override
+  String prdToastRefuses(int n) {
+    return '$n refused: linked movements';
+  }
+
+  @override
+  String get prdImportFichier => 'File';
+
+  @override
+  String get prdImportFichierDesc => '.xlsx';
+
+  @override
+  String get prdImportColonnes => 'Columns';
+
+  @override
+  String get prdImportColonnesDesc => 'Mapping';
+
+  @override
+  String get prdImportApercuDesc => 'Check';
+
+  @override
+  String prdImportInfos(int n, int total) {
+    return '$n column(s) · $total KB';
+  }
+
+  @override
+  String get prdChangerFichier => 'Change file';
+
+  @override
+  String get prdTelechargerModele => 'Download the template';
+
+  @override
+  String prdColonneN(String lettre, String nom) {
+    return 'Column $lettre · $nom';
+  }
+
+  @override
+  String get prdIgnorer => '— Ignore —';
+
+  @override
+  String get prdImportDesignationRequise => 'Map a column to the name.';
+
+  @override
+  String get prdGenere => '— generated —';
+
+  @override
+  String get prdControle => 'Check';
+
+  @override
+  String prdImporterN(int n) {
+    return 'Import $n product(s)';
+  }
+
+  @override
+  String get prdImportTermine => 'Import complete';
 }

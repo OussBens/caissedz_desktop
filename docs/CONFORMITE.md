@@ -46,6 +46,8 @@
 - [x] Mode IA avec cascade CaisseDZ → Mantouj → Open Food Facts → Open Beauty Facts — API CaisseDZ/Mantouj provisoires
 - [x] 2ᵉ stock « nombre » (pièces par unité) — interprétation provisoire
 - [x] Import Excel, étiquettes (PDF A4 / rouleau), synchro catalogue (protocole provisoire)
+- [x] Écran Produits fidèle au DS v2.2 (phase D) : 5 onglets, formulaire Rapide / Détaillé / IA, photos, codes
+      secondaires, remises Par Produit / Par Montant avec seuil, packs, import avec correspondance des colonnes
 
 ## Stock (lot 3)
 - [x] Stock = journal des mouvements (SUM), garde de stock toujours active, 2ᵉ stock « nombre »

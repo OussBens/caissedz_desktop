@@ -5012,4 +5012,671 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get catalogueErreurNomPris => 'هذا الاسم مستخدم بالفعل.';
+
+  @override
+  String get prdDescription => 'الكتالوج والفئات والتخفيضات والحزم';
+
+  @override
+  String get prdOngletSousCategories => 'الفئات الفرعية';
+
+  @override
+  String get prdAchat => 'الشراء';
+
+  @override
+  String get prdVente => 'البيع';
+
+  @override
+  String get prdMarge => 'الهامش';
+
+  @override
+  String get prdMarque => 'العلامة التجارية';
+
+  @override
+  String get prdMarqueIndice => 'مثال: إليو';
+
+  @override
+  String get prdDescriptionChamp => 'الوصف';
+
+  @override
+  String get prdTaille => 'المقاس';
+
+  @override
+  String get prdCouleur => 'اللون';
+
+  @override
+  String get prdRemise => 'التخفيض';
+
+  @override
+  String get prdService => 'خدمة';
+
+  @override
+  String prdEmballageN(int n) {
+    return 'التغليف $n';
+  }
+
+  @override
+  String prdPrixEmballageN(int n) {
+    return 'سعر التغليف $n';
+  }
+
+  @override
+  String prdEmballagePieces(int n) {
+    return '$n قطعة';
+  }
+
+  @override
+  String get prdNumeroSerie => 'الرقم التسلسلي';
+
+  @override
+  String get prdMultiCodes => 'رموز شريطية متعددة';
+
+  @override
+  String get prdPhotos => 'الصور';
+
+  @override
+  String get prdTva => 'الرسم على القيمة المضافة';
+
+  @override
+  String get prdDateExpiration => 'تاريخ انتهاء الصلاحية';
+
+  @override
+  String get prdEntiteProduits => 'منتجات';
+
+  @override
+  String get prdEntiteProduit => 'منتج';
+
+  @override
+  String get prdEntiteCategories => 'فئات';
+
+  @override
+  String get prdEntiteCategorie => 'فئة';
+
+  @override
+  String get prdEntiteSousCategories => 'فئات فرعية';
+
+  @override
+  String get prdEntiteSousCategorie => 'فئة فرعية';
+
+  @override
+  String get prdEntiteRemises => 'تخفيضات';
+
+  @override
+  String get prdEntiteRemise => 'تخفيض';
+
+  @override
+  String get prdEntitePacks => 'حزم';
+
+  @override
+  String get prdEntitePack => 'حزمة';
+
+  @override
+  String get prdKpiActifs => 'المنتجات النشطة';
+
+  @override
+  String get prdKpiValeurStock => 'قيمة المخزون';
+
+  @override
+  String get prdKpiSousSeuil => 'تحت الحد';
+
+  @override
+  String get prdKpiRupture => 'نفاد المخزون';
+
+  @override
+  String get prdToutes => 'الكل';
+
+  @override
+  String get prdDisponible => 'متوفر';
+
+  @override
+  String get prdRechercheProduits => 'الاسم أو الرمز أو الرمز الشريطي…';
+
+  @override
+  String get prdRechercheCategorie => 'البحث عن فئة…';
+
+  @override
+  String get prdRechercheSousCategorie => 'البحث عن فئة فرعية…';
+
+  @override
+  String get prdRechercheRemise => 'البحث عن تخفيض…';
+
+  @override
+  String get prdRecherchePack => 'البحث عن حزمة…';
+
+  @override
+  String get prdEtiquette => 'الملصق';
+
+  @override
+  String get prdEtiquettes => 'الملصقات';
+
+  @override
+  String get prdAffecter => 'تعيين';
+
+  @override
+  String get prdImporter => 'استيراد';
+
+  @override
+  String prdAchatMontant(String montant) {
+    return 'الشراء $montant';
+  }
+
+  @override
+  String prdStockN(String quantite) {
+    return 'المخزون $quantite';
+  }
+
+  @override
+  String prdMargeN(int n) {
+    return 'الهامش $n %';
+  }
+
+  @override
+  String get prdStatut => 'الحالة';
+
+  @override
+  String get prdTypeTaux => 'نوع النسبة';
+
+  @override
+  String get prdSeuilMontant => 'حد السلة';
+
+  @override
+  String get prdPack => 'الحزمة';
+
+  @override
+  String get prdComposants => 'المكونات';
+
+  @override
+  String get prdComposant => 'المكون';
+
+  @override
+  String get prdValeurSeparee => 'القيمة المنفصلة';
+
+  @override
+  String get prdPrixPack => 'سعر الحزمة';
+
+  @override
+  String get prdEconomie => 'التوفير';
+
+  @override
+  String get prdDisponibles => 'المتاحة';
+
+  @override
+  String get prdFormDescription =>
+      'سريع: صفحة واحدة للأساسيات. مفصل: 3 مراحل (الصور والتعريف والأسعار · المخزون والتغليف · المتغيرات والخيارات). الذكاء الاصطناعي: بطاقة يعثر عليها بالرمز الشريطي.';
+
+  @override
+  String get prdModeRapide => 'سريع';
+
+  @override
+  String get prdModeDetaille => 'مفصل · 3 مراحل';
+
+  @override
+  String get prdModeIa => 'ذكاء اصطناعي';
+
+  @override
+  String get prdEtape1 => 'الصور والتعريف والأسعار';
+
+  @override
+  String get prdEtape1Desc => 'الصور، الاسم، الرموز، الهامش';
+
+  @override
+  String get prdEtape2 => 'المخزون والتغليف';
+
+  @override
+  String get prdEtape2Desc => 'المخزن، الحد، العلبة، الكرتون';
+
+  @override
+  String get prdEtape3 => 'المتغيرات والخيارات';
+
+  @override
+  String get prdEtape3Desc => 'المقاسات، الألوان، الأرقام التسلسلية';
+
+  @override
+  String prdEtapeObligatoire(int n) {
+    return 'المرحلة $n / 3 · * إلزامي';
+  }
+
+  @override
+  String get prdObligatoire => '* إلزامي';
+
+  @override
+  String get prdEnregistrerNouveau => 'حفظ وجديد';
+
+  @override
+  String get prdSuivant => 'التالي';
+
+  @override
+  String get prdPrincipale => 'الرئيسية';
+
+  @override
+  String get prdPhotosFormat => 'JPG أو PNG · 4 كحد أقصى';
+
+  @override
+  String get prdPhotosFin => 'الأولى هي الصورة الرئيسية';
+
+  @override
+  String get prdPhotosAide =>
+      'تظهر الصورة الأولى في الصندوق (بطاقة المنتج ونافذة الكمية والطرد). JPG أو PNG، 4 كحد أقصى.';
+
+  @override
+  String get prdIdentification => 'التعريف';
+
+  @override
+  String get prdCodeAuto => 'يُسند عند الحفظ';
+
+  @override
+  String get prdDesignationIndice => 'مثال: زيت إليو 1 ل';
+
+  @override
+  String get prdEanInvalide => 'رقم التحقق EAN-13 غير صالح';
+
+  @override
+  String get prdScannerOuSaisir => 'امسح أو أدخل';
+
+  @override
+  String get prdGenererEan => 'توليد EAN-13';
+
+  @override
+  String get prdFournisseur => 'المورد';
+
+  @override
+  String get prdPrix => 'الأسعار';
+
+  @override
+  String get prdSousAchat => 'أقل من سعر الشراء';
+
+  @override
+  String prdMargeUnitaire(String montant) {
+    return 'الهامش للوحدة: $montant';
+  }
+
+  @override
+  String get prdStockActuel => 'المخزون الحالي';
+
+  @override
+  String get prdStockInitial => 'المخزون الأولي';
+
+  @override
+  String get prdStockAide => 'يعدل عبر المدخلات / المخرجات';
+
+  @override
+  String get prdSeuilAlerte => 'حد التنبيه';
+
+  @override
+  String get prdEmballages => 'التغليف';
+
+  @override
+  String get prdEmballagesAide => 'الطرود المقترحة في الصندوق (نافذة الكمية والطرد): عدد القطع في الطرد وسعره.';
+
+  @override
+  String get prdBoite => 'علبة';
+
+  @override
+  String get prdCarton => 'كرتون';
+
+  @override
+  String get prdPcs => 'قطعة';
+
+  @override
+  String get prdVariantes => 'المتغيرات';
+
+  @override
+  String get prdTypeTaille => 'نوع المقاس';
+
+  @override
+  String get prdTailles => 'المقاسات';
+
+  @override
+  String get prdTaillesAide => 'اختر المقاسات المتوفرة';
+
+  @override
+  String prdTaillesN(int n) {
+    return '$n مقاس(ات) محدد(ة)';
+  }
+
+  @override
+  String get prdCouleurs => 'الألوان';
+
+  @override
+  String get prdCouleursAide => '16 لونا · يمكن اختيار عدة ألوان';
+
+  @override
+  String get prdOptions => 'الخيارات';
+
+  @override
+  String get prdCodesMultiples => 'رموز متعددة';
+
+  @override
+  String get prdCodesMultiplesAide => 'رموز شريطية أخرى يتعرف عليها الصندوق لهذا المنتج';
+
+  @override
+  String get prdAjouterCode => 'إضافة رمز';
+
+  @override
+  String get prdSuiviSerie => 'التتبع بالرقم التسلسلي';
+
+  @override
+  String get prdSuiviSerieAide => 'إدخال إلزامي عند البيع';
+
+  @override
+  String get prdServiceSansStock => 'خدمة (بدون مخزون)';
+
+  @override
+  String get prdServiceAide => 'تصليح، توصيل، يد عاملة';
+
+  @override
+  String get prdExpirationAide => 'تنبيه قبل انتهاء الصلاحية';
+
+  @override
+  String get prdNoteInterne => 'ملاحظة داخلية';
+
+  @override
+  String get prdToastEnregistre => 'تم حفظ المنتج';
+
+  @override
+  String get prdToastModifie => 'تم تعديل المنتج';
+
+  @override
+  String prdToastAjoute(String code) {
+    return '$code · أضيف إلى الكتالوج';
+  }
+
+  @override
+  String get prdModifierCategorie => 'تعديل الفئة';
+
+  @override
+  String get prdModifierSousCategorie => 'تعديل الفئة الفرعية';
+
+  @override
+  String get prdCategorieParente => 'الفئة الأم';
+
+  @override
+  String get prdCategorieExiste => 'هذه الفئة موجودة مسبقا';
+
+  @override
+  String get prdSousCategorieExiste => 'هذه الفئة الفرعية موجودة مسبقا';
+
+  @override
+  String get prdCategorieIndice => 'مثال: بقالة';
+
+  @override
+  String get prdSousCategorieIndice => 'مثال: زيوت';
+
+  @override
+  String get prdVisibleCaisse => 'ظاهر في الصندوق';
+
+  @override
+  String get prdToastCategorie => 'تم حفظ الفئة';
+
+  @override
+  String get prdToastSousCategorie => 'تم حفظ الفئة الفرعية';
+
+  @override
+  String get prdInformations => 'المعلومات';
+
+  @override
+  String prdNProduits(int n) {
+    return '$n منتج(ات)';
+  }
+
+  @override
+  String prdNComposants(int n) {
+    return '$n مكون(ات)';
+  }
+
+  @override
+  String get prdContientProduits => 'تحتوي على منتجات — أعد تعيينها أولا';
+
+  @override
+  String get prdDejaInactif => 'غير نشط مسبقا';
+
+  @override
+  String get prdToastAnnulation => 'تم الإلغاء';
+
+  @override
+  String get prdPorteeProduit => 'حسب المنتج';
+
+  @override
+  String get prdPorteeMontant => 'حسب المبلغ (السلة)';
+
+  @override
+  String get prdProgrammee => 'مبرمج';
+
+  @override
+  String get prdModifierRemise => 'تعديل التخفيض';
+
+  @override
+  String get prdRemiseDescription => 'يطبق التخفيض تلقائيا في الصندوق خلال فترته.';
+
+  @override
+  String get prdProduitsConcernes => 'المنتجات المعنية';
+
+  @override
+  String get prdRemiseAccordee => 'التخفيض الممنوح';
+
+  @override
+  String get prdPrixNormal => 'السعر العادي';
+
+  @override
+  String get prdPrixRemise => 'السعر بعد التخفيض';
+
+  @override
+  String get prdRemiseNomIndice => 'مثال: نهاية السلسلة';
+
+  @override
+  String get prdPourcentageAide => 'مثال: −10 % من السعر';
+
+  @override
+  String get prdMontantFixe => 'مبلغ ثابت';
+
+  @override
+  String prdMontantFixeAide(String devise) {
+    return 'مثال: −50 $devise لكل سلعة';
+  }
+
+  @override
+  String get prdCumulable => 'قابل للجمع';
+
+  @override
+  String get prdAvecRemiseTicket => 'مع تخفيض التذكرة';
+
+  @override
+  String get prdSeuilAide => 'يتفعل التخفيض عندما يبلغ المجموع الفرعي هذا المبلغ';
+
+  @override
+  String get prdParMontantAide => 'تخفيض «حسب المبلغ»: يختار على السلة في الصندوق (Ctrl+R / F8)، دون قائمة منتجات.';
+
+  @override
+  String get prdToastRemise => 'تم حفظ التخفيض';
+
+  @override
+  String get prdToastRemiseDesc => 'يطبق في الصندوق خلال فترته';
+
+  @override
+  String get prdVentesRemisees => 'المبيعات المخفضة';
+
+  @override
+  String get prdModifierPack => 'تعديل الحزمة';
+
+  @override
+  String get prdPackDescription => 'تباع الحزمة كسلعة واحدة وتخصم كل مكون من المخزون.';
+
+  @override
+  String get prdEnregistrerPack => 'حفظ الحزمة';
+
+  @override
+  String get prdComposantsPack => 'مكونات الحزمة';
+
+  @override
+  String get prdQteParPack => 'الكمية / حزمة';
+
+  @override
+  String get prdPrixUnitaire => 'سعر الوحدة';
+
+  @override
+  String get prdOptionnel => 'اختياري';
+
+  @override
+  String get prdNomPack => 'اسم الحزمة';
+
+  @override
+  String get prdPackNomIndice => 'مثال: حزمة الفطور';
+
+  @override
+  String get prdPacksPossibles => 'الحزم الممكنة';
+
+  @override
+  String get prdPacksPossiblesAide => 'حسب مخزون المكون الأكثر محدودية';
+
+  @override
+  String get prdEconomieClient => 'توفير للزبون';
+
+  @override
+  String get prdPackPlusCher => 'الحزمة أغلى من مكوناتها';
+
+  @override
+  String prdValeurSepareeMontant(String montant) {
+    return 'القيمة المنفصلة $montant';
+  }
+
+  @override
+  String get prdToastPack => 'تم حفظ الحزمة';
+
+  @override
+  String get prdValeur => 'القيمة';
+
+  @override
+  String get prdStockTotal => 'المخزون الإجمالي';
+
+  @override
+  String get prdPrixMoyenAchat => 'متوسط سعر الشراء';
+
+  @override
+  String get prdVendus30 => 'المباع (30 يوما)';
+
+  @override
+  String get prdStockParMagasin => 'المخزون حسب المخزن';
+
+  @override
+  String get prdDerniersMouvements => 'آخر الحركات';
+
+  @override
+  String get prdReference => 'المرجع';
+
+  @override
+  String get prdCodeBarreTitre => 'الرمز الشريطي والملصقات';
+
+  @override
+  String get prdEanAide => 'معيار تجاري — البادئة 613 (الجزائر)';
+
+  @override
+  String get prdCodeInterne => 'رمز داخلي';
+
+  @override
+  String get prdCodeInterneAide => 'للمنتجات بدون رمز المصنع';
+
+  @override
+  String get prdFormat => 'الصيغة';
+
+  @override
+  String get prdFormatA4 => 'A4 · 3 × 8 (38 × 21 مم)';
+
+  @override
+  String get prdFormatRouleau40 => 'لفافة 40 × 30 مم';
+
+  @override
+  String get prdFormatRouleau58 => 'لفافة 58 مم';
+
+  @override
+  String prdImprimerEtiquettes(int n) {
+    return 'طباعة $n ملصق(ات)';
+  }
+
+  @override
+  String prdAffecterN(int n) {
+    return 'تعيين $n منتج(ات)';
+  }
+
+  @override
+  String get prdRemplacerAffectation => 'استبدال التعيين الحالي';
+
+  @override
+  String get prdRemplacerPackAide => 'وإلا يضاف المنتج إلى الحزمة بكمية 1';
+
+  @override
+  String get prdRemplacerCategorieAide => 'وإلا تعدل المنتجات بدون فئة فقط';
+
+  @override
+  String get prdRemplacerRemiseAide => 'وإلا تعدل المنتجات بدون تخفيض فقط';
+
+  @override
+  String get prdToastAffectation => 'تم حفظ التعيين';
+
+  @override
+  String prdToastAffectationDesc(int n, String nom) {
+    return '$n منتج(ات) · $nom';
+  }
+
+  @override
+  String get prdSuppressionBloquee => 'مخزون أو حركات مرتبطة — عطله بدلا من ذلك';
+
+  @override
+  String prdToastSupprimes(int n) {
+    return 'تم حذف $n منتج(ات)';
+  }
+
+  @override
+  String prdToastRefuses(int n) {
+    return '$n مرفوض(ة): حركات مرتبطة';
+  }
+
+  @override
+  String get prdImportFichier => 'الملف';
+
+  @override
+  String get prdImportFichierDesc => '.xlsx';
+
+  @override
+  String get prdImportColonnes => 'الأعمدة';
+
+  @override
+  String get prdImportColonnesDesc => 'المطابقة';
+
+  @override
+  String get prdImportApercuDesc => 'المراقبة';
+
+  @override
+  String prdImportInfos(int n, int total) {
+    return '$n عمود(أعمدة) · $total ك.ب';
+  }
+
+  @override
+  String get prdChangerFichier => 'تغيير الملف';
+
+  @override
+  String get prdTelechargerModele => 'تنزيل النموذج';
+
+  @override
+  String prdColonneN(String lettre, String nom) {
+    return 'العمود $lettre · $nom';
+  }
+
+  @override
+  String get prdIgnorer => '— تجاهل —';
+
+  @override
+  String get prdImportDesignationRequise => 'اربط عمودا بالتسمية.';
+
+  @override
+  String get prdGenere => '— مولد —';
+
+  @override
+  String get prdControle => 'المراقبة';
+
+  @override
+  String prdImporterN(int n) {
+    return 'استيراد $n منتج(ات)';
+  }
+
+  @override
+  String get prdImportTermine => 'انتهى الاستيراد';
 }

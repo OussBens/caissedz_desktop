@@ -19,7 +19,7 @@ import '../../domain/permissions.dart';
 import '../../domain/referentiel/referentiel.dart';
 import '../commun/referentiel_ui.dart';
 import '../gestion_caisse/gestion_caisse_providers.dart';
-import '../produits/produit_dialogs.dart';
+import '../produits/produit_form_dialog.dart';
 import '../produits/produits_providers.dart';
 import '../tiers/tiers_dialogs.dart';
 import '../tiers/tiers_providers.dart';
@@ -222,8 +222,7 @@ class _PosPageState extends ConsumerState<PosPage> {
     return [
       for (final r in ref.read(remisesProvider).value ?? const <Remise>[])
         if (r.actif &&
-            r.produitCode == null &&
-            r.categorieCode == null &&
+            r.parMontant &&
             (r.dateDebut == null || !n.isBefore(r.dateDebut!)) &&
             (r.dateFin == null || !n.isAfter(r.dateFin!)))
           r,

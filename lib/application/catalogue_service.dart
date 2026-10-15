@@ -223,6 +223,7 @@ class CatalogueService {
     List<EmballageProduit?> emballages = const [],
     double stockInitial = 0,
     String? magasinCode,
+    List<String> photos = const [],
   }) async {
     final prepare = await _preparer(p, nouveau: true, margeDefautPct: margeDefautPct);
     final codes = await _verifierCodes(codesSecondaires, prepare.codeBarres);
@@ -246,7 +247,7 @@ class CatalogueService {
         nombreParUnite: prepare.nombreParUnite,
         source: prepare.source,
         actif: prepare.actif,
-        image: prepare.image,
+        image: photos.isEmpty ? prepare.image : photos.first,
         marque: prepare.marque,
         description: prepare.description,
         fournisseurCode: prepare.fournisseurCode,
@@ -263,6 +264,7 @@ class CatalogueService {
       }
       await repo.insererProduit(produit);
       await repo.remplacerCodesSecondaires(code, codes);
+      await repo.remplacerPhotos(code, photos.take(4).toList());
       await _enregistrerEmballages(repo, produit, emballages);
       if (stockInitial > 0 && !produit.service && magasinCode != null) {
         await StockRepository(txn).insererMouvement(
@@ -294,14 +296,21 @@ class CatalogueService {
     double? margeDefautPct,
     List<String>? codesSecondaires,
     List<EmballageProduit?>? emballages,
+    List<String>? photos,
   }) async {
-    final prepare = await _preparer(p, nouveau: false, margeDefautPct: margeDefautPct);
+    var prepare = await _preparer(p, nouveau: false, margeDefautPct: margeDefautPct);
+    if (photos != null) {
+      prepare = photos.isEmpty
+          ? Produit.depuisLigne({...prepare.versLigne(), 'image': null})
+          : prepare.copyWith(image: photos.first);
+    }
     final codes = codesSecondaires == null ? null : await _verifierCodes(codesSecondaires, prepare.codeBarres, p.code);
     if (emballages != null) await _verifierEmballages(emballages, p.code);
     await db.transaction((txn) async {
       final repo = CatalogueRepository(txn);
       await repo.mettreAJourProduit(prepare);
       if (codes != null) await repo.remplacerCodesSecondaires(p.code, codes);
+      if (photos != null) await repo.remplacerPhotos(p.code, photos.take(4).toList());
       if (emballages != null) await _enregistrerEmballages(repo, prepare, emballages);
       await HistoriqueRepository(txn).journaliser(
         utilisateurCode: utilisateurCode,
@@ -345,11 +354,7 @@ class CatalogueService {
         ..sort((a, b) => a.quantite.compareTo(b.quantite));
 
   /// Petit / grand colis de la fiche : mis à jour, créés, ou désactivés quand l'emballage est vidé.
-  Future<void> _enregistrerEmballages(
-    CatalogueRepository repo,
-    Produit p,
-    List<EmballageProduit?> emballages,
-  ) async {
+  Future<void> _enregistrerEmballages(CatalogueRepository repo, Produit p, List<EmballageProduit?> emballages) async {
     final existants = await _colisFiche(repo, p.code);
     for (var i = 0; i < 2; i++) {
       final e = i < emballages.length ? emballages[i] : null;
@@ -390,6 +395,8 @@ class CatalogueService {
 
   /// Emballages de la fiche (petit puis grand colis).
   Future<List<Colis>> emballages(String produitCode) => _colisFiche(_repo, produitCode);
+  Future<List<String>> photos(String produitCode) => _repo.photos(produitCode);
+  Future<List<String>> codesSecondaires(String produitCode) => _repo.codesSecondaires(produitCode);
 
   /// Supprime des produits sans mouvement ni pack ; sinon [ErreurCatalogue.produitUtilise] (à désactiver).
   Future<void> supprimerProduits(List<String> codes) async {
@@ -547,34 +554,77 @@ class CatalogueService {
     await db.transaction((txn) => CatalogueRepository(txn).mettreAJourPack(p));
   }
 
+  Future<void> activerPack(String code, bool actif) async {
+    final p = (await _repo.packs()).where((k) => k.code == code).firstOrNull;
+    if (p == null) return;
+    await db.transaction((txn) => CatalogueRepository(txn).mettreAJourPack(p.copyWith(actif: actif)));
+  }
+
   // ---------------- Remises ----------------
-  Future<Remise> creerRemise(Remise r) async {
+  void _validerRemise(Remise r) {
     if (r.designation.trim().isEmpty) throw const CatalogueException(ErreurCatalogue.designationVide);
-    if (r.valeur <= 0 || (r.type == 'Pourcentage' && r.valeur > 100)) {
+    if (r.valeur <= 0 || (r.estPourcentage && r.valeur > 100) || r.seuil < 0) {
       throw const CatalogueException(ErreurCatalogue.prixInvalide);
     }
+  }
+
+  /// Crée une remise ; une remise « Par Produit » est assignée aux [produits] (`produit.remise_code`).
+  Future<Remise> creerRemise(Remise r, {List<String> produits = const []}) async {
+    _validerRemise(r);
     return db.transaction((txn) async {
       final repo = CatalogueRepository(txn);
-      final code = await repo.prochainCode('remise', CodeGenerator.remise);
-      final remise = Remise(
-        code: code,
-        designation: r.designation.trim(),
-        type: r.type,
-        valeur: r.valeur,
-        produitCode: r.produitCode,
-        categorieCode: r.categorieCode,
-        dateDebut: r.dateDebut,
-        dateFin: r.dateFin,
-        actif: r.actif,
-        cumulable: r.cumulable,
-        observation: r.observation,
-      );
+      final remise = r.copyWith(code: await repo.prochainCode('remise', CodeGenerator.remise));
       await repo.insererRemise(remise);
+      if (!r.parMontant) await _assignerRemise(repo, remise.code, produits);
+      await HistoriqueRepository(txn).journaliser(
+        utilisateurCode: utilisateurCode,
+        action: 'Création',
+        entite: 'remise',
+        entiteCode: remise.code,
+        detail: r.designation.trim(),
+      );
       return remise;
     });
   }
 
-  Future<void> modifierRemise(Remise r) => _repo.mettreAJourRemise(r);
+  /// Modifie une remise ; si [produits] est fourni, il remplace la liste des produits assignés.
+  Future<void> modifierRemise(Remise r, {List<String>? produits}) async {
+    _validerRemise(r);
+    await db.transaction((txn) async {
+      final repo = CatalogueRepository(txn);
+      await repo.mettreAJourRemise(r);
+      if (r.parMontant) {
+        await _assignerRemise(repo, r.code, const []);
+      } else if (produits != null) {
+        await _assignerRemise(repo, r.code, produits);
+      }
+      await HistoriqueRepository(txn).journaliser(
+        utilisateurCode: utilisateurCode,
+        action: 'Modification',
+        entite: 'remise',
+        entiteCode: r.code,
+        detail: r.designation,
+      );
+    });
+  }
+
+  Future<void> _assignerRemise(CatalogueRepository repo, String remiseCode, List<String> produits) async {
+    for (final p in await repo.produits()) {
+      final dedans = produits.contains(p.code);
+      if (dedans && p.remiseCode != remiseCode) {
+        await repo.mettreAJourProduit(p.copyWith(remiseCode: remiseCode));
+      } else if (!dedans && p.remiseCode == remiseCode) {
+        await repo.mettreAJourProduit(p.copyWith(effacerRemise: true));
+      }
+    }
+  }
+
+  Future<void> activerRemise(String code, bool actif) async {
+    final r = (await _repo.remises()).where((x) => x.code == code).firstOrNull;
+    if (r == null) return;
+    await _repo.mettreAJourRemise(r.copyWith(actif: actif));
+  }
+
   Future<void> supprimerRemise(String code) => _repo.supprimerRemise(code);
 
   /// Meilleure remise applicable à un produit à une date donnée (montant de remise sur [montant]).
@@ -582,7 +632,7 @@ class CatalogueService {
     final d = date ?? DateTime.now();
     var meilleure = 0.0;
     for (final r in await _repo.remises()) {
-      final parProduit = p.remiseCode == r.code && r.actif && r.statut(d) == 'actif';
+      final parProduit = !r.parMontant && p.remiseCode == r.code && r.statut(d) == 'actif';
       if (!parProduit && !r.estApplicable(d, produitCode: p.code, categorieCode: p.categorieCode)) continue;
       final m = CalculsPrix.remise(montant, type: r.type, valeur: r.valeur);
       if (m > meilleure) meilleure = m;

@@ -224,13 +224,7 @@ class Produit {
 /// Catégorie / sous-catégorie.
 @immutable
 class Categorie {
-  const Categorie({
-    required this.code,
-    required this.nom,
-    this.systeme = false,
-    this.description,
-    this.actif = true,
-  });
+  const Categorie({required this.code, required this.nom, this.systeme = false, this.description, this.actif = true});
   final String code;
   final String nom;
   final bool systeme;
@@ -359,12 +353,12 @@ class Pack {
   final bool actif;
   final List<PackLigne> lignes;
   final String? description;
-  Pack copyWith({List<PackLigne>? lignes}) => Pack(
+  Pack copyWith({List<PackLigne>? lignes, bool? actif}) => Pack(
     code: code,
     designation: designation,
     codeBarres: codeBarres,
     prixVente: prixVente,
-    actif: actif,
+    actif: actif ?? this.actif,
     lignes: lignes ?? this.lignes,
     description: description,
   );
@@ -414,11 +408,13 @@ class Remise {
     this.actif = true,
     this.cumulable = false,
     this.observation,
+    this.portee = porteeProduit,
+    this.seuil = 0,
   });
   final String code;
   final String designation;
 
-  /// `Pourcentage` ou `Montant` (valeur stockée FR).
+  /// Type de taux (`taux_type` du §7) : `Pourcentage` ou `Montant` (valeur stockée FR).
   final String type;
   final double valeur;
   final String? produitCode;
@@ -431,7 +427,32 @@ class Remise {
   final bool cumulable;
   final String? observation;
 
+  /// Type de remise (§8.9) : [porteeProduit] (assignée aux produits) ou [porteeMontant] (choisie sur le
+  /// panier, active seulement si le sous-total atteint [seuil]).
+  final String portee;
+  final double seuil;
+
+  static const porteeProduit = 'Par Produit';
+  static const porteeMontant = 'Par Montant';
+
   bool get estPourcentage => type == 'Pourcentage';
+  bool get parMontant => portee == porteeMontant;
+
+  Remise copyWith({String? code, bool? actif}) => Remise(
+    code: code ?? this.code,
+    designation: designation,
+    type: type,
+    valeur: valeur,
+    produitCode: produitCode,
+    categorieCode: categorieCode,
+    dateDebut: dateDebut,
+    dateFin: dateFin,
+    actif: actif ?? this.actif,
+    cumulable: cumulable,
+    observation: observation,
+    portee: portee,
+    seuil: seuil,
+  );
 
   /// Statut d'affichage : `actif`, `enAttente` (programmée), `expire` ou `inactif`.
   String statut(DateTime date) {
@@ -446,12 +467,12 @@ class Remise {
       (estPourcentage ? prix * (1 - valeur / 100) : prix - valeur).clamp(0, double.infinity).toDouble();
 
   bool estApplicable(DateTime date, {required String produitCode, required String categorieCode}) {
-    if (!actif) return false;
+    if (!actif || parMontant) return false;
     if (dateDebut != null && date.isBefore(dateDebut!)) return false;
     if (dateFin != null && date.isAfter(dateFin!)) return false;
     if (this.produitCode != null) return this.produitCode == produitCode;
     if (this.categorieCode != null) return this.categorieCode == categorieCode;
-    return true;
+    return false;
   }
 
   Map<String, Object?> versLigne() => {
@@ -466,6 +487,8 @@ class Remise {
     'actif': actif ? 1 : 0,
     'cumulable': cumulable ? 1 : 0,
     'observation': observation,
+    'portee': portee,
+    'seuil': seuil,
   };
   factory Remise.depuisLigne(Map<String, Object?> r) => Remise(
     code: r['code'] as String,
@@ -479,5 +502,7 @@ class Remise {
     actif: (r['actif'] as int) == 1,
     cumulable: (r['cumulable'] as int? ?? 0) == 1,
     observation: r['observation'] as String?,
+    portee: r['portee'] as String? ?? porteeProduit,
+    seuil: (r['seuil'] as num? ?? 0).toDouble(),
   );
 }

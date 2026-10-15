@@ -144,6 +144,13 @@ void main() {
     expect(c.read(posControllerProvider).panier.remiseCode, 'REM0002');
     ctrl.appliquerRemise(null);
     expect(c.read(posControllerProvider).panier.totalNet, 300);
+    // Remise conditionnelle : active seulement à partir du seuil de sous-total.
+    ctrl.appliquerRemise(
+      const Remise(code: 'REM0003', designation: '-10 % dès 400', type: 'Pourcentage', valeur: 10, seuil: 400),
+    );
+    expect(c.read(posControllerProvider).panier.totalNet, 300);
+    await ctrl.ajouter(lait);
+    expect(c.read(posControllerProvider).panier.totalNet, 360);
   });
 
   test('changement de colis : ligne remplacée, restaurée si le stock manque', () async {

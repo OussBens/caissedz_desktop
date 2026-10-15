@@ -285,6 +285,8 @@ class PosController extends Notifier<PosEtat> {
   Panier _recalculer(Panier p) {
     final r = _remises[p.id];
     if (r == null || p.remiseCode != r.code) return p;
+    // Remise conditionnelle (§8.9) : inactive tant que le sous-total n'atteint pas le seuil.
+    if (p.sousTotal < r.seuil) return p.copyWith(remiseGlobalePct: 0);
     if (r.type == 'Pourcentage') return p.copyWith(remiseGlobalePct: r.valeur.clamp(0, 100).toDouble());
     final sous = p.sousTotal;
     final pct = sous <= 0 ? 0.0 : (r.valeur.clamp(0, sous) / sous * 100);

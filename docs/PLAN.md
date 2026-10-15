@@ -432,6 +432,20 @@ Référence : `docs/design/CaisseDZ-DS-v2.2/CaisseDZ-DS-v2.2.html`, `bundle-v2.2
     avec mot de passe et portée ticket / catalogue ; clic sur le colis : changement), total, Enregistrer
     (F6, crédit), BL / SC (F5, `type_panier = BL_SC`, facture A4 imprimée ou PDF) et Encaisser (F4, ticket
     ESC/POS direct ou choix 58 / 80 / A4). Toast avec « Réimprimer ».
+  - ✅ Produits (`ProduitsScreen` + `ProduitKit` / `CatalogueKit`) : onglets Produits / Catégories / Sous-catégories /
+    Remises / Packs avec compteurs. Produits : KPI (actifs, valeur du stock si `voirPrixAchat`, sous seuil,
+    rupture), filtres catégorie / état du stock / prix / marque, vue grille (cartes) par défaut ou liste, colonnes
+    masquables. Formulaire 960 px en 3 modes (Rapide, Détaillé en 3 étapes, IA par code-barres) : photos (4 max,
+    copiées dans `photos/` à côté de la base), codes secondaires, marge % ou montant, TVA, boîte / carton, stock
+    initial, taille / couleur, fournisseur. Détail 1120 px (stats prix moyen d'achat et vendus), étiquette 760 px
+    (A4 38×21, rouleau 40 / 58), affectation en lot, suppression bloquée si stock ≠ 0, import Excel en 3 étapes
+    avec correspondance des colonnes et stock initial. Catégories / sous-catégories 600 px, Remises (DocForm
+    980 px, portée Par Produit / Par Montant avec seuil), Packs (940 px, économie calculée).
+    Migration v13 : `produit_photo`, `remise.portee` / `remise.seuil`, champs de fiche.
+    Écarts Produits : le bouton « Synchro catalogue » passe dans Paramètres ; tailles / couleurs stockées en
+    liste sur le produit (pas de produits variantes) ; pas de « jours d'alerte » de péremption (aucune date de
+    péremption au schéma) ; libellés de tailles enfant non traduits ; « Annuler » désactive (catégorie avec
+    produits bloquée) ; le mode IA est gardé comme 3ᵉ segment (§9.4 exige 3 modes).
   - Écarts : colonnes d'audit « modifié le / par » absentes du schéma (seuls créé par et annulation) ;
     tendances des KPI calculées seulement pour les ventes ; ventes antérieures à la v10 valorisées au prix
     d'achat actuel ; `mouvement_stock` sans valorisation (prix_achat / prix_vente de §7.3).

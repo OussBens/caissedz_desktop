@@ -4,7 +4,7 @@ import 'migration.dart';
 
 /// Version 13 : fiche produit complète (§7.2 et formulaire `ProduitFormDialog` du DS v2.2) — marque,
 /// description, fournisseur, date d'expiration, service, taille, couleur, observation, suivi par n° de série,
-/// remise « Par Produit » ; codes-barres secondaires (`produit_code_detail`) ; description et état des
+/// remise « Par Produit » ; type de remise et seuil ; codes-barres secondaires (`produit_code_detail`) ; description et état des
 /// catégories et sous-catégories ; description des packs ; remise cumulable et observation.
 class MigrationV013Produits extends Migration {
   const MigrationV013Produits();
@@ -38,6 +38,15 @@ class MigrationV013Produits extends Migration {
         PRIMARY KEY (produit_code, code_barres)
       )
     ''');
+    // Photos du produit (4 max) ; la première est aussi recopiée dans `produit.image` (photo principale).
+    await txn.execute('''
+      CREATE TABLE produit_photo (
+        produit_code  TEXT NOT NULL REFERENCES produit(code) ON DELETE CASCADE,
+        ordre         INTEGER NOT NULL,
+        chemin        TEXT NOT NULL,
+        PRIMARY KEY (produit_code, ordre)
+      )
+    ''');
     for (final table in ['categorie', 'sous_categorie']) {
       await txn.execute('ALTER TABLE $table ADD COLUMN description TEXT');
       await txn.execute('ALTER TABLE $table ADD COLUMN actif INTEGER NOT NULL DEFAULT 1');
@@ -45,5 +54,10 @@ class MigrationV013Produits extends Migration {
     await txn.execute('ALTER TABLE pack ADD COLUMN description TEXT');
     await txn.execute('ALTER TABLE remise ADD COLUMN cumulable INTEGER NOT NULL DEFAULT 0');
     await txn.execute('ALTER TABLE remise ADD COLUMN observation TEXT');
+    // §7 : type de remise (`Par Produit` / `Par Montant`) et seuil de la remise conditionnelle.
+    await txn.execute("ALTER TABLE remise ADD COLUMN portee TEXT NOT NULL DEFAULT 'Par Produit'");
+    await txn.execute('ALTER TABLE remise ADD COLUMN seuil REAL NOT NULL DEFAULT 0');
+    // Les remises sans produit ni catégorie servaient de remise panier.
+    await txn.execute("UPDATE remise SET portee = 'Par Montant' WHERE produit_code IS NULL AND categorie_code IS NULL");
   }
 }

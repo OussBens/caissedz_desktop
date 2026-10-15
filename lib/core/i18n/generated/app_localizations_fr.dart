@@ -5031,4 +5031,673 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get catalogueErreurNomPris => 'Ce nom est déjà utilisé.';
+
+  @override
+  String get prdDescription => 'Catalogue, catégories, remises et packs';
+
+  @override
+  String get prdOngletSousCategories => 'Sous-catégories';
+
+  @override
+  String get prdAchat => 'Achat';
+
+  @override
+  String get prdVente => 'Vente';
+
+  @override
+  String get prdMarge => 'Marge';
+
+  @override
+  String get prdMarque => 'Marque';
+
+  @override
+  String get prdMarqueIndice => 'Ex. Elio';
+
+  @override
+  String get prdDescriptionChamp => 'Description';
+
+  @override
+  String get prdTaille => 'Taille';
+
+  @override
+  String get prdCouleur => 'Couleur';
+
+  @override
+  String get prdRemise => 'Remise';
+
+  @override
+  String get prdService => 'Service';
+
+  @override
+  String prdEmballageN(int n) {
+    return 'Emballage $n';
+  }
+
+  @override
+  String prdPrixEmballageN(int n) {
+    return 'Prix emballage $n';
+  }
+
+  @override
+  String prdEmballagePieces(int n) {
+    return '$n pcs';
+  }
+
+  @override
+  String get prdNumeroSerie => 'N° série';
+
+  @override
+  String get prdMultiCodes => 'Multi code-barres';
+
+  @override
+  String get prdPhotos => 'Photos';
+
+  @override
+  String get prdTva => 'TVA';
+
+  @override
+  String get prdDateExpiration => 'Date d\'expiration';
+
+  @override
+  String get prdEntiteProduits => 'produits';
+
+  @override
+  String get prdEntiteProduit => 'produit';
+
+  @override
+  String get prdEntiteCategories => 'catégories';
+
+  @override
+  String get prdEntiteCategorie => 'catégorie';
+
+  @override
+  String get prdEntiteSousCategories => 'sous-catégories';
+
+  @override
+  String get prdEntiteSousCategorie => 'sous-catégorie';
+
+  @override
+  String get prdEntiteRemises => 'remises';
+
+  @override
+  String get prdEntiteRemise => 'remise';
+
+  @override
+  String get prdEntitePacks => 'packs';
+
+  @override
+  String get prdEntitePack => 'pack';
+
+  @override
+  String get prdKpiActifs => 'Produits actifs';
+
+  @override
+  String get prdKpiValeurStock => 'Valeur du stock';
+
+  @override
+  String get prdKpiSousSeuil => 'Sous le seuil';
+
+  @override
+  String get prdKpiRupture => 'En rupture';
+
+  @override
+  String get prdToutes => 'Toutes';
+
+  @override
+  String get prdDisponible => 'Disponible';
+
+  @override
+  String get prdRechercheProduits => 'Nom, code ou code-barres…';
+
+  @override
+  String get prdRechercheCategorie => 'Rechercher une catégorie…';
+
+  @override
+  String get prdRechercheSousCategorie => 'Rechercher une sous-catégorie…';
+
+  @override
+  String get prdRechercheRemise => 'Rechercher une remise…';
+
+  @override
+  String get prdRecherchePack => 'Rechercher un pack…';
+
+  @override
+  String get prdEtiquette => 'Étiquette';
+
+  @override
+  String get prdEtiquettes => 'Étiquettes';
+
+  @override
+  String get prdAffecter => 'Affecter';
+
+  @override
+  String get prdImporter => 'Importer';
+
+  @override
+  String prdAchatMontant(String montant) {
+    return 'Achat $montant';
+  }
+
+  @override
+  String prdStockN(String quantite) {
+    return 'Stock $quantite';
+  }
+
+  @override
+  String prdMargeN(int n) {
+    return 'Marge $n %';
+  }
+
+  @override
+  String get prdStatut => 'Statut';
+
+  @override
+  String get prdTypeTaux => 'Type de taux';
+
+  @override
+  String get prdSeuilMontant => 'Seuil du panier';
+
+  @override
+  String get prdPack => 'Pack';
+
+  @override
+  String get prdComposants => 'Composants';
+
+  @override
+  String get prdComposant => 'Composant';
+
+  @override
+  String get prdValeurSeparee => 'Valeur séparée';
+
+  @override
+  String get prdPrixPack => 'Prix du pack';
+
+  @override
+  String get prdEconomie => 'Économie';
+
+  @override
+  String get prdDisponibles => 'Disponibles';
+
+  @override
+  String get prdFormDescription =>
+      'Rapide : une page pour l\'essentiel. Détaillé : 3 étapes (photos, identification et prix · stock et emballages · variantes et options). IA : fiche retrouvée par le code-barres.';
+
+  @override
+  String get prdModeRapide => 'Rapide';
+
+  @override
+  String get prdModeDetaille => 'Détaillé · 3 étapes';
+
+  @override
+  String get prdModeIa => 'IA';
+
+  @override
+  String get prdEtape1 => 'Photos, identification et prix';
+
+  @override
+  String get prdEtape1Desc => 'Photos, nom, codes, marge';
+
+  @override
+  String get prdEtape2 => 'Stock et emballages';
+
+  @override
+  String get prdEtape2Desc => 'Magasin, seuil, boîte, carton';
+
+  @override
+  String get prdEtape3 => 'Variantes et options';
+
+  @override
+  String get prdEtape3Desc => 'Tailles, couleurs, séries';
+
+  @override
+  String prdEtapeObligatoire(int n) {
+    return 'Étape $n / 3 · * obligatoire';
+  }
+
+  @override
+  String get prdObligatoire => '* obligatoire';
+
+  @override
+  String get prdEnregistrerNouveau => 'Enregistrer et nouveau';
+
+  @override
+  String get prdSuivant => 'Suivant';
+
+  @override
+  String get prdPrincipale => 'Principale';
+
+  @override
+  String get prdPhotosFormat => 'JPG ou PNG · 4 max';
+
+  @override
+  String get prdPhotosFin => 'la première est la photo principale';
+
+  @override
+  String get prdPhotosAide =>
+      'La 1re photo s\'affiche en caisse (carte produit et dialog Quantité et colis). JPG ou PNG, 4 max.';
+
+  @override
+  String get prdIdentification => 'Identification';
+
+  @override
+  String get prdCodeAuto => 'Attribué à l\'enregistrement';
+
+  @override
+  String get prdDesignationIndice => 'Ex. Huile Elio 1 L';
+
+  @override
+  String get prdEanInvalide => 'Clé de contrôle EAN-13 invalide';
+
+  @override
+  String get prdScannerOuSaisir => 'Scanner ou saisir';
+
+  @override
+  String get prdGenererEan => 'Générer un EAN-13';
+
+  @override
+  String get prdFournisseur => 'Fournisseur';
+
+  @override
+  String get prdPrix => 'Prix';
+
+  @override
+  String get prdSousAchat => 'Inférieur au prix d\'achat';
+
+  @override
+  String prdMargeUnitaire(String montant) {
+    return 'Marge unitaire : $montant';
+  }
+
+  @override
+  String get prdStockActuel => 'Stock actuel';
+
+  @override
+  String get prdStockInitial => 'Stock initial';
+
+  @override
+  String get prdStockAide => 'Modifiable via Entrées / Sorties';
+
+  @override
+  String get prdSeuilAlerte => 'Seuil d\'alerte';
+
+  @override
+  String get prdEmballages => 'Emballages';
+
+  @override
+  String get prdEmballagesAide =>
+      'Colis proposés en caisse (dialog Quantité et colis) : nombre de pièces par colis et prix du colis.';
+
+  @override
+  String get prdBoite => 'Boîte';
+
+  @override
+  String get prdCarton => 'Carton';
+
+  @override
+  String get prdPcs => 'pcs';
+
+  @override
+  String get prdVariantes => 'Variantes';
+
+  @override
+  String get prdTypeTaille => 'Type de taille';
+
+  @override
+  String get prdTailles => 'Tailles';
+
+  @override
+  String get prdTaillesAide => 'Cliquez les tailles disponibles';
+
+  @override
+  String prdTaillesN(int n) {
+    return '$n taille(s) sélectionnée(s)';
+  }
+
+  @override
+  String get prdCouleurs => 'Couleurs';
+
+  @override
+  String get prdCouleursAide => '16 couleurs · plusieurs choix possibles';
+
+  @override
+  String get prdOptions => 'Options';
+
+  @override
+  String get prdCodesMultiples => 'Codes multiples';
+
+  @override
+  String get prdCodesMultiplesAide => 'Autres codes-barres reconnus en caisse pour ce produit';
+
+  @override
+  String get prdAjouterCode => 'Ajouter un code';
+
+  @override
+  String get prdSuiviSerie => 'Suivi par n° de série';
+
+  @override
+  String get prdSuiviSerieAide => 'Saisie obligatoire à la vente';
+
+  @override
+  String get prdServiceSansStock => 'Service (sans stock)';
+
+  @override
+  String get prdServiceAide => 'Réparation, livraison, main d\'œuvre';
+
+  @override
+  String get prdExpirationAide => 'Alerte avant péremption';
+
+  @override
+  String get prdNoteInterne => 'Note interne';
+
+  @override
+  String get prdToastEnregistre => 'Produit enregistré';
+
+  @override
+  String get prdToastModifie => 'Produit modifié';
+
+  @override
+  String prdToastAjoute(String code) {
+    return '$code · ajouté au catalogue';
+  }
+
+  @override
+  String get prdModifierCategorie => 'Modifier la catégorie';
+
+  @override
+  String get prdModifierSousCategorie => 'Modifier la sous-catégorie';
+
+  @override
+  String get prdCategorieParente => 'Catégorie parente';
+
+  @override
+  String get prdCategorieExiste => 'Cette catégorie existe déjà';
+
+  @override
+  String get prdSousCategorieExiste => 'Cette sous-catégorie existe déjà';
+
+  @override
+  String get prdCategorieIndice => 'Ex. Épicerie';
+
+  @override
+  String get prdSousCategorieIndice => 'Ex. Huiles';
+
+  @override
+  String get prdVisibleCaisse => 'Visible en caisse';
+
+  @override
+  String get prdToastCategorie => 'Catégorie enregistrée';
+
+  @override
+  String get prdToastSousCategorie => 'Sous-catégorie enregistrée';
+
+  @override
+  String get prdInformations => 'Informations';
+
+  @override
+  String prdNProduits(int n) {
+    return '$n produit(s)';
+  }
+
+  @override
+  String prdNComposants(int n) {
+    return '$n composant(s)';
+  }
+
+  @override
+  String get prdContientProduits => 'Contient des produits — réaffectez-les d\'abord';
+
+  @override
+  String get prdDejaInactif => 'Déjà inactif';
+
+  @override
+  String get prdToastAnnulation => 'Annulation effectuée';
+
+  @override
+  String get prdPorteeProduit => 'Par produit';
+
+  @override
+  String get prdPorteeMontant => 'Par montant (panier)';
+
+  @override
+  String get prdProgrammee => 'Programmée';
+
+  @override
+  String get prdModifierRemise => 'Modifier la remise';
+
+  @override
+  String get prdRemiseDescription => 'Une remise s\'applique automatiquement en caisse pendant sa période.';
+
+  @override
+  String get prdProduitsConcernes => 'Produits concernés';
+
+  @override
+  String get prdRemiseAccordee => 'Remise accordée';
+
+  @override
+  String get prdPrixNormal => 'Prix normal';
+
+  @override
+  String get prdPrixRemise => 'Prix remisé';
+
+  @override
+  String get prdRemiseNomIndice => 'Ex. Fin de série';
+
+  @override
+  String get prdPourcentageAide => 'Ex. −10 % sur le prix';
+
+  @override
+  String get prdMontantFixe => 'Montant fixe';
+
+  @override
+  String prdMontantFixeAide(String devise) {
+    return 'Ex. −50 $devise par article';
+  }
+
+  @override
+  String get prdCumulable => 'Cumulable';
+
+  @override
+  String get prdAvecRemiseTicket => 'Avec la remise ticket';
+
+  @override
+  String get prdSeuilAide => 'La remise s\'active quand le sous-total atteint ce montant';
+
+  @override
+  String get prdParMontantAide =>
+      'Remise « Par montant » : choisie sur le panier en caisse (Ctrl+R / F8), sans liste de produits.';
+
+  @override
+  String get prdToastRemise => 'Remise enregistrée';
+
+  @override
+  String get prdToastRemiseDesc => 'Appliquée en caisse pendant sa période';
+
+  @override
+  String get prdVentesRemisees => 'Ventes remisées';
+
+  @override
+  String get prdModifierPack => 'Modifier le pack';
+
+  @override
+  String get prdPackDescription => 'Un pack se vend comme un seul article et déstocke chaque composant.';
+
+  @override
+  String get prdEnregistrerPack => 'Enregistrer le pack';
+
+  @override
+  String get prdComposantsPack => 'Composants du pack';
+
+  @override
+  String get prdQteParPack => 'Qté / pack';
+
+  @override
+  String get prdPrixUnitaire => 'Prix unitaire';
+
+  @override
+  String get prdOptionnel => 'Optionnel';
+
+  @override
+  String get prdNomPack => 'Nom du pack';
+
+  @override
+  String get prdPackNomIndice => 'Ex. Pack petit-déjeuner';
+
+  @override
+  String get prdPacksPossibles => 'Packs possibles';
+
+  @override
+  String get prdPacksPossiblesAide => 'Selon le stock du composant le plus limitant';
+
+  @override
+  String get prdEconomieClient => 'Économie pour le client';
+
+  @override
+  String get prdPackPlusCher => 'Le pack coûte plus cher que ses composants';
+
+  @override
+  String prdValeurSepareeMontant(String montant) {
+    return 'valeur séparée $montant';
+  }
+
+  @override
+  String get prdToastPack => 'Pack enregistré';
+
+  @override
+  String get prdValeur => 'Valeur';
+
+  @override
+  String get prdStockTotal => 'Stock total';
+
+  @override
+  String get prdPrixMoyenAchat => 'Prix moyen d\'achat';
+
+  @override
+  String get prdVendus30 => 'Vendus (30 j)';
+
+  @override
+  String get prdStockParMagasin => 'Stock par magasin';
+
+  @override
+  String get prdDerniersMouvements => 'Derniers mouvements';
+
+  @override
+  String get prdReference => 'Réf.';
+
+  @override
+  String get prdCodeBarreTitre => 'Code-barres & étiquettes';
+
+  @override
+  String get prdEanAide => 'Standard commerce — préfixe 613 (Algérie)';
+
+  @override
+  String get prdCodeInterne => 'Code interne';
+
+  @override
+  String get prdCodeInterneAide => 'Pour les produits sans code fabricant';
+
+  @override
+  String get prdFormat => 'Format';
+
+  @override
+  String get prdFormatA4 => 'A4 · 3 × 8 (38 × 21 mm)';
+
+  @override
+  String get prdFormatRouleau40 => 'Rouleau 40 × 30 mm';
+
+  @override
+  String get prdFormatRouleau58 => 'Rouleau 58 mm';
+
+  @override
+  String prdImprimerEtiquettes(int n) {
+    return 'Imprimer $n étiquette(s)';
+  }
+
+  @override
+  String prdAffecterN(int n) {
+    return 'Affecter $n produit(s)';
+  }
+
+  @override
+  String get prdRemplacerAffectation => 'Remplacer l\'affectation existante';
+
+  @override
+  String get prdRemplacerPackAide => 'Sinon le produit est ajouté au pack avec la quantité 1';
+
+  @override
+  String get prdRemplacerCategorieAide => 'Sinon seuls les produits sans catégorie sont modifiés';
+
+  @override
+  String get prdRemplacerRemiseAide => 'Sinon seuls les produits sans remise sont modifiés';
+
+  @override
+  String get prdToastAffectation => 'Affectation enregistrée';
+
+  @override
+  String prdToastAffectationDesc(int n, String nom) {
+    return '$n produit(s) · $nom';
+  }
+
+  @override
+  String get prdSuppressionBloquee => 'Stock ou mouvements liés — désactivez-le plutôt';
+
+  @override
+  String prdToastSupprimes(int n) {
+    return '$n produit(s) supprimé(s)';
+  }
+
+  @override
+  String prdToastRefuses(int n) {
+    return '$n refusé(s) : mouvements liés';
+  }
+
+  @override
+  String get prdImportFichier => 'Fichier';
+
+  @override
+  String get prdImportFichierDesc => '.xlsx';
+
+  @override
+  String get prdImportColonnes => 'Colonnes';
+
+  @override
+  String get prdImportColonnesDesc => 'Correspondance';
+
+  @override
+  String get prdImportApercuDesc => 'Contrôle';
+
+  @override
+  String prdImportInfos(int n, int total) {
+    return '$n colonne(s) · $total Ko';
+  }
+
+  @override
+  String get prdChangerFichier => 'Changer de fichier';
+
+  @override
+  String get prdTelechargerModele => 'Télécharger le modèle';
+
+  @override
+  String prdColonneN(String lettre, String nom) {
+    return 'Colonne $lettre · $nom';
+  }
+
+  @override
+  String get prdIgnorer => '— Ignorer —';
+
+  @override
+  String get prdImportDesignationRequise => 'Associez une colonne à la désignation.';
+
+  @override
+  String get prdGenere => '— généré —';
+
+  @override
+  String get prdControle => 'Contrôle';
+
+  @override
+  String prdImporterN(int n) {
+    return 'Importer $n produit(s)';
+  }
+
+  @override
+  String get prdImportTermine => 'Import terminé';
 }

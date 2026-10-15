@@ -12,7 +12,7 @@ import '../../core/i18n/generated/app_localizations.dart';
 import '../../domain/models/produit.dart';
 import '../../domain/models/stock.dart';
 import '../../domain/permissions.dart';
-import '../produits/produit_dialogs.dart';
+import '../produits/produit_form_dialog.dart';
 import '../produits/produits_providers.dart';
 import 'stock_providers.dart';
 
