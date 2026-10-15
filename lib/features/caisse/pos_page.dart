@@ -18,6 +18,7 @@ import '../../domain/models/vente.dart';
 import '../../domain/permissions.dart';
 import '../../domain/referentiel/referentiel.dart';
 import '../commun/referentiel_ui.dart';
+import '../entrees/entree_dialogs.dart';
 import '../gestion_caisse/gestion_caisse_providers.dart';
 import '../produits/produit_form_dialog.dart';
 import '../produits/produits_providers.dart';
@@ -195,6 +196,12 @@ class _PosPageState extends ConsumerState<PosPage> {
       description: l10n.posVente(ref.read(posControllerProvider).panier.id),
       ton: DsToastTon.info,
     );
+  }
+
+  /// Entrée rapide (§9.6, touche `E`) : achat d'un produit payé intégralement, stock rafraîchi ensuite.
+  Future<void> _entreeRapide([Produit? p]) async {
+    await afficherEntreeRapide(context, ref, produit: p);
+    ref.invalidate(stocksCaisseProvider);
   }
 
   Future<void> _nouveauProduit() async {
@@ -384,6 +391,8 @@ class _PosPageState extends ConsumerState<PosPage> {
       unawaited(_executer(() async => ctrl.nouveauPanier()));
     } else if (ctrlPresse && k == LogicalKeyboardKey.tab) {
       ctrl.panierSuivant();
+    } else if (k == LogicalKeyboardKey.keyE && !ctrlPresse && !saisie) {
+      unawaited(_entreeRapide());
     } else if (k == LogicalKeyboardKey.delete && ligne != null && !saisie) {
       ctrl.retirerLigne(i!);
       setState(() => _ligneSelectionnee = null);
@@ -622,7 +631,7 @@ class _PosPageState extends ConsumerState<PosPage> {
               devise: devise,
               enLigne: liste,
               onAjouter: () => unawaited(_choisirProduit(p)),
-              onEntree: () => unawaited(afficherEntreeRapide(context, ref, p)),
+              onEntree: () => unawaited(_entreeRapide(p)),
             ),
       ];
     }

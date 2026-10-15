@@ -203,6 +203,8 @@ void main() {
       final ctx = _Ctx(base.db);
       await ctx.preparer();
       await ctx.journee(2);
+      // Achat et retour exigent une session ouverte (§8.4).
+      await ctx.sessions.ouvrir(caisseCode: 'CIS0000', fondInitial: 0);
       final achats = AchatService(base.db, utilisateurCode: 'USR0000', periodeCloturee: ClotureService.periodeCloturee);
       final a = await achats.enregistrer(
         fournisseurCode: 'FOR0000',
@@ -232,6 +234,7 @@ void main() {
         achats.annuler(a.code, motif: 'Erreur'),
         throwsA(isA<AchatException>().having((e) => e.erreur, 'e', ErreurAchat.periodeCloturee)),
       );
+      await ctx.sessions.fermer(montantCompte: 0);
       // Une vente postérieure à la clôture reste annulable.
       await ctx.journee(1);
       final v = await ctx.ventes.annuler(ctx.tickets.last.code, motif: 'test');

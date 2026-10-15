@@ -10,6 +10,7 @@ import '../domain/models/retour.dart';
 import '../domain/referentiel/referentiel.dart';
 
 import 'caisse_service.dart';
+import 'session_caisse_service.dart';
 
 enum ErreurVersement {
   montantInvalide,
@@ -20,6 +21,7 @@ enum ErreurVersement {
   tiersInvalide,
   motifObligatoire,
   dejaAnnule,
+  sessionRequise,
 }
 
 class VersementException implements Exception {
@@ -65,8 +67,11 @@ class VersementService {
     String? documentCible,
   }) async {
     _controler(tiersType: tiersType, tiersCode: tiersCode, montant: montant, mode: mode);
-    return db.transaction(
-      (txn) => imputerDansTransaction(
+    return db.transaction((txn) async {
+      if (!await SessionCaisseService.sessionOuverte(txn, utilisateurCode)) {
+        throw const VersementException(ErreurVersement.sessionRequise);
+      }
+      return imputerDansTransaction(
         txn,
         tiersType: tiersType,
         tiersCode: tiersCode,
@@ -79,8 +84,8 @@ class VersementService {
         sens: sens,
         type: type,
         documentCible: documentCible,
-      ),
-    );
+      );
+    });
   }
 
   void _controler({

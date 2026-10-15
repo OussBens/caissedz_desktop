@@ -11,6 +11,7 @@ import 'package:caissedz_desktop/data/tiers_repository.dart';
 import 'package:caissedz_desktop/domain/models/achat.dart';
 import 'package:caissedz_desktop/domain/models/produit.dart';
 import 'package:caissedz_desktop/domain/models/tiers.dart';
+import 'package:caissedz_desktop/features/caisse/pos_controller.dart';
 import 'package:caissedz_desktop/features/entrees/entrees_providers.dart';
 import 'package:caissedz_desktop/features/produits/produits_providers.dart';
 import 'package:caissedz_desktop/features/tiers/tiers_providers.dart';
@@ -22,10 +23,11 @@ import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 
 import '../../helpers/app_test_helper.dart';
+import '../../helpers/bases.dart';
 
 const _taille = Size(1600, 1000);
 
-Future<void> _donnees(WidgetTester tester, ProviderContainer c) async {
+Future<void> _donnees(WidgetTester tester, ProviderContainer c, {bool session = true}) async {
   final db = c.read(appDatabaseProvider).db;
   await CatalogueService(db, utilisateurCode: 'USR0000').creerProduit(
     const Produit(
@@ -40,6 +42,7 @@ Future<void> _donnees(WidgetTester tester, ProviderContainer c) async {
   );
   await TiersService(db, utilisateurCode: 'USR0000').creerFournisseur(const Fournisseur(code: '', nom: 'Grossiste'));
   await ParametreRepository(db).ecrire('serveur_url', 'https://api.test');
+  if (session) await ouvrirSessionDeTest(db);
   c.read(commerceVersionProvider.notifier).incrementer();
   c.read(catalogueVersionProvider.notifier).incrementer();
   c.invalidate(serveurCaisseDzProvider);
@@ -134,6 +137,19 @@ void main() {
       expect(a.total, 400);
       expect(a.statutPaiement, 'paye');
       expect((await StockRepository(c.read(appDatabaseProvider).db).niveau('PRD0001', 'MAG0000')).quantite, 5);
+      await tester.pump(const Duration(seconds: 5));
+    });
+
+    testWidgets('§8.4 : sans session, la caisse fermée propose l’ouverture avant l’entrée rapide', (tester) async {
+      final c = await pumpApp(tester, routeInitiale: '/entrees', taille: _taille);
+      await _donnees(tester, c, session: false);
+      await clic(tester, _cle('entree_rapide'));
+      expect(find.text('Aucune session ouverte'), findsOneWidget);
+      expect(find.byKey(const ValueKey('rapide_enregistrer')), findsNothing);
+      await clic(tester, _cle('caisse_fermee_ouvrir'));
+      await clic(tester, _cle('ouverture_valider'));
+      expect(await c.read(sessionCaisseServiceProvider).courante(), isNotNull);
+      expect(find.byKey(const ValueKey('rapide_enregistrer')), findsOneWidget);
       await tester.pump(const Duration(seconds: 5));
     });
 

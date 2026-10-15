@@ -25,6 +25,10 @@ class SessionCaisseService {
 
   VenteRepository get _repo => VenteRepository(db);
 
+  /// §8.4 : aucun achat, retour ni versement n'est enregistré sans session `Ouverte` de l'utilisateur.
+  static Future<bool> sessionOuverte(DatabaseExecutor db, String utilisateurCode) async =>
+      await VenteRepository(db).sessionOuverte(utilisateurCode: utilisateurCode) != null;
+
   Future<SessionCaisse?> courante() => _repo.sessionOuverte(utilisateurCode: utilisateurCode);
 
   Future<SessionCaisse> ouvrir({required String caisseCode, required double fondInitial}) async {

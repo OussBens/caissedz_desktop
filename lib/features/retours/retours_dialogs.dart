@@ -13,6 +13,7 @@ import '../../domain/models/retour.dart';
 import '../../domain/models/tiers.dart';
 import '../../domain/models/vente.dart';
 import '../../domain/permissions.dart';
+import '../caisse/caisse_dialogs.dart';
 import '../commun/statuts.dart';
 import '../entrees/entrees_providers.dart';
 import '../produits/produits_providers.dart';
@@ -56,10 +57,14 @@ Future<void> afficherFormulaireRetour(
   String type = TypesTiers.client,
   String? documentCode,
   Retour? retour,
-}) => afficherDialog<void>(
-  context,
-  builder: (_) => _FormulaireRetour(type: retour?.type ?? type, documentCode: documentCode, retour: retour),
-);
+}) async {
+  if (retour == null && !await exigerSessionCaisse(context, ref)) return;
+  if (!context.mounted) return;
+  return afficherDialog<void>(
+    context,
+    builder: (_) => _FormulaireRetour(type: retour?.type ?? type, documentCode: documentCode, retour: retour),
+  );
+}
 
 class _FormulaireRetour extends ConsumerStatefulWidget {
   const _FormulaireRetour({required this.type, this.documentCode, this.retour});

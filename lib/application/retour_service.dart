@@ -12,6 +12,7 @@ import '../domain/models/retour.dart';
 import '../domain/models/stock.dart';
 import '../domain/models/vente.dart';
 import 'achat_service.dart';
+import 'session_caisse_service.dart';
 import 'stock_service.dart';
 import 'vente_service.dart';
 import 'versement_service.dart';
@@ -28,6 +29,7 @@ enum ErreurRetour {
   retourInconnu,
   dejaAnnule,
   motifObligatoire,
+  sessionRequise,
 }
 
 class RetourException implements Exception {
@@ -67,6 +69,9 @@ class RetourService {
     String? caisseCode,
     DateTime? date,
   }) => db.transaction((txn) async {
+    if (!await SessionCaisseService.sessionOuverte(txn, utilisateurCode)) {
+      throw const RetourException(ErreurRetour.sessionRequise);
+    }
     final code = await TiersRepository(txn).prochainCode('retour', CodeGenerator.retour);
     final r = await _appliquer(
       txn,

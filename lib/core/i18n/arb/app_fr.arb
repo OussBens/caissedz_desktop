@@ -1989,27 +1989,6 @@
     }
   },
   "posFermerVenteOk": "Fermer sans enregistrer",
-  "posEntreeTitre": "Entrée rapide",
-  "posEntreeDesc": "{nom} · {magasin}",
-  "@posEntreeDesc": {
-    "placeholders": {
-      "magasin": {
-        "type": "String"
-      },
-      "nom": {
-        "type": "String"
-      }
-    }
-  },
-  "posEntreeFaite": "Entrée rapide enregistrée",
-  "posEntreeFaiteDesc": "{nom} · stock mis à jour",
-  "@posEntreeFaiteDesc": {
-    "placeholders": {
-      "nom": {
-        "type": "String"
-      }
-    }
-  },
   "produitErreurUtilise": "Ce produit est utilisé (ventes, achats ou stock) : il ne peut pas être supprimé.",
   "catalogueErreurNomPris": "Ce nom est déjà utilisé.",
   "prdDescription": "Catalogue, catégories, remises et packs",
@@ -3542,5 +3521,15 @@
         "type": "int"
       }
     }
-  }
+  },
+  "communSessionRequise": "Aucune session de caisse ouverte : ouvrez une session avant d'enregistrer.",
+  "communFermeeDesc": "Ouvrez une session pour « {caisse} » avant d'enregistrer cette opération.",
+  "@communFermeeDesc": {
+    "placeholders": {
+      "caisse": {
+        "type": "String"
+      }
+    }
+  },
+  "posRaccourciE": "Entrée rapide (achat d’un produit)"
 }

@@ -1366,10 +1366,6 @@
   "posFermerVenteTitre": "Close sale {n}?",
   "posFermerVenteMsg": "The cart ({lignes} line(s)) will be dropped. Check it out or save it first to keep it.",
   "posFermerVenteOk": "Close without saving",
-  "posEntreeTitre": "Quick stock entry",
-  "posEntreeDesc": "{nom} · {magasin}",
-  "posEntreeFaite": "Quick entry saved",
-  "posEntreeFaiteDesc": "{nom} · stock updated",
   "produitErreurUtilise": "This product is in use (sales, purchases or stock): it cannot be deleted.",
   "catalogueErreurNomPris": "This name is already in use.",
   "prdDescription": "Catalogue, categories, discounts and bundles",
@@ -2332,5 +2328,8 @@
   "pmGererLicence": "Manage the licence",
   "pmGererLicenceDesc": "Enter a new key or upgrade to the Advanced tier.",
   "posPrixSousAchatInterdit": "Price below cost: forbidden by the settings.",
-  "alertesExpireDepuis": "Expired {n} d ago"
+  "alertesExpireDepuis": "Expired {n} d ago",
+  "communSessionRequise": "No open cash session: open a session before saving.",
+  "communFermeeDesc": "Open a session for “{caisse}” before saving this operation.",
+  "posRaccourciE": "Quick entry (buy one product)"
 }

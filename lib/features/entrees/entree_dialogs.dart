@@ -13,6 +13,7 @@ import '../../domain/models/caisse.dart';
 import '../../domain/models/produit.dart';
 import '../../domain/models/stock.dart';
 import '../../domain/models/tiers.dart';
+import '../caisse/caisse_dialogs.dart';
 import '../caisse/pos_dialogs.dart';
 import '../commun/doc_form.dart';
 import '../commun/export_module.dart';
@@ -190,6 +191,7 @@ Future<void> modifierEntree(BuildContext context, WidgetRef ref, Achat a) =>
 /// `SmartScanDialog` (1040 px, 2 étapes) : bon & fournisseur (en-tête, paiement) puis produits reçus (scan continu,
 /// « Liste »). Sert aussi à la modification (ouverte à l'étape 2) et à la réception d'une liste de besoins.
 Future<void> afficherFormulaireEntree(BuildContext context, WidgetRef ref, {Achat? achat, Besoin? besoin}) async {
+  if (achat == null && !await exigerSessionCaisse(context, ref)) return;
   final catalogue = {for (final p in await ref.read(produitsProvider.future)) p.code: p};
   final principal = await ref.read(magasinPrincipalProvider.future);
   await ref.read(fournisseursProvider.future);
@@ -611,6 +613,7 @@ String libelleMajPrix(AppLocalizations l10n, MajPrixAchat m) => switch (m) {
 
 /// `EntreeRapideDialog` (720 px) : un produit payé intégralement, réparti entre magasins (§9.6).
 Future<void> afficherEntreeRapide(BuildContext context, WidgetRef ref, {Achat? achat, Produit? produit}) async {
+  if (achat == null && !await exigerSessionCaisse(context, ref)) return;
   await ref.read(produitsProvider.future);
   await ref.read(fournisseursProvider.future);
   await ref.read(magasinsProvider.future);

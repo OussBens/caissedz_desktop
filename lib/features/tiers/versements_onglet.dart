@@ -10,6 +10,7 @@ import '../../core/i18n/generated/app_localizations.dart';
 import '../../domain/models/caisse.dart';
 import '../../domain/models/retour.dart';
 import '../../domain/referentiel/referentiel.dart';
+import '../caisse/caisse_dialogs.dart';
 import '../commun/export_module.dart';
 import '../commun/referentiel_ui.dart';
 import '../commun/statuts.dart';
@@ -356,16 +357,20 @@ Future<void> afficherVersementTiers(
   LigneTiers? beneficiaire,
   Versement? versement,
   bool retour = false,
-}) => afficherDialog<void>(
-  context,
-  builder: (_) => _VersementTiers(
-    tiersType: tiersType,
-    tiers: tiers,
-    beneficiaire: beneficiaire ?? tiers.where((t) => t.code == versement?.tiersCode).firstOrNull,
-    versement: versement,
-    retour: versement?.estRetour ?? retour,
-  ),
-);
+}) async {
+  if (versement == null && !await exigerSessionCaisse(context, ref)) return;
+  if (!context.mounted) return;
+  return afficherDialog<void>(
+    context,
+    builder: (_) => _VersementTiers(
+      tiersType: tiersType,
+      tiers: tiers,
+      beneficiaire: beneficiaire ?? tiers.where((t) => t.code == versement?.tiersCode).firstOrNull,
+      versement: versement,
+      retour: versement?.estRetour ?? retour,
+    ),
+  );
+}
 
 class _VersementTiers extends ConsumerStatefulWidget {
   const _VersementTiers({

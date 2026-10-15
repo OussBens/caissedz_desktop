@@ -96,6 +96,7 @@ String messageErreurVersement(AppLocalizations l10n, ErreurVersement e) => switc
   ErreurVersement.tiersInvalide => l10n.versementErreurTiers,
   ErreurVersement.motifObligatoire => l10n.dsMotifAnnulation,
   ErreurVersement.dejaAnnule => l10n.tiersBloqueDejaAnnule,
+  ErreurVersement.sessionRequise => l10n.communSessionRequise,
 };
 
 String messageErreurRetour(AppLocalizations l10n, ErreurRetour e) => switch (e) {
@@ -110,6 +111,7 @@ String messageErreurRetour(AppLocalizations l10n, ErreurRetour e) => switch (e) 
   ErreurRetour.retourInconnu => l10n.retourErreurInconnu,
   ErreurRetour.dejaAnnule => l10n.retourErreurDejaAnnule,
   ErreurRetour.motifObligatoire => l10n.retourErreurMotif,
+  ErreurRetour.sessionRequise => l10n.communSessionRequise,
 };
 
 String messageErreurTiers(AppLocalizations l10n, ErreurTiers e) => switch (e) {

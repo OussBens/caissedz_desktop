@@ -763,7 +763,7 @@ Future<bool?> afficherProduitIntrouvable(BuildContext context, String code) {
 }
 
 /// `true` si l'utilisateur choisit d'ouvrir la caisse.
-Future<bool> afficherCaisseFermee(BuildContext context, {required String caisse}) async {
+Future<bool> afficherCaisseFermee(BuildContext context, {required String caisse, String? description}) async {
   final l10n = AppLocalizations.of(context);
   final r = await afficherDialog<bool>(
     context,
@@ -771,7 +771,7 @@ Future<bool> afficherCaisseFermee(BuildContext context, {required String caisse}
       titre: l10n.posFermeeTitre,
       iconeData: LucideIcons.lock,
       ton: DsDialogTon.avertissement,
-      description: l10n.posFermeeDesc(caisse),
+      description: description ?? l10n.posFermeeDesc(caisse),
       largeur: 480,
       actions: [
         DsButton(
@@ -790,6 +790,23 @@ Future<bool> afficherCaisseFermee(BuildContext context, {required String caisse}
     ),
   );
   return r ?? false;
+}
+
+/// §8.4 : achat, retour et versement exigent une session ouverte. Sans session, propose de l'ouvrir
+/// (`CaisseFermeeDialog` puis ouverture) ; `true` si une session est ouverte au retour.
+Future<bool> exigerSessionCaisse(BuildContext context, WidgetRef ref) async {
+  if (await ref.read(sessionCaisseServiceProvider).courante() != null) return true;
+  final caisses = await ref.read(caissesListeProvider.future);
+  if (!context.mounted) return false;
+  final code = ref.read(posControllerProvider).caisseCode;
+  final nom = caisses.where((c) => c.code == code).firstOrNull?.nom ?? caisses.firstOrNull?.nom ?? '';
+  final ouvrir = await afficherCaisseFermee(
+    context,
+    caisse: nom,
+    description: AppLocalizations.of(context).communFermeeDesc(nom),
+  );
+  if (!ouvrir || !context.mounted) return false;
+  return afficherOuvertureCaisse(context, ref);
 }
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -1543,57 +1560,6 @@ Future<void> afficherParametresCaisse(BuildContext context, WidgetRef ref) async
     description:
         '${caisses.firstWhere((c) => c.code == caisse).nom} · ${magasins.firstWhere((m) => m.code == magasin).nom}',
   );
-}
-
-/// Entrée rapide en stock d'un produit depuis la grille de la caisse.
-Future<void> afficherEntreeRapide(BuildContext context, WidgetRef ref, Produit p) async {
-  final l10n = AppLocalizations.of(context);
-  final magasinCode = ref.read(posControllerProvider).magasinCode;
-  final magasins = await ref.read(magasinsProvider.future);
-  if (!context.mounted) return;
-  final nomMagasin = magasins.where((m) => m.code == magasinCode).firstOrNull?.nom ?? magasinCode;
-  final quantite = TextEditingController(text: '1');
-  final ok = await afficherDialog<bool>(
-    context,
-    builder: (ctx) => DsDialog(
-      titre: l10n.posEntreeTitre,
-      iconeData: LucideIcons.packagePlus,
-      description: l10n.posEntreeDesc(p.designation, nomMagasin),
-      largeur: 440,
-      actions: [
-        DsButton(
-          libelle: l10n.dsAnnuler,
-          variante: DsButtonVariante.secondaire,
-          onPressed: () => Navigator.of(ctx).pop(false),
-        ),
-        DsButton(libelle: l10n.posEnregistrer, icone: LucideIcons.check, onPressed: () => Navigator.of(ctx).pop(true)),
-      ],
-      contenu: DsFormRow(
-        libelle: l10n.posSelQuantite,
-        obligatoire: true,
-        child: DsTextField(
-          controller: quantite,
-          numerique: true,
-          autofocus: true,
-          suffixeTexte: p.unite,
-          onSubmitted: (_) => Navigator.of(ctx).pop(true),
-        ),
-      ),
-    ),
-  );
-  final q = lireNombre(quantite.text) ?? 0;
-  if (ok != true || q <= 0 || !context.mounted) return;
-  try {
-    await ref.read(stockServiceProvider).entrerStock(produitCode: p.code, magasinCode: magasinCode, quantite: q);
-    rafraichirStock(ref);
-    if (context.mounted) {
-      afficherToast(context, titre: l10n.posEntreeFaite, description: l10n.posEntreeFaiteDesc(p.designation));
-    }
-  } on Object catch (e) {
-    if (context.mounted) {
-      await afficherResultat(context, type: DsResultatType.erreur, titre: l10n.posEntreeTitre, message: '$e');
-    }
-  }
 }
 
 /// Niveaux de stock du magasin de la caisse (code produit → unités).

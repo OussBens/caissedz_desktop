@@ -1366,10 +1366,6 @@
   "posFermerVenteTitre": "إغلاق البيع {n}؟",
   "posFermerVenteMsg": "ستُترك السلة ({lignes} سطر). حصّلها أو احفظها أولًا للاحتفاظ بها.",
   "posFermerVenteOk": "إغلاق دون حفظ",
-  "posEntreeTitre": "إدخال سريع",
-  "posEntreeDesc": "{nom} · {magasin}",
-  "posEntreeFaite": "تم تسجيل الإدخال السريع",
-  "posEntreeFaiteDesc": "{nom} · تم تحديث المخزون",
   "produitErreurUtilise": "هذا المنتج مستخدم (مبيعات أو مشتريات أو مخزون): لا يمكن حذفه.",
   "catalogueErreurNomPris": "هذا الاسم مستخدم بالفعل.",
   "prdDescription": "الكتالوج والفئات والتخفيضات والحزم",
@@ -2332,5 +2328,8 @@
   "pmGererLicence": "إدارة الترخيص",
   "pmGererLicenceDesc": "إدخال مفتاح جديد أو الانتقال إلى المستوى المتقدم.",
   "posPrixSousAchatInterdit": "سعر أقل من سعر الشراء: ممنوع في الإعدادات.",
-  "alertesExpireDepuis": "منتهي منذ {n} ي"
+  "alertesExpireDepuis": "منتهي منذ {n} ي",
+  "communSessionRequise": "لا توجد جلسة صندوق مفتوحة: افتح جلسة قبل التسجيل.",
+  "communFermeeDesc": "افتح جلسة لـ « {caisse} » قبل تسجيل هذه العملية.",
+  "posRaccourciE": "إدخال سريع (شراء منتج واحد)"
 }

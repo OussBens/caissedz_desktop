@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:caissedz_desktop/application/achat_service.dart';
 import 'package:caissedz_desktop/application/catalogue_service.dart';
+import 'package:caissedz_desktop/application/retour_service.dart';
 import 'package:caissedz_desktop/application/smart_scan_service.dart';
 import 'package:caissedz_desktop/application/stock_service.dart';
 import 'package:caissedz_desktop/application/tiers_service.dart';
@@ -24,8 +25,40 @@ import '../helpers/bases.dart';
 
 void main() {
   group('AchatService', () {
+    test('§8.4 : achat, retour et versement refusés sans session de caisse ouverte', () async {
+      final base = await ouvrirBaseDeTest();
+      final f = await TiersService(
+        base.db,
+        utilisateurCode: 'USR0000',
+      ).creerFournisseur(const Fournisseur(code: '', nom: 'Grossiste'));
+      await expectLater(
+        AchatService(base.db, utilisateurCode: 'USR0000').enregistrer(
+          fournisseurCode: f.code,
+          magasinCode: 'MAG0000',
+          lignes: const [DemandeAchatLigne(produitCode: 'X', quantite: 1, prixAchat: 1)],
+        ),
+        throwsA(isA<AchatException>().having((e) => e.erreur, 'e', ErreurAchat.sessionRequise)),
+      );
+      await expectLater(
+        RetourService(
+          base.db,
+          utilisateurCode: 'USR0000',
+        ).creer(type: TypesTiers.fournisseur, documentCode: 'SS0001', produitCode: 'X', quantite: 1),
+        throwsA(isA<RetourException>().having((e) => e.erreur, 'e', ErreurRetour.sessionRequise)),
+      );
+      await expectLater(
+        VersementService(
+          base.db,
+          utilisateurCode: 'USR0000',
+        ).imputer(tiersType: TypesTiers.fournisseur, tiersCode: f.code, montant: 100, mode: 'Espèces'),
+        throwsA(isA<VersementException>().having((e) => e.erreur, 'e', ErreurVersement.sessionRequise)),
+      );
+      expect(await base.db.query('achat'), isEmpty);
+    });
+
     test('enregistrer : stock, prix d’achat, dette fournisseur, paiement partiel, puis versement imputé', () async {
       final base = await ouvrirBaseDeTest();
+      await ouvrirSessionDeTest(base.db);
       final cat = CatalogueService(base.db, utilisateurCode: 'USR0000');
       final lait = await cat.creerProduit(
         const Produit(
@@ -91,6 +124,7 @@ void main() {
 
     test('annulation : stock ressorti (garde), statut Annulé, refus si période clôturée', () async {
       final base = await ouvrirBaseDeTest();
+      await ouvrirSessionDeTest(base.db);
       final cat = CatalogueService(base.db, utilisateurCode: 'USR0000');
       final lait = await cat.creerProduit(
         const Produit(
@@ -137,6 +171,7 @@ void main() {
 
     setUp(() async {
       base = await ouvrirBaseDeTest();
+      await ouvrirSessionDeTest(base.db);
       lait = await CatalogueService(base.db, utilisateurCode: 'USR0000').creerProduit(
         const Produit(
           code: '',

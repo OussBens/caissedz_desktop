@@ -3747,22 +3747,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get posFermerVenteOk => 'إغلاق دون حفظ';
 
   @override
-  String get posEntreeTitre => 'إدخال سريع';
-
-  @override
-  String posEntreeDesc(String magasin, String nom) {
-    return '$nom · $magasin';
-  }
-
-  @override
-  String get posEntreeFaite => 'تم تسجيل الإدخال السريع';
-
-  @override
-  String posEntreeFaiteDesc(String nom) {
-    return '$nom · تم تحديث المخزون';
-  }
-
-  @override
   String get produitErreurUtilise => 'هذا المنتج مستخدم (مبيعات أو مشتريات أو مخزون): لا يمكن حذفه.';
 
   @override
@@ -6803,4 +6787,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String alertesExpireDepuis(int n) {
     return 'منتهي منذ $n ي';
   }
+
+  @override
+  String get communSessionRequise => 'لا توجد جلسة صندوق مفتوحة: افتح جلسة قبل التسجيل.';
+
+  @override
+  String communFermeeDesc(String caisse) {
+    return 'افتح جلسة لـ « $caisse » قبل تسجيل هذه العملية.';
+  }
+
+  @override
+  String get posRaccourciE => 'إدخال سريع (شراء منتج واحد)';
 }

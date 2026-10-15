@@ -12,6 +12,7 @@ import '../domain/code_generator.dart';
 import '../domain/models/achat.dart';
 import '../domain/models/retour.dart';
 import '../domain/models/stock.dart';
+import 'session_caisse_service.dart';
 import 'stock_service.dart';
 import 'vente_service.dart';
 import 'versement_service.dart';
@@ -31,6 +32,7 @@ enum ErreurAchat {
   repartitionIncomplete,
   bonInconnu,
   bonTraite,
+  sessionRequise,
 }
 
 class AchatException implements Exception {
@@ -68,6 +70,9 @@ class AchatService {
   }) async {
     _verifier(lignes, verse);
     return db.transaction((txn) async {
+      if (!await SessionCaisseService.sessionOuverte(txn, utilisateurCode)) {
+        throw const AchatException(ErreurAchat.sessionRequise);
+      }
       if (await TiersRepository(txn).fournisseur(fournisseurCode) == null) {
         throw const AchatException(ErreurAchat.fournisseurInconnu);
       }

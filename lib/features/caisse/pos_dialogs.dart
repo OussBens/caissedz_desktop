@@ -118,6 +118,7 @@ Future<void> afficherAideRaccourcis(BuildContext context) {
     ('Ctrl+Tab', l10n.posRaccourciCtrlTab),
     ('Suppr', l10n.posRaccourciSuppr),
     ('+ / −', l10n.posRaccourciPlusMoins),
+    ('E', l10n.posRaccourciE),
   ];
   return afficherDialog<void>(
     context,

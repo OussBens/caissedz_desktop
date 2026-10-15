@@ -3760,22 +3760,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get posFermerVenteOk => 'Fermer sans enregistrer';
 
   @override
-  String get posEntreeTitre => 'Entrée rapide';
-
-  @override
-  String posEntreeDesc(String magasin, String nom) {
-    return '$nom · $magasin';
-  }
-
-  @override
-  String get posEntreeFaite => 'Entrée rapide enregistrée';
-
-  @override
-  String posEntreeFaiteDesc(String nom) {
-    return '$nom · stock mis à jour';
-  }
-
-  @override
   String get produitErreurUtilise => 'Ce produit est utilisé (ventes, achats ou stock) : il ne peut pas être supprimé.';
 
   @override
@@ -6826,4 +6810,15 @@ class AppLocalizationsFr extends AppLocalizations {
   String alertesExpireDepuis(int n) {
     return 'Expiré depuis $n j';
   }
+
+  @override
+  String get communSessionRequise => 'Aucune session de caisse ouverte : ouvrez une session avant d\'enregistrer.';
+
+  @override
+  String communFermeeDesc(String caisse) {
+    return 'Ouvrez une session pour « $caisse » avant d\'enregistrer cette opération.';
+  }
+
+  @override
+  String get posRaccourciE => 'Entrée rapide (achat d’un produit)';
 }

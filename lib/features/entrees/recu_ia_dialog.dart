@@ -15,6 +15,7 @@ import '../../domain/models/caisse.dart';
 import '../../domain/models/produit.dart';
 import '../../domain/models/stock.dart';
 import '../../domain/models/tiers.dart';
+import '../caisse/caisse_dialogs.dart';
 import '../commun/doc_form.dart';
 import '../commun/statuts.dart';
 import '../gestion_caisse/gestion_caisse_providers.dart';
@@ -58,6 +59,8 @@ double similarite(String a, String b) {
 /// `RecuIADialog` (1040 px, 3 étapes) : photo du bon → lignes détectées et rapprochées → fournisseur & paiement.
 /// Un bon reçu (file Mode IA) s'ouvre directement à l'étape 2 avec ses lignes détectées.
 Future<void> afficherRecuIA(BuildContext context, WidgetRef ref, {BonReception? bon}) async {
+  if (!await exigerSessionCaisse(context, ref)) return;
+  if (!context.mounted) return;
   await ref.read(produitsProvider.future);
   await ref.read(fournisseursProvider.future);
   await ref.read(caissesListeProvider.future);

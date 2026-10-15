@@ -7161,30 +7161,6 @@ abstract class AppLocalizations {
   /// **'Fermer sans enregistrer'**
   String get posFermerVenteOk;
 
-  /// No description provided for @posEntreeTitre.
-  ///
-  /// In fr, this message translates to:
-  /// **'Entrée rapide'**
-  String get posEntreeTitre;
-
-  /// No description provided for @posEntreeDesc.
-  ///
-  /// In fr, this message translates to:
-  /// **'{nom} · {magasin}'**
-  String posEntreeDesc(String magasin, String nom);
-
-  /// No description provided for @posEntreeFaite.
-  ///
-  /// In fr, this message translates to:
-  /// **'Entrée rapide enregistrée'**
-  String get posEntreeFaite;
-
-  /// No description provided for @posEntreeFaiteDesc.
-  ///
-  /// In fr, this message translates to:
-  /// **'{nom} · stock mis à jour'**
-  String posEntreeFaiteDesc(String nom);
-
   /// No description provided for @produitErreurUtilise.
   ///
   /// In fr, this message translates to:
@@ -12962,6 +12938,24 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Expiré depuis {n} j'**
   String alertesExpireDepuis(int n);
+
+  /// No description provided for @communSessionRequise.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune session de caisse ouverte : ouvrez une session avant d\'enregistrer.'**
+  String get communSessionRequise;
+
+  /// No description provided for @communFermeeDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouvrez une session pour « {caisse} » avant d\'enregistrer cette opération.'**
+  String communFermeeDesc(String caisse);
+
+  /// No description provided for @posRaccourciE.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrée rapide (achat d’un produit)'**
+  String get posRaccourciE;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

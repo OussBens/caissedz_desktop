@@ -3751,22 +3751,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get posFermerVenteOk => 'Close without saving';
 
   @override
-  String get posEntreeTitre => 'Quick stock entry';
-
-  @override
-  String posEntreeDesc(String magasin, String nom) {
-    return '$nom · $magasin';
-  }
-
-  @override
-  String get posEntreeFaite => 'Quick entry saved';
-
-  @override
-  String posEntreeFaiteDesc(String nom) {
-    return '$nom · stock updated';
-  }
-
-  @override
   String get produitErreurUtilise => 'This product is in use (sales, purchases or stock): it cannot be deleted.';
 
   @override
@@ -6813,4 +6797,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String alertesExpireDepuis(int n) {
     return 'Expired $n d ago';
   }
+
+  @override
+  String get communSessionRequise => 'No open cash session: open a session before saving.';
+
+  @override
+  String communFermeeDesc(String caisse) {
+    return 'Open a session for “$caisse” before saving this operation.';
+  }
+
+  @override
+  String get posRaccourciE => 'Quick entry (buy one product)';
 }
