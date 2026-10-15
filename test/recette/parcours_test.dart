@@ -29,8 +29,8 @@ void main() {
           expect(find.byKey(accesRefuse), findsNothing, reason: m.id);
           expect(find.byType(AppShell), findsOneWidget, reason: m.id);
           expect(Directionality.of(tester.element(find.byType(AppShell))), rtl ? TextDirection.rtl : TextDirection.ltr);
-          // Caisse plein écran ; Utilisateurs (ancienne page Rôles) réécrit en DsPage en phase D.
-          if (!{'caisse', 'utilisateurs'}.contains(m.id)) expect(find.byType(DsPage), findsOneWidget, reason: m.id);
+          // Caisse plein écran (sans en-tête de page).
+          if (m.id != 'caisse') expect(find.byType(DsPage), findsOneWidget, reason: m.id);
         }
       });
     }
