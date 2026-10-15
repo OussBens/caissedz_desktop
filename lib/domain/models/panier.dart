@@ -76,6 +76,8 @@ class Panier {
     this.remiseGlobalePct = 0,
     this.paiements = const [],
     this.commentaire,
+    this.remiseCode,
+    this.modePaiement = 'Espèces',
   });
 
   final int id;
@@ -84,6 +86,12 @@ class Panier {
   final double remiseGlobalePct;
   final List<Paiement> paiements;
   final String? commentaire;
+
+  /// Remise globale choisie dans le référentiel des remises (code), `null` = aucune.
+  final String? remiseCode;
+
+  /// Mode de paiement choisi pour l'encaissement (valeur stockée FR).
+  final String modePaiement;
 
   bool get estVide => lignes.isEmpty;
   double get totalBrut => CalculsPrix.arrondir(lignes.fold(0.0, (s, l) => s + l.brut));
@@ -110,6 +118,9 @@ class Panier {
     double? remiseGlobalePct,
     List<Paiement>? paiements,
     String? commentaire,
+    String? remiseCode,
+    bool effacerRemise = false,
+    String? modePaiement,
   }) => Panier(
     id: id ?? this.id,
     lignes: lignes ?? this.lignes,
@@ -117,6 +128,8 @@ class Panier {
     remiseGlobalePct: remiseGlobalePct ?? this.remiseGlobalePct,
     paiements: paiements ?? this.paiements,
     commentaire: commentaire ?? this.commentaire,
+    remiseCode: effacerRemise ? null : (remiseCode ?? this.remiseCode),
+    modePaiement: modePaiement ?? this.modePaiement,
   );
 
   /// Ajoute une ligne (agrège sur la même clé).
@@ -143,7 +156,20 @@ class Panier {
 
   Panier retirer(int index) => copyWith(lignes: [...lignes]..removeAt(index));
 
-  Panier vider() => Panier(id: id, clientCode: clientCode);
+  /// Retire les lignes et les paiements ; client, remise et mode sont conservés.
+  Panier vider() => Panier(
+    id: id,
+    clientCode: clientCode,
+    remiseGlobalePct: remiseGlobalePct,
+    remiseCode: remiseCode,
+    modePaiement: modePaiement,
+  );
+
+  /// Panier neuf (après encaissement) : client comptoir, sans remise, espèces.
+  Panier reinitialiser() => Panier(id: id);
+
+  /// Nombre de pièces (unités de stock ou pièces vendues au nombre).
+  double get pieces => lignes.fold(0.0, (s, l) => s + (l.pack != null ? l.quantite : l.unitesStock + l.nombreStock));
 
   Panier ajouterPaiement(Paiement p) => copyWith(paiements: [...paiements, p]);
   Panier retirerPaiement(int index) => copyWith(paiements: [...paiements]..removeAt(index));

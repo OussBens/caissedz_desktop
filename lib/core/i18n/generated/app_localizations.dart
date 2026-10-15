@@ -2361,59 +2361,11 @@ abstract class AppLocalizations {
   /// **'Caisse'**
   String get posTitre;
 
-  /// No description provided for @posScan.
-  ///
-  /// In fr, this message translates to:
-  /// **'Scanner ou rechercher un produit (F1)'**
-  String get posScan;
-
-  /// No description provided for @posPanier.
-  ///
-  /// In fr, this message translates to:
-  /// **'Panier {n}'**
-  String posPanier(int n);
-
-  /// No description provided for @posNouveauPanier.
-  ///
-  /// In fr, this message translates to:
-  /// **'Nouveau panier (Ctrl+N)'**
-  String get posNouveauPanier;
-
   /// No description provided for @posMaxPaniers.
   ///
   /// In fr, this message translates to:
   /// **'5 ventes en parallèle au maximum.'**
   String get posMaxPaniers;
-
-  /// No description provided for @posPanierVide.
-  ///
-  /// In fr, this message translates to:
-  /// **'Panier vide : scannez un code-barres ou cliquez sur un produit.'**
-  String get posPanierVide;
-
-  /// No description provided for @posSousTotal.
-  ///
-  /// In fr, this message translates to:
-  /// **'Sous-total'**
-  String get posSousTotal;
-
-  /// No description provided for @posRemise.
-  ///
-  /// In fr, this message translates to:
-  /// **'Remise'**
-  String get posRemise;
-
-  /// No description provided for @posTotal.
-  ///
-  /// In fr, this message translates to:
-  /// **'Total'**
-  String get posTotal;
-
-  /// No description provided for @posVerse.
-  ///
-  /// In fr, this message translates to:
-  /// **'Versé'**
-  String get posVerse;
 
   /// No description provided for @posReste.
   ///
@@ -2421,23 +2373,11 @@ abstract class AppLocalizations {
   /// **'Reste'**
   String get posReste;
 
-  /// No description provided for @posMonnaie.
-  ///
-  /// In fr, this message translates to:
-  /// **'Monnaie à rendre'**
-  String get posMonnaie;
-
   /// No description provided for @posPointsGagnes.
   ///
   /// In fr, this message translates to:
   /// **'Points gagnés'**
   String get posPointsGagnes;
-
-  /// No description provided for @posClient.
-  ///
-  /// In fr, this message translates to:
-  /// **'Client (F2)'**
-  String get posClient;
 
   /// No description provided for @posClientPassage.
   ///
@@ -2451,42 +2391,6 @@ abstract class AppLocalizations {
   /// **'Choisir un client'**
   String get posChoisirClient;
 
-  /// No description provided for @posRemiseGlobale.
-  ///
-  /// In fr, this message translates to:
-  /// **'Remise globale (F3)'**
-  String get posRemiseGlobale;
-
-  /// No description provided for @posRemisePct.
-  ///
-  /// In fr, this message translates to:
-  /// **'Remise (%)'**
-  String get posRemisePct;
-
-  /// No description provided for @posPaiement.
-  ///
-  /// In fr, this message translates to:
-  /// **'Paiement'**
-  String get posPaiement;
-
-  /// No description provided for @posMontant.
-  ///
-  /// In fr, this message translates to:
-  /// **'Montant'**
-  String get posMontant;
-
-  /// No description provided for @posEncaisser.
-  ///
-  /// In fr, this message translates to:
-  /// **'Encaisser (F12)'**
-  String get posEncaisser;
-
-  /// No description provided for @posVider.
-  ///
-  /// In fr, this message translates to:
-  /// **'Vider (F10)'**
-  String get posVider;
-
   /// No description provided for @posCalculatrice.
   ///
   /// In fr, this message translates to:
@@ -2496,20 +2400,8 @@ abstract class AppLocalizations {
   /// No description provided for @posAide.
   ///
   /// In fr, this message translates to:
-  /// **'Aide (F11)'**
+  /// **'Raccourcis clavier (F1)'**
   String get posAide;
-
-  /// No description provided for @posSessionOuvrir.
-  ///
-  /// In fr, this message translates to:
-  /// **'Ouvrir la session'**
-  String get posSessionOuvrir;
-
-  /// No description provided for @posSessionFermer.
-  ///
-  /// In fr, this message translates to:
-  /// **'Fermer la session'**
-  String get posSessionFermer;
 
   /// No description provided for @posSessionAucune.
   ///
@@ -2517,47 +2409,11 @@ abstract class AppLocalizations {
   /// **'Aucune session de caisse ouverte : ouvrez une session pour encaisser.'**
   String get posSessionAucune;
 
-  /// No description provided for @posSessionOuverte.
-  ///
-  /// In fr, this message translates to:
-  /// **'Session {code} · {caisse}'**
-  String posSessionOuverte(String code, String caisse);
-
   /// No description provided for @posSessionCaisse.
   ///
   /// In fr, this message translates to:
   /// **'Caisse'**
   String get posSessionCaisse;
-
-  /// No description provided for @posSessionFond.
-  ///
-  /// In fr, this message translates to:
-  /// **'Fond de caisse initial'**
-  String get posSessionFond;
-
-  /// No description provided for @posSessionMontantCompte.
-  ///
-  /// In fr, this message translates to:
-  /// **'Montant compté'**
-  String get posSessionMontantCompte;
-
-  /// No description provided for @posSessionAttendu.
-  ///
-  /// In fr, this message translates to:
-  /// **'Espèces attendues'**
-  String get posSessionAttendu;
-
-  /// No description provided for @posSessionEcart.
-  ///
-  /// In fr, this message translates to:
-  /// **'Écart'**
-  String get posSessionEcart;
-
-  /// No description provided for @posSessionFermee.
-  ///
-  /// In fr, this message translates to:
-  /// **'Session {code} fermée. Écart : {ecart}.'**
-  String posSessionFermee(String code, String ecart);
 
   /// No description provided for @posErreurSessionDejaOuverte.
   ///
@@ -2667,12 +2523,6 @@ abstract class AppLocalizations {
   /// **'Ticket 80 mm'**
   String get posTicket80;
 
-  /// No description provided for @posApercuTicket.
-  ///
-  /// In fr, this message translates to:
-  /// **'Aperçu du ticket'**
-  String get posApercuTicket;
-
   /// No description provided for @posImpressionOk.
   ///
   /// In fr, this message translates to:
@@ -2685,12 +2535,6 @@ abstract class AppLocalizations {
   /// **'Impression impossible : {detail}'**
   String posImpressionErreur(String detail);
 
-  /// No description provided for @posCreditAutoriser.
-  ///
-  /// In fr, this message translates to:
-  /// **'Vendre à crédit (reste dû)'**
-  String get posCreditAutoriser;
-
   /// No description provided for @posRaccourcisTitre.
   ///
   /// In fr, this message translates to:
@@ -2700,49 +2544,49 @@ abstract class AppLocalizations {
   /// No description provided for @posRaccourciF1.
   ///
   /// In fr, this message translates to:
-  /// **'Rechercher / scanner'**
+  /// **'Aide des raccourcis'**
   String get posRaccourciF1;
 
   /// No description provided for @posRaccourciF2.
   ///
   /// In fr, this message translates to:
-  /// **'Choisir le client'**
+  /// **'Rechercher / scanner'**
   String get posRaccourciF2;
 
   /// No description provided for @posRaccourciF3.
   ///
   /// In fr, this message translates to:
-  /// **'Remise globale'**
+  /// **'Recherche avancée'**
   String get posRaccourciF3;
 
   /// No description provided for @posRaccourciF4.
   ///
   /// In fr, this message translates to:
-  /// **'Espèces : montant exact'**
+  /// **'Encaisser le ticket'**
   String get posRaccourciF4;
 
   /// No description provided for @posRaccourciF5.
   ///
   /// In fr, this message translates to:
-  /// **'Carte : montant exact'**
+  /// **'Encaisser BL / SC'**
   String get posRaccourciF5;
 
   /// No description provided for @posRaccourciF6.
   ///
   /// In fr, this message translates to:
-  /// **'Chèque : montant exact'**
+  /// **'Enregistrer le ticket (crédit)'**
   String get posRaccourciF6;
 
   /// No description provided for @posRaccourciF7.
   ///
   /// In fr, this message translates to:
-  /// **'Virement : montant exact'**
+  /// **'Choisir le client'**
   String get posRaccourciF7;
 
   /// No description provided for @posRaccourciF8.
   ///
   /// In fr, this message translates to:
-  /// **'Points de fidélité'**
+  /// **'Choisir une remise'**
   String get posRaccourciF8;
 
   /// No description provided for @posRaccourciF9.
@@ -2760,13 +2604,13 @@ abstract class AppLocalizations {
   /// No description provided for @posRaccourciF11.
   ///
   /// In fr, this message translates to:
-  /// **'Cette aide'**
+  /// **'Masquer / afficher les produits'**
   String get posRaccourciF11;
 
   /// No description provided for @posRaccourciF12.
   ///
   /// In fr, this message translates to:
-  /// **'Encaisser'**
+  /// **'Ventes du jour'**
   String get posRaccourciF12;
 
   /// No description provided for @posRaccourciCtrlN.
@@ -2793,41 +2637,11 @@ abstract class AppLocalizations {
   /// **'Quantité +1 / −1 sur la ligne sélectionnée'**
   String get posRaccourciPlusMoins;
 
-  /// No description provided for @posLigneQuantite.
-  ///
-  /// In fr, this message translates to:
-  /// **'Qté'**
-  String get posLigneQuantite;
-
-  /// No description provided for @posLignePrix.
-  ///
-  /// In fr, this message translates to:
-  /// **'P.U.'**
-  String get posLignePrix;
-
-  /// No description provided for @posLigneRemise.
-  ///
-  /// In fr, this message translates to:
-  /// **'Rem.'**
-  String get posLigneRemise;
-
-  /// No description provided for @posLigneTotal.
-  ///
-  /// In fr, this message translates to:
-  /// **'Total'**
-  String get posLigneTotal;
-
   /// No description provided for @posVendreNombre.
   ///
   /// In fr, this message translates to:
   /// **'Vendre à la pièce'**
   String get posVendreNombre;
-
-  /// No description provided for @posColis.
-  ///
-  /// In fr, this message translates to:
-  /// **'Colis'**
-  String get posColis;
 
   /// No description provided for @posPack.
   ///
@@ -8828,6 +8642,924 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Un retour fournisseur est lié à cette entrée : annulation impossible.'**
   String get achatErreurRetourLie;
+
+  /// No description provided for @posVentesDuJour.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ventes du jour'**
+  String get posVentesDuJour;
+
+  /// No description provided for @posRecetteProduit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Recette produit'**
+  String get posRecetteProduit;
+
+  /// No description provided for @posMasquerProduits.
+  ///
+  /// In fr, this message translates to:
+  /// **'Masquer les produits'**
+  String get posMasquerProduits;
+
+  /// No description provided for @posAfficherProduits.
+  ///
+  /// In fr, this message translates to:
+  /// **'Afficher les produits'**
+  String get posAfficherProduits;
+
+  /// No description provided for @posParametres.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paramètres de la caisse'**
+  String get posParametres;
+
+  /// No description provided for @posScanIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Scanner un code-barres ou rechercher…'**
+  String get posScanIndice;
+
+  /// No description provided for @posRecherche.
+  ///
+  /// In fr, this message translates to:
+  /// **'Recherche'**
+  String get posRecherche;
+
+  /// No description provided for @posProduits.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produits'**
+  String get posProduits;
+
+  /// No description provided for @posPacks.
+  ///
+  /// In fr, this message translates to:
+  /// **'Packs'**
+  String get posPacks;
+
+  /// No description provided for @posAffichageGrille.
+  ///
+  /// In fr, this message translates to:
+  /// **'Affichage grille'**
+  String get posAffichageGrille;
+
+  /// No description provided for @posAffichageListe.
+  ///
+  /// In fr, this message translates to:
+  /// **'Affichage liste'**
+  String get posAffichageListe;
+
+  /// No description provided for @posVente.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vente {n}'**
+  String posVente(int n);
+
+  /// No description provided for @posVenteVide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vide'**
+  String get posVenteVide;
+
+  /// No description provided for @posVenteMeta.
+  ///
+  /// In fr, this message translates to:
+  /// **'{pieces} pcs · {montant}'**
+  String posVenteMeta(String montant, String pieces);
+
+  /// No description provided for @posPanierTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Panier'**
+  String get posPanierTitre;
+
+  /// No description provided for @posNouveauProduit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau produit'**
+  String get posNouveauProduit;
+
+  /// No description provided for @posNouveauClient.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau client'**
+  String get posNouveauClient;
+
+  /// No description provided for @posViderPanier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vider le panier (F10)'**
+  String get posViderPanier;
+
+  /// No description provided for @posClientLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Client'**
+  String get posClientLabel;
+
+  /// No description provided for @posModePaiement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mode de paiement'**
+  String get posModePaiement;
+
+  /// No description provided for @posChoisirRemise.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir une remise'**
+  String get posChoisirRemise;
+
+  /// No description provided for @posAucuneRemise.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune remise'**
+  String get posAucuneRemise;
+
+  /// No description provided for @posPanierVideTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Panier vide'**
+  String get posPanierVideTitre;
+
+  /// No description provided for @posPanierVideDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Scannez un code-barres ou touchez un produit.'**
+  String get posPanierVideDesc;
+
+  /// No description provided for @posLigneAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Double-clic : modifier le prix · clic sur le colis : changer le colis'**
+  String get posLigneAide;
+
+  /// No description provided for @posEnregistrer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrer'**
+  String get posEnregistrer;
+
+  /// No description provided for @posBlSc.
+  ///
+  /// In fr, this message translates to:
+  /// **'BL / SC'**
+  String get posBlSc;
+
+  /// No description provided for @posEncaisserBouton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Encaisser'**
+  String get posEncaisserBouton;
+
+  /// No description provided for @posEncTicketTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Encaisser le ticket'**
+  String get posEncTicketTitre;
+
+  /// No description provided for @posEncBlscTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Encaisser BL / SC'**
+  String get posEncBlscTitre;
+
+  /// No description provided for @posEncSaveTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrer le ticket'**
+  String get posEncSaveTitre;
+
+  /// No description provided for @posEncTicketDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vérifiez le montant reçu puis validez : le ticket est imprimé.'**
+  String get posEncTicketDesc;
+
+  /// No description provided for @posEncBlscDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bon de livraison sans cachet, avec mentions légales.'**
+  String get posEncBlscDesc;
+
+  /// No description provided for @posEncSaveDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le ticket est enregistré : le reste est porté au crédit du client.'**
+  String get posEncSaveDesc;
+
+  /// No description provided for @posEncTicketOk.
+  ///
+  /// In fr, this message translates to:
+  /// **'Encaisser et imprimer'**
+  String get posEncTicketOk;
+
+  /// No description provided for @posEncBlscOk.
+  ///
+  /// In fr, this message translates to:
+  /// **'Encaisser le BL / SC'**
+  String get posEncBlscOk;
+
+  /// No description provided for @posInfoVente.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vente'**
+  String get posInfoVente;
+
+  /// No description provided for @posInfoDate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Date'**
+  String get posInfoDate;
+
+  /// No description provided for @posInfoProduits.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produits'**
+  String get posInfoProduits;
+
+  /// No description provided for @posInfoPieces.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pièces'**
+  String get posInfoPieces;
+
+  /// No description provided for @posInfoPaiement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paiement'**
+  String get posInfoPaiement;
+
+  /// No description provided for @posInfoCaissier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Caissier'**
+  String get posInfoCaissier;
+
+  /// No description provided for @posSortieImprimer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Imprimer'**
+  String get posSortieImprimer;
+
+  /// No description provided for @posSortieImprimerDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Imprimante A4 par défaut'**
+  String get posSortieImprimerDesc;
+
+  /// No description provided for @posSortiePdf.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrer en PDF'**
+  String get posSortiePdf;
+
+  /// No description provided for @posSortiePdfDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrer ou partager le document'**
+  String get posSortiePdfDesc;
+
+  /// No description provided for @posToastEncaisse.
+  ///
+  /// In fr, this message translates to:
+  /// **'{type} {code} encaissé'**
+  String posToastEncaisse(String code, String type);
+
+  /// No description provided for @posToastEnregistre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ticket {code} enregistré'**
+  String posToastEnregistre(String code);
+
+  /// No description provided for @posToastResteCredit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Reste au crédit : {montant}'**
+  String posToastResteCredit(String montant);
+
+  /// No description provided for @posToastRendu.
+  ///
+  /// In fr, this message translates to:
+  /// **'Total {montant} · rendu {rendu}'**
+  String posToastRendu(String montant, String rendu);
+
+  /// No description provided for @posReimprimer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réimprimer'**
+  String get posReimprimer;
+
+  /// No description provided for @posTicket.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ticket'**
+  String get posTicket;
+
+  /// No description provided for @posSelTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quantité et colis'**
+  String get posSelTitre;
+
+  /// No description provided for @posSelTitreModif.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier la quantité et le colis'**
+  String get posSelTitreModif;
+
+  /// No description provided for @posSelScanne.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produit scanné · {code}'**
+  String posSelScanne(String code);
+
+  /// No description provided for @posSelAuto.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajout automatique de {detail} dans {secondes} s · touchez pour modifier'**
+  String posSelAuto(String detail, String secondes);
+
+  /// No description provided for @posSelAutoAnnule.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajout automatique annulé — validez avec Entrée'**
+  String get posSelAutoAnnule;
+
+  /// No description provided for @posSelParPiece.
+  ///
+  /// In fr, this message translates to:
+  /// **'{prix} / pièce'**
+  String posSelParPiece(String prix);
+
+  /// No description provided for @posSelStock.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock : {quantite} pièces'**
+  String posSelStock(String quantite);
+
+  /// No description provided for @posSelColis.
+  ///
+  /// In fr, this message translates to:
+  /// **'Colis'**
+  String get posSelColis;
+
+  /// No description provided for @posSelUnite.
+  ///
+  /// In fr, this message translates to:
+  /// **'À l\'unité'**
+  String get posSelUnite;
+
+  /// No description provided for @posSelParColis.
+  ///
+  /// In fr, this message translates to:
+  /// **'{nom} ({quantite} pièces)'**
+  String posSelParColis(String nom, String quantite);
+
+  /// No description provided for @posSelQuantite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quantité'**
+  String get posSelQuantite;
+
+  /// No description provided for @posSelPieces.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pièces'**
+  String get posSelPieces;
+
+  /// No description provided for @posSelStockInsuffisant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock insuffisant ({quantite} pièces)'**
+  String posSelStockInsuffisant(String quantite);
+
+  /// No description provided for @posSelAjouter.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter · {montant}'**
+  String posSelAjouter(String montant);
+
+  /// No description provided for @posSelModifier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier · {montant}'**
+  String posSelModifier(String montant);
+
+  /// No description provided for @posPrixTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier le prix du produit'**
+  String get posPrixTitre;
+
+  /// No description provided for @posPrixDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réservé aux rôles autorisés — mot de passe requis.'**
+  String get posPrixDesc;
+
+  /// No description provided for @posPrixAchat.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix d\'achat'**
+  String get posPrixAchat;
+
+  /// No description provided for @posPrixVente.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix de vente'**
+  String get posPrixVente;
+
+  /// No description provided for @posPrixMotDePasse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mot de passe'**
+  String get posPrixMotDePasse;
+
+  /// No description provided for @posPrixMotDePasseIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre mot de passe'**
+  String get posPrixMotDePasseIndice;
+
+  /// No description provided for @posPrixPortee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Portée'**
+  String get posPrixPortee;
+
+  /// No description provided for @posPrixPorteeTicket.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce ticket uniquement'**
+  String get posPrixPorteeTicket;
+
+  /// No description provided for @posPrixPorteeTicketDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le prix catalogue ne change pas'**
+  String get posPrixPorteeTicketDesc;
+
+  /// No description provided for @posPrixPorteeProduit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tout le produit'**
+  String get posPrixPorteeProduit;
+
+  /// No description provided for @posPrixPorteeProduitDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Met à jour le prix de vente'**
+  String get posPrixPorteeProduitDesc;
+
+  /// No description provided for @posPrixInvalide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix invalide'**
+  String get posPrixInvalide;
+
+  /// No description provided for @posPrixMdpRequis.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mot de passe requis'**
+  String get posPrixMdpRequis;
+
+  /// No description provided for @posPrixMdpIncorrect.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mot de passe incorrect'**
+  String get posPrixMdpIncorrect;
+
+  /// No description provided for @posPrixSousAchat.
+  ///
+  /// In fr, this message translates to:
+  /// **'En dessous du prix d\'achat'**
+  String get posPrixSousAchat;
+
+  /// No description provided for @posPrixMarge.
+  ///
+  /// In fr, this message translates to:
+  /// **'Marge : {montant}'**
+  String posPrixMarge(String montant);
+
+  /// No description provided for @posPrixSousAchatTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vendre sous le prix d\'achat ?'**
+  String get posPrixSousAchatTitre;
+
+  /// No description provided for @posPrixSousAchatMsg.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix de vente {vente} inférieur au prix d\'achat {achat}.'**
+  String posPrixSousAchatMsg(String achat, String vente);
+
+  /// No description provided for @posPrixSousAchatOk.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vendre quand même'**
+  String get posPrixSousAchatOk;
+
+  /// No description provided for @posPrixModifie.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix modifié'**
+  String get posPrixModifie;
+
+  /// No description provided for @posPrixModifieTicket.
+  ///
+  /// In fr, this message translates to:
+  /// **'{nom} · ce ticket uniquement'**
+  String posPrixModifieTicket(String nom);
+
+  /// No description provided for @posPrixModifieProduit.
+  ///
+  /// In fr, this message translates to:
+  /// **'{nom} · prix catalogue mis à jour'**
+  String posPrixModifieProduit(String nom);
+
+  /// No description provided for @posRechTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher un produit'**
+  String get posRechTitre;
+
+  /// No description provided for @posRechDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Filtrez puis cochez les produits à ajouter au panier.'**
+  String get posRechDesc;
+
+  /// No description provided for @posRechAjouter.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter au panier'**
+  String get posRechAjouter;
+
+  /// No description provided for @posRechIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom, code ou code-barres…'**
+  String get posRechIndice;
+
+  /// No description provided for @posRechAjoutes.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n} produit(s) ajouté(s)'**
+  String posRechAjoutes(int n);
+
+  /// No description provided for @posIntrouvableTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produit introuvable'**
+  String get posIntrouvableTitre;
+
+  /// No description provided for @posIntrouvableDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun produit actif ne correspond à ce code-barres.'**
+  String get posIntrouvableDesc;
+
+  /// No description provided for @posIntrouvableCreer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créer le produit'**
+  String get posIntrouvableCreer;
+
+  /// No description provided for @posFermeeTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune session ouverte'**
+  String get posFermeeTitre;
+
+  /// No description provided for @posFermeeDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouvrez une session pour « {caisse} » avant de vendre.'**
+  String posFermeeDesc(String caisse);
+
+  /// No description provided for @posOuvrirCaisse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouvrir la caisse'**
+  String get posOuvrirCaisse;
+
+  /// No description provided for @posOuvertureTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouvrir {caisse}'**
+  String posOuvertureTitre(String caisse);
+
+  /// No description provided for @posOuvertureDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Comptez le fond de caisse avant de commencer.'**
+  String get posOuvertureDesc;
+
+  /// No description provided for @posOuvertureSolde.
+  ///
+  /// In fr, this message translates to:
+  /// **'Solde d\'ouverture'**
+  String get posOuvertureSolde;
+
+  /// No description provided for @posOuverturePar.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouverte par'**
+  String get posOuverturePar;
+
+  /// No description provided for @posOuvertureOk.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouvrir la session'**
+  String get posOuvertureOk;
+
+  /// No description provided for @posCaisseOuverte.
+  ///
+  /// In fr, this message translates to:
+  /// **'Caisse ouverte'**
+  String get posCaisseOuverte;
+
+  /// No description provided for @posCaisseOuverteDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fond de caisse : {montant}'**
+  String posCaisseOuverteDesc(String montant);
+
+  /// No description provided for @posClotureTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Clôturer {caisse}'**
+  String posClotureTitre(String caisse);
+
+  /// No description provided for @posClotureDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Session {code} · ouverte à {heure}'**
+  String posClotureDesc(String code, String heure);
+
+  /// No description provided for @posClotureFond.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fond de départ'**
+  String get posClotureFond;
+
+  /// No description provided for @posClotureVentesEspeces.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ventes en espèces (monnaie déduite)'**
+  String get posClotureVentesEspeces;
+
+  /// No description provided for @posClotureTheorique.
+  ///
+  /// In fr, this message translates to:
+  /// **'Solde théorique'**
+  String get posClotureTheorique;
+
+  /// No description provided for @posClotureReel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Solde réel compté'**
+  String get posClotureReel;
+
+  /// No description provided for @posClotureEcart.
+  ///
+  /// In fr, this message translates to:
+  /// **'Écart de caisse · {etat}'**
+  String posClotureEcart(String etat);
+
+  /// No description provided for @posClotureJuste.
+  ///
+  /// In fr, this message translates to:
+  /// **'Caisse juste'**
+  String get posClotureJuste;
+
+  /// No description provided for @posClotureExcedent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Excédent'**
+  String get posClotureExcedent;
+
+  /// No description provided for @posClotureManquant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Manquant'**
+  String get posClotureManquant;
+
+  /// No description provided for @posClotureOk.
+  ///
+  /// In fr, this message translates to:
+  /// **'Clôturer la session'**
+  String get posClotureOk;
+
+  /// No description provided for @posClotureFaite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Session clôturée'**
+  String get posClotureFaite;
+
+  /// No description provided for @posClotureEcartToast.
+  ///
+  /// In fr, this message translates to:
+  /// **'Écart : {montant}'**
+  String posClotureEcartToast(String montant);
+
+  /// No description provided for @posMvtTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mouvement manuel'**
+  String get posMvtTitre;
+
+  /// No description provided for @posMvtDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrée ou sortie hors vente : dépôt de fond, prélèvement, frais divers.'**
+  String get posMvtDesc;
+
+  /// No description provided for @posMvtType.
+  ///
+  /// In fr, this message translates to:
+  /// **'Type'**
+  String get posMvtType;
+
+  /// No description provided for @posMvtEntree.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrée manuelle'**
+  String get posMvtEntree;
+
+  /// No description provided for @posMvtSortie.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sortie manuelle'**
+  String get posMvtSortie;
+
+  /// No description provided for @posMvtMotif.
+  ///
+  /// In fr, this message translates to:
+  /// **'Motif'**
+  String get posMvtMotif;
+
+  /// No description provided for @posMvtFait.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mouvement enregistré'**
+  String get posMvtFait;
+
+  /// No description provided for @posMvtFaitDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'{sens} de {montant}'**
+  String posMvtFaitDesc(String montant, String sens);
+
+  /// No description provided for @posVdjTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Recette caisse — {caisse}'**
+  String posVdjTitre(String caisse);
+
+  /// No description provided for @posVdjDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ventes du {date}'**
+  String posVdjDesc(String date);
+
+  /// No description provided for @posVdjIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'N° panier ou client…'**
+  String get posVdjIndice;
+
+  /// No description provided for @posVdjNombre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nombre de ventes'**
+  String get posVdjNombre;
+
+  /// No description provided for @posVdjTotal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Total ventes'**
+  String get posVdjTotal;
+
+  /// No description provided for @posVdjEncaisse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Encaissé'**
+  String get posVdjEncaisse;
+
+  /// No description provided for @posVdjReste.
+  ///
+  /// In fr, this message translates to:
+  /// **'Reste (crédit)'**
+  String get posVdjReste;
+
+  /// No description provided for @posVdjAucune.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune vente trouvée'**
+  String get posVdjAucune;
+
+  /// No description provided for @posVdjHeure.
+  ///
+  /// In fr, this message translates to:
+  /// **'Heure'**
+  String get posVdjHeure;
+
+  /// No description provided for @posRecTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Recette par produit — {caisse}'**
+  String posRecTitre(String caisse);
+
+  /// No description provided for @posRecDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lignes vendues le {date}'**
+  String posRecDesc(String date);
+
+  /// No description provided for @posRecIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produit, code ou panier…'**
+  String get posRecIndice;
+
+  /// No description provided for @posRecLignes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lignes vendues'**
+  String get posRecLignes;
+
+  /// No description provided for @posRecQuantite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quantité'**
+  String get posRecQuantite;
+
+  /// No description provided for @posRecAucune.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune ligne vendue'**
+  String get posRecAucune;
+
+  /// No description provided for @posParamDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'S\'applique à ce poste jusqu\'à la déconnexion.'**
+  String get posParamDesc;
+
+  /// No description provided for @posParamMagasin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Magasin'**
+  String get posParamMagasin;
+
+  /// No description provided for @posParamFait.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paramètres enregistrés'**
+  String get posParamFait;
+
+  /// No description provided for @posFermerVenteTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fermer la vente {n} ?'**
+  String posFermerVenteTitre(int n);
+
+  /// No description provided for @posFermerVenteMsg.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le panier ({lignes} ligne(s)) sera abandonné. Encaissez-le ou enregistrez-le d\'abord pour le garder.'**
+  String posFermerVenteMsg(String lignes);
+
+  /// No description provided for @posFermerVenteOk.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fermer sans enregistrer'**
+  String get posFermerVenteOk;
+
+  /// No description provided for @posEntreeTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrée rapide'**
+  String get posEntreeTitre;
+
+  /// No description provided for @posEntreeDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'{nom} · {magasin}'**
+  String posEntreeDesc(String magasin, String nom);
+
+  /// No description provided for @posEntreeFaite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrée rapide enregistrée'**
+  String get posEntreeFaite;
+
+  /// No description provided for @posEntreeFaiteDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'{nom} · stock mis à jour'**
+  String posEntreeFaiteDesc(String nom);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

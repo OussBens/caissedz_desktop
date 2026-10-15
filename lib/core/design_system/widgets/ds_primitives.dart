@@ -1259,6 +1259,9 @@ void afficherToast(
   String? description,
   DsToastTon ton = DsToastTon.succes,
   Duration duree = const Duration(seconds: 4),
+  String? libelleAction,
+  IconData? iconeAction,
+  VoidCallback? onAction,
 }) {
   final overlay = Overlay.maybeOf(context, rootOverlay: true);
   if (overlay == null) return;
@@ -1275,7 +1278,24 @@ void afficherToast(
           opacity: v,
           child: Transform.translate(offset: Offset(0, (1 - v) * 8), child: enfant),
         ),
-        child: DsToast(titre: titre, description: description, ton: ton, onFermer: () => entree.remove()),
+        child: DsToast(
+          titre: titre,
+          description: description,
+          ton: ton,
+          onFermer: () => entree.remove(),
+          action: libelleAction == null
+              ? null
+              : DsButton(
+                  libelle: libelleAction,
+                  icone: iconeAction,
+                  taille: DsButtonTaille.sm,
+                  variante: DsButtonVariante.secondaire,
+                  onPressed: () {
+                    if (entree.mounted) entree.remove();
+                    onAction?.call();
+                  },
+                ),
+        ),
       ),
     ),
   );

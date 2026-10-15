@@ -2,9 +2,11 @@ import 'package:caissedz_desktop/app/demarrage_providers.dart';
 import 'package:caissedz_desktop/app/providers.dart';
 import 'package:caissedz_desktop/application/catalogue_service.dart';
 import 'package:caissedz_desktop/application/stock_service.dart';
+import 'package:caissedz_desktop/application/vente_service.dart';
 import 'package:caissedz_desktop/core/design_system/design_system.dart';
 import 'package:caissedz_desktop/domain/models/produit.dart';
 import 'package:caissedz_desktop/features/caisse/pos_controller.dart';
+import 'package:caissedz_desktop/features/produits/produits_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -130,12 +132,62 @@ void main() {
     expect(c.read(posControllerProvider).session, isNull);
   });
 
+  test('remise du référentiel : pourcentage, montant recalculé sur le sous-total, aucune', () async {
+    final ctrl = c.read(posControllerProvider.notifier);
+    await ctrl.ajouter(lait, quantite: 2);
+    ctrl.appliquerRemise(const Remise(code: 'REM0001', designation: '10 %', type: 'Pourcentage', valeur: 10));
+    expect(c.read(posControllerProvider).panier.totalNet, 180);
+    ctrl.appliquerRemise(const Remise(code: 'REM0002', designation: '50 DA', type: 'Montant', valeur: 50));
+    expect(c.read(posControllerProvider).panier.totalNet, 150);
+    await ctrl.ajouter(lait);
+    expect(c.read(posControllerProvider).panier.totalNet, 250);
+    expect(c.read(posControllerProvider).panier.remiseCode, 'REM0002');
+    ctrl.appliquerRemise(null);
+    expect(c.read(posControllerProvider).panier.totalNet, 300);
+  });
+
+  test('changement de colis : ligne remplacée, restaurée si le stock manque', () async {
+    final ctrl = c.read(posControllerProvider.notifier);
+    await ctrl.ajouter(lait, quantite: 2);
+    final colis = (await c.read(catalogueRepositoryProvider).colis()).first;
+    await ctrl.remplacerLigne(0, lait, colis: colis);
+    var p = c.read(posControllerProvider).panier;
+    expect(p.lignes.single.colis?.code, colis.code);
+    expect(p.totalNet, 550);
+    await expectLater(
+      ctrl.remplacerLigne(0, lait, colis: colis, quantite: 2),
+      throwsA(isA<PosException>().having((e) => e.erreur, 'e', ErreurPos.stockInsuffisant)),
+    );
+    p = c.read(posControllerProvider).panier;
+    expect(p.lignes.single.quantite, 1);
+  });
+
+  test('encaisser depuis le dialog : paiement unique dans le mode du panier, BL / SC, crédit client', () async {
+    final ctrl = c.read(posControllerProvider.notifier);
+    await ctrl.ouvrirSession(caisseCode: 'CIS0000', fondInitial: 0);
+    await ctrl.ajouter(lait, quantite: 2);
+    ctrl.choisirModePaiement('Carte');
+    final v = await ctrl.encaisser(montantPaye: 500, typePanier: 'BL_SC');
+    expect(v.verse, 200);
+    expect(v.monnaie, 0);
+    expect(v.typePanier, 'BL_SC');
+    final p = c.read(posControllerProvider).panier;
+    expect(p.estVide, isTrue);
+    expect(p.modePaiement, 'Espèces');
+    expect(p.clientCode, 'CLN0000');
+    await ctrl.ajouter(lait);
+    await expectLater(
+      ctrl.encaisser(montantPaye: 0, creditAutorise: true),
+      throwsA(isA<VenteException>().having((e) => e.erreur, 'e', ErreurVente.paiementInsuffisant)),
+    );
+  });
+
   test('calculatrice : évaluation', () {
-    expect(Calculator.evaluer('2+3*4'), 14);
-    expect(Calculator.evaluer('10/4'), 2.5);
-    expect(Calculator.evaluer('-5+2'), -3);
-    expect(Calculator.evaluer('7/0'), isNull);
-    expect(Calculator.evaluer('2+'), isNull);
-    expect(Calculator.evaluer('1 250,5 × 2'), 2501);
+    expect(DsCalculator.evaluer('2+3*4'), 14);
+    expect(DsCalculator.evaluer('10/4'), 2.5);
+    expect(DsCalculator.evaluer('-5+2'), -3);
+    expect(DsCalculator.evaluer('7/0'), isNull);
+    expect(DsCalculator.evaluer('2+'), isNull);
+    expect(DsCalculator.evaluer('1 250,5 × 2'), 2501);
   });
 }

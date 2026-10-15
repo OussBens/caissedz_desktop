@@ -124,6 +124,12 @@ class AuthService {
     await _utilisateurs.mettreAJour(code, {'mot_de_passe': hachage.hacher(nouveau)});
   }
 
+  /// Vérifie le mot de passe d'un utilisateur (ex. modification de prix en caisse).
+  Future<bool> verifierMotDePasse(String code, String motDePasse) async {
+    final empreinte = await _utilisateurs.empreinte(code);
+    return empreinte != null && MotDePasse.verifier(motDePasse, empreinte);
+  }
+
   Future<Utilisateur> _exiger(String code, String motDePasseActuel) async {
     final u = await _utilisateurs.parCode(code);
     final empreinte = await _utilisateurs.empreinte(code);

@@ -34,12 +34,16 @@ class PosEtat {
     this.courant = 0,
     this.session,
     this.magasinCode = 'MAG0000',
+    this.caisseCode,
     this.derniereVente,
   });
   final List<Panier> paniers;
   final int courant;
   final SessionCaisse? session;
   final String magasinCode;
+
+  /// Caisse de ce poste (Paramètres de la caisse), proposée à l'ouverture de session.
+  final String? caisseCode;
   final Vente? derniereVente;
 
   Panier get panier => paniers[courant];
@@ -50,12 +54,14 @@ class PosEtat {
     SessionCaisse? session,
     bool effacerSession = false,
     String? magasinCode,
+    String? caisseCode,
     Vente? derniereVente,
   }) => PosEtat(
     paniers: paniers ?? this.paniers,
     courant: courant ?? this.courant,
     session: effacerSession ? null : (session ?? this.session),
     magasinCode: magasinCode ?? this.magasinCode,
+    caisseCode: caisseCode ?? this.caisseCode,
     derniereVente: derniereVente ?? this.derniereVente,
   );
 
@@ -132,14 +138,14 @@ class PosController extends Notifier<PosEtat> {
 
   void fermerPanier(int index) {
     if (state.paniers.length == 1) {
-      state = state.remplacerPanier(state.panier.vider());
+      _poser(state.panier.vider());
       return;
     }
     final copie = [...state.paniers]..removeAt(index);
     state = state.copyWith(paniers: copie, courant: state.courant.clamp(0, copie.length - 1));
   }
 
-  void viderPanier() => state = state.remplacerPanier(state.panier.vider());
+  void viderPanier() => _poser(state.panier.vider());
 
   // ---------------- Lignes ----------------
   Future<void> _verifierDisponibilite(Produit produit, {double unites = 0, double nombre = 0}) async {
@@ -160,7 +166,7 @@ class PosController extends Notifier<PosEtat> {
         if (p == null) throw PosException(ErreurPos.produitInconnu, c.produitCode);
         await _verifierDisponibilite(p, unites: c.quantite * quantite);
       }
-      state = state.remplacerPanier(
+      _poser(
         state.panier.ajouter(
           PanierLigne(produit: produit, pack: pack, quantite: quantite, prixUnitaire: pack.prixVente),
         ),
@@ -170,7 +176,7 @@ class PosController extends Notifier<PosEtat> {
     if (nombre) {
       await _verifierDisponibilite(produit, nombre: quantite);
       final prixPiece = produit.nombreParUnite > 0 ? produit.prixVente / produit.nombreParUnite : produit.prixVente;
-      state = state.remplacerPanier(
+      _poser(
         state.panier.ajouter(
           PanierLigne(
             produit: produit,
@@ -187,7 +193,7 @@ class PosController extends Notifier<PosEtat> {
     final remisePct = colis == null && remise > 0 && produit.prixVente > 0
         ? double.parse((remise / produit.prixVente * 100).toStringAsFixed(2))
         : 0.0;
-    state = state.remplacerPanier(
+    _poser(
       state.panier.ajouter(
         PanierLigne(
           produit: produit,
@@ -200,34 +206,34 @@ class PosController extends Notifier<PosEtat> {
     );
   }
 
-  /// Scan : QR produit, code-barres produit, colis ou pack.
-  Future<bool> scanner(String code) async {
+  /// Résout un code scanné : QR produit, code-barres ou code produit, colis ou pack. `null` si inconnu.
+  Future<({Produit produit, Colis? colis, Pack? pack})?> resoudre(String code) async {
     final c = code.trim();
-    if (c.isEmpty) return false;
+    if (c.isEmpty) return null;
     final catalogue = CatalogueRepository(ref.read(appDatabaseProvider).db);
     final qr = CodesBarres.codeProduitDepuisQr(c);
     Produit? produit = qr != null ? await catalogue.produitParCode(qr) : await catalogue.produitParCodeBarres(c);
     produit ??= await catalogue.produitParCode(c.toUpperCase());
-    if (produit != null) {
-      if (!produit.actif) return false;
-      await ajouter(produit);
-      return true;
-    }
+    if (produit != null) return produit.actif ? (produit: produit, colis: null, pack: null) : null;
     final colis = await catalogue.colisParCodeBarres(c);
     if (colis != null) {
       final p = await catalogue.produitParCode(colis.produitCode);
-      if (p == null) return false;
-      await ajouter(p, colis: colis);
-      return true;
+      return p == null ? null : (produit: p, colis: colis, pack: null);
     }
     final pack = await catalogue.packParCodeBarres(c);
     if (pack != null && pack.lignes.isNotEmpty) {
       final p = await catalogue.produitParCode(pack.lignes.first.produitCode);
-      if (p == null) return false;
-      await ajouter(p, pack: pack);
-      return true;
+      return p == null ? null : (produit: p, colis: null, pack: pack);
     }
-    return false;
+    return null;
+  }
+
+  /// Scan direct : ajoute le produit, le colis ou le pack résolu. `false` si le code est inconnu.
+  Future<bool> scanner(String code) async {
+    final r = await resoudre(code);
+    if (r == null) return false;
+    await ajouter(r.produit, colis: r.colis, pack: r.pack);
+    return true;
   }
 
   Future<void> modifierQuantite(int index, double quantite) async {
@@ -246,23 +252,71 @@ class PosController extends Notifier<PosEtat> {
         await _verifierDisponibilite(l.produit, unites: delta * (l.colis?.quantite ?? 1));
       }
     }
-    state = state.remplacerPanier(state.panier.modifierQuantite(index, quantite));
+    _poser(state.panier.modifierQuantite(index, quantite));
   }
 
-  void retirerLigne(int index) => state = state.remplacerPanier(state.panier.retirer(index));
+  void retirerLigne(int index) => _poser(state.panier.retirer(index));
 
-  void remiseLigne(int index, double pct) => state = state.remplacerPanier(
-    state.panier.modifierLigne(index, state.panier.lignes[index].copyWith(remisePct: pct.clamp(0, 100))),
-  );
+  void remiseLigne(int index, double pct) =>
+      _poser(state.panier.modifierLigne(index, state.panier.lignes[index].copyWith(remisePct: pct.clamp(0, 100))));
 
-  void prixLigne(int index, double prix) => state = state.remplacerPanier(
-    state.panier.modifierLigne(index, state.panier.lignes[index].copyWith(prixUnitaire: prix < 0 ? 0 : prix)),
-  );
+  void prixLigne(int index, double prix) =>
+      _poser(state.panier.modifierLigne(index, state.panier.lignes[index].copyWith(prixUnitaire: prix < 0 ? 0 : prix)));
 
   void remiseGlobale(double pct) =>
-      state = state.remplacerPanier(state.panier.copyWith(remiseGlobalePct: pct.clamp(0, 100)));
+      state = state.remplacerPanier(state.panier.copyWith(remiseGlobalePct: pct.clamp(0, 100), effacerRemise: true));
+
+  /// Remise globale choisie dans le référentiel (`null` = aucune). Une remise en montant est convertie
+  /// en pourcentage du sous-total (plafonnée au sous-total) et recalculée à chaque changement de lignes.
+  void appliquerRemise(Remise? remise) {
+    if (remise == null) {
+      _remises.remove(state.panier.id);
+      state = state.remplacerPanier(state.panier.copyWith(remiseGlobalePct: 0, effacerRemise: true));
+      return;
+    }
+    _remises[state.panier.id] = remise;
+    state = state.remplacerPanier(_recalculer(state.panier.copyWith(remiseCode: remise.code)));
+  }
+
+  final Map<int, Remise> _remises = {};
+
+  void _poser(Panier p) => state = state.remplacerPanier(_recalculer(p));
+
+  Panier _recalculer(Panier p) {
+    final r = _remises[p.id];
+    if (r == null || p.remiseCode != r.code) return p;
+    if (r.type == 'Pourcentage') return p.copyWith(remiseGlobalePct: r.valeur.clamp(0, 100).toDouble());
+    final sous = p.sousTotal;
+    final pct = sous <= 0 ? 0.0 : (r.valeur.clamp(0, sous) / sous * 100);
+    return p.copyWith(remiseGlobalePct: pct.toDouble());
+  }
 
   void choisirClient(String code) => state = state.remplacerPanier(state.panier.copyWith(clientCode: code));
+
+  void choisirModePaiement(String mode) => state = state.remplacerPanier(state.panier.copyWith(modePaiement: mode));
+
+  /// Paramètres du poste (caisse, magasin) jusqu'à la déconnexion.
+  void parametrer({String? caisseCode, String? magasinCode}) =>
+      state = state.copyWith(caisseCode: caisseCode, magasinCode: magasinCode);
+
+  /// Remplace une ligne (changement de colis ou de quantité depuis le dialog) ; la ligne est restaurée
+  /// si le stock ne suffit pas.
+  Future<void> remplacerLigne(
+    int index,
+    Produit produit, {
+    Colis? colis,
+    bool nombre = false,
+    double quantite = 1,
+  }) async {
+    final avant = state.panier;
+    state = state.remplacerPanier(avant.retirer(index));
+    try {
+      await ajouter(produit, colis: colis, nombre: nombre, quantite: quantite);
+    } on Object {
+      state = state.remplacerPanier(avant);
+      rethrow;
+    }
+  }
 
   // ---------------- Paiements ----------------
   void ajouterPaiement(String mode, double montant, {String? reference}) {
@@ -275,13 +329,31 @@ class PosController extends Notifier<PosEtat> {
   void retirerPaiement(int index) => state = state.remplacerPanier(state.panier.retirerPaiement(index));
 
   /// Encaisse le panier courant ; le panier est vidé et la vente mémorisée pour l'impression.
-  Future<Vente> encaisser({bool creditAutorise = false}) async {
+  ///
+  /// [montantPaye] (dialog Encaisser du DS) remplace les paiements saisis par un paiement unique dans le mode
+  /// du panier ; un trop-perçu en espèces devient la monnaie rendue. [typePanier] : `Ticket` ou `BL_SC`.
+  Future<Vente> encaisser({bool creditAutorise = false, double? montantPaye, String typePanier = 'Ticket'}) async {
     final session = state.session;
     if (session == null) throw const PosException(ErreurPos.sessionRequise);
+    var panier = state.panier;
+    if (montantPaye != null) {
+      final mode = panier.modePaiement;
+      final m = mode == 'Espèces' ? montantPaye : montantPaye.clamp(0, panier.totalNet).toDouble();
+      panier = panier.copyWith(
+        paiements: [if (m > 0) Paiement(mode: mode, montant: m)],
+      );
+    }
     final v = await ref
         .read(venteServiceProvider)
-        .encaisser(state.panier, session: session, magasinCode: state.magasinCode, creditAutorise: creditAutorise);
-    state = state.remplacerPanier(state.panier.vider()).copyWith(derniereVente: v);
+        .encaisser(
+          panier,
+          session: session,
+          magasinCode: state.magasinCode,
+          creditAutorise: creditAutorise,
+          typePanier: typePanier,
+        );
+    _remises.remove(panier.id);
+    state = state.remplacerPanier(panier.reinitialiser()).copyWith(derniereVente: v);
     ref.read(stockVersionProvider.notifier).incrementer();
     return v;
   }

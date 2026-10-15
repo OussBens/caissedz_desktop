@@ -1190,45 +1190,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get posTitre => 'Point of sale';
 
   @override
-  String get posScan => 'Scan or search a product (F1)';
-
-  @override
-  String posPanier(int n) {
-    return 'Cart $n';
-  }
-
-  @override
-  String get posNouveauPanier => 'New cart (Ctrl+N)';
-
-  @override
   String get posMaxPaniers => 'At most 5 parallel sales.';
-
-  @override
-  String get posPanierVide => 'Empty cart: scan a barcode or click a product.';
-
-  @override
-  String get posSousTotal => 'Subtotal';
-
-  @override
-  String get posRemise => 'Discount';
-
-  @override
-  String get posTotal => 'Total';
-
-  @override
-  String get posVerse => 'Paid';
 
   @override
   String get posReste => 'Due';
 
   @override
-  String get posMonnaie => 'Change';
-
-  @override
   String get posPointsGagnes => 'Points earned';
-
-  @override
-  String get posClient => 'Customer (F2)';
 
   @override
   String get posClientPassage => 'Walk-in customer';
@@ -1237,62 +1205,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get posChoisirClient => 'Choose a customer';
 
   @override
-  String get posRemiseGlobale => 'Global discount (F3)';
-
-  @override
-  String get posRemisePct => 'Discount (%)';
-
-  @override
-  String get posPaiement => 'Payment';
-
-  @override
-  String get posMontant => 'Amount';
-
-  @override
-  String get posEncaisser => 'Checkout (F12)';
-
-  @override
-  String get posVider => 'Clear (F10)';
-
-  @override
   String get posCalculatrice => 'Calculator (F9)';
 
   @override
-  String get posAide => 'Help (F11)';
-
-  @override
-  String get posSessionOuvrir => 'Open session';
-
-  @override
-  String get posSessionFermer => 'Close session';
+  String get posAide => 'Keyboard shortcuts (F1)';
 
   @override
   String get posSessionAucune => 'No open cash session: open one to sell.';
 
   @override
-  String posSessionOuverte(String code, String caisse) {
-    return 'Session $code · $caisse';
-  }
-
-  @override
   String get posSessionCaisse => 'Register';
-
-  @override
-  String get posSessionFond => 'Opening float';
-
-  @override
-  String get posSessionMontantCompte => 'Counted amount';
-
-  @override
-  String get posSessionAttendu => 'Expected cash';
-
-  @override
-  String get posSessionEcart => 'Difference';
-
-  @override
-  String posSessionFermee(String code, String ecart) {
-    return 'Session $code closed. Difference: $ecart.';
-  }
 
   @override
   String get posErreurSessionDejaOuverte => 'A session is already open (user or register).';
@@ -1357,9 +1279,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get posTicket80 => '80 mm receipt';
 
   @override
-  String get posApercuTicket => 'Receipt preview';
-
-  @override
   String get posImpressionOk => 'Receipt sent to the printer.';
 
   @override
@@ -1368,34 +1287,31 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get posCreditAutoriser => 'Sell on credit (amount due)';
-
-  @override
   String get posRaccourcisTitre => 'Keyboard shortcuts';
 
   @override
-  String get posRaccourciF1 => 'Search / scan';
+  String get posRaccourciF1 => 'Shortcut help';
 
   @override
-  String get posRaccourciF2 => 'Choose customer';
+  String get posRaccourciF2 => 'Search / scan';
 
   @override
-  String get posRaccourciF3 => 'Global discount';
+  String get posRaccourciF3 => 'Advanced search';
 
   @override
-  String get posRaccourciF4 => 'Cash: exact amount';
+  String get posRaccourciF4 => 'Check out the receipt';
 
   @override
-  String get posRaccourciF5 => 'Card: exact amount';
+  String get posRaccourciF5 => 'Check out DN / NS';
 
   @override
-  String get posRaccourciF6 => 'Cheque: exact amount';
+  String get posRaccourciF6 => 'Save the receipt (credit)';
 
   @override
-  String get posRaccourciF7 => 'Transfer: exact amount';
+  String get posRaccourciF7 => 'Choose the customer';
 
   @override
-  String get posRaccourciF8 => 'Loyalty points';
+  String get posRaccourciF8 => 'Choose a discount';
 
   @override
   String get posRaccourciF9 => 'Calculator';
@@ -1404,10 +1320,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get posRaccourciF10 => 'Clear cart';
 
   @override
-  String get posRaccourciF11 => 'This help';
+  String get posRaccourciF11 => 'Hide / show products';
 
   @override
-  String get posRaccourciF12 => 'Checkout';
+  String get posRaccourciF12 => 'Today\'s sales';
 
   @override
   String get posRaccourciCtrlN => 'New cart';
@@ -1422,22 +1338,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get posRaccourciPlusMoins => 'Quantity +1 / −1 on the selected line';
 
   @override
-  String get posLigneQuantite => 'Qty';
-
-  @override
-  String get posLignePrix => 'Unit';
-
-  @override
-  String get posLigneRemise => 'Disc.';
-
-  @override
-  String get posLigneTotal => 'Total';
-
-  @override
   String get posVendreNombre => 'Sell by piece';
-
-  @override
-  String get posColis => 'Case';
 
   @override
   String get posPack => 'Bundle';
@@ -4581,4 +4482,533 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get achatErreurRetourLie => 'A supplier return is linked to this receipt note: it cannot be cancelled.';
+
+  @override
+  String get posVentesDuJour => 'Today\'s sales';
+
+  @override
+  String get posRecetteProduit => 'Product takings';
+
+  @override
+  String get posMasquerProduits => 'Hide products';
+
+  @override
+  String get posAfficherProduits => 'Show products';
+
+  @override
+  String get posParametres => 'Till settings';
+
+  @override
+  String get posScanIndice => 'Scan a barcode or search…';
+
+  @override
+  String get posRecherche => 'Search';
+
+  @override
+  String get posProduits => 'Products';
+
+  @override
+  String get posPacks => 'Packs';
+
+  @override
+  String get posAffichageGrille => 'Grid view';
+
+  @override
+  String get posAffichageListe => 'List view';
+
+  @override
+  String posVente(int n) {
+    return 'Sale $n';
+  }
+
+  @override
+  String get posVenteVide => 'Empty';
+
+  @override
+  String posVenteMeta(String montant, String pieces) {
+    return '$pieces pcs · $montant';
+  }
+
+  @override
+  String get posPanierTitre => 'Cart';
+
+  @override
+  String get posNouveauProduit => 'New product';
+
+  @override
+  String get posNouveauClient => 'New customer';
+
+  @override
+  String get posViderPanier => 'Empty the cart (F10)';
+
+  @override
+  String get posClientLabel => 'Customer';
+
+  @override
+  String get posModePaiement => 'Payment method';
+
+  @override
+  String get posChoisirRemise => 'Choose a discount';
+
+  @override
+  String get posAucuneRemise => 'No discount';
+
+  @override
+  String get posPanierVideTitre => 'Empty cart';
+
+  @override
+  String get posPanierVideDesc => 'Scan a barcode or tap a product.';
+
+  @override
+  String get posLigneAide => 'Double-click: edit the price · click the package: change it';
+
+  @override
+  String get posEnregistrer => 'Save';
+
+  @override
+  String get posBlSc => 'DN / NS';
+
+  @override
+  String get posEncaisserBouton => 'Check out';
+
+  @override
+  String get posEncTicketTitre => 'Check out the receipt';
+
+  @override
+  String get posEncBlscTitre => 'Check out DN / NS';
+
+  @override
+  String get posEncSaveTitre => 'Save the receipt';
+
+  @override
+  String get posEncTicketDesc => 'Check the amount received, then confirm: the receipt is printed.';
+
+  @override
+  String get posEncBlscDesc => 'Delivery note without stamp, with legal notices.';
+
+  @override
+  String get posEncSaveDesc => 'The receipt is saved: the balance goes to the customer\'s credit.';
+
+  @override
+  String get posEncTicketOk => 'Check out and print';
+
+  @override
+  String get posEncBlscOk => 'Check out the DN / NS';
+
+  @override
+  String get posInfoVente => 'Sale';
+
+  @override
+  String get posInfoDate => 'Date';
+
+  @override
+  String get posInfoProduits => 'Products';
+
+  @override
+  String get posInfoPieces => 'Pieces';
+
+  @override
+  String get posInfoPaiement => 'Payment';
+
+  @override
+  String get posInfoCaissier => 'Cashier';
+
+  @override
+  String get posSortieImprimer => 'Print';
+
+  @override
+  String get posSortieImprimerDesc => 'Default A4 printer';
+
+  @override
+  String get posSortiePdf => 'Save as PDF';
+
+  @override
+  String get posSortiePdfDesc => 'Save or share the document';
+
+  @override
+  String posToastEncaisse(String code, String type) {
+    return '$type $code checked out';
+  }
+
+  @override
+  String posToastEnregistre(String code) {
+    return 'Receipt $code saved';
+  }
+
+  @override
+  String posToastResteCredit(String montant) {
+    return 'Balance on credit: $montant';
+  }
+
+  @override
+  String posToastRendu(String montant, String rendu) {
+    return 'Total $montant · change $rendu';
+  }
+
+  @override
+  String get posReimprimer => 'Reprint';
+
+  @override
+  String get posTicket => 'Receipt';
+
+  @override
+  String get posSelTitre => 'Quantity and package';
+
+  @override
+  String get posSelTitreModif => 'Edit quantity and package';
+
+  @override
+  String posSelScanne(String code) {
+    return 'Scanned product · $code';
+  }
+
+  @override
+  String posSelAuto(String detail, String secondes) {
+    return 'Adding $detail automatically in $secondes s · touch to edit';
+  }
+
+  @override
+  String get posSelAutoAnnule => 'Automatic add cancelled — confirm with Enter';
+
+  @override
+  String posSelParPiece(String prix) {
+    return '$prix / piece';
+  }
+
+  @override
+  String posSelStock(String quantite) {
+    return 'Stock: $quantite pieces';
+  }
+
+  @override
+  String get posSelColis => 'Package';
+
+  @override
+  String get posSelUnite => 'By the unit';
+
+  @override
+  String posSelParColis(String nom, String quantite) {
+    return '$nom ($quantite pieces)';
+  }
+
+  @override
+  String get posSelQuantite => 'Quantity';
+
+  @override
+  String get posSelPieces => 'Pieces';
+
+  @override
+  String posSelStockInsuffisant(String quantite) {
+    return 'Insufficient stock ($quantite pieces)';
+  }
+
+  @override
+  String posSelAjouter(String montant) {
+    return 'Add · $montant';
+  }
+
+  @override
+  String posSelModifier(String montant) {
+    return 'Edit · $montant';
+  }
+
+  @override
+  String get posPrixTitre => 'Edit the product price';
+
+  @override
+  String get posPrixDesc => 'Authorised roles only — password required.';
+
+  @override
+  String get posPrixAchat => 'Purchase price';
+
+  @override
+  String get posPrixVente => 'Sale price';
+
+  @override
+  String get posPrixMotDePasse => 'Password';
+
+  @override
+  String get posPrixMotDePasseIndice => 'Your password';
+
+  @override
+  String get posPrixPortee => 'Scope';
+
+  @override
+  String get posPrixPorteeTicket => 'This receipt only';
+
+  @override
+  String get posPrixPorteeTicketDesc => 'The catalogue price does not change';
+
+  @override
+  String get posPrixPorteeProduit => 'The whole product';
+
+  @override
+  String get posPrixPorteeProduitDesc => 'Updates the sale price';
+
+  @override
+  String get posPrixInvalide => 'Invalid price';
+
+  @override
+  String get posPrixMdpRequis => 'Password required';
+
+  @override
+  String get posPrixMdpIncorrect => 'Incorrect password';
+
+  @override
+  String get posPrixSousAchat => 'Below the purchase price';
+
+  @override
+  String posPrixMarge(String montant) {
+    return 'Margin: $montant';
+  }
+
+  @override
+  String get posPrixSousAchatTitre => 'Sell below the purchase price?';
+
+  @override
+  String posPrixSousAchatMsg(String achat, String vente) {
+    return 'Sale price $vente is below the purchase price $achat.';
+  }
+
+  @override
+  String get posPrixSousAchatOk => 'Sell anyway';
+
+  @override
+  String get posPrixModifie => 'Price changed';
+
+  @override
+  String posPrixModifieTicket(String nom) {
+    return '$nom · this receipt only';
+  }
+
+  @override
+  String posPrixModifieProduit(String nom) {
+    return '$nom · catalogue price updated';
+  }
+
+  @override
+  String get posRechTitre => 'Find a product';
+
+  @override
+  String get posRechDesc => 'Filter, then tick the products to add to the cart.';
+
+  @override
+  String get posRechAjouter => 'Add to cart';
+
+  @override
+  String get posRechIndice => 'Name, code or barcode…';
+
+  @override
+  String posRechAjoutes(int n) {
+    return '$n product(s) added';
+  }
+
+  @override
+  String get posIntrouvableTitre => 'Product not found';
+
+  @override
+  String get posIntrouvableDesc => 'No active product matches this barcode.';
+
+  @override
+  String get posIntrouvableCreer => 'Create the product';
+
+  @override
+  String get posFermeeTitre => 'No open session';
+
+  @override
+  String posFermeeDesc(String caisse) {
+    return 'Open a session for “$caisse” before selling.';
+  }
+
+  @override
+  String get posOuvrirCaisse => 'Open the till';
+
+  @override
+  String posOuvertureTitre(String caisse) {
+    return 'Open $caisse';
+  }
+
+  @override
+  String get posOuvertureDesc => 'Count the opening float before starting.';
+
+  @override
+  String get posOuvertureSolde => 'Opening balance';
+
+  @override
+  String get posOuverturePar => 'Opened by';
+
+  @override
+  String get posOuvertureOk => 'Open the session';
+
+  @override
+  String get posCaisseOuverte => 'Till opened';
+
+  @override
+  String posCaisseOuverteDesc(String montant) {
+    return 'Opening float: $montant';
+  }
+
+  @override
+  String posClotureTitre(String caisse) {
+    return 'Close $caisse';
+  }
+
+  @override
+  String posClotureDesc(String code, String heure) {
+    return 'Session $code · opened at $heure';
+  }
+
+  @override
+  String get posClotureFond => 'Opening float';
+
+  @override
+  String get posClotureVentesEspeces => 'Cash sales (change deducted)';
+
+  @override
+  String get posClotureTheorique => 'Expected balance';
+
+  @override
+  String get posClotureReel => 'Counted balance';
+
+  @override
+  String posClotureEcart(String etat) {
+    return 'Till difference · $etat';
+  }
+
+  @override
+  String get posClotureJuste => 'Till balanced';
+
+  @override
+  String get posClotureExcedent => 'Surplus';
+
+  @override
+  String get posClotureManquant => 'Shortfall';
+
+  @override
+  String get posClotureOk => 'Close the session';
+
+  @override
+  String get posClotureFaite => 'Session closed';
+
+  @override
+  String posClotureEcartToast(String montant) {
+    return 'Difference: $montant';
+  }
+
+  @override
+  String get posMvtTitre => 'Manual movement';
+
+  @override
+  String get posMvtDesc => 'Cash in or out outside sales: float deposit, withdrawal, expenses.';
+
+  @override
+  String get posMvtType => 'Type';
+
+  @override
+  String get posMvtEntree => 'Manual cash in';
+
+  @override
+  String get posMvtSortie => 'Manual cash out';
+
+  @override
+  String get posMvtMotif => 'Reason';
+
+  @override
+  String get posMvtFait => 'Movement saved';
+
+  @override
+  String posMvtFaitDesc(String montant, String sens) {
+    return '$sens of $montant';
+  }
+
+  @override
+  String posVdjTitre(String caisse) {
+    return 'Till takings — $caisse';
+  }
+
+  @override
+  String posVdjDesc(String date) {
+    return 'Sales of $date';
+  }
+
+  @override
+  String get posVdjIndice => 'Cart no. or customer…';
+
+  @override
+  String get posVdjNombre => 'Number of sales';
+
+  @override
+  String get posVdjTotal => 'Total sales';
+
+  @override
+  String get posVdjEncaisse => 'Collected';
+
+  @override
+  String get posVdjReste => 'Balance (credit)';
+
+  @override
+  String get posVdjAucune => 'No sales found';
+
+  @override
+  String get posVdjHeure => 'Time';
+
+  @override
+  String posRecTitre(String caisse) {
+    return 'Takings by product — $caisse';
+  }
+
+  @override
+  String posRecDesc(String date) {
+    return 'Lines sold on $date';
+  }
+
+  @override
+  String get posRecIndice => 'Product, code or cart…';
+
+  @override
+  String get posRecLignes => 'Lines sold';
+
+  @override
+  String get posRecQuantite => 'Quantity';
+
+  @override
+  String get posRecAucune => 'No lines sold';
+
+  @override
+  String get posParamDesc => 'Applies to this workstation until sign-out.';
+
+  @override
+  String get posParamMagasin => 'Store';
+
+  @override
+  String get posParamFait => 'Settings saved';
+
+  @override
+  String posFermerVenteTitre(int n) {
+    return 'Close sale $n?';
+  }
+
+  @override
+  String posFermerVenteMsg(String lignes) {
+    return 'The cart ($lignes line(s)) will be dropped. Check it out or save it first to keep it.';
+  }
+
+  @override
+  String get posFermerVenteOk => 'Close without saving';
+
+  @override
+  String get posEntreeTitre => 'Quick stock entry';
+
+  @override
+  String posEntreeDesc(String magasin, String nom) {
+    return '$nom · $magasin';
+  }
+
+  @override
+  String get posEntreeFaite => 'Quick entry saved';
+
+  @override
+  String posEntreeFaiteDesc(String nom) {
+    return '$nom · stock updated';
+  }
 }

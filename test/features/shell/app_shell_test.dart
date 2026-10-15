@@ -35,9 +35,10 @@ void main() {
     testWidgets('caissier : la barre latérale ne montre que ses modules', (tester) async {
       await pumpApp(tester, etat: EtatApp.connecteeCaissier);
       expect(find.text('Caisse'), findsWidgets);
-      expect(find.text('Produits'), findsNothing);
-      expect(find.text('Utilisateurs'), findsNothing);
-      expect(find.text('STOCK'), findsNothing);
+      final barre = find.byType(DsSidebar);
+      expect(find.descendant(of: barre, matching: find.text('Produits')), findsNothing);
+      expect(find.descendant(of: barre, matching: find.text('Utilisateurs')), findsNothing);
+      expect(find.descendant(of: barre, matching: find.text('STOCK')), findsNothing);
     });
 
     testWidgets('Ctrl+M ouvre le menu des modules, la recherche filtre', (tester) async {

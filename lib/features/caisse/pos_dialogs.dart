@@ -22,7 +22,6 @@ import '../../domain/models/boutique.dart';
 import '../../domain/models/tiers.dart';
 import '../../domain/models/vente.dart';
 import '../produits/produits_providers.dart';
-import 'pos_controller.dart';
 
 String messageErreurSession(AppLocalizations l10n, ErreurSession e) => switch (e) {
   ErreurSession.dejaOuverte => l10n.posErreurSessionDejaOuverte,
@@ -59,210 +58,47 @@ String libelleModePaiement(AppLocalizations l10n, String mode) => switch (mode) 
   _ => mode,
 };
 
-/// Ouverture de session : caisse + fond initial.
-Future<void> afficherOuvertureSession(BuildContext context, WidgetRef ref) async {
-  final l10n = AppLocalizations.of(context);
-  final caisses = await ref.read(caissesProvider.future);
-  if (!context.mounted || caisses.isEmpty) return;
-  var caisse = caisses.first['code'] as String;
-  final fond = TextEditingController(text: '0');
-  final ok = await showDialog<bool>(
-    context: context,
-    barrierColor: context.ds.colors.overlay,
-    builder: (ctx) => StatefulBuilder(
-      builder: (ctx, setState) => DsDialog(
-        titre: l10n.posSessionOuvrir,
-        largeur: 440,
-        icone: Icon(LucideIcons.doorOpen, color: ctx.ds.colors.primaire),
-        actions: [
-          DsButton(
-            libelle: l10n.communAnnuler,
-            variante: DsButtonVariante.secondaire,
-            onPressed: () => Navigator.of(ctx).pop(false),
-          ),
-          DsButton(
-            libelle: l10n.posSessionOuvrir,
-            icone: LucideIcons.check,
-            onPressed: () => Navigator.of(ctx).pop(true),
-          ),
-        ],
-        contenu: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            DsSelect<String>(
-              titre: l10n.posSessionCaisse,
-              valeur: caisse,
-              options: caisses.map((c) => c['code'] as String).toList(),
-              libelle: (c) => caisses.firstWhere((x) => x['code'] == c)['nom'] as String,
-              onChanged: (v) => setState(() => caisse = v ?? caisse),
-            ),
-            const SizedBox(height: DsSpacing.md),
-            DsTextField(
-              controller: fond,
-              libelle: l10n.posSessionFond,
-              typeClavier: TextInputType.number,
-              autofocus: true,
-              onSubmitted: (_) => Navigator.of(ctx).pop(true),
-            ),
-          ],
-        ),
-      ),
-    ),
-  );
-  if (ok != true || !context.mounted) return;
-  try {
-    await ref
-        .read(posControllerProvider.notifier)
-        .ouvrirSession(caisseCode: caisse, fondInitial: double.tryParse(fond.text.replaceAll(',', '.')) ?? -1);
-  } on SessionException catch (e) {
-    if (!context.mounted) return;
-    unawaited(
-      afficherResultat(
-        context,
-        type: DsResultatType.erreur,
-        titre: l10n.posSessionOuvrir,
-        message: messageErreurSession(l10n, e.erreur),
-      ),
-    );
-  }
-}
-
-/// Fermeture de session : montant compté, écart.
-Future<void> afficherFermetureSession(BuildContext context, WidgetRef ref) async {
-  final l10n = AppLocalizations.of(context);
-  final session = ref.read(posControllerProvider).session;
-  if (session == null) return;
-  final devise = ref.read(deviseProvider);
-  final attendu = await ref.read(sessionCaisseServiceProvider).especesAttendues(session.code);
-  if (!context.mounted) return;
-  final compte = TextEditingController(text: attendu.toStringAsFixed(2));
-  final ok = await showDialog<bool>(
-    context: context,
-    barrierColor: context.ds.colors.overlay,
-    builder: (ctx) => DsDialog(
-      titre: l10n.posSessionFermer,
-      largeur: 440,
-      icone: Icon(LucideIcons.doorClosed, color: ctx.ds.colors.avertissement),
-      actions: [
-        DsButton(
-          libelle: l10n.communAnnuler,
-          variante: DsButtonVariante.secondaire,
-          onPressed: () => Navigator.of(ctx).pop(false),
-        ),
-        DsButton(
-          libelle: l10n.posSessionFermer,
-          icone: LucideIcons.check,
-          variante: DsButtonVariante.danger,
-          onPressed: () => Navigator.of(ctx).pop(true),
-        ),
-      ],
-      contenu: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text('${l10n.posSessionAttendu} : ${formaterMontant(attendu, devise)}', style: ctx.ds.typo.corps),
-          const SizedBox(height: DsSpacing.md),
-          DsTextField(
-            controller: compte,
-            libelle: l10n.posSessionMontantCompte,
-            typeClavier: TextInputType.number,
-            autofocus: true,
-          ),
-        ],
-      ),
-    ),
-  );
-  if (ok != true || !context.mounted) return;
-  try {
-    final s = await ref
-        .read(posControllerProvider.notifier)
-        .fermerSession(montantCompte: double.tryParse(compte.text.replaceAll(',', '.')) ?? -1);
-    if (!context.mounted) return;
-    unawaited(
-      afficherResultat(
-        context,
-        type: DsResultatType.info,
-        titre: l10n.posSessionFermer,
-        message: l10n.posSessionFermee(s.code, formaterMontant(s.ecart ?? 0, devise)),
-      ),
-    );
-  } on SessionException catch (e) {
-    if (!context.mounted) return;
-    unawaited(
-      afficherResultat(
-        context,
-        type: DsResultatType.erreur,
-        titre: l10n.posSessionFermer,
-        message: messageErreurSession(l10n, e.erreur),
-      ),
-    );
-  }
-}
-
-/// Sélection d'un client.
-Future<Client?> afficherChoixClient(BuildContext context, WidgetRef ref) async {
+/// Sélection d'un client (`PickerDialog` : code, nom, téléphone, points), avec « Nouveau client ».
+Future<Client?> afficherChoixClient(BuildContext context, WidgetRef ref, {VoidCallback? onCreer}) async {
   final l10n = AppLocalizations.of(context);
   final clients = await ClientRepository(ref.read(appDatabaseProvider).db).tous(actifsSeulement: true);
   if (!context.mounted) return null;
   return afficherSelecteur<Client>(
     context,
     titre: l10n.posChoisirClient,
+    icone: LucideIcons.user,
     elements: clients,
     libelle: (c) => c.estDePassage ? l10n.posClientPassage : c.nom,
-    sousLibelle: (c) =>
-        '${c.code}${c.telephone.isEmpty ? '' : ' · ${c.telephone}'}${c.points > 0 ? ' · ${c.points} pts' : ''}',
-  );
-}
-
-/// Saisie d'un pourcentage de remise.
-Future<double?> afficherRemise(BuildContext context, {required double initiale}) async {
-  final l10n = AppLocalizations.of(context);
-  final ctrl = TextEditingController(text: initiale == 0 ? '' : initiale.toString());
-  return showDialog<double>(
-    context: context,
-    barrierColor: context.ds.colors.overlay,
-    builder: (ctx) => DsDialog(
-      titre: l10n.posRemiseGlobale,
-      largeur: 380,
-      contenu: DsTextField(
-        controller: ctrl,
-        libelle: l10n.posRemisePct,
-        typeClavier: TextInputType.number,
-        autofocus: true,
-        onSubmitted: (v) => Navigator.of(ctx).pop(double.tryParse(v.replaceAll(',', '.')) ?? 0),
+    onCreer: onCreer,
+    libelleCreer: onCreer == null ? null : l10n.posNouveauClient,
+    colonnes: [
+      DsColonnePicker(libelle: l10n.dsPosCode, valeur: (c) => c.code, mono: true, attenue: true, largeur: 110),
+      DsColonnePicker(
+        libelle: l10n.posClientLabel,
+        valeur: (c) => c.estDePassage ? l10n.posClientPassage : c.nom,
+        fort: true,
       ),
-      actions: [
-        DsButton(
-          libelle: l10n.communAnnuler,
-          variante: DsButtonVariante.secondaire,
-          onPressed: () => Navigator.of(ctx).pop(),
-        ),
-        DsButton(
-          libelle: l10n.communValider,
-          onPressed: () => Navigator.of(ctx).pop(double.tryParse(ctrl.text.replaceAll(',', '.')) ?? 0),
-        ),
-      ],
-    ),
+      DsColonnePicker(libelle: l10n.clientTelephone, valeur: (c) => c.telephone, largeur: 140),
+      DsColonnePicker(libelle: l10n.posPointsGagnes, valeur: (c) => '${c.points}', largeur: 90),
+    ],
   );
 }
 
-/// Calculatrice.
+/// Calculatrice (`Calculator` du DS).
 Future<double?> afficherCalculatrice(BuildContext context) {
   final l10n = AppLocalizations.of(context);
-  return showDialog<double>(
-    context: context,
-    barrierColor: context.ds.colors.overlay,
+  return afficherDialog<double>(
+    context,
     builder: (ctx) => DsDialog(
       titre: l10n.calcTitre,
-      largeur: 360,
-      icone: Icon(LucideIcons.calculator, color: ctx.ds.colors.primaire),
-      contenu: Calculator(libelleUtiliser: l10n.calcUtiliser, onUtiliser: (v) => Navigator.of(ctx).pop(v)),
+      largeur: 380,
+      iconeData: LucideIcons.calculator,
+      contenu: DsCalculator(libelleUtiliser: l10n.calcUtiliser, onUtiliser: (v) => Navigator.of(ctx).pop(v)),
     ),
   );
 }
 
-/// Aide des 16 raccourcis.
+/// Aide des raccourcis clavier de la caisse.
 Future<void> afficherAideRaccourcis(BuildContext context) {
   final l10n = AppLocalizations.of(context);
   final raccourcis = [
@@ -283,16 +119,15 @@ Future<void> afficherAideRaccourcis(BuildContext context) {
     ('Suppr', l10n.posRaccourciSuppr),
     ('+ / −', l10n.posRaccourciPlusMoins),
   ];
-  return showDialog<void>(
-    context: context,
-    barrierColor: context.ds.colors.overlay,
+  return afficherDialog<void>(
+    context,
     builder: (ctx) {
       final c = ctx.ds.colors;
       final t = ctx.ds.typo;
       return DsDialog(
         titre: l10n.posRaccourcisTitre,
         largeur: 560,
-        icone: Icon(LucideIcons.keyboard, color: c.primaire),
+        iconeData: LucideIcons.keyboard,
         contenu: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -300,19 +135,15 @@ Future<void> afficherAideRaccourcis(BuildContext context) {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 3),
                 child: Row(
+                  spacing: DsSpacing.md,
                   children: [
-                    Container(
+                    SizedBox(
                       width: 84,
-                      padding: const EdgeInsets.symmetric(horizontal: DsSpacing.sm, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: c.surfaceAttenuee,
-                        borderRadius: DsRadius.borderSm,
-                        border: Border.all(color: c.bordureForte),
-                      ),
-                      child: Text(touche, style: t.petitFort, textAlign: TextAlign.center),
+                      child: Align(alignment: AlignmentDirectional.centerStart, child: DsKbd(touche)),
                     ),
-                    const SizedBox(width: DsSpacing.md),
-                    Expanded(child: Text(libelle, style: t.corps)),
+                    Expanded(
+                      child: Text(libelle, style: t.body.copyWith(color: c.textPrimary)),
+                    ),
                   ],
                 ),
               ),
@@ -383,7 +214,7 @@ Future<void> afficherResultatVente(BuildContext context, WidgetRef ref, Vente ve
           ).generer(vente, boutique: boutique, nomClient: nomClient, ouvrirTiroir: true),
         );
         if (!context.mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.posImpressionOk)));
+        afficherToast(context, titre: l10n.posImpressionOk);
       } else {
         final police = await policePdf(arabe);
         final octets = await DocumentsPdf(
@@ -417,33 +248,36 @@ Future<void> afficherResultatVente(BuildContext context, WidgetRef ref, Vente ve
     await Printing.layoutPdf(onLayout: (_) async => octets, name: 'facture_${vente.code}.pdf');
   }
 
-  await showDialog<void>(
-    context: context,
-    barrierColor: context.ds.colors.overlay,
+  await afficherDialog<void>(
+    context,
     builder: (ctx) {
       final c = ctx.ds.colors;
       final t = ctx.ds.typo;
       return DsDialog(
-        titre: l10n.posEncaisser.replaceAll(' (F12)', ''),
+        titre: l10n.posImprimerTicket,
         largeur: 480,
-        icone: Icon(LucideIcons.circleCheck, color: c.succes),
+        iconeData: LucideIcons.printer,
+        ton: DsDialogTon.succes,
         contenu: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(l10n.posVenteEnregistree(vente.code, formaterMontant(vente.monnaie, devise)), style: t.corps),
+            Text(
+              l10n.posVenteEnregistree(vente.code, formaterMontant(vente.monnaie, devise)),
+              style: t.body.copyWith(color: c.textPrimary),
+            ),
             if (vente.monnaie > 0) ...[
               const SizedBox(height: DsSpacing.sm),
               Text(
                 formaterMontant(vente.monnaie, devise),
-                style: t.chiffreXl.copyWith(color: c.info),
+                style: t.montantXl.copyWith(color: c.infoFg),
                 textAlign: TextAlign.center,
               ),
             ],
             if (vente.pointsGagnes > 0)
               Text(
                 '${l10n.posPointsGagnes} : +${vente.pointsGagnes}',
-                style: t.petit.copyWith(color: c.texteSecondaire),
+                style: t.bodySm.copyWith(color: c.textSecondary),
               ),
             const SizedBox(height: DsSpacing.lg),
             Wrap(
@@ -476,4 +310,79 @@ Future<void> afficherResultatVente(BuildContext context, WidgetRef ref, Vente ve
       );
     },
   );
+}
+
+/// Facture A4 d'une vente (BL / SC) : impression ou enregistrement / partage du PDF.
+Future<void> imprimerFactureVente(BuildContext context, WidgetRef ref, Vente vente, {bool partager = false}) async {
+  final l10n = AppLocalizations.of(context);
+  final devise = ref.read(deviseProvider);
+  final arabe = Localizations.localeOf(context).languageCode == 'ar';
+  final db = ref.read(appDatabaseProvider).db;
+  final boutique = await BoutiqueRepository(db).lire() ?? const Boutique(nom: 'CaisseDZ');
+  final client = await ClientRepository(db).parCode(vente.clientCode);
+  try {
+    final police = await policePdf(arabe);
+    final octets =
+        await DocumentsPdf(
+          libelles: arabe ? LibellesTicket.ar : LibellesTicket.fr,
+          devise: devise,
+          police: police,
+        ).factureA4(
+          vente,
+          boutique: boutique,
+          nomClient: client == null || client.estDePassage ? l10n.posClientPassage : client.nom,
+          adresseClient: client?.adresse,
+        );
+    if (partager) {
+      await Printing.sharePdf(bytes: octets, filename: 'facture_${vente.code}.pdf');
+    } else {
+      await Printing.layoutPdf(onLayout: (_) async => octets, name: 'facture_${vente.code}.pdf');
+    }
+  } on Object catch (e) {
+    if (!context.mounted) return;
+    await afficherResultat(
+      context,
+      type: DsResultatType.erreur,
+      titre: l10n.posImprimerFacture,
+      message: l10n.posImpressionErreur('$e'),
+    );
+  }
+}
+
+/// Envoie le ticket à l'imprimante ESC/POS configurée. Retourne `false` sans imprimante thermique
+/// (l'appelant propose alors l'aperçu PDF).
+Future<bool> imprimerTicketDirect(BuildContext context, WidgetRef ref, Vente vente) async {
+  final imprimante = await lireImprimante(ref);
+  final transport = construireImprimante(imprimante.type, imprimante.adresse);
+  if (transport == null || !context.mounted) return false;
+  final l10n = AppLocalizations.of(context);
+  final arabe = Localizations.localeOf(context).languageCode == 'ar';
+  final db = ref.read(appDatabaseProvider).db;
+  final boutique = await BoutiqueRepository(db).lire() ?? const Boutique(nom: 'CaisseDZ');
+  final client = await ClientRepository(db).parCode(vente.clientCode);
+  try {
+    await transport.envoyer(
+      TicketEscPos(
+        largeur: imprimante.largeur,
+        libelles: arabe ? LibellesTicket.ar : LibellesTicket.fr,
+        devise: ref.read(deviseProvider),
+      ).generer(
+        vente,
+        boutique: boutique,
+        nomClient: client == null || client.estDePassage ? null : client.nom,
+        ouvrirTiroir: true,
+      ),
+    );
+    return true;
+  } on ImpressionException catch (e) {
+    if (context.mounted) {
+      await afficherResultat(
+        context,
+        type: DsResultatType.erreur,
+        titre: l10n.posImprimerTicket,
+        message: l10n.posImpressionErreur(e.message),
+      );
+    }
+    return true;
+  }
 }

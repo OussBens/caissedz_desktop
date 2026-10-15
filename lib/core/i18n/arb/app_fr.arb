@@ -539,66 +539,15 @@
   "communQuantite": "Quantité",
   "moduleMagasins": "Magasins",
   "posTitre": "Caisse",
-  "posScan": "Scanner ou rechercher un produit (F1)",
-  "posPanier": "Panier {n}",
-  "@posPanier": {
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
-  },
-  "posNouveauPanier": "Nouveau panier (Ctrl+N)",
   "posMaxPaniers": "5 ventes en parallèle au maximum.",
-  "posPanierVide": "Panier vide : scannez un code-barres ou cliquez sur un produit.",
-  "posSousTotal": "Sous-total",
-  "posRemise": "Remise",
-  "posTotal": "Total",
-  "posVerse": "Versé",
   "posReste": "Reste",
-  "posMonnaie": "Monnaie à rendre",
   "posPointsGagnes": "Points gagnés",
-  "posClient": "Client (F2)",
   "posClientPassage": "Client de passage",
   "posChoisirClient": "Choisir un client",
-  "posRemiseGlobale": "Remise globale (F3)",
-  "posRemisePct": "Remise (%)",
-  "posPaiement": "Paiement",
-  "posMontant": "Montant",
-  "posEncaisser": "Encaisser (F12)",
-  "posVider": "Vider (F10)",
   "posCalculatrice": "Calculatrice (F9)",
-  "posAide": "Aide (F11)",
-  "posSessionOuvrir": "Ouvrir la session",
-  "posSessionFermer": "Fermer la session",
+  "posAide": "Raccourcis clavier (F1)",
   "posSessionAucune": "Aucune session de caisse ouverte : ouvrez une session pour encaisser.",
-  "posSessionOuverte": "Session {code} · {caisse}",
-  "@posSessionOuverte": {
-    "placeholders": {
-      "code": {
-        "type": "String"
-      },
-      "caisse": {
-        "type": "String"
-      }
-    }
-  },
   "posSessionCaisse": "Caisse",
-  "posSessionFond": "Fond de caisse initial",
-  "posSessionMontantCompte": "Montant compté",
-  "posSessionAttendu": "Espèces attendues",
-  "posSessionEcart": "Écart",
-  "posSessionFermee": "Session {code} fermée. Écart : {ecart}.",
-  "@posSessionFermee": {
-    "placeholders": {
-      "code": {
-        "type": "String"
-      },
-      "ecart": {
-        "type": "String"
-      }
-    }
-  },
   "posErreurSessionDejaOuverte": "Une session est déjà ouverte (utilisateur ou caisse).",
   "posErreurSessionAucune": "Aucune session ouverte.",
   "posErreurCaisse": "Caisse inconnue ou inactive.",
@@ -648,7 +597,6 @@
   "posImprimerFacture": "Facture A4",
   "posTicket58": "Ticket 58 mm",
   "posTicket80": "Ticket 80 mm",
-  "posApercuTicket": "Aperçu du ticket",
   "posImpressionOk": "Ticket envoyé à l'imprimante.",
   "posImpressionErreur": "Impression impossible : {detail}",
   "@posImpressionErreur": {
@@ -658,30 +606,24 @@
       }
     }
   },
-  "posCreditAutoriser": "Vendre à crédit (reste dû)",
   "posRaccourcisTitre": "Raccourcis clavier",
-  "posRaccourciF1": "Rechercher / scanner",
-  "posRaccourciF2": "Choisir le client",
-  "posRaccourciF3": "Remise globale",
-  "posRaccourciF4": "Espèces : montant exact",
-  "posRaccourciF5": "Carte : montant exact",
-  "posRaccourciF6": "Chèque : montant exact",
-  "posRaccourciF7": "Virement : montant exact",
-  "posRaccourciF8": "Points de fidélité",
+  "posRaccourciF1": "Aide des raccourcis",
+  "posRaccourciF2": "Rechercher / scanner",
+  "posRaccourciF3": "Recherche avancée",
+  "posRaccourciF4": "Encaisser le ticket",
+  "posRaccourciF5": "Encaisser BL / SC",
+  "posRaccourciF6": "Enregistrer le ticket (crédit)",
+  "posRaccourciF7": "Choisir le client",
+  "posRaccourciF8": "Choisir une remise",
   "posRaccourciF9": "Calculatrice",
   "posRaccourciF10": "Vider le panier",
-  "posRaccourciF11": "Cette aide",
-  "posRaccourciF12": "Encaisser",
+  "posRaccourciF11": "Masquer / afficher les produits",
+  "posRaccourciF12": "Ventes du jour",
   "posRaccourciCtrlN": "Nouveau panier",
   "posRaccourciCtrlTab": "Panier suivant",
   "posRaccourciSuppr": "Retirer la ligne sélectionnée",
   "posRaccourciPlusMoins": "Quantité +1 / −1 sur la ligne sélectionnée",
-  "posLigneQuantite": "Qté",
-  "posLignePrix": "P.U.",
-  "posLigneRemise": "Rem.",
-  "posLigneTotal": "Total",
   "posVendreNombre": "Vendre à la pièce",
-  "posColis": "Colis",
   "posPack": "Pack",
   "posCategoriesToutes": "Toutes",
   "posAucunProduit": "Aucun produit actif.",
@@ -2269,5 +2211,430 @@
   "retourErreurInconnu": "Retour introuvable.",
   "retourErreurDejaAnnule": "Retour déjà annulé.",
   "retourErreurMotif": "Le motif est obligatoire.",
-  "achatErreurRetourLie": "Un retour fournisseur est lié à cette entrée : annulation impossible."
+  "achatErreurRetourLie": "Un retour fournisseur est lié à cette entrée : annulation impossible.",
+  "posVentesDuJour": "Ventes du jour",
+  "posRecetteProduit": "Recette produit",
+  "posMasquerProduits": "Masquer les produits",
+  "posAfficherProduits": "Afficher les produits",
+  "posParametres": "Paramètres de la caisse",
+  "posScanIndice": "Scanner un code-barres ou rechercher…",
+  "posRecherche": "Recherche",
+  "posProduits": "Produits",
+  "posPacks": "Packs",
+  "posAffichageGrille": "Affichage grille",
+  "posAffichageListe": "Affichage liste",
+  "posVente": "Vente {n}",
+  "@posVente": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "posVenteVide": "Vide",
+  "posVenteMeta": "{pieces} pcs · {montant}",
+  "@posVenteMeta": {
+    "placeholders": {
+      "montant": {
+        "type": "String"
+      },
+      "pieces": {
+        "type": "String"
+      }
+    }
+  },
+  "posPanierTitre": "Panier",
+  "posNouveauProduit": "Nouveau produit",
+  "posNouveauClient": "Nouveau client",
+  "posViderPanier": "Vider le panier (F10)",
+  "posClientLabel": "Client",
+  "posModePaiement": "Mode de paiement",
+  "posChoisirRemise": "Choisir une remise",
+  "posAucuneRemise": "Aucune remise",
+  "posPanierVideTitre": "Panier vide",
+  "posPanierVideDesc": "Scannez un code-barres ou touchez un produit.",
+  "posLigneAide": "Double-clic : modifier le prix · clic sur le colis : changer le colis",
+  "posEnregistrer": "Enregistrer",
+  "posBlSc": "BL / SC",
+  "posEncaisserBouton": "Encaisser",
+  "posEncTicketTitre": "Encaisser le ticket",
+  "posEncBlscTitre": "Encaisser BL / SC",
+  "posEncSaveTitre": "Enregistrer le ticket",
+  "posEncTicketDesc": "Vérifiez le montant reçu puis validez : le ticket est imprimé.",
+  "posEncBlscDesc": "Bon de livraison sans cachet, avec mentions légales.",
+  "posEncSaveDesc": "Le ticket est enregistré : le reste est porté au crédit du client.",
+  "posEncTicketOk": "Encaisser et imprimer",
+  "posEncBlscOk": "Encaisser le BL / SC",
+  "posInfoVente": "Vente",
+  "posInfoDate": "Date",
+  "posInfoProduits": "Produits",
+  "posInfoPieces": "Pièces",
+  "posInfoPaiement": "Paiement",
+  "posInfoCaissier": "Caissier",
+  "posSortieImprimer": "Imprimer",
+  "posSortieImprimerDesc": "Imprimante A4 par défaut",
+  "posSortiePdf": "Enregistrer en PDF",
+  "posSortiePdfDesc": "Enregistrer ou partager le document",
+  "posToastEncaisse": "{type} {code} encaissé",
+  "@posToastEncaisse": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "posToastEnregistre": "Ticket {code} enregistré",
+  "@posToastEnregistre": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "posToastResteCredit": "Reste au crédit : {montant}",
+  "@posToastResteCredit": {
+    "placeholders": {
+      "montant": {
+        "type": "String"
+      }
+    }
+  },
+  "posToastRendu": "Total {montant} · rendu {rendu}",
+  "@posToastRendu": {
+    "placeholders": {
+      "montant": {
+        "type": "String"
+      },
+      "rendu": {
+        "type": "String"
+      }
+    }
+  },
+  "posReimprimer": "Réimprimer",
+  "posTicket": "Ticket",
+  "posSelTitre": "Quantité et colis",
+  "posSelTitreModif": "Modifier la quantité et le colis",
+  "posSelScanne": "Produit scanné · {code}",
+  "@posSelScanne": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "posSelAuto": "Ajout automatique de {detail} dans {secondes} s · touchez pour modifier",
+  "@posSelAuto": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      },
+      "secondes": {
+        "type": "String"
+      }
+    }
+  },
+  "posSelAutoAnnule": "Ajout automatique annulé — validez avec Entrée",
+  "posSelParPiece": "{prix} / pièce",
+  "@posSelParPiece": {
+    "placeholders": {
+      "prix": {
+        "type": "String"
+      }
+    }
+  },
+  "posSelStock": "Stock : {quantite} pièces",
+  "@posSelStock": {
+    "placeholders": {
+      "quantite": {
+        "type": "String"
+      }
+    }
+  },
+  "posSelColis": "Colis",
+  "posSelUnite": "À l'unité",
+  "posSelParColis": "{nom} ({quantite} pièces)",
+  "@posSelParColis": {
+    "placeholders": {
+      "nom": {
+        "type": "String"
+      },
+      "quantite": {
+        "type": "String"
+      }
+    }
+  },
+  "posSelQuantite": "Quantité",
+  "posSelPieces": "Pièces",
+  "posSelStockInsuffisant": "Stock insuffisant ({quantite} pièces)",
+  "@posSelStockInsuffisant": {
+    "placeholders": {
+      "quantite": {
+        "type": "String"
+      }
+    }
+  },
+  "posSelAjouter": "Ajouter · {montant}",
+  "@posSelAjouter": {
+    "placeholders": {
+      "montant": {
+        "type": "String"
+      }
+    }
+  },
+  "posSelModifier": "Modifier · {montant}",
+  "@posSelModifier": {
+    "placeholders": {
+      "montant": {
+        "type": "String"
+      }
+    }
+  },
+  "posPrixTitre": "Modifier le prix du produit",
+  "posPrixDesc": "Réservé aux rôles autorisés — mot de passe requis.",
+  "posPrixAchat": "Prix d'achat",
+  "posPrixVente": "Prix de vente",
+  "posPrixMotDePasse": "Mot de passe",
+  "posPrixMotDePasseIndice": "Votre mot de passe",
+  "posPrixPortee": "Portée",
+  "posPrixPorteeTicket": "Ce ticket uniquement",
+  "posPrixPorteeTicketDesc": "Le prix catalogue ne change pas",
+  "posPrixPorteeProduit": "Tout le produit",
+  "posPrixPorteeProduitDesc": "Met à jour le prix de vente",
+  "posPrixInvalide": "Prix invalide",
+  "posPrixMdpRequis": "Mot de passe requis",
+  "posPrixMdpIncorrect": "Mot de passe incorrect",
+  "posPrixSousAchat": "En dessous du prix d'achat",
+  "posPrixMarge": "Marge : {montant}",
+  "@posPrixMarge": {
+    "placeholders": {
+      "montant": {
+        "type": "String"
+      }
+    }
+  },
+  "posPrixSousAchatTitre": "Vendre sous le prix d'achat ?",
+  "posPrixSousAchatMsg": "Prix de vente {vente} inférieur au prix d'achat {achat}.",
+  "@posPrixSousAchatMsg": {
+    "placeholders": {
+      "achat": {
+        "type": "String"
+      },
+      "vente": {
+        "type": "String"
+      }
+    }
+  },
+  "posPrixSousAchatOk": "Vendre quand même",
+  "posPrixModifie": "Prix modifié",
+  "posPrixModifieTicket": "{nom} · ce ticket uniquement",
+  "@posPrixModifieTicket": {
+    "placeholders": {
+      "nom": {
+        "type": "String"
+      }
+    }
+  },
+  "posPrixModifieProduit": "{nom} · prix catalogue mis à jour",
+  "@posPrixModifieProduit": {
+    "placeholders": {
+      "nom": {
+        "type": "String"
+      }
+    }
+  },
+  "posRechTitre": "Rechercher un produit",
+  "posRechDesc": "Filtrez puis cochez les produits à ajouter au panier.",
+  "posRechAjouter": "Ajouter au panier",
+  "posRechIndice": "Nom, code ou code-barres…",
+  "posRechAjoutes": "{n} produit(s) ajouté(s)",
+  "@posRechAjoutes": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "posIntrouvableTitre": "Produit introuvable",
+  "posIntrouvableDesc": "Aucun produit actif ne correspond à ce code-barres.",
+  "posIntrouvableCreer": "Créer le produit",
+  "posFermeeTitre": "Aucune session ouverte",
+  "posFermeeDesc": "Ouvrez une session pour « {caisse} » avant de vendre.",
+  "@posFermeeDesc": {
+    "placeholders": {
+      "caisse": {
+        "type": "String"
+      }
+    }
+  },
+  "posOuvrirCaisse": "Ouvrir la caisse",
+  "posOuvertureTitre": "Ouvrir {caisse}",
+  "@posOuvertureTitre": {
+    "placeholders": {
+      "caisse": {
+        "type": "String"
+      }
+    }
+  },
+  "posOuvertureDesc": "Comptez le fond de caisse avant de commencer.",
+  "posOuvertureSolde": "Solde d'ouverture",
+  "posOuverturePar": "Ouverte par",
+  "posOuvertureOk": "Ouvrir la session",
+  "posCaisseOuverte": "Caisse ouverte",
+  "posCaisseOuverteDesc": "Fond de caisse : {montant}",
+  "@posCaisseOuverteDesc": {
+    "placeholders": {
+      "montant": {
+        "type": "String"
+      }
+    }
+  },
+  "posClotureTitre": "Clôturer {caisse}",
+  "@posClotureTitre": {
+    "placeholders": {
+      "caisse": {
+        "type": "String"
+      }
+    }
+  },
+  "posClotureDesc": "Session {code} · ouverte à {heure}",
+  "@posClotureDesc": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "heure": {
+        "type": "String"
+      }
+    }
+  },
+  "posClotureFond": "Fond de départ",
+  "posClotureVentesEspeces": "Ventes en espèces (monnaie déduite)",
+  "posClotureTheorique": "Solde théorique",
+  "posClotureReel": "Solde réel compté",
+  "posClotureEcart": "Écart de caisse · {etat}",
+  "@posClotureEcart": {
+    "placeholders": {
+      "etat": {
+        "type": "String"
+      }
+    }
+  },
+  "posClotureJuste": "Caisse juste",
+  "posClotureExcedent": "Excédent",
+  "posClotureManquant": "Manquant",
+  "posClotureOk": "Clôturer la session",
+  "posClotureFaite": "Session clôturée",
+  "posClotureEcartToast": "Écart : {montant}",
+  "@posClotureEcartToast": {
+    "placeholders": {
+      "montant": {
+        "type": "String"
+      }
+    }
+  },
+  "posMvtTitre": "Mouvement manuel",
+  "posMvtDesc": "Entrée ou sortie hors vente : dépôt de fond, prélèvement, frais divers.",
+  "posMvtType": "Type",
+  "posMvtEntree": "Entrée manuelle",
+  "posMvtSortie": "Sortie manuelle",
+  "posMvtMotif": "Motif",
+  "posMvtFait": "Mouvement enregistré",
+  "posMvtFaitDesc": "{sens} de {montant}",
+  "@posMvtFaitDesc": {
+    "placeholders": {
+      "montant": {
+        "type": "String"
+      },
+      "sens": {
+        "type": "String"
+      }
+    }
+  },
+  "posVdjTitre": "Recette caisse — {caisse}",
+  "@posVdjTitre": {
+    "placeholders": {
+      "caisse": {
+        "type": "String"
+      }
+    }
+  },
+  "posVdjDesc": "Ventes du {date}",
+  "@posVdjDesc": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "posVdjIndice": "N° panier ou client…",
+  "posVdjNombre": "Nombre de ventes",
+  "posVdjTotal": "Total ventes",
+  "posVdjEncaisse": "Encaissé",
+  "posVdjReste": "Reste (crédit)",
+  "posVdjAucune": "Aucune vente trouvée",
+  "posVdjHeure": "Heure",
+  "posRecTitre": "Recette par produit — {caisse}",
+  "@posRecTitre": {
+    "placeholders": {
+      "caisse": {
+        "type": "String"
+      }
+    }
+  },
+  "posRecDesc": "Lignes vendues le {date}",
+  "@posRecDesc": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "posRecIndice": "Produit, code ou panier…",
+  "posRecLignes": "Lignes vendues",
+  "posRecQuantite": "Quantité",
+  "posRecAucune": "Aucune ligne vendue",
+  "posParamDesc": "S'applique à ce poste jusqu'à la déconnexion.",
+  "posParamMagasin": "Magasin",
+  "posParamFait": "Paramètres enregistrés",
+  "posFermerVenteTitre": "Fermer la vente {n} ?",
+  "@posFermerVenteTitre": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "posFermerVenteMsg": "Le panier ({lignes} ligne(s)) sera abandonné. Encaissez-le ou enregistrez-le d'abord pour le garder.",
+  "@posFermerVenteMsg": {
+    "placeholders": {
+      "lignes": {
+        "type": "String"
+      }
+    }
+  },
+  "posFermerVenteOk": "Fermer sans enregistrer",
+  "posEntreeTitre": "Entrée rapide",
+  "posEntreeDesc": "{nom} · {magasin}",
+  "@posEntreeDesc": {
+    "placeholders": {
+      "magasin": {
+        "type": "String"
+      },
+      "nom": {
+        "type": "String"
+      }
+    }
+  },
+  "posEntreeFaite": "Entrée rapide enregistrée",
+  "posEntreeFaiteDesc": "{nom} · stock mis à jour",
+  "@posEntreeFaiteDesc": {
+    "placeholders": {
+      "nom": {
+        "type": "String"
+      }
+    }
+  }
 }

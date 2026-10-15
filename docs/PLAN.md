@@ -422,8 +422,22 @@ Référence : `docs/design/CaisseDZ-DS-v2.2/CaisseDZ-DS-v2.2.html`, `bundle-v2.2
     remboursement ou avoir ; fournisseur : sortie de stock, dette déduite ou remboursement espèces).
     Une entrée ou une vente avec un retour actif n'est plus annulable. `DsTextField.valeurInitiale` est
     désormais affichée (elle était ignorée).
+  - ✅ Caisse (`CaisseScreen` + `CaisseKit`) : en-tête avec session compacte (ouverture, mouvement manuel,
+    clôture avec solde théorique et écart), Ventes du jour, Recette produit, masquer les produits, paramètres
+    du poste (caisse, magasin) ; 5 ventes en onglets (pièces · total ou client) ; recherche / scan (F2),
+    recherche avancée multi-sélection (F3), produit introuvable ; Produits / Packs, catégories, grille ou liste
+    avec entrée rapide ; dialog « Quantité et colis » (unité, colis, vente à la pièce, pavé, contrôle du stock
+    réservé, ajout automatique au bout de 3 s) ; panier 540 px : client (liste + recherche + création),
+    remise du référentiel (montant recalculé sur le sous-total), mode de paiement, lignes (double-clic : prix
+    avec mot de passe et portée ticket / catalogue ; clic sur le colis : changement), total, Enregistrer
+    (F6, crédit), BL / SC (F5, `type_panier = BL_SC`, facture A4 imprimée ou PDF) et Encaisser (F4, ticket
+    ESC/POS direct ou choix 58 / 80 / A4). Toast avec « Réimprimer ».
   - Écarts : colonnes d'audit « modifié le / par » absentes du schéma (seuls créé par et annulation) ;
     tendances des KPI calculées seulement pour les ventes ; ventes antérieures à la v10 valorisées au prix
     d'achat actuel ; `mouvement_stock` sans valorisation (prix_achat / prix_vente de §7.3).
     Ventes : le client d'un panier n'est pas modifiable (§9.2 le permet, mais il fait partie du ticket scellé ;
     décision : retour puis nouvelle vente) et le montant payé ne peut que monter (une baisse passe par un retour).
+    Caisse : le n° de panier « PN… » du DS n'est connu qu'à l'encaissement (onglets « Vente n ») ; le
+    paramètre « colis par défaut » n'est pas repris (les colis sont libres par produit) ; la clôture détaille
+    fond + ventes espèces nettes, sans versements, mouvements manuels ni remboursements (rattachés à la caisse,
+    pas à la session) ; le mot de passe demandé pour le prix est celui de l'utilisateur connecté.

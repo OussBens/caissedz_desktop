@@ -58,6 +58,8 @@
 - [x] Scan (EAN-13, interne, QR), colis, vente à la pièce (« nombre »), remises ligne / globale
 - [x] Paiements Espèces / Carte / Chèque / Virement / Points, versé/reste, points gagnés
 - [x] 16 raccourcis + aide, calculatrice
+- [x] Écran et dialogs du DS v2.2 (onglets de ventes, quantité et colis avec ajout auto 3 s, encaisser ticket /
+      BL-SC / crédit, prix avec mot de passe et portée, ventes du jour, recette produit, session compacte)
 - [x] Ticket scellé (SHA-256 chaîné), impression 58/80 mm FR/AR (ESC/POS et PDF) et facture A4 — Bluetooth via
       file d'impression Windows (écart)
 

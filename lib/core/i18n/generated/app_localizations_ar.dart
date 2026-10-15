@@ -1187,45 +1187,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get posTitre => 'الصندوق';
 
   @override
-  String get posScan => 'امسح أو ابحث عن منتج (F1)';
-
-  @override
-  String posPanier(int n) {
-    return 'سلة $n';
-  }
-
-  @override
-  String get posNouveauPanier => 'سلة جديدة (Ctrl+N)';
-
-  @override
   String get posMaxPaniers => '5 مبيعات متوازية كحد أقصى.';
-
-  @override
-  String get posPanierVide => 'السلة فارغة: امسح باركودًا أو انقر على منتج.';
-
-  @override
-  String get posSousTotal => 'المجموع الجزئي';
-
-  @override
-  String get posRemise => 'التخفيض';
-
-  @override
-  String get posTotal => 'المجموع';
-
-  @override
-  String get posVerse => 'المدفوع';
 
   @override
   String get posReste => 'المتبقي';
 
   @override
-  String get posMonnaie => 'الباقي المسترجع';
-
-  @override
   String get posPointsGagnes => 'النقاط المكتسبة';
-
-  @override
-  String get posClient => 'الزبون (F2)';
 
   @override
   String get posClientPassage => 'زبون عابر';
@@ -1234,62 +1202,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get posChoisirClient => 'اختيار زبون';
 
   @override
-  String get posRemiseGlobale => 'تخفيض إجمالي (F3)';
-
-  @override
-  String get posRemisePct => 'التخفيض (%)';
-
-  @override
-  String get posPaiement => 'الدفع';
-
-  @override
-  String get posMontant => 'المبلغ';
-
-  @override
-  String get posEncaisser => 'تحصيل (F12)';
-
-  @override
-  String get posVider => 'إفراغ (F10)';
-
-  @override
   String get posCalculatrice => 'الآلة الحاسبة (F9)';
 
   @override
-  String get posAide => 'مساعدة (F11)';
-
-  @override
-  String get posSessionOuvrir => 'فتح الجلسة';
-
-  @override
-  String get posSessionFermer => 'إغلاق الجلسة';
+  String get posAide => 'اختصارات لوحة المفاتيح (F1)';
 
   @override
   String get posSessionAucune => 'لا توجد جلسة صندوق مفتوحة: افتح جلسة للتحصيل.';
 
   @override
-  String posSessionOuverte(String code, String caisse) {
-    return 'الجلسة $code · $caisse';
-  }
-
-  @override
   String get posSessionCaisse => 'الصندوق';
-
-  @override
-  String get posSessionFond => 'رصيد الصندوق الأولي';
-
-  @override
-  String get posSessionMontantCompte => 'المبلغ المعدود';
-
-  @override
-  String get posSessionAttendu => 'النقد المتوقع';
-
-  @override
-  String get posSessionEcart => 'الفرق';
-
-  @override
-  String posSessionFermee(String code, String ecart) {
-    return 'أُغلقت الجلسة $code. الفرق: $ecart.';
-  }
 
   @override
   String get posErreurSessionDejaOuverte => 'توجد جلسة مفتوحة بالفعل (المستخدم أو الصندوق).';
@@ -1354,9 +1276,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get posTicket80 => 'تذكرة 80 مم';
 
   @override
-  String get posApercuTicket => 'معاينة التذكرة';
-
-  @override
   String get posImpressionOk => 'أُرسلت التذكرة إلى الطابعة.';
 
   @override
@@ -1365,34 +1284,31 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get posCreditAutoriser => 'البيع بالدين (متبقٍ مستحق)';
-
-  @override
   String get posRaccourcisTitre => 'اختصارات لوحة المفاتيح';
 
   @override
-  String get posRaccourciF1 => 'بحث / مسح';
+  String get posRaccourciF1 => 'مساعدة الاختصارات';
 
   @override
-  String get posRaccourciF2 => 'اختيار الزبون';
+  String get posRaccourciF2 => 'بحث / مسح';
 
   @override
-  String get posRaccourciF3 => 'تخفيض إجمالي';
+  String get posRaccourciF3 => 'بحث متقدم';
 
   @override
-  String get posRaccourciF4 => 'نقدًا: المبلغ بالضبط';
+  String get posRaccourciF4 => 'تحصيل التذكرة';
 
   @override
-  String get posRaccourciF5 => 'بطاقة: المبلغ بالضبط';
+  String get posRaccourciF5 => 'تحصيل وصل التسليم';
 
   @override
-  String get posRaccourciF6 => 'شيك: المبلغ بالضبط';
+  String get posRaccourciF6 => 'حفظ التذكرة (دين)';
 
   @override
-  String get posRaccourciF7 => 'تحويل: المبلغ بالضبط';
+  String get posRaccourciF7 => 'اختيار الزبون';
 
   @override
-  String get posRaccourciF8 => 'نقاط الولاء';
+  String get posRaccourciF8 => 'اختيار تخفيض';
 
   @override
   String get posRaccourciF9 => 'الآلة الحاسبة';
@@ -1401,10 +1317,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get posRaccourciF10 => 'إفراغ السلة';
 
   @override
-  String get posRaccourciF11 => 'هذه المساعدة';
+  String get posRaccourciF11 => 'إخفاء / إظهار المنتجات';
 
   @override
-  String get posRaccourciF12 => 'تحصيل';
+  String get posRaccourciF12 => 'مبيعات اليوم';
 
   @override
   String get posRaccourciCtrlN => 'سلة جديدة';
@@ -1419,22 +1335,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get posRaccourciPlusMoins => 'الكمية +1 / −1 على السطر المحدد';
 
   @override
-  String get posLigneQuantite => 'الكمية';
-
-  @override
-  String get posLignePrix => 'السعر';
-
-  @override
-  String get posLigneRemise => 'تخف.';
-
-  @override
-  String get posLigneTotal => 'المجموع';
-
-  @override
   String get posVendreNombre => 'البيع بالقطعة';
-
-  @override
-  String get posColis => 'طرد';
 
   @override
   String get posPack => 'حزمة';
@@ -4576,4 +4477,533 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get achatErreurRetourLie => 'يوجد مرتجع مورد مرتبط بهذا الإدخال: الإلغاء غير ممكن.';
+
+  @override
+  String get posVentesDuJour => 'مبيعات اليوم';
+
+  @override
+  String get posRecetteProduit => 'إيراد المنتجات';
+
+  @override
+  String get posMasquerProduits => 'إخفاء المنتجات';
+
+  @override
+  String get posAfficherProduits => 'إظهار المنتجات';
+
+  @override
+  String get posParametres => 'إعدادات الصندوق';
+
+  @override
+  String get posScanIndice => 'امسح رمزًا شريطيًا أو ابحث…';
+
+  @override
+  String get posRecherche => 'بحث';
+
+  @override
+  String get posProduits => 'المنتجات';
+
+  @override
+  String get posPacks => 'الحزم';
+
+  @override
+  String get posAffichageGrille => 'عرض شبكي';
+
+  @override
+  String get posAffichageListe => 'عرض قائمة';
+
+  @override
+  String posVente(int n) {
+    return 'بيع $n';
+  }
+
+  @override
+  String get posVenteVide => 'فارغ';
+
+  @override
+  String posVenteMeta(String montant, String pieces) {
+    return '$pieces قطعة · $montant';
+  }
+
+  @override
+  String get posPanierTitre => 'السلة';
+
+  @override
+  String get posNouveauProduit => 'منتج جديد';
+
+  @override
+  String get posNouveauClient => 'زبون جديد';
+
+  @override
+  String get posViderPanier => 'إفراغ السلة (F10)';
+
+  @override
+  String get posClientLabel => 'الزبون';
+
+  @override
+  String get posModePaiement => 'طريقة الدفع';
+
+  @override
+  String get posChoisirRemise => 'اختيار تخفيض';
+
+  @override
+  String get posAucuneRemise => 'بدون تخفيض';
+
+  @override
+  String get posPanierVideTitre => 'السلة فارغة';
+
+  @override
+  String get posPanierVideDesc => 'امسح رمزًا شريطيًا أو المس منتجًا.';
+
+  @override
+  String get posLigneAide => 'نقر مزدوج: تعديل السعر · نقر على الطرد: تغيير الطرد';
+
+  @override
+  String get posEnregistrer => 'حفظ';
+
+  @override
+  String get posBlSc => 'وصل / بدون ختم';
+
+  @override
+  String get posEncaisserBouton => 'تحصيل';
+
+  @override
+  String get posEncTicketTitre => 'تحصيل التذكرة';
+
+  @override
+  String get posEncBlscTitre => 'تحصيل وصل التسليم';
+
+  @override
+  String get posEncSaveTitre => 'حفظ التذكرة';
+
+  @override
+  String get posEncTicketDesc => 'تحقق من المبلغ المستلم ثم أكّد: تُطبع التذكرة.';
+
+  @override
+  String get posEncBlscDesc => 'وصل تسليم بدون ختم، مع البيانات القانونية.';
+
+  @override
+  String get posEncSaveDesc => 'تُحفظ التذكرة: يُسجَّل الباقي دينًا على الزبون.';
+
+  @override
+  String get posEncTicketOk => 'تحصيل وطباعة';
+
+  @override
+  String get posEncBlscOk => 'تحصيل الوصل';
+
+  @override
+  String get posInfoVente => 'البيع';
+
+  @override
+  String get posInfoDate => 'التاريخ';
+
+  @override
+  String get posInfoProduits => 'المنتجات';
+
+  @override
+  String get posInfoPieces => 'القطع';
+
+  @override
+  String get posInfoPaiement => 'الدفع';
+
+  @override
+  String get posInfoCaissier => 'أمين الصندوق';
+
+  @override
+  String get posSortieImprimer => 'طباعة';
+
+  @override
+  String get posSortieImprimerDesc => 'طابعة A4 الافتراضية';
+
+  @override
+  String get posSortiePdf => 'حفظ بصيغة PDF';
+
+  @override
+  String get posSortiePdfDesc => 'حفظ المستند أو مشاركته';
+
+  @override
+  String posToastEncaisse(String code, String type) {
+    return 'تم تحصيل $type $code';
+  }
+
+  @override
+  String posToastEnregistre(String code) {
+    return 'تم حفظ التذكرة $code';
+  }
+
+  @override
+  String posToastResteCredit(String montant) {
+    return 'الباقي دينًا: $montant';
+  }
+
+  @override
+  String posToastRendu(String montant, String rendu) {
+    return 'المجموع $montant · الباقي للزبون $rendu';
+  }
+
+  @override
+  String get posReimprimer => 'إعادة الطباعة';
+
+  @override
+  String get posTicket => 'التذكرة';
+
+  @override
+  String get posSelTitre => 'الكمية والطرد';
+
+  @override
+  String get posSelTitreModif => 'تعديل الكمية والطرد';
+
+  @override
+  String posSelScanne(String code) {
+    return 'منتج ممسوح · $code';
+  }
+
+  @override
+  String posSelAuto(String detail, String secondes) {
+    return 'إضافة تلقائية لـ $detail خلال $secondes ث · المس للتعديل';
+  }
+
+  @override
+  String get posSelAutoAnnule => 'أُلغيت الإضافة التلقائية — أكّد بزر الإدخال';
+
+  @override
+  String posSelParPiece(String prix) {
+    return '$prix / قطعة';
+  }
+
+  @override
+  String posSelStock(String quantite) {
+    return 'المخزون: $quantite قطعة';
+  }
+
+  @override
+  String get posSelColis => 'الطرد';
+
+  @override
+  String get posSelUnite => 'بالوحدة';
+
+  @override
+  String posSelParColis(String nom, String quantite) {
+    return '$nom ($quantite قطعة)';
+  }
+
+  @override
+  String get posSelQuantite => 'الكمية';
+
+  @override
+  String get posSelPieces => 'القطع';
+
+  @override
+  String posSelStockInsuffisant(String quantite) {
+    return 'مخزون غير كافٍ ($quantite قطعة)';
+  }
+
+  @override
+  String posSelAjouter(String montant) {
+    return 'إضافة · $montant';
+  }
+
+  @override
+  String posSelModifier(String montant) {
+    return 'تعديل · $montant';
+  }
+
+  @override
+  String get posPrixTitre => 'تعديل سعر المنتج';
+
+  @override
+  String get posPrixDesc => 'مخصص للأدوار المرخصة — كلمة المرور مطلوبة.';
+
+  @override
+  String get posPrixAchat => 'سعر الشراء';
+
+  @override
+  String get posPrixVente => 'سعر البيع';
+
+  @override
+  String get posPrixMotDePasse => 'كلمة المرور';
+
+  @override
+  String get posPrixMotDePasseIndice => 'كلمة مرورك';
+
+  @override
+  String get posPrixPortee => 'النطاق';
+
+  @override
+  String get posPrixPorteeTicket => 'هذه التذكرة فقط';
+
+  @override
+  String get posPrixPorteeTicketDesc => 'لا يتغير سعر الكتالوج';
+
+  @override
+  String get posPrixPorteeProduit => 'المنتج بالكامل';
+
+  @override
+  String get posPrixPorteeProduitDesc => 'يحدّث سعر البيع';
+
+  @override
+  String get posPrixInvalide => 'سعر غير صالح';
+
+  @override
+  String get posPrixMdpRequis => 'كلمة المرور مطلوبة';
+
+  @override
+  String get posPrixMdpIncorrect => 'كلمة المرور غير صحيحة';
+
+  @override
+  String get posPrixSousAchat => 'أقل من سعر الشراء';
+
+  @override
+  String posPrixMarge(String montant) {
+    return 'الهامش: $montant';
+  }
+
+  @override
+  String get posPrixSousAchatTitre => 'البيع بأقل من سعر الشراء؟';
+
+  @override
+  String posPrixSousAchatMsg(String achat, String vente) {
+    return 'سعر البيع $vente أقل من سعر الشراء $achat.';
+  }
+
+  @override
+  String get posPrixSousAchatOk => 'البيع على أي حال';
+
+  @override
+  String get posPrixModifie => 'تم تعديل السعر';
+
+  @override
+  String posPrixModifieTicket(String nom) {
+    return '$nom · هذه التذكرة فقط';
+  }
+
+  @override
+  String posPrixModifieProduit(String nom) {
+    return '$nom · تم تحديث سعر الكتالوج';
+  }
+
+  @override
+  String get posRechTitre => 'البحث عن منتج';
+
+  @override
+  String get posRechDesc => 'صفِّ ثم حدد المنتجات لإضافتها إلى السلة.';
+
+  @override
+  String get posRechAjouter => 'إضافة إلى السلة';
+
+  @override
+  String get posRechIndice => 'الاسم أو الرمز أو الرمز الشريطي…';
+
+  @override
+  String posRechAjoutes(int n) {
+    return 'تمت إضافة $n منتج';
+  }
+
+  @override
+  String get posIntrouvableTitre => 'المنتج غير موجود';
+
+  @override
+  String get posIntrouvableDesc => 'لا يوجد منتج نشط يطابق هذا الرمز الشريطي.';
+
+  @override
+  String get posIntrouvableCreer => 'إنشاء المنتج';
+
+  @override
+  String get posFermeeTitre => 'لا توجد جلسة مفتوحة';
+
+  @override
+  String posFermeeDesc(String caisse) {
+    return 'افتح جلسة لـ « $caisse » قبل البيع.';
+  }
+
+  @override
+  String get posOuvrirCaisse => 'فتح الصندوق';
+
+  @override
+  String posOuvertureTitre(String caisse) {
+    return 'فتح $caisse';
+  }
+
+  @override
+  String get posOuvertureDesc => 'عُدّ رصيد الصندوق قبل البدء.';
+
+  @override
+  String get posOuvertureSolde => 'رصيد الافتتاح';
+
+  @override
+  String get posOuverturePar => 'فتحها';
+
+  @override
+  String get posOuvertureOk => 'فتح الجلسة';
+
+  @override
+  String get posCaisseOuverte => 'الصندوق مفتوح';
+
+  @override
+  String posCaisseOuverteDesc(String montant) {
+    return 'رصيد الصندوق: $montant';
+  }
+
+  @override
+  String posClotureTitre(String caisse) {
+    return 'إقفال $caisse';
+  }
+
+  @override
+  String posClotureDesc(String code, String heure) {
+    return 'الجلسة $code · فُتحت على $heure';
+  }
+
+  @override
+  String get posClotureFond => 'الرصيد الافتتاحي';
+
+  @override
+  String get posClotureVentesEspeces => 'المبيعات نقدًا (بعد خصم الباقي)';
+
+  @override
+  String get posClotureTheorique => 'الرصيد النظري';
+
+  @override
+  String get posClotureReel => 'الرصيد الفعلي المعدود';
+
+  @override
+  String posClotureEcart(String etat) {
+    return 'فارق الصندوق · $etat';
+  }
+
+  @override
+  String get posClotureJuste => 'الصندوق مضبوط';
+
+  @override
+  String get posClotureExcedent => 'فائض';
+
+  @override
+  String get posClotureManquant => 'عجز';
+
+  @override
+  String get posClotureOk => 'إقفال الجلسة';
+
+  @override
+  String get posClotureFaite => 'تم إقفال الجلسة';
+
+  @override
+  String posClotureEcartToast(String montant) {
+    return 'الفارق: $montant';
+  }
+
+  @override
+  String get posMvtTitre => 'حركة يدوية';
+
+  @override
+  String get posMvtDesc => 'إدخال أو إخراج خارج البيع: إيداع، سحب، مصاريف متنوعة.';
+
+  @override
+  String get posMvtType => 'النوع';
+
+  @override
+  String get posMvtEntree => 'إدخال يدوي';
+
+  @override
+  String get posMvtSortie => 'إخراج يدوي';
+
+  @override
+  String get posMvtMotif => 'السبب';
+
+  @override
+  String get posMvtFait => 'تم تسجيل الحركة';
+
+  @override
+  String posMvtFaitDesc(String montant, String sens) {
+    return '$sens بمبلغ $montant';
+  }
+
+  @override
+  String posVdjTitre(String caisse) {
+    return 'إيراد الصندوق — $caisse';
+  }
+
+  @override
+  String posVdjDesc(String date) {
+    return 'مبيعات $date';
+  }
+
+  @override
+  String get posVdjIndice => 'رقم السلة أو الزبون…';
+
+  @override
+  String get posVdjNombre => 'عدد المبيعات';
+
+  @override
+  String get posVdjTotal => 'مجموع المبيعات';
+
+  @override
+  String get posVdjEncaisse => 'المحصَّل';
+
+  @override
+  String get posVdjReste => 'الباقي (دين)';
+
+  @override
+  String get posVdjAucune => 'لا توجد مبيعات';
+
+  @override
+  String get posVdjHeure => 'الساعة';
+
+  @override
+  String posRecTitre(String caisse) {
+    return 'الإيراد حسب المنتج — $caisse';
+  }
+
+  @override
+  String posRecDesc(String date) {
+    return 'الأسطر المباعة يوم $date';
+  }
+
+  @override
+  String get posRecIndice => 'المنتج أو الرمز أو السلة…';
+
+  @override
+  String get posRecLignes => 'الأسطر المباعة';
+
+  @override
+  String get posRecQuantite => 'الكمية';
+
+  @override
+  String get posRecAucune => 'لا توجد أسطر مباعة';
+
+  @override
+  String get posParamDesc => 'يُطبَّق على هذا الجهاز حتى تسجيل الخروج.';
+
+  @override
+  String get posParamMagasin => 'المخزن';
+
+  @override
+  String get posParamFait => 'تم حفظ الإعدادات';
+
+  @override
+  String posFermerVenteTitre(int n) {
+    return 'إغلاق البيع $n؟';
+  }
+
+  @override
+  String posFermerVenteMsg(String lignes) {
+    return 'ستُترك السلة ($lignes سطر). حصّلها أو احفظها أولًا للاحتفاظ بها.';
+  }
+
+  @override
+  String get posFermerVenteOk => 'إغلاق دون حفظ';
+
+  @override
+  String get posEntreeTitre => 'إدخال سريع';
+
+  @override
+  String posEntreeDesc(String magasin, String nom) {
+    return '$nom · $magasin';
+  }
+
+  @override
+  String get posEntreeFaite => 'تم تسجيل الإدخال السريع';
+
+  @override
+  String posEntreeFaiteDesc(String nom) {
+    return '$nom · تم تحديث المخزون';
+  }
 }
