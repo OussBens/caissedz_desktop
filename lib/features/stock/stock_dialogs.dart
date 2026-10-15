@@ -1263,7 +1263,8 @@ Future<void> afficherFormulaireBesoin(
 }) async {
   final produits = {for (final p in await ref.read(produitsProvider.future)) p.code: p};
   final stocks = await ref.read(stocksProduitsProvider.future);
-  final seuilGlobal = (await ref.read(parametresVenteProvider.future)).seuilStockGlobal;
+  final parametres = await ref.read(parametresVenteProvider.future);
+  final seuilGlobal = parametres.seuilStockGlobal;
   if (!context.mounted) return;
   final lignes = besoin != null
       ? [
@@ -1273,7 +1274,14 @@ Future<void> afficherFormulaireBesoin(
         ]
       : [
           for (final p in proposes)
-            LigneDoc(produit: p, quantite: StockService.suggestion(stocks[p.code] ?? 0, seuilDe(p, seuilGlobal))),
+            LigneDoc(
+              produit: p,
+              quantite: StockService.suggestion(
+                stocks[p.code] ?? 0,
+                seuilDe(p, seuilGlobal),
+                maximum: parametres.seuilStockMax,
+              ),
+            ),
         ];
   final fournisseur = besoin?.fournisseurCode ?? proposes.map((p) => p.fournisseurCode).nonNulls.firstOrNull;
   await afficherDialog<bool>(

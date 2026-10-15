@@ -314,6 +314,9 @@ void main() {
       expect((await StockRepository(base.db).besoin(b2.code))!.actif, isFalse);
       expect(StockService.suggestion(2, 5), 8);
       expect(StockService.suggestion(20, 5), 1);
+      // Seuil maximum des Paramètres : on remonte au maximum (ignoré s'il ne dépasse pas le seuil).
+      expect(StockService.suggestion(2, 5, maximum: 30), 28);
+      expect(StockService.suggestion(2, 5, maximum: 4), 8);
     });
   });
 }

@@ -24,11 +24,12 @@ import 'stock_providers.dart';
 
 /// Produit sous le seuil (onglet Ruptures & seuils).
 class _Rupture {
-  const _Rupture(this.produit, this.stock, this.seuil);
+  const _Rupture(this.produit, this.stock, this.seuil, this.maximum);
   final Produit produit;
   final double stock;
   final int seuil;
-  double get suggestion => StockService.suggestion(stock, seuil);
+  final int maximum;
+  double get suggestion => StockService.suggestion(stock, seuil, maximum: maximum);
 }
 
 /// Produit expiré ou proche de l'expiration (onglet Expirés).
@@ -63,9 +64,11 @@ class _BesoinsPageState extends ConsumerState<BesoinsPage> {
     final produits = (ref.watch(produitsProvider).value ?? const <Produit>[]).where((p) => p.actif && !p.service);
     final stocks = ref.watch(stocksProduitsProvider).value ?? const <String, double>{};
     final seuilGlobal = ref.watch(parametresVenteProvider).value?.seuilStockGlobal ?? 5;
+    final maximum = ref.watch(parametresVenteProvider).value?.seuilStockMax ?? 0;
     final ruptures = [
       for (final p in produits)
-        if ((stocks[p.code] ?? 0) <= seuilDe(p, seuilGlobal)) _Rupture(p, stocks[p.code] ?? 0, seuilDe(p, seuilGlobal)),
+        if ((stocks[p.code] ?? 0) <= seuilDe(p, seuilGlobal))
+          _Rupture(p, stocks[p.code] ?? 0, seuilDe(p, seuilGlobal), maximum),
     ];
     final aujourdhui = DateTime.now();
     final jour = DateTime(aujourdhui.year, aujourdhui.month, aujourdhui.day);

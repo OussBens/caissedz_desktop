@@ -713,9 +713,10 @@ class StockService {
   }
 
   // ---------------- Listes de besoins BL ----------------
-  /// Quantité suggérée pour un produit sous le seuil : 2 × seuil − stock (au moins 1).
-  static double suggestion(double stock, int seuil) {
-    final s = 2 * seuil - stock;
+  /// Quantité suggérée pour un produit sous le seuil : de quoi remonter au seuil [maximum] (`parametre.maximum`)
+  /// quand il est renseigné et supérieur au seuil, sinon à 2 × seuil (au moins 1).
+  static double suggestion(double stock, int seuil, {int maximum = 0}) {
+    final s = (maximum > seuil ? maximum : 2 * seuil) - stock;
     return s < 1 ? 1 : s;
   }
 
