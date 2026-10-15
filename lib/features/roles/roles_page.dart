@@ -30,7 +30,7 @@ String libelleRole(AppLocalizations l10n, String role) => switch (role) {
 class RolesPage extends ConsumerStatefulWidget {
   const RolesPage({super.key});
 
-  static const String route = '/parametres/roles';
+  static const String route = '/utilisateurs';
 
   @override
   ConsumerState<RolesPage> createState() => _RolesPageState();

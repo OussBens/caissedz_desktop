@@ -496,11 +496,15 @@ class DsSegmentedControl<T> extends StatelessWidget {
                             if (o.icone != null)
                               Icon(o.icone, size: 15, color: actif ? c.textPrimary : c.textSecondary),
                             if (o.libelle != null)
-                              Text(
-                                o.libelle!,
-                                style: t.bodySm.copyWith(
-                                  fontWeight: actif ? FontWeight.w600 : FontWeight.w500,
-                                  color: actif ? c.textPrimary : c.textSecondary,
+                              Flexible(
+                                child: Text(
+                                  o.libelle!,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: t.bodySm.copyWith(
+                                    fontWeight: actif ? FontWeight.w600 : FontWeight.w500,
+                                    color: actif ? c.textPrimary : c.textSecondary,
+                                  ),
                                 ),
                               ),
                           ],

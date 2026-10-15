@@ -47,6 +47,14 @@ class UtilisateurRepository {
     return CodeGenerator.suivant(prefixe, rows.isEmpty ? null : rows.first['code'] as String);
   }
 
+  /// Horodate la connexion réussie de l'utilisateur.
+  Future<void> enregistrerAcces(String code, DateTime quand) => db.update(
+    'utilisateur',
+    {'dernier_acces': quand.toUtc().toIso8601String()},
+    where: 'code = ?',
+    whereArgs: [code],
+  );
+
   Future<void> mettreAJour(String code, Map<String, Object?> valeurs) async {
     await db.update(
       'utilisateur',

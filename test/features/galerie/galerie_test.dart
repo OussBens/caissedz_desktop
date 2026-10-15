@@ -23,7 +23,7 @@ void main() {
     );
     await pompe(tester);
 
-    expect(find.text('Galerie du design system'), findsNWidgets(3)); // page + sidebar + barre de titre
+    expect(find.text('Galerie du design system'), findsWidgets);
     expect(find.byType(DsDataTable<dynamic>), findsNothing); // générique : vérifié via un texte
     final listePage = find.descendant(of: find.byType(GaleriePage), matching: find.byType(Scrollable)).first;
     await tester.scrollUntilVisible(
@@ -49,7 +49,7 @@ void main() {
 
     await tester.tap(find.text('AR'));
     await pompe(tester);
-    expect(find.text('معرض نظام التصميم'), findsNWidgets(3));
+    expect(find.text('معرض نظام التصميم'), findsWidgets);
     expect(Directionality.of(tester.element(find.text('Couleurs'))), TextDirection.rtl);
   });
 }

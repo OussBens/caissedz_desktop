@@ -226,22 +226,22 @@ class AppLocalizationsAr extends AppLocalizations {
   String get activationTitre => 'تفعيل CaisseDZ';
 
   @override
-  String get activationIntro => 'أدخل مفتاح التفعيل الخاص بهذا الجهاز، أو جرّب الوضع التجريبي.';
+  String get activationIntro => 'أرسل معرّف هذا الجهاز إلى الموزّع؛ سيمنحك مفتاحًا مرتبطًا بهذا الحاسوب.';
 
   @override
-  String get activationIdentifiantMachine => 'معرّف هذا الجهاز';
+  String get activationIdentifiantMachine => 'معرّف الجهاز';
 
   @override
-  String get activationCopierIdentifiant => 'نسخ المعرّف';
+  String get activationCopierIdentifiant => 'نسخ';
 
   @override
-  String get activationIdentifiantCopie => 'تم نسخ المعرّف';
+  String get activationIdentifiantCopie => 'تم النسخ';
 
   @override
-  String get activationCle => 'مفتاح التفعيل (64 حرفًا)';
+  String get activationCle => 'مفتاح الرخصة';
 
   @override
-  String get activationCleIndice => 'مفتاح SHA-256 من 64 حرفًا سداسيًا عشريًا';
+  String get activationCleIndice => 'الصق المفتاح كاملًا في الخانة الأولى.';
 
   @override
   String get activationBouton => 'تفعيل';
@@ -257,7 +257,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get activationErreurFormat => 'يجب أن يحتوي المفتاح على 64 حرفًا سداسيًا عشريًا بالضبط (0-9، a-f).';
 
   @override
-  String get activationErreurInconnue => 'هذا المفتاح لا يطابق هذا الجهاز. تحقق من المفتاح أو اتصل بالموزع.';
+  String get activationErreurInconnue => 'مفتاح غير صالح لهذا الجهاز — تحقق من المعرّف المرسل.';
 
   @override
   String activationReussie(String niveau) {
@@ -288,10 +288,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get licenceGererCle => 'تفعيل مفتاح آخر';
 
   @override
-  String get connexionTitre => 'تسجيل الدخول';
+  String get connexionTitre => 'مرحبًا بعودتك';
 
   @override
-  String get connexionIdentifiant => 'المعرّف';
+  String get connexionIdentifiant => 'اسم المستخدم';
 
   @override
   String get connexionMotDePasse => 'كلمة المرور';
@@ -312,7 +312,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get connexionErreurDemo => 'الحساب demo/demo متاح فقط في الوضع التجريبي.';
 
   @override
-  String get connexionDemoIndice => 'الوضع التجريبي: المعرّف demo، كلمة المرور demo';
+  String get connexionDemoIndice => 'الوضع التجريبي: اسم المستخدم demo، كلمة المرور demo.';
 
   @override
   String get connexionSaisirCle => 'إدخال مفتاح التفعيل';
@@ -321,7 +321,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get connexionDeconnecter => 'تسجيل الخروج';
 
   @override
-  String get configTitre => 'الإعداد الأولي';
+  String get configTitre => 'مرحبًا بك في CaisseDZ';
 
   @override
   String configEtape(int n, int total) {
@@ -335,7 +335,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get configEtapeAdmin => 'المدير';
 
   @override
-  String get configEtapeVente => 'الهامش والبيع';
+  String get configEtapeVente => 'الهامش والمخزون';
 
   @override
   String get configEtapeRecap => 'الملخص';
@@ -368,16 +368,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get configAdminMotDePasseConfirmation => 'تأكيد كلمة المرور';
 
   @override
-  String get configMarge => 'الهامش الافتراضي (%)';
+  String get configMarge => 'الهامش الافتراضي';
 
   @override
   String get configMargeAide => 'يُطبّق لحساب سعر البيع من سعر الشراء للمنتجات الجديدة.';
 
   @override
-  String get configSeuil => 'حد تنبيه المخزون (عام)';
+  String get configSeuil => 'حد النفاد';
 
   @override
-  String get configFidelite => 'تفعيل الولاء (نقاط)';
+  String get configFidelite => 'الولاء';
 
   @override
   String get configPointsParDinar => 'النقاط المكتسبة لكل دينار';
@@ -386,7 +386,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get configDevise => 'العملة';
 
   @override
-  String get configLangue => 'لغة التطبيق';
+  String get configLangue => 'اللغة';
 
   @override
   String get configRecapIntro => 'تحقق من المعلومات قبل الإنهاء. يمكنك تعديلها لاحقًا في الإعدادات.';
@@ -3014,4 +3014,308 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get dsBarcodeImprimer => 'طباعة الملصق';
+
+  @override
+  String get moduleUtilisateurs => 'المستخدمون';
+
+  @override
+  String get connexionSousTitre => 'سجّل الدخول لفتح صندوقك.';
+
+  @override
+  String get connexionAfficher => 'إظهار';
+
+  @override
+  String get connexionMasquer => 'إخفاء';
+
+  @override
+  String get connexionResterConnecte => 'البقاء متصلًا';
+
+  @override
+  String get connexionMotDePasseOublie => 'نسيت كلمة المرور؟ راجع المسؤول';
+
+  @override
+  String get connexionHorsLigne => 'يعمل دون اتصال · البيانات محفوظة على هذا الجهاز';
+
+  @override
+  String get connexionDemoNonActivee => 'التطبيق غير مفعّل: سجّل الدخول بـ demo / demo لتجربته، أو أدخل مفتاحًا.';
+
+  @override
+  String get connexionErreurNonActivee => 'التطبيق غير مفعّل: الحساب demo / demo فقط متاح.';
+
+  @override
+  String get connexionNonActivee => 'غير مفعّل';
+
+  @override
+  String connexionVersion(String version, String licence) {
+    return 'الإصدار $version · $licence';
+  }
+
+  @override
+  String get connexionNouveaute => 'جديد · المسح الذكي';
+
+  @override
+  String get connexionAccroche => 'المبيعات والمخزون والصندوق — ببساطة وسرعة وأمان.';
+
+  @override
+  String get connexionAccrocheDetail =>
+      'امسح وصولات الشراء، تابع عدة مخازن واستلم المدفوعات بالفرنسية أو العربية أو الإنجليزية.';
+
+  @override
+  String get connexionAtoutHorsLigne => 'دون اتصال';
+
+  @override
+  String get connexionAtoutMultiMagasin => 'متعدد المخازن';
+
+  @override
+  String get activationNonActivee => 'غير مفعّل';
+
+  @override
+  String activationPalierDetecte(String palier) {
+    return 'المستوى المكتشف: $palier';
+  }
+
+  @override
+  String get activationPalierBasic => 'أساسي (مخزن واحد، صندوق واحد)';
+
+  @override
+  String get activationPalierAvance => 'متقدم (عدة مخازن، عدة صناديق)';
+
+  @override
+  String get activationUnMagasin => 'مخزن واحد';
+
+  @override
+  String get activationUneCaisse => 'صندوق واحد';
+
+  @override
+  String get activationMagasinsIllimites => 'مخازن غير محدودة وتحويلات';
+
+  @override
+  String get activationPlusieursCaisses => 'عدة صناديق';
+
+  @override
+  String get activationSmartScanQuota => 'المسح الذكي حسب حصة الخادم';
+
+  @override
+  String get activationRetourConnexion => 'تسجيل الدخول';
+
+  @override
+  String get activationReussieTitre => 'تم تفعيل التطبيق';
+
+  @override
+  String activationReussieDetail(String palier, String poste) {
+    return 'المستوى $palier · مرتبط بالجهاز $poste.';
+  }
+
+  @override
+  String get activationContinuer => 'متابعة';
+
+  @override
+  String get configDescription => 'أربع خطوات لإعداد المتجر. يبقى كل شيء قابلًا للتعديل في الإعدادات.';
+
+  @override
+  String get configEtapeLangue => 'اللغة والعملة';
+
+  @override
+  String get configEtapeLangueDetail => 'العرض';
+
+  @override
+  String get configEtapeBoutiqueDetail => 'التذكرة والبيانات';
+
+  @override
+  String get configEtapePaiements => 'المدفوعات';
+
+  @override
+  String get configEtapePaiementsDetail => 'الوسائل المقبولة';
+
+  @override
+  String get configEtapeVenteDetail => 'الأسعار والتنبيهات';
+
+  @override
+  String get configDecimales => 'أرقام الكميات العشرية';
+
+  @override
+  String get configDecimalesAide => '3 للبيع بالوزن';
+
+  @override
+  String get configBoutiqueNomIndice => 'مثال: متجر بن علي';
+
+  @override
+  String get configBoutiqueAdresseIndice => 'الشارع، البلدية، الولاية';
+
+  @override
+  String get configBoutiqueNis => 'ر.ت.إ';
+
+  @override
+  String get configBoutiqueArticle => 'مادة الضريبة';
+
+  @override
+  String get configBoutiqueMessage => 'رسالة التذكرة';
+
+  @override
+  String get configBoutiqueMessageIndice => 'شكرًا لزيارتكم!';
+
+  @override
+  String get configSeuilAide => 'حد عام، يُستبدل بحد المنتج إن وُجد';
+
+  @override
+  String get configFideliteActive => 'نقاط الولاء';
+
+  @override
+  String get configPlusTard => 'لاحقًا';
+
+  @override
+  String get compteIdentifiant => 'اسم المستخدم';
+
+  @override
+  String compteIdentite(String identifiant, String acces) {
+    return '@$identifiant · آخر دخول $acces';
+  }
+
+  @override
+  String get compteJamaisConnecte => 'أول دخول';
+
+  @override
+  String get compteOngletProfil => 'الملف الشخصي';
+
+  @override
+  String get compteOngletMotDePasse => 'كلمة المرور';
+
+  @override
+  String get compteCode => 'الرمز';
+
+  @override
+  String get compteMagasinDefaut => 'المخزن الافتراضي';
+
+  @override
+  String get compteConfirmer => 'تأكيد';
+
+  @override
+  String compteMotDePasseAide(int n) {
+    return '$n أحرف على الأقل';
+  }
+
+  @override
+  String get comptePreferencesAide => 'تنطبق هذه التفضيلات على هذا الجهاز.';
+
+  @override
+  String get alertesTitre => 'تنبيهات اليوم';
+
+  @override
+  String alertesResume(int urgentes, int surveiller) {
+    return '$urgentes عاجلة · $surveiller للمتابعة';
+  }
+
+  @override
+  String get alertesToutTraite => 'تمت معالجة الكل';
+
+  @override
+  String get alertesUrgent => 'عاجل';
+
+  @override
+  String get alertesASurveiller => 'للمتابعة';
+
+  @override
+  String get alertesNePlusAfficher => 'عدم الإظهار مجددًا اليوم';
+
+  @override
+  String get alertesLienParametres => 'الإعدادات › التنبيهات';
+
+  @override
+  String get alertesOuvrirModule => 'فتح الوحدة';
+
+  @override
+  String get alertesMarquerTraite => 'تعليم كمعالج';
+
+  @override
+  String get alertesRienTitre => 'لا شيء للإبلاغ';
+
+  @override
+  String get alertesRienDetail => 'تمت معالجة هذه الفئة من التنبيهات.';
+
+  @override
+  String get alertesMesureRupture => 'نفاد';
+
+  @override
+  String alertesOuverteDepuis(String date) {
+    return 'مفتوحة منذ $date';
+  }
+
+  @override
+  String alertesJours(int n) {
+    return 'ي−$n';
+  }
+
+  @override
+  String alertesDernierDocument(String code, String date) {
+    return '$code · آخر مستند في $date';
+  }
+
+  @override
+  String get alertesRupture => 'النفاد والحدود';
+
+  @override
+  String get alertesRuptureAide => 'منتجات نافدة أو تحت حد التنبيه.';
+
+  @override
+  String get alertesRuptureAction => 'إنشاء قائمة احتياجات';
+
+  @override
+  String get alertesRuptureLigne => 'طلب';
+
+  @override
+  String get alertesExpire => 'منتجات منتهية الصلاحية';
+
+  @override
+  String get alertesExpireAide => 'دفعات منتهية ما زالت في المخزون — يجب إخراجها قبل البيع.';
+
+  @override
+  String get alertesExpireAction => 'إخراج «منتهي الصلاحية»';
+
+  @override
+  String get alertesExpireLigne => 'إخراج';
+
+  @override
+  String get alertesSessions => 'جلسات مفتوحة';
+
+  @override
+  String get alertesSessionsAide => 'جلسات صندوق مفتوحة منذ يوم سابق.';
+
+  @override
+  String get alertesSessionsAction => 'إغلاق';
+
+  @override
+  String get alertesBientot => 'تنتهي قريبًا';
+
+  @override
+  String get alertesBientotAide => 'دفعات تنتهي خلال الثلاثين يومًا القادمة.';
+
+  @override
+  String get alertesBientotAction => 'إنشاء تخفيض';
+
+  @override
+  String get alertesBientotLigne => 'تخفيض';
+
+  @override
+  String get alertesClients => 'ديون الزبائن';
+
+  @override
+  String get alertesClientsAide => 'أكبر الديون الجارية.';
+
+  @override
+  String get alertesClientsAction => 'دفعة جديدة';
+
+  @override
+  String get alertesClientsLigne => 'تحصيل';
+
+  @override
+  String get alertesFournisseurs => 'ديون الموردين';
+
+  @override
+  String get alertesFournisseursAide => 'أكبر الديون وآخر شراء.';
+
+  @override
+  String get alertesFournisseursAction => 'تسوية جديدة';
+
+  @override
+  String get alertesFournisseursLigne => 'تسوية';
 }

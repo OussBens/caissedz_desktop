@@ -223,25 +223,26 @@ class AppLocalizationsFr extends AppLocalizations {
   String get galerieSombre => 'Sombre';
 
   @override
-  String get activationTitre => 'Activation de CaisseDZ';
+  String get activationTitre => 'Activer CaisseDZ';
 
   @override
-  String get activationIntro => 'Saisissez la clé d\'activation fournie pour cette machine, ou essayez le mode démo.';
+  String get activationIntro =>
+      'Envoyez l\'identifiant de ce poste à votre revendeur ; il vous remettra une clé liée à cet ordinateur.';
 
   @override
-  String get activationIdentifiantMachine => 'Identifiant de cette machine';
+  String get activationIdentifiantMachine => 'Identifiant du poste';
 
   @override
-  String get activationCopierIdentifiant => 'Copier l\'identifiant';
+  String get activationCopierIdentifiant => 'Copier';
 
   @override
-  String get activationIdentifiantCopie => 'Identifiant copié';
+  String get activationIdentifiantCopie => 'Copié';
 
   @override
-  String get activationCle => 'Clé d\'activation (64 caractères)';
+  String get activationCle => 'Clé de licence';
 
   @override
-  String get activationCleIndice => 'Clé SHA-256 de 64 caractères hexadécimaux';
+  String get activationCleIndice => 'Collez la clé complète dans la première case.';
 
   @override
   String get activationBouton => 'Activer';
@@ -257,8 +258,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get activationErreurFormat => 'La clé doit contenir exactement 64 caractères hexadécimaux (0-9, a-f).';
 
   @override
-  String get activationErreurInconnue =>
-      'Cette clé ne correspond pas à cette machine. Vérifiez la clé ou contactez votre revendeur.';
+  String get activationErreurInconnue => 'Clé invalide pour ce poste — vérifiez l\'identifiant envoyé.';
 
   @override
   String activationReussie(String niveau) {
@@ -290,10 +290,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get licenceGererCle => 'Activer une autre clé';
 
   @override
-  String get connexionTitre => 'Connexion';
+  String get connexionTitre => 'Bon retour';
 
   @override
-  String get connexionIdentifiant => 'Identifiant';
+  String get connexionIdentifiant => 'Nom d\'utilisateur';
 
   @override
   String get connexionMotDePasse => 'Mot de passe';
@@ -315,7 +315,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get connexionErreurDemo => 'Le compte demo/demo n\'est disponible qu\'en mode démo.';
 
   @override
-  String get connexionDemoIndice => 'Mode démo : identifiant demo, mot de passe demo';
+  String get connexionDemoIndice => 'Mode démo : nom d\'utilisateur demo, mot de passe demo.';
 
   @override
   String get connexionSaisirCle => 'Saisir une clé d\'activation';
@@ -324,7 +324,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get connexionDeconnecter => 'Se déconnecter';
 
   @override
-  String get configTitre => 'Configuration initiale';
+  String get configTitre => 'Bienvenue dans CaisseDZ';
 
   @override
   String configEtape(int n, int total) {
@@ -338,7 +338,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get configEtapeAdmin => 'Administrateur';
 
   @override
-  String get configEtapeVente => 'Marge et vente';
+  String get configEtapeVente => 'Marge et stock';
 
   @override
   String get configEtapeRecap => 'Récapitulatif';
@@ -372,16 +372,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get configAdminMotDePasseConfirmation => 'Confirmer le mot de passe';
 
   @override
-  String get configMarge => 'Marge par défaut (%)';
+  String get configMarge => 'Marge par défaut';
 
   @override
   String get configMargeAide => 'Appliquée au calcul du prix de vente à partir du prix d\'achat des nouveaux produits.';
 
   @override
-  String get configSeuil => 'Seuil d\'alerte de stock (global)';
+  String get configSeuil => 'Seuil de rupture';
 
   @override
-  String get configFidelite => 'Activer la fidélité (points)';
+  String get configFidelite => 'Fidélité';
 
   @override
   String get configPointsParDinar => 'Points gagnés par dinar';
@@ -390,7 +390,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get configDevise => 'Devise';
 
   @override
-  String get configLangue => 'Langue de l\'application';
+  String get configLangue => 'Langue';
 
   @override
   String get configRecapIntro =>
@@ -3027,4 +3027,310 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get dsBarcodeImprimer => 'Imprimer l\'étiquette';
+
+  @override
+  String get moduleUtilisateurs => 'Utilisateurs';
+
+  @override
+  String get connexionSousTitre => 'Connectez-vous pour ouvrir votre caisse.';
+
+  @override
+  String get connexionAfficher => 'Afficher';
+
+  @override
+  String get connexionMasquer => 'Masquer';
+
+  @override
+  String get connexionResterConnecte => 'Rester connecté';
+
+  @override
+  String get connexionMotDePasseOublie => 'Mot de passe oublié ? Voyez l\'administrateur';
+
+  @override
+  String get connexionHorsLigne => 'Fonctionne hors ligne · données stockées sur ce poste';
+
+  @override
+  String get connexionDemoNonActivee =>
+      'Application non activée : connectez-vous avec demo / demo pour l\'essayer, ou saisissez une clé.';
+
+  @override
+  String get connexionErreurNonActivee => 'Application non activée : seul le compte demo / demo est disponible.';
+
+  @override
+  String get connexionNonActivee => 'Non activée';
+
+  @override
+  String connexionVersion(String version, String licence) {
+    return 'Version $version · $licence';
+  }
+
+  @override
+  String get connexionNouveaute => 'Nouveau · Smart Scan IA';
+
+  @override
+  String get connexionAccroche => 'Ventes, stock et caisse — simple, rapide et sécurisé.';
+
+  @override
+  String get connexionAccrocheDetail =>
+      'Scannez vos bons d\'achat, suivez plusieurs magasins et encaissez en français, arabe ou anglais.';
+
+  @override
+  String get connexionAtoutHorsLigne => 'Hors ligne';
+
+  @override
+  String get connexionAtoutMultiMagasin => 'Multi-magasin';
+
+  @override
+  String get activationNonActivee => 'Non activée';
+
+  @override
+  String activationPalierDetecte(String palier) {
+    return 'Palier détecté : $palier';
+  }
+
+  @override
+  String get activationPalierBasic => 'Basic (1 magasin, 1 caisse)';
+
+  @override
+  String get activationPalierAvance => 'Avancé (multi-magasins, multi-caisses)';
+
+  @override
+  String get activationUnMagasin => '1 magasin';
+
+  @override
+  String get activationUneCaisse => '1 caisse';
+
+  @override
+  String get activationMagasinsIllimites => 'Magasins illimités et transferts';
+
+  @override
+  String get activationPlusieursCaisses => 'Plusieurs caisses';
+
+  @override
+  String get activationSmartScanQuota => 'Smart Scan IA selon quota serveur';
+
+  @override
+  String get activationRetourConnexion => 'Connexion';
+
+  @override
+  String get activationReussieTitre => 'Application activée';
+
+  @override
+  String activationReussieDetail(String palier, String poste) {
+    return 'Palier $palier · lié au poste $poste.';
+  }
+
+  @override
+  String get activationContinuer => 'Continuer';
+
+  @override
+  String get configDescription => 'Quatre étapes pour configurer la boutique. Tout reste modifiable dans Paramètres.';
+
+  @override
+  String get configEtapeLangue => 'Langue & devise';
+
+  @override
+  String get configEtapeLangueDetail => 'Affichage';
+
+  @override
+  String get configEtapeBoutiqueDetail => 'Ticket et mentions';
+
+  @override
+  String get configEtapePaiements => 'Paiements';
+
+  @override
+  String get configEtapePaiementsDetail => 'Moyens acceptés';
+
+  @override
+  String get configEtapeVenteDetail => 'Prix et alertes';
+
+  @override
+  String get configDecimales => 'Décimales des quantités';
+
+  @override
+  String get configDecimalesAide => '3 pour la vente au poids';
+
+  @override
+  String get configBoutiqueNomIndice => 'Ex. Supérette Benali';
+
+  @override
+  String get configBoutiqueAdresseIndice => 'Rue, commune, wilaya';
+
+  @override
+  String get configBoutiqueNis => 'NIS';
+
+  @override
+  String get configBoutiqueArticle => 'Article d\'imposition';
+
+  @override
+  String get configBoutiqueMessage => 'Message du ticket';
+
+  @override
+  String get configBoutiqueMessageIndice => 'Merci de votre visite !';
+
+  @override
+  String get configSeuilAide => 'Seuil global, remplacé par celui du produit s\'il est défini';
+
+  @override
+  String get configFideliteActive => 'Points de fidélité';
+
+  @override
+  String get configPlusTard => 'Plus tard';
+
+  @override
+  String get compteIdentifiant => 'Nom d\'utilisateur';
+
+  @override
+  String compteIdentite(String identifiant, String acces) {
+    return '@$identifiant · dernier accès $acces';
+  }
+
+  @override
+  String get compteJamaisConnecte => 'première connexion';
+
+  @override
+  String get compteOngletProfil => 'Profil';
+
+  @override
+  String get compteOngletMotDePasse => 'Mot de passe';
+
+  @override
+  String get compteCode => 'Code';
+
+  @override
+  String get compteMagasinDefaut => 'Magasin par défaut';
+
+  @override
+  String get compteConfirmer => 'Confirmer';
+
+  @override
+  String compteMotDePasseAide(int n) {
+    return '$n caractères minimum';
+  }
+
+  @override
+  String get comptePreferencesAide => 'Ces préférences s\'appliquent à ce poste.';
+
+  @override
+  String get alertesTitre => 'Alertes du jour';
+
+  @override
+  String alertesResume(int urgentes, int surveiller) {
+    String _temp0 = intl.Intl.pluralLogic(urgentes, locale: localeName, other: '$urgentes urgentes', one: '1 urgente');
+    return '$_temp0 · $surveiller à surveiller';
+  }
+
+  @override
+  String get alertesToutTraite => 'Tout est traité';
+
+  @override
+  String get alertesUrgent => 'Urgent';
+
+  @override
+  String get alertesASurveiller => 'À surveiller';
+
+  @override
+  String get alertesNePlusAfficher => 'Ne plus afficher aujourd\'hui';
+
+  @override
+  String get alertesLienParametres => 'Paramètres › Alertes';
+
+  @override
+  String get alertesOuvrirModule => 'Ouvrir le module';
+
+  @override
+  String get alertesMarquerTraite => 'Marquer comme traité';
+
+  @override
+  String get alertesRienTitre => 'Rien à signaler';
+
+  @override
+  String get alertesRienDetail => 'Cette famille d\'alertes est traitée.';
+
+  @override
+  String get alertesMesureRupture => 'Rupture';
+
+  @override
+  String alertesOuverteDepuis(String date) {
+    return 'Ouverte depuis le $date';
+  }
+
+  @override
+  String alertesJours(int n) {
+    return 'J−$n';
+  }
+
+  @override
+  String alertesDernierDocument(String code, String date) {
+    return '$code · dernier document le $date';
+  }
+
+  @override
+  String get alertesRupture => 'Ruptures et seuils';
+
+  @override
+  String get alertesRuptureAide => 'Produits épuisés ou sous leur seuil d\'alerte.';
+
+  @override
+  String get alertesRuptureAction => 'Créer une liste de besoins';
+
+  @override
+  String get alertesRuptureLigne => 'Commander';
+
+  @override
+  String get alertesExpire => 'Produits expirés';
+
+  @override
+  String get alertesExpireAide => 'Lots périmés encore en stock — à sortir avant la vente.';
+
+  @override
+  String get alertesExpireAction => 'Sortie « Périmé »';
+
+  @override
+  String get alertesExpireLigne => 'Sortir';
+
+  @override
+  String get alertesSessions => 'Sessions ouvertes';
+
+  @override
+  String get alertesSessionsAide => 'Sessions de caisse ouvertes depuis un jour précédent.';
+
+  @override
+  String get alertesSessionsAction => 'Clôturer';
+
+  @override
+  String get alertesBientot => 'Bientôt expirés';
+
+  @override
+  String get alertesBientotAide => 'Lots qui expirent dans les 30 prochains jours.';
+
+  @override
+  String get alertesBientotAction => 'Créer une remise';
+
+  @override
+  String get alertesBientotLigne => 'Remise';
+
+  @override
+  String get alertesClients => 'Crédits clients';
+
+  @override
+  String get alertesClientsAide => 'Les plus gros crédits en cours.';
+
+  @override
+  String get alertesClientsAction => 'Nouveau versement';
+
+  @override
+  String get alertesClientsLigne => 'Encaisser';
+
+  @override
+  String get alertesFournisseurs => 'Dettes fournisseurs';
+
+  @override
+  String get alertesFournisseursAide => 'Les plus grosses dettes et leur dernier achat.';
+
+  @override
+  String get alertesFournisseursAction => 'Nouveau règlement';
+
+  @override
+  String get alertesFournisseursLigne => 'Régler';
 }

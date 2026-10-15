@@ -75,18 +75,16 @@ class ParametresService {
     });
   }
 
-  Future<ParametresVente> lireVente() async => ParametresVente.depuisCles(
-    await ParametreRepository(db).lirePlusieurs([
-      ParametresVente.cleMarge,
-      ParametresVente.cleSeuil,
-      ParametresVente.cleFidelite,
-      ParametresVente.clePoints,
-      ParametresVente.cleDevise,
-    ]),
-  );
+  Future<ParametresVente> lireVente() async =>
+      ParametresVente.depuisCles(await ParametreRepository(db).lirePlusieurs(ParametresVente.cles));
 
   Future<void> enregistrerVente(ParametresVente p) async {
-    if (p.margeDefautPct < 0 || p.margeDefautPct > 1000 || p.seuilStockGlobal < 0 || p.pointsParDinar < 0) {
+    if (p.margeDefautPct < 0 ||
+        p.margeDefautPct > 1000 ||
+        p.seuilStockGlobal < 0 ||
+        p.pointsParDinar < 0 ||
+        p.decimalesQuantite < 0 ||
+        p.decimalesQuantite > 3) {
       throw const ParametresException(ErreurParametres.valeurInvalide);
     }
     if (p.devise.trim().isEmpty) throw const ParametresException(ErreurParametres.valeurInvalide, 'devise');

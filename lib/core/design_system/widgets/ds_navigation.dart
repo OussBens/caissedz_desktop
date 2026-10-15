@@ -191,7 +191,14 @@ class DsSidebar extends StatelessWidget {
             child: Row(
               mainAxisAlignment: replie ? MainAxisAlignment.center : MainAxisAlignment.spaceBetween,
               children: [
-                if (!replie) const DsLogo(),
+                if (!replie)
+                  const Flexible(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: AlignmentDirectional.centerStart,
+                      child: DsLogo(),
+                    ),
+                  ),
                 if (onBasculer != null)
                   DsIconButton(
                     icone: replie ? LucideIcons.panelLeftOpen : LucideIcons.panelLeftClose,

@@ -20,13 +20,13 @@ void main() {
     await tester.tap(caseCaissier);
     await tester.pumpAndSettle();
     expect(tester.widget<Checkbox>(caseCaissier).value, isTrue);
-    await clic(tester, find.byKey(const ValueKey('perm_Magasinier_clotures')));
+    await clic(tester, find.byKey(const ValueKey('perm_Magasinier_zakat')));
     await tester.scrollUntilVisible(find.text('Enregistrer'), -300, scrollable: find.byType(Scrollable).last);
     await clic(tester, find.text('Enregistrer'));
     expect(find.text('Grille des rôles enregistrée.'), findsOneWidget);
     final grille = await c.read(permissionServiceProvider).lireGrille();
     expect(grille.permissions[Roles.caissier], contains(Permission.voirPrixAchat));
-    expect(grille.modules[Roles.magasinier], contains('clotures'));
+    expect(grille.modules[Roles.magasinier], contains('zakat'));
     expect(grille.permissions[Roles.admin], Permission.values.toSet());
   });
 }

@@ -10,6 +10,7 @@ class Utilisateur {
     required this.role,
     this.actif = true,
     this.systeme = false,
+    this.dernierAcces,
   });
 
   final String code;
@@ -21,6 +22,9 @@ class Utilisateur {
   final bool actif;
   final bool systeme;
 
+  /// Dernière connexion réussie (§5.4).
+  final DateTime? dernierAcces;
+
   Utilisateur copyWith({String? identifiant, String? nom, String? role, bool? actif}) => Utilisateur(
     code: code,
     identifiant: identifiant ?? this.identifiant,
@@ -28,6 +32,7 @@ class Utilisateur {
     role: role ?? this.role,
     actif: actif ?? this.actif,
     systeme: systeme,
+    dernierAcces: dernierAcces,
   );
 
   factory Utilisateur.depuisLigne(Map<String, Object?> r) => Utilisateur(
@@ -37,6 +42,7 @@ class Utilisateur {
     role: r['role'] as String,
     actif: (r['actif'] as int) == 1,
     systeme: (r['systeme'] as int) == 1,
+    dernierAcces: DateTime.tryParse((r['dernier_acces'] as String?) ?? '')?.toLocal(),
   );
 
   @override

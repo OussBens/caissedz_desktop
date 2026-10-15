@@ -1,37 +1,55 @@
 import 'package:caissedz_desktop/app/demarrage_providers.dart';
-import 'package:caissedz_desktop/features/compte/mon_compte_page.dart';
+import 'package:caissedz_desktop/features/connexion/connexion_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../helpers/app_test_helper.dart';
 
 void main() {
+  Future<void> ouvrir(WidgetTester tester) async {
+    await clic(tester, find.byKey(const ValueKey('topbar_compte')));
+    expect(find.byKey(const ValueKey('dialog_mon_compte')), findsOneWidget);
+  }
+
   group('Mon compte', () {
     testWidgets('changement d’identifiant : mot de passe exigé, puis session mise à jour', (tester) async {
-      final c = await pumpApp(
-        tester,
-        etat: EtatApp.connecteeAdmin,
-        routeInitiale: MonComptePage.route,
-        taille: const Size(1400, 900),
-      );
-      expect(find.text('Identifiant actuel : gerant'), findsOneWidget);
-      final champs = find.byType(TextField);
-      await tester.enterText(champs.at(0), 'karim.b');
-      await tester.enterText(champs.at(1), 'faux');
-      await clic(tester, find.text("Changer l'identifiant").last);
+      final c = await pumpApp(tester, etat: EtatApp.connecteeAdmin);
+      await ouvrir(tester);
+      expect(find.byKey(const ValueKey('compte_mdp_identifiant')), findsNothing);
+      await tester.enterText(find.byKey(const ValueKey('compte_identifiant')), 'karim.b');
+      await tester.pump();
+      expect(find.byKey(const ValueKey('compte_mdp_identifiant')), findsOneWidget);
+      await tester.enterText(find.byKey(const ValueKey('compte_mdp_identifiant')), 'faux');
+      await clic(tester, find.byKey(const ValueKey('compte_enregistrer')));
       expect(find.text('Mot de passe actuel incorrect.'), findsOneWidget);
-      await tester.enterText(champs.at(1), 'azerty');
-      await clic(tester, find.text("Changer l'identifiant").last);
+      await tester.enterText(find.byKey(const ValueKey('compte_mdp_identifiant')), motDePasseAdmin);
+      await clic(tester, find.byKey(const ValueKey('compte_enregistrer')));
       expect(find.textContaining('connectez-vous désormais avec « karim.b »'), findsOneWidget);
       await clic(tester, find.text('Fermer').last);
       expect(c.read(sessionProvider)!.utilisateur.identifiant, 'karim.b');
-      expect(find.text('Identifiant actuel : karim.b'), findsOneWidget);
+    });
+
+    testWidgets('changement de mot de passe puis reconnexion', (tester) async {
+      final c = await pumpApp(tester, etat: EtatApp.connecteeAdmin);
+      await ouvrir(tester);
+      await clic(tester, find.text('Mot de passe').last);
+      await tester.enterText(find.byKey(const ValueKey('compte_mdp_actuel')), motDePasseAdmin);
+      await tester.enterText(find.byKey(const ValueKey('compte_mdp_nouveau')), 'nouveau1');
+      await tester.enterText(find.byKey(const ValueKey('compte_mdp_confirmation')), 'nouveau1');
+      await clic(tester, find.byKey(const ValueKey('compte_enregistrer')));
+      await clic(tester, find.text('Fermer').last);
+      await clic(tester, find.byKey(const ValueKey('compte_deconnexion')));
+      expect(find.byType(ConnexionPage), findsOneWidget);
+      await c.read(sessionProvider.notifier).connecter(identifiantAdmin, 'nouveau1');
+      expect(c.read(sessionProvider), isNotNull);
+      await tester.pumpAndSettle();
     });
 
     testWidgets('compte démo : modification impossible', (tester) async {
-      await pumpApp(tester, etat: EtatApp.connecteeDemo, routeInitiale: MonComptePage.route);
+      await pumpApp(tester, etat: EtatApp.connecteeDemo);
+      await ouvrir(tester);
       expect(find.text('Le compte de démonstration ne peut pas être modifié.'), findsOneWidget);
-      expect(find.text("Changer l'identifiant"), findsNothing);
+      expect(find.byKey(const ValueKey('compte_enregistrer')), findsNothing);
     });
   });
 }

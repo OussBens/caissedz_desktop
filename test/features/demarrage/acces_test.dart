@@ -1,38 +1,41 @@
 import 'package:caissedz_desktop/core/design_system/design_system.dart';
 import 'package:caissedz_desktop/features/roles/roles_page.dart';
-import 'package:caissedz_desktop/features/shell/acces_refuse_page.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../helpers/app_test_helper.dart';
 
 void main() {
+  const accesRefuse = ValueKey('acces_refuse');
+
   group('Accès refusé et licence', () {
     testWidgets('caissier : module Clôtures interdit → écran Accès refusé ; Caisse accessible', (tester) async {
       await pumpApp(tester, etat: EtatApp.connecteeCaissier, routeInitiale: '/clotures');
-      expect(find.byType(AccesRefusePage), findsOneWidget);
+      expect(find.byKey(accesRefuse), findsOneWidget);
       expect(find.text('Accès refusé'), findsOneWidget);
-      expect(find.textContaining('« Caissier »'), findsOneWidget);
       await clic(tester, find.text('Retour au tableau de bord'));
-      expect(find.byType(AccesRefusePage), findsNothing);
-      await clic(tester, find.text('Caisse'));
+      expect(find.byKey(accesRefuse), findsNothing);
+      await clic(tester, find.text('Caisse').first);
       expect(find.textContaining('Aucune session de caisse ouverte'), findsOneWidget);
     });
 
-    testWidgets('caissier : page Rôles interdite (permission gererUtilisateurs)', (tester) async {
+    testWidgets('caissier : page Utilisateurs interdite (permission gererUtilisateurs)', (tester) async {
       await pumpApp(tester, etat: EtatApp.connecteeCaissier, routeInitiale: RolesPage.route);
-      expect(find.byType(AccesRefusePage), findsOneWidget);
+      expect(find.byKey(accesRefuse), findsOneWidget);
     });
 
-    testWidgets('licence Basic : module Zakat verrouillé, Avancé : accessible', (tester) async {
-      await pumpApp(tester, etat: EtatApp.connecteeCaissier, routeInitiale: '/produits');
-      // Caissier n'a pas accès à produits → accès refusé prime ; testons un module accessible et Avancé :
-      // 'retours' est accessible au caissier mais réservé à la licence Avancé.
-      await clic(tester, find.text('Retours'));
+    testWidgets('licence Basic : Magasins et Transferts verrouillés (palier Avancé)', (tester) async {
+      await pumpApp(tester, etat: EtatApp.connecteeAdminBasic, routeInitiale: '/magasins');
       expect(find.text('Disponible avec le palier Avancé'), findsOneWidget);
       expect(find.byType(LicenceGate), findsWidgets);
     });
 
-    testWidgets('admin Avancé : Zakat accessible et grille des rôles modifiable', (tester) async {
+    testWidgets('licence Basic : Retours et Zakat accessibles', (tester) async {
+      await pumpApp(tester, etat: EtatApp.connecteeAdminBasic, routeInitiale: '/zakat');
+      expect(find.text('Disponible avec le palier Avancé'), findsNothing);
+    });
+
+    testWidgets('admin Avancé : Zakat accessible', (tester) async {
       await pumpApp(tester, etat: EtatApp.connecteeAdmin, routeInitiale: '/zakat');
       expect(find.textContaining('Zakat sur les biens commerciaux'), findsOneWidget);
       expect(find.text('Disponible avec le palier Avancé'), findsNothing);

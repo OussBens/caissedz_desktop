@@ -226,22 +226,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get activationTitre => 'Activate CaisseDZ';
 
   @override
-  String get activationIntro => 'Enter the activation key issued for this machine, or try the demo mode.';
+  String get activationIntro =>
+      'Send this computer\'s identifier to your reseller; they will give you a key tied to this computer.';
 
   @override
-  String get activationIdentifiantMachine => 'This machine\'s identifier';
+  String get activationIdentifiantMachine => 'Computer identifier';
 
   @override
-  String get activationCopierIdentifiant => 'Copy identifier';
+  String get activationCopierIdentifiant => 'Copy';
 
   @override
-  String get activationIdentifiantCopie => 'Identifier copied';
+  String get activationIdentifiantCopie => 'Copied';
 
   @override
-  String get activationCle => 'Activation key (64 characters)';
+  String get activationCle => 'Licence key';
 
   @override
-  String get activationCleIndice => '64-character hexadecimal SHA-256 key';
+  String get activationCleIndice => 'Paste the full key into the first box.';
 
   @override
   String get activationBouton => 'Activate';
@@ -257,8 +258,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get activationErreurFormat => 'The key must contain exactly 64 hexadecimal characters (0-9, a-f).';
 
   @override
-  String get activationErreurInconnue =>
-      'This key does not match this machine. Check the key or contact your reseller.';
+  String get activationErreurInconnue => 'Invalid key for this computer — check the identifier you sent.';
 
   @override
   String activationReussie(String niveau) {
@@ -290,7 +290,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get licenceGererCle => 'Activate another key';
 
   @override
-  String get connexionTitre => 'Sign in';
+  String get connexionTitre => 'Welcome back';
 
   @override
   String get connexionIdentifiant => 'Username';
@@ -314,7 +314,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get connexionErreurDemo => 'The demo/demo account is only available in demo mode.';
 
   @override
-  String get connexionDemoIndice => 'Demo mode: username demo, password demo';
+  String get connexionDemoIndice => 'Demo mode: username demo, password demo.';
 
   @override
   String get connexionSaisirCle => 'Enter an activation key';
@@ -323,7 +323,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get connexionDeconnecter => 'Sign out';
 
   @override
-  String get configTitre => 'Initial setup';
+  String get configTitre => 'Welcome to CaisseDZ';
 
   @override
   String configEtape(int n, int total) {
@@ -337,7 +337,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get configEtapeAdmin => 'Administrator';
 
   @override
-  String get configEtapeVente => 'Margin and sales';
+  String get configEtapeVente => 'Margin and stock';
 
   @override
   String get configEtapeRecap => 'Summary';
@@ -370,16 +370,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get configAdminMotDePasseConfirmation => 'Confirm password';
 
   @override
-  String get configMarge => 'Default margin (%)';
+  String get configMarge => 'Default margin';
 
   @override
   String get configMargeAide => 'Used to compute the selling price from the purchase price of new products.';
 
   @override
-  String get configSeuil => 'Stock alert threshold (global)';
+  String get configSeuil => 'Stock-out threshold';
 
   @override
-  String get configFidelite => 'Enable loyalty (points)';
+  String get configFidelite => 'Loyalty';
 
   @override
   String get configPointsParDinar => 'Points earned per dinar';
@@ -388,7 +388,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get configDevise => 'Currency';
 
   @override
-  String get configLangue => 'Application language';
+  String get configLangue => 'Language';
 
   @override
   String get configRecapIntro => 'Check the information before finishing. You can change it later in Settings.';
@@ -3017,4 +3017,309 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dsBarcodeImprimer => 'Print label';
+
+  @override
+  String get moduleUtilisateurs => 'Users';
+
+  @override
+  String get connexionSousTitre => 'Sign in to open your till.';
+
+  @override
+  String get connexionAfficher => 'Show';
+
+  @override
+  String get connexionMasquer => 'Hide';
+
+  @override
+  String get connexionResterConnecte => 'Stay signed in';
+
+  @override
+  String get connexionMotDePasseOublie => 'Forgot your password? See the administrator';
+
+  @override
+  String get connexionHorsLigne => 'Works offline · data stored on this computer';
+
+  @override
+  String get connexionDemoNonActivee =>
+      'Application not activated: sign in with demo / demo to try it, or enter a key.';
+
+  @override
+  String get connexionErreurNonActivee => 'Application not activated: only the demo / demo account is available.';
+
+  @override
+  String get connexionNonActivee => 'Not activated';
+
+  @override
+  String connexionVersion(String version, String licence) {
+    return 'Version $version · $licence';
+  }
+
+  @override
+  String get connexionNouveaute => 'New · AI Smart Scan';
+
+  @override
+  String get connexionAccroche => 'Sales, stock and till — simple, fast and secure.';
+
+  @override
+  String get connexionAccrocheDetail =>
+      'Scan your purchase slips, track several stores and take payments in French, Arabic or English.';
+
+  @override
+  String get connexionAtoutHorsLigne => 'Offline';
+
+  @override
+  String get connexionAtoutMultiMagasin => 'Multi-store';
+
+  @override
+  String get activationNonActivee => 'Not activated';
+
+  @override
+  String activationPalierDetecte(String palier) {
+    return 'Detected tier: $palier';
+  }
+
+  @override
+  String get activationPalierBasic => 'Basic (1 store, 1 till)';
+
+  @override
+  String get activationPalierAvance => 'Advanced (multi-store, multi-till)';
+
+  @override
+  String get activationUnMagasin => '1 store';
+
+  @override
+  String get activationUneCaisse => '1 till';
+
+  @override
+  String get activationMagasinsIllimites => 'Unlimited stores and transfers';
+
+  @override
+  String get activationPlusieursCaisses => 'Several tills';
+
+  @override
+  String get activationSmartScanQuota => 'AI Smart Scan within server quota';
+
+  @override
+  String get activationRetourConnexion => 'Sign in';
+
+  @override
+  String get activationReussieTitre => 'Application activated';
+
+  @override
+  String activationReussieDetail(String palier, String poste) {
+    return '$palier tier · tied to computer $poste.';
+  }
+
+  @override
+  String get activationContinuer => 'Continue';
+
+  @override
+  String get configDescription => 'Four steps to set up the shop. Everything can be changed later in Settings.';
+
+  @override
+  String get configEtapeLangue => 'Language & currency';
+
+  @override
+  String get configEtapeLangueDetail => 'Display';
+
+  @override
+  String get configEtapeBoutiqueDetail => 'Receipt and legal details';
+
+  @override
+  String get configEtapePaiements => 'Payments';
+
+  @override
+  String get configEtapePaiementsDetail => 'Accepted methods';
+
+  @override
+  String get configEtapeVenteDetail => 'Prices and alerts';
+
+  @override
+  String get configDecimales => 'Quantity decimals';
+
+  @override
+  String get configDecimalesAide => '3 for sales by weight';
+
+  @override
+  String get configBoutiqueNomIndice => 'e.g. Benali Grocery';
+
+  @override
+  String get configBoutiqueAdresseIndice => 'Street, municipality, wilaya';
+
+  @override
+  String get configBoutiqueNis => 'NIS';
+
+  @override
+  String get configBoutiqueArticle => 'Tax article';
+
+  @override
+  String get configBoutiqueMessage => 'Receipt message';
+
+  @override
+  String get configBoutiqueMessageIndice => 'Thank you for your visit!';
+
+  @override
+  String get configSeuilAide => 'Global threshold, overridden by the product\'s own when set';
+
+  @override
+  String get configFideliteActive => 'Loyalty points';
+
+  @override
+  String get configPlusTard => 'Later';
+
+  @override
+  String get compteIdentifiant => 'Username';
+
+  @override
+  String compteIdentite(String identifiant, String acces) {
+    return '@$identifiant · last access $acces';
+  }
+
+  @override
+  String get compteJamaisConnecte => 'first sign-in';
+
+  @override
+  String get compteOngletProfil => 'Profile';
+
+  @override
+  String get compteOngletMotDePasse => 'Password';
+
+  @override
+  String get compteCode => 'Code';
+
+  @override
+  String get compteMagasinDefaut => 'Default store';
+
+  @override
+  String get compteConfirmer => 'Confirm';
+
+  @override
+  String compteMotDePasseAide(int n) {
+    return 'At least $n characters';
+  }
+
+  @override
+  String get comptePreferencesAide => 'These preferences apply to this computer.';
+
+  @override
+  String get alertesTitre => 'Today\'s alerts';
+
+  @override
+  String alertesResume(int urgentes, int surveiller) {
+    return '$urgentes urgent · $surveiller to watch';
+  }
+
+  @override
+  String get alertesToutTraite => 'All handled';
+
+  @override
+  String get alertesUrgent => 'Urgent';
+
+  @override
+  String get alertesASurveiller => 'To watch';
+
+  @override
+  String get alertesNePlusAfficher => 'Don\'t show again today';
+
+  @override
+  String get alertesLienParametres => 'Settings › Alerts';
+
+  @override
+  String get alertesOuvrirModule => 'Open module';
+
+  @override
+  String get alertesMarquerTraite => 'Mark as handled';
+
+  @override
+  String get alertesRienTitre => 'Nothing to report';
+
+  @override
+  String get alertesRienDetail => 'This alert family is handled.';
+
+  @override
+  String get alertesMesureRupture => 'Out of stock';
+
+  @override
+  String alertesOuverteDepuis(String date) {
+    return 'Open since $date';
+  }
+
+  @override
+  String alertesJours(int n) {
+    return 'D−$n';
+  }
+
+  @override
+  String alertesDernierDocument(String code, String date) {
+    return '$code · last document on $date';
+  }
+
+  @override
+  String get alertesRupture => 'Stock-outs and thresholds';
+
+  @override
+  String get alertesRuptureAide => 'Products out of stock or below their alert threshold.';
+
+  @override
+  String get alertesRuptureAction => 'Create a needs list';
+
+  @override
+  String get alertesRuptureLigne => 'Order';
+
+  @override
+  String get alertesExpire => 'Expired products';
+
+  @override
+  String get alertesExpireAide => 'Expired batches still in stock — remove before selling.';
+
+  @override
+  String get alertesExpireAction => '\"Expired\" removal';
+
+  @override
+  String get alertesExpireLigne => 'Remove';
+
+  @override
+  String get alertesSessions => 'Open sessions';
+
+  @override
+  String get alertesSessionsAide => 'Till sessions opened on a previous day.';
+
+  @override
+  String get alertesSessionsAction => 'Close';
+
+  @override
+  String get alertesBientot => 'Expiring soon';
+
+  @override
+  String get alertesBientotAide => 'Batches expiring within the next 30 days.';
+
+  @override
+  String get alertesBientotAction => 'Create a discount';
+
+  @override
+  String get alertesBientotLigne => 'Discount';
+
+  @override
+  String get alertesClients => 'Customer credit';
+
+  @override
+  String get alertesClientsAide => 'The largest outstanding credits.';
+
+  @override
+  String get alertesClientsAction => 'New payment';
+
+  @override
+  String get alertesClientsLigne => 'Collect';
+
+  @override
+  String get alertesFournisseurs => 'Supplier debts';
+
+  @override
+  String get alertesFournisseursAide => 'The largest debts and their latest purchase.';
+
+  @override
+  String get alertesFournisseursAction => 'New settlement';
+
+  @override
+  String get alertesFournisseursLigne => 'Settle';
 }

@@ -29,7 +29,7 @@ void main() {
     addTearDown(c.dispose);
     await c.read(licenceProvider.notifier).activerDemo();
     await c.read(configurationTermineeProvider.notifier).terminer(configurationTest());
-    await c.read(sessionProvider.notifier).connecter('gerant', 'azerty');
+    await c.read(sessionProvider.notifier).connecter(identifiantAdmin, motDePasseAdmin);
     final cat = CatalogueService(base.db, utilisateurCode: 'USR0000');
     lait = await cat.creerProduit(
       const Produit(

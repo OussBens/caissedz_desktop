@@ -96,18 +96,18 @@
   "galerieLangue": "Langue",
   "galerieClair": "Clair",
   "galerieSombre": "Sombre",
-  "activationTitre": "Activation de CaisseDZ",
-  "activationIntro": "Saisissez la clé d'activation fournie pour cette machine, ou essayez le mode démo.",
-  "activationIdentifiantMachine": "Identifiant de cette machine",
-  "activationCopierIdentifiant": "Copier l'identifiant",
-  "activationIdentifiantCopie": "Identifiant copié",
-  "activationCle": "Clé d'activation (64 caractères)",
-  "activationCleIndice": "Clé SHA-256 de 64 caractères hexadécimaux",
+  "activationTitre": "Activer CaisseDZ",
+  "activationIntro": "Envoyez l'identifiant de ce poste à votre revendeur ; il vous remettra une clé liée à cet ordinateur.",
+  "activationIdentifiantMachine": "Identifiant du poste",
+  "activationCopierIdentifiant": "Copier",
+  "activationIdentifiantCopie": "Copié",
+  "activationCle": "Clé de licence",
+  "activationCleIndice": "Collez la clé complète dans la première case.",
   "activationBouton": "Activer",
   "activationDemo": "Essayer en mode démo",
   "activationDemoAide": "Le mode démo ouvre toutes les fonctions (licence Avancé) avec le compte demo / demo. Les données saisies ne sont pas destinées à la production.",
   "activationErreurFormat": "La clé doit contenir exactement 64 caractères hexadécimaux (0-9, a-f).",
-  "activationErreurInconnue": "Cette clé ne correspond pas à cette machine. Vérifiez la clé ou contactez votre revendeur.",
+  "activationErreurInconnue": "Clé invalide pour ce poste — vérifiez l'identifiant envoyé.",
   "activationReussie": "Licence {niveau} activée.",
   "@activationReussie": {
     "placeholders": {
@@ -130,18 +130,18 @@
   "licenceRequise": "Fonction disponible avec la licence Avancé",
   "licenceRequiseDetail": "Votre licence actuelle est Basic. Activez une licence Avancé pour accéder à ce module.",
   "licenceGererCle": "Activer une autre clé",
-  "connexionTitre": "Connexion",
-  "connexionIdentifiant": "Identifiant",
+  "connexionTitre": "Bon retour",
+  "connexionIdentifiant": "Nom d'utilisateur",
   "connexionMotDePasse": "Mot de passe",
   "connexionBouton": "Se connecter",
   "connexionErreurIdentifiants": "Identifiant ou mot de passe incorrect.",
   "connexionErreurInactif": "Ce compte est désactivé.",
   "connexionErreurNonConfigure": "Ce compte n'a pas encore de mot de passe : terminez la configuration initiale.",
   "connexionErreurDemo": "Le compte demo/demo n'est disponible qu'en mode démo.",
-  "connexionDemoIndice": "Mode démo : identifiant demo, mot de passe demo",
+  "connexionDemoIndice": "Mode démo : nom d'utilisateur demo, mot de passe demo.",
   "connexionSaisirCle": "Saisir une clé d'activation",
   "connexionDeconnecter": "Se déconnecter",
-  "configTitre": "Configuration initiale",
+  "configTitre": "Bienvenue dans CaisseDZ",
   "configEtape": "Étape {n} sur {total}",
   "@configEtape": {
     "placeholders": {
@@ -155,7 +155,7 @@
   },
   "configEtapeBoutique": "Boutique",
   "configEtapeAdmin": "Administrateur",
-  "configEtapeVente": "Marge et vente",
+  "configEtapeVente": "Marge et stock",
   "configEtapeRecap": "Récapitulatif",
   "configBoutiqueNom": "Nom de la boutique",
   "configBoutiqueRc": "Registre de commerce (RC)",
@@ -166,13 +166,13 @@
   "configAdminIntro": "Ce compte administrateur aura tous les droits. Choisissez un identifiant et un mot de passe.",
   "configAdminNom": "Nom affiché",
   "configAdminMotDePasseConfirmation": "Confirmer le mot de passe",
-  "configMarge": "Marge par défaut (%)",
+  "configMarge": "Marge par défaut",
   "configMargeAide": "Appliquée au calcul du prix de vente à partir du prix d'achat des nouveaux produits.",
-  "configSeuil": "Seuil d'alerte de stock (global)",
-  "configFidelite": "Activer la fidélité (points)",
+  "configSeuil": "Seuil de rupture",
+  "configFidelite": "Fidélité",
   "configPointsParDinar": "Points gagnés par dinar",
   "configDevise": "Devise",
-  "configLangue": "Langue de l'application",
+  "configLangue": "Langue",
   "configRecapIntro": "Vérifiez les informations avant de terminer. Vous pourrez les modifier plus tard dans Paramètres.",
   "configPrecedent": "Précédent",
   "configSuivant": "Suivant",
@@ -1523,5 +1523,178 @@
   "dsBarcodeGenerer": "Générer",
   "dsBarcodeFormatLibre": "Format libre (non EAN-13)",
   "dsBarcodeCopier": "Copier",
-  "dsBarcodeImprimer": "Imprimer l'étiquette"
+  "dsBarcodeImprimer": "Imprimer l'étiquette",
+  "moduleUtilisateurs": "Utilisateurs",
+  "connexionSousTitre": "Connectez-vous pour ouvrir votre caisse.",
+  "connexionAfficher": "Afficher",
+  "connexionMasquer": "Masquer",
+  "connexionResterConnecte": "Rester connecté",
+  "connexionMotDePasseOublie": "Mot de passe oublié ? Voyez l'administrateur",
+  "connexionHorsLigne": "Fonctionne hors ligne · données stockées sur ce poste",
+  "connexionDemoNonActivee": "Application non activée : connectez-vous avec demo / demo pour l'essayer, ou saisissez une clé.",
+  "connexionErreurNonActivee": "Application non activée : seul le compte demo / demo est disponible.",
+  "connexionNonActivee": "Non activée",
+  "connexionVersion": "Version {version} · {licence}",
+  "@connexionVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      },
+      "licence": {
+        "type": "String"
+      }
+    }
+  },
+  "connexionNouveaute": "Nouveau · Smart Scan IA",
+  "connexionAccroche": "Ventes, stock et caisse — simple, rapide et sécurisé.",
+  "connexionAccrocheDetail": "Scannez vos bons d'achat, suivez plusieurs magasins et encaissez en français, arabe ou anglais.",
+  "connexionAtoutHorsLigne": "Hors ligne",
+  "connexionAtoutMultiMagasin": "Multi-magasin",
+  "activationNonActivee": "Non activée",
+  "activationPalierDetecte": "Palier détecté : {palier}",
+  "@activationPalierDetecte": {
+    "placeholders": {
+      "palier": {
+        "type": "String"
+      }
+    }
+  },
+  "activationPalierBasic": "Basic (1 magasin, 1 caisse)",
+  "activationPalierAvance": "Avancé (multi-magasins, multi-caisses)",
+  "activationUnMagasin": "1 magasin",
+  "activationUneCaisse": "1 caisse",
+  "activationMagasinsIllimites": "Magasins illimités et transferts",
+  "activationPlusieursCaisses": "Plusieurs caisses",
+  "activationSmartScanQuota": "Smart Scan IA selon quota serveur",
+  "activationRetourConnexion": "Connexion",
+  "activationReussieTitre": "Application activée",
+  "activationReussieDetail": "Palier {palier} · lié au poste {poste}.",
+  "@activationReussieDetail": {
+    "placeholders": {
+      "palier": {
+        "type": "String"
+      },
+      "poste": {
+        "type": "String"
+      }
+    }
+  },
+  "activationContinuer": "Continuer",
+  "configDescription": "Quatre étapes pour configurer la boutique. Tout reste modifiable dans Paramètres.",
+  "configEtapeLangue": "Langue & devise",
+  "configEtapeLangueDetail": "Affichage",
+  "configEtapeBoutiqueDetail": "Ticket et mentions",
+  "configEtapePaiements": "Paiements",
+  "configEtapePaiementsDetail": "Moyens acceptés",
+  "configEtapeVenteDetail": "Prix et alertes",
+  "configDecimales": "Décimales des quantités",
+  "configDecimalesAide": "3 pour la vente au poids",
+  "configBoutiqueNomIndice": "Ex. Supérette Benali",
+  "configBoutiqueAdresseIndice": "Rue, commune, wilaya",
+  "configBoutiqueNis": "NIS",
+  "configBoutiqueArticle": "Article d'imposition",
+  "configBoutiqueMessage": "Message du ticket",
+  "configBoutiqueMessageIndice": "Merci de votre visite !",
+  "configSeuilAide": "Seuil global, remplacé par celui du produit s'il est défini",
+  "configFideliteActive": "Points de fidélité",
+  "configPlusTard": "Plus tard",
+  "compteIdentifiant": "Nom d'utilisateur",
+  "compteIdentite": "@{identifiant} · dernier accès {acces}",
+  "@compteIdentite": {
+    "placeholders": {
+      "identifiant": {
+        "type": "String"
+      },
+      "acces": {
+        "type": "String"
+      }
+    }
+  },
+  "compteJamaisConnecte": "première connexion",
+  "compteOngletProfil": "Profil",
+  "compteOngletMotDePasse": "Mot de passe",
+  "compteCode": "Code",
+  "compteMagasinDefaut": "Magasin par défaut",
+  "compteConfirmer": "Confirmer",
+  "compteMotDePasseAide": "{n} caractères minimum",
+  "@compteMotDePasseAide": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "comptePreferencesAide": "Ces préférences s'appliquent à ce poste.",
+  "alertesTitre": "Alertes du jour",
+  "alertesResume": "{urgentes, plural, =1{1 urgente} other{{urgentes} urgentes}} · {surveiller} à surveiller",
+  "@alertesResume": {
+    "placeholders": {
+      "urgentes": {
+        "type": "int"
+      },
+      "surveiller": {
+        "type": "int"
+      }
+    }
+  },
+  "alertesToutTraite": "Tout est traité",
+  "alertesUrgent": "Urgent",
+  "alertesASurveiller": "À surveiller",
+  "alertesNePlusAfficher": "Ne plus afficher aujourd'hui",
+  "alertesLienParametres": "Paramètres › Alertes",
+  "alertesOuvrirModule": "Ouvrir le module",
+  "alertesMarquerTraite": "Marquer comme traité",
+  "alertesRienTitre": "Rien à signaler",
+  "alertesRienDetail": "Cette famille d'alertes est traitée.",
+  "alertesMesureRupture": "Rupture",
+  "alertesOuverteDepuis": "Ouverte depuis le {date}",
+  "@alertesOuverteDepuis": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "alertesJours": "J−{n}",
+  "@alertesJours": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "alertesDernierDocument": "{code} · dernier document le {date}",
+  "@alertesDernierDocument": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "alertesRupture": "Ruptures et seuils",
+  "alertesRuptureAide": "Produits épuisés ou sous leur seuil d'alerte.",
+  "alertesRuptureAction": "Créer une liste de besoins",
+  "alertesRuptureLigne": "Commander",
+  "alertesExpire": "Produits expirés",
+  "alertesExpireAide": "Lots périmés encore en stock — à sortir avant la vente.",
+  "alertesExpireAction": "Sortie « Périmé »",
+  "alertesExpireLigne": "Sortir",
+  "alertesSessions": "Sessions ouvertes",
+  "alertesSessionsAide": "Sessions de caisse ouvertes depuis un jour précédent.",
+  "alertesSessionsAction": "Clôturer",
+  "alertesBientot": "Bientôt expirés",
+  "alertesBientotAide": "Lots qui expirent dans les 30 prochains jours.",
+  "alertesBientotAction": "Créer une remise",
+  "alertesBientotLigne": "Remise",
+  "alertesClients": "Crédits clients",
+  "alertesClientsAide": "Les plus gros crédits en cours.",
+  "alertesClientsAction": "Nouveau versement",
+  "alertesClientsLigne": "Encaisser",
+  "alertesFournisseurs": "Dettes fournisseurs",
+  "alertesFournisseursAide": "Les plus grosses dettes et leur dernier achat.",
+  "alertesFournisseursAction": "Nouveau règlement",
+  "alertesFournisseursLigne": "Régler"
 }

@@ -11,6 +11,7 @@ class ParametresVente {
     this.fideliteActive = false,
     this.pointsParDinar = 0.01,
     this.devise = 'DA',
+    this.decimalesQuantite = 2,
   });
 
   static const String cleMarge = 'marge_defaut_pct';
@@ -18,6 +19,8 @@ class ParametresVente {
   static const String cleFidelite = 'fidelite_active';
   static const String clePoints = 'fidelite_points_par_dinar';
   static const String cleDevise = 'devise';
+  static const String cleDecimales = 'decimales_quantite';
+  static const List<String> cles = [cleMarge, cleSeuil, cleFidelite, clePoints, cleDevise, cleDecimales];
 
   final double margeDefautPct;
   final int seuilStockGlobal;
@@ -25,18 +28,23 @@ class ParametresVente {
   final double pointsParDinar;
   final String devise;
 
+  /// Décimales des quantités (0 à 3 ; 3 pour la vente au poids).
+  final int decimalesQuantite;
+
   ParametresVente copyWith({
     double? margeDefautPct,
     int? seuilStockGlobal,
     bool? fideliteActive,
     double? pointsParDinar,
     String? devise,
+    int? decimalesQuantite,
   }) => ParametresVente(
     margeDefautPct: margeDefautPct ?? this.margeDefautPct,
     seuilStockGlobal: seuilStockGlobal ?? this.seuilStockGlobal,
     fideliteActive: fideliteActive ?? this.fideliteActive,
     pointsParDinar: pointsParDinar ?? this.pointsParDinar,
     devise: devise ?? this.devise,
+    decimalesQuantite: decimalesQuantite ?? this.decimalesQuantite,
   );
 
   Map<String, String> versCles() => {
@@ -45,6 +53,7 @@ class ParametresVente {
     cleFidelite: fideliteActive ? '1' : '0',
     clePoints: pointsParDinar.toString(),
     cleDevise: devise,
+    cleDecimales: decimalesQuantite.toString(),
   };
 
   factory ParametresVente.depuisCles(Map<String, String?> m) => ParametresVente(
@@ -53,6 +62,7 @@ class ParametresVente {
     fideliteActive: m[cleFidelite] == '1',
     pointsParDinar: double.tryParse(m[clePoints] ?? '') ?? 0.01,
     devise: m[cleDevise] ?? 'DA',
+    decimalesQuantite: (int.tryParse(m[cleDecimales] ?? '') ?? 2).clamp(0, 3),
   );
 
   @override
@@ -62,7 +72,9 @@ class ParametresVente {
       other.seuilStockGlobal == seuilStockGlobal &&
       other.fideliteActive == fideliteActive &&
       other.pointsParDinar == pointsParDinar &&
-      other.devise == devise;
+      other.devise == devise &&
+      other.decimalesQuantite == decimalesQuantite;
   @override
-  int get hashCode => Object.hash(margeDefautPct, seuilStockGlobal, fideliteActive, pointsParDinar, devise);
+  int get hashCode =>
+      Object.hash(margeDefautPct, seuilStockGlobal, fideliteActive, pointsParDinar, devise, decimalesQuantite);
 }

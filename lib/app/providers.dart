@@ -8,6 +8,9 @@ import '../application/favoris_service.dart';
 import '../core/db/app_database.dart';
 import '../data/favoris_repository.dart';
 import '../data/parametres_repository.dart';
+import '../data/stock_repository.dart';
+import '../domain/models/alerte.dart';
+import '../domain/models/stock.dart';
 import '../domain/modules.dart';
 import 'demarrage_providers.dart';
 
@@ -126,31 +129,66 @@ class FavorisNotifier extends Notifier<List<String>> {
 final favorisProvider = NotifierProvider<FavorisNotifier, List<String>>(FavorisNotifier.new);
 
 final favorisModulesProvider = Provider<List<ModuleApp>>(
-  (ref) => ref.watch(favorisProvider).map(Modules.parId).whereType<ModuleApp>().toList(),
+  (ref) => [for (final id in ref.watch(favorisProvider)) ...Modules.tous.where((m) => m.id == id)],
 );
 
-/// Alerte affichée dans le panneau d'alertes du shell.
-@immutable
-class Alerte {
-  const Alerte({required this.id, required this.titre, this.detail, this.critique = false, this.route});
-  final String id;
-  final String titre;
-  final String? detail;
-  final bool critique;
-  final String? route;
-}
-
-/// Alertes du shell (stock sous seuil, session ouverte… alimentées par les lots suivants).
-class AlertesNotifier extends Notifier<List<Alerte>> {
+/// Alertes du jour de l'utilisateur connecté (§5.3), recalculées à la connexion et à l'ouverture du dialog.
+class AlertesNotifier extends Notifier<AlertesDuJour> {
   @override
-  List<Alerte> build() => const [];
+  AlertesDuJour build() => AlertesDuJour.vide;
 
-  void publier(Alerte alerte) => state = [...state.where((a) => a.id != alerte.id), alerte];
-  void retirer(String id) => state = state.where((a) => a.id != id).toList();
-  void vider() => state = const [];
+  Future<AlertesDuJour> charger() async {
+    final session = ref.read(sessionProvider);
+    state = session == null ? AlertesDuJour.vide : await ref.read(alertesServiceProvider).calculer(session);
+    return state;
+  }
+
+  void reinitialiser() => state = AlertesDuJour.vide;
 }
 
-final alertesProvider = NotifierProvider<AlertesNotifier, List<Alerte>>(AlertesNotifier.new);
+final alertesProvider = NotifierProvider<AlertesNotifier, AlertesDuJour>(AlertesNotifier.new);
+
+/// Magasins accessibles à l'utilisateur connecté et magasin courant (§6.3 : le premier est le principal ;
+/// l'Admin voit tous les magasins, les siens d'abord).
+@immutable
+class MagasinsSession {
+  const MagasinsSession({this.magasins = const [], this.courant});
+  static const MagasinsSession aucun = MagasinsSession();
+  final List<Magasin> magasins;
+  final String? courant;
+
+  Magasin? get magasinCourant => magasins.where((m) => m.code == courant).firstOrNull;
+}
+
+class MagasinCourantNotifier extends Notifier<MagasinsSession> {
+  @override
+  MagasinsSession build() => MagasinsSession.aucun;
+
+  Future<void> charger() async {
+    final session = ref.read(sessionProvider);
+    if (session == null) {
+      state = MagasinsSession.aucun;
+      return;
+    }
+    final repo = StockRepository(ref.read(appDatabaseProvider).db);
+    final actifs = await repo.magasins(actifsSeulement: true);
+    final siens = await repo.magasinsUtilisateur(session.utilisateur.code);
+    final ordonnes = [
+      for (final c in siens) ...actifs.where((m) => m.code == c),
+      if (session.estAdmin) ...actifs.where((m) => !siens.contains(m.code)),
+    ];
+    final liste = ordonnes.isEmpty && session.estAdmin ? actifs : ordonnes;
+    state = MagasinsSession(magasins: liste, courant: liste.firstOrNull?.code);
+  }
+
+  void changer(String code) {
+    if (state.magasins.any((m) => m.code == code)) state = MagasinsSession(magasins: state.magasins, courant: code);
+  }
+
+  void reinitialiser() => state = MagasinsSession.aucun;
+}
+
+final magasinCourantProvider = NotifierProvider<MagasinCourantNotifier, MagasinsSession>(MagasinCourantNotifier.new);
 
 /// Témoin Internet : sondage périodique d'une résolution DNS.
 class InternetNotifier extends Notifier<bool> {

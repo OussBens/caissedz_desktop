@@ -1,6 +1,7 @@
 import 'package:sqflite_common/sqlite_api.dart';
 
 import '../core/securite/mot_de_passe.dart';
+import '../data/historique_repository.dart';
 import '../data/licence_repository.dart';
 import '../data/permissions_repository.dart';
 import '../data/utilisateur_repository.dart';
@@ -15,6 +16,9 @@ enum ErreurConnexion {
 
   /// Le compte demo/demo n'est disponible qu'en mode démo.
   demoIndisponible,
+
+  /// Application non activée : seul le compte demo/demo est accepté (§4.3).
+  nonActivee,
 }
 
 class ConnexionException implements Exception {
@@ -47,12 +51,18 @@ class AuthService {
 
   static bool identifiantValide(String identifiant) => _identifiantValide.hasMatch(identifiant.trim());
 
+  /// Identifiant du compte de démonstration (demo / demo).
+  static const String identifiantDemo = 'demo';
+
+  static bool estIdentifiantDemo(String identifiant) => identifiant.trim().toLowerCase() == identifiantDemo;
+
   /// Vérifie identifiant + mot de passe et construit la session avec les droits du rôle.
   Future<Session> connecter(String identifiant, String motDePasse) async {
     final u = await _utilisateurs.parIdentifiant(identifiant);
     if (u == null) throw const ConnexionException(ErreurConnexion.identifiantsInvalides);
     final licence = await LicenceRepository(db).lire();
-    final estDemo = u.identifiant.toLowerCase() == 'demo' && u.systeme;
+    final estDemo = estIdentifiantDemo(u.identifiant) && u.systeme;
+    if (!licence.estActivee && !estDemo) throw const ConnexionException(ErreurConnexion.nonActivee);
     if (estDemo && !licence.demo) throw const ConnexionException(ErreurConnexion.demoIndisponible);
     if (!u.actif) throw const ConnexionException(ErreurConnexion.compteInactif);
     final empreinte = await _utilisateurs.empreinte(u.code);
@@ -60,7 +70,33 @@ class AuthService {
     if (!MotDePasse.verifier(motDePasse, empreinte)) {
       throw const ConnexionException(ErreurConnexion.identifiantsInvalides);
     }
-    return construireSession(u, demo: licence.demo);
+    return _ouvrir(u, demo: licence.demo);
+  }
+
+  /// Reprend la session mémorisée par « Rester connecté » (§4.1, `tryAutoLogin`) : `null` si le compte
+  /// n'existe plus, est inactif, ou si la licence ne l'autorise plus.
+  Future<Session?> reprendreSession(String code) async {
+    final u = await _utilisateurs.parCode(code);
+    if (u == null || !u.actif) return null;
+    final licence = await LicenceRepository(db).lire();
+    final estDemo = estIdentifiantDemo(u.identifiant) && u.systeme;
+    if (!licence.estActivee || estDemo != licence.demo) return null;
+    return _ouvrir(u, demo: licence.demo);
+  }
+
+  /// Journalise la déconnexion (§4.4).
+  Future<void> deconnecter(String code) =>
+      HistoriqueRepository(db)
+          .journaliser(utilisateurCode: code, action: 'Déconnexion', entite: 'utilisateur', entiteCode: code);
+
+  Future<Session> _ouvrir(Utilisateur u, {required bool demo}) async {
+    final maintenant = DateTime.now();
+    await db.transaction((txn) async {
+      await UtilisateurRepository(txn).enregistrerAcces(u.code, maintenant);
+      await HistoriqueRepository(txn)
+          .journaliser(utilisateurCode: u.code, action: 'Connexion', entite: 'utilisateur', entiteCode: u.code);
+    });
+    return construireSession(u, demo: demo);
   }
 
   Future<Session> construireSession(Utilisateur u, {required bool demo}) async {
