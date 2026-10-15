@@ -125,7 +125,7 @@ void main() {
         'retour_code': 'RET0001',
       });
 
-      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [12, 13, 14]);
+      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [12, 13, 14, 15]);
       final r = (await db.query('retour')).single;
       expect(r['type'], 'Client');
       expect(r['document_code'], 'VTE0001');
@@ -166,7 +166,7 @@ void main() {
         'sous_categorie_code': 'SC0000',
         'code_barres': '6130000000015',
       });
-      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [13, 14]);
+      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [13, 14, 15]);
       final p = (await db.query('produit')).single;
       expect(p['service'], 0);
       expect(p['suivi_serie'], 0);
@@ -212,7 +212,7 @@ void main() {
         'utilisateur_code': 'USR0000',
       });
       await db.insert('sortie_stock_ligne', {'sortie_code': 'SOR0001', 'produit_code': 'PRD0001', 'quantite': 2});
-      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [14]);
+      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [14, 15]);
       final b = (await db.query('besoin')).single;
       expect(b['fournisseur_code'], 'FOR0000');
       expect(b['statut'], 'Commande');
@@ -224,6 +224,47 @@ void main() {
       expect((await db.query('sortie_stock')).single['actif'], 1);
       expect((await db.query('magasin', where: "code = 'MAG0000'")).single['telephone'], '');
       expect(await db.rawQuery('PRAGMA foreign_key_check'), isEmpty);
+    });
+  });
+
+  group('Migration v15 (entrées DS)', () {
+    test('annulation douce des entrées et file des bons de réception', () async {
+      final base = await AppDatabase.ouvrirEnMemoire(
+        cleHex: cleTestHex,
+        migrations: toutesLesMigrations.sublist(0, 14),
+      );
+      addTearDown(base.fermer);
+      final db = base.db;
+      await db.insert('achat', {
+        'code': 'ACH0001',
+        'date': '2026-10-01T10:00:00Z',
+        'fournisseur_code': 'FOR0000',
+        'magasin_code': 'MAG0000',
+        'utilisateur_code': 'USR0000',
+        'total': 100,
+      });
+      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [15]);
+      final a = (await db.query('achat')).single;
+      expect(a['annule_par'], isNull);
+      expect(a['besoin_code'], isNull);
+      await db.insert('bon_reception', {
+        'code': 'BON0001',
+        'date_reception': '2026-10-01T10:00:00Z',
+        'fichier': 'facture.jpg',
+        'utilisateur_code': 'USR0000',
+        'achat_code': 'ACH0001',
+      });
+      expect((await db.query('bon_reception')).single['statut'], 'Reçu');
+      await expectLater(
+        db.insert('bon_reception', {
+          'code': 'BON0002',
+          'date_reception': '2026-10-01T10:00:00Z',
+          'fichier': 'x.jpg',
+          'utilisateur_code': 'USR0000',
+          'achat_code': 'SS9999',
+        }),
+        throwsA(anything),
+      );
     });
   });
 

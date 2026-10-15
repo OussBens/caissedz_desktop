@@ -13,6 +13,7 @@ import '../../domain/permissions.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
 import '../commun/statuts.dart';
+import '../entrees/entree_dialogs.dart';
 import '../historique/historique_page.dart';
 import '../produits/produits_donnees.dart';
 import '../produits/produits_providers.dart';
@@ -217,6 +218,18 @@ class _BesoinsPageState extends ConsumerState<BesoinsPage> {
           regle: DsRegleSelection.une,
           desactive: (choix) => choix.isNotEmpty && fige(choix.first),
           onPressed: (choix, _) => afficherFormulaireBesoin(context, ref, besoin: choix.first),
+        ),
+        DsActionModule(
+          cle: const ValueKey('besoins_creer_entree'),
+          libelle: l10n.entCreerEntree,
+          icone: LucideIcons.packagePlus,
+          regle: DsRegleSelection.une,
+          desactive: (choix) =>
+              choix.isNotEmpty && (!choix.first.actif || choix.first.statut == StatutsBesoin.disponible),
+          onPressed: (choix, effacer) async {
+            await afficherFormulaireEntree(context, ref, besoin: choix.first);
+            effacer();
+          },
         ),
         DsActionModule(
           cle: const ValueKey('besoins_annuler'),

@@ -463,10 +463,29 @@ Référence : `docs/design/CaisseDZ-DS-v2.2/CaisseDZ-DS-v2.2.html`, `bundle-v2.2
     visibles dans Stock › Mouvements, filtre Vente) ; colonnes catégorie / sous-catégorie d'une sortie absentes
     (une sortie a plusieurs lignes) ; pas de lots ni de « jours d'alerte » : les expirés viennent de la date
     d'expiration du produit (fenêtre de 30 jours) ; la sortie « Périmé » ouvre le formulaire pré-rempli au lieu
-    de sortir directement ; le statut « Commande » d'une liste n'a pas encore de déclencheur (« Créer l'entrée »
-    arrive avec l'écran Entrées) ; en l'absence de la permission `voirStockTousMagasins`, l'administrateur voit
+    de sortir directement ; le statut « Commande » d'une liste n'a pas encore de déclencheur ; en l'absence de la permission `voirStockTousMagasins`, l'administrateur voit
     tous les magasins (⚠️ PROVISOIRE) ; l'entrée manuelle et l'inventaire unitaire de l'ancien écran sont retirés
     (inventaire dans Situation, entrées dans Entrées).
+  - ✅ Entrées (`EntreesScreen`) : migration v15 (annulation douce des entrées, liste de besoins d'origine, table
+    `bon_reception` = file des bons lus par l'IA, statut Reçu / Traité / Erreur avec lignes détectées). Préfixe des
+    entrées aligné sur §8.10 : `SS` ; bons `BON`. `AchatService` : `modifier` (mouvements défaits puis réécrits,
+    paiement immédiat ajusté, créé ou annulé), `annulerEntrees` en lot avec motif (paiement immédiat annulé),
+    `blocage` (déjà annulée, période clôturée, retour lié, produits déjà vendus), répartition d'une ligne entre
+    magasins, mise à jour du prix d'achat au choix (garder / prix moyen pondéré / dernier prix), versé / reste /
+    nb de versements calculés depuis les imputations (§8.5), liste de besoins passée « Disponible » et bon marqué
+    « Traité » dans la même transaction. Écrans : onglets Smart Scan (KPI, filtres fournisseur / paiement /
+    magasin, colonnes masquables, détail 1060 px avec « Imprimer ») et Mode IA (bandeau, quota, file des bons :
+    Traiter, Voir le bon, Supprimer) ; nouvelle entrée Smart Scan 1040 px en 2 étapes (bon & paiement, puis scan
+    continu par code ou code-barres + « Liste ») ; Entrée rapide 720 px (un produit payé intégralement, réparti
+    entre magasins ; « Modifier » y renvoie quand l'entrée n'a qu'un produit) ; Reçu IA 1040 px en 3 étapes
+    (photo + quota, rapprochement avec suggestions par similarité et « + Créer », fournisseur pré-résolu et
+    paiement) ; « Créer l'entrée » depuis une liste de besoins.
+    Écarts Entrées : pas de contrôle « session de caisse ouverte » (§9.6 étape 1, déjà absent des lots 5–6) ;
+    « Depuis le téléphone » inactif (pas d'application mobile) ; pas de raccourci `E` d'entrée rapide en caisse ;
+    la confiance n'est affichée que si le serveur la renvoie ; le prix de vente reste éditable dans les lignes
+    (règle §8 « vente > achat », colonne en lecture seule dans le DS) ; « Imprimer » produit le PDF du tableau
+    des lignes (pas encore de bon de réception mis en page) ; l'annulation exige la permission « Annuler »
+    (`annulerVente`, ⚠️ PROVISOIRE en attendant `annulerOperations`).
   - Écarts : colonnes d'audit « modifié le / par » absentes du schéma (seuls créé par et annulation) ;
     tendances des KPI calculées seulement pour les ventes ; ventes antérieures à la v10 valorisées au prix
     d'achat actuel ; `mouvement_stock` sans valorisation (prix_achat / prix_vente de §7.3).

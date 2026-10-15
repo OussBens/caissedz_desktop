@@ -6144,4 +6144,373 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get stkVoirPiece => 'View document';
+
+  @override
+  String get entAucunBon => 'No receipt received.';
+
+  @override
+  String get entAucunFournisseur => 'None (cash purchase)';
+
+  @override
+  String get entAucunProduit => 'Scan or add the received products.';
+
+  @override
+  String get entBloqueDejaAnnulee => 'Already cancelled';
+
+  @override
+  String get entBloqueVendus => 'Some products have already been sold';
+
+  @override
+  String get entBonReception => 'Goods receipt';
+
+  @override
+  String get entChoisirProduit => 'Choose a product';
+
+  @override
+  String get entDescription => 'Supplier receipts — scanning, AI reading of delivery notes, quick entry';
+
+  @override
+  String get entEntite => 'Entry';
+
+  @override
+  String get entEntiteBon => 'receipt';
+
+  @override
+  String get entEntiteBons => 'receipts';
+
+  @override
+  String get entEntitePluriel => 'entries';
+
+  @override
+  String get entEntreeLiee => 'Linked entry';
+
+  @override
+  String get entErreurBonInconnu => 'Receipt not found.';
+
+  @override
+  String get entErreurBonTraite => 'Receipt already processed';
+
+  @override
+  String get entErreurMotif => 'A reason is required.';
+
+  @override
+  String get entEtapeBon => 'Receipt & supplier';
+
+  @override
+  String get entEtapeBonDetail => 'Header, payment';
+
+  @override
+  String get entEtapeProduits => 'Received products';
+
+  @override
+  String get entEtapeProduitsDetail => 'Scan and quantities';
+
+  @override
+  String get entFichier => 'File';
+
+  @override
+  String get entFournisseurDetecte => 'Detected supplier';
+
+  @override
+  String get entIaAnalyser => 'Analyse the receipt';
+
+  @override
+  String get entIaApercu => 'Receipt preview';
+
+  @override
+  String get entIaAucunFichier => 'No file chosen';
+
+  @override
+  String get entIaBandeauDetail => 'Receipts sent from the phone arrive here with the “Received” status.';
+
+  @override
+  String get entIaBandeauTitre => 'Photograph the receipt, AI fills in the entry';
+
+  @override
+  String get entIaConfiance => 'Confidence';
+
+  @override
+  String get entIaDepuisDisque => 'From disk';
+
+  @override
+  String get entIaDepuisTelephone => 'From the phone';
+
+  @override
+  String get entIaDescription =>
+      'Photo or PDF of a supplier invoice: lines are detected then matched to the catalogue.';
+
+  @override
+  String get entIaDetecte => 'Detected on the receipt';
+
+  @override
+  String get entIaEtapeFournisseur => 'Supplier & payment';
+
+  @override
+  String get entIaEtapeFournisseurDetail => 'Confirm';
+
+  @override
+  String get entIaEtapeLignes => 'Detected lines';
+
+  @override
+  String get entIaEtapeLignesDetail => 'Check, match';
+
+  @override
+  String get entIaEtapePhoto => 'Receipt photo';
+
+  @override
+  String get entIaEtapePhotoDetail => 'Image or PDF';
+
+  @override
+  String get entIaFormats => 'JPG, PNG or PDF';
+
+  @override
+  String get entIaJoindre => 'Attach a receipt';
+
+  @override
+  String get entIaLecture => 'Reading the receipt…';
+
+  @override
+  String get entIaLectureDetail => 'Detecting lines, quantities and prices';
+
+  @override
+  String get entIaLignes => 'Lines';
+
+  @override
+  String get entIaLignesLues => 'Lines read';
+
+  @override
+  String get entIaLu => 'Read on the receipt';
+
+  @override
+  String get entIaProduitCatalogue => 'Catalogue product';
+
+  @override
+  String get entIaRapprocher => 'Match…';
+
+  @override
+  String get entIaRecuPar => 'Received by';
+
+  @override
+  String get entIaRemplacer => 'Replace the product';
+
+  @override
+  String get entIaTelephoneAide => 'Receipts sent from the mobile app appear in the AI mode queue.';
+
+  @override
+  String get entIaTitre => 'AI receipt · automatic reading';
+
+  @override
+  String get entIaTraitePar => 'Processed by';
+
+  @override
+  String get entIaTraiter => 'Process';
+
+  @override
+  String get entIaVideAide => 'Attach a receipt (photo or PDF) so AI prepares the entry.';
+
+  @override
+  String get entIaVoirBon => 'View receipt';
+
+  @override
+  String get entImprimer => 'Print';
+
+  @override
+  String get entInformations => 'Information';
+
+  @override
+  String get entKpiEntrees => 'Entries this month';
+
+  @override
+  String get entListe => 'List';
+
+  @override
+  String get entListeBesoins => 'Needs list';
+
+  @override
+  String get entMagasinAide => 'Default: your main store';
+
+  @override
+  String get entMajDernier => 'Latest purchase price';
+
+  @override
+  String get entMajGarder => 'Keep the current purchase price';
+
+  @override
+  String get entMajMoyen => 'Weighted average price';
+
+  @override
+  String get entMajPrix => 'Price update';
+
+  @override
+  String get entMode => 'Method';
+
+  @override
+  String get entModifierTitre => 'Edit entry';
+
+  @override
+  String get entMontantPaye => 'Amount paid';
+
+  @override
+  String get entNbVersements => 'No. of payments';
+
+  @override
+  String get entNouvelleDescription => 'Scan the received products: each scan adds 1 to the quantity.';
+
+  @override
+  String get entNouvelleTitre => 'New entry · Smart Scan';
+
+  @override
+  String get entNumFacture => 'Invoice / DN no.';
+
+  @override
+  String get entNumFactureIndice => 'E.g. FAC-24-1187';
+
+  @override
+  String get entOffreMessage => 'I would like to increase my Smart Scan quota.';
+
+  @override
+  String get entOngletIa => 'AI mode';
+
+  @override
+  String get entPaiement => 'Payment';
+
+  @override
+  String get entPaye => 'Paid';
+
+  @override
+  String get entPayeTotalite => 'Paid in full';
+
+  @override
+  String get entProduitsRecus => 'Received products';
+
+  @override
+  String get entQteRecue => 'Qty received';
+
+  @override
+  String get entRapideDescription => 'Receipt of a single product, without a detailed supplier note.';
+
+  @override
+  String get entRapideTitre => 'Quick entry';
+
+  @override
+  String get entRecherche => 'Code, supplier or invoice no.…';
+
+  @override
+  String get entRechercheBons => 'File or supplier…';
+
+  @override
+  String get entRecuLe => 'Received on';
+
+  @override
+  String get entRepartitionIncomplete => 'Incomplete split';
+
+  @override
+  String get entRepartitionOption => 'Split (optional)';
+
+  @override
+  String get entResteAide => 'Added to the supplier\'s credit';
+
+  @override
+  String get entResteCredit => 'Remaining (credit)';
+
+  @override
+  String get entRetour => 'Back';
+
+  @override
+  String get entScanAjoute => 'added';
+
+  @override
+  String get entScanIndice => 'Scan a barcode then Enter (or product code)…';
+
+  @override
+  String get entSourceIa => 'AI receipt';
+
+  @override
+  String get entSourceRapide => 'Quick entry';
+
+  @override
+  String get entSuivant => 'Next';
+
+  @override
+  String get entToastAnnulees => 'Entries cancelled';
+
+  @override
+  String get entToastAnnuleesDetail => 'Stock and supplier credit corrected';
+
+  @override
+  String get entToastBonsSupprimes => 'Receipts deleted';
+
+  @override
+  String get entToastDepuisBon => 'Entry created from the receipt';
+
+  @override
+  String get entToastEnregistree => 'Entry saved';
+
+  @override
+  String get entToastModifiee => 'Entry updated';
+
+  @override
+  String get entToastRapide => 'Quick entry saved';
+
+  @override
+  String get entToastReparti => 'Stock split between stores';
+
+  @override
+  String get entVenteSousAchat => 'Sale price ≤ purchase price';
+
+  @override
+  String entCreerProduit(String nom) {
+    return '+ Create “$nom”';
+  }
+
+  @override
+  String entDepuisListe(String code) {
+    return 'Receipt of needs list $code';
+  }
+
+  @override
+  String entDetailTitre(String code) {
+    return 'Entry $code';
+  }
+
+  @override
+  String entIaARapprocher(int n) {
+    return '$n line(s) to match';
+  }
+
+  @override
+  String entIaCreer(String montant) {
+    return 'Create entry · $montant';
+  }
+
+  @override
+  String entValider(String montant) {
+    return 'Confirm entry · $montant';
+  }
+
+  @override
+  String entRapideDescriptionProduit(String code, String stock) {
+    return '$code · current stock $stock pcs — receipt without a detailed note.';
+  }
+
+  @override
+  String entRapideTitreProduit(String nom) {
+    return 'Quick entry · $nom';
+  }
+
+  @override
+  String entScanInconnu(String code) {
+    return 'Unknown code: $code';
+  }
+
+  @override
+  String entToastBonsDetail(int n) {
+    return '$n file(s)';
+  }
+
+  @override
+  String get entCreerEntree => 'Create the entry';
+
+  @override
+  String get statutErreur => 'Error';
 }

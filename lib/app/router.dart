@@ -3,11 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../domain/modules.dart';
-import '../features/achats/achats_page.dart';
 import '../features/activation/activation_page.dart';
 import '../features/caisse/pos_page.dart';
 import '../features/clotures/clotures_page.dart';
 import '../features/connexion/connexion_page.dart';
+import '../features/entrees/entrees_page.dart';
 import '../features/galerie/galerie_page.dart';
 import '../features/gestion_caisse/gestion_caisse_page.dart';
 import '../features/historique/historique_page.dart';
@@ -97,7 +97,7 @@ Widget pageModule(ModuleApp module) => switch (module.id) {
   'zakat' => const ZakatPage(),
   'historique' => const HistoriquePage(),
   'caisse' => const PosPage(),
-  'entrees' => const AchatsPage(),
+  'entrees' => const EntreesPage(),
   'gestion_caisse' => const GestionCaissePage(),
   'clotures' => const CloturesPage(),
   'ventes' => const VentesPage(),

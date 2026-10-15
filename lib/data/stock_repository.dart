@@ -30,10 +30,15 @@ class StockRepository {
     String? type,
     DateTime? depuis,
     DateTime? jusqua,
+    String? referenceCode,
     int limite = 1000,
   }) async {
     final where = <String>[];
     final args = <Object>[];
+    if (referenceCode != null) {
+      where.add('reference_code = ?');
+      args.add(referenceCode);
+    }
     if (produitCode != null) {
       where.add('produit_code = ?');
       args.add(produitCode);

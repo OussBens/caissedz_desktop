@@ -354,7 +354,7 @@ void main() {
       expect((await StockRepository(base.db).niveau(c.lait.code, 'MAG0000')).quantite, 100 + 10 - 2);
       expect(await repo.soldeFournisseur(f.code), 640);
       await expectLater(
-        achats.annuler(a.code),
+        achats.annuler(a.code, motif: 'Erreur'),
         throwsA(isA<AchatException>().having((e) => e.erreur, 'e', ErreurAchat.retourLie)),
       );
       await expectLater(

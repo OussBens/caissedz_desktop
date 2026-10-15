@@ -11,10 +11,10 @@ import '../../domain/models/retour.dart';
 import '../../domain/models/tiers.dart';
 import '../../domain/referentiel/referentiel.dart';
 import '../../domain/referentiel/wilayas.dart';
-import '../achats/achats_page.dart';
 import '../commun/export_module.dart';
 import '../commun/referentiel_ui.dart';
 import '../commun/statuts.dart';
+import '../entrees/entrees_providers.dart';
 import '../produits/produits_providers.dart';
 import 'tiers_providers.dart';
 

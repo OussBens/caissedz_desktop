@@ -170,7 +170,7 @@ void main() {
         throwsA(isA<RetourException>().having((e) => e.erreur, 'e', ErreurRetour.periodeCloturee)),
       );
       await expectLater(
-        achats.annuler(a.code),
+        achats.annuler(a.code, motif: 'Erreur'),
         throwsA(isA<AchatException>().having((e) => e.erreur, 'e', ErreurAchat.periodeCloturee)),
       );
       // Une vente postérieure à la clôture reste annulable.

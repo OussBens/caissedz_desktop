@@ -6136,4 +6136,372 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get stkVoirPiece => 'عرض المستند';
+
+  @override
+  String get entAucunBon => 'لا توجد وصولات مستلمة.';
+
+  @override
+  String get entAucunFournisseur => 'بدون (شراء نقدي)';
+
+  @override
+  String get entAucunProduit => 'امسح أو أضف المنتجات المستلمة.';
+
+  @override
+  String get entBloqueDejaAnnulee => 'ملغاة مسبقا';
+
+  @override
+  String get entBloqueVendus => 'تم بيع بعض المنتجات';
+
+  @override
+  String get entBonReception => 'وصل الاستلام';
+
+  @override
+  String get entChoisirProduit => 'اختر منتجا';
+
+  @override
+  String get entDescription => 'استلامات الموردين — مسح، قراءة الوصولات بالذكاء الاصطناعي، إدخال سريع';
+
+  @override
+  String get entEntite => 'إدخال';
+
+  @override
+  String get entEntiteBon => 'وصل';
+
+  @override
+  String get entEntiteBons => 'وصولات';
+
+  @override
+  String get entEntitePluriel => 'إدخالات';
+
+  @override
+  String get entEntreeLiee => 'الإدخال المرتبط';
+
+  @override
+  String get entErreurBonInconnu => 'وصل الاستلام غير موجود.';
+
+  @override
+  String get entErreurBonTraite => 'وصل معالج مسبقا';
+
+  @override
+  String get entErreurMotif => 'السبب إلزامي.';
+
+  @override
+  String get entEtapeBon => 'الوصل والمورد';
+
+  @override
+  String get entEtapeBonDetail => 'الرأسية، الدفع';
+
+  @override
+  String get entEtapeProduits => 'المنتجات المستلمة';
+
+  @override
+  String get entEtapeProduitsDetail => 'المسح والكميات';
+
+  @override
+  String get entFichier => 'الملف';
+
+  @override
+  String get entFournisseurDetecte => 'المورد المكتشف';
+
+  @override
+  String get entIaAnalyser => 'تحليل الوصل';
+
+  @override
+  String get entIaApercu => 'معاينة الوصل';
+
+  @override
+  String get entIaAucunFichier => 'لم يتم اختيار ملف';
+
+  @override
+  String get entIaBandeauDetail => 'تصل الوصولات المرسلة من الهاتف هنا بحالة « مستلم ».';
+
+  @override
+  String get entIaBandeauTitre => 'صوّر الوصل، والذكاء الاصطناعي يملأ الإدخال';
+
+  @override
+  String get entIaConfiance => 'الثقة';
+
+  @override
+  String get entIaDepuisDisque => 'من القرص';
+
+  @override
+  String get entIaDepuisTelephone => 'من الهاتف';
+
+  @override
+  String get entIaDescription => 'صورة أو PDF لفاتورة المورد: تُكتشف الأسطر ثم تُطابق مع الكتالوج.';
+
+  @override
+  String get entIaDetecte => 'مكتشف في الوصل';
+
+  @override
+  String get entIaEtapeFournisseur => 'المورد والدفع';
+
+  @override
+  String get entIaEtapeFournisseurDetail => 'تأكيد';
+
+  @override
+  String get entIaEtapeLignes => 'الأسطر المكتشفة';
+
+  @override
+  String get entIaEtapeLignesDetail => 'التحقق والمطابقة';
+
+  @override
+  String get entIaEtapePhoto => 'صورة الوصل';
+
+  @override
+  String get entIaEtapePhotoDetail => 'صورة أو PDF';
+
+  @override
+  String get entIaFormats => 'JPG أو PNG أو PDF';
+
+  @override
+  String get entIaJoindre => 'إرفاق وصل';
+
+  @override
+  String get entIaLecture => 'جارٍ قراءة الوصل…';
+
+  @override
+  String get entIaLectureDetail => 'اكتشاف الأسطر والكميات والأسعار';
+
+  @override
+  String get entIaLignes => 'الأسطر';
+
+  @override
+  String get entIaLignesLues => 'الأسطر المقروءة';
+
+  @override
+  String get entIaLu => 'مقروء في الوصل';
+
+  @override
+  String get entIaProduitCatalogue => 'منتج الكتالوج';
+
+  @override
+  String get entIaRapprocher => 'مطابقة…';
+
+  @override
+  String get entIaRecuPar => 'استلمه';
+
+  @override
+  String get entIaRemplacer => 'استبدال المنتج';
+
+  @override
+  String get entIaTelephoneAide => 'تظهر الوصولات المرسلة من تطبيق الهاتف في قائمة وضع الذكاء الاصطناعي.';
+
+  @override
+  String get entIaTitre => 'وصل ذكي · قراءة آلية للوصل';
+
+  @override
+  String get entIaTraitePar => 'عالجه';
+
+  @override
+  String get entIaTraiter => 'معالجة';
+
+  @override
+  String get entIaVideAide => 'أرفق وصلا (صورة أو PDF) ليحضّر الذكاء الاصطناعي الإدخال.';
+
+  @override
+  String get entIaVoirBon => 'عرض الوصل';
+
+  @override
+  String get entImprimer => 'طباعة';
+
+  @override
+  String get entInformations => 'معلومات';
+
+  @override
+  String get entKpiEntrees => 'إدخالات الشهر';
+
+  @override
+  String get entListe => 'القائمة';
+
+  @override
+  String get entListeBesoins => 'قائمة الاحتياجات';
+
+  @override
+  String get entMagasinAide => 'افتراضيا: متجرك الرئيسي';
+
+  @override
+  String get entMajDernier => 'آخر سعر شراء';
+
+  @override
+  String get entMajGarder => 'الإبقاء على سعر الشراء الحالي';
+
+  @override
+  String get entMajMoyen => 'السعر المتوسط المرجح';
+
+  @override
+  String get entMajPrix => 'تحديث السعر';
+
+  @override
+  String get entMode => 'الطريقة';
+
+  @override
+  String get entModifierTitre => 'تعديل الإدخال';
+
+  @override
+  String get entMontantPaye => 'المبلغ المدفوع';
+
+  @override
+  String get entNbVersements => 'عدد الدفعات';
+
+  @override
+  String get entNouvelleDescription => 'امسح المنتجات المستلمة: كل مسح يضيف 1 إلى الكمية.';
+
+  @override
+  String get entNouvelleTitre => 'إدخال جديد · Smart Scan';
+
+  @override
+  String get entNumFacture => 'رقم الفاتورة / وصل التسليم';
+
+  @override
+  String get entNumFactureIndice => 'مثال FAC-24-1187';
+
+  @override
+  String get entOffreMessage => 'أرغب في زيادة حصة Smart Scan.';
+
+  @override
+  String get entOngletIa => 'وضع الذكاء الاصطناعي';
+
+  @override
+  String get entPaiement => 'الدفع';
+
+  @override
+  String get entPaye => 'مدفوع';
+
+  @override
+  String get entPayeTotalite => 'مدفوع بالكامل';
+
+  @override
+  String get entProduitsRecus => 'المنتجات المستلمة';
+
+  @override
+  String get entQteRecue => 'الكمية المستلمة';
+
+  @override
+  String get entRapideDescription => 'استلام منتج واحد دون وصل مورد مفصل.';
+
+  @override
+  String get entRapideTitre => 'إدخال سريع';
+
+  @override
+  String get entRecherche => 'الرمز أو المورد أو رقم الفاتورة…';
+
+  @override
+  String get entRechercheBons => 'الملف أو المورد…';
+
+  @override
+  String get entRecuLe => 'تاريخ الاستلام';
+
+  @override
+  String get entRepartitionIncomplete => 'توزيع غير مكتمل';
+
+  @override
+  String get entRepartitionOption => 'التوزيع (اختياري)';
+
+  @override
+  String get entResteAide => 'يضاف إلى دين المورد';
+
+  @override
+  String get entResteCredit => 'الباقي (دين)';
+
+  @override
+  String get entRetour => 'رجوع';
+
+  @override
+  String get entScanAjoute => 'أضيف';
+
+  @override
+  String get entScanIndice => 'امسح الرمز الشريطي ثم Entrée (أو رمز المنتج)…';
+
+  @override
+  String get entSourceIa => 'وصل ذكي';
+
+  @override
+  String get entSourceRapide => 'إدخال سريع';
+
+  @override
+  String get entSuivant => 'التالي';
+
+  @override
+  String get entToastAnnulees => 'تم إلغاء الإدخالات';
+
+  @override
+  String get entToastAnnuleesDetail => 'تم تصحيح المخزون ودين المورد';
+
+  @override
+  String get entToastBonsSupprimes => 'تم حذف الوصولات';
+
+  @override
+  String get entToastDepuisBon => 'تم إنشاء الإدخال من الوصل';
+
+  @override
+  String get entToastEnregistree => 'تم تسجيل الإدخال';
+
+  @override
+  String get entToastModifiee => 'تم تعديل الإدخال';
+
+  @override
+  String get entToastRapide => 'تم تسجيل الإدخال السريع';
+
+  @override
+  String get entToastReparti => 'تم توزيع المخزون بين المتاجر';
+
+  @override
+  String get entVenteSousAchat => 'سعر البيع ≤ سعر الشراء';
+
+  @override
+  String entCreerProduit(String nom) {
+    return '+ إنشاء « $nom »';
+  }
+
+  @override
+  String entDepuisListe(String code) {
+    return 'استلام قائمة الاحتياجات $code';
+  }
+
+  @override
+  String entDetailTitre(String code) {
+    return 'إدخال $code';
+  }
+
+  @override
+  String entIaARapprocher(int n) {
+    return '$n سطر(أسطر) للمطابقة';
+  }
+
+  @override
+  String entIaCreer(String montant) {
+    return 'إنشاء الإدخال · $montant';
+  }
+
+  @override
+  String entValider(String montant) {
+    return 'تأكيد الإدخال · $montant';
+  }
+
+  @override
+  String entRapideDescriptionProduit(String code, String stock) {
+    return '$code · المخزون الحالي $stock قطعة — استلام دون وصل مفصل.';
+  }
+
+  @override
+  String entRapideTitreProduit(String nom) {
+    return 'إدخال سريع · $nom';
+  }
+
+  @override
+  String entScanInconnu(String code) {
+    return 'رمز غير معروف: $code';
+  }
+
+  @override
+  String entToastBonsDetail(int n) {
+    return '$n ملف(ات)';
+  }
+
+  @override
+  String get entCreerEntree => 'إنشاء الإدخال';
+
+  @override
+  String get statutErreur => 'خطأ';
 }

@@ -63,6 +63,18 @@ Future<bool> executerStock(BuildContext context, WidgetRef ref, Future<void> Fun
   }
 }
 
+/// Libellés localisés du `SplitAllocator`.
+Map<String, String> libellesRepartition(AppLocalizations l10n) => {
+  'total': l10n.communTotal,
+  'reparti': l10n.stkReparti,
+  'reste': l10n.stkReste,
+  'principal': l10n.stkPrincipal,
+  'enStock': l10n.stkEnStock,
+  'toutPrincipal': l10n.stkToutPrincipal,
+  'repartir': l10n.stkRepartirEgalement,
+  'restePrincipal': l10n.stkRestePrincipal,
+};
+
 Map<String, String> _nomsMagasins(List<Magasin> ms) => {for (final m in ms) m.code: m.nom};
 
 // ———————————————————————————— Stock ————————————————————————————
@@ -293,16 +305,7 @@ class _DistributionDialogState extends ConsumerState<_DistributionDialog> {
             ],
             valeur: _valeur,
             onChanged: (v) => setState(() => _valeur = v),
-            libelles: {
-              'total': l10n.communTotal,
-              'reparti': l10n.stkReparti,
-              'reste': l10n.stkReste,
-              'principal': l10n.stkPrincipal,
-              'enStock': l10n.stkEnStock,
-              'toutPrincipal': l10n.stkToutPrincipal,
-              'repartir': l10n.stkRepartirEgalement,
-              'restePrincipal': l10n.stkRestePrincipal,
-            },
+            libelles: libellesRepartition(l10n),
           ),
           DsFormRow(
             libelle: l10n.stkMotif,

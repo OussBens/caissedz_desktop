@@ -6157,4 +6157,373 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get stkVoirPiece => 'Voir la pièce';
+
+  @override
+  String get entAucunBon => 'Aucun bon reçu.';
+
+  @override
+  String get entAucunFournisseur => 'Aucun (achat comptant)';
+
+  @override
+  String get entAucunProduit => 'Scannez ou ajoutez les produits reçus.';
+
+  @override
+  String get entBloqueDejaAnnulee => 'Déjà annulée';
+
+  @override
+  String get entBloqueVendus => 'Des produits ont déjà été vendus';
+
+  @override
+  String get entBonReception => 'Bon de réception';
+
+  @override
+  String get entChoisirProduit => 'Choisir un produit';
+
+  @override
+  String get entDescription => 'Réceptions fournisseurs — scan, lecture IA des bons, entrée rapide';
+
+  @override
+  String get entEntite => 'Entrée';
+
+  @override
+  String get entEntiteBon => 'bon';
+
+  @override
+  String get entEntiteBons => 'bons';
+
+  @override
+  String get entEntitePluriel => 'entrées';
+
+  @override
+  String get entEntreeLiee => 'Entrée liée';
+
+  @override
+  String get entErreurBonInconnu => 'Bon de réception introuvable.';
+
+  @override
+  String get entErreurBonTraite => 'Bon déjà traité';
+
+  @override
+  String get entErreurMotif => 'Le motif est obligatoire.';
+
+  @override
+  String get entEtapeBon => 'Bon & fournisseur';
+
+  @override
+  String get entEtapeBonDetail => 'En-tête, paiement';
+
+  @override
+  String get entEtapeProduits => 'Produits reçus';
+
+  @override
+  String get entEtapeProduitsDetail => 'Scan et quantités';
+
+  @override
+  String get entFichier => 'Fichier';
+
+  @override
+  String get entFournisseurDetecte => 'Fournisseur détecté';
+
+  @override
+  String get entIaAnalyser => 'Analyser le bon';
+
+  @override
+  String get entIaApercu => 'Aperçu du bon';
+
+  @override
+  String get entIaAucunFichier => 'Aucun fichier choisi';
+
+  @override
+  String get entIaBandeauDetail => 'Les bons envoyés depuis le téléphone arrivent ici avec le statut « Reçu ».';
+
+  @override
+  String get entIaBandeauTitre => 'Photographiez le bon, l\'IA remplit l\'entrée';
+
+  @override
+  String get entIaConfiance => 'Confiance';
+
+  @override
+  String get entIaDepuisDisque => 'Depuis le disque';
+
+  @override
+  String get entIaDepuisTelephone => 'Depuis le téléphone';
+
+  @override
+  String get entIaDescription =>
+      'Photo ou PDF d\'une facture fournisseur : les lignes sont détectées puis rapprochées du catalogue.';
+
+  @override
+  String get entIaDetecte => 'Détecté sur le bon';
+
+  @override
+  String get entIaEtapeFournisseur => 'Fournisseur & paiement';
+
+  @override
+  String get entIaEtapeFournisseurDetail => 'Valider';
+
+  @override
+  String get entIaEtapeLignes => 'Lignes détectées';
+
+  @override
+  String get entIaEtapeLignesDetail => 'Vérifier, rapprocher';
+
+  @override
+  String get entIaEtapePhoto => 'Photo du bon';
+
+  @override
+  String get entIaEtapePhotoDetail => 'Image ou PDF';
+
+  @override
+  String get entIaFormats => 'JPG, PNG ou PDF';
+
+  @override
+  String get entIaJoindre => 'Joindre un bon';
+
+  @override
+  String get entIaLecture => 'Lecture du bon en cours…';
+
+  @override
+  String get entIaLectureDetail => 'Détection des lignes, quantités et prix';
+
+  @override
+  String get entIaLignes => 'Lignes';
+
+  @override
+  String get entIaLignesLues => 'Lignes lues';
+
+  @override
+  String get entIaLu => 'Lu sur le bon';
+
+  @override
+  String get entIaProduitCatalogue => 'Produit du catalogue';
+
+  @override
+  String get entIaRapprocher => 'Rapprocher…';
+
+  @override
+  String get entIaRecuPar => 'Reçu par';
+
+  @override
+  String get entIaRemplacer => 'Remplacer le produit';
+
+  @override
+  String get entIaTelephoneAide => 'Les bons envoyés depuis l\'application mobile apparaissent dans la file Mode IA.';
+
+  @override
+  String get entIaTitre => 'Reçu IA · lecture automatique du bon';
+
+  @override
+  String get entIaTraitePar => 'Traité par';
+
+  @override
+  String get entIaTraiter => 'Traiter';
+
+  @override
+  String get entIaVideAide => 'Joignez un bon (photo ou PDF) pour que l\'IA prépare l\'entrée.';
+
+  @override
+  String get entIaVoirBon => 'Voir le bon';
+
+  @override
+  String get entImprimer => 'Imprimer';
+
+  @override
+  String get entInformations => 'Informations';
+
+  @override
+  String get entKpiEntrees => 'Entrées du mois';
+
+  @override
+  String get entListe => 'Liste';
+
+  @override
+  String get entListeBesoins => 'Liste de besoins';
+
+  @override
+  String get entMagasinAide => 'Par défaut : votre magasin principal';
+
+  @override
+  String get entMajDernier => 'Dernier prix d\'achat';
+
+  @override
+  String get entMajGarder => 'Garder le prix d\'achat actuel';
+
+  @override
+  String get entMajMoyen => 'Prix moyen pondéré';
+
+  @override
+  String get entMajPrix => 'Mise à jour prix';
+
+  @override
+  String get entMode => 'Mode';
+
+  @override
+  String get entModifierTitre => 'Modifier l\'entrée';
+
+  @override
+  String get entMontantPaye => 'Montant payé';
+
+  @override
+  String get entNbVersements => 'Nb versements';
+
+  @override
+  String get entNouvelleDescription => 'Scannez les produits reçus : chaque scan ajoute 1 à la quantité.';
+
+  @override
+  String get entNouvelleTitre => 'Nouvelle entrée · Smart Scan';
+
+  @override
+  String get entNumFacture => 'N° facture / BL';
+
+  @override
+  String get entNumFactureIndice => 'Ex. FAC-24-1187';
+
+  @override
+  String get entOffreMessage => 'Je souhaite augmenter mon quota Smart Scan.';
+
+  @override
+  String get entOngletIa => 'Mode IA';
+
+  @override
+  String get entPaiement => 'Paiement';
+
+  @override
+  String get entPaye => 'Payé';
+
+  @override
+  String get entPayeTotalite => 'Payé en totalité';
+
+  @override
+  String get entProduitsRecus => 'Produits reçus';
+
+  @override
+  String get entQteRecue => 'Qté reçue';
+
+  @override
+  String get entRapideDescription => 'Réception d\'un seul produit, sans bon fournisseur détaillé.';
+
+  @override
+  String get entRapideTitre => 'Entrée rapide';
+
+  @override
+  String get entRecherche => 'Code, fournisseur ou n° facture…';
+
+  @override
+  String get entRechercheBons => 'Fichier ou fournisseur…';
+
+  @override
+  String get entRecuLe => 'Reçu le';
+
+  @override
+  String get entRepartitionIncomplete => 'Répartition incomplète';
+
+  @override
+  String get entRepartitionOption => 'Répartition (option)';
+
+  @override
+  String get entResteAide => 'Ajouté au crédit du fournisseur';
+
+  @override
+  String get entResteCredit => 'Reste (crédit)';
+
+  @override
+  String get entRetour => 'Retour';
+
+  @override
+  String get entScanAjoute => 'ajouté';
+
+  @override
+  String get entScanIndice => 'Scanner un code-barres puis Entrée (ou code produit)…';
+
+  @override
+  String get entSourceIa => 'Reçu IA';
+
+  @override
+  String get entSourceRapide => 'Entrée rapide';
+
+  @override
+  String get entSuivant => 'Suivant';
+
+  @override
+  String get entToastAnnulees => 'Entrées annulées';
+
+  @override
+  String get entToastAnnuleesDetail => 'Stock et crédit fournisseur corrigés';
+
+  @override
+  String get entToastBonsSupprimes => 'Bons supprimés';
+
+  @override
+  String get entToastDepuisBon => 'Entrée créée depuis le bon';
+
+  @override
+  String get entToastEnregistree => 'Entrée enregistrée';
+
+  @override
+  String get entToastModifiee => 'Entrée modifiée';
+
+  @override
+  String get entToastRapide => 'Entrée rapide enregistrée';
+
+  @override
+  String get entToastReparti => 'Stock réparti entre les magasins';
+
+  @override
+  String get entVenteSousAchat => 'Prix de vente ≤ prix d\'achat';
+
+  @override
+  String entCreerProduit(String nom) {
+    return '+ Créer « $nom »';
+  }
+
+  @override
+  String entDepuisListe(String code) {
+    return 'Réception de la liste de besoins $code';
+  }
+
+  @override
+  String entDetailTitre(String code) {
+    return 'Entrée $code';
+  }
+
+  @override
+  String entIaARapprocher(int n) {
+    return '$n ligne(s) à rapprocher';
+  }
+
+  @override
+  String entIaCreer(String montant) {
+    return 'Créer l\'entrée · $montant';
+  }
+
+  @override
+  String entValider(String montant) {
+    return 'Valider l\'entrée · $montant';
+  }
+
+  @override
+  String entRapideDescriptionProduit(String code, String stock) {
+    return '$code · stock actuel $stock pièces — réception sans bon détaillé.';
+  }
+
+  @override
+  String entRapideTitreProduit(String nom) {
+    return 'Entrée rapide · $nom';
+  }
+
+  @override
+  String entScanInconnu(String code) {
+    return 'Code inconnu : $code';
+  }
+
+  @override
+  String entToastBonsDetail(int n) {
+    return '$n fichier(s)';
+  }
+
+  @override
+  String get entCreerEntree => 'Créer l\'entrée';
+
+  @override
+  String get statutErreur => 'Erreur';
 }

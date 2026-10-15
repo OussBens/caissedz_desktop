@@ -85,6 +85,10 @@
 ## Achats (lot 6)
 - [x] Entrées / achats : transaction unique, stock par mouvements, prix d'achat, dette fournisseur
 - [x] Smart Scan IA : quota serveur, quota atteint, demande d'offre
+- [x] Entrées DS v2.2 (phase D, migration v15) : Smart Scan 2 étapes, entrée rapide répartie entre magasins,
+      Reçu IA 3 étapes avec file `bon_reception`, modification et annulation en lot avec motif, versé / reste
+      calculés, réception d'une liste de besoins
+- [ ] Session de caisse ouverte obligatoire pour une entrée (§9.6) ; raccourci `E` en caisse
 
 ## Gestion caisse et fiscal (lot 7)
 - [x] Caisses Physique / Compte, caisse sans magasin ; journal des mouvements ; transferts TRF = 2 mouvements

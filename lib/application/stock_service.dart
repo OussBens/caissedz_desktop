@@ -330,7 +330,13 @@ class StockService {
   }
 
   /// Défait les mouvements d'un document : mouvements inverses du net passé par produit et par magasin.
-  Future<void> _defaire(Transaction txn, String referenceType, String code, String type, {String? motif}) async {
+  Future<void> defaireDansTransaction(
+    Transaction txn,
+    String referenceType,
+    String code,
+    String type, {
+    String? motif,
+  }) async {
     final net = await txn.rawQuery(
       '''
       SELECT produit_code p, magasin_code m, SUM(quantite) q, SUM(nombre) n FROM mouvement_stock
@@ -485,7 +491,7 @@ class StockService {
     return db.transaction((txn) async {
       final repo = StockRepository(txn);
       final avant = await _transfertActif(repo, code);
-      await _defaire(txn, 'transfert', code, TypesMouvement.transfert, motif: 'Modification');
+      await defaireDansTransaction(txn, 'transfert', code, TypesMouvement.transfert, motif: 'Modification');
       final t = TransfertStock(
         code: code,
         date: date ?? avant.date,
@@ -515,7 +521,7 @@ class StockService {
       final repo = StockRepository(txn);
       for (final code in codes) {
         await _transfertActif(repo, code);
-        await _defaire(txn, 'transfert', code, TypesMouvement.transfert, motif: motif.trim());
+        await defaireDansTransaction(txn, 'transfert', code, TypesMouvement.transfert, motif: motif.trim());
         await repo.annulerDocument('transfert_stock', code, par: utilisateurCode, motif: motif.trim());
         await HistoriqueRepository(txn).journaliser(
           utilisateurCode: utilisateurCode,
@@ -663,7 +669,7 @@ class StockService {
     return db.transaction((txn) async {
       final repo = StockRepository(txn);
       final avant = await _sortieActive(repo, code);
-      await _defaire(txn, 'sortie', code, TypesMouvement.sortie, motif: 'Modification');
+      await defaireDansTransaction(txn, 'sortie', code, TypesMouvement.sortie, motif: 'Modification');
       final s = SortieStock(
         code: code,
         date: date ?? avant.date,
@@ -693,7 +699,7 @@ class StockService {
       final repo = StockRepository(txn);
       for (final code in codes) {
         await _sortieActive(repo, code);
-        await _defaire(txn, 'sortie', code, TypesMouvement.sortie, motif: motif.trim());
+        await defaireDansTransaction(txn, 'sortie', code, TypesMouvement.sortie, motif: motif.trim());
         await repo.annulerDocument('sortie_stock', code, par: utilisateurCode, motif: motif.trim());
         await HistoriqueRepository(txn).journaliser(
           utilisateurCode: utilisateurCode,

@@ -3233,5 +3233,194 @@
   "stkValiderTransfert": "Valider le transfert",
   "stkVers": "Vers",
   "stkVoirMouvements": "Voir les mouvements",
-  "stkVoirPiece": "Voir la pièce"
+  "stkVoirPiece": "Voir la pièce",
+  "entAucunBon": "Aucun bon reçu.",
+  "entAucunFournisseur": "Aucun (achat comptant)",
+  "entAucunProduit": "Scannez ou ajoutez les produits reçus.",
+  "entBloqueDejaAnnulee": "Déjà annulée",
+  "entBloqueVendus": "Des produits ont déjà été vendus",
+  "entBonReception": "Bon de réception",
+  "entChoisirProduit": "Choisir un produit",
+  "entDescription": "Réceptions fournisseurs — scan, lecture IA des bons, entrée rapide",
+  "entEntite": "Entrée",
+  "entEntiteBon": "bon",
+  "entEntiteBons": "bons",
+  "entEntitePluriel": "entrées",
+  "entEntreeLiee": "Entrée liée",
+  "entErreurBonInconnu": "Bon de réception introuvable.",
+  "entErreurBonTraite": "Bon déjà traité",
+  "entErreurMotif": "Le motif est obligatoire.",
+  "entEtapeBon": "Bon & fournisseur",
+  "entEtapeBonDetail": "En-tête, paiement",
+  "entEtapeProduits": "Produits reçus",
+  "entEtapeProduitsDetail": "Scan et quantités",
+  "entFichier": "Fichier",
+  "entFournisseurDetecte": "Fournisseur détecté",
+  "entIaAnalyser": "Analyser le bon",
+  "entIaApercu": "Aperçu du bon",
+  "entIaAucunFichier": "Aucun fichier choisi",
+  "entIaBandeauDetail": "Les bons envoyés depuis le téléphone arrivent ici avec le statut « Reçu ».",
+  "entIaBandeauTitre": "Photographiez le bon, l'IA remplit l'entrée",
+  "entIaConfiance": "Confiance",
+  "entIaDepuisDisque": "Depuis le disque",
+  "entIaDepuisTelephone": "Depuis le téléphone",
+  "entIaDescription": "Photo ou PDF d'une facture fournisseur : les lignes sont détectées puis rapprochées du catalogue.",
+  "entIaDetecte": "Détecté sur le bon",
+  "entIaEtapeFournisseur": "Fournisseur & paiement",
+  "entIaEtapeFournisseurDetail": "Valider",
+  "entIaEtapeLignes": "Lignes détectées",
+  "entIaEtapeLignesDetail": "Vérifier, rapprocher",
+  "entIaEtapePhoto": "Photo du bon",
+  "entIaEtapePhotoDetail": "Image ou PDF",
+  "entIaFormats": "JPG, PNG ou PDF",
+  "entIaJoindre": "Joindre un bon",
+  "entIaLecture": "Lecture du bon en cours…",
+  "entIaLectureDetail": "Détection des lignes, quantités et prix",
+  "entIaLignes": "Lignes",
+  "entIaLignesLues": "Lignes lues",
+  "entIaLu": "Lu sur le bon",
+  "entIaProduitCatalogue": "Produit du catalogue",
+  "entIaRapprocher": "Rapprocher…",
+  "entIaRecuPar": "Reçu par",
+  "entIaRemplacer": "Remplacer le produit",
+  "entIaTelephoneAide": "Les bons envoyés depuis l'application mobile apparaissent dans la file Mode IA.",
+  "entIaTitre": "Reçu IA · lecture automatique du bon",
+  "entIaTraitePar": "Traité par",
+  "entIaTraiter": "Traiter",
+  "entIaVideAide": "Joignez un bon (photo ou PDF) pour que l'IA prépare l'entrée.",
+  "entIaVoirBon": "Voir le bon",
+  "entImprimer": "Imprimer",
+  "entInformations": "Informations",
+  "entKpiEntrees": "Entrées du mois",
+  "entListe": "Liste",
+  "entListeBesoins": "Liste de besoins",
+  "entMagasinAide": "Par défaut : votre magasin principal",
+  "entMajDernier": "Dernier prix d'achat",
+  "entMajGarder": "Garder le prix d'achat actuel",
+  "entMajMoyen": "Prix moyen pondéré",
+  "entMajPrix": "Mise à jour prix",
+  "entMode": "Mode",
+  "entModifierTitre": "Modifier l'entrée",
+  "entMontantPaye": "Montant payé",
+  "entNbVersements": "Nb versements",
+  "entNouvelleDescription": "Scannez les produits reçus : chaque scan ajoute 1 à la quantité.",
+  "entNouvelleTitre": "Nouvelle entrée · Smart Scan",
+  "entNumFacture": "N° facture / BL",
+  "entNumFactureIndice": "Ex. FAC-24-1187",
+  "entOffreMessage": "Je souhaite augmenter mon quota Smart Scan.",
+  "entOngletIa": "Mode IA",
+  "entPaiement": "Paiement",
+  "entPaye": "Payé",
+  "entPayeTotalite": "Payé en totalité",
+  "entProduitsRecus": "Produits reçus",
+  "entQteRecue": "Qté reçue",
+  "entRapideDescription": "Réception d'un seul produit, sans bon fournisseur détaillé.",
+  "entRapideTitre": "Entrée rapide",
+  "entRecherche": "Code, fournisseur ou n° facture…",
+  "entRechercheBons": "Fichier ou fournisseur…",
+  "entRecuLe": "Reçu le",
+  "entRepartitionIncomplete": "Répartition incomplète",
+  "entRepartitionOption": "Répartition (option)",
+  "entResteAide": "Ajouté au crédit du fournisseur",
+  "entResteCredit": "Reste (crédit)",
+  "entRetour": "Retour",
+  "entScanAjoute": "ajouté",
+  "entScanIndice": "Scanner un code-barres puis Entrée (ou code produit)…",
+  "entSourceIa": "Reçu IA",
+  "entSourceRapide": "Entrée rapide",
+  "entSuivant": "Suivant",
+  "entToastAnnulees": "Entrées annulées",
+  "entToastAnnuleesDetail": "Stock et crédit fournisseur corrigés",
+  "entToastBonsSupprimes": "Bons supprimés",
+  "entToastDepuisBon": "Entrée créée depuis le bon",
+  "entToastEnregistree": "Entrée enregistrée",
+  "entToastModifiee": "Entrée modifiée",
+  "entToastRapide": "Entrée rapide enregistrée",
+  "entToastReparti": "Stock réparti entre les magasins",
+  "entVenteSousAchat": "Prix de vente ≤ prix d'achat",
+  "entCreerProduit": "+ Créer « {nom} »",
+  "@entCreerProduit": {
+    "placeholders": {
+      "nom": {
+        "type": "String"
+      }
+    }
+  },
+  "entDepuisListe": "Réception de la liste de besoins {code}",
+  "@entDepuisListe": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "entDetailTitre": "Entrée {code}",
+  "@entDetailTitre": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "entIaARapprocher": "{n} ligne(s) à rapprocher",
+  "@entIaARapprocher": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "entIaCreer": "Créer l'entrée · {montant}",
+  "@entIaCreer": {
+    "placeholders": {
+      "montant": {
+        "type": "String"
+      }
+    }
+  },
+  "entValider": "Valider l'entrée · {montant}",
+  "@entValider": {
+    "placeholders": {
+      "montant": {
+        "type": "String"
+      }
+    }
+  },
+  "entRapideDescriptionProduit": "{code} · stock actuel {stock} pièces — réception sans bon détaillé.",
+  "@entRapideDescriptionProduit": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "stock": {
+        "type": "String"
+      }
+    }
+  },
+  "entRapideTitreProduit": "Entrée rapide · {nom}",
+  "@entRapideTitreProduit": {
+    "placeholders": {
+      "nom": {
+        "type": "String"
+      }
+    }
+  },
+  "entScanInconnu": "Code inconnu : {code}",
+  "@entScanInconnu": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "entToastBonsDetail": "{n} fichier(s)",
+  "@entToastBonsDetail": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "entCreerEntree": "Créer l'entrée",
+  "statutErreur": "Erreur"
 }

@@ -11684,6 +11684,702 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Voir la pièce'**
   String get stkVoirPiece;
+
+  /// No description provided for @entAucunBon.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun bon reçu.'**
+  String get entAucunBon;
+
+  /// No description provided for @entAucunFournisseur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun (achat comptant)'**
+  String get entAucunFournisseur;
+
+  /// No description provided for @entAucunProduit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Scannez ou ajoutez les produits reçus.'**
+  String get entAucunProduit;
+
+  /// No description provided for @entBloqueDejaAnnulee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déjà annulée'**
+  String get entBloqueDejaAnnulee;
+
+  /// No description provided for @entBloqueVendus.
+  ///
+  /// In fr, this message translates to:
+  /// **'Des produits ont déjà été vendus'**
+  String get entBloqueVendus;
+
+  /// No description provided for @entBonReception.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bon de réception'**
+  String get entBonReception;
+
+  /// No description provided for @entChoisirProduit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir un produit'**
+  String get entChoisirProduit;
+
+  /// No description provided for @entDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réceptions fournisseurs — scan, lecture IA des bons, entrée rapide'**
+  String get entDescription;
+
+  /// No description provided for @entEntite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrée'**
+  String get entEntite;
+
+  /// No description provided for @entEntiteBon.
+  ///
+  /// In fr, this message translates to:
+  /// **'bon'**
+  String get entEntiteBon;
+
+  /// No description provided for @entEntiteBons.
+  ///
+  /// In fr, this message translates to:
+  /// **'bons'**
+  String get entEntiteBons;
+
+  /// No description provided for @entEntitePluriel.
+  ///
+  /// In fr, this message translates to:
+  /// **'entrées'**
+  String get entEntitePluriel;
+
+  /// No description provided for @entEntreeLiee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrée liée'**
+  String get entEntreeLiee;
+
+  /// No description provided for @entErreurBonInconnu.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bon de réception introuvable.'**
+  String get entErreurBonInconnu;
+
+  /// No description provided for @entErreurBonTraite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bon déjà traité'**
+  String get entErreurBonTraite;
+
+  /// No description provided for @entErreurMotif.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le motif est obligatoire.'**
+  String get entErreurMotif;
+
+  /// No description provided for @entEtapeBon.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bon & fournisseur'**
+  String get entEtapeBon;
+
+  /// No description provided for @entEtapeBonDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'En-tête, paiement'**
+  String get entEtapeBonDetail;
+
+  /// No description provided for @entEtapeProduits.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produits reçus'**
+  String get entEtapeProduits;
+
+  /// No description provided for @entEtapeProduitsDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Scan et quantités'**
+  String get entEtapeProduitsDetail;
+
+  /// No description provided for @entFichier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fichier'**
+  String get entFichier;
+
+  /// No description provided for @entFournisseurDetecte.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fournisseur détecté'**
+  String get entFournisseurDetecte;
+
+  /// No description provided for @entIaAnalyser.
+  ///
+  /// In fr, this message translates to:
+  /// **'Analyser le bon'**
+  String get entIaAnalyser;
+
+  /// No description provided for @entIaApercu.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aperçu du bon'**
+  String get entIaApercu;
+
+  /// No description provided for @entIaAucunFichier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun fichier choisi'**
+  String get entIaAucunFichier;
+
+  /// No description provided for @entIaBandeauDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les bons envoyés depuis le téléphone arrivent ici avec le statut « Reçu ».'**
+  String get entIaBandeauDetail;
+
+  /// No description provided for @entIaBandeauTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Photographiez le bon, l\'IA remplit l\'entrée'**
+  String get entIaBandeauTitre;
+
+  /// No description provided for @entIaConfiance.
+  ///
+  /// In fr, this message translates to:
+  /// **'Confiance'**
+  String get entIaConfiance;
+
+  /// No description provided for @entIaDepuisDisque.
+  ///
+  /// In fr, this message translates to:
+  /// **'Depuis le disque'**
+  String get entIaDepuisDisque;
+
+  /// No description provided for @entIaDepuisTelephone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Depuis le téléphone'**
+  String get entIaDepuisTelephone;
+
+  /// No description provided for @entIaDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Photo ou PDF d\'une facture fournisseur : les lignes sont détectées puis rapprochées du catalogue.'**
+  String get entIaDescription;
+
+  /// No description provided for @entIaDetecte.
+  ///
+  /// In fr, this message translates to:
+  /// **'Détecté sur le bon'**
+  String get entIaDetecte;
+
+  /// No description provided for @entIaEtapeFournisseur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fournisseur & paiement'**
+  String get entIaEtapeFournisseur;
+
+  /// No description provided for @entIaEtapeFournisseurDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Valider'**
+  String get entIaEtapeFournisseurDetail;
+
+  /// No description provided for @entIaEtapeLignes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lignes détectées'**
+  String get entIaEtapeLignes;
+
+  /// No description provided for @entIaEtapeLignesDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vérifier, rapprocher'**
+  String get entIaEtapeLignesDetail;
+
+  /// No description provided for @entIaEtapePhoto.
+  ///
+  /// In fr, this message translates to:
+  /// **'Photo du bon'**
+  String get entIaEtapePhoto;
+
+  /// No description provided for @entIaEtapePhotoDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Image ou PDF'**
+  String get entIaEtapePhotoDetail;
+
+  /// No description provided for @entIaFormats.
+  ///
+  /// In fr, this message translates to:
+  /// **'JPG, PNG ou PDF'**
+  String get entIaFormats;
+
+  /// No description provided for @entIaJoindre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Joindre un bon'**
+  String get entIaJoindre;
+
+  /// No description provided for @entIaLecture.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lecture du bon en cours…'**
+  String get entIaLecture;
+
+  /// No description provided for @entIaLectureDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Détection des lignes, quantités et prix'**
+  String get entIaLectureDetail;
+
+  /// No description provided for @entIaLignes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lignes'**
+  String get entIaLignes;
+
+  /// No description provided for @entIaLignesLues.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lignes lues'**
+  String get entIaLignesLues;
+
+  /// No description provided for @entIaLu.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lu sur le bon'**
+  String get entIaLu;
+
+  /// No description provided for @entIaProduitCatalogue.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produit du catalogue'**
+  String get entIaProduitCatalogue;
+
+  /// No description provided for @entIaRapprocher.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rapprocher…'**
+  String get entIaRapprocher;
+
+  /// No description provided for @entIaRecuPar.
+  ///
+  /// In fr, this message translates to:
+  /// **'Reçu par'**
+  String get entIaRecuPar;
+
+  /// No description provided for @entIaRemplacer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Remplacer le produit'**
+  String get entIaRemplacer;
+
+  /// No description provided for @entIaTelephoneAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les bons envoyés depuis l\'application mobile apparaissent dans la file Mode IA.'**
+  String get entIaTelephoneAide;
+
+  /// No description provided for @entIaTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Reçu IA · lecture automatique du bon'**
+  String get entIaTitre;
+
+  /// No description provided for @entIaTraitePar.
+  ///
+  /// In fr, this message translates to:
+  /// **'Traité par'**
+  String get entIaTraitePar;
+
+  /// No description provided for @entIaTraiter.
+  ///
+  /// In fr, this message translates to:
+  /// **'Traiter'**
+  String get entIaTraiter;
+
+  /// No description provided for @entIaVideAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Joignez un bon (photo ou PDF) pour que l\'IA prépare l\'entrée.'**
+  String get entIaVideAide;
+
+  /// No description provided for @entIaVoirBon.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir le bon'**
+  String get entIaVoirBon;
+
+  /// No description provided for @entImprimer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Imprimer'**
+  String get entImprimer;
+
+  /// No description provided for @entInformations.
+  ///
+  /// In fr, this message translates to:
+  /// **'Informations'**
+  String get entInformations;
+
+  /// No description provided for @entKpiEntrees.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrées du mois'**
+  String get entKpiEntrees;
+
+  /// No description provided for @entListe.
+  ///
+  /// In fr, this message translates to:
+  /// **'Liste'**
+  String get entListe;
+
+  /// No description provided for @entListeBesoins.
+  ///
+  /// In fr, this message translates to:
+  /// **'Liste de besoins'**
+  String get entListeBesoins;
+
+  /// No description provided for @entMagasinAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Par défaut : votre magasin principal'**
+  String get entMagasinAide;
+
+  /// No description provided for @entMajDernier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dernier prix d\'achat'**
+  String get entMajDernier;
+
+  /// No description provided for @entMajGarder.
+  ///
+  /// In fr, this message translates to:
+  /// **'Garder le prix d\'achat actuel'**
+  String get entMajGarder;
+
+  /// No description provided for @entMajMoyen.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix moyen pondéré'**
+  String get entMajMoyen;
+
+  /// No description provided for @entMajPrix.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mise à jour prix'**
+  String get entMajPrix;
+
+  /// No description provided for @entMode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mode'**
+  String get entMode;
+
+  /// No description provided for @entModifierTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier l\'entrée'**
+  String get entModifierTitre;
+
+  /// No description provided for @entMontantPaye.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montant payé'**
+  String get entMontantPaye;
+
+  /// No description provided for @entNbVersements.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nb versements'**
+  String get entNbVersements;
+
+  /// No description provided for @entNouvelleDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Scannez les produits reçus : chaque scan ajoute 1 à la quantité.'**
+  String get entNouvelleDescription;
+
+  /// No description provided for @entNouvelleTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouvelle entrée · Smart Scan'**
+  String get entNouvelleTitre;
+
+  /// No description provided for @entNumFacture.
+  ///
+  /// In fr, this message translates to:
+  /// **'N° facture / BL'**
+  String get entNumFacture;
+
+  /// No description provided for @entNumFactureIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex. FAC-24-1187'**
+  String get entNumFactureIndice;
+
+  /// No description provided for @entOffreMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Je souhaite augmenter mon quota Smart Scan.'**
+  String get entOffreMessage;
+
+  /// No description provided for @entOngletIa.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mode IA'**
+  String get entOngletIa;
+
+  /// No description provided for @entPaiement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paiement'**
+  String get entPaiement;
+
+  /// No description provided for @entPaye.
+  ///
+  /// In fr, this message translates to:
+  /// **'Payé'**
+  String get entPaye;
+
+  /// No description provided for @entPayeTotalite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Payé en totalité'**
+  String get entPayeTotalite;
+
+  /// No description provided for @entProduitsRecus.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produits reçus'**
+  String get entProduitsRecus;
+
+  /// No description provided for @entQteRecue.
+  ///
+  /// In fr, this message translates to:
+  /// **'Qté reçue'**
+  String get entQteRecue;
+
+  /// No description provided for @entRapideDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réception d\'un seul produit, sans bon fournisseur détaillé.'**
+  String get entRapideDescription;
+
+  /// No description provided for @entRapideTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrée rapide'**
+  String get entRapideTitre;
+
+  /// No description provided for @entRecherche.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code, fournisseur ou n° facture…'**
+  String get entRecherche;
+
+  /// No description provided for @entRechercheBons.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fichier ou fournisseur…'**
+  String get entRechercheBons;
+
+  /// No description provided for @entRecuLe.
+  ///
+  /// In fr, this message translates to:
+  /// **'Reçu le'**
+  String get entRecuLe;
+
+  /// No description provided for @entRepartitionIncomplete.
+  ///
+  /// In fr, this message translates to:
+  /// **'Répartition incomplète'**
+  String get entRepartitionIncomplete;
+
+  /// No description provided for @entRepartitionOption.
+  ///
+  /// In fr, this message translates to:
+  /// **'Répartition (option)'**
+  String get entRepartitionOption;
+
+  /// No description provided for @entResteAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouté au crédit du fournisseur'**
+  String get entResteAide;
+
+  /// No description provided for @entResteCredit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Reste (crédit)'**
+  String get entResteCredit;
+
+  /// No description provided for @entRetour.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retour'**
+  String get entRetour;
+
+  /// No description provided for @entScanAjoute.
+  ///
+  /// In fr, this message translates to:
+  /// **'ajouté'**
+  String get entScanAjoute;
+
+  /// No description provided for @entScanIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Scanner un code-barres puis Entrée (ou code produit)…'**
+  String get entScanIndice;
+
+  /// No description provided for @entSourceIa.
+  ///
+  /// In fr, this message translates to:
+  /// **'Reçu IA'**
+  String get entSourceIa;
+
+  /// No description provided for @entSourceRapide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrée rapide'**
+  String get entSourceRapide;
+
+  /// No description provided for @entSuivant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Suivant'**
+  String get entSuivant;
+
+  /// No description provided for @entToastAnnulees.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrées annulées'**
+  String get entToastAnnulees;
+
+  /// No description provided for @entToastAnnuleesDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock et crédit fournisseur corrigés'**
+  String get entToastAnnuleesDetail;
+
+  /// No description provided for @entToastBonsSupprimes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bons supprimés'**
+  String get entToastBonsSupprimes;
+
+  /// No description provided for @entToastDepuisBon.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrée créée depuis le bon'**
+  String get entToastDepuisBon;
+
+  /// No description provided for @entToastEnregistree.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrée enregistrée'**
+  String get entToastEnregistree;
+
+  /// No description provided for @entToastModifiee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrée modifiée'**
+  String get entToastModifiee;
+
+  /// No description provided for @entToastRapide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrée rapide enregistrée'**
+  String get entToastRapide;
+
+  /// No description provided for @entToastReparti.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock réparti entre les magasins'**
+  String get entToastReparti;
+
+  /// No description provided for @entVenteSousAchat.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix de vente ≤ prix d\'achat'**
+  String get entVenteSousAchat;
+
+  /// No description provided for @entCreerProduit.
+  ///
+  /// In fr, this message translates to:
+  /// **'+ Créer « {nom} »'**
+  String entCreerProduit(String nom);
+
+  /// No description provided for @entDepuisListe.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réception de la liste de besoins {code}'**
+  String entDepuisListe(String code);
+
+  /// No description provided for @entDetailTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrée {code}'**
+  String entDetailTitre(String code);
+
+  /// No description provided for @entIaARapprocher.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n} ligne(s) à rapprocher'**
+  String entIaARapprocher(int n);
+
+  /// No description provided for @entIaCreer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créer l\'entrée · {montant}'**
+  String entIaCreer(String montant);
+
+  /// No description provided for @entValider.
+  ///
+  /// In fr, this message translates to:
+  /// **'Valider l\'entrée · {montant}'**
+  String entValider(String montant);
+
+  /// No description provided for @entRapideDescriptionProduit.
+  ///
+  /// In fr, this message translates to:
+  /// **'{code} · stock actuel {stock} pièces — réception sans bon détaillé.'**
+  String entRapideDescriptionProduit(String code, String stock);
+
+  /// No description provided for @entRapideTitreProduit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrée rapide · {nom}'**
+  String entRapideTitreProduit(String nom);
+
+  /// No description provided for @entScanInconnu.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code inconnu : {code}'**
+  String entScanInconnu(String code);
+
+  /// No description provided for @entToastBonsDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n} fichier(s)'**
+  String entToastBonsDetail(int n);
+
+  /// No description provided for @entCreerEntree.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créer l\'entrée'**
+  String get entCreerEntree;
+
+  /// No description provided for @statutErreur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Erreur'**
+  String get statutErreur;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
