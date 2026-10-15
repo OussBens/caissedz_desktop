@@ -2352,5 +2352,7 @@
   "pmSauvegardeMdpDesc": "Required to restore an automatic backup.",
   "pmSauvegardeMdpDefinir": "Set",
   "pmSauvegardeMdpChanger": "Change",
-  "pmSauvegardeDerniere": "Last automatic backup: {date}"
+  "pmSauvegardeDerniere": "Last automatic backup: {date}",
+  "communModifiePar": "Modified by",
+  "communModifieLe": "Modified on"
 }

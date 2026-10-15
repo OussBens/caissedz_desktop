@@ -2352,5 +2352,7 @@
   "pmSauvegardeMdpDesc": "مطلوبة لاستعادة نسخة تلقائية.",
   "pmSauvegardeMdpDefinir": "تحديد",
   "pmSauvegardeMdpChanger": "تغيير",
-  "pmSauvegardeDerniere": "آخر نسخة تلقائية: {date}"
+  "pmSauvegardeDerniere": "آخر نسخة تلقائية: {date}",
+  "communModifiePar": "عُدّل بواسطة",
+  "communModifieLe": "تاريخ التعديل"
 }

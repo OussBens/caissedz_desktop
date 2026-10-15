@@ -13082,6 +13082,18 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Dernière sauvegarde automatique : {date}'**
   String pmSauvegardeDerniere(String date);
+
+  /// No description provided for @communModifiePar.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifié par'**
+  String get communModifiePar;
+
+  /// No description provided for @communModifieLe.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifié le'**
+  String get communModifieLe;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

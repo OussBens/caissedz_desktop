@@ -3559,5 +3559,7 @@
         "type": "String"
       }
     }
-  }
+  },
+  "communModifiePar": "Modifié par",
+  "communModifieLe": "Modifié le"
 }

@@ -206,7 +206,8 @@ class VenteRepository {
         (SELECT GROUP_CONCAT(p.mode, '|') FROM vente_paiement p WHERE p.vente_code = v.code) modes,
         (SELECT h.detail FROM historique h WHERE h.entite = 'vente' AND h.entite_code = v.code
           AND h.action = 'Annulation' ORDER BY h.id DESC LIMIT 1) motif_annulation,
-        (SELECT COALESCE(ua.nom, v.annulee_par) FROM utilisateur ua WHERE ua.code = v.annulee_par) annulee_par_nom
+        (SELECT COALESCE(ua.nom, v.annulee_par) FROM utilisateur ua WHERE ua.code = v.annulee_par) annulee_par_nom,
+        (SELECT um.nom FROM utilisateur um WHERE um.code = v.modifie_par) modifie_par_nom
       FROM vente v LEFT JOIN utilisateur u ON u.code = v.utilisateur_code
       ${where.isEmpty ? '' : 'WHERE ${where.join(' AND ')}'}
       ORDER BY v.date DESC, v.code DESC LIMIT ?
@@ -228,6 +229,8 @@ class VenteRepository {
           annuleeLe: r['annulee_le'] == null ? null : DateTime.parse(r['annulee_le']! as String).toLocal(),
           annuleePar: (r['annulee_par_nom'] ?? r['annulee_par']) as String?,
           motifAnnulation: r['motif_annulation'] as String?,
+          modifieLe: r['modifie_le'] == null ? null : DateTime.parse(r['modifie_le']! as String).toLocal(),
+          modifiePar: (r['modifie_par_nom'] ?? r['modifie_par']) as String?,
         ),
     ];
   }

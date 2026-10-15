@@ -6863,4 +6863,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String pmSauvegardeDerniere(String date) {
     return 'آخر نسخة تلقائية: $date';
   }
+
+  @override
+  String get communModifiePar => 'عُدّل بواسطة';
+
+  @override
+  String get communModifieLe => 'تاريخ التعديل';
 }

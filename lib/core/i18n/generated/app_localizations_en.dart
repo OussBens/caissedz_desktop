@@ -6873,4 +6873,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String pmSauvegardeDerniere(String date) {
     return 'Last automatic backup: $date';
   }
+
+  @override
+  String get communModifiePar => 'Modified by';
+
+  @override
+  String get communModifieLe => 'Modified on';
 }

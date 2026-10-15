@@ -85,14 +85,17 @@ class AuthService {
   }
 
   /// Journalise la déconnexion (§4.4).
-  Future<void> deconnecter(String code) =>
-      HistoriqueRepository(db)
-          .journaliser(utilisateurCode: code, action: 'Déconnexion', entite: 'utilisateur', entiteCode: code);
+  Future<void> deconnecter(String code) => db.transaction((txn) async {
+    await UtilisateurRepository(txn).definirAuditContexte(null);
+    await HistoriqueRepository(txn)
+        .journaliser(utilisateurCode: code, action: 'Déconnexion', entite: 'utilisateur', entiteCode: code);
+  });
 
   Future<Session> _ouvrir(Utilisateur u, {required bool demo}) async {
     final maintenant = DateTime.now();
     await db.transaction((txn) async {
       await UtilisateurRepository(txn).enregistrerAcces(u.code, maintenant);
+      await UtilisateurRepository(txn).definirAuditContexte(u.code);
       await HistoriqueRepository(txn)
           .journaliser(utilisateurCode: u.code, action: 'Connexion', entite: 'utilisateur', entiteCode: u.code);
     });

@@ -223,6 +223,23 @@ void main() {
       expect(await auth.reprendreSession(_admin), isNull);
     });
 
+    test('audit : l’utilisateur connecté signe les créations et modifications', () async {
+      final base = await ouvrirBaseDeTest();
+      await _activer(base);
+      final auth = AuthService(base.db, hachage: _hachage);
+      await auth.connecter('admin', 'admin');
+      final tiers = TiersService(base.db, utilisateurCode: _admin);
+      final c = await tiers.creerClient(const Client(code: '', nom: 'Amina'));
+      var ligne = (await base.db.query('client', where: 'code = ?', whereArgs: [c.code])).single;
+      expect((ligne['cree_par'], ligne['modifie_par']), (_admin, null));
+      await tiers.modifierClient(c.copyWith(telephone: '0550000000'));
+      ligne = (await base.db.query('client', where: 'code = ?', whereArgs: [c.code])).single;
+      expect(ligne['modifie_par'], _admin);
+      expect(ligne['modifie_le'], isNotNull);
+      await auth.deconnecter(_admin);
+      expect((await base.db.query('audit_contexte')).single['utilisateur_code'], isNull);
+    });
+
     test('rôle Caissier : permissions et modules restreints', () async {
       final base = await ouvrirBaseDeTest();
       await _activer(base);

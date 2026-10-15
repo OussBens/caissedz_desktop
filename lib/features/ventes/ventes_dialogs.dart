@@ -179,6 +179,8 @@ Future<void> afficherDetailPanier(
           items: [
             DsKeyValue(l10n.ventesCreePar, p.caissier),
             DsKeyValue(l10n.ventesCreeLe, date),
+            DsKeyValue(l10n.communModifiePar, p.modifiePar),
+            DsKeyValue(l10n.communModifieLe, p.modifieLe == null ? null : formatDateHeure.format(p.modifieLe!)),
             DsKeyValue(l10n.ventesAnnulePar, p.annuleePar),
             DsKeyValue(l10n.ventesAnnuleLe, p.annuleeLe == null ? null : formatDateHeure.format(p.annuleeLe!)),
             DsKeyValue(l10n.ventesMotifAnnulation, p.motifAnnulation),

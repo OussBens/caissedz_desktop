@@ -270,6 +270,8 @@ class PanierResume {
     this.annuleeLe,
     this.annuleePar,
     this.motifAnnulation,
+    this.modifieLe,
+    this.modifiePar,
   });
 
   final Vente vente;
@@ -288,6 +290,10 @@ class PanierResume {
   final DateTime? annuleeLe;
   final String? annuleePar;
   final String? motifAnnulation;
+
+  /// Dernière modification (colonnes d'audit, §3.2) : modification du paiement, annulation…
+  final DateTime? modifieLe;
+  final String? modifiePar;
 
   String get code => vente.code;
   bool get annule => vente.statut == StatutsVente.annulee;

@@ -48,6 +48,10 @@ class UtilisateurRepository {
   }
 
   /// Horodate la connexion réussie de l'utilisateur.
+  /// Utilisateur connecté, lu par les déclencheurs d'audit (`cree_par`, `modifie_par`) ; `null` à la déconnexion.
+  Future<void> definirAuditContexte(String? code) =>
+      db.update('audit_contexte', {'utilisateur_code': code}, where: 'id = 1');
+
   Future<void> enregistrerAcces(String code, DateTime quand) => db.update(
     'utilisateur',
     {'dernier_acces': quand.toUtc().toIso8601String()},
