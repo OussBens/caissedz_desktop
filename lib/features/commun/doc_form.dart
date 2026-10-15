@@ -157,6 +157,7 @@ class DocFormDialog extends ConsumerStatefulWidget {
     this.libelleTotal,
     this.cleEnregistrer,
     this.saisieNombre = false,
+    this.sansLignes = false,
   });
   final String titre;
   final IconData icone;
@@ -178,6 +179,9 @@ class DocFormDialog extends ConsumerStatefulWidget {
   final bool prixVenteSelecteur;
   final String? libelleTotal;
   final Key? cleEnregistrer;
+
+  /// Document sans lignes produits (remise « Par montant ») : éditeur masqué, enregistrable sans ligne.
+  final bool sansLignes;
 
   /// Document qui mouvemente le stock : colonne « Nombre » obligatoire quand le 2ᵉ stock est actif (§8.1).
   final bool saisieNombre;
@@ -233,7 +237,7 @@ class _DocFormDialogState extends ConsumerState<DocFormDialog> {
             onEdition: () => widget.onLignes([...widget.lignes]),
           )
         : widget.colonnes;
-    final ok = widget.peutEnregistrer && widget.lignes.isNotEmpty && erreurs.isEmpty;
+    final ok = widget.peutEnregistrer && (widget.sansLignes || widget.lignes.isNotEmpty) && erreurs.isEmpty;
     return DsDialog(
       titre: widget.titre,
       iconeData: widget.icone,
@@ -258,19 +262,20 @@ class _DocFormDialogState extends ConsumerState<DocFormDialog> {
         spacing: 16,
         children: [
           DsGrilleFormulaire(children: widget.entete),
-          DsLineItemsEditor<LigneDoc>(
-            lignes: widget.lignes,
-            colonnes: colonnes,
-            totalLigne: widget.totalLigne,
-            quantite: (l) => l.quantite,
-            cle: (l) => l.produit.code,
-            devise: devise,
-            erreurs: erreurs,
-            libelleTotal: widget.libelleTotal,
-            libelleAjouter: l10n.dsPosLigneAjouter,
-            onAjouter: _ajouter,
-            onSupprimer: (l) => widget.onLignes(widget.lignes.where((x) => x != l).toList()),
-          ),
+          if (!widget.sansLignes)
+            DsLineItemsEditor<LigneDoc>(
+              lignes: widget.lignes,
+              colonnes: colonnes,
+              totalLigne: widget.totalLigne,
+              quantite: (l) => l.quantite,
+              cle: (l) => l.produit.code,
+              devise: devise,
+              erreurs: erreurs,
+              libelleTotal: widget.libelleTotal,
+              libelleAjouter: l10n.dsPosLigneAjouter,
+              onAjouter: _ajouter,
+              onSupprimer: (l) => widget.onLignes(widget.lignes.where((x) => x != l).toList()),
+            ),
           ?widget.apres,
         ],
       ),

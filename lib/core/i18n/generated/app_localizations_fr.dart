@@ -390,9 +390,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get produitModifier => 'Modifier le produit';
 
   @override
-  String get produitChampCategorie => 'Catégorie';
-
-  @override
   String get produitChampSousCategorie => 'Sous-catégorie';
 
   @override
@@ -1443,9 +1440,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get dsPageSuivante => 'Page suivante';
-
-  @override
-  String get dsChoisirListe => 'Choisir dans la liste';
 
   @override
   String get dsAucunResultat => 'Aucun résultat';
@@ -3075,14 +3069,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get retoursRegRembEspeces => 'Remboursement espèces';
 
   @override
-  String get retoursNouveau => 'Nouveau retour';
-
-  @override
   String get retoursModifierTitre => 'Modifier le retour';
-
-  @override
-  String get retoursFormDescription =>
-      'Retour d\'un produit vendu (client) ou reçu (fournisseur). Le stock est réintégré ou déduit.';
 
   @override
   String get retoursChoixClient => 'Retour client';
@@ -4227,17 +4214,7 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get prdCumulable => 'Cumulable';
-
-  @override
-  String get prdAvecRemiseTicket => 'Avec la remise ticket';
-
-  @override
   String get prdSeuilAide => 'La remise s\'active quand le sous-total atteint ce montant';
-
-  @override
-  String get prdParMontantAide =>
-      'Remise « Par montant » : choisie sur le panier en caisse (Ctrl+R / F8), sans liste de produits.';
 
   @override
   String get prdToastRemise => 'Remise enregistrée';
@@ -7087,5 +7064,30 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String selNbProduits(int n) {
     return '$n produits';
+  }
+
+  @override
+  String get retoursNouveauClient => 'Nouveau retour client';
+
+  @override
+  String get retoursNouveauFournisseur => 'Nouveau retour fournisseur';
+
+  @override
+  String get retoursFormDescriptionClient =>
+      'Retour d\'un produit vendu : remis en stock, remboursé ou porté en avoir.';
+
+  @override
+  String get retoursFormDescriptionFournisseur =>
+      'Retour d\'un produit reçu : sorti du stock et déduit du crédit fournisseur.';
+
+  @override
+  String get prdPorteeProduitAide => 'Appliquée automatiquement aux produits choisis, pendant sa période.';
+
+  @override
+  String get prdPorteeMontantAide => 'Choisie sur le panier en caisse, dès que le sous-total atteint le seuil.';
+
+  @override
+  String prdMontantPanierAide(String devise) {
+    return 'Ex. −500 $devise sur le panier';
   }
 }

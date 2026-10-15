@@ -236,11 +236,7 @@ class _PosPageState extends ConsumerState<PosPage> {
     final n = DateTime.now();
     return [
       for (final r in ref.read(remisesProvider).value ?? const <Remise>[])
-        if (r.actif &&
-            r.parMontant &&
-            (r.dateDebut == null || !n.isBefore(r.dateDebut!)) &&
-            (r.dateFin == null || !n.isAfter(r.dateFin!)))
-          r,
+        if (r.parMontant && r.estActive(n)) r,
     ];
   }
 

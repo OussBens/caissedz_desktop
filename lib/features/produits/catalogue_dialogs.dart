@@ -405,7 +405,7 @@ class BadgeStatutRemise extends StatelessWidget {
 }
 
 /// Formulaire remise (`RemiseFormDialog`, `DocFormDialog` 980 px) : nom, type de taux (Pourcentage /
-/// Montant fixe), valeur, cumulable, période, type de remise (§8.9) et produits concernés.
+/// Montant fixe), valeur, période, type de remise (§8.9, en tête) et produits concernés (remise par produit).
 Future<void> afficherFormulaireRemise(BuildContext context, WidgetRef ref, {Remise? remise}) async {
   final produits = await ref.read(produitsProvider.future);
   if (!context.mounted) return;
@@ -434,7 +434,6 @@ class _RemiseFormState extends ConsumerState<_RemiseForm> {
   late final _observation = TextEditingController(text: widget.remise?.observation ?? '');
   late String _type = widget.remise?.type ?? 'Pourcentage';
   late String _portee = widget.remise?.portee ?? Remise.porteeProduit;
-  late bool _cumulable = widget.remise?.cumulable ?? false;
   late DateTime? _du = widget.remise?.dateDebut ?? DateTime(DateTime.now().year, DateTime.now().month);
   late DateTime? _au = widget.remise?.dateFin ?? DateTime(DateTime.now().year, DateTime.now().month + 1, 0);
   late List<LigneDoc> _lignes = widget.lignesInitiales;
@@ -463,7 +462,6 @@ class _RemiseFormState extends ConsumerState<_RemiseForm> {
       dateDebut: _du,
       dateFin: _au == null ? null : DateTime(_au!.year, _au!.month, _au!.day, 23, 59, 59),
       actif: widget.remise?.actif ?? true,
-      cumulable: _cumulable,
       observation: _observation.text.trim().isEmpty ? null : _observation.text.trim(),
       portee: _portee,
       seuil: _portee == Remise.porteeMontant ? nombreSaisi(_seuil.text) : 0,
@@ -507,6 +505,7 @@ class _RemiseFormState extends ConsumerState<_RemiseForm> {
       largeur: 980,
       cleEnregistrer: const ValueKey('remise_enregistrer'),
       lignes: parMontant ? const [] : _lignes,
+      sansLignes: parMontant,
       onLignes: (l) => setState(() => _lignes = l),
       peutEnregistrer: _v > 0 && _nom.text.trim().isNotEmpty && _du != null && _au != null,
       titreSelecteur: l10n.prdProduitsConcernes,
@@ -541,6 +540,29 @@ class _RemiseFormState extends ConsumerState<_RemiseForm> {
         ),
       ],
       entete: [
+        // Type de remise en premier : il décide de la suite du formulaire (produits ou seuil du panier).
+        DsSpan(
+          child: DsChoiceCards<String>(
+            key: const ValueKey('remise_portee'),
+            petit: true,
+            valeur: _portee,
+            onChanged: (v) => setState(() => _portee = v),
+            options: [
+              DsOption(
+                Remise.porteeProduit,
+                libelle: l10n.prdPorteeProduit,
+                icone: LucideIcons.package,
+                description: l10n.prdPorteeProduitAide,
+              ),
+              DsOption(
+                Remise.porteeMontant,
+                libelle: l10n.prdPorteeMontant,
+                icone: LucideIcons.shoppingCart,
+                description: l10n.prdPorteeMontantAide,
+              ),
+            ],
+          ),
+        ),
         DsFormRow(
           libelle: l10n.produitsColCode,
           largeurLibelle: lw,
@@ -561,6 +583,7 @@ class _RemiseFormState extends ConsumerState<_RemiseForm> {
         ),
         DsSpan(
           child: DsChoiceCards<String>(
+            key: const ValueKey('remise_type_taux'),
             petit: true,
             valeur: _type,
             onChanged: (v) => setState(() => _type = v),
@@ -575,7 +598,7 @@ class _RemiseFormState extends ConsumerState<_RemiseForm> {
                 'Montant',
                 libelle: l10n.prdMontantFixe,
                 icone: LucideIcons.banknote,
-                description: l10n.prdMontantFixeAide(devise),
+                description: parMontant ? l10n.prdMontantPanierAide(devise) : l10n.prdMontantFixeAide(devise),
               ),
             ],
           ),
@@ -592,15 +615,20 @@ class _RemiseFormState extends ConsumerState<_RemiseForm> {
             onChanged: (_) => setState(() {}),
           ),
         ),
-        DsFormRow(
-          libelle: l10n.prdCumulable,
-          largeurLibelle: lw,
-          child: DsSwitch(
-            valeur: _cumulable,
-            libelle: l10n.prdAvecRemiseTicket,
-            onChanged: (v) => setState(() => _cumulable = v),
-          ),
-        ),
+        if (parMontant)
+          DsFormRow(
+            libelle: l10n.prdSeuilMontant,
+            largeurLibelle: lw,
+            aide: l10n.prdSeuilAide,
+            child: DsTextField(
+              key: const ValueKey('remise_seuil'),
+              controller: _seuil,
+              numerique: true,
+              suffixeTexte: devise,
+            ),
+          )
+        else
+          const SizedBox.shrink(),
         DsFormRow(
           libelle: l10n.dsDu,
           obligatoire: true,
@@ -613,37 +641,14 @@ class _RemiseFormState extends ConsumerState<_RemiseForm> {
           largeurLibelle: lw,
           child: DsDateField(valeur: _au, min: _du, onChanged: (d) => setState(() => _au = d)),
         ),
-        DsFormRow(
-          libelle: l10n.remiseType,
-          largeurLibelle: lw,
-          child: DsSelectReferentiel(
-            cle: const ValueKey('remise_portee'),
-            liste: Referentiel.typesRemise,
-            valeur: _portee,
-            onChanged: (v) => setState(() => _portee = v ?? _portee),
+        DsSpan(
+          child: DsFormRow(
+            libelle: l10n.retoursObservation,
+            largeurLibelle: lw,
+            child: DsTextField(key: const ValueKey('remise_observation'), controller: _observation),
           ),
         ),
-        if (parMontant)
-          DsFormRow(
-            libelle: l10n.prdSeuilMontant,
-            largeurLibelle: lw,
-            aide: l10n.prdSeuilAide,
-            child: DsTextField(controller: _seuil, numerique: true, suffixeTexte: devise),
-          )
-        else
-          const SizedBox.shrink(),
       ],
-      apres: parMontant
-          ? DsCard(
-              child: Row(
-                spacing: 10,
-                children: [
-                  Icon(LucideIcons.info, size: 16, color: context.ds.colors.iconMuted),
-                  Expanded(child: Text(l10n.prdParMontantAide, style: context.ds.typo.bodySm)),
-                ],
-              ),
-            )
-          : null,
     );
   }
 }
@@ -723,7 +728,6 @@ Future<void> afficherDetailRemise(BuildContext context, WidgetRef ref, Remise r,
             items: [
               DsKeyValue(l10n.remiseType, libellePorteeRemise(l10n, r.portee)),
               DsKeyValue(l10n.prdSeuilMontant, formaterMontant(r.seuil, devise)),
-              DsKeyValue(l10n.prdCumulable, r.cumulable ? l10n.communOui : l10n.communNon),
               DsKeyValue(l10n.retoursObservation, r.observation, span: 3),
             ],
           ),

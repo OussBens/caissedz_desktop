@@ -660,3 +660,17 @@ Référence : `docs/design/CaisseDZ-DS-v2.2/CaisseDZ-DS-v2.2.html`, `bundle-v2.2
   aux documents : mêmes dialogs, avec cartes.
 - ✅ Affichage liste ou grille (`CarteEntite`) dans Clients, Fournisseurs, Ventes et Utilisateurs (Produits
   l'avait déjà) ; les cartes coupent leur contenu dans une grille à hauteur fixe au lieu de déborder.
+
+## Retours utilisateur — Dialogs, Retours et Remises ✅ (2026-10-15)
+
+- ✅ `DsDialog` : boutons du pied centrés dans tous les dialogs (le contenu de début de pied reste à gauche).
+- ✅ Panneaux de filtres : une même largeur de libellé dans toutes les cellules (`DsLargeurLibelle`), colonnes
+  alignées ; Retours : période sur la 1ʳᵉ ligne, Client / Fournisseur, Remboursement et État sur la 2ᵉ.
+- ✅ Retours : « Nouveau retour client » et « Nouveau retour fournisseur » selon l'onglet ; le dialog n'affiche que
+  la carte du type de l'onglet (plus de bascule client / fournisseur).
+- ✅ Remises : type (Par produit / Par montant) en tête du formulaire ; une remise par montant n'a plus d'éditeur de
+  produits et s'enregistre sans ligne (elle était bloquée) ; option « Cumulable » retirée (colonne conservée en base,
+  toujours 0) ; champ Observation.
+- ✅ Remises : état calculé sur la période (`Remise.estActive`, bornes incluses à la journée) : Active / Inactive,
+  Annulée si annulée. Une remise inactive n'est proposée ni dans les listes, ni dans le dialog de sélection, ni en
+  caisse, et ne s'applique pas aux produits.

@@ -223,19 +223,20 @@ Future<_Config> _charger(BuildContext context, WidgetRef ref, ListeMetier liste)
           (l10n.selColType, null),
           (l10n.selColValeur, 120),
         ],
-        filtres: [type, etat],
+        filtres: [type],
         elements: [
-          for (final r in remises)
+          // Seules les remises actives (période en cours, non annulées) sont proposées.
+          for (final r in remises.where((r) => r.estActive(DateTime.now())))
             _Element(
               code: r.code,
               titre: r.designation,
               colonnes: [
                 r.code,
                 r.designation,
-                libelleRef(context, Referentiel.typesRemise, r.type),
+                libelleRef(context, Referentiel.typesRemise, r.portee),
                 r.type == 'Pourcentage' ? '${formaterNombre(r.valeur)} %' : da(r.valeur),
               ],
-              attributs: {'type': libelleRef(context, Referentiel.typesRemise, r.type), 'etat': _etat(r.actif)},
+              attributs: {'type': libelleRef(context, Referentiel.typesRemise, r.portee)},
             ),
         ],
       );

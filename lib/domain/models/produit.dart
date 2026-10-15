@@ -457,22 +457,27 @@ class Remise {
     seuil: seuil,
   );
 
-  /// Statut d'affichage : `actif`, `enAttente` (programmée), `expire` ou `inactif`.
-  String statut(DateTime date) {
-    if (!actif) return 'inactif';
-    if (dateDebut != null && date.isBefore(dateDebut!)) return 'enAttente';
-    if (dateFin != null && date.isAfter(dateFin!)) return 'expire';
-    return 'actif';
+  /// Vrai si [date] (à la journée) est dans la période Du / Au, bornes incluses.
+  bool dansPeriode(DateTime date) {
+    final jour = DateTime(date.year, date.month, date.day);
+    if (dateDebut != null && jour.isBefore(DateTime(dateDebut!.year, dateDebut!.month, dateDebut!.day))) return false;
+    if (dateFin != null && jour.isAfter(DateTime(dateFin!.year, dateFin!.month, dateFin!.day))) return false;
+    return true;
   }
+
+  /// Active à [date] : non annulée et [date] dans la période. Une remise inactive n'est ni proposée (listes,
+  /// dialogs de sélection, caisse) ni appliquée aux produits.
+  bool estActive(DateTime date) => actif && dansPeriode(date);
+
+  /// Statut d'affichage : `actif` ou `inactif` selon la période, `annule` si la remise a été annulée.
+  String statut(DateTime date) => !actif ? 'annule' : (dansPeriode(date) ? 'actif' : 'inactif');
 
   /// Prix remisé d'un prix de base.
   double appliquer(double prix) =>
       (estPourcentage ? prix * (1 - valeur / 100) : prix - valeur).clamp(0, double.infinity).toDouble();
 
   bool estApplicable(DateTime date, {required String produitCode, required String categorieCode}) {
-    if (!actif || parMontant) return false;
-    if (dateDebut != null && date.isBefore(dateDebut!)) return false;
-    if (dateFin != null && date.isAfter(dateFin!)) return false;
+    if (parMontant || !estActive(date)) return false;
     if (this.produitCode != null) return this.produitCode == produitCode;
     if (this.categorieCode != null) return this.categorieCode == categorieCode;
     return false;

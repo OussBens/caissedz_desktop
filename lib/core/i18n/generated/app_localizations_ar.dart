@@ -387,9 +387,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get produitModifier => 'تعديل المنتج';
 
   @override
-  String get produitChampCategorie => 'الفئة';
-
-  @override
   String get produitChampSousCategorie => 'الفئة الفرعية';
 
   @override
@@ -1436,9 +1433,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get dsPageSuivante => 'الصفحة التالية';
-
-  @override
-  String get dsChoisirListe => 'اختيار من القائمة';
 
   @override
   String get dsAucunResultat => 'لا نتائج';
@@ -3063,13 +3057,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get retoursRegRembEspeces => 'استرداد نقدي';
 
   @override
-  String get retoursNouveau => 'مرتجع جديد';
-
-  @override
   String get retoursModifierTitre => 'تعديل المرتجع';
-
-  @override
-  String get retoursFormDescription => 'إرجاع منتج مباع (زبون) أو مستلم (مورد). يُعاد المخزون أو يُخصم.';
 
   @override
   String get retoursChoixClient => 'مرتجع زبون';
@@ -4213,16 +4201,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get prdCumulable => 'قابل للجمع';
-
-  @override
-  String get prdAvecRemiseTicket => 'مع تخفيض التذكرة';
-
-  @override
   String get prdSeuilAide => 'يتفعل التخفيض عندما يبلغ المجموع الفرعي هذا المبلغ';
-
-  @override
-  String get prdParMontantAide => 'تخفيض «حسب المبلغ»: يختار على السلة في الصندوق (Ctrl+R / F8)، دون قائمة منتجات.';
 
   @override
   String get prdToastRemise => 'تم حفظ التخفيض';
@@ -7061,5 +7040,28 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String selNbProduits(int n) {
     return '$n منتجات';
+  }
+
+  @override
+  String get retoursNouveauClient => 'مرتجع زبون جديد';
+
+  @override
+  String get retoursNouveauFournisseur => 'مرتجع مورد جديد';
+
+  @override
+  String get retoursFormDescriptionClient => 'إرجاع منتج مباع: يعاد إلى المخزون أو يُسترد أو يُسجل كرصيد.';
+
+  @override
+  String get retoursFormDescriptionFournisseur => 'إرجاع منتج مستلم: يُخرج من المخزون ويُخصم من دين المورد.';
+
+  @override
+  String get prdPorteeProduitAide => 'تُطبق تلقائيًا على المنتجات المختارة خلال فترتها.';
+
+  @override
+  String get prdPorteeMontantAide => 'تُختار على السلة في الصندوق عندما يبلغ المجموع الفرعي العتبة.';
+
+  @override
+  String prdMontantPanierAide(String devise) {
+    return 'مثال: −500 $devise على السلة';
   }
 }

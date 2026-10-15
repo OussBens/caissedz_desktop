@@ -831,12 +831,6 @@ abstract class AppLocalizations {
   /// **'Modifier le produit'**
   String get produitModifier;
 
-  /// No description provided for @produitChampCategorie.
-  ///
-  /// In fr, this message translates to:
-  /// **'Catégorie'**
-  String get produitChampCategorie;
-
   /// No description provided for @produitChampSousCategorie.
   ///
   /// In fr, this message translates to:
@@ -2828,12 +2822,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Page suivante'**
   String get dsPageSuivante;
-
-  /// No description provided for @dsChoisirListe.
-  ///
-  /// In fr, this message translates to:
-  /// **'Choisir dans la liste'**
-  String get dsChoisirListe;
 
   /// No description provided for @dsAucunResultat.
   ///
@@ -5949,23 +5937,11 @@ abstract class AppLocalizations {
   /// **'Remboursement espèces'**
   String get retoursRegRembEspeces;
 
-  /// No description provided for @retoursNouveau.
-  ///
-  /// In fr, this message translates to:
-  /// **'Nouveau retour'**
-  String get retoursNouveau;
-
   /// No description provided for @retoursModifierTitre.
   ///
   /// In fr, this message translates to:
   /// **'Modifier le retour'**
   String get retoursModifierTitre;
-
-  /// No description provided for @retoursFormDescription.
-  ///
-  /// In fr, this message translates to:
-  /// **'Retour d\'un produit vendu (client) ou reçu (fournisseur). Le stock est réintégré ou déduit.'**
-  String get retoursFormDescription;
 
   /// No description provided for @retoursChoixClient.
   ///
@@ -8037,29 +8013,11 @@ abstract class AppLocalizations {
   /// **'Ex. −50 {devise} par article'**
   String prdMontantFixeAide(String devise);
 
-  /// No description provided for @prdCumulable.
-  ///
-  /// In fr, this message translates to:
-  /// **'Cumulable'**
-  String get prdCumulable;
-
-  /// No description provided for @prdAvecRemiseTicket.
-  ///
-  /// In fr, this message translates to:
-  /// **'Avec la remise ticket'**
-  String get prdAvecRemiseTicket;
-
   /// No description provided for @prdSeuilAide.
   ///
   /// In fr, this message translates to:
   /// **'La remise s\'active quand le sous-total atteint ce montant'**
   String get prdSeuilAide;
-
-  /// No description provided for @prdParMontantAide.
-  ///
-  /// In fr, this message translates to:
-  /// **'Remise « Par montant » : choisie sur le panier en caisse (Ctrl+R / F8), sans liste de produits.'**
-  String get prdParMontantAide;
 
   /// No description provided for @prdToastRemise.
   ///
@@ -13460,6 +13418,48 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'{n} produits'**
   String selNbProduits(int n);
+
+  /// No description provided for @retoursNouveauClient.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau retour client'**
+  String get retoursNouveauClient;
+
+  /// No description provided for @retoursNouveauFournisseur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau retour fournisseur'**
+  String get retoursNouveauFournisseur;
+
+  /// No description provided for @retoursFormDescriptionClient.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retour d\'un produit vendu : remis en stock, remboursé ou porté en avoir.'**
+  String get retoursFormDescriptionClient;
+
+  /// No description provided for @retoursFormDescriptionFournisseur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retour d\'un produit reçu : sorti du stock et déduit du crédit fournisseur.'**
+  String get retoursFormDescriptionFournisseur;
+
+  /// No description provided for @prdPorteeProduitAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Appliquée automatiquement aux produits choisis, pendant sa période.'**
+  String get prdPorteeProduitAide;
+
+  /// No description provided for @prdPorteeMontantAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisie sur le panier en caisse, dès que le sous-total atteint le seuil.'**
+  String get prdPorteeMontantAide;
+
+  /// No description provided for @prdMontantPanierAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex. −500 {devise} sur le panier'**
+  String prdMontantPanierAide(String devise);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

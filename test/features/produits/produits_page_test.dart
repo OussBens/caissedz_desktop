@@ -93,6 +93,26 @@ void main() {
       await tester.pump(const Duration(seconds: 5)); // fin du toast
     });
 
+    testWidgets('remise par montant : type en tête, sans produits, enregistrable', (tester) async {
+      final c = await pumpApp(tester, routeInitiale: '/produits', taille: const Size(1600, 1000));
+      await clic(tester, find.text('Remises').first);
+      await clic(tester, _cle('remise_nouvelle'));
+      expect(find.text('Ajouter des produits'), findsOneWidget);
+      expect(find.text('Cumulable'), findsNothing);
+      await clic(tester, find.text('Par montant (panier)'));
+      expect(find.text('Ajouter des produits'), findsNothing);
+      await tester.enterText(_champ('remise_nom'), 'Gros panier');
+      await clic(tester, find.text('Montant fixe'));
+      await tester.enterText(_champ('remise_valeur'), '500');
+      await tester.enterText(_champ('remise_seuil'), '5000');
+      await tester.pump();
+      await clic(tester, _cle('remise_enregistrer'));
+      expect(find.text('Gros panier'), findsOneWidget);
+      final r = (await CatalogueRepository(c.read(appDatabaseProvider).db).remises()).single;
+      expect((r.parMontant, r.type, r.valeur, r.seuil), (true, 'Montant', 500.0, 5000.0));
+      await tester.pump(const Duration(seconds: 5)); // fin du toast
+    });
+
     testWidgets('import Excel : analyse du modèle et import', (tester) async {
       final c = await pumpApp(tester, routeInitiale: '/produits', taille: const Size(1600, 1000));
       final service = c.read(importProduitsServiceProvider);

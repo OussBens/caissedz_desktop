@@ -389,9 +389,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get produitModifier => 'Edit product';
 
   @override
-  String get produitChampCategorie => 'Category';
-
-  @override
   String get produitChampSousCategorie => 'Sub-category';
 
   @override
@@ -1438,9 +1435,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dsPageSuivante => 'Next page';
-
-  @override
-  String get dsChoisirListe => 'Choose from the list';
 
   @override
   String get dsAucunResultat => 'No results';
@@ -3066,14 +3060,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get retoursRegRembEspeces => 'Cash refund';
 
   @override
-  String get retoursNouveau => 'New return';
-
-  @override
   String get retoursModifierTitre => 'Edit return';
-
-  @override
-  String get retoursFormDescription =>
-      'Return of a product sold (customer) or received (supplier). Stock is restored or deducted.';
 
   @override
   String get retoursChoixClient => 'Customer return';
@@ -4218,17 +4205,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get prdCumulable => 'Stackable';
-
-  @override
-  String get prdAvecRemiseTicket => 'With the receipt discount';
-
-  @override
   String get prdSeuilAide => 'The discount applies once the subtotal reaches this amount';
-
-  @override
-  String get prdParMontantAide =>
-      '\"By amount\" discount: chosen on the basket at the till (Ctrl+R / F8), with no product list.';
 
   @override
   String get prdToastRemise => 'Discount saved';
@@ -7074,5 +7051,29 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String selNbProduits(int n) {
     return '$n products';
+  }
+
+  @override
+  String get retoursNouveauClient => 'New customer return';
+
+  @override
+  String get retoursNouveauFournisseur => 'New supplier return';
+
+  @override
+  String get retoursFormDescriptionClient => 'Return of a sold product: restocked, refunded or credited.';
+
+  @override
+  String get retoursFormDescriptionFournisseur =>
+      'Return of a received product: removed from stock and deducted from the supplier balance.';
+
+  @override
+  String get prdPorteeProduitAide => 'Applied automatically to the chosen products during its period.';
+
+  @override
+  String get prdPorteeMontantAide => 'Chosen on the basket at the till once the subtotal reaches the threshold.';
+
+  @override
+  String prdMontantPanierAide(String devise) {
+    return 'E.g. −500 $devise off the basket';
   }
 }

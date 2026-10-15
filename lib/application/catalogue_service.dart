@@ -632,7 +632,7 @@ class CatalogueService {
     final d = date ?? DateTime.now();
     var meilleure = 0.0;
     for (final r in await _repo.remises()) {
-      final parProduit = !r.parMontant && p.remiseCode == r.code && r.statut(d) == 'actif';
+      final parProduit = !r.parMontant && p.remiseCode == r.code && r.estActive(d);
       if (!parProduit && !r.estApplicable(d, produitCode: p.code, categorieCode: p.categorieCode)) continue;
       final m = CalculsPrix.remise(montant, type: r.type, valeur: r.valeur);
       if (m > meilleure) meilleure = m;

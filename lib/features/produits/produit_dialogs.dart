@@ -584,7 +584,7 @@ class _AffecterDialogState extends ConsumerState<_AffecterDialog> {
         .where((s) => s.actif && s.categorieCode == _valeur)
         .toList();
     final remises = (ref.watch(remisesProvider).value ?? const <Remise>[])
-        .where((r) => r.actif && !r.parMontant)
+        .where((r) => !r.parMontant && r.estActive(DateTime.now()))
         .toList();
     final packs = (ref.watch(packsProvider).value ?? const <Pack>[]).where((k) => k.actif).toList();
     final options = switch (_cible) {
