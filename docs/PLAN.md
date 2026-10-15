@@ -635,3 +635,15 @@ Référence : `docs/design/CaisseDZ-DS-v2.2/CaisseDZ-DS-v2.2.html`, `bundle-v2.2
   distincte du même produit ajouté seul. `vente_ligne.composant_pack` (v21) distingue ces lignes des anciennes lignes
   de pack à l'annulation ; elles sont retournables comme un produit.
   ⚠️ PROVISOIRE : montants rapides fixes (200 / 500 / 1000), non paramétrables.
+
+## Retours utilisateur — Général et Ventes ✅ (2026-10-15)
+
+- ✅ Listes déroulantes et menus contextuels positionnés dans l'overlay du navigateur qui les affiche (navigateur
+  imbriqué du shell) : la liste s'ouvre sous son champ.
+- ✅ `DsDataTable` : bouton « colonnes » au début (après les cases à cocher) ; défilement horizontal de l'en-tête,
+  des lignes et des totaux quand la somme des largeurs minimales (`largeurMin`, 110 px par défaut, 180 px si flex > 1)
+  dépasse la largeur disponible.
+- ✅ Filtres de période : Du, Au et Période rapide occupent chacun une cellule de la grille des filtres, dans tous
+  les modules.
+- ✅ Ventes : action « Liste des produits » (dialog des lignes du panier, colonne Colis) ; aperçu PDF des exports
+  avec « Imprimer » à côté de « Fermer ».

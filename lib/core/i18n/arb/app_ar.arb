@@ -2375,5 +2375,8 @@
   "posMontantModifierDesc": "المبلغ الجديد لسطر « بيع بالمبلغ »؛ 0 يحذف السطر.",
   "posMontantChamp": "المبلغ",
   "posMontantInvalide": "أدخل مبلغًا أكبر من 0.",
-  "posMontantLigneAide": "نقرة مزدوجة: تعديل المبلغ"
+  "posMontantLigneAide": "نقرة مزدوجة: تعديل المبلغ",
+  "ventesListeProduits": "قائمة المنتجات",
+  "ventesListeProduitsTitre": "منتجات السلة {code}",
+  "ventesColis": "الطرد"
 }

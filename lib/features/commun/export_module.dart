@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:printing/printing.dart';
 
 import '../../app/demarrage_providers.dart';
@@ -80,27 +82,35 @@ Future<void> exporterRapport(BuildContext context, WidgetRef ref, Rapport r, DsF
   final police = await policePdf(arabe);
   await ref.read(journalServiceProvider).export(id: r.id, format: 'PDF', fichier: '${r.id}_$date.pdf');
   if (!context.mounted) return;
+  Future<Uint8List>? octets;
+  Future<Uint8List> pdf() => octets ??= RapportPdf(
+    police: police,
+    rtl: arabe,
+    devise: devise,
+  ).generer(r, boutique: boutique, periode: DateFormat('dd/MM/yyyy').format(DateTime.now()));
+  final apercu = ref.read(apercuPdfProvider);
   await afficherDialog<void>(
     context,
     builder: (ctx) => DsDialog(
       titre: '${l10n.situationApercuPdf} — ${r.titre}',
       largeur: 900,
-      actions: [DsButton(libelle: l10n.communFermer, onPressed: () => Navigator.of(ctx).pop())],
-      contenu: SizedBox(
-        height: 560,
-        child: PdfPreview(
-          build: (_) => RapportPdf(
-            police: police,
-            rtl: arabe,
-            devise: devise,
-          ).generer(r, boutique: boutique, periode: DateFormat('dd/MM/yyyy').format(DateTime.now())),
-          canChangePageFormat: false,
-          canChangeOrientation: false,
-          canDebug: false,
-          allowSharing: false,
-          pdfFileName: '${r.id}_$date.pdf',
+      // Imprimer sur la ligne de Fermer (la barre d'outils de l'aperçu est masquée).
+      actions: [
+        DsButton(
+          key: const ValueKey('export_pdf_imprimer'),
+          libelle: l10n.posImprimer,
+          icone: LucideIcons.printer,
+          variante: DsButtonVariante.secondaire,
+          onPressed: () => Printing.layoutPdf(onLayout: (_) => pdf(), name: '${r.id}_$date.pdf'),
         ),
-      ),
+        DsButton(
+          key: const ValueKey('export_pdf_fermer'),
+          libelle: l10n.communFermer,
+          icone: LucideIcons.x,
+          onPressed: () => Navigator.of(ctx).pop(),
+        ),
+      ],
+      contenu: SizedBox(height: 560, child: apercu(const ValueKey('export_pdf_apercu'), pdf, '${r.id}_$date.pdf')),
     ),
   );
 }

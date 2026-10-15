@@ -6949,4 +6949,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get posMontantLigneAide => 'Double-click: edit the amount';
+
+  @override
+  String get ventesListeProduits => 'Product list';
+
+  @override
+  String ventesListeProduitsTitre(String code) {
+    return 'Basket $code products';
+  }
+
+  @override
+  String get ventesColis => 'Package';
 }

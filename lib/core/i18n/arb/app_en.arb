@@ -2375,5 +2375,8 @@
   "posMontantModifierDesc": "New amount of the « Sale by amount » line; 0 removes the line.",
   "posMontantChamp": "Amount",
   "posMontantInvalide": "Enter an amount greater than 0.",
-  "posMontantLigneAide": "Double-click: edit the amount"
+  "posMontantLigneAide": "Double-click: edit the amount",
+  "ventesListeProduits": "Product list",
+  "ventesListeProduitsTitre": "Basket {code} products",
+  "ventesColis": "Package"
 }

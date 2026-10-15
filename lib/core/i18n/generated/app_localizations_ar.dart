@@ -6936,4 +6936,15 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get posMontantLigneAide => 'نقرة مزدوجة: تعديل المبلغ';
+
+  @override
+  String get ventesListeProduits => 'قائمة المنتجات';
+
+  @override
+  String ventesListeProduitsTitre(String code) {
+    return 'منتجات السلة $code';
+  }
+
+  @override
+  String get ventesColis => 'الطرد';
 }

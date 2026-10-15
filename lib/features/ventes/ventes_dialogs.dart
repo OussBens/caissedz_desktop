@@ -8,6 +8,7 @@ import '../../app/demarrage_providers.dart';
 import '../../application/vente_service.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
+import '../../domain/models/panier.dart';
 import '../../domain/models/vente.dart';
 import '../../domain/permissions.dart';
 import '../../domain/referentiel/referentiel.dart';
@@ -27,12 +28,24 @@ String nomClientPanier(AppLocalizations l10n, String code, Map<String, String> n
     code == 'CLN0000' ? l10n.posClientPassage : (noms[code] ?? code);
 
 /// Tableau des lignes d'un panier (détail et modification).
-Widget _tableauLignes(AppLocalizations l10n, String devise, List<VenteLigne> lignes, {required bool detail}) {
+Widget _tableauLignes(
+  AppLocalizations l10n,
+  String devise,
+  List<VenteLigne> lignes, {
+  required bool detail,
+  double? hauteurMax,
+}) {
   String da(double v) => formaterMontant(v, devise);
+  String colis(VenteLigne l) => l.produitCode == PanierLigne.codeMontant
+      ? l10n.posMontantColis
+      : l.packCode != null
+      ? l10n.posPack
+      : l.colisCode ?? (l.uniteVente == 'Nombre' ? l10n.posVendreNombre : l10n.posSelUnite);
   return DsDataTable<VenteLigne>(
     dense: true,
     encadre: false,
     pagine: false,
+    hauteurMax: hauteurMax,
     afficherTotaux: detail,
     cle: (l) => l.ordre,
     lignes: lignes,
@@ -40,6 +53,7 @@ Widget _tableauLignes(AppLocalizations l10n, String devise, List<VenteLigne> lig
     colonnes: [
       DsColonne(id: 'code', libelle: l10n.produitsColCode, valeur: (l) => l.produitCode, attenue: true),
       DsColonne(id: 'nom', libelle: l10n.ventesProduit, valeur: (l) => l.designation, fort: true, flex: 3),
+      DsColonne(id: 'colis', libelle: l10n.ventesColis, valeur: colis, attenue: true),
       DsColonne(
         id: 'qte',
         libelle: l10n.ventesQte,
@@ -65,6 +79,40 @@ Widget _tableauLignes(AppLocalizations l10n, String devise, List<VenteLigne> lig
         total: (ls) => da(ls.fold(0.0, (s, l) => s + l.total)),
       ),
     ],
+  );
+}
+
+/// Liste des produits d'un panier (action « Liste des produits » du module Ventes).
+Future<void> afficherProduitsPanier(
+  BuildContext context,
+  WidgetRef ref,
+  PanierResume p, {
+  required Map<String, String> nomsClients,
+}) async {
+  final l10n = AppLocalizations.of(context);
+  final devise = ref.read(deviseProvider);
+  final vente = await ref.read(venteRepositoryProvider).vente(p.code);
+  if (vente == null || !context.mounted) return;
+  final hauteur = (MediaQuery.sizeOf(context).height - 320).clamp(240.0, 560.0);
+  await afficherDialog<void>(
+    context,
+    builder: (dialogue) => DsDialog(
+      key: const ValueKey('ventes_liste_produits'),
+      titre: l10n.ventesListeProduitsTitre(p.code),
+      iconeData: LucideIcons.listOrdered,
+      description:
+          '${formatDateHeure.format(vente.date)} · ${nomClientPanier(l10n, vente.clientCode, nomsClients)} · '
+          '${l10n.ventesArticles} : ${vente.lignes.length}',
+      largeur: 900,
+      actions: [
+        DsButton(
+          libelle: l10n.communFermer,
+          variante: DsButtonVariante.secondaire,
+          onPressed: () => Navigator.of(dialogue).pop(),
+        ),
+      ],
+      contenu: _tableauLignes(l10n, devise, vente.lignes, detail: true, hauteurMax: hauteur),
+    ),
   );
 }
 

@@ -6962,4 +6962,15 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get posMontantLigneAide => 'Double-clic : modifier le montant';
+
+  @override
+  String get ventesListeProduits => 'Liste des produits';
+
+  @override
+  String ventesListeProduitsTitre(String code) {
+    return 'Produits du panier $code';
+  }
+
+  @override
+  String get ventesColis => 'Colis';
 }

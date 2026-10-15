@@ -10,8 +10,10 @@ import 'package:caissedz_desktop/domain/models/panier.dart';
 import 'package:caissedz_desktop/domain/models/parametres_vente.dart';
 import 'package:caissedz_desktop/domain/models/produit.dart';
 import 'package:caissedz_desktop/domain/models/tiers.dart';
+import 'package:caissedz_desktop/features/caisse/pos_dialogs.dart';
 import 'package:caissedz_desktop/features/tiers/tiers_providers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -116,6 +118,51 @@ void main() {
       expect(find.text('Paniers annulés'), findsOneWidget);
       final v = (await VenteRepository(c.read(appDatabaseProvider).db).vente('VTE0002'))!;
       expect(v.statut, 'Annulée');
+    });
+
+    testWidgets('liste sous son champ, liste des produits du panier, export PDF imprimable', (tester) async {
+      final rendus = <String>[];
+      final c = await pumpApp(
+        tester,
+        routeInitiale: '/ventes',
+        taille: const Size(1500, 1000),
+        overrides: [
+          apercuPdfProvider.overrideWithValue((cle, pdf, nom) {
+            rendus.add(nom);
+            return Text(nom);
+          }),
+        ],
+      );
+      await _donnees(c);
+      await tester.pumpAndSettle();
+      // Navigateur imbriqué du shell : la liste s'ouvre juste sous le champ, pas décalée de la barre latérale.
+      final champ = tester.getRect(find.byKey(const ValueKey('filtre_type_panier')));
+      await clic(tester, find.byKey(const ValueKey('filtre_type_panier')));
+      final option = tester.getRect(find.text('Tous').last); // 1re option
+      expect((option.top - champ.bottom).abs(), lessThan(24));
+      expect((option.left - champ.left).abs(), lessThan(24));
+      await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+      await tester.pumpAndSettle();
+      // Filtres de date alignés : Du, Au et Période rapide dans la grille des filtres.
+      expect(tester.getTopLeft(find.text('Du')).dy, tester.getTopLeft(find.text('Type')).dy);
+
+      await clic(tester, find.text('PDF'));
+      expect(rendus.single, startsWith('ventes_'));
+      expect(find.byKey(const ValueKey('export_pdf_imprimer')), findsOneWidget);
+      expect(
+        tester.getCenter(find.byKey(const ValueKey('export_pdf_imprimer'))).dy,
+        tester.getCenter(find.byKey(const ValueKey('export_pdf_fermer'))).dy,
+      );
+      await clic(tester, find.byKey(const ValueKey('export_pdf_fermer')));
+
+      await clic(tester, find.text('VTE0001'));
+      await clic(tester, find.byKey(const ValueKey('ventes_action_produits')));
+      expect(find.text('Produits du panier VTE0001'), findsOneWidget);
+      final dialogue = find.byKey(const ValueKey('ventes_liste_produits'));
+      expect(find.descendant(of: dialogue, matching: find.text('Lait 1 L')), findsOneWidget);
+      expect(find.descendant(of: dialogue, matching: find.text('À l\'unité')), findsOneWidget);
+      await clic(tester, find.text('Fermer').last);
+      expect(dialogue, findsNothing);
     });
 
     testWidgets('« Nouvelle vente » ouvre la caisse', (tester) async {

@@ -356,6 +356,13 @@ class _VentesPageState extends ConsumerState<VentesPage> {
             onPressed: (choix, _) => detail(choix.first),
           ),
           DsActionModule(
+            cle: const ValueKey('ventes_action_produits'),
+            libelle: l10n.ventesListeProduits,
+            icone: LucideIcons.listOrdered,
+            regle: DsRegleSelection.une,
+            onPressed: (choix, _) => afficherProduitsPanier(context, ref, choix.first, nomsClients: nomsClients),
+          ),
+          DsActionModule(
             libelle: l10n.communModifier,
             icone: LucideIcons.pencil,
             regle: DsRegleSelection.une,

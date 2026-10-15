@@ -3596,5 +3596,15 @@
   "posMontantModifierDesc": "Nouveau montant de la ligne « Vente au montant » ; 0 retire la ligne.",
   "posMontantChamp": "Montant",
   "posMontantInvalide": "Saisissez un montant supérieur à 0.",
-  "posMontantLigneAide": "Double-clic : modifier le montant"
+  "posMontantLigneAide": "Double-clic : modifier le montant",
+  "ventesListeProduits": "Liste des produits",
+  "ventesListeProduitsTitre": "Produits du panier {code}",
+  "@ventesListeProduitsTitre": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "ventesColis": "Colis"
 }

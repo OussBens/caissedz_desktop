@@ -13220,6 +13220,24 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Double-clic : modifier le montant'**
   String get posMontantLigneAide;
+
+  /// No description provided for @ventesListeProduits.
+  ///
+  /// In fr, this message translates to:
+  /// **'Liste des produits'**
+  String get ventesListeProduits;
+
+  /// No description provided for @ventesListeProduitsTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produits du panier {code}'**
+  String ventesListeProduitsTitre(String code);
+
+  /// No description provided for @ventesColis.
+  ///
+  /// In fr, this message translates to:
+  /// **'Colis'**
+  String get ventesColis;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
