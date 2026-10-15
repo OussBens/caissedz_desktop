@@ -8,6 +8,8 @@
 >
 > Phase A / B faites : tokens exacts du DS v2.2 (clair / sombre, typographie, espacements) et composants du
 > bundle (66 + v2.2) traduits en Flutter avec les libellés FR / AR / EN.
+>
+> Phase C faite (2026-10-15) : shell et démarrage conformes au DS v2.2 et aux §4.3 à §5.4 de la spec.
 
 ## Socle (lot 0)
 - [x] Fenêtre Windows minimale 1000×700, barre de titre personnalisée
@@ -19,19 +21,24 @@
 - [ ] Schéma des 45 tables
 - [x] Seed système : MAG0000, CIS0000, CLN0000, FOR0000, CATE0000, SC0000, admin (migration v2 ; colonnes minimales, à compléter avec la spec)
 - [x] i18n FR/AR/EN (ARB), arabe en RTL
-- [x] go_router ShellRoute + AppShell (sidebar Général/Stock/Tiers/Gestion, favoris max 7, menu modules Ctrl+M,
-      alertes, témoin Internet)
+- [x] go_router ShellRoute + AppShell DS v2.2 : 17 modules en 4 groupes (Général/Stock/Tiers/Gestion) filtrés par
+      accès, favoris max 7 dans la barre supérieure, menu des modules Ctrl+M, cloche + alertes du jour (§5.3),
+      témoin Internet, sélecteur de magasin (Avancé), bandeau démo
+- [x] Séquence post-connexion (§4.4 / §4.5) : droits → favoris → magasins → alertes ; accueil Caisse, puis
+      configuration (1ʳᵉ fois), alertes (s'il y en a), menu des modules
 - [x] Relations par code, aucune valeur traduite en base (règle appliquée dès le socle)
 
 ## Démarrage (lot 1)
 - [x] Activation par clé SHA-256 (64 caractères) — règle de résolution de la clé provisoire (hypothèse n° 1 du plan)
-- [x] Mode démo demo/demo
-- [x] Connexion, mots de passe hachés (PBKDF2-HMAC-SHA256), déconnexion
-- [x] Configuration initiale en 4 étapes (dont marge) — contenu des étapes provisoire
-- [x] Mon compte : changement d'identifiant et de mot de passe
+- [x] Mode démo demo/demo — seul compte accepté tant que l'application n'est pas activée (§4.3)
+- [x] Connexion (« Rester connecté »), mots de passe hachés (PBKDF2-HMAC-SHA256), déconnexion, journal
+      Connexion / Déconnexion, dernier accès
+- [x] Configuration initiale en 4 étapes (langue et devise, boutique, paiements, marge et stock), une transaction
+- [x] Mon compte (dialog DS) : profil / identifiant, mot de passe, préférences, déconnexion ; démo en lecture seule
 - [x] Licences Basic / Avancé (LicenceGate, modules réservés) — répartition des modules provisoire
 - [x] Rôles et 7 permissions d'action (voirPrixAchat, colonnes masquées, écran « Accès refusé ») — 6 permissions provisoires
-- [ ] Fidélité visuelle des écrans au DS v2.2 (FR/AR, clair/sombre) — impossible à vérifier, DS absent
+- [x] Fidélité visuelle au DS v2.2 des écrans de démarrage (connexion, activation, configuration, Mon compte,
+      alertes, shell) ; les 17 écrans de modules suivent en phase D
 
 ## Produits (lot 2)
 - [x] Catégories / sous-catégories (système protégé), produits en mode détaillé avec marge, colis, packs, remises

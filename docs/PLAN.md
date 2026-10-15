@@ -365,7 +365,35 @@ Référence : `docs/design/CaisseDZ-DS-v2.2/CaisseDZ-DS-v2.2.html`, `bundle-v2.2
   - Libellés des composants : clés ARB `ds*` (FR / AR / EN).
   - Écarts assumés en attendant la phase D : les écrans des lots 0 à 9 utilisent encore les alias historiques ;
     `pos_widgets.dart` (ancienne caisse) subsiste jusqu'à la réécriture de `CaisseScreen`.
-- **Phase C — shell et démarrage ⬜** : AppShell DS (sidebar 4 groupes, favoris, Ctrl+M, alertes, Mon compte,
-  sélecteur de magasin), 17 modules du DS, Login / Activation (KeyInput) / Mode démo / InitialSetup.
+- **Phase C — shell et démarrage ✅** (2026-10-15) :
+  - Étape 1 (données) : `modules.dart` = 17 modules du DS en 4 groupes (Général : tableau de bord, caisse,
+    ventes, retours ; Stock : produits, stock, entrées (badge IA), sorties, magasins, besoins ; Tiers : clients,
+    fournisseurs ; Gestion : gestion caisse, utilisateurs, zakat, historique, paramètres) + pages rattachées
+    (transferts → magasins, versements → clients, clôtures → gestion caisse, situation → tableau de bord), accès
+    via `idAcces`. Migration `v008_shell_ds` : compte admin / admin provisoire, `utilisateur.dernier_acces`,
+    boutique NIS / article / message ticket / logo, renommage des anciens identifiants de modules (rôles,
+    favoris). Services `ConfigurationInitialeService` (4 étapes, une transaction, journal) et `AlertesService`
+    (§5.3, familles visibles selon l'accès au module, masquage du jour). Séquence de connexion (§4.4) : droits →
+    favoris → magasins (magasin courant, Admin = tous) → alertes ; journal Connexion / Déconnexion ; « Rester
+    connecté ». Application non activée : demo / demo active le mode démo (§4.3). Accueil = `/caisse`.
+  - Étape 2 (écrans) : `app_shell.dart` (DsSidebar filtrée par accès, sélecteur de magasin Avancé,
+    déconnexion ; DsTopBar avec favoris, témoin Internet, cloche, thème, compte, contrôles de fenêtre ;
+    bandeau démo ; portes Accès refusé / palier Avancé ; Ctrl+M `MenuModulesDialog` = DsModuleLauncher),
+    séquence post-connexion §4.5 (configuration 1ʳᵉ fois pour l'admin → alertes s'il y en a → menu des
+    modules), `alertes_dialog.dart`, `connexion_page.dart` (split + panneau nuit, langue, thème, Rester connecté,
+    encart démo), `activation_page.dart` (DsKeyInput 8×8, palier détecté en direct, cartes Basic / Avancé),
+    `configuration_dialog.dart` (4 étapes), `mon_compte_dialog.dart` (Profil / Mot de passe / Préférences).
+    Supprimés : `sidebar.dart`, `title_bar.dart`, `modules_menu.dart`, `alertes_panel.dart`,
+    `cadre_demarrage.dart`, `configuration_page.dart`, `mon_compte_page.dart`, `acces_refuse_page.dart`.
+  - Tests : `pumpApp(sequence: false)` par défaut (opt-out de la séquence post-connexion) ; tests démarrage,
+    connexion, activation, configuration, Mon compte, shell, accès et recette réécrits.
+  - Décisions et hypothèses ⚠️ :
+    - Spec > DS : configuration en 4 étapes (Langue & devise / Boutique / Paiements / Marge et stock), le DS
+      en montre 3 ; proposée après la connexion de l'admin, « Plus tard » possible.
+    - Seuls Magasins et Transferts exigent le palier Avancé (§6.1) ; Retours et Zakat passent en Basic.
+    - Pages rattachées routables mais absentes de la barre latérale et du menu jusqu'à la phase D.
+    - Familles « Produits expirés » et « Bientôt expirés » vides : pas de dates de péremption dans le schéma.
+    - Logo de la boutique non demandé à la configuration (colonne prête, saisie en phase D dans Paramètres).
+    - Compte admin / admin provisoire en attendant la création de comptes par l'écran Utilisateurs (phase D).
 - **Phase D — écrans ⬜** : les 17 écrans et leurs dialogs d'après les kits du bundle, listes de `ref.js`,
   tests réécrits, suppression des alias.
