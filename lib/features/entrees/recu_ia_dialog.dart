@@ -17,6 +17,7 @@ import '../../domain/models/stock.dart';
 import '../../domain/models/tiers.dart';
 import '../caisse/caisse_dialogs.dart';
 import '../commun/doc_form.dart';
+import '../commun/selecteurs.dart';
 import '../commun/statuts.dart';
 import '../gestion_caisse/gestion_caisse_providers.dart';
 import '../historique/historique_providers.dart';
@@ -560,6 +561,7 @@ class _RecuIADialogState extends ConsumerState<RecuIADialog> {
                 libelle: (code) => code == _creer
                     ? l10n.entCreerProduit(l.lu)
                     : produits.where((p) => p.code == code).firstOrNull?.designation ?? code,
+                recherche: rechercheListe(context, ref, ListeMetier.produit),
                 onChanged: (v) => _rapprocher(l, v),
               ),
             );
@@ -634,6 +636,7 @@ class _RecuIADialogState extends ConsumerState<RecuIADialog> {
             placeholder: _fournisseurDetecte ?? l10n.stkChoisirFournisseur,
             options: [for (final f in fournisseurs) f.code],
             libelle: (c) => fournisseurs.where((f) => f.code == c).firstOrNull?.nom ?? c,
+            recherche: rechercheListe(context, ref, ListeMetier.fournisseur),
             onChanged: (v) => setState(() => _fournisseur = v),
           ),
         ),
@@ -657,6 +660,7 @@ class _RecuIADialogState extends ConsumerState<RecuIADialog> {
             valeur: _magasin,
             options: [for (final m in magasins) m.code],
             libelle: (c) => magasins.where((m) => m.code == c).firstOrNull?.nom ?? c,
+            recherche: rechercheListe(context, ref, ListeMetier.magasin),
             onChanged: (v) => setState(() => _magasin = v ?? _magasin),
           ),
         ),
@@ -667,6 +671,7 @@ class _RecuIADialogState extends ConsumerState<RecuIADialog> {
           devise: devise,
           caisses: caisses,
           onChanged: () => setState(() {}),
+          ref: ref,
         ),
       ],
     );

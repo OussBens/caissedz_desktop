@@ -21,6 +21,7 @@ import '../../data/parametre_repository.dart';
 import '../../domain/models/boutique.dart';
 import '../../domain/models/tiers.dart';
 import '../../domain/models/vente.dart';
+import '../commun/selecteurs.dart';
 import '../produits/produits_providers.dart';
 
 String messageErreurSession(AppLocalizations l10n, ErreurSession e) => switch (e) {
@@ -59,30 +60,22 @@ String libelleModePaiement(AppLocalizations l10n, String mode) => switch (mode) 
   _ => mode,
 };
 
-/// Sélection d'un client (`PickerDialog` : code, nom, téléphone, points), avec « Nouveau client ».
+/// Sélection d'un client actif (dialog commun des listes métier : recherche, filtres, liste ou cartes),
+/// avec « Nouveau client ».
 Future<Client?> afficherChoixClient(BuildContext context, WidgetRef ref, {VoidCallback? onCreer}) async {
   final l10n = AppLocalizations.of(context);
   final clients = await ClientRepository(ref.read(appDatabaseProvider).db).tous(actifsSeulement: true);
   if (!context.mounted) return null;
-  return afficherSelecteur<Client>(
+  final code = await choisirDansListe(
     context,
+    ref,
+    ListeMetier.client,
+    codes: {for (final c in clients) c.code},
     titre: l10n.posChoisirClient,
-    icone: LucideIcons.user,
-    elements: clients,
-    libelle: (c) => c.estDePassage ? l10n.posClientPassage : c.nom,
     onCreer: onCreer,
     libelleCreer: onCreer == null ? null : l10n.posNouveauClient,
-    colonnes: [
-      DsColonnePicker(libelle: l10n.dsPosCode, valeur: (c) => c.code, mono: true, attenue: true, largeur: 110),
-      DsColonnePicker(
-        libelle: l10n.posClientLabel,
-        valeur: (c) => c.estDePassage ? l10n.posClientPassage : c.nom,
-        fort: true,
-      ),
-      DsColonnePicker(libelle: l10n.clientTelephone, valeur: (c) => c.telephone, largeur: 140),
-      DsColonnePicker(libelle: l10n.posPointsGagnes, valeur: (c) => '${c.points}', largeur: 90),
-    ],
   );
+  return clients.where((c) => c.code == code).firstOrNull;
 }
 
 /// Calculatrice (`Calculator` du DS).

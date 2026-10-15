@@ -287,6 +287,7 @@ class _DsModuleTableState<T> extends State<DsModuleTable<T>> {
             if (widget.filtres == null && widget.periode == null && export != null) export,
             if (widget.carte != null)
               DsSegmentedControl<DsVueModule>(
+                key: const ValueKey('module_vue'),
                 valeur: _vue,
                 onChanged: (v) => setState(() => _vue = v),
                 options: [

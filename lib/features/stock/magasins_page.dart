@@ -9,6 +9,7 @@ import '../../domain/models/stock.dart';
 import '../../domain/permissions.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
+import '../commun/selecteurs.dart';
 import '../commun/statuts.dart';
 import '../historique/historique_providers.dart';
 import '../produits/produits_providers.dart';
@@ -264,6 +265,7 @@ class _MagasinsPageState extends ConsumerState<MagasinsPage> {
             valeur: _source,
             options: [null, for (final m in magasins) m.code],
             libelle: (c) => c == null ? l10n.retoursTous : (noms[c] ?? c),
+            recherche: rechercheListe(context, ref, ListeMetier.magasin),
             onChanged: (v) => setState(() => _source = v),
           ),
         ),
@@ -274,6 +276,7 @@ class _MagasinsPageState extends ConsumerState<MagasinsPage> {
             valeur: _destination,
             options: [null, for (final m in magasins) m.code],
             libelle: (c) => c == null ? l10n.retoursTous : (noms[c] ?? c),
+            recherche: rechercheListe(context, ref, ListeMetier.magasin),
             onChanged: (v) => setState(() => _destination = v),
           ),
         ),

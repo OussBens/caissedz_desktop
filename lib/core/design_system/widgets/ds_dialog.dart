@@ -5,6 +5,7 @@ import '../../i18n/generated/app_localizations.dart';
 import '../tokens/ds_theme.dart';
 import 'ds_button.dart';
 import 'ds_forms.dart';
+import 'ds_module_kit.dart';
 import 'ds_page.dart';
 import 'ds_primitives.dart';
 
@@ -358,6 +359,10 @@ class DsPickerDialog<T> extends StatefulWidget {
     this.hauteurFixe = false,
     this.filtres,
     this.filtre,
+    this.carte,
+    this.largeurCarte = 220,
+    this.hauteurCarte = 150,
+    this.vueInitiale = DsVueModule.liste,
   });
   final String titre;
   final String? description;
@@ -386,6 +391,12 @@ class DsPickerDialog<T> extends StatefulWidget {
   final Widget? filtres;
   final bool Function(T)? filtre;
 
+  /// Rendu en carte d'un élément : active la bascule « liste / cartes » (produits, clients, fournisseurs, ventes).
+  final Widget Function(BuildContext context, T element, DsEtatCarte etat)? carte;
+  final double largeurCarte;
+  final double hauteurCarte;
+  final DsVueModule vueInitiale;
+
   @override
   State<DsPickerDialog<T>> createState() => _DsPickerDialogState<T>();
 }
@@ -393,6 +404,21 @@ class DsPickerDialog<T> extends StatefulWidget {
 class _DsPickerDialogState<T> extends State<DsPickerDialog<T>> {
   String _filtre = '';
   late final Set<Object> _selection = {for (final e in widget.selectionInitiale) _cle(e)};
+  late DsVueModule _vue = widget.carte == null ? DsVueModule.liste : widget.vueInitiale;
+
+  void _basculer(T e) {
+    final cle = _cle(e);
+    final actif = _selection.contains(cle);
+    setState(() {
+      if (widget.multiple) {
+        actif ? _selection.remove(cle) : _selection.add(cle);
+      } else {
+        _selection
+          ..clear()
+          ..add(cle);
+      }
+    });
+  }
 
   Object _cle(T e) => widget.cle?.call(e) ?? e as Object;
 
@@ -474,114 +500,165 @@ class _DsPickerDialogState<T> extends State<DsPickerDialog<T>> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         spacing: DsSpacing.s3,
         children: [
-          DsSearchField(
-            autofocus: true,
-            kbd: '',
-            indice: widget.indiceRecherche ?? l10n.communRechercher,
-            onChanged: (v) => setState(() => _filtre = v),
+          Row(
+            spacing: DsSpacing.s3,
+            children: [
+              Expanded(
+                child: DsSearchField(
+                  autofocus: true,
+                  kbd: '',
+                  indice: widget.indiceRecherche ?? l10n.communRechercher,
+                  onChanged: (v) => setState(() => _filtre = v),
+                ),
+              ),
+              if (widget.carte != null)
+                DsSegmentedControl<DsVueModule>(
+                  key: const ValueKey('picker_vue'),
+                  valeur: _vue,
+                  onChanged: (v) => setState(() => _vue = v),
+                  options: [
+                    DsOption(DsVueModule.liste, icone: LucideIcons.list, tooltip: l10n.dsAffichageListe),
+                    DsOption(DsVueModule.grille, icone: LucideIcons.layoutGrid, tooltip: l10n.dsAffichageGrille),
+                  ],
+                ),
+            ],
           ),
           ?widget.filtres,
-          Container(
-            height: widget.hauteurFixe ? widget.hauteurMax : null,
-            constraints: BoxConstraints(maxHeight: widget.hauteurMax),
-            clipBehavior: Clip.antiAlias,
-            decoration: BoxDecoration(
-              color: c.surfaceCard,
-              borderRadius: DsRadius.borderLg,
-              border: Border.all(color: c.borderDefault),
+          if (_vue == DsVueModule.grille && widget.carte != null)
+            SizedBox(
+              height: widget.hauteurMax,
+              child: filtres.isEmpty
+                  ? DsVide(message: l10n.communAucunResultat, icone: LucideIcons.searchX, petit: true)
+                  : GridView.builder(
+                      padding: const EdgeInsets.all(4),
+                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                        maxCrossAxisExtent: widget.largeurCarte,
+                        mainAxisExtent: widget.hauteurCarte,
+                        crossAxisSpacing: DsSpacing.s3,
+                        mainAxisSpacing: DsSpacing.s3,
+                      ),
+                      itemCount: filtres.length,
+                      itemBuilder: (ctx, i) {
+                        final e = filtres[i];
+                        return KeyedSubtree(
+                          key: ValueKey('picker_carte_$i'),
+                          child: widget.carte!(
+                            ctx,
+                            e,
+                            DsEtatCarte(
+                              selectionnee: _selection.contains(_cle(e)),
+                              basculer: () => _basculer(e),
+                              ouvrir: widget.multiple ? null : () => _confirmer([e]),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+            )
+          else
+            Container(
+              height: widget.hauteurFixe ? widget.hauteurMax : null,
+              constraints: BoxConstraints(maxHeight: widget.hauteurMax),
+              clipBehavior: Clip.antiAlias,
+              decoration: BoxDecoration(
+                color: c.surfaceCard,
+                borderRadius: DsRadius.borderLg,
+                border: Border.all(color: c.borderDefault),
+              ),
+              child: filtres.isEmpty
+                  ? DsVide(message: l10n.communAucunResultat, icone: LucideIcons.searchX, petit: true)
+                  : Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          height: DsTailles.enTeteTable,
+                          padding: const EdgeInsets.symmetric(horizontal: DsSpacing.s4),
+                          decoration: BoxDecoration(
+                            color: c.surfaceSunken,
+                            border: Border(bottom: BorderSide(color: c.borderDefault)),
+                          ),
+                          child: Row(
+                            children: [
+                              if (widget.multiple) const SizedBox(width: 32),
+                              for (final col in colonnes)
+                                col.largeur != null
+                                    ? SizedBox(
+                                        width: col.largeur,
+                                        child: Text(
+                                          col.libelle.toUpperCase(),
+                                          style: t.overline.copyWith(color: c.textMuted),
+                                        ),
+                                      )
+                                    : Expanded(
+                                        child: Text(
+                                          col.libelle.toUpperCase(),
+                                          style: t.overline.copyWith(color: c.textMuted),
+                                        ),
+                                      ),
+                            ],
+                          ),
+                        ),
+                        Flexible(
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: filtres.length,
+                            itemExtent: DsTailles.ligneTableDense,
+                            itemBuilder: (ctx, i) {
+                              final e = filtres[i];
+                              final cle = _cle(e);
+                              final actif = _selection.contains(cle);
+                              return _LignePicker(
+                                actif: actif,
+                                onTap: () => setState(() {
+                                  if (widget.multiple) {
+                                    actif ? _selection.remove(cle) : _selection.add(cle);
+                                  } else {
+                                    _selection
+                                      ..clear()
+                                      ..add(cle);
+                                  }
+                                }),
+                                onDoubleTap: widget.multiple ? null : () => _confirmer([e]),
+                                child: Row(
+                                  children: [
+                                    if (widget.multiple)
+                                      SizedBox(
+                                        width: 32,
+                                        child: DsCheckbox(
+                                          valeur: actif,
+                                          onChanged: (_) =>
+                                              setState(() => actif ? _selection.remove(cle) : _selection.add(cle)),
+                                        ),
+                                      ),
+                                    for (final col in colonnes)
+                                      Builder(
+                                        builder: (context) {
+                                          final texte = Text(
+                                            col.valeur(e),
+                                            style: (col.mono ? t.mono : t.bodySm).copyWith(
+                                              fontWeight: col.fort ? FontWeight.w600 : FontWeight.w400,
+                                              color: col.fort
+                                                  ? c.textPrimary
+                                                  : (col.attenue ? c.textMuted : c.textBody),
+                                              fontFeatures: DsTypography.tabular,
+                                            ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          );
+                                          return col.largeur != null
+                                              ? SizedBox(width: col.largeur, child: texte)
+                                              : Expanded(child: texte);
+                                        },
+                                      ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
             ),
-            child: filtres.isEmpty
-                ? DsVide(message: l10n.communAucunResultat, icone: LucideIcons.searchX, petit: true)
-                : Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        height: DsTailles.enTeteTable,
-                        padding: const EdgeInsets.symmetric(horizontal: DsSpacing.s4),
-                        decoration: BoxDecoration(
-                          color: c.surfaceSunken,
-                          border: Border(bottom: BorderSide(color: c.borderDefault)),
-                        ),
-                        child: Row(
-                          children: [
-                            if (widget.multiple) const SizedBox(width: 32),
-                            for (final col in colonnes)
-                              col.largeur != null
-                                  ? SizedBox(
-                                      width: col.largeur,
-                                      child: Text(
-                                        col.libelle.toUpperCase(),
-                                        style: t.overline.copyWith(color: c.textMuted),
-                                      ),
-                                    )
-                                  : Expanded(
-                                      child: Text(
-                                        col.libelle.toUpperCase(),
-                                        style: t.overline.copyWith(color: c.textMuted),
-                                      ),
-                                    ),
-                          ],
-                        ),
-                      ),
-                      Flexible(
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: filtres.length,
-                          itemExtent: DsTailles.ligneTableDense,
-                          itemBuilder: (ctx, i) {
-                            final e = filtres[i];
-                            final cle = _cle(e);
-                            final actif = _selection.contains(cle);
-                            return _LignePicker(
-                              actif: actif,
-                              onTap: () => setState(() {
-                                if (widget.multiple) {
-                                  actif ? _selection.remove(cle) : _selection.add(cle);
-                                } else {
-                                  _selection
-                                    ..clear()
-                                    ..add(cle);
-                                }
-                              }),
-                              onDoubleTap: widget.multiple ? null : () => _confirmer([e]),
-                              child: Row(
-                                children: [
-                                  if (widget.multiple)
-                                    SizedBox(
-                                      width: 32,
-                                      child: DsCheckbox(
-                                        valeur: actif,
-                                        onChanged: (_) =>
-                                            setState(() => actif ? _selection.remove(cle) : _selection.add(cle)),
-                                      ),
-                                    ),
-                                  for (final col in colonnes)
-                                    Builder(
-                                      builder: (context) {
-                                        final texte = Text(
-                                          col.valeur(e),
-                                          style: (col.mono ? t.mono : t.bodySm).copyWith(
-                                            fontWeight: col.fort ? FontWeight.w600 : FontWeight.w400,
-                                            color: col.fort ? c.textPrimary : (col.attenue ? c.textMuted : c.textBody),
-                                            fontFeatures: DsTypography.tabular,
-                                          ),
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                        );
-                                        return col.largeur != null
-                                            ? SizedBox(width: col.largeur, child: texte)
-                                            : Expanded(child: texte);
-                                      },
-                                    ),
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-          ),
         ],
       ),
     );

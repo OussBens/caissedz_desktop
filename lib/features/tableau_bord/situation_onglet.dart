@@ -17,6 +17,7 @@ import '../../domain/referentiel/referentiel.dart';
 import '../../domain/referentiel/wilayas.dart';
 import '../commun/export_module.dart';
 import '../commun/referentiel_ui.dart';
+import '../commun/selecteurs.dart';
 import '../commun/statuts.dart';
 import '../gestion_caisse/gestion_caisse_providers.dart';
 import '../historique/historique_providers.dart';
@@ -433,6 +434,15 @@ class _VueAnalyseState extends ConsumerState<_VueAnalyse> {
         valeur: _f[f],
         options: [null, ...options.map((o) => _code(o))],
         libelle: (code) => code == null ? (tous ?? l10n.tiersTous) : nom(options.firstWhere((o) => _code(o) == code)),
+        recherche: switch (f) {
+          FiltreSituation.caisse => rechercheListe(context, ref, ListeMetier.caisse),
+          FiltreSituation.produit => rechercheListe(context, ref, ListeMetier.produit),
+          FiltreSituation.magasin => rechercheListe(context, ref, ListeMetier.magasin),
+          FiltreSituation.caissier => rechercheListe(context, ref, ListeMetier.utilisateur),
+          FiltreSituation.categorie => rechercheListe(context, ref, ListeMetier.categorie),
+          FiltreSituation.client => rechercheListe(context, ref, ListeMetier.client),
+          _ => null,
+        },
         onChanged: (v) => _maj(() => _f[f] = v),
       ),
     );

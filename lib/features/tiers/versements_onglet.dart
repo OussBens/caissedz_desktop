@@ -13,6 +13,7 @@ import '../../domain/referentiel/referentiel.dart';
 import '../caisse/caisse_dialogs.dart';
 import '../commun/export_module.dart';
 import '../commun/referentiel_ui.dart';
+import '../commun/selecteurs.dart';
 import '../commun/statuts.dart';
 import '../gestion_caisse/gestion_caisse_providers.dart';
 import '../produits/produits_providers.dart';
@@ -167,6 +168,7 @@ class _VersementsOngletState extends ConsumerState<VersementsOnglet> {
             valeur: _caisse,
             options: [null, ...caisses.map((c) => c.code)],
             libelle: (c) => c == null ? l10n.tiersToutes : nomCaisse(c),
+            recherche: rechercheListe(context, ref, ListeMetier.caisse),
             onChanged: (c) => setState(() => _caisse = c),
           ),
         ),
@@ -594,6 +596,7 @@ class _VersementTiersState extends ConsumerState<_VersementTiers> {
               valeur: _caisse,
               options: caisses.map((c) => c.code).toList(),
               libelle: (code) => caisses.where((c) => c.code == code).firstOrNull?.nom ?? code,
+              recherche: rechercheListe(context, ref, ListeMetier.caisse),
               onChanged: (v) => setState(() => _caisse = v),
             ),
           ),

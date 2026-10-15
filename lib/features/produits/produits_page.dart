@@ -10,6 +10,7 @@ import '../../domain/referentiel/referentiel.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
 import '../commun/referentiel_ui.dart';
+import '../commun/selecteurs.dart';
 import '../commun/statuts.dart';
 import 'catalogue_dialogs.dart';
 import 'produit_dialogs.dart';
@@ -323,11 +324,8 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
             valeur: _categorie,
             options: [null, for (final c in categories) c.code],
             libelle: (c) => c == null ? l10n.prdToutes : (nomsCat[c] ?? c),
+            recherche: rechercheListe(context, ref, ListeMetier.categorie),
             onChanged: (v) => setState(() => _categorie = v),
-            onLookup: () async {
-              final c = await choisirCategorie(context, ref);
-              if (c != null) setState(() => _categorie = c.code);
-            },
           ),
         ),
         DsFormRow(
@@ -571,6 +569,7 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
             valeur: _categorieSc,
             options: [null, for (final c in categories) c.code],
             libelle: (c) => c == null ? l10n.prdToutes : (nomsCat[c] ?? c),
+            recherche: rechercheListe(context, ref, ListeMetier.categorie),
             onChanged: (v) => setState(() => _categorieSc = v),
           ),
         ),

@@ -14,6 +14,7 @@ import '../../domain/models/tiers.dart';
 import '../../domain/models/vente.dart';
 import '../../domain/permissions.dart';
 import '../caisse/caisse_dialogs.dart';
+import '../commun/selecteurs.dart';
 import '../commun/statuts.dart';
 import '../entrees/entrees_providers.dart';
 import '../produits/produits_providers.dart';
@@ -183,46 +184,30 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
 
   Future<void> _choisirTiers() async {
     final l10n = AppLocalizations.of(context);
-    final devise = ref.read(deviseProvider);
     if (_client) {
-      final stats = ref.read(statsClientsProvider).value ?? const {};
-      final clients = (await ref.read(clientsProvider.future)).where((c) => c.actif).toList();
+      final clients = (await ref.read(clientsProvider.future)).where((c) => c.actif);
       if (!mounted) return;
-      final c = await afficherSelecteur<Client>(
+      final code = await choisirDansListe(
         context,
+        ref,
+        ListeMetier.client,
+        codes: {for (final c in clients) c.code},
+        valeur: _tiers,
         titre: l10n.tiersChoisirClient,
-        icone: LucideIcons.users,
-        elements: clients,
-        libelle: (c) => c.estDePassage ? l10n.posClientPassage : c.nom,
-        colonnes: [
-          DsColonnePicker(
-            libelle: l10n.retoursClient,
-            valeur: (c) => c.estDePassage ? l10n.posClientPassage : c.nom,
-            fort: true,
-          ),
-          DsColonnePicker(libelle: l10n.clientTelephone, valeur: (c) => c.telephone, attenue: true),
-          DsColonnePicker(
-            libelle: l10n.tiersCredit,
-            valeur: (c) => formaterMontant(stats[c.code]?.credit ?? 0, devise),
-          ),
-        ],
       );
-      if (c != null) setState(() => _tiers = c.code);
+      if (code != null) setState(() => _tiers = code);
     } else {
-      final fournisseurs = (await ref.read(fournisseursProvider.future)).where((f) => f.actif).toList();
+      final fournisseurs = (await ref.read(fournisseursProvider.future)).where((f) => f.actif);
       if (!mounted) return;
-      final f = await afficherSelecteur<Fournisseur>(
+      final code = await choisirDansListe(
         context,
+        ref,
+        ListeMetier.fournisseur,
+        codes: {for (final f in fournisseurs) f.code},
+        valeur: _tiers,
         titre: l10n.tiersChoisirFournisseur,
-        icone: LucideIcons.truck,
-        elements: fournisseurs,
-        libelle: (f) => f.nom,
-        colonnes: [
-          DsColonnePicker(libelle: l10n.retoursFournisseur, valeur: (f) => f.nom, fort: true),
-          DsColonnePicker(libelle: l10n.tiersWilaya, valeur: (f) => f.fiche.wilaya, attenue: true),
-        ],
       );
-      if (f != null) setState(() => _tiers = f.code);
+      if (code != null) setState(() => _tiers = code);
     }
   }
 
@@ -232,26 +217,16 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
     final noms = _nomsTiers();
     String? code;
     if (_client) {
-      final ventes = (await ref.read(ventesProvider.future)).where((v) => v.statut == StatutsVente.validee).toList()
-        ..sort((a, b) => (a.clientCode == _tiers ? 0 : 1).compareTo(b.clientCode == _tiers ? 0 : 1));
+      final ventes = (await ref.read(ventesProvider.future)).where((v) => v.statut == StatutsVente.validee);
       if (!mounted) return;
-      code = (await afficherSelecteur<Vente>(
+      code = await choisirDansListe(
         context,
+        ref,
+        ListeMetier.vente,
+        codes: {for (final v in ventes) v.code},
+        valeur: _document,
         titre: l10n.retoursChoisirTicket,
-        icone: LucideIcons.receiptText,
-        elements: ventes,
-        libelle: (v) => v.code,
-        colonnes: [
-          DsColonnePicker(libelle: l10n.produitsColCode, valeur: (v) => v.code, attenue: true, mono: true),
-          DsColonnePicker(libelle: l10n.communDate, valeur: (v) => formatDateHeure.format(v.date), attenue: true),
-          DsColonnePicker(
-            libelle: l10n.retoursClient,
-            valeur: (v) => v.clientCode == 'CLN0000' ? l10n.posClientPassage : (noms[v.clientCode] ?? v.clientCode),
-            fort: true,
-          ),
-          DsColonnePicker(libelle: l10n.retoursMontant, valeur: (v) => formaterMontant(v.totalNet, devise)),
-        ],
-      ))?.code;
+      );
     } else {
       final achats = (await ref.read(achatsProvider.future)).where((a) => a.statut == StatutsAchat.valide).toList()
         ..sort((a, b) => (a.fournisseurCode == _tiers ? 0 : 1).compareTo(b.fournisseurCode == _tiers ? 0 : 1));
@@ -452,6 +427,7 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
                           ? l10n.retoursOptionVendu(l.nom, da(l.prix), formaterNombre(l.quantite))
                           : l10n.retoursOptionRecu(l.nom, da(l.prix), formaterNombre(l.quantite));
                     },
+                    recherche: rechercheListe(context, ref, ListeMetier.produit),
                     onChanged: (v) => setState(() {
                       _produit = v;
                       _erreur = null;

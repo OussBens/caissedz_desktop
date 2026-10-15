@@ -12,9 +12,9 @@ import '../../domain/referentiel/referentiel.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
 import '../commun/referentiel_ui.dart';
+import '../commun/selecteurs.dart';
 import '../commun/statuts.dart';
 import '../historique/historique_providers.dart';
-import '../produits/catalogue_dialogs.dart';
 import '../produits/produits_donnees.dart';
 import '../produits/produits_providers.dart';
 import '../retours/retours_dialogs.dart';
@@ -290,20 +290,18 @@ class _StockPageState extends ConsumerState<StockPage> {
             valeur: _magasin,
             options: [null, for (final m in consultables) m.code],
             libelle: (c) => c == null ? l10n.retoursTous : consultables.firstWhere((m) => m.code == c).nom,
+            recherche: rechercheListe(context, ref, ListeMetier.magasin),
             onChanged: (v) => setState(() => _magasin = v),
           ),
         ),
         DsFormRow(
           libelle: l10n.produitsColCategorie,
           largeurLibelle: 80,
-          onLookup: () async {
-            final c = await choisirCategorie(context, ref);
-            if (c != null) setState(() => _categorie = c.code);
-          },
           child: DsSelect<String?>(
             valeur: _categorie,
             options: [null, ...categories.keys],
             libelle: (c) => c == null ? l10n.prdToutes : (categories[c] ?? c),
+            recherche: rechercheListe(context, ref, ListeMetier.categorie),
             onChanged: (v) => setState(() => _categorie = v),
           ),
         ),
@@ -484,6 +482,7 @@ class _StockPageState extends ConsumerState<StockPage> {
             valeur: _magasinMvt,
             options: [null, for (final m in magasins) m.code],
             libelle: (c) => c == null ? l10n.retoursTous : (noms[c] ?? c),
+            recherche: rechercheListe(context, ref, ListeMetier.magasin),
             onChanged: (v) => setState(() => _magasinMvt = v),
           ),
         ),
@@ -494,6 +493,7 @@ class _StockPageState extends ConsumerState<StockPage> {
             valeur: _utilisateur,
             options: [null, ...codesUtilisateurs],
             libelle: (c) => c == null ? l10n.retoursTous : (utilisateurs[c] ?? c),
+            recherche: rechercheListe(context, ref, ListeMetier.utilisateur),
             onChanged: (v) => setState(() => _utilisateur = v),
           ),
         ),

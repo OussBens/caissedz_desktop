@@ -10,6 +10,7 @@ import '../../domain/models/tiers.dart';
 import '../../domain/permissions.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
+import '../commun/selecteurs.dart';
 import '../commun/statuts.dart';
 import '../produits/produits_providers.dart';
 import '../tiers/tiers_providers.dart';
@@ -217,6 +218,7 @@ class _RetoursPageState extends ConsumerState<RetoursPage> {
               options: [null, ...codesTiers],
               libelle: (c) =>
                   c == null ? l10n.retoursTous : (client && c == 'CLN0000' ? l10n.posClientPassage : (noms[c] ?? c)),
+              recherche: rechercheListe(context, ref, client ? ListeMetier.client : ListeMetier.fournisseur),
               onChanged: (v) => setState(() => _tiers = v),
             ),
           ),

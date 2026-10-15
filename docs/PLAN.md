@@ -647,3 +647,16 @@ Référence : `docs/design/CaisseDZ-DS-v2.2/CaisseDZ-DS-v2.2.html`, `bundle-v2.2
   les modules.
 - ✅ Ventes : action « Liste des produits » (dialog des lignes du panier, colonne Colis) ; aperçu PDF des exports
   avec « Imprimer » à côté de « Fermer ».
+
+## Retours utilisateur — Listes métier et vues grille ✅ (2026-10-15)
+
+- ✅ Bouton « Rechercher dans la liste » à côté des listes déroulantes métier, dans les dialogs et les filtres
+  (`DsSelect.recherche` → `choisirDansListe`, `features/commun/selecteurs.dart`) : produit, catégorie,
+  sous-catégorie, remise, pack, client, fournisseur, magasin, caisse, session, utilisateur, vente ; dialogs
+  d'entrée, d'entrée rapide, de sortie, de transfert, de stock, de retour, de versement, de caisse et filtres des
+  modules. Le dialog reprend les seules options de la liste (recherche, filtres propres à la liste, affichage
+  liste ou cartes pour produit, client, fournisseur et vente).
+- ✅ Choix du client en caisse, du client / fournisseur et du ticket d'origine des retours, et ajout de produits
+  aux documents : mêmes dialogs, avec cartes.
+- ✅ Affichage liste ou grille (`CarteEntite`) dans Clients, Fournisseurs, Ventes et Utilisateurs (Produits
+  l'avait déjà) ; les cartes coupent leur contenu dans une grille à hauteur fixe au lieu de déborder.

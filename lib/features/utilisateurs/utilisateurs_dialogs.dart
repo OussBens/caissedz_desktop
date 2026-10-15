@@ -15,6 +15,7 @@ import '../../domain/models/caisse.dart';
 import '../../domain/models/stock.dart';
 import '../../domain/models/utilisateur.dart';
 import '../../domain/permissions.dart';
+import '../commun/selecteurs.dart';
 import '../commun/statuts.dart';
 import '../gestion_caisse/gestion_caisse_providers.dart';
 import '../historique/historique_providers.dart';
@@ -346,6 +347,7 @@ class _UtilisateurFormState extends ConsumerState<_UtilisateurForm> {
               options: [null, for (final c in widget.caisses) c.code],
               libelle: (c) => c == null ? l10n.usrAucune : widget.caisses.firstWhere((x) => x.code == c).nom,
               actif: !_admin,
+              recherche: rechercheListe(context, ref, ListeMetier.caisse),
               onChanged: (v) => setState(() => _caisse = v),
             ),
           ),

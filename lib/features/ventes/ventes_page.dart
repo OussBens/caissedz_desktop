@@ -13,8 +13,10 @@ import '../../domain/models/tiers.dart';
 import '../../domain/models/vente.dart';
 import '../../domain/permissions.dart';
 import '../caisse/pos_controller.dart';
+import '../commun/carte_entite.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
+import '../commun/selecteurs.dart';
 import '../commun/statuts.dart';
 import '../gestion_caisse/gestion_caisse_providers.dart';
 import '../produits/produits_providers.dart';
@@ -307,6 +309,7 @@ class _VentesPageState extends ConsumerState<VentesPage> {
             valeur: _client,
             options: [null, ...distincts((p) => p.vente.clientCode)],
             libelle: (v) => v == null ? l10n.ventesTous : nomClientPanier(l10n, v, nomsClients),
+            liste: ListeMetier.client,
             onChanged: (v) => setState(() => _client = v),
           ),
           _filtre<String?>(
@@ -314,6 +317,7 @@ class _VentesPageState extends ConsumerState<VentesPage> {
             valeur: _caisse,
             options: [null, ...caisses.map((c) => c.code)],
             libelle: (v) => v == null ? l10n.ventesToutes : nomCaisse(v),
+            liste: ListeMetier.caisse,
             onChanged: (v) => setState(() => _caisse = v),
           ),
           _filtre<String?>(
@@ -321,6 +325,7 @@ class _VentesPageState extends ConsumerState<VentesPage> {
             valeur: _session,
             options: [null, ...distincts((p) => p.vente.sessionCode).reversed],
             libelle: (v) => v ?? l10n.ventesToutes,
+            liste: ListeMetier.session,
             onChanged: (v) => setState(() => _session = v),
           ),
           DsFormRow(
@@ -346,6 +351,18 @@ class _VentesPageState extends ConsumerState<VentesPage> {
                 format: format,
               )
             : null,
+        carte: (context, p, etatCarte) => CarteEntite(
+          etat: etatCarte,
+          titre: p.code,
+          sousTitre: formatDateHeure.format(p.vente.date),
+          icone: LucideIcons.receipt,
+          initiales: false,
+          statut: p.statut,
+          montant: da(p.vente.totalNet),
+          libelleMontant: p.resteActuel > 0.004 ? '${l10n.ventesReste} ${da(p.resteActuel)}' : null,
+          lignes: [(LucideIcons.user, client(p)), (LucideIcons.userCog, p.caissier)],
+        ),
+        largeurMinCarte: 240,
         onOuvrir: detail,
         actions: [
           DsActionModule(
@@ -403,6 +420,7 @@ class _VentesPageState extends ConsumerState<VentesPage> {
     required List<T> options,
     required String Function(T) libelle,
     required ValueChanged<T> onChanged,
+    ListeMetier? liste,
   }) => DsFormRow(
     libelle: titre,
     largeurLibelle: 64,
@@ -411,6 +429,10 @@ class _VentesPageState extends ConsumerState<VentesPage> {
       valeur: valeur,
       options: options,
       libelle: libelle,
+      recherche: liste == null
+          ? null
+          : (options, valeur) async =>
+                await rechercheListe(context, ref, liste)(options.cast<String?>(), valeur as String?) as T?,
       onChanged: (v) => onChanged(v as T),
     ),
   );

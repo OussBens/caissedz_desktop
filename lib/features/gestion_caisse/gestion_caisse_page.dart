@@ -11,6 +11,7 @@ import '../../domain/permissions.dart';
 import '../caisse/caisse_dialogs.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
+import '../commun/selecteurs.dart';
 import '../commun/statuts.dart';
 import '../historique/historique_providers.dart';
 import '../produits/produits_providers.dart';
@@ -371,6 +372,7 @@ class _GestionCaissePageState extends ConsumerState<GestionCaissePage> {
             valeur: _caisseClotures,
             options: [null, for (final c in caisses) c.code],
             libelle: (code) => code == null ? l10n.tiersToutes : (noms[code] ?? code),
+            recherche: rechercheListe(context, ref, ListeMetier.caisse),
             onChanged: (v) => setState(() => _caisseClotures = v),
           ),
         ),
@@ -471,6 +473,7 @@ class _GestionCaissePageState extends ConsumerState<GestionCaissePage> {
             valeur: _caisseMouvements,
             options: [null, for (final c in caisses) c.code],
             libelle: (code) => code == null ? l10n.tiersToutes : (noms[code] ?? code),
+            recherche: rechercheListe(context, ref, ListeMetier.caisse),
             onChanged: (v) => setState(() => _caisseMouvements = v),
           ),
         ),
@@ -486,6 +489,7 @@ class _GestionCaissePageState extends ConsumerState<GestionCaissePage> {
                 if (_caisseMouvements == null || s.caisseCode == _caisseMouvements) s.code,
             ],
             libelle: (code) => code ?? l10n.tiersToutes,
+            recherche: rechercheListe(context, ref, ListeMetier.session),
             onChanged: (v) => setState(() => _sessionMouvements = v),
           ),
         ),

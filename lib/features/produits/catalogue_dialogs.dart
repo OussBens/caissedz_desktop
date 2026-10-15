@@ -9,36 +9,13 @@ import '../../domain/models/produit.dart';
 import '../../domain/referentiel/referentiel.dart';
 import '../commun/doc_form.dart';
 import '../commun/referentiel_ui.dart';
+import '../commun/selecteurs.dart';
 import '../commun/statuts.dart';
 import 'produit_dialogs.dart';
 import 'produits_donnees.dart';
 import 'produits_providers.dart';
 
 // ============================================================ Catégories
-
-/// Sélection d'une catégorie active (`PickerDialog`).
-Future<Categorie?> choisirCategorie(BuildContext context, WidgetRef ref) async {
-  final l10n = AppLocalizations.of(context);
-  final categories = (await ref.read(categoriesProvider.future)).where((c) => c.actif).toList();
-  final produits = await ref.read(produitsProvider.future);
-  if (!context.mounted) return null;
-  return afficherSelecteur<Categorie>(
-    context,
-    titre: l10n.produitChampCategorie,
-    icone: LucideIcons.folder,
-    elements: categories,
-    libelle: (c) => c.nom,
-    colonnes: [
-      DsColonnePicker(libelle: l10n.produitsColCode, valeur: (c) => c.code, attenue: true, mono: true, largeur: 110),
-      DsColonnePicker(libelle: l10n.produitsColCategorie, valeur: (c) => c.nom, fort: true),
-      DsColonnePicker(
-        libelle: l10n.produitsOngletProduits,
-        valeur: (c) => '${produits.where((p) => p.categorieCode == c.code).length}',
-        largeur: 90,
-      ),
-    ],
-  );
-}
 
 /// Formulaire catégorie (`CategorieFormDialog`, 600 px) : code, nom unique, description, état.
 Future<void> afficherFormulaireCategorie(BuildContext context, WidgetRef ref, {Categorie? categorie}) =>
@@ -184,15 +161,11 @@ class _CategorieFormState extends ConsumerState<_CategorieForm> {
             DsFormRow(
               libelle: l10n.prdCategorieParente,
               obligatoire: true,
-              onLookup: () async {
-                final c = await choisirCategorie(context, ref);
-                if (c != null) setState(() => _parente = c.code);
-              },
-              lookupTooltip: l10n.dsChoisirListe,
               child: DsSelect<String>(
                 valeur: _parente,
                 options: [for (final c in parentes) c.code],
                 libelle: (code) => parentes.where((c) => c.code == code).firstOrNull?.nom ?? code,
+                recherche: rechercheListe(context, ref, ListeMetier.categorie),
                 onChanged: (v) => setState(() => _parente = v),
               ),
             ),

@@ -6973,4 +6973,119 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get ventesColis => 'Colis';
+
+  @override
+  String get selRechercherListe => 'Rechercher dans la liste';
+
+  @override
+  String get selProduit => 'Choisir un produit';
+
+  @override
+  String get selCategorie => 'Choisir une catégorie';
+
+  @override
+  String get selSousCategorie => 'Choisir une sous-catégorie';
+
+  @override
+  String get selRemise => 'Choisir une remise';
+
+  @override
+  String get selPack => 'Choisir un pack';
+
+  @override
+  String get selClient => 'Choisir un client';
+
+  @override
+  String get selFournisseur => 'Choisir un fournisseur';
+
+  @override
+  String get selMagasin => 'Choisir un magasin';
+
+  @override
+  String get selCaisse => 'Choisir une caisse';
+
+  @override
+  String get selSession => 'Choisir une session';
+
+  @override
+  String get selUtilisateur => 'Choisir un utilisateur';
+
+  @override
+  String get selVente => 'Choisir une vente';
+
+  @override
+  String get selColCode => 'Code';
+
+  @override
+  String get selColNom => 'Nom';
+
+  @override
+  String get selColDesignation => 'Désignation';
+
+  @override
+  String get selColCategorie => 'Catégorie';
+
+  @override
+  String get selColStock => 'Stock';
+
+  @override
+  String get selColPrix => 'Prix';
+
+  @override
+  String get selColTelephone => 'Téléphone';
+
+  @override
+  String get selColAdresse => 'Adresse';
+
+  @override
+  String get selColType => 'Type';
+
+  @override
+  String get selColValeur => 'Valeur';
+
+  @override
+  String get selColMagasin => 'Magasin';
+
+  @override
+  String get selColCaisse => 'Caisse';
+
+  @override
+  String get selColUtilisateur => 'Utilisateur';
+
+  @override
+  String get selColOuverture => 'Ouverture';
+
+  @override
+  String get selColStatut => 'Statut';
+
+  @override
+  String get selColDate => 'Date';
+
+  @override
+  String get selColClient => 'Client';
+
+  @override
+  String get selColTotal => 'Total';
+
+  @override
+  String get selColProduits => 'Produits';
+
+  @override
+  String get selColDescription => 'Description';
+
+  @override
+  String get selFiltreEtat => 'État';
+
+  @override
+  String get selTous => 'Tous';
+
+  @override
+  String selPoints(int n) {
+    return '$n points';
+  }
+
+  @override
+  String selNbProduits(int n) {
+    return '$n produits';
+  }
 }

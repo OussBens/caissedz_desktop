@@ -7,6 +7,7 @@ import '../../core/i18n/generated/app_localizations.dart';
 import '../../domain/models/produit.dart';
 import '../produits/produits_donnees.dart';
 import '../produits/produits_providers.dart';
+import 'carte_entite.dart';
 import 'statuts.dart';
 
 /// Ligne d'un [DocFormDialog] : produit, quantité, nombre (2ᵉ stock) et prix saisis.
@@ -95,6 +96,23 @@ Future<List<Produit>> choisirProduits(
       elements: produits,
       libelle: (p) => p.designation,
       indiceRecherche: l10n.prdRechercheProduits,
+      largeur: 960,
+      hauteurCarte: 172,
+      carte: (context, p, etat) {
+        final stock = stocks[p.code] ?? 0;
+        return CarteEntite(
+          etat: etat,
+          titre: p.designation,
+          sousTitre: '${p.code} · ${categories[p.categorieCode] ?? ''}',
+          icone: LucideIcons.package,
+          initiales: false,
+          image: imageProduit(p.image),
+          statut: p.service ? null : (stock <= 0 ? 'rupture' : 'disponible'),
+          montant: formaterMontant(prixVente ? p.prixVente : p.prixAchat, devise),
+          libelleMontant: prixVente ? l10n.produitsColPrixVente : l10n.produitsColPrixAchat,
+          lignes: [(LucideIcons.boxes, p.service ? l10n.prdService : l10n.prdStockN(formaterNombre(stock)))],
+        );
+      },
       colonnes: [
         DsColonnePicker(libelle: l10n.produitsColCode, valeur: (p) => p.code, attenue: true, mono: true, largeur: 110),
         DsColonnePicker(libelle: l10n.dsPosProduit, valeur: (p) => p.designation, fort: true),

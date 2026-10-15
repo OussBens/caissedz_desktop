@@ -4,6 +4,7 @@ import 'package:caissedz_desktop/application/session_caisse_service.dart';
 import 'package:caissedz_desktop/application/stock_service.dart';
 import 'package:caissedz_desktop/application/tiers_service.dart';
 import 'package:caissedz_desktop/application/vente_service.dart';
+import 'package:caissedz_desktop/core/design_system/design_system.dart';
 import 'package:caissedz_desktop/data/tiers_repository.dart';
 import 'package:caissedz_desktop/data/vente_repository.dart';
 import 'package:caissedz_desktop/domain/models/panier.dart';
@@ -11,6 +12,7 @@ import 'package:caissedz_desktop/domain/models/parametres_vente.dart';
 import 'package:caissedz_desktop/domain/models/produit.dart';
 import 'package:caissedz_desktop/domain/models/tiers.dart';
 import 'package:caissedz_desktop/features/caisse/pos_dialogs.dart';
+import 'package:caissedz_desktop/features/commun/carte_entite.dart';
 import 'package:caissedz_desktop/features/tiers/tiers_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -163,6 +165,28 @@ void main() {
       expect(find.descendant(of: dialogue, matching: find.text('À l\'unité')), findsOneWidget);
       await clic(tester, find.text('Fermer').last);
       expect(dialogue, findsNothing);
+    });
+
+    testWidgets('vue grille des paniers et choix du client par le dialog de la liste', (tester) async {
+      await _ouvrir(tester);
+      await clic(
+        tester,
+        find.descendant(of: find.byKey(const ValueKey('module_vue')), matching: find.byTooltip('Affichage grille')),
+      );
+      expect(find.byType(CarteEntite), findsNWidgets(2));
+      expect(find.descendant(of: find.byType(CarteEntite), matching: find.text('VTE0001')), findsOneWidget);
+      // Bouton « Rechercher dans la liste » du filtre Client : dialog avec recherche, liste ou cartes.
+      final filtreClient = find.widgetWithText(DsFormRow, 'Client');
+      await clic(tester, find.descendant(of: filtreClient, matching: find.byTooltip('Rechercher dans la liste')));
+      expect(find.text('Choisir un client'), findsOneWidget);
+      await clic(
+        tester,
+        find.descendant(of: find.byKey(const ValueKey('picker_vue')), matching: find.byTooltip('Affichage grille')),
+      );
+      await clic(tester, find.byKey(const ValueKey('picker_carte_0')));
+      await clic(tester, find.widgetWithText(DsButton, 'Choisir'));
+      expect(find.text('Choisir un client'), findsNothing);
+      expect(find.descendant(of: filtreClient, matching: find.text('Amina')), findsOneWidget);
     });
 
     testWidgets('« Nouvelle vente » ouvre la caisse', (tester) async {

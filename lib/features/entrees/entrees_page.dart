@@ -14,6 +14,7 @@ import '../../domain/models/tiers.dart';
 import '../../domain/permissions.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
+import '../commun/selecteurs.dart';
 import '../commun/statuts.dart';
 import '../historique/historique_providers.dart';
 import '../produits/produits_providers.dart';
@@ -238,6 +239,7 @@ class _EntreesPageState extends ConsumerState<EntreesPage> {
             valeur: _fournisseur,
             options: [null, for (final f in fournisseurs) f.code],
             libelle: (c) => c == null ? l10n.retoursTous : (nomsFrn[c] ?? c),
+            recherche: rechercheListe(context, ref, ListeMetier.fournisseur),
             onChanged: (v) => setState(() => _fournisseur = v),
           ),
         ),
@@ -259,6 +261,7 @@ class _EntreesPageState extends ConsumerState<EntreesPage> {
             valeur: _magasin,
             options: [null, for (final m in magasins) m.code],
             libelle: (c) => c == null ? l10n.retoursTous : (nomsMag[c] ?? c),
+            recherche: rechercheListe(context, ref, ListeMetier.magasin),
             onChanged: (v) => setState(() => _magasin = v),
           ),
         ),
@@ -433,6 +436,7 @@ class _EntreesPageState extends ConsumerState<EntreesPage> {
                 valeur: _fournisseurBon,
                 options: [null, for (final f in fournisseurs) f.code],
                 libelle: (code) => code == null ? l10n.retoursTous : (nomsFrn[code] ?? code),
+                recherche: rechercheListe(context, ref, ListeMetier.fournisseur),
                 onChanged: (v) => setState(() => _fournisseurBon = v),
               ),
             ),

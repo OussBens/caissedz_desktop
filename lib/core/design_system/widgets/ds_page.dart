@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
+import '../../i18n/generated/app_localizations.dart';
 import '../tokens/ds_theme.dart';
 import 'ds_button.dart';
 import 'ds_forms.dart';
@@ -249,7 +250,8 @@ class DsSelect<T> extends StatefulWidget {
     this.taille = DsTailles.controleMd,
     this.largeur,
     this.onLookup,
-    this.lookupTooltip = 'Choisir dans la liste',
+    this.lookupTooltip,
+    this.recherche,
     this.cle,
   });
   final T? valeur;
@@ -268,7 +270,11 @@ class DsSelect<T> extends StatefulWidget {
   final double taille;
   final double? largeur;
   final VoidCallback? onLookup;
-  final String lookupTooltip;
+  final String? lookupTooltip;
+
+  /// Recherche dans un dialog (liste métier : filtres, liste ou cartes) parmi les [options] : affiche le bouton
+  /// de recherche à côté de la liste ; la valeur retournée (non nulle) est transmise à [onChanged].
+  final Future<T?> Function(List<T> options, T? valeur)? recherche;
 
   /// Clé de test du déclencheur.
   final Key? cle;
@@ -363,13 +369,28 @@ class _DsSelectState<T> extends State<DsSelect<T>> {
       ),
     );
 
-    final champ = widget.onLookup == null
+    final lookup =
+        widget.onLookup ??
+        (widget.recherche == null || !widget.actif
+            ? null
+            : () async {
+                final v = await widget.recherche!(widget.options, widget.valeur);
+                if (v != null && mounted) widget.onChanged(v);
+              });
+    final champ = lookup == null
         ? declencheur
         : Row(
             spacing: 6,
             children: [
               Expanded(child: declencheur),
-              DsLookupButton(onPressed: widget.onLookup!, tooltip: widget.lookupTooltip, taille: widget.taille),
+              DsLookupButton(
+                key: widget.cle is ValueKey<String>
+                    ? ValueKey('${(widget.cle! as ValueKey<String>).value}_recherche')
+                    : null,
+                onPressed: lookup,
+                tooltip: widget.lookupTooltip ?? AppLocalizations.of(context).selRechercherListe,
+                taille: widget.taille,
+              ),
             ],
           );
 

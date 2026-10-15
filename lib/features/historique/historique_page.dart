@@ -7,6 +7,7 @@ import '../../core/i18n/generated/app_localizations.dart';
 import '../../domain/historique.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
+import '../commun/selecteurs.dart';
 import '../ventes/ventes_providers.dart';
 import 'historique_providers.dart';
 
@@ -135,6 +136,7 @@ class _HistoriquePageState extends ConsumerState<HistoriquePage> {
             valeur: _utilisateur,
             options: [null, ...distincts((e) => e.utilisateurCode)],
             libelle: (v) => v == null ? l10n.hiTous : nom(v),
+            liste: ListeMetier.utilisateur,
             onChanged: (v) => setState(() => _utilisateur = v),
           ),
           _filtre<String?>(
@@ -178,6 +180,7 @@ class _HistoriquePageState extends ConsumerState<HistoriquePage> {
     required List<T> options,
     required String Function(T) libelle,
     required ValueChanged<T> onChanged,
+    ListeMetier? liste,
   }) => DsFormRow(
     libelle: titre,
     largeurLibelle: 80,
@@ -186,6 +189,10 @@ class _HistoriquePageState extends ConsumerState<HistoriquePage> {
       valeur: valeur,
       options: options,
       libelle: libelle,
+      recherche: liste == null
+          ? null
+          : (options, valeur) async =>
+                await rechercheListe(context, ref, liste)(options.cast<String?>(), valeur as String?) as T?,
       onChanged: (v) => onChanged(v as T),
     ),
   );

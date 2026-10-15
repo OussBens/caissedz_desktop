@@ -13238,6 +13238,228 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Colis'**
   String get ventesColis;
+
+  /// No description provided for @selRechercherListe.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher dans la liste'**
+  String get selRechercherListe;
+
+  /// No description provided for @selProduit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir un produit'**
+  String get selProduit;
+
+  /// No description provided for @selCategorie.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir une catégorie'**
+  String get selCategorie;
+
+  /// No description provided for @selSousCategorie.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir une sous-catégorie'**
+  String get selSousCategorie;
+
+  /// No description provided for @selRemise.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir une remise'**
+  String get selRemise;
+
+  /// No description provided for @selPack.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir un pack'**
+  String get selPack;
+
+  /// No description provided for @selClient.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir un client'**
+  String get selClient;
+
+  /// No description provided for @selFournisseur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir un fournisseur'**
+  String get selFournisseur;
+
+  /// No description provided for @selMagasin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir un magasin'**
+  String get selMagasin;
+
+  /// No description provided for @selCaisse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir une caisse'**
+  String get selCaisse;
+
+  /// No description provided for @selSession.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir une session'**
+  String get selSession;
+
+  /// No description provided for @selUtilisateur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir un utilisateur'**
+  String get selUtilisateur;
+
+  /// No description provided for @selVente.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir une vente'**
+  String get selVente;
+
+  /// No description provided for @selColCode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code'**
+  String get selColCode;
+
+  /// No description provided for @selColNom.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom'**
+  String get selColNom;
+
+  /// No description provided for @selColDesignation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Désignation'**
+  String get selColDesignation;
+
+  /// No description provided for @selColCategorie.
+  ///
+  /// In fr, this message translates to:
+  /// **'Catégorie'**
+  String get selColCategorie;
+
+  /// No description provided for @selColStock.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock'**
+  String get selColStock;
+
+  /// No description provided for @selColPrix.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix'**
+  String get selColPrix;
+
+  /// No description provided for @selColTelephone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Téléphone'**
+  String get selColTelephone;
+
+  /// No description provided for @selColAdresse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Adresse'**
+  String get selColAdresse;
+
+  /// No description provided for @selColType.
+  ///
+  /// In fr, this message translates to:
+  /// **'Type'**
+  String get selColType;
+
+  /// No description provided for @selColValeur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Valeur'**
+  String get selColValeur;
+
+  /// No description provided for @selColMagasin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Magasin'**
+  String get selColMagasin;
+
+  /// No description provided for @selColCaisse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Caisse'**
+  String get selColCaisse;
+
+  /// No description provided for @selColUtilisateur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Utilisateur'**
+  String get selColUtilisateur;
+
+  /// No description provided for @selColOuverture.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouverture'**
+  String get selColOuverture;
+
+  /// No description provided for @selColStatut.
+  ///
+  /// In fr, this message translates to:
+  /// **'Statut'**
+  String get selColStatut;
+
+  /// No description provided for @selColDate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Date'**
+  String get selColDate;
+
+  /// No description provided for @selColClient.
+  ///
+  /// In fr, this message translates to:
+  /// **'Client'**
+  String get selColClient;
+
+  /// No description provided for @selColTotal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Total'**
+  String get selColTotal;
+
+  /// No description provided for @selColProduits.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produits'**
+  String get selColProduits;
+
+  /// No description provided for @selColDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Description'**
+  String get selColDescription;
+
+  /// No description provided for @selFiltreEtat.
+  ///
+  /// In fr, this message translates to:
+  /// **'État'**
+  String get selFiltreEtat;
+
+  /// No description provided for @selTous.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tous'**
+  String get selTous;
+
+  /// No description provided for @selPoints.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n} points'**
+  String selPoints(int n);
+
+  /// No description provided for @selNbProduits.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n} produits'**
+  String selNbProduits(int n);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -9,6 +9,7 @@ import '../../domain/permissions.dart';
 import '../../domain/referentiel/referentiel.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
+import '../commun/selecteurs.dart';
 import '../commun/statuts.dart';
 import '../historique/historique_providers.dart';
 import '../produits/produits_providers.dart';
@@ -173,6 +174,7 @@ class _SortiesPageState extends ConsumerState<SortiesPage> {
               valeur: _magasin,
               options: [null, for (final m in magasins) m.code],
               libelle: (c) => c == null ? l10n.retoursTous : (noms[c] ?? c),
+              recherche: rechercheListe(context, ref, ListeMetier.magasin),
               onChanged: (v) => setState(() => _magasin = v),
             ),
           ),

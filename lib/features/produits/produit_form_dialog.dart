@@ -15,10 +15,10 @@ import '../../domain/models/stock.dart';
 import '../../domain/models/tiers.dart';
 import '../../domain/referentiel/referentiel.dart';
 import '../commun/referentiel_ui.dart';
+import '../commun/selecteurs.dart';
 import '../commun/statuts.dart';
 import '../stock/stock_providers.dart';
 import '../tiers/tiers_providers.dart';
-import 'catalogue_dialogs.dart';
 import 'produit_dialogs.dart';
 import 'produits_donnees.dart';
 import 'produits_providers.dart';
@@ -696,21 +696,12 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
         libelle: l10n.produitsColCategorie,
         obligatoire: true,
         largeurLibelle: _lw,
-        onLookup: () async {
-          final cat = await choisirCategorie(context, ref);
-          if (cat != null) {
-            setState(() {
-              _categorie = cat.code;
-              _sousCategorie = null;
-            });
-          }
-        },
-        lookupTooltip: l10n.dsChoisirListe,
         child: DsSelect<String>(
           cle: const ValueKey('produit_categorie'),
           valeur: _categorie,
           options: [for (final x in categories) x.code],
           libelle: (code) => categories.where((x) => x.code == code).firstOrNull?.nom ?? code,
+          recherche: rechercheListe(context, ref, ListeMetier.categorie),
           onChanged: (v) => setState(() {
             _categorie = v ?? _categorie;
             _sousCategorie = null;
@@ -725,6 +716,7 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
           options: [null, for (final s in sous) s.code],
           libelle: (code) =>
               code == null ? l10n.communAucune : (sous.where((s) => s.code == code).firstOrNull?.nom ?? code),
+          recherche: rechercheListe(context, ref, ListeMetier.sousCategorie),
           onChanged: (v) => setState(() => _sousCategorie = v),
         ),
       ),
@@ -745,6 +737,7 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
             options: [null, for (final f in fournisseurs) f.code],
             libelle: (code) =>
                 code == null ? l10n.communAucune : (fournisseurs.where((f) => f.code == code).firstOrNull?.nom ?? code),
+            recherche: rechercheListe(context, ref, ListeMetier.fournisseur),
             onChanged: (v) => setState(() => _fournisseur = v),
           ),
         ),
@@ -893,6 +886,7 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
           actif: !_edition,
           options: [for (final m in magasins) m.code],
           libelle: (code) => magasins.where((m) => m.code == code).firstOrNull?.nom ?? code,
+          recherche: rechercheListe(context, ref, ListeMetier.magasin),
           onChanged: (v) => setState(() => _magasin = v),
         ),
       ),

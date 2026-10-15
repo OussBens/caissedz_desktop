@@ -3606,5 +3606,56 @@
       }
     }
   },
-  "ventesColis": "Colis"
+  "ventesColis": "Colis",
+  "selRechercherListe": "Rechercher dans la liste",
+  "selProduit": "Choisir un produit",
+  "selCategorie": "Choisir une catégorie",
+  "selSousCategorie": "Choisir une sous-catégorie",
+  "selRemise": "Choisir une remise",
+  "selPack": "Choisir un pack",
+  "selClient": "Choisir un client",
+  "selFournisseur": "Choisir un fournisseur",
+  "selMagasin": "Choisir un magasin",
+  "selCaisse": "Choisir une caisse",
+  "selSession": "Choisir une session",
+  "selUtilisateur": "Choisir un utilisateur",
+  "selVente": "Choisir une vente",
+  "selColCode": "Code",
+  "selColNom": "Nom",
+  "selColDesignation": "Désignation",
+  "selColCategorie": "Catégorie",
+  "selColStock": "Stock",
+  "selColPrix": "Prix",
+  "selColTelephone": "Téléphone",
+  "selColAdresse": "Adresse",
+  "selColType": "Type",
+  "selColValeur": "Valeur",
+  "selColMagasin": "Magasin",
+  "selColCaisse": "Caisse",
+  "selColUtilisateur": "Utilisateur",
+  "selColOuverture": "Ouverture",
+  "selColStatut": "Statut",
+  "selColDate": "Date",
+  "selColClient": "Client",
+  "selColTotal": "Total",
+  "selColProduits": "Produits",
+  "selColDescription": "Description",
+  "selFiltreEtat": "État",
+  "selTous": "Tous",
+  "selPoints": "{n} points",
+  "@selPoints": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "selNbProduits": "{n} produits",
+  "@selNbProduits": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  }
 }

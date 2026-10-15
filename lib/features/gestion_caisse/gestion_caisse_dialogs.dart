@@ -19,6 +19,7 @@ import '../../domain/referentiel/referentiel.dart';
 import '../../domain/scellement.dart';
 import '../commun/export_module.dart';
 import '../commun/referentiel_ui.dart';
+import '../commun/selecteurs.dart';
 import '../commun/statuts.dart';
 import '../historique/historique_providers.dart';
 import '../produits/produits_providers.dart';
@@ -432,6 +433,7 @@ Future<void> afficherTransfertCaisse(BuildContext context, WidgetRef ref) async 
                   valeur: source,
                   options: [for (final c in caisses) c.code],
                   libelle: nom,
+                  recherche: rechercheListe(context, ref, ListeMetier.caisse),
                   onChanged: (v) => setState(() => source = v ?? source),
                 ),
               ),
@@ -444,6 +446,7 @@ Future<void> afficherTransfertCaisse(BuildContext context, WidgetRef ref) async 
                   valeur: destination,
                   options: [for (final c in caisses) c.code],
                   libelle: nom,
+                  recherche: rechercheListe(context, ref, ListeMetier.caisse),
                   onChanged: (v) => setState(() => destination = v ?? destination),
                 ),
               ),
@@ -673,6 +676,7 @@ class _ClotureZDialogState extends ConsumerState<_ClotureZDialog> {
                     valeur: _caisse,
                     options: [for (final c in widget.caisses) c.code],
                     libelle: (code) => widget.caisses.firstWhere((c) => c.code == code).nom,
+                    recherche: rechercheListe(context, ref, ListeMetier.caisse),
                     onChanged: (v) {
                       if (v == null || v == _caisse) return;
                       setState(() {

@@ -19,6 +19,7 @@ import '../../domain/permissions.dart';
 import '../../domain/referentiel/referentiel.dart';
 import '../commun/export_module.dart';
 import '../commun/referentiel_ui.dart';
+import '../commun/selecteurs.dart';
 import '../commun/statuts.dart';
 import '../stock/stock_providers.dart';
 import 'produits_donnees.dart';
@@ -643,6 +644,11 @@ class _AffecterDialogState extends ConsumerState<_AffecterDialog> {
               options: options.keys.toList(),
               libelle: (k) => options[k] ?? k,
               placeholder: l10n.communAucune,
+              recherche: rechercheListe(context, ref, switch (_cible) {
+                _CibleAffectation.categorie => ListeMetier.categorie,
+                _CibleAffectation.remise => ListeMetier.remise,
+                _CibleAffectation.pack => ListeMetier.pack,
+              }),
               onChanged: (v) => setState(() {
                 _valeur = v;
                 _sous = null;
@@ -656,6 +662,7 @@ class _AffecterDialogState extends ConsumerState<_AffecterDialog> {
                 valeur: _sous,
                 options: [null, for (final s in sous) s.code],
                 libelle: (k) => k == null ? l10n.communAucune : (sous.where((s) => s.code == k).firstOrNull?.nom ?? k),
+                recherche: rechercheListe(context, ref, ListeMetier.sousCategorie),
                 onChanged: (v) => setState(() => _sous = v),
               ),
             ),

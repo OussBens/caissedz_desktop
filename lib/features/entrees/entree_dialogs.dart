@@ -17,6 +17,7 @@ import '../caisse/caisse_dialogs.dart';
 import '../caisse/pos_dialogs.dart';
 import '../commun/doc_form.dart';
 import '../commun/export_module.dart';
+import '../commun/selecteurs.dart';
 import '../commun/statuts.dart';
 import '../gestion_caisse/gestion_caisse_providers.dart';
 import '../historique/historique_providers.dart';
@@ -87,6 +88,7 @@ List<Widget> lignesPaiement(
   required String devise,
   required List<Caisse> caisses,
   required VoidCallback onChanged,
+  WidgetRef? ref,
   double largeurLibelle = _lw,
 }) {
   final l10n = AppLocalizations.of(context);
@@ -171,6 +173,7 @@ List<Widget> lignesPaiement(
         valeur: etat.caisse ?? caisses.firstOrNull?.code,
         options: [for (final c in caisses) c.code],
         libelle: (code) => caisses.where((c) => c.code == code).firstOrNull?.nom ?? code,
+        recherche: ref == null ? null : rechercheListe(context, ref, ListeMetier.caisse),
         onChanged: (v) {
           etat.caisse = v;
           onChanged();
@@ -473,6 +476,7 @@ class _EntreeFormState extends ConsumerState<_EntreeForm> {
                     placeholder: l10n.stkChoisirFournisseur,
                     options: [for (final f in fournisseurs) f.code],
                     libelle: (c) => fournisseurs.where((f) => f.code == c).firstOrNull?.nom ?? c,
+                    recherche: rechercheListe(context, ref, ListeMetier.fournisseur),
                     onChanged: (v) => setState(() => _fournisseur = v),
                   ),
                 ),
@@ -494,6 +498,7 @@ class _EntreeFormState extends ConsumerState<_EntreeForm> {
                     valeur: _magasin,
                     options: [for (final m in magasins) m.code],
                     libelle: (c) => magasins.where((m) => m.code == c).firstOrNull?.nom ?? c,
+                    recherche: rechercheListe(context, ref, ListeMetier.magasin),
                     onChanged: (v) => setState(() => _magasin = v ?? _magasin),
                   ),
                 ),
@@ -515,6 +520,7 @@ class _EntreeFormState extends ConsumerState<_EntreeForm> {
                   devise: devise,
                   caisses: caisses,
                   onChanged: () => setState(() {}),
+                  ref: ref,
                 ),
               ],
             )
@@ -816,16 +822,6 @@ class _EntreeRapideFormState extends ConsumerState<_EntreeRapideForm> {
           DsFormRow(
             libelle: l10n.dsPosProduit,
             obligatoire: true,
-            onLookup: fixe != null
-                ? null
-                : () async {
-                    final choix = await choisirProduits(context, ref);
-                    if (choix.isEmpty) return;
-                    setState(() {
-                      _produit = choix.first.code;
-                      _prix.text = texteQuantite(choix.first.prixAchat);
-                    });
-                  },
             child: DsSelect<String>(
               cle: const ValueKey('rapide_produit'),
               valeur: _produit,
@@ -833,6 +829,7 @@ class _EntreeRapideFormState extends ConsumerState<_EntreeRapideForm> {
               options: [for (final p in produits) p.code],
               libelle: (c) => produits.where((p) => p.code == c).firstOrNull?.designation ?? c,
               actif: fixe == null,
+              recherche: rechercheListe(context, ref, ListeMetier.produit),
               onChanged: (v) => setState(() {
                 _produit = v;
                 final p = produits.where((p) => p.code == v).firstOrNull;
@@ -888,6 +885,7 @@ class _EntreeRapideFormState extends ConsumerState<_EntreeRapideForm> {
               options: [null, for (final f in fournisseurs) f.code],
               libelle: (c) =>
                   c == null ? l10n.entAucunFournisseur : (fournisseurs.where((f) => f.code == c).firstOrNull?.nom ?? c),
+              recherche: rechercheListe(context, ref, ListeMetier.fournisseur),
               onChanged: (v) => setState(() => _fournisseur = v),
             ),
           ),

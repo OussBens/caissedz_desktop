@@ -22,6 +22,7 @@ import '../../domain/models/vente.dart';
 import '../../domain/permissions.dart';
 import '../../domain/referentiel/referentiel.dart';
 import '../commun/referentiel_ui.dart';
+import '../commun/selecteurs.dart';
 import '../commun/statuts.dart';
 import '../gestion_caisse/gestion_caisse_providers.dart';
 import '../produits/produits_providers.dart';
@@ -989,6 +990,7 @@ class _RechercheProduitDialogState extends ConsumerState<_RechercheProduitDialog
               valeur: _categorie,
               options: [null, for (final c in listeCategories) c.code],
               libelle: (v) => v == null ? l10n.posRechToutesCategories : (categories[v] ?? v),
+              recherche: rechercheListe(context, ref, ListeMetier.categorie),
               onChanged: (v) => setState(() => _categorie = v),
             ),
           ),
@@ -1165,6 +1167,16 @@ Future<bool> afficherOuvertureCaisse(BuildContext context, WidgetRef ref, {Strin
                 valeur: caisse,
                 options: caisses,
                 libelle: (c) => c.nom,
+                recherche: (options, valeur) async {
+                  final code = await choisirDansListe(
+                    context,
+                    ref,
+                    ListeMetier.caisse,
+                    codes: {for (final c in options) c.code},
+                    valeur: valeur?.code,
+                  );
+                  return options.where((c) => c.code == code).firstOrNull;
+                },
                 onChanged: (v) => setState(() {
                   caisse = v ?? caisse;
                   fond.text = formaterNombre(caisse.soldeInitial, decimales: 2);
@@ -1409,6 +1421,7 @@ Future<void> afficherMouvementManuel(BuildContext context, WidgetRef ref, {Strin
                   valeur: caisse,
                   options: [for (final c in caisses) c.code],
                   libelle: (code) => caisses.firstWhere((c) => c.code == code).nom,
+                  recherche: rechercheListe(context, ref, ListeMetier.caisse),
                   onChanged: (v) => setState(() => caisse = v ?? caisse),
                 ),
               ),
@@ -1835,6 +1848,7 @@ Future<void> afficherParametresCaisse(BuildContext context, WidgetRef ref) async
                 options: [for (final c in caisses) c.code],
                 libelle: (c) => caisses.firstWhere((x) => x.code == c).nom,
                 actif: etat.session == null && libre,
+                recherche: rechercheListe(context, ref, ListeMetier.caisse),
                 onChanged: (v) => setState(() => caisse = v ?? caisse),
               ),
             ),
@@ -1845,6 +1859,7 @@ Future<void> afficherParametresCaisse(BuildContext context, WidgetRef ref) async
                 options: [for (final m in magasins) m.code],
                 libelle: (c) => magasins.firstWhere((x) => x.code == c).nom,
                 actif: libre,
+                recherche: rechercheListe(context, ref, ListeMetier.magasin),
                 onChanged: (v) => setState(() => magasin = v ?? magasin),
               ),
             ),

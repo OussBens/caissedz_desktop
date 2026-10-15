@@ -6947,4 +6947,119 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get ventesColis => 'الطرد';
+
+  @override
+  String get selRechercherListe => 'البحث في القائمة';
+
+  @override
+  String get selProduit => 'اختيار منتج';
+
+  @override
+  String get selCategorie => 'اختيار فئة';
+
+  @override
+  String get selSousCategorie => 'اختيار فئة فرعية';
+
+  @override
+  String get selRemise => 'اختيار تخفيض';
+
+  @override
+  String get selPack => 'اختيار حزمة';
+
+  @override
+  String get selClient => 'اختيار عميل';
+
+  @override
+  String get selFournisseur => 'اختيار مورد';
+
+  @override
+  String get selMagasin => 'اختيار مخزن';
+
+  @override
+  String get selCaisse => 'اختيار صندوق';
+
+  @override
+  String get selSession => 'اختيار جلسة';
+
+  @override
+  String get selUtilisateur => 'اختيار مستخدم';
+
+  @override
+  String get selVente => 'اختيار عملية بيع';
+
+  @override
+  String get selColCode => 'الرمز';
+
+  @override
+  String get selColNom => 'الاسم';
+
+  @override
+  String get selColDesignation => 'التسمية';
+
+  @override
+  String get selColCategorie => 'الفئة';
+
+  @override
+  String get selColStock => 'المخزون';
+
+  @override
+  String get selColPrix => 'السعر';
+
+  @override
+  String get selColTelephone => 'الهاتف';
+
+  @override
+  String get selColAdresse => 'العنوان';
+
+  @override
+  String get selColType => 'النوع';
+
+  @override
+  String get selColValeur => 'القيمة';
+
+  @override
+  String get selColMagasin => 'المخزن';
+
+  @override
+  String get selColCaisse => 'الصندوق';
+
+  @override
+  String get selColUtilisateur => 'المستخدم';
+
+  @override
+  String get selColOuverture => 'الفتح';
+
+  @override
+  String get selColStatut => 'الحالة';
+
+  @override
+  String get selColDate => 'التاريخ';
+
+  @override
+  String get selColClient => 'العميل';
+
+  @override
+  String get selColTotal => 'المجموع';
+
+  @override
+  String get selColProduits => 'المنتجات';
+
+  @override
+  String get selColDescription => 'الوصف';
+
+  @override
+  String get selFiltreEtat => 'الحالة';
+
+  @override
+  String get selTous => 'الكل';
+
+  @override
+  String selPoints(int n) {
+    return '$n نقطة';
+  }
+
+  @override
+  String selNbProduits(int n) {
+    return '$n منتجات';
+  }
 }

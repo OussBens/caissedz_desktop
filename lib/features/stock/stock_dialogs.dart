@@ -15,6 +15,7 @@ import '../../domain/permissions.dart';
 import '../../domain/referentiel/referentiel.dart';
 import '../commun/doc_form.dart';
 import '../commun/export_module.dart';
+import '../commun/selecteurs.dart';
 import '../commun/statuts.dart';
 import '../historique/historique_providers.dart';
 import '../produits/produits_donnees.dart';
@@ -501,6 +502,7 @@ class _SortieFormState extends ConsumerState<_SortieForm> {
             valeur: _magasin,
             options: [for (final m in magasins) m.code],
             libelle: (c) => magasins.where((m) => m.code == c).firstOrNull?.nom ?? c,
+            recherche: rechercheListe(context, ref, ListeMetier.magasin),
             onChanged: (v) => setState(() => _magasin = v ?? _magasin),
           ),
         ),
@@ -832,6 +834,7 @@ class _TransfertFormState extends ConsumerState<_TransfertForm> {
             valeur: _source,
             options: [for (final m in magasins) m.code],
             libelle: nom,
+            recherche: rechercheListe(context, ref, ListeMetier.magasin),
             onChanged: (v) => setState(() => _source = v ?? _source),
           ),
         ),
@@ -845,6 +848,7 @@ class _TransfertFormState extends ConsumerState<_TransfertForm> {
             valeur: _destination,
             options: [for (final m in magasins) m.code],
             libelle: nom,
+            recherche: rechercheListe(context, ref, ListeMetier.magasin),
             onChanged: (v) => setState(() => _destination = v ?? _destination),
           ),
         ),
@@ -1086,6 +1090,7 @@ class _MagasinFormState extends ConsumerState<_MagasinForm> {
               valeur: _responsable,
               options: [null, ...utilisateurs.keys],
               libelle: (c) => c == null ? l10n.stkAucun : (utilisateurs[c] ?? c),
+              recherche: rechercheListe(context, ref, ListeMetier.utilisateur),
               onChanged: (v) => setState(() => _responsable = v),
             ),
           ),
@@ -1451,6 +1456,7 @@ class _BesoinFormState extends ConsumerState<_BesoinForm> {
             placeholder: l10n.stkChoisirFournisseur,
             options: [for (final f in fournisseurs) f.code],
             libelle: (c) => fournisseurs.where((f) => f.code == c).firstOrNull?.nom ?? (c ?? ''),
+            recherche: rechercheListe(context, ref, ListeMetier.fournisseur),
             onChanged: (v) => setState(() => _fournisseur = v),
           ),
         ),
