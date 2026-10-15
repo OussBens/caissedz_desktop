@@ -74,7 +74,7 @@ class VenteService {
     if (panier.estVide) throw const VenteException(ErreurVente.panierVide);
     if (panier.lignes.any((l) => l.quantite <= 0)) throw const VenteException(ErreurVente.quantiteInvalide);
     for (final l in panier.lignes) {
-      if (l.pack == null && l.nombreStock <= 0 && l.produit.exigeNombre(global: parametres.nombreActif)) {
+      if (l.nombreStock <= 0 && l.produit.exigeNombre(global: parametres.nombreActif)) {
         throw VenteException(ErreurVente.nombreObligatoire, l.produit.code);
       }
     }
@@ -113,44 +113,26 @@ class VenteService {
       }
       final code = await repo.prochainCode('vente', CodeGenerator.vente);
       final stock = StockService(txn.database, utilisateurCode: utilisateurCode);
-      // Mouvements de stock (garde de stock) — composants de pack sortis individuellement.
+      // Mouvements de stock (garde de stock) — un pack est déjà éclaté en lignes produit ; services exclus.
       try {
         for (final l in panier.lignes) {
-          if (l.pack != null) {
-            for (final c in l.pack!.lignes) {
-              await stock.sortirDansTransaction(
-                txn,
-                produitCode: c.produitCode,
-                magasinCode: magasinCode,
-                quantite: c.quantite * l.quantite,
-                type: TypesMouvement.vente,
-                referenceType: 'vente',
-                referenceCode: code,
-                date: d,
-              );
-            }
-          } else {
-            await stock.sortirDansTransaction(
-              txn,
-              produitCode: l.produit.code,
-              magasinCode: magasinCode,
-              quantite: l.unitesStock,
-              nombre: l.nombreStock,
-              type: TypesMouvement.vente,
-              referenceType: 'vente',
-              referenceCode: code,
-              date: d,
-            );
-          }
+          await stock.sortirDansTransaction(
+            txn,
+            produitCode: l.produit.code,
+            magasinCode: magasinCode,
+            quantite: l.unitesStock,
+            nombre: l.nombreStock,
+            type: TypesMouvement.vente,
+            referenceType: 'vente',
+            referenceCode: code,
+            date: d,
+          );
         }
       } on StockException catch (e) {
         throw VenteException(ErreurVente.stockInsuffisant, e.detail);
       }
-      // Coût d'achat figé (§7.4) : composants pour un pack, unités de stock sinon.
-      final codesCout = {
-        for (final l in panier.lignes)
-          if (l.pack != null) ...l.pack!.lignes.map((c) => c.produitCode) else l.produit.code,
-      };
+      // Coût d'achat figé (§7.4) : unités de stock × prix d'achat du produit.
+      final codesCout = {for (final l in panier.lignes) l.produit.code};
       final prixAchat = {
         for (final r in await txn.query(
           'produit',
@@ -160,11 +142,7 @@ class VenteService {
         ))
           r['code'] as String: ((r['prix_achat'] as num?) ?? 0).toDouble(),
       };
-      double coutLigne(PanierLigne l) => CalculsPrix.arrondir(
-        l.pack != null
-            ? l.pack!.lignes.fold(0.0, (s, c) => s + (prixAchat[c.produitCode] ?? 0) * c.quantite * l.quantite)
-            : (prixAchat[l.produit.code] ?? 0) * l.unitesStock,
-      );
+      double coutLigne(PanierLigne l) => CalculsPrix.arrondir((prixAchat[l.produit.code] ?? 0) * l.unitesStock);
       final lignes = [
         for (final (i, l) in panier.lignes.indexed)
           VenteLigne(
@@ -172,6 +150,7 @@ class VenteService {
             produitCode: l.produit.code,
             colisCode: l.colis?.code,
             packCode: l.pack?.code,
+            composantPack: l.pack != null,
             designation: l.designation,
             quantite: l.quantite,
             nombre: l.nombreStock,
@@ -330,7 +309,8 @@ class VenteService {
       final stock = StockService(txn.database, utilisateurCode: utilisateurCode);
       final catalogue = CatalogueRepository(txn);
       for (final l in v.lignes) {
-        if (l.packCode != null) {
+        if (l.packCode != null && !l.composantPack) {
+          // Ancienne ligne de pack (quantité = nombre de packs) : composants remis en stock.
           final pack = (await catalogue.packs()).where((p) => p.code == l.packCode).firstOrNull;
           for (final c in pack?.lignes ?? const []) {
             await stock.entrerDansTransaction(

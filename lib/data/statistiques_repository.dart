@@ -69,7 +69,7 @@ class StatistiquesRepository {
       '''
       SELECT COUNT(*) n FROM produit p
       LEFT JOIN (SELECT produit_code, SUM(quantite) q FROM mouvement_stock GROUP BY produit_code) s ON s.produit_code = p.code
-      WHERE p.actif = 1 AND COALESCE(s.q, 0) < COALESCE(p.seuil_stock, ?)
+      WHERE p.actif = 1 AND p.service = 0 AND COALESCE(s.q, 0) < COALESCE(p.seuil_stock, ?)
       ''',
       [seuilGlobal],
     );

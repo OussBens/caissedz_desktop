@@ -13166,6 +13166,60 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Toutes les catégories'**
   String get posRechToutesCategories;
+
+  /// No description provided for @posMontantTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vente au montant'**
+  String get posMontantTitre;
+
+  /// No description provided for @posMontantColis.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montant'**
+  String get posMontantColis;
+
+  /// No description provided for @posMontantAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Article pesé ou non codifié : le montant s\'ajoute à une seule ligne du panier (200 puis 500 = 700).'**
+  String get posMontantAide;
+
+  /// No description provided for @posMontantAutre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Autre montant'**
+  String get posMontantAutre;
+
+  /// No description provided for @posMontantModifier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier le montant'**
+  String get posMontantModifier;
+
+  /// No description provided for @posMontantModifierDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau montant de la ligne « Vente au montant » ; 0 retire la ligne.'**
+  String get posMontantModifierDesc;
+
+  /// No description provided for @posMontantChamp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montant'**
+  String get posMontantChamp;
+
+  /// No description provided for @posMontantInvalide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Saisissez un montant supérieur à 0.'**
+  String get posMontantInvalide;
+
+  /// No description provided for @posMontantLigneAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Double-clic : modifier le montant'**
+  String get posMontantLigneAide;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

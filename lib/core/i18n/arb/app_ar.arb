@@ -2366,5 +2366,14 @@
   "communTermine": "تم",
   "posRechMin": "أدنى",
   "posRechMax": "أقصى",
-  "posRechToutesCategories": "كل الفئات"
+  "posRechToutesCategories": "كل الفئات",
+  "posMontantTitre": "بيع بالمبلغ",
+  "posMontantColis": "مبلغ",
+  "posMontantAide": "سلعة موزونة أو بدون رمز: يُضاف المبلغ إلى سطر واحد في السلة (200 ثم 500 = 700).",
+  "posMontantAutre": "مبلغ آخر",
+  "posMontantModifier": "تعديل المبلغ",
+  "posMontantModifierDesc": "المبلغ الجديد لسطر « بيع بالمبلغ »؛ 0 يحذف السطر.",
+  "posMontantChamp": "المبلغ",
+  "posMontantInvalide": "أدخل مبلغًا أكبر من 0.",
+  "posMontantLigneAide": "نقرة مزدوجة: تعديل المبلغ"
 }

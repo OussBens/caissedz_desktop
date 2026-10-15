@@ -134,7 +134,7 @@ class _PosPageState extends ConsumerState<PosPage> {
 
   Future<void> _modifierColis(int index) async {
     final l = ref.read(posControllerProvider).panier.lignes[index];
-    if (l.pack != null) return;
+    if (l.pack != null || l.estMontant) return;
     final choix = await afficherSelectionProduit(
       context,
       produit: l.produit,
@@ -151,14 +151,19 @@ class _PosPageState extends ConsumerState<PosPage> {
     );
   }
 
-  Future<void> _ajouterPack(Pack pack) async {
-    final produits = ref.read(produitsPosProvider).value ?? const <Produit>[];
-    final premier = produits.where((p) => p.code == pack.lignes.firstOrNull?.produitCode).firstOrNull;
-    if (premier == null) {
-      _erreur(l10n.posErreurProduitInconnu(pack.code));
-      return;
+  Future<void> _ajouterPack(Pack pack) => _executer(() => ctrl.ajouterPack(pack));
+
+  /// Vente au montant : « Autre montant » (saisie) ou modification de la ligne existante ([index]).
+  Future<void> _saisirMontant({int? index}) async {
+    final lignes = ref.read(posControllerProvider).panier.lignes;
+    final v = await afficherSaisieMontant(context, initial: index == null ? null : lignes[index].prixUnitaire);
+    if (v == null || !mounted) return;
+    if (index == null) {
+      await _executer(() => ctrl.ajouterMontant(v));
+    } else {
+      ctrl.modifierMontant(index, v);
+      if (v <= 0) setState(() => _ligneSelectionnee = null);
     }
-    await _executer(() => ctrl.ajouter(premier, pack: pack));
   }
 
   Future<void> _scanner() async {
@@ -416,9 +421,15 @@ class _PosPageState extends ConsumerState<PosPage> {
     } else if (k == LogicalKeyboardKey.delete && ligne != null && !saisie) {
       ctrl.retirerLigne(i!);
       setState(() => _ligneSelectionnee = null);
-    } else if ((k == LogicalKeyboardKey.numpadAdd || k == LogicalKeyboardKey.add) && ligne != null && !saisie) {
+    } else if ((k == LogicalKeyboardKey.numpadAdd || k == LogicalKeyboardKey.add) &&
+        ligne != null &&
+        !ligne.estMontant &&
+        !saisie) {
       unawaited(_executer(() => ctrl.modifierQuantite(i!, ligne.quantite + 1)));
-    } else if ((k == LogicalKeyboardKey.numpadSubtract || k == LogicalKeyboardKey.minus) && ligne != null && !saisie) {
+    } else if ((k == LogicalKeyboardKey.numpadSubtract || k == LogicalKeyboardKey.minus) &&
+        ligne != null &&
+        !ligne.estMontant &&
+        !saisie) {
       unawaited(_executer(() => ctrl.modifierQuantite(i!, ligne.quantite - 1)));
     } else {
       return KeyEventResult.ignored;
@@ -729,6 +740,41 @@ class _PosPageState extends ConsumerState<PosPage> {
     );
   }
 
+  /// Montants rapides de la vente au montant (balance, articles non codifiés) : cumulés sur une seule ligne.
+  Widget _montantsRapides() {
+    return Tooltip(
+      message: l10n.posMontantAide,
+      waitDuration: const Duration(seconds: 1),
+      child: Row(
+        spacing: DsSpacing.s2,
+        children: [
+          Icon(LucideIcons.coins, size: 16, color: context.ds.colors.textMuted),
+          for (final m in _montants)
+            Expanded(
+              child: DsButton(
+                key: ValueKey('montant_$m'),
+                libelle: '+$m',
+                taille: DsButtonTaille.sm,
+                variante: DsButtonVariante.secondaire,
+                pleineLargeur: true,
+                onPressed: () => _executer(() => ctrl.ajouterMontant(m.toDouble())),
+              ),
+            ),
+          DsButton(
+            key: const ValueKey('montant_autre'),
+            libelle: l10n.posMontantAutre,
+            icone: LucideIcons.pencil,
+            taille: DsButtonTaille.sm,
+            variante: DsButtonVariante.fantome,
+            onPressed: () => _saisirMontant(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  static const _montants = [200, 500, 1000];
+
   Widget _panier(PosEtat etat, {required bool large}) {
     final c = context.ds.colors;
     final t = context.ds.typo;
@@ -833,29 +879,41 @@ class _PosPageState extends ConsumerState<PosPage> {
                   itemCount: panier.lignes.length,
                   itemBuilder: (_, i) {
                     final l = panier.lignes[i];
-                    final colis = l.pack != null
+                    final montant = l.estMontant;
+                    // Ligne issue d'un pack : colonne colis « Pack », nom du pack sous le produit.
+                    final colis = montant
+                        ? l10n.posMontantColis
+                        : l.pack != null
                         ? l10n.posPack
                         : l.colis?.designation ??
                               (l.uniteVente == UniteVente.nombre ? l10n.posVendreNombre : l10n.posSelUnite);
                     return Tooltip(
-                      message: l10n.posLigneAide,
+                      message: montant ? l10n.posMontantLigneAide : l10n.posLigneAide,
                       waitDuration: const Duration(seconds: 1),
                       child: GestureDetector(
-                        onDoubleTap: peutPrix ? () => unawaited(_modifierPrix(i)) : null,
+                        onDoubleTap: montant
+                            ? () => unawaited(_saisirMontant(index: i))
+                            : peutPrix
+                            ? () => unawaited(_modifierPrix(i))
+                            : null,
                         child: DsCartLine(
                           key: ValueKey('ligne_$i'),
-                          nom: l.designation,
-                          code: l.pack?.code ?? l.produit.code,
+                          nom: montant ? l10n.posMontantTitre : l.designation,
+                          code: l.pack != null ? '${l.produit.code} · ${l.pack!.designation}' : l.produit.code,
                           prix: l.quantite == 0 ? l.prixUnitaire : l.total / l.quantite,
                           qte: l.quantite,
                           devise: devise,
                           colis: colis,
-                          pieces: l.pack != null ? l.quantite : l.unitesStock + l.nombreStock,
+                          pieces: montant ? 0 : l.unitesStock + l.nombreStock,
                           selectionnee: _ligneSelectionnee == i,
                           onTap: () => setState(() => _ligneSelectionnee = i),
-                          onColis: l.pack == null ? () => unawaited(_modifierColis(i)) : null,
-                          onPlus: () => unawaited(_executer(() => ctrl.modifierQuantite(i, l.quantite + 1))),
-                          onMoins: () => unawaited(_executer(() => ctrl.modifierQuantite(i, l.quantite - 1))),
+                          onColis: l.pack == null && !montant ? () => unawaited(_modifierColis(i)) : null,
+                          onPlus: montant
+                              ? null
+                              : () => unawaited(_executer(() => ctrl.modifierQuantite(i, l.quantite + 1))),
+                          onMoins: montant
+                              ? null
+                              : () => unawaited(_executer(() => ctrl.modifierQuantite(i, l.quantite - 1))),
                           onRetirer: () {
                             ctrl.retirerLigne(i);
                             setState(() => _ligneSelectionnee = null);
@@ -873,6 +931,7 @@ class _PosPageState extends ConsumerState<PosPage> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       spacing: DsSpacing.s2,
       children: [
+        _montantsRapides(),
         DsTotalPanel(
           key: const ValueKey('pos_total'),
           total: panier.totalNet,

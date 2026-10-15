@@ -200,7 +200,7 @@ class SituationRepository {
         COALESCE((SELECT SUM(m.quantite) FROM mouvement_stock m WHERE m.produit_code = p.code
           AND (? IS NULL OR m.magasin_code = ?)), 0) theo
       FROM produit p LEFT JOIN categorie cat ON cat.code = p.categorie_code
-      WHERE p.actif = 1 AND (? IS NULL OR p.categorie_code = ?)
+      WHERE p.actif = 1 AND p.service = 0 AND (? IS NULL OR p.categorie_code = ?)
       ORDER BY p.designation
       ''',
       [f.magasin, f.magasin, f.categorie, f.categorie],
@@ -231,7 +231,7 @@ class SituationRepository {
           WHERE l.produit_code = p.code AND a.statut = ?) mini,
         (SELECT MAX(l.prix_achat) FROM achat_ligne l JOIN achat a ON a.code = l.achat_code
           WHERE l.produit_code = p.code AND a.statut = ?) maxi
-      FROM produit p WHERE p.actif = 1 AND (? IS NULL OR p.categorie_code = ?)
+      FROM produit p WHERE p.actif = 1 AND p.code <> 'PRD0000' AND (? IS NULL OR p.categorie_code = ?)
       ORDER BY p.designation
       ''',
       [_achatValide, _achatValide, _achatValide, _achatValide, f.categorie, f.categorie],
@@ -365,7 +365,7 @@ class SituationRepository {
       '''
       SELECT p.code, p.designation d, COALESCE((SELECT SUM(m.quantite) FROM mouvement_stock m
         WHERE m.produit_code = p.code AND (? IS NULL OR m.magasin_code = ?)), 0) q
-      FROM produit p WHERE p.actif = 1 AND q <= 0 ORDER BY p.designation LIMIT ?
+      FROM produit p WHERE p.actif = 1 AND p.service = 0 AND q <= 0 ORDER BY p.designation LIMIT ?
       ''',
       [magasin, magasin, limite],
     );

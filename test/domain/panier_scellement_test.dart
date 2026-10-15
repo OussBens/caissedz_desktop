@@ -71,12 +71,43 @@ void main() {
       final p = const Panier(id: 1)
           .ajouter(const PanierLigne(produit: _lait, quantite: 2, prixUnitaire: 100))
           .ajouter(const PanierLigne(produit: _lait, colis: colis, quantite: 1, prixUnitaire: 550))
-          .ajouter(const PanierLigne(produit: _lait, pack: pack, quantite: 3, prixUnitaire: 120))
+          // Pack éclaté (3 packs) : une ligne par produit, distincte de la ligne du produit seul.
+          .ajouter(const PanierLigne(produit: _lait, pack: pack, quantite: 3, prixUnitaire: 52.17))
+          .ajouter(const PanierLigne(produit: _eau, pack: pack, quantite: 6, prixUnitaire: 33.91))
           .ajouter(const PanierLigne(produit: _eau, quantite: 5, uniteVente: UniteVente.nombre, prixUnitaire: 6));
       expect(p.unitesReservees('PRD0001'), 2 + 6 + 3);
       expect(p.unitesReservees('PRD0002'), 6);
       expect(p.nombreReserve('PRD0002'), 5);
-      expect(p.lignes.length, 4);
+      expect(p.lignes.length, 5);
+      // Ajout du même produit seul : la ligne sans pack s'incrémente, la ligne du pack reste à part.
+      final q = p.ajouter(const PanierLigne(produit: _lait, quantite: 1, prixUnitaire: 100));
+      expect(q.lignes.where((l) => l.produit.code == 'PRD0001' && l.colis == null).map((l) => l.quantite), [3, 3]);
+      expect(q.pieces, 3 + 6 + 3 + 6 + 5);
+    });
+
+    test('pack : prix réparti au prorata, total exact', () {
+      const pack = Pack(
+        code: 'PCK0001',
+        designation: 'Duo',
+        prixVente: 120,
+        lignes: [
+          PackLigne(produitCode: 'PRD0001', quantite: 1),
+          PackLigne(produitCode: 'PRD0002', quantite: 2),
+        ],
+      );
+      final prix = Panier.prixComposantsPack(pack, {'PRD0001': _lait, 'PRD0002': _eau});
+      // Poids 100 × 1 et 30 × 2 : 120 × 100/160 = 75 ; reste 45 / 2 = 22,5.
+      expect(prix, {'PRD0001': 75.0, 'PRD0002': 22.5});
+      final gratuit = Panier.prixComposantsPack(
+        const Pack(
+          code: 'PCK2',
+          designation: 'X',
+          prixVente: 100,
+          lignes: [PackLigne(produitCode: 'A', quantite: 3)],
+        ),
+        const {},
+      );
+      expect(gratuit, {'A': 33.33});
     });
 
     test('points de fidélité', () {

@@ -3587,5 +3587,14 @@
   "communTermine": "Terminé",
   "posRechMin": "Min",
   "posRechMax": "Max",
-  "posRechToutesCategories": "Toutes les catégories"
+  "posRechToutesCategories": "Toutes les catégories",
+  "posMontantTitre": "Vente au montant",
+  "posMontantColis": "Montant",
+  "posMontantAide": "Article pesé ou non codifié : le montant s'ajoute à une seule ligne du panier (200 puis 500 = 700).",
+  "posMontantAutre": "Autre montant",
+  "posMontantModifier": "Modifier le montant",
+  "posMontantModifierDesc": "Nouveau montant de la ligne « Vente au montant » ; 0 retire la ligne.",
+  "posMontantChamp": "Montant",
+  "posMontantInvalide": "Saisissez un montant supérieur à 0.",
+  "posMontantLigneAide": "Double-clic : modifier le montant"
 }

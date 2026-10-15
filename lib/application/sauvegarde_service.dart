@@ -116,7 +116,7 @@ class SauvegardeService {
       final version = (await db.rawQuery('PRAGMA user_version')).first.values.first as int;
       final boutique = await db.query('boutique', columns: ['nom'], limit: 1);
       final ventes = (await db.rawQuery('SELECT COUNT(*) n FROM vente')).first['n'] as int;
-      final produits = (await db.rawQuery('SELECT COUNT(*) n FROM produit')).first['n'] as int;
+      final produits = (await db.rawQuery("SELECT COUNT(*) n FROM produit WHERE code <> 'PRD0000'")).first['n'] as int;
       return InfoSauvegarde(
         version: version,
         boutique: boutique.isEmpty ? '' : boutique.first['nom'] as String,

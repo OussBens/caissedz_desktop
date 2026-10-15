@@ -125,7 +125,7 @@ void main() {
         'retour_code': 'RET0001',
       });
 
-      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [12, 13, 14, 15, 16, 17, 18, 19, 20]);
+      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [12, 13, 14, 15, 16, 17, 18, 19, 20, 21]);
       final r = (await db.query('retour')).single;
       expect(r['type'], 'Client');
       expect(r['document_code'], 'VTE0001');
@@ -166,8 +166,8 @@ void main() {
         'sous_categorie_code': 'SC0000',
         'code_barres': '6130000000015',
       });
-      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [13, 14, 15, 16, 17, 18, 19, 20]);
-      final p = (await db.query('produit')).single;
+      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [13, 14, 15, 16, 17, 18, 19, 20, 21]);
+      final p = (await db.query('produit', where: "code = 'PRD0001'")).single;
       expect(p['service'], 0);
       expect(p['suivi_serie'], 0);
       expect(p['marque'], isNull);
@@ -212,7 +212,7 @@ void main() {
         'utilisateur_code': 'USR0000',
       });
       await db.insert('sortie_stock_ligne', {'sortie_code': 'SOR0001', 'produit_code': 'PRD0001', 'quantite': 2});
-      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [14, 15, 16, 17, 18, 19, 20]);
+      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [14, 15, 16, 17, 18, 19, 20, 21]);
       final b = (await db.query('besoin')).single;
       expect(b['fournisseur_code'], 'FOR0000');
       expect(b['statut'], 'Commande');
@@ -243,7 +243,7 @@ void main() {
         'utilisateur_code': 'USR0000',
         'total': 100,
       });
-      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [15, 16, 17, 18, 19, 20]);
+      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [15, 16, 17, 18, 19, 20, 21]);
       final a = (await db.query('achat')).single;
       expect(a['annule_par'], isNull);
       expect(a['besoin_code'], isNull);
@@ -285,7 +285,7 @@ void main() {
         'mode': 'Espèces',
         'utilisateur_code': 'USR0000',
       });
-      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [16, 17, 18, 19, 20]);
+      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [16, 17, 18, 19, 20, 21]);
       final c = (await db.query('caisse', where: "code = 'CIS0000'")).single;
       expect(c['solde_initial'], 0);
       expect(c['observation'], isNull);
@@ -310,7 +310,7 @@ void main() {
       await db.insert('role_permission', {'role': 'Caissier', 'permission': 'annulerVente'});
       await db.insert('role_permission', {'role': 'Caissier', 'permission': 'gererUtilisateurs'});
       await db.insert('role_permission', {'role': 'Magasinier', 'permission': 'exporterDonnees'});
-      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [17, 18, 19, 20]);
+      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [17, 18, 19, 20, 21]);
       final roles = await db.query('role', orderBy: 'code');
       expect(roles.map((r) => '${r['code']}:${r['nom']}:${r['systeme']}'), [
         'ROL0000:Admin:1',
@@ -350,7 +350,7 @@ void main() {
       addTearDown(base.fermer);
       final db = base.db;
       await db.insert('parametre', {'cle': 'zakat_prix_gramme_or', 'valeur': '12000.0'});
-      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [18, 19, 20]);
+      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [18, 19, 20, 21]);
       final p = {for (final r in await db.query('parametre')) r['cle']: r['valeur']};
       expect(p['zakat_nissab'], '1020000.0');
       expect(p.containsKey('zakat_prix_gramme_or'), isFalse);
@@ -368,7 +368,7 @@ void main() {
       addTearDown(base.fermer);
       final db = base.db;
       await db.insert('historique', {'utilisateur_code': 'USR0000', 'action': 'Connexion', 'entite': 'utilisateur'});
-      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [19, 20]);
+      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [19, 20, 21]);
       final ligne = (await db.query('historique')).single;
       expect(ligne['action'], 'Connexion');
       expect(ligne.containsKey('poste'), isTrue);
@@ -385,7 +385,7 @@ void main() {
       addTearDown(base.fermer);
       final db = base.db;
       await db.insert('client', {'code': 'CLN0001', 'nom': 'Amina'});
-      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [20]);
+      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [20, 21]);
       var amina = (await db.query('client', where: "code = 'CLN0001'")).single;
       expect(amina.keys, containsAll(['cree_le', 'cree_par', 'modifie_le', 'modifie_par']));
       expect(amina['modifie_le'], isNull);

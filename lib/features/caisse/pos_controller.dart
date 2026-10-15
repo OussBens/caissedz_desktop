@@ -8,6 +8,7 @@ import '../../application/vente_service.dart';
 import '../../data/catalogue_repository.dart';
 import '../../data/stock_repository.dart';
 import '../../data/utilisateur_repository.dart';
+import '../../domain/calculs_prix.dart';
 import '../../domain/codes_barres.dart';
 import '../../domain/models/panier.dart';
 import '../../domain/models/parametres_vente.dart';
@@ -158,6 +159,7 @@ class PosController extends Notifier<PosEtat> {
 
   // ---------------- Lignes ----------------
   Future<void> _verifierDisponibilite(Produit produit, {double unites = 0, double nombre = 0}) async {
+    if (produit.service) return;
     final niveau = await StockRepository(ref.read(appDatabaseProvider).db).niveau(produit.code, state.magasinCode);
     final dispoUnites = niveau.quantite - state.unitesReservees(produit.code);
     final dispoNombre = niveau.nombre - state.nombreReserve(produit.code);
@@ -168,20 +170,7 @@ class PosController extends Notifier<PosEtat> {
 
   /// Ajoute un produit (ou un colis / pack) au panier courant, après contrôle du stock réservé.
   Future<void> ajouter(Produit produit, {Colis? colis, Pack? pack, bool nombre = false, double quantite = 1}) async {
-    if (pack != null) {
-      final catalogue = CatalogueRepository(ref.read(appDatabaseProvider).db);
-      for (final c in pack.lignes) {
-        final p = await catalogue.produitParCode(c.produitCode);
-        if (p == null) throw PosException(ErreurPos.produitInconnu, c.produitCode);
-        await _verifierDisponibilite(p, unites: c.quantite * quantite);
-      }
-      _poser(
-        state.panier.ajouter(
-          PanierLigne(produit: produit, pack: pack, quantite: quantite, prixUnitaire: pack.prixVente),
-        ),
-      );
-      return;
-    }
+    if (pack != null) return ajouterPack(pack, quantite: quantite);
     if (nombre) {
       await _verifierDisponibilite(produit, nombre: quantite);
       final prixPiece = produit.nombreParUnite > 0 ? produit.prixVente / produit.nombreParUnite : produit.prixVente;
@@ -218,6 +207,71 @@ class PosController extends Notifier<PosEtat> {
     );
   }
 
+  /// Ajoute [quantite] packs, éclatés en une ligne par produit (quantité dans le pack × [quantite], prix réparti :
+  /// [Panier.prixComposantsPack]). Tout ou rien : si un seul produit manque de stock, aucun n'est ajouté.
+  Future<void> ajouterPack(Pack pack, {double quantite = 1}) async {
+    final catalogue = CatalogueRepository(ref.read(appDatabaseProvider).db);
+    final global = ref.read(parametresVenteProvider).value?.nombreActif ?? false;
+    final produits = <String, Produit>{};
+    for (final c in pack.lignes) {
+      final p = await catalogue.produitParCode(c.produitCode);
+      if (p == null) throw PosException(ErreurPos.produitInconnu, c.produitCode);
+      produits[p.code] = p;
+    }
+    if (produits.isEmpty) throw PosException(ErreurPos.produitInconnu, pack.code);
+    final lignes = [
+      for (final c in pack.lignes)
+        if (c.quantite > 0) (produit: produits[c.produitCode]!, unites: c.quantite * quantite),
+    ];
+    for (final l in lignes) {
+      final exige = l.produit.exigeNombre(global: global);
+      await _verifierDisponibilite(
+        l.produit,
+        unites: l.unites,
+        nombre: exige ? l.unites * l.produit.nombreParUnite : 0,
+      );
+    }
+    final prix = Panier.prixComposantsPack(pack, produits);
+    var panier = state.panier;
+    for (final l in lignes) {
+      panier = panier.ajouter(
+        PanierLigne(
+          produit: l.produit,
+          pack: pack,
+          quantite: l.unites,
+          prixUnitaire: prix[l.produit.code] ?? 0,
+          nombreExige: l.produit.exigeNombre(global: global),
+        ),
+      );
+    }
+    _poser(panier);
+  }
+
+  /// Ajoute [montant] à la ligne de montant libre (une seule par panier : 200 puis 500 ⇒ 700), créée au besoin
+  /// sur le produit système « Vente au montant » (service, sans stock).
+  Future<void> ajouterMontant(double montant) async {
+    if (montant <= 0) return;
+    final i = state.panier.lignes.indexWhere((l) => l.estMontant);
+    if (i >= 0) {
+      final l = state.panier.lignes[i];
+      _poser(state.panier.modifierLigne(i, l.copyWith(prixUnitaire: CalculsPrix.arrondir(l.prixUnitaire + montant))));
+      return;
+    }
+    final p = await CatalogueRepository(ref.read(appDatabaseProvider).db).produitParCode(PanierLigne.codeMontant);
+    if (p == null) throw const PosException(ErreurPos.produitInconnu, PanierLigne.codeMontant);
+    _poser(state.panier.ajouter(PanierLigne(produit: p, quantite: 1, prixUnitaire: CalculsPrix.arrondir(montant))));
+  }
+
+  /// Remplace le montant de la ligne de montant libre ([montant] ≤ 0 la retire).
+  void modifierMontant(int index, double montant) => montant <= 0
+      ? retirerLigne(index)
+      : _poser(
+          state.panier.modifierLigne(
+            index,
+            state.panier.lignes[index].copyWith(prixUnitaire: CalculsPrix.arrondir(montant)),
+          ),
+        );
+
   /// Résout un code scanné : QR produit, code-barres ou code produit, colis ou pack. `null` si inconnu.
   Future<({Produit produit, Colis? colis, Pack? pack})?> resoudre(String code) async {
     final c = code.trim();
@@ -252,13 +306,7 @@ class PosController extends Notifier<PosEtat> {
     final l = state.panier.lignes[index];
     if (quantite > l.quantite) {
       final delta = quantite - l.quantite;
-      if (l.pack != null) {
-        final catalogue = CatalogueRepository(ref.read(appDatabaseProvider).db);
-        for (final c in l.pack!.lignes) {
-          final p = await catalogue.produitParCode(c.produitCode);
-          if (p != null) await _verifierDisponibilite(p, unites: c.quantite * delta);
-        }
-      } else if (l.uniteVente == UniteVente.nombre) {
+      if (l.uniteVente == UniteVente.nombre) {
         await _verifierDisponibilite(l.produit, nombre: delta);
       } else {
         final unites = delta * (l.colis?.quantite ?? 1);

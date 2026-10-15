@@ -6934,4 +6934,32 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get posRechToutesCategories => 'Toutes les catégories';
+
+  @override
+  String get posMontantTitre => 'Vente au montant';
+
+  @override
+  String get posMontantColis => 'Montant';
+
+  @override
+  String get posMontantAide =>
+      'Article pesé ou non codifié : le montant s\'ajoute à une seule ligne du panier (200 puis 500 = 700).';
+
+  @override
+  String get posMontantAutre => 'Autre montant';
+
+  @override
+  String get posMontantModifier => 'Modifier le montant';
+
+  @override
+  String get posMontantModifierDesc => 'Nouveau montant de la ligne « Vente au montant » ; 0 retire la ligne.';
+
+  @override
+  String get posMontantChamp => 'Montant';
+
+  @override
+  String get posMontantInvalide => 'Saisissez un montant supérieur à 0.';
+
+  @override
+  String get posMontantLigneAide => 'Double-clic : modifier le montant';
 }

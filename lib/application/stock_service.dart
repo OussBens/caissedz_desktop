@@ -280,6 +280,12 @@ class StockService {
     return n;
   });
 
+  /// Un service (dont le produit système « Vente au montant ») ne passe jamais par le journal de stock.
+  static Future<bool> _estService(DatabaseExecutor db, String produitCode) async {
+    final r = await db.query('produit', columns: ['service'], where: 'code = ?', whereArgs: [produitCode]);
+    return r.isNotEmpty && (r.first['service'] as int? ?? 0) == 1;
+  }
+
   /// Sortie de stock liée à un document (vente, sortie…) — utilisée par les autres services dans leur transaction.
   Future<void> sortirDansTransaction(
     Transaction txn, {
@@ -293,6 +299,7 @@ class StockService {
     String? motif,
     DateTime? date,
   }) async {
+    if (await _estService(txn, produitCode)) return;
     final repo = StockRepository(txn);
     await _verifierDisponibilite(repo, produitCode, magasinCode, quantite, nombre);
     await repo.insererMouvement(
@@ -323,6 +330,7 @@ class StockService {
     String? motif,
     DateTime? date,
   }) async {
+    if (await _estService(txn, produitCode)) return;
     await StockRepository(txn).insererMouvement(
       MouvementStock(
         date: date ?? DateTime.now(),

@@ -234,7 +234,7 @@ void main() {
       await base.fermer();
       base = await AppDatabase.ouvrir(dossier: dossier.path, cleHex: cleTestHex);
       expect((await BoutiqueRepository(base.db).lire())!.nom, 'Avant');
-      expect((await base.db.query('produit')).length, 1);
+      expect((await base.db.query('produit', where: "code <> 'PRD0000'")).length, 1);
       expect(SauvegardeService(base).restaurationEnAttente, isFalse);
       // La ligne « Sauvegarde » est écrite après la copie ; la restauration est journalisée dans la base restaurée.
       final journal = await base.db.query('historique', where: "entite = 'sauvegarde'", orderBy: 'id');

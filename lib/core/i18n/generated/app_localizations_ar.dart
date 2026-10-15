@@ -6909,4 +6909,31 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get posRechToutesCategories => 'كل الفئات';
+
+  @override
+  String get posMontantTitre => 'بيع بالمبلغ';
+
+  @override
+  String get posMontantColis => 'مبلغ';
+
+  @override
+  String get posMontantAide => 'سلعة موزونة أو بدون رمز: يُضاف المبلغ إلى سطر واحد في السلة (200 ثم 500 = 700).';
+
+  @override
+  String get posMontantAutre => 'مبلغ آخر';
+
+  @override
+  String get posMontantModifier => 'تعديل المبلغ';
+
+  @override
+  String get posMontantModifierDesc => 'المبلغ الجديد لسطر « بيع بالمبلغ »؛ 0 يحذف السطر.';
+
+  @override
+  String get posMontantChamp => 'المبلغ';
+
+  @override
+  String get posMontantInvalide => 'أدخل مبلغًا أكبر من 0.';
+
+  @override
+  String get posMontantLigneAide => 'نقرة مزدوجة: تعديل المبلغ';
 }

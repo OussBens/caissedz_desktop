@@ -25,7 +25,9 @@ class PanierLigne {
   /// Colis vendu (quantité d'unités = quantite × colis.quantite).
   final Colis? colis;
 
-  /// Pack vendu (composants sortis du stock individuellement).
+  /// Pack d'origine : un pack est éclaté en une ligne par produit ([quantite] = quantité du produit dans le pack
+  /// × nombre de packs, [prixUnitaire] = part du prix du pack). Une telle ligne reste distincte de la ligne du même
+  /// produit ajouté seul.
   final Pack? pack;
   final double quantite;
   final UniteVente uniteVente;
@@ -36,16 +38,22 @@ class PanierLigne {
   /// (unités × `nombreParUnite`). ⚠️ PROVISOIRE : pièces déduites, pas de saisie séparée en caisse.
   final bool nombreExige;
 
-  String get designation => pack?.designation ?? colis?.designation ?? produit.designation;
+  /// Code du produit système « Vente au montant » (ligne de montant libre de la caisse).
+  static const String codeMontant = 'PRD0000';
 
-  /// Clé d'agrégation : même produit / colis / pack / unité ⇒ même ligne.
-  String get cle => '${pack?.code ?? colis?.code ?? produit.code}|${uniteVente.name}';
+  /// Ligne de montant libre (balance, article non codifié) : quantité 1, le prix est le montant cumulé.
+  bool get estMontant => produit.code == codeMontant;
+
+  String get designation => colis?.designation ?? produit.designation;
+
+  /// Clé d'agrégation : même pack d'origine / produit / colis / unité ⇒ même ligne.
+  String get cle => '${pack == null ? '' : '${pack!.code}/'}${colis?.code ?? produit.code}|${uniteVente.name}';
 
   double get brut => CalculsPrix.arrondir(prixUnitaire * quantite);
   double get remise => CalculsPrix.arrondir(brut * remisePct / 100);
   double get total => CalculsPrix.arrondir(brut - remise);
 
-  /// Unités de stock consommées par cette ligne (hors pack : voir [composantsPack]).
+  /// Unités de stock consommées par cette ligne.
   double get unitesStock => uniteVente == UniteVente.nombre ? 0 : quantite * (colis?.quantite ?? 1);
   double get nombreStock =>
       uniteVente == UniteVente.nombre ? quantite : (nombreExige ? unitesStock * produit.nombreParUnite : 0);
@@ -175,32 +183,46 @@ class Panier {
   /// Panier neuf (après encaissement) : client comptoir, sans remise, espèces.
   Panier reinitialiser() => Panier(id: id);
 
-  /// Nombre de pièces (unités de stock ou pièces vendues au nombre).
+  /// Nombre de pièces (unités de stock ou pièces vendues au nombre ; la ligne de montant libre n'en compte pas).
   double get pieces => lignes.fold(
     0.0,
-    (s, l) => s + (l.pack != null || l.uniteVente == UniteVente.nombre ? l.quantite : l.unitesStock),
+    (s, l) => s + (l.estMontant ? 0 : (l.uniteVente == UniteVente.nombre ? l.quantite : l.unitesStock)),
   );
 
   Panier ajouterPaiement(Paiement p) => copyWith(paiements: [...paiements, p]);
   Panier retirerPaiement(int index) => copyWith(paiements: [...paiements]..removeAt(index));
 
-  /// Quantité d'unités de stock réservées pour un produit (lignes directes, colis, composants de packs).
-  double unitesReservees(String produitCode) {
-    var total = 0.0;
-    for (final l in lignes) {
-      if (l.pack != null) {
-        for (final c in l.pack!.lignes) {
-          if (c.produitCode == produitCode) total += c.quantite * l.quantite;
-        }
-      } else if (l.produit.code == produitCode) {
-        total += l.unitesStock;
-      }
-    }
-    return total;
-  }
+  /// Quantité d'unités de stock réservées pour un produit (lignes directes, colis, lignes issues d'un pack).
+  double unitesReservees(String produitCode) =>
+      lignes.where((l) => l.produit.code == produitCode).fold(0.0, (s, l) => s + l.unitesStock);
 
   double nombreReserve(String produitCode) =>
-      lignes.where((l) => l.pack == null && l.produit.code == produitCode).fold(0.0, (s, l) => s + l.nombreStock);
+      lignes.where((l) => l.produit.code == produitCode).fold(0.0, (s, l) => s + l.nombreStock);
+
+  /// Prix unitaire de chaque produit dans [pack] : le prix du pack est réparti au prorata du prix de vente des
+  /// produits × leur quantité (à défaut, de la quantité), arrondi au centime ; le dernier produit absorbe l'arrondi
+  /// pour que le pack complet coûte son prix (au centime près selon les quantités).
+  static Map<String, double> prixComposantsPack(Pack pack, Map<String, Produit> produits) {
+    final lignes = pack.lignes.where((c) => c.quantite > 0).toList();
+    if (lignes.isEmpty) return const {};
+    double poids(PackLigne c) => (produits[c.produitCode]?.prixVente ?? 0) * c.quantite;
+    final total = lignes.fold(0.0, (s, c) => s + poids(c));
+    final quantites = lignes.fold(0.0, (s, c) => s + c.quantite);
+    final prix = <String, double>{};
+    var reparti = 0.0;
+    for (final (i, c) in lignes.indexed) {
+      final double unitaire;
+      if (i == lignes.length - 1) {
+        unitaire = ((pack.prixVente - reparti) / c.quantite).clamp(0, double.infinity).toDouble();
+      } else {
+        final part = total > 0 ? pack.prixVente * poids(c) / total : pack.prixVente * c.quantite / quantites;
+        unitaire = part / c.quantite;
+      }
+      prix[c.produitCode] = CalculsPrix.arrondir(unitaire);
+      reparti += prix[c.produitCode]! * c.quantite;
+    }
+    return prix;
+  }
 }
 
 /// Calcul des points de fidélité (§8). ⚠️ PROVISOIRE : 1 point = 1 DA à l'utilisation.

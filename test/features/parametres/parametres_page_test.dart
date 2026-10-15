@@ -41,7 +41,9 @@ void main() {
       // Caisse et ventes.
       await clic(tester, _cle('param_nav_caisse'));
       await clic(tester, _cle('param_mode_Chèque'));
-      await clic(tester, _cle('param_mode_Points'));
+      // Points : liés à la fidélité (inactive par défaut), interrupteur grisé et éteint.
+      final points = tester.widget<DsSwitch>(find.widgetWithText(DsSwitch, 'Points fidélité'));
+      expect((points.valeur, points.actif), (false, false));
       await clic(tester, find.text('Interdire'));
       // Impression : réseau sans adresse refusé.
       await clic(tester, _cle('param_nav_impression'));
@@ -67,7 +69,6 @@ void main() {
       expect(p.boutique.email, 'contact@baraka.dz');
       expect(p.boutique.nis, '000216123456789');
       expect(p.paiements.cheque, isTrue);
-      expect(p.paiements.points, isFalse);
       expect(p.impression.type, TypesImprimante.reseau);
       expect(p.impression.adresse, '10.0.0.5:9100');
       expect(p.alertes.afficherConnexion, isFalse);

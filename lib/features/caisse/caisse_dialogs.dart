@@ -785,6 +785,83 @@ class _ModifPrixDialogState extends ConsumerState<_ModifPrixDialog> {
 }
 
 // ---------------------------------------------------------------------------------------------------------------
+// 3 bis · Vente au montant : saisie d'un montant libre (ajout ou modification de la ligne « Vente au montant »).
+// ---------------------------------------------------------------------------------------------------------------
+
+/// Montant saisi (`null` = annulé). En [modification], 0 est accepté (la ligne est retirée).
+Future<double?> afficherSaisieMontant(BuildContext context, {double? initial}) =>
+    afficherDialog<double>(context, builder: (_) => _SaisieMontantDialog(initial: initial));
+
+class _SaisieMontantDialog extends ConsumerStatefulWidget {
+  const _SaisieMontantDialog({this.initial});
+  final double? initial;
+
+  @override
+  ConsumerState<_SaisieMontantDialog> createState() => _SaisieMontantDialogState();
+}
+
+class _SaisieMontantDialogState extends ConsumerState<_SaisieMontantDialog> {
+  late final _montant = TextEditingController(
+    text: widget.initial == null ? '' : formaterNombre(widget.initial!, decimales: 2),
+  );
+  String? _erreur;
+
+  bool get _modification => widget.initial != null;
+
+  @override
+  void dispose() {
+    _montant.dispose();
+    super.dispose();
+  }
+
+  void _valider() {
+    final v = lireNombre(_montant.text);
+    if (v == null || v < 0 || (v == 0 && !_modification)) {
+      setState(() => _erreur = AppLocalizations.of(context).posMontantInvalide);
+      return;
+    }
+    Navigator.of(context).pop(v);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return DsDialog(
+      titre: _modification ? l10n.posMontantModifier : l10n.posMontantAutre,
+      iconeData: LucideIcons.coins,
+      description: _modification ? l10n.posMontantModifierDesc : l10n.posMontantAide,
+      largeur: 440,
+      actions: [
+        DsButton(
+          libelle: l10n.dsAnnuler,
+          variante: DsButtonVariante.secondaire,
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        DsButton(
+          key: const ValueKey('montant_valider'),
+          libelle: l10n.communValider,
+          icone: LucideIcons.check,
+          onPressed: _valider,
+        ),
+      ],
+      contenu: DsFormRow(
+        libelle: l10n.posMontantChamp,
+        obligatoire: true,
+        erreur: _erreur,
+        child: DsTextField(
+          key: const ValueKey('montant_valeur'),
+          controller: _montant,
+          numerique: true,
+          autofocus: true,
+          suffixeTexte: ref.read(deviseProvider),
+          onSubmitted: (_) => _valider(),
+        ),
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------------------------------------------
 // 4 · Rechercher un produit (RechercheProduitDialog) : sélection multiple.
 // ---------------------------------------------------------------------------------------------------------------
 

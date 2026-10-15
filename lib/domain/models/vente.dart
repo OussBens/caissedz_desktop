@@ -60,6 +60,7 @@ class VenteLigne {
     required this.produitCode,
     this.colisCode,
     this.packCode,
+    this.composantPack = false,
     required this.designation,
     required this.quantite,
     this.nombre = 0,
@@ -74,6 +75,10 @@ class VenteLigne {
   final String produitCode;
   final String? colisCode;
   final String? packCode;
+
+  /// Ligne d'un produit issu d'un pack éclaté (quantité en unités du produit) ; `false` pour les anciennes
+  /// lignes de pack (quantité = nombre de packs, composants déduits du pack).
+  final bool composantPack;
   final String designation;
   final double quantite;
   final double nombre;
@@ -92,6 +97,7 @@ class VenteLigne {
     'produit_code': produitCode,
     'colis_code': colisCode,
     'pack_code': packCode,
+    'composant_pack': composantPack ? 1 : 0,
     'designation': designation,
     'quantite': quantite,
     'nombre': nombre,
@@ -107,6 +113,7 @@ class VenteLigne {
     produitCode: r['produit_code'] as String,
     colisCode: r['colis_code'] as String?,
     packCode: r['pack_code'] as String?,
+    composantPack: ((r['composant_pack'] as int?) ?? 0) == 1,
     designation: r['designation'] as String,
     quantite: (r['quantite'] as num).toDouble(),
     nombre: (r['nombre'] as num).toDouble(),

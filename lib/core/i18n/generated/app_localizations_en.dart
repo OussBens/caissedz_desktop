@@ -6921,4 +6921,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get posRechToutesCategories => 'All categories';
+
+  @override
+  String get posMontantTitre => 'Sale by amount';
+
+  @override
+  String get posMontantColis => 'Amount';
+
+  @override
+  String get posMontantAide =>
+      'Weighed or uncoded item: the amount adds up on a single basket line (200 then 500 = 700).';
+
+  @override
+  String get posMontantAutre => 'Other amount';
+
+  @override
+  String get posMontantModifier => 'Edit amount';
+
+  @override
+  String get posMontantModifierDesc => 'New amount of the « Sale by amount » line; 0 removes the line.';
+
+  @override
+  String get posMontantChamp => 'Amount';
+
+  @override
+  String get posMontantInvalide => 'Enter an amount greater than 0.';
+
+  @override
+  String get posMontantLigneAide => 'Double-click: edit the amount';
 }

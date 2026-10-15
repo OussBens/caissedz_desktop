@@ -1,6 +1,7 @@
 import 'package:sqflite_common/sqlite_api.dart';
 
 import '../domain/code_generator.dart';
+import '../domain/models/panier.dart';
 import '../domain/models/produit.dart';
 
 /// Accès SQL au catalogue : catégories, produits, colis, packs, remises.
@@ -74,9 +75,12 @@ class CatalogueRepository {
       db.delete('sous_categorie', where: 'code = ? AND systeme = 0', whereArgs: [code]);
 
   // ---- Produits ----
+  /// Produit système de la vente au montant (caisse), masqué des listes du catalogue.
+  static const String produitMontant = PanierLigne.codeMontant;
+
   Future<List<Produit>> produits({String? recherche, bool actifsSeulement = false, String? categorieCode}) async {
-    final where = <String>[];
-    final args = <Object>[];
+    final where = <String>['code <> ?'];
+    final args = <Object>[produitMontant];
     if (recherche != null && recherche.trim().isNotEmpty) {
       where.add('(designation LIKE ? OR code LIKE ? OR code_barres LIKE ?)');
       final r = '%${recherche.trim()}%';
@@ -87,12 +91,7 @@ class CatalogueRepository {
       where.add('categorie_code = ?');
       args.add(categorieCode);
     }
-    final rows = await db.query(
-      'produit',
-      where: where.isEmpty ? null : where.join(' AND '),
-      whereArgs: args,
-      orderBy: 'designation',
-    );
+    final rows = await db.query('produit', where: where.join(' AND '), whereArgs: args, orderBy: 'designation');
     return rows.map(Produit.depuisLigne).toList();
   }
 
@@ -227,7 +226,8 @@ class CatalogueRepository {
     where: 'code = ?',
     whereArgs: [p.code],
   );
-  Future<int> nbProduits() async => (await db.rawQuery('SELECT count(*) n FROM produit')).first['n'] as int;
+  Future<int> nbProduits() async =>
+      (await db.rawQuery('SELECT count(*) n FROM produit WHERE code <> ?', [produitMontant])).first['n'] as int;
 
   // ---- Colis ----
   Future<List<Colis>> colis({String? produitCode}) async => (await db.query(

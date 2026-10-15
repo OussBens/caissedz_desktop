@@ -127,7 +127,7 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
       final v = await ref.read(venteRepositoryProvider).vente(code);
       if (v == null) return;
       tiers = v.clientCode;
-      for (final l in v.lignes.where((l) => l.packCode == null)) {
+      for (final l in v.lignes.where((l) => l.packCode == null || l.composantPack)) {
         if (lignes.any((x) => x.produitCode == l.produitCode)) continue;
         lignes.add(
           _LigneOrigine(

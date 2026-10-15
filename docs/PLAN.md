@@ -610,9 +610,28 @@ Référence : `docs/design/CaisseDZ-DS-v2.2/CaisseDZ-DS-v2.2.html`, `bundle-v2.2
   que le produit le suit, le nombre est obligatoire (> 0) dans les entrées, achats, sorties et transferts
   (colonne « Nombre » proposée à quantité × pièces par unité), réparti au prorata entre magasins.
   ⚠️ PROVISOIRE : en caisse, la vente à l'unité sort les pièces correspondantes (unités × pièces par unité) sans
-  saisie séparée ; les composants d'un pack ne sortent pas de pièces.
+  saisie séparée ; un pack étant éclaté en lignes produit, ses produits suivent la même règle.
 - Restent ouverts : tableau « Changements » avant / après dans le détail de l'Historique, `journal_fiscal` distinct
   avec ligne `CLOTURE_CAISSE`, période clôturée par caisse, Bluetooth natif, règle du crédit caissier, dérivation de
   la clé §4.2.
 - Décisions conservées par défaut : Historique inaltérable (pas de suppression de lignes) ; client d'une vente
   scellée non modifiable (retour puis nouvelle vente).
+
+## Retours utilisateur — Caisse ✅ (2026-10-15)
+
+- ✅ Dialog quantité / colis : saisie directe au clavier, barre d'ajout automatique sur toute la largeur.
+- ✅ Raccourcis clavier actifs (écoute globale, ignorés pendant une saisie ou un dialog).
+- ✅ Photos sur les cartes produit ; cartes plus basses, bouton « Entrée » flottant au survol (violet, délai).
+- ✅ Mode de paiement choisi dans le dialog d'encaissement (retiré du panier) ; Points proposés seulement si la
+  fidélité est active et le client identifié.
+- ✅ Recherche produit (F3) : filtres catégorie, fourchette de stock, fourchette de prix ; hauteur fixe des dialogs
+  recette produit, ventes du jour et recherche.
+- ✅ Clients inactifs masqués en caisse.
+- ✅ Vente au montant (migration v21) : produit système `PRD0000` « Vente au montant » (service, masqué du catalogue,
+  des ruptures et de l'inventaire) ; boutons +200 / +500 / +1000 et « Autre montant » cumulés sur une seule ligne,
+  modifiable par double-clic. Les services ne passent plus par le journal de stock.
+- ✅ Packs éclatés : une ligne par produit (quantité dans le pack × nombre de packs, colonne colis « Pack »), prix
+  du pack réparti au prorata des prix de vente, ajout tout ou rien selon le stock, quantité modifiable, ligne
+  distincte du même produit ajouté seul. `vente_ligne.composant_pack` (v21) distingue ces lignes des anciennes lignes
+  de pack à l'annulation ; elles sont retournables comme un produit.
+  ⚠️ PROVISOIRE : montants rapides fixes (200 / 500 / 1000), non paramétrables.

@@ -275,6 +275,56 @@ void main() {
       expect(v.paiements.single.mode, 'Chèque');
     });
 
+    testWidgets('montants rapides (une ligne cumulée) et pack éclaté en lignes « Pack »', (tester) async {
+      final c = await pumpApp(tester, routeInitiale: '/caisse', taille: const Size(1600, 1000));
+      await _donnees(c);
+      await tester.pumpAndSettle();
+      await clic(tester, find.byKey(const ValueKey('montant_200')));
+      await clic(tester, find.byKey(const ValueKey('montant_500')));
+      expect(find.byKey(const ValueKey('ligne_1')), findsNothing);
+      expect(find.text('Vente au montant'), findsOneWidget);
+      expect(_total(tester), contains('700'));
+      await clic(tester, find.byKey(const ValueKey('montant_autre')));
+      await tester.enterText(
+        find.descendant(of: find.byKey(const ValueKey('montant_valeur')), matching: find.byType(TextField)),
+        '150',
+      );
+      await clic(tester, find.byKey(const ValueKey('montant_valider')));
+      expect(_total(tester), contains('850'));
+      // Double-clic : nouveau montant de la ligne.
+      await doubleClic(tester, find.byKey(const ValueKey('ligne_0')));
+      expect(find.text('Modifier le montant'), findsOneWidget);
+      await tester.enterText(
+        find.descendant(of: find.byKey(const ValueKey('montant_valeur')), matching: find.byType(TextField)),
+        '400',
+      );
+      await clic(tester, find.byKey(const ValueKey('montant_valider')));
+      expect(_total(tester), contains('400'));
+      await _touche(tester, LogicalKeyboardKey.f10);
+
+      final db = c.read(appDatabaseProvider).db;
+      await CatalogueService(db, utilisateurCode: 'USR0000').creerPack(
+        const Pack(
+          code: '',
+          designation: 'Duo lait',
+          prixVente: 180,
+          lignes: [PackLigne(produitCode: 'PRD0001', quantite: 2)],
+        ),
+      );
+      c.read(catalogueVersionProvider.notifier).incrementer();
+      await tester.pumpAndSettle();
+      await clic(tester, find.text('Packs'));
+      await clic(tester, find.byKey(const ValueKey('tuile_PCK0001')));
+      await clic(tester, find.byKey(const ValueKey('tuile_PCK0001')));
+      // Une seule ligne produit (2 × 2 laits), colonne colis « Pack ».
+      expect(find.byKey(const ValueKey('ligne_1')), findsNothing);
+      final ligne = find.byKey(const ValueKey('ligne_0'));
+      expect(find.descendant(of: ligne, matching: find.text('Pack')), findsOneWidget);
+      expect(find.descendant(of: ligne, matching: find.text('Lait 1 L')), findsOneWidget);
+      expect(find.descendant(of: ligne, matching: find.text('4')), findsWidgets);
+      expect(_total(tester), contains('360'));
+    });
+
     testWidgets('arabe : écran caisse en RTL', (tester) async {
       await pumpApp(tester, routeInitiale: '/caisse', locale: const Locale('ar'));
       expect(find.text('تحصيل'), findsOneWidget);

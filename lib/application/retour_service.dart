@@ -261,7 +261,9 @@ class RetourService {
       if (reglement == ReglementsRetour.avoir && v.clientCode == CodeGenerator.systeme(CodeGenerator.client)) {
         throw const RetourException(ErreurRetour.reglementInvalide);
       }
-      final vl = v.lignes.where((l) => l.produitCode == produitCode && l.packCode == null).firstOrNull;
+      final vl = v.lignes
+          .where((l) => l.produitCode == produitCode && (l.packCode == null || l.composantPack))
+          .firstOrNull;
       if (vl == null) throw RetourException(ErreurRetour.produitAbsent, produitCode);
       _verifierPlafond(vl.quantite, deja, quantite);
       final prixNet = vl.quantite == 0 ? 0.0 : CalculsPrix.arrondir(vl.total / vl.quantite);

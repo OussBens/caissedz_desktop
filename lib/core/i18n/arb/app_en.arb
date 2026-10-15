@@ -2366,5 +2366,14 @@
   "communTermine": "Done",
   "posRechMin": "Min",
   "posRechMax": "Max",
-  "posRechToutesCategories": "All categories"
+  "posRechToutesCategories": "All categories",
+  "posMontantTitre": "Sale by amount",
+  "posMontantColis": "Amount",
+  "posMontantAide": "Weighed or uncoded item: the amount adds up on a single basket line (200 then 500 = 700).",
+  "posMontantAutre": "Other amount",
+  "posMontantModifier": "Edit amount",
+  "posMontantModifierDesc": "New amount of the « Sale by amount » line; 0 removes the line.",
+  "posMontantChamp": "Amount",
+  "posMontantInvalide": "Enter an amount greater than 0.",
+  "posMontantLigneAide": "Double-click: edit the amount"
 }
