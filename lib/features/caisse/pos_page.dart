@@ -233,7 +233,6 @@ class _PosPageState extends ConsumerState<PosPage> {
       '${r.designation} · ${r.type == 'Pourcentage' ? '${formaterNombre(r.valeur)} %' : _da(r.valeur)}';
 
   Future<void> _choisirRemise() async {
-    if (!ref.read(permissionProvider(Permission.appliquerRemise))) return;
     final r = await afficherSelecteur<Remise>(
       context,
       titre: l10n.posChoisirRemise,
@@ -245,7 +244,7 @@ class _PosPageState extends ConsumerState<PosPage> {
   }
 
   Future<void> _modifierPrix(int index) async {
-    if (!ref.read(permissionProvider(Permission.modifierPrix))) return;
+    if (!ref.read(permissionProvider(Permission.modifierPrixVente))) return;
     final l = ref.read(posControllerProvider).panier.lignes[index];
     final r = await afficherModifPrix(
       context,
@@ -706,8 +705,7 @@ class _PosPageState extends ConsumerState<PosPage> {
     final t = context.ds.typo;
     final panier = etat.panier;
     final devise = ref.watch(deviseProvider);
-    final peutRemise = ref.watch(permissionProvider(Permission.appliquerRemise));
-    final peutPrix = ref.watch(permissionProvider(Permission.modifierPrix));
+    final peutPrix = ref.watch(permissionProvider(Permission.modifierPrixVente));
     final clients = ref.watch(clientsProvider).value ?? const <Client>[];
     final remises = _remisesGlobales();
 
@@ -778,13 +776,12 @@ class _PosPageState extends ConsumerState<PosPage> {
             key: const ValueKey('panier_remise'),
             taille: DsTailles.controleSm,
             icone: LucideIcons.percent,
-            actif: peutRemise,
             valeur: panier.remiseCode,
             options: [null, for (final r in remises) r.code],
             libelle: (code) =>
                 code == null ? l10n.posAucuneRemise : _libelleRemise(remises.firstWhere((r) => r.code == code)),
             onChanged: (code) => ctrl.appliquerRemise(remises.where((r) => r.code == code).firstOrNull),
-            onLookup: peutRemise ? () => unawaited(_choisirRemise()) : null,
+            onLookup: () => unawaited(_choisirRemise()),
             lookupTooltip: l10n.posChoisirRemise,
           ),
         ),

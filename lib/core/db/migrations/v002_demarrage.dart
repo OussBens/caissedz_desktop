@@ -1,7 +1,6 @@
 import 'package:sqflite_common/sqlite_api.dart';
 
 import '../../../domain/code_generator.dart';
-import '../../../domain/permissions.dart';
 import '../../securite/mot_de_passe.dart';
 import 'migration.dart';
 
@@ -174,7 +173,7 @@ class MigrationV002Demarrage extends Migration {
       'code': codeAdmin,
       'identifiant': 'admin',
       'nom': 'Administrateur',
-      'role': Roles.admin,
+      'role': 'Admin',
       'mot_de_passe': null,
       'systeme': 1,
     });
@@ -183,18 +182,35 @@ class MigrationV002Demarrage extends Migration {
       'code': codeDemo,
       'identifiant': identifiantDemo,
       'nom': 'Démonstration',
-      'role': Roles.admin,
+      'role': 'Admin',
       'mot_de_passe': const MotDePasse(iterations: 1000).hacher(motDePasseDemo),
       'systeme': 1,
     });
 
-    // Permissions et modules par défaut des rôles.
-    for (final e in Roles.permissionsParDefaut.entries) {
+    // Permissions et modules par défaut des rôles (valeurs figées de la v2 ; la v17 les relie à la table `role`).
+    const permissions = {
+      'Admin': [
+        'voirPrixAchat',
+        'modifierPrix',
+        'appliquerRemise',
+        'annulerVente',
+        'supprimerDocument',
+        'exporterDonnees',
+        'gererUtilisateurs',
+      ],
+      'Caissier': ['appliquerRemise'],
+      'Magasinier': ['voirPrixAchat'],
+    };
+    const modules = {
+      'Caissier': ['tableau_bord', 'caisse', 'ventes', 'retours', 'clients', 'historique'],
+      'Magasinier': ['tableau_bord', 'produits', 'stock', 'magasins', 'entrees', 'besoins', 'sorties', 'fournisseurs'],
+    };
+    for (final e in permissions.entries) {
       for (final p in e.value) {
-        await txn.insert('role_permission', {'role': e.key, 'permission': p.code});
+        await txn.insert('role_permission', {'role': e.key, 'permission': p});
       }
     }
-    for (final e in Roles.modulesParDefaut.entries) {
+    for (final e in modules.entries) {
       for (final m in e.value) {
         await txn.insert('role_module', {'role': e.key, 'module_id': m});
       }

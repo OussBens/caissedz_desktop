@@ -131,7 +131,7 @@ Future<ProviderContainer> pumpApp(
       await licence.activer(cleTest(NiveauLicence.avance));
       await config.terminer(configurationTest());
       await UtilisateurRepository(base.db).inserer(
-        const Utilisateur(code: 'USR0003', identifiant: 'yacine', nom: 'Yacine', role: Roles.magasinier),
+        const Utilisateur(code: 'USR0003', identifiant: 'yacine', nom: 'Yacine', roleCode: Roles.magasinier),
         hachageTest.hacher('1234'),
       );
       await session.connecter('yacine', '1234');
@@ -139,7 +139,7 @@ Future<ProviderContainer> pumpApp(
       await licence.activer(cleTest(NiveauLicence.basic));
       await config.terminer(configurationTest());
       await UtilisateurRepository(base.db).inserer(
-        const Utilisateur(code: 'USR0002', identifiant: 'amina', nom: 'Amina', role: Roles.caissier),
+        const Utilisateur(code: 'USR0002', identifiant: 'amina', nom: 'Amina', roleCode: Roles.caissier),
         hachageTest.hacher('1234'),
       );
       await session.connecter('amina', '1234');

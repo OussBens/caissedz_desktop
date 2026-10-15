@@ -12,6 +12,7 @@ import '../produits/produits_providers.dart';
 import '../rapports/rapports_providers.dart';
 import '../stock/stock_providers.dart';
 import '../tiers/tiers_providers.dart';
+import '../utilisateurs/utilisateurs_providers.dart';
 
 /// Entrée du journal d'audit.
 class EntreeHistorique {
@@ -54,8 +55,9 @@ final historiqueProvider = FutureProvider<List<EntreeHistorique>>((ref) async {
 });
 
 final nomsUtilisateursProvider = FutureProvider<Map<String, String>>((ref) async {
+  ref.watch(utilisateursVersionProvider);
   final us = await UtilisateurRepository(ref.watch(appDatabaseProvider).db).tous();
-  return {for (final u in us) u.code: u.nom};
+  return {for (final u in us) u.code: u.nomComplet.isEmpty ? u.identifiant : u.nomComplet};
 });
 
 /// Historique des opérations (journal d'audit `historique`).

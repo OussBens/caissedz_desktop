@@ -79,6 +79,7 @@ Future<void> afficherDetailPanier(
   final l10n = AppLocalizations.of(context);
   final devise = ref.read(deviseProvider);
   final voirAchat = ref.read(permissionProvider(Permission.voirPrixAchat));
+  final voirMarge = ref.read(permissionProvider(Permission.voirMarge));
   String da(double v) => formaterMontant(v, devise);
   final vente = await ref.read(venteRepositoryProvider).vente(p.code);
   if (vente == null || !context.mounted) return;
@@ -149,7 +150,7 @@ Future<void> afficherDetailPanier(
           items: [
             DsKeyValue(l10n.ventesMontantTotal, da(vente.totalNet), fort: true),
             if (voirAchat) DsKeyValue(l10n.ventesTotalAchat, da(p.totalAchat)),
-            if (voirAchat)
+            if (voirMarge)
               DsKeyValue(
                 l10n.ventesKpiMarge,
                 da(p.marge),

@@ -7,7 +7,6 @@ import '../application/alertes_service.dart';
 import '../application/auth_service.dart';
 import '../application/configuration_initiale_service.dart';
 import '../application/licence_service.dart';
-import '../application/permission_service.dart';
 import '../domain/models/licence.dart';
 import '../domain/models/session.dart';
 import '../domain/models/utilisateur.dart';
@@ -18,9 +17,6 @@ final licenceServiceProvider = Provider<LicenceService>((ref) => LicenceService(
 final authServiceProvider = Provider<AuthService>((ref) => AuthService(ref.watch(appDatabaseProvider).db));
 final configurationServiceProvider = Provider<ConfigurationInitialeService>(
   (ref) => ConfigurationInitialeService(ref.watch(appDatabaseProvider).db),
-);
-final permissionServiceProvider = Provider<PermissionService>(
-  (ref) => PermissionService(ref.watch(appDatabaseProvider).db),
 );
 final alertesServiceProvider = Provider<AlertesService>((ref) => AlertesService(ref.watch(appDatabaseProvider).db));
 

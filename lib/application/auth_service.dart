@@ -101,8 +101,8 @@ class AuthService {
 
   Future<Session> construireSession(Utilisateur u, {required bool demo}) async {
     final perms = PermissionsRepository(db);
-    final permissions = await perms.permissionsDe(u.role);
-    final modules = u.role == Roles.admin ? null : await perms.modulesDe(u.role);
+    final permissions = u.estAdmin ? Permission.values.toSet() : await perms.permissionsDe(u.roleCode);
+    final modules = u.estAdmin ? null : await perms.modulesDe(u.roleCode);
     return Session(utilisateur: u, permissions: permissions, modulesAutorises: modules, demo: demo);
   }
 

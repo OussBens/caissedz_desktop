@@ -83,7 +83,7 @@ class _EntreesPageState extends ConsumerState<EntreesPage> {
     double? tendance(double v, double avant) => avant <= 0 ? null : (v - avant) / avant * 100;
     final totalAchats = somme(actives, (a) => a.total);
     final reste = somme(actives, (a) => a.reste);
-    final peutAnnuler = ref.watch(sessionProvider)?.a(Permission.annulerVente) ?? false;
+    final peutAnnuler = ref.watch(sessionProvider)?.a(Permission.annulerOperations) ?? false;
 
     final colonnes = <DsColonne<Achat>>[
       DsColonne(id: 'code', libelle: l10n.produitsColCode, valeur: (a) => a.code, attenue: true),

@@ -20,7 +20,7 @@ class Session {
   final Set<String>? modulesAutorises;
   final bool demo;
 
-  bool get estAdmin => utilisateur.role == Roles.admin;
+  bool get estAdmin => utilisateur.estAdmin;
 
   bool a(Permission p) => permissions.contains(p);
 

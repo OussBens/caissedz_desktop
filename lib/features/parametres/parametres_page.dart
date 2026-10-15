@@ -13,11 +13,11 @@ import '../../core/i18n/generated/app_localizations.dart';
 import '../../core/print/imprimante.dart';
 import '../../domain/models/boutique.dart';
 import '../../domain/models/parametres_vente.dart';
+import '../../domain/modules.dart';
 import '../../domain/permissions.dart';
 import '../activation/activation_page.dart';
 import '../produits/produits_providers.dart';
 import '../rapports/rapports_providers.dart';
-import '../roles/roles_page.dart';
 
 /// Paramètres (lot 8) : général (rôles, licence), boutique, vente, impression, serveurs, sauvegarde.
 class ParametresPage extends ConsumerStatefulWidget {
@@ -318,7 +318,7 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
     final c = context.ds.colors;
     final t = context.ds.typo;
     final licence = ref.watch(licenceProvider);
-    final peutRoles = ref.watch(permissionProvider(Permission.gererUtilisateurs));
+    final peutRoles = ref.watch(sessionProvider)?.peutAcceder('utilisateurs') ?? false;
     final niveau = licence.demo
         ? l10n.licenceDemo
         : (licence.niveau == NiveauLicence.avance ? l10n.licenceAvance : l10n.licenceBasic);
@@ -353,7 +353,7 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
           icone: LucideIcons.shield,
           titre: l10n.parametresRolesCarte,
           detail: peutRoles ? l10n.parametresRolesCarteDetail : l10n.shellAccesRestreint,
-          onTap: peutRoles ? () => context.go(RolesPage.route) : null,
+          onTap: peutRoles ? () => context.go(Modules.parId('utilisateurs')!.route) : null,
         ),
         carte(
           icone: LucideIcons.keyRound,

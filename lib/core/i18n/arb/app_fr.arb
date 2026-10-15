@@ -218,19 +218,7 @@
     }
   },
   "accesRefuseRetour": "Retour au tableau de bord",
-  "rolesTitre": "Rôles et permissions",
-  "rolesIntro": "Cochez les permissions d'action et les modules accessibles pour chaque rôle. L'administrateur conserve toujours tous les droits.",
-  "rolesPermissions": "Permissions d'action",
-  "rolesModules": "Modules accessibles",
-  "rolesEnregistre": "Grille des rôles enregistrée.",
-  "rolesAdminTotal": "Tous les droits",
   "permVoirPrixAchat": "Voir le prix d'achat",
-  "permModifierPrix": "Modifier le prix en caisse",
-  "permAppliquerRemise": "Appliquer une remise",
-  "permAnnulerVente": "Annuler une vente",
-  "permSupprimerDocument": "Supprimer un document",
-  "permExporterDonnees": "Exporter les données",
-  "permGererUtilisateurs": "Gérer les utilisateurs",
   "roleAdmin": "Admin",
   "roleCaissier": "Caissier",
   "roleMagasinier": "Magasinier",
@@ -3668,5 +3656,192 @@
   },
   "gcEntrees": "Entrées",
   "gcSorties": "Sorties",
-  "gcSolde": "Solde"
+  "gcSolde": "Solde",
+  "permVoirMarge": "Voir la marge / taux de marge",
+  "permModifierPrixVente": "Modifier le prix de vente",
+  "permAnnulerOperations": "Annuler des opérations",
+  "permChangerCaisseMagasin": "Changer sa caisse / son magasin",
+  "permGererTransfertsCaisse": "Gérer les transferts entre caisses",
+  "permVoirStockTousMagasins": "Voir le stock de tous les magasins",
+  "usrDescription": "Comptes, rôles et permissions",
+  "usrOngletUtilisateurs": "Utilisateurs",
+  "usrOngletRoles": "Rôles",
+  "usrEntiteUtilisateurs": "utilisateurs",
+  "usrEntiteUtilisateur": "utilisateur",
+  "usrEntiteRoles": "rôles",
+  "usrEntiteRole": "rôle",
+  "usrKpiActifs": "Utilisateurs actifs",
+  "usrKpiVentes": "Ventes (30 j)",
+  "usrKpiTotal": "Total vendu",
+  "usrRole": "Rôle",
+  "usrEtat": "État",
+  "usrActif": "Actif",
+  "usrInactif": "Inactif",
+  "usrRecherche": "Nom, identifiant ou téléphone…",
+  "usrColUtilisateur": "Utilisateur",
+  "usrColCaisse": "Caisse",
+  "usrColMagasins": "Magasins",
+  "usrColVentes": "Ventes",
+  "usrColDernierAcces": "Dernier accès",
+  "usrTelephone": "Téléphone",
+  "usrLibre": "Libre",
+  "usrReinitialiser": "Réinitialiser le mot de passe",
+  "usrDesactiver": "Désactiver",
+  "usrNouvel": "Nouvel utilisateur",
+  "usrModifierTitre": "Modifier l'utilisateur",
+  "usrFormDescription": "Le rôle définit les modules visibles ; la caisse attachée verrouille l'écran Caisse.",
+  "usrSectionCompte": "Compte",
+  "usrSectionAcces": "Accès",
+  "usrCode": "Code",
+  "usrIdentifiant": "Identifiant",
+  "usrIdentifiantIndice": "ex. amina",
+  "usrIdentifiantPris": "Identifiant déjà utilisé",
+  "usrIdentifiantInvalide": "3 à 32 caractères : lettres, chiffres, . _ -",
+  "usrMotDePasse": "Mot de passe",
+  "usrNouveauMotDePasse": "Nouveau mot de passe",
+  "usrMdpIndice": "8 caractères minimum",
+  "usrMdpVide": "Laisser vide pour ne pas changer",
+  "usrForce0": "Très faible",
+  "usrForce1": "Faible",
+  "usrForce2": "Moyen",
+  "usrForce3": "Bon",
+  "usrForce4": "Fort",
+  "usrPrenom": "Prénom",
+  "usrNom": "Nom",
+  "usrTelephoneIndice": "05xx xx xx xx",
+  "usrAdminRole": "Accès complet, ne peut pas être restreint",
+  "usrNbPermissions": "{n} permissions",
+  "@usrNbPermissions": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "usrCaisseAttachee": "Caisse attachée",
+  "usrCaisseAdmin": "L'admin choisit sa caisse librement",
+  "usrCaisseIndice": "Verrouille la caisse de l'écran Caisse",
+  "usrAucune": "Aucune",
+  "usrMagasinsIndice": "Le premier est le magasin par défaut à la connexion",
+  "usrObservation": "Observation",
+  "usrCree": "Utilisateur créé",
+  "usrModifie": "Utilisateur modifié",
+  "usrErrTelephone": "Téléphone obligatoire",
+  "usrErrMotDePasse": "Mot de passe trop faible",
+  "usrErrRole": "Rôle non assignable",
+  "usrErrMagasins": "Choisissez au moins un magasin",
+  "usrErrInconnu": "Utilisateur introuvable",
+  "usrInfos": "Informations générales",
+  "usrPermissionsRole": "Permissions du rôle",
+  "usrAudit": "Audit",
+  "usrCreePar": "Créé par",
+  "usrCreeLe": "Créé le",
+  "usrModifiePar": "Modifié par",
+  "usrModifieLe": "Modifié le",
+  "usrLibreAdmin": "Libre (admin)",
+  "usrDefaut": "(défaut)",
+  "usrMdpReinitTitre": "Mot de passe réinitialisé",
+  "usrMdpReinitMessage": "Communiquez ce mot de passe temporaire à @{identifiant} : {mdp}. Il pourra le changer dans Mon compte.",
+  "@usrMdpReinitMessage": {
+    "placeholders": {
+      "identifiant": {
+        "type": "String"
+      },
+      "mdp": {
+        "type": "String"
+      }
+    }
+  },
+  "usrBloqueAdmin": "Compte administrateur principal",
+  "usrBloqueCourant": "Votre propre compte",
+  "usrBloqueInactif": "Déjà inactif",
+  "usrDesactives": "Utilisateurs désactivés",
+  "usrDesactivesDetail": "Ils ne peuvent plus se connecter",
+  "usrColModules": "Modules",
+  "usrColSpeciales": "Spéciales",
+  "usrTous": "Tous",
+  "usrToutes": "Toutes",
+  "usrSysteme": "Système",
+  "usrDupliquer": "Dupliquer",
+  "usrNouveauRole": "Nouveau rôle",
+  "usrModifierRole": "Modifier le rôle",
+  "usrRoleDescription": "Informations, modules accessibles, puis actions sensibles.",
+  "usrRoleConcernes": "{code} · {n} utilisateur(s) concerné(s)",
+  "@usrRoleConcernes": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "usrPrecedent": "Précédent",
+  "usrSuivant": "Suivant",
+  "usrEnregistrerRole": "Enregistrer le rôle",
+  "usrEtapeInfos": "Informations",
+  "usrEtapeInfosDesc": "Nom, état",
+  "usrEtapePermissions": "Permissions",
+  "usrEtapeModules": "{n} modules",
+  "@usrEtapeModules": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "usrEtapeSpeciales": "Permissions spéciales",
+  "usrEtapeSpecialesDesc": "Actions sensibles",
+  "usrNomRole": "Nom du rôle",
+  "usrNomRoleIndice": "Ex. Caissier senior",
+  "usrNomRolePris": "Ce nom de rôle existe déjà",
+  "usrObsRoleIndice": "À quoi sert ce rôle ?",
+  "usrModulesTitre": "Modules accessibles",
+  "usrModulesDesc": "Le rôle ne voit dans la barre latérale et le menu que les modules cochés. Paramètres et Historique s'attribuent comme les autres modules.",
+  "usrSpecialesDesc": "Actions transversales, vérifiées dans tous les modules (affichage des prix d'achat, annulations, changement de caisse…).",
+  "usrConfirmRoleTitre": "Modifier ce rôle ?",
+  "usrConfirmRoleMessage": "{n} utilisateur(s) verront leurs accès changer à la prochaine connexion.",
+  "@usrConfirmRoleMessage": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "usrRoleEnregistre": "Rôle enregistré",
+  "usrRoleEnregistreDetail": "Permissions appliquées",
+  "usrRoleTitre": "Rôle {nom}",
+  "@usrRoleTitre": {
+    "placeholders": {
+      "nom": {
+        "type": "String"
+      }
+    }
+  },
+  "usrAdminBloqueTitre": "Modification impossible",
+  "usrAdminBloqueMessage": "Le rôle Admin est un rôle système : ses permissions ne peuvent pas être modifiées.",
+  "usrRoleBloqueSysteme": "Rôle système Admin",
+  "usrRoleBloqueUtilisateurs": "Des utilisateurs ont ce rôle : réaffectez-les",
+  "usrRolesDesactives": "Rôles désactivés",
+  "usrNbUtilisateurs": "{n} utilisateur(s)",
+  "@usrNbUtilisateurs": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "usrCopie": "{nom} (copie)",
+  "@usrCopie": {
+    "placeholders": {
+      "nom": {
+        "type": "String"
+      }
+    }
+  },
+  "usrRoleErrModules": "Cochez au moins un module",
+  "usrRoleErrInconnu": "Rôle introuvable",
+  "usrAucunUtilisateur": "Aucun utilisateur.",
+  "usrAucunRole": "Aucun rôle."
 }

@@ -479,44 +479,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get accesRefuseRetour => 'Back to dashboard';
 
   @override
-  String get rolesTitre => 'Roles and permissions';
-
-  @override
-  String get rolesIntro =>
-      'Tick the action permissions and the accessible modules for each role. The administrator always keeps every right.';
-
-  @override
-  String get rolesPermissions => 'Action permissions';
-
-  @override
-  String get rolesModules => 'Accessible modules';
-
-  @override
-  String get rolesEnregistre => 'Roles grid saved.';
-
-  @override
-  String get rolesAdminTotal => 'All rights';
-
-  @override
   String get permVoirPrixAchat => 'View purchase price';
-
-  @override
-  String get permModifierPrix => 'Change price at checkout';
-
-  @override
-  String get permAppliquerRemise => 'Apply a discount';
-
-  @override
-  String get permAnnulerVente => 'Cancel a sale';
-
-  @override
-  String get permSupprimerDocument => 'Delete a document';
-
-  @override
-  String get permExporterDonnees => 'Export data';
-
-  @override
-  String get permGererUtilisateurs => 'Manage users';
 
   @override
   String get roleAdmin => 'Admin';
@@ -6913,4 +6876,397 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get gcSolde => 'Balance';
+
+  @override
+  String get permVoirMarge => 'View margin / margin rate';
+
+  @override
+  String get permModifierPrixVente => 'Change the selling price';
+
+  @override
+  String get permAnnulerOperations => 'Cancel operations';
+
+  @override
+  String get permChangerCaisseMagasin => 'Change own till / store';
+
+  @override
+  String get permGererTransfertsCaisse => 'Manage transfers between tills';
+
+  @override
+  String get permVoirStockTousMagasins => 'View stock of all stores';
+
+  @override
+  String get usrDescription => 'Accounts, roles and permissions';
+
+  @override
+  String get usrOngletUtilisateurs => 'Users';
+
+  @override
+  String get usrOngletRoles => 'Roles';
+
+  @override
+  String get usrEntiteUtilisateurs => 'users';
+
+  @override
+  String get usrEntiteUtilisateur => 'user';
+
+  @override
+  String get usrEntiteRoles => 'roles';
+
+  @override
+  String get usrEntiteRole => 'role';
+
+  @override
+  String get usrKpiActifs => 'Active users';
+
+  @override
+  String get usrKpiVentes => 'Sales (30 d)';
+
+  @override
+  String get usrKpiTotal => 'Total sold';
+
+  @override
+  String get usrRole => 'Role';
+
+  @override
+  String get usrEtat => 'Status';
+
+  @override
+  String get usrActif => 'Active';
+
+  @override
+  String get usrInactif => 'Inactive';
+
+  @override
+  String get usrRecherche => 'Name, username or phone…';
+
+  @override
+  String get usrColUtilisateur => 'User';
+
+  @override
+  String get usrColCaisse => 'Till';
+
+  @override
+  String get usrColMagasins => 'Stores';
+
+  @override
+  String get usrColVentes => 'Sales';
+
+  @override
+  String get usrColDernierAcces => 'Last access';
+
+  @override
+  String get usrTelephone => 'Phone';
+
+  @override
+  String get usrLibre => 'Free';
+
+  @override
+  String get usrReinitialiser => 'Reset password';
+
+  @override
+  String get usrDesactiver => 'Deactivate';
+
+  @override
+  String get usrNouvel => 'New user';
+
+  @override
+  String get usrModifierTitre => 'Edit user';
+
+  @override
+  String get usrFormDescription => 'The role sets the visible modules; the attached till locks the Till screen.';
+
+  @override
+  String get usrSectionCompte => 'Account';
+
+  @override
+  String get usrSectionAcces => 'Access';
+
+  @override
+  String get usrCode => 'Code';
+
+  @override
+  String get usrIdentifiant => 'Username';
+
+  @override
+  String get usrIdentifiantIndice => 'e.g. amina';
+
+  @override
+  String get usrIdentifiantPris => 'Username already taken';
+
+  @override
+  String get usrIdentifiantInvalide => '3 to 32 characters: letters, digits, . _ -';
+
+  @override
+  String get usrMotDePasse => 'Password';
+
+  @override
+  String get usrNouveauMotDePasse => 'New password';
+
+  @override
+  String get usrMdpIndice => '8 characters minimum';
+
+  @override
+  String get usrMdpVide => 'Leave empty to keep it';
+
+  @override
+  String get usrForce0 => 'Very weak';
+
+  @override
+  String get usrForce1 => 'Weak';
+
+  @override
+  String get usrForce2 => 'Fair';
+
+  @override
+  String get usrForce3 => 'Good';
+
+  @override
+  String get usrForce4 => 'Strong';
+
+  @override
+  String get usrPrenom => 'First name';
+
+  @override
+  String get usrNom => 'Last name';
+
+  @override
+  String get usrTelephoneIndice => '05xx xx xx xx';
+
+  @override
+  String get usrAdminRole => 'Full access, cannot be restricted';
+
+  @override
+  String usrNbPermissions(int n) {
+    return '$n permissions';
+  }
+
+  @override
+  String get usrCaisseAttachee => 'Attached till';
+
+  @override
+  String get usrCaisseAdmin => 'The admin picks any till';
+
+  @override
+  String get usrCaisseIndice => 'Locks the till on the Till screen';
+
+  @override
+  String get usrAucune => 'None';
+
+  @override
+  String get usrMagasinsIndice => 'The first one is the default store at login';
+
+  @override
+  String get usrObservation => 'Note';
+
+  @override
+  String get usrCree => 'User created';
+
+  @override
+  String get usrModifie => 'User updated';
+
+  @override
+  String get usrErrTelephone => 'Phone is required';
+
+  @override
+  String get usrErrMotDePasse => 'Password too weak';
+
+  @override
+  String get usrErrRole => 'Role cannot be assigned';
+
+  @override
+  String get usrErrMagasins => 'Pick at least one store';
+
+  @override
+  String get usrErrInconnu => 'User not found';
+
+  @override
+  String get usrInfos => 'General information';
+
+  @override
+  String get usrPermissionsRole => 'Role permissions';
+
+  @override
+  String get usrAudit => 'Audit';
+
+  @override
+  String get usrCreePar => 'Created by';
+
+  @override
+  String get usrCreeLe => 'Created on';
+
+  @override
+  String get usrModifiePar => 'Updated by';
+
+  @override
+  String get usrModifieLe => 'Updated on';
+
+  @override
+  String get usrLibreAdmin => 'Free (admin)';
+
+  @override
+  String get usrDefaut => '(default)';
+
+  @override
+  String get usrMdpReinitTitre => 'Password reset';
+
+  @override
+  String usrMdpReinitMessage(String identifiant, String mdp) {
+    return 'Give this temporary password to @$identifiant: $mdp. They can change it in My account.';
+  }
+
+  @override
+  String get usrBloqueAdmin => 'Main administrator account';
+
+  @override
+  String get usrBloqueCourant => 'Your own account';
+
+  @override
+  String get usrBloqueInactif => 'Already inactive';
+
+  @override
+  String get usrDesactives => 'Users deactivated';
+
+  @override
+  String get usrDesactivesDetail => 'They can no longer sign in';
+
+  @override
+  String get usrColModules => 'Modules';
+
+  @override
+  String get usrColSpeciales => 'Special';
+
+  @override
+  String get usrTous => 'All';
+
+  @override
+  String get usrToutes => 'All';
+
+  @override
+  String get usrSysteme => 'System';
+
+  @override
+  String get usrDupliquer => 'Duplicate';
+
+  @override
+  String get usrNouveauRole => 'New role';
+
+  @override
+  String get usrModifierRole => 'Edit role';
+
+  @override
+  String get usrRoleDescription => 'Details, accessible modules, then sensitive actions.';
+
+  @override
+  String usrRoleConcernes(String code, int n) {
+    return '$code · $n user(s) affected';
+  }
+
+  @override
+  String get usrPrecedent => 'Back';
+
+  @override
+  String get usrSuivant => 'Next';
+
+  @override
+  String get usrEnregistrerRole => 'Save role';
+
+  @override
+  String get usrEtapeInfos => 'Details';
+
+  @override
+  String get usrEtapeInfosDesc => 'Name, status';
+
+  @override
+  String get usrEtapePermissions => 'Permissions';
+
+  @override
+  String usrEtapeModules(int n) {
+    return '$n modules';
+  }
+
+  @override
+  String get usrEtapeSpeciales => 'Special permissions';
+
+  @override
+  String get usrEtapeSpecialesDesc => 'Sensitive actions';
+
+  @override
+  String get usrNomRole => 'Role name';
+
+  @override
+  String get usrNomRoleIndice => 'e.g. Senior cashier';
+
+  @override
+  String get usrNomRolePris => 'This role name already exists';
+
+  @override
+  String get usrObsRoleIndice => 'What is this role for?';
+
+  @override
+  String get usrModulesTitre => 'Accessible modules';
+
+  @override
+  String get usrModulesDesc =>
+      'The role only sees the checked modules in the sidebar and menu. Settings and History are granted like any other module.';
+
+  @override
+  String get usrSpecialesDesc =>
+      'Cross-cutting actions, checked in every module (purchase prices, cancellations, till change…).';
+
+  @override
+  String get usrConfirmRoleTitre => 'Edit this role?';
+
+  @override
+  String usrConfirmRoleMessage(int n) {
+    return '$n user(s) will see their access change at next sign-in.';
+  }
+
+  @override
+  String get usrRoleEnregistre => 'Role saved';
+
+  @override
+  String get usrRoleEnregistreDetail => 'Permissions applied';
+
+  @override
+  String usrRoleTitre(String nom) {
+    return 'Role $nom';
+  }
+
+  @override
+  String get usrAdminBloqueTitre => 'Cannot edit';
+
+  @override
+  String get usrAdminBloqueMessage => 'The Admin role is a system role: its permissions cannot be changed.';
+
+  @override
+  String get usrRoleBloqueSysteme => 'Admin system role';
+
+  @override
+  String get usrRoleBloqueUtilisateurs => 'Users have this role: reassign them';
+
+  @override
+  String get usrRolesDesactives => 'Roles deactivated';
+
+  @override
+  String usrNbUtilisateurs(int n) {
+    return '$n user(s)';
+  }
+
+  @override
+  String usrCopie(String nom) {
+    return '$nom (copy)';
+  }
+
+  @override
+  String get usrRoleErrModules => 'Check at least one module';
+
+  @override
+  String get usrRoleErrInconnu => 'Role not found';
+
+  @override
+  String get usrAucunUtilisateur => 'No users.';
+
+  @override
+  String get usrAucunRole => 'No roles.';
 }

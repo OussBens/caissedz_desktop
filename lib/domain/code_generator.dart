@@ -24,6 +24,7 @@ class CodeGenerator {
   static const String transfertStock = 'TRM';
   static const String transfertCaisse = 'TRF';
   static const String utilisateur = 'USR';
+  static const String role = 'ROL';
   static const String produit = 'PRD';
   static const String colis = 'COL';
   static const String pack = 'PCK';

@@ -7,6 +7,7 @@ import '../../application/session_caisse_service.dart';
 import '../../application/vente_service.dart';
 import '../../data/catalogue_repository.dart';
 import '../../data/stock_repository.dart';
+import '../../data/utilisateur_repository.dart';
 import '../../domain/codes_barres.dart';
 import '../../domain/models/panier.dart';
 import '../../domain/models/parametres_vente.dart';
@@ -98,11 +99,19 @@ class PosController extends Notifier<PosEtat> {
   @override
   PosEtat build() => PosEtat(paniers: [Panier(id: _prochainId++)]);
 
-  /// Charge la session ouverte et le magasin principal de l'utilisateur.
+  /// Charge la session ouverte, la caisse attachée (§5 : caisse courante d'un non-Admin) et le magasin principal
+  /// de l'utilisateur.
   Future<void> initialiser() async {
+    final code = ref.read(utilisateurCourantCodeProvider);
     final session = await ref.read(sessionCaisseServiceProvider).courante();
-    final magasin = await ref.read(stockServiceProvider).magasinPrincipal(ref.read(utilisateurCourantCodeProvider));
-    state = state.copyWith(session: session, effacerSession: session == null, magasinCode: magasin);
+    final magasin = await ref.read(stockServiceProvider).magasinPrincipal(code);
+    final attachee = (await UtilisateurRepository(ref.read(appDatabaseProvider).db).parCode(code))?.caisseCode;
+    state = state.copyWith(
+      session: session,
+      effacerSession: session == null,
+      magasinCode: magasin,
+      caisseCode: state.caisseCode ?? attachee,
+    );
   }
 
   // ---------------- Sessions ----------------

@@ -12,7 +12,6 @@ import '../../core/export/export_excel.dart';
 import '../../core/i18n/generated/app_localizations.dart';
 import '../../core/print/rapport_pdf.dart';
 import '../../domain/models/rapport.dart';
-import '../../domain/permissions.dart';
 import '../caisse/pos_dialogs.dart';
 import '../produits/produits_providers.dart';
 import '../rapports/rapports_providers.dart';
@@ -21,8 +20,8 @@ import '../rapports/rapports_providers.dart';
 Set<String> permissionsSession(WidgetRef ref) =>
     ref.watch(sessionProvider)?.permissions.map((p) => p.code).toSet() ?? const {};
 
-/// `true` si la session peut exporter (`exporterDonnees`).
-bool peutExporter(WidgetRef ref) => ref.watch(sessionProvider)?.a(Permission.exporterDonnees) ?? false;
+/// Export des tableaux : ouvert à toute session ayant accès au module (aucune permission dédiée au §6.2).
+bool peutExporter(WidgetRef ref) => ref.watch(sessionProvider) != null;
 
 /// Rapport tabulaire construit depuis les colonnes d'un tableau de module (colonnes visibles par
 /// défaut et autorisées, valeurs brutes des cellules).

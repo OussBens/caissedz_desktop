@@ -5,9 +5,8 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../app/providers.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
-import '../../domain/permissions.dart';
 import '../../domain/referentiel/referentiel.dart';
-import '../roles/roles_page.dart';
+import '../utilisateurs/utilisateurs_providers.dart';
 
 /// Page interne de vérification du design system (clair / sombre / RTL).
 class GaleriePage extends ConsumerWidget {
@@ -248,21 +247,10 @@ class GaleriePage extends ConsumerWidget {
         _Section(
           titre: 'Grille des permissions',
           enfant: PermissionGrid(
-            lignes: [
-              for (final p in Permission.values.take(3))
-                PermissionGridLigne(id: p.code, libelle: libellePermission(l10n, p), icone: LucideIcons.shieldCheck),
-            ],
-            colonnes: [
-              for (final r in Roles.tous)
-                PermissionGridColonne(
-                  id: r,
-                  libelle: libelleRole(l10n, r),
-                  verrouillee: r == Roles.admin,
-                  infoVerrou: l10n.rolesAdminTotal,
-                ),
-            ],
-            estCoche: (role, id) => Roles.permissionsParDefaut[role]?.contains(Permission.parCode(id)) ?? false,
-            onBasculer: (_, _) {},
+            titre: 'Permissions spéciales',
+            items: itemsSpeciales(l10n),
+            valeur: const {'voirPrixAchat', 'annulerOperations'},
+            onChanged: (_) {},
           ),
         ),
         _Section(

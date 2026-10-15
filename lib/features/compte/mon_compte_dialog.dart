@@ -200,14 +200,14 @@ class _MonCompteDialogState extends ConsumerState<MonCompteDialog> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(u.nom, style: t.bodyStrong.copyWith(fontSize: 16, fontWeight: FontWeight.w700)),
+                    Text(u.nomComplet, style: t.bodyStrong.copyWith(fontSize: 16, fontWeight: FontWeight.w700)),
                     Text(l10n.compteIdentite(u.identifiant, acces), style: t.bodySm.copyWith(color: c.textSecondary)),
                   ],
                 ),
               ),
               if (session.demo) DsBadge(libelle: l10n.licenceDemo, ton: DsBadgeTon.avertissement),
               DsBadge(
-                libelle: Referentiel.roles.libelle(u.role, locale),
+                libelle: Referentiel.roles.libelle(u.roleNom ?? '', locale),
                 ton: DsBadgeTon.primaire,
                 icone: LucideIcons.shield,
               ),

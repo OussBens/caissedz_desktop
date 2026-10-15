@@ -79,8 +79,8 @@ class _VentesPageState extends ConsumerState<VentesPage> {
         .toList();
     final actifs = lignes.where((p) => !p.annule).toList();
     double somme(Iterable<PanierResume> ps, double Function(PanierResume) f) => ps.fold(0.0, (s, p) => s + f(p));
-    final voirAchat = ref.watch(permissionProvider(Permission.voirPrixAchat));
-    final peutAnnuler = ref.watch(permissionProvider(Permission.annulerVente));
+    final voirMarge = ref.watch(permissionProvider(Permission.voirMarge));
+    final peutAnnuler = ref.watch(permissionProvider(Permission.annulerOperations));
 
     final colonnes = <DsColonne<PanierResume>>[
       DsColonne(id: 'code', libelle: l10n.produitsColCode, valeur: (p) => p.code, attenue: true),
@@ -171,7 +171,7 @@ class _VentesPageState extends ConsumerState<VentesPage> {
         libelle: l10n.ventesKpiMarge,
         numerique: true,
         visibleParDefaut: false,
-        permission: Permission.voirPrixAchat.code,
+        permission: Permission.voirMarge.code,
         valeur: (p) => p.marge,
         cellule: (_, p) => Text(da(p.marge)),
       ),
@@ -250,7 +250,7 @@ class _VentesPageState extends ConsumerState<VentesPage> {
             suffixe: devise,
             icone: LucideIcons.banknote,
           ),
-          if (voirAchat)
+          if (voirMarge)
             DsStatCard(
               libelle: l10n.ventesKpiMarge,
               valeur: f2(somme(actifs, (p) => p.marge)),

@@ -36,7 +36,11 @@
 - [x] Configuration initiale en 4 étapes (langue et devise, boutique, paiements, marge et stock), une transaction
 - [x] Mon compte (dialog DS) : profil / identifiant, mot de passe, préférences, déconnexion ; démo en lecture seule
 - [x] Licences Basic / Avancé (LicenceGate, modules réservés) — répartition des modules provisoire
-- [x] Rôles et 7 permissions d'action (voirPrixAchat, colonnes masquées, écran « Accès refusé ») — 6 permissions provisoires
+- [x] Rôles (table `role`, codes ROL) : accès modules + les 7 permissions d'action du §6.2, admin unique non
+      assignable, colonnes masquées et écran « Accès refusé » (phase D, migration v17)
+- [x] Utilisateurs DS v2.2 : onglets Utilisateurs · Rôles, caisse attachée, magasins ordonnés, assistant de rôle
+      en 3 étapes, réinitialisation du mot de passe, désactivations bloquées (admin principal, rôle utilisé)
+- [ ] Crédit caissier (§7 `utilisateur.credit`) : règle de calcul absente de la spec
 - [x] Fidélité visuelle au DS v2.2 des écrans de démarrage (connexion, activation, configuration, Mon compte,
       alertes, shell) ; les 17 écrans de modules suivent en phase D
 
@@ -99,7 +103,8 @@
       bloquée (session ouverte, solde non nul, caisse système)
 - [x] Clôture Z par caisse, chaînage par caisse (§12.3), tickets annulés et répartition des paiements ; export de
       contrôle fiscal en archive / JSON / PDF / CSV avec état de la chaîne
-- [ ] Permission `gererTransfertsCaisse` (§9.13) ; journal fiscal `journal_fiscal` avec ligne `CLOTURE_CAISSE` (§12.3)
+- [x] Permission `gererTransfertsCaisse` (§9.13) : onglet Transferts en « accès refusé » sans elle
+- [ ] Journal fiscal `journal_fiscal` avec ligne `CLOTURE_CAISSE` (§12.3)
 - [ ] Période clôturée évaluée par caisse (aujourd'hui : toute clôture couvrant la date bloque, ⚠️ PROVISOIRE)
 
 ## Rapports et paramètres (lot 8)

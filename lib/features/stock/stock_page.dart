@@ -58,8 +58,8 @@ class _StockPageState extends ConsumerState<StockPage> {
     final magasins = ref.watch(magasinsProvider).value ?? const <Magasin>[];
     final mes = ref.watch(mesMagasinsProvider).value ?? const <String>[];
     final session = ref.watch(sessionProvider);
-    // ⚠️ PROVISOIRE : en attendant la permission `voirStockTousMagasins` (§5), l'administrateur voit tous les magasins.
-    final tous = mes.isEmpty || (session?.a(Permission.gererUtilisateurs) ?? false);
+    // §6.2 : magasins consultables = tous pour l'Admin ou `voirStockTousMagasins`, sinon ceux de l'utilisateur.
+    final tous = mes.isEmpty || (session?.estAdmin ?? false) || (session?.a(Permission.voirStockTousMagasins) ?? false);
     final consultables = [
       for (final m in magasins)
         if (m.actif && (tous || mes.contains(m.code))) m,

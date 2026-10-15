@@ -17,6 +17,7 @@ import '../../domain/models/produit.dart';
 import '../../domain/models/stock.dart';
 import '../../domain/models/tiers.dart';
 import '../../domain/models/vente.dart';
+import '../../domain/permissions.dart';
 import '../../domain/referentiel/referentiel.dart';
 import '../commun/referentiel_ui.dart';
 import '../commun/statuts.dart';
@@ -1467,6 +1468,13 @@ Future<void> afficherParametresCaisse(BuildContext context, WidgetRef ref) async
   final magasins = (await ref.read(magasinsProvider.future)).where((m) => m.actif).toList();
   if (!context.mounted || caisses.isEmpty || magasins.isEmpty) return;
   final etat = ref.read(posControllerProvider);
+  final session = ref.read(sessionProvider);
+  // §6.2 : un non-Admin travaille sur sa caisse attachée et ses magasins, sauf permission `changerCaisseMagasin`.
+  final libre =
+      session == null ||
+      session.estAdmin ||
+      session.a(Permission.changerCaisseMagasin) ||
+      session.utilisateur.caisseCode == null;
   var caisse = etat.session?.caisseCode ?? etat.caisseCode ?? caisses.first.code;
   var magasin = magasins.any((m) => m.code == etat.magasinCode) ? etat.magasinCode : magasins.first.code;
   final ok = await afficherDialog<bool>(
@@ -1500,7 +1508,7 @@ Future<void> afficherParametresCaisse(BuildContext context, WidgetRef ref) async
                 valeur: caisse,
                 options: [for (final c in caisses) c.code],
                 libelle: (c) => caisses.firstWhere((x) => x.code == c).nom,
-                actif: etat.session == null,
+                actif: etat.session == null && libre,
                 onChanged: (v) => setState(() => caisse = v ?? caisse),
               ),
             ),
@@ -1510,6 +1518,7 @@ Future<void> afficherParametresCaisse(BuildContext context, WidgetRef ref) async
                 valeur: magasin,
                 options: [for (final m in magasins) m.code],
                 libelle: (c) => magasins.firstWhere((x) => x.code == c).nom,
+                actif: libre,
                 onChanged: (v) => setState(() => magasin = v ?? magasin),
               ),
             ),

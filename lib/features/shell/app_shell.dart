@@ -15,7 +15,6 @@ import '../../domain/referentiel/referentiel.dart';
 import '../activation/activation_page.dart';
 import '../compte/mon_compte_dialog.dart';
 import '../configuration/configuration_dialog.dart';
-import '../roles/roles_page.dart';
 import 'alertes_dialog.dart';
 import 'controles_fenetre.dart';
 
@@ -124,16 +123,13 @@ class _AppShellState extends ConsumerState<AppShell> {
     ];
 
     Widget contenu = widget.child;
-    final refuse =
-        session != null &&
-        ((module != null && !session.peutAcceder(module.idAcces)) ||
-            (route == RolesPage.route && !session.a(Permission.gererUtilisateurs)));
+    final refuse = session != null && module != null && !session.peutAcceder(module.idAcces);
     if (refuse) {
       contenu = LicenceGate(
         key: const ValueKey('acces_refuse'),
         autorise: false,
         genre: DsGateGenre.refuse,
-        description: l10n.dsGateRefuseDetail(module?.libelle(l10n) ?? l10n.moduleUtilisateurs),
+        description: l10n.dsGateRefuseDetail(module.libelle(l10n)),
         onAction: () => context.go(Modules.parId('tableau_bord')!.route),
         child: widget.child,
       );
@@ -197,8 +193,10 @@ class _AppShellState extends ConsumerState<AppShell> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       DsTopBar(
-                        utilisateur: session?.utilisateur.nom ?? '',
-                        role: session == null ? '' : Referentiel.roles.libelle(session.utilisateur.role, locale),
+                        utilisateur: session?.utilisateur.nomComplet ?? '',
+                        role: session == null
+                            ? ''
+                            : Referentiel.roles.libelle(session.utilisateur.roleNom ?? '', locale),
                         enLigne: ref.watch(internetProvider),
                         alertes: alertes.total,
                         onMenu: () => afficherMenuModules(context),

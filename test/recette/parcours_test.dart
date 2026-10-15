@@ -70,12 +70,15 @@ void main() {
   });
 
   group('Recette — rôles', () {
-    for (final (etat, role) in [
-      (EtatApp.connecteeCaissier, Roles.caissier),
-      (EtatApp.connecteeMagasinier, Roles.magasinier),
+    for (final (etat, role, autorises) in [
+      (EtatApp.connecteeCaissier, 'Caissier', {'tableau_bord', 'caisse', 'ventes', 'retours', 'clients', 'historique'}),
+      (
+        EtatApp.connecteeMagasinier,
+        'Magasinier',
+        {'tableau_bord', 'produits', 'stock', 'magasins', 'entrees', 'besoins', 'sorties', 'fournisseurs'},
+      ),
     ]) {
       testWidgets('$role : accès limité aux modules du rôle', (tester) async {
-        final autorises = Roles.modulesParDefaut[role]!;
         for (final m in modules) {
           await pumpApp(tester, etat: etat, routeInitiale: m.route, taille: taille);
           expect(tester.takeException(), isNull, reason: m.id);

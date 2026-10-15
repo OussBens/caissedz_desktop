@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
+import '../../app/demarrage_providers.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
 import '../../domain/models/caisse.dart';
 import '../../domain/models/vente.dart';
+import '../../domain/permissions.dart';
 import '../caisse/caisse_dialogs.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
@@ -63,6 +65,14 @@ class _GestionCaissePageState extends ConsumerState<GestionCaissePage> {
       ongletCourant: _onglet,
       onOnglet: (i) => setState(() => _onglet = i),
       child: switch (_onglet) {
+        // §9.13 : transferts caisse réservés à la permission `gererTransfertsCaisse` (sinon « accès refusé »).
+        1 when !ref.watch(permissionProvider(Permission.gererTransfertsCaisse)) => LicenceGate(
+          key: const ValueKey('transferts_refuse'),
+          autorise: false,
+          genre: DsGateGenre.refuse,
+          description: l10n.dsGateRefuseDetail(l10n.gcOngletTransferts),
+          child: const SizedBox.shrink(),
+        ),
         1 => _transferts(l10n, transferts, noms, utilisateurs),
         2 => _clotures(l10n, clotures, caisses, noms, utilisateurs),
         3 => _mouvements(l10n, mouvements, sessions, caisses, noms, utilisateurs),

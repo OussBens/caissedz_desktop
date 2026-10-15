@@ -477,43 +477,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get accesRefuseRetour => 'العودة إلى لوحة القيادة';
 
   @override
-  String get rolesTitre => 'الأدوار والصلاحيات';
-
-  @override
-  String get rolesIntro => 'حدد صلاحيات الإجراءات والوحدات المتاحة لكل دور. يحتفظ المدير دائمًا بكل الصلاحيات.';
-
-  @override
-  String get rolesPermissions => 'صلاحيات الإجراءات';
-
-  @override
-  String get rolesModules => 'الوحدات المتاحة';
-
-  @override
-  String get rolesEnregistre => 'تم حفظ شبكة الأدوار.';
-
-  @override
-  String get rolesAdminTotal => 'كل الصلاحيات';
-
-  @override
   String get permVoirPrixAchat => 'عرض سعر الشراء';
-
-  @override
-  String get permModifierPrix => 'تعديل السعر في الصندوق';
-
-  @override
-  String get permAppliquerRemise => 'تطبيق تخفيض';
-
-  @override
-  String get permAnnulerVente => 'إلغاء بيع';
-
-  @override
-  String get permSupprimerDocument => 'حذف مستند';
-
-  @override
-  String get permExporterDonnees => 'تصدير البيانات';
-
-  @override
-  String get permGererUtilisateurs => 'إدارة المستخدمين';
 
   @override
   String get roleAdmin => 'مدير';
@@ -6903,4 +6867,396 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get gcSolde => 'الرصيد';
+
+  @override
+  String get permVoirMarge => 'عرض الهامش / نسبة الهامش';
+
+  @override
+  String get permModifierPrixVente => 'تعديل سعر البيع';
+
+  @override
+  String get permAnnulerOperations => 'إلغاء العمليات';
+
+  @override
+  String get permChangerCaisseMagasin => 'تغيير صندوقه / مخزنه';
+
+  @override
+  String get permGererTransfertsCaisse => 'إدارة التحويلات بين الصناديق';
+
+  @override
+  String get permVoirStockTousMagasins => 'عرض مخزون كل المخازن';
+
+  @override
+  String get usrDescription => 'الحسابات والأدوار والصلاحيات';
+
+  @override
+  String get usrOngletUtilisateurs => 'المستخدمون';
+
+  @override
+  String get usrOngletRoles => 'الأدوار';
+
+  @override
+  String get usrEntiteUtilisateurs => 'مستخدمين';
+
+  @override
+  String get usrEntiteUtilisateur => 'مستخدم';
+
+  @override
+  String get usrEntiteRoles => 'أدوار';
+
+  @override
+  String get usrEntiteRole => 'دور';
+
+  @override
+  String get usrKpiActifs => 'المستخدمون النشطون';
+
+  @override
+  String get usrKpiVentes => 'المبيعات (30 يومًا)';
+
+  @override
+  String get usrKpiTotal => 'إجمالي المبيعات';
+
+  @override
+  String get usrRole => 'الدور';
+
+  @override
+  String get usrEtat => 'الحالة';
+
+  @override
+  String get usrActif => 'نشط';
+
+  @override
+  String get usrInactif => 'غير نشط';
+
+  @override
+  String get usrRecherche => 'الاسم أو المعرّف أو الهاتف…';
+
+  @override
+  String get usrColUtilisateur => 'المستخدم';
+
+  @override
+  String get usrColCaisse => 'الصندوق';
+
+  @override
+  String get usrColMagasins => 'المخازن';
+
+  @override
+  String get usrColVentes => 'المبيعات';
+
+  @override
+  String get usrColDernierAcces => 'آخر دخول';
+
+  @override
+  String get usrTelephone => 'الهاتف';
+
+  @override
+  String get usrLibre => 'حر';
+
+  @override
+  String get usrReinitialiser => 'إعادة تعيين كلمة المرور';
+
+  @override
+  String get usrDesactiver => 'تعطيل';
+
+  @override
+  String get usrNouvel => 'مستخدم جديد';
+
+  @override
+  String get usrModifierTitre => 'تعديل المستخدم';
+
+  @override
+  String get usrFormDescription => 'يحدد الدور الوحدات الظاهرة؛ والصندوق المرتبط يقفل شاشة الصندوق.';
+
+  @override
+  String get usrSectionCompte => 'الحساب';
+
+  @override
+  String get usrSectionAcces => 'الصلاحيات';
+
+  @override
+  String get usrCode => 'الرمز';
+
+  @override
+  String get usrIdentifiant => 'المعرّف';
+
+  @override
+  String get usrIdentifiantIndice => 'مثال: amina';
+
+  @override
+  String get usrIdentifiantPris => 'المعرّف مستخدم من قبل';
+
+  @override
+  String get usrIdentifiantInvalide => 'من 3 إلى 32 حرفًا: حروف، أرقام، . _ -';
+
+  @override
+  String get usrMotDePasse => 'كلمة المرور';
+
+  @override
+  String get usrNouveauMotDePasse => 'كلمة مرور جديدة';
+
+  @override
+  String get usrMdpIndice => '8 أحرف على الأقل';
+
+  @override
+  String get usrMdpVide => 'اتركه فارغًا لعدم التغيير';
+
+  @override
+  String get usrForce0 => 'ضعيفة جدًا';
+
+  @override
+  String get usrForce1 => 'ضعيفة';
+
+  @override
+  String get usrForce2 => 'متوسطة';
+
+  @override
+  String get usrForce3 => 'جيدة';
+
+  @override
+  String get usrForce4 => 'قوية';
+
+  @override
+  String get usrPrenom => 'الاسم';
+
+  @override
+  String get usrNom => 'اللقب';
+
+  @override
+  String get usrTelephoneIndice => '05xx xx xx xx';
+
+  @override
+  String get usrAdminRole => 'صلاحيات كاملة، لا يمكن تقييدها';
+
+  @override
+  String usrNbPermissions(int n) {
+    return '$n صلاحيات';
+  }
+
+  @override
+  String get usrCaisseAttachee => 'الصندوق المرتبط';
+
+  @override
+  String get usrCaisseAdmin => 'المدير يختار صندوقه بحرية';
+
+  @override
+  String get usrCaisseIndice => 'يقفل صندوق شاشة الصندوق';
+
+  @override
+  String get usrAucune => 'لا شيء';
+
+  @override
+  String get usrMagasinsIndice => 'الأول هو المخزن الافتراضي عند الدخول';
+
+  @override
+  String get usrObservation => 'ملاحظة';
+
+  @override
+  String get usrCree => 'تم إنشاء المستخدم';
+
+  @override
+  String get usrModifie => 'تم تعديل المستخدم';
+
+  @override
+  String get usrErrTelephone => 'الهاتف إلزامي';
+
+  @override
+  String get usrErrMotDePasse => 'كلمة المرور ضعيفة جدًا';
+
+  @override
+  String get usrErrRole => 'دور غير قابل للإسناد';
+
+  @override
+  String get usrErrMagasins => 'اختر مخزنًا واحدًا على الأقل';
+
+  @override
+  String get usrErrInconnu => 'المستخدم غير موجود';
+
+  @override
+  String get usrInfos => 'معلومات عامة';
+
+  @override
+  String get usrPermissionsRole => 'صلاحيات الدور';
+
+  @override
+  String get usrAudit => 'التدقيق';
+
+  @override
+  String get usrCreePar => 'أنشأه';
+
+  @override
+  String get usrCreeLe => 'أنشئ في';
+
+  @override
+  String get usrModifiePar => 'عدّله';
+
+  @override
+  String get usrModifieLe => 'عُدّل في';
+
+  @override
+  String get usrLibreAdmin => 'حر (مدير)';
+
+  @override
+  String get usrDefaut => '(افتراضي)';
+
+  @override
+  String get usrMdpReinitTitre => 'تمت إعادة تعيين كلمة المرور';
+
+  @override
+  String usrMdpReinitMessage(String identifiant, String mdp) {
+    return 'أبلغ @$identifiant بكلمة المرور المؤقتة هذه: $mdp. يمكنه تغييرها من حسابي.';
+  }
+
+  @override
+  String get usrBloqueAdmin => 'حساب المدير الرئيسي';
+
+  @override
+  String get usrBloqueCourant => 'حسابك الخاص';
+
+  @override
+  String get usrBloqueInactif => 'غير نشط مسبقًا';
+
+  @override
+  String get usrDesactives => 'تم تعطيل المستخدمين';
+
+  @override
+  String get usrDesactivesDetail => 'لم يعد بإمكانهم الدخول';
+
+  @override
+  String get usrColModules => 'الوحدات';
+
+  @override
+  String get usrColSpeciales => 'خاصة';
+
+  @override
+  String get usrTous => 'الكل';
+
+  @override
+  String get usrToutes => 'الكل';
+
+  @override
+  String get usrSysteme => 'نظام';
+
+  @override
+  String get usrDupliquer => 'نسخ';
+
+  @override
+  String get usrNouveauRole => 'دور جديد';
+
+  @override
+  String get usrModifierRole => 'تعديل الدور';
+
+  @override
+  String get usrRoleDescription => 'المعلومات، الوحدات المتاحة، ثم العمليات الحساسة.';
+
+  @override
+  String usrRoleConcernes(String code, int n) {
+    return '$code · $n مستخدم(ين) معنيين';
+  }
+
+  @override
+  String get usrPrecedent => 'السابق';
+
+  @override
+  String get usrSuivant => 'التالي';
+
+  @override
+  String get usrEnregistrerRole => 'حفظ الدور';
+
+  @override
+  String get usrEtapeInfos => 'المعلومات';
+
+  @override
+  String get usrEtapeInfosDesc => 'الاسم، الحالة';
+
+  @override
+  String get usrEtapePermissions => 'الصلاحيات';
+
+  @override
+  String usrEtapeModules(int n) {
+    return '$n وحدات';
+  }
+
+  @override
+  String get usrEtapeSpeciales => 'صلاحيات خاصة';
+
+  @override
+  String get usrEtapeSpecialesDesc => 'عمليات حساسة';
+
+  @override
+  String get usrNomRole => 'اسم الدور';
+
+  @override
+  String get usrNomRoleIndice => 'مثال: أمين صندوق أول';
+
+  @override
+  String get usrNomRolePris => 'اسم الدور هذا موجود مسبقًا';
+
+  @override
+  String get usrObsRoleIndice => 'ما الغرض من هذا الدور؟';
+
+  @override
+  String get usrModulesTitre => 'الوحدات المتاحة';
+
+  @override
+  String get usrModulesDesc =>
+      'لا يرى الدور في الشريط الجانبي والقائمة إلا الوحدات المحددة. تُسند الإعدادات والسجل مثل باقي الوحدات.';
+
+  @override
+  String get usrSpecialesDesc => 'عمليات شاملة تُراقَب في كل الوحدات (عرض أسعار الشراء، الإلغاءات، تغيير الصندوق…).';
+
+  @override
+  String get usrConfirmRoleTitre => 'تعديل هذا الدور؟';
+
+  @override
+  String usrConfirmRoleMessage(int n) {
+    return 'سيتغير وصول $n مستخدم(ين) عند الدخول القادم.';
+  }
+
+  @override
+  String get usrRoleEnregistre => 'تم حفظ الدور';
+
+  @override
+  String get usrRoleEnregistreDetail => 'تم تطبيق الصلاحيات';
+
+  @override
+  String usrRoleTitre(String nom) {
+    return 'الدور $nom';
+  }
+
+  @override
+  String get usrAdminBloqueTitre => 'التعديل غير ممكن';
+
+  @override
+  String get usrAdminBloqueMessage => 'دور المدير دور نظام: لا يمكن تعديل صلاحياته.';
+
+  @override
+  String get usrRoleBloqueSysteme => 'دور نظام المدير';
+
+  @override
+  String get usrRoleBloqueUtilisateurs => 'لهذا الدور مستخدمون: أعد إسنادهم';
+
+  @override
+  String get usrRolesDesactives => 'تم تعطيل الأدوار';
+
+  @override
+  String usrNbUtilisateurs(int n) {
+    return '$n مستخدم(ين)';
+  }
+
+  @override
+  String usrCopie(String nom) {
+    return '$nom (نسخة)';
+  }
+
+  @override
+  String get usrRoleErrModules => 'حدد وحدة واحدة على الأقل';
+
+  @override
+  String get usrRoleErrInconnu => 'الدور غير موجود';
+
+  @override
+  String get usrAucunUtilisateur => 'لا يوجد مستخدمون.';
+
+  @override
+  String get usrAucunRole => 'لا توجد أدوار.';
 }

@@ -1,5 +1,4 @@
 import 'package:caissedz_desktop/core/design_system/design_system.dart';
-import 'package:caissedz_desktop/features/roles/roles_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -19,8 +18,8 @@ void main() {
       expect(find.byKey(const ValueKey('caisse_session')), findsOneWidget);
     });
 
-    testWidgets('caissier : page Utilisateurs interdite (permission gererUtilisateurs)', (tester) async {
-      await pumpApp(tester, etat: EtatApp.connecteeCaissier, routeInitiale: RolesPage.route);
+    testWidgets('caissier : page Utilisateurs interdite (module non attribué au rôle)', (tester) async {
+      await pumpApp(tester, etat: EtatApp.connecteeCaissier, routeInitiale: '/utilisateurs');
       expect(find.byKey(accesRefuse), findsOneWidget);
     });
 

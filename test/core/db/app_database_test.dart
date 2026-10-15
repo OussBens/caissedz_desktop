@@ -125,7 +125,7 @@ void main() {
         'retour_code': 'RET0001',
       });
 
-      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [12, 13, 14, 15, 16]);
+      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [12, 13, 14, 15, 16, 17]);
       final r = (await db.query('retour')).single;
       expect(r['type'], 'Client');
       expect(r['document_code'], 'VTE0001');
@@ -166,7 +166,7 @@ void main() {
         'sous_categorie_code': 'SC0000',
         'code_barres': '6130000000015',
       });
-      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [13, 14, 15, 16]);
+      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [13, 14, 15, 16, 17]);
       final p = (await db.query('produit')).single;
       expect(p['service'], 0);
       expect(p['suivi_serie'], 0);
@@ -212,7 +212,7 @@ void main() {
         'utilisateur_code': 'USR0000',
       });
       await db.insert('sortie_stock_ligne', {'sortie_code': 'SOR0001', 'produit_code': 'PRD0001', 'quantite': 2});
-      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [14, 15, 16]);
+      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [14, 15, 16, 17]);
       final b = (await db.query('besoin')).single;
       expect(b['fournisseur_code'], 'FOR0000');
       expect(b['statut'], 'Commande');
@@ -243,7 +243,7 @@ void main() {
         'utilisateur_code': 'USR0000',
         'total': 100,
       });
-      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [15, 16]);
+      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [15, 16, 17]);
       final a = (await db.query('achat')).single;
       expect(a['annule_par'], isNull);
       expect(a['besoin_code'], isNull);
@@ -285,7 +285,7 @@ void main() {
         'mode': 'Espèces',
         'utilisateur_code': 'USR0000',
       });
-      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [16]);
+      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [16, 17]);
       final c = (await db.query('caisse', where: "code = 'CIS0000'")).single;
       expect(c['solde_initial'], 0);
       expect(c['observation'], isNull);
@@ -294,6 +294,49 @@ void main() {
       expect(t['motif_annulation'], isNull);
       final cols = (await db.rawQuery('PRAGMA table_info(cloture)')).map((r) => r['name']).toSet();
       expect(cols, containsAll(['caisse_code', 'total_annule']));
+      expect(await db.rawQuery('PRAGMA foreign_key_check'), isEmpty);
+    });
+  });
+
+  group('Migration v17 (utilisateurs et rôles DS)', () {
+    test('table role, droits reliés par code, anciennes permissions converties, rôle de l’utilisateur', () async {
+      final base = await AppDatabase.ouvrirEnMemoire(
+        cleHex: cleTestHex,
+        migrations: toutesLesMigrations.sublist(0, 16),
+      );
+      addTearDown(base.fermer);
+      final db = base.db;
+      await db.insert('utilisateur', {'code': 'USR0002', 'identifiant': 'amina', 'nom': 'Amina', 'role': 'Caissier'});
+      await db.insert('role_permission', {'role': 'Caissier', 'permission': 'annulerVente'});
+      await db.insert('role_permission', {'role': 'Caissier', 'permission': 'gererUtilisateurs'});
+      await db.insert('role_permission', {'role': 'Magasinier', 'permission': 'exporterDonnees'});
+      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [17]);
+      final roles = await db.query('role', orderBy: 'code');
+      expect(roles.map((r) => '${r['code']}:${r['nom']}:${r['systeme']}'), [
+        'ROL0000:Admin:1',
+        'ROL0001:Caissier:0',
+        'ROL0002:Magasinier:0',
+      ]);
+      Future<Set<String>> perms(String role) async => (await db.query(
+        'role_permission',
+        where: 'role_code = ?',
+        whereArgs: [role],
+      )).map((r) => r['permission']! as String).toSet();
+      Future<Set<String>> modules(String role) async => (await db.query(
+        'role_module',
+        where: 'role_code = ?',
+        whereArgs: [role],
+      )).map((r) => r['module_id']! as String).toSet();
+      expect(await perms('ROL0001'), {'modifierPrixVente', 'annulerOperations'});
+      expect(await perms('ROL0002'), {'voirPrixAchat'});
+      expect(await perms('ROL0000'), isEmpty, reason: 'l’Admin a tout sans ligne');
+      expect(await modules('ROL0001'), containsAll(['caisse', 'utilisateurs']));
+      expect(await modules('ROL0002'), contains('stock'));
+      final u = {for (final r in await db.query('utilisateur')) r['code']: r};
+      expect(u['USR0000']!['role_code'], 'ROL0000');
+      expect(u['USR0002']!['role_code'], 'ROL0001');
+      expect(u['USR0002']!.containsKey('role'), isFalse);
+      expect(u['USR0002']!['telephone'], '');
       expect(await db.rawQuery('PRAGMA foreign_key_check'), isEmpty);
     });
   });

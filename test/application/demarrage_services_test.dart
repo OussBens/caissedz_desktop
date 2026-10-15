@@ -3,7 +3,6 @@ import 'package:caissedz_desktop/application/auth_service.dart';
 import 'package:caissedz_desktop/application/catalogue_service.dart';
 import 'package:caissedz_desktop/application/configuration_initiale_service.dart';
 import 'package:caissedz_desktop/application/licence_service.dart';
-import 'package:caissedz_desktop/application/permission_service.dart';
 import 'package:caissedz_desktop/core/db/app_database.dart';
 import 'package:caissedz_desktop/core/db/machine_key.dart';
 import 'package:caissedz_desktop/core/db/migrations/v002_demarrage.dart';
@@ -12,6 +11,7 @@ import 'package:caissedz_desktop/core/licence/cle_activation.dart';
 import 'package:caissedz_desktop/core/securite/mot_de_passe.dart';
 import 'package:caissedz_desktop/data/boutique_repository.dart';
 import 'package:caissedz_desktop/data/parametre_repository.dart';
+import 'package:caissedz_desktop/data/permissions_repository.dart';
 import 'package:caissedz_desktop/data/utilisateur_repository.dart';
 import 'package:caissedz_desktop/domain/models/alerte.dart';
 import 'package:caissedz_desktop/domain/models/boutique.dart';
@@ -63,17 +63,19 @@ void main() {
         expect(rows.length, 1, reason: '$table/$code');
       }
       final admin = await UtilisateurRepository(base.db).parCode(_admin);
-      expect(admin!.role, Roles.admin);
+      expect(admin!.roleCode, Roles.admin);
+      expect(admin.roleNom, 'Admin');
       expect(admin.identifiant, MigrationV008ShellDs.identifiantAdmin);
       // v008 : compte admin / admin provisoire.
       final empreinte = await UtilisateurRepository(base.db).empreinte(admin.code);
       expect(MotDePasse.verifier(MigrationV008ShellDs.motDePasseAdmin, empreinte!), isTrue);
       final caisse = (await base.db.query('caisse', where: 'code = ?', whereArgs: ['CIS0000'])).first;
       expect(caisse['magasin_code'], 'MAG0000');
-      final grille = await PermissionService(base.db).lireGrille();
-      expect(grille.permissions[Roles.admin], Permission.values.toSet());
-      expect(grille.permissions[Roles.caissier], {Permission.appliquerRemise});
-      expect(grille.modules[Roles.magasinier], contains('stock'));
+      final roles = {for (final r in await PermissionsRepository(base.db).roles()) r.code: r};
+      expect(roles[Roles.admin]!.systeme, isTrue);
+      expect(Permission.values.every(roles[Roles.admin]!.aPermission), isTrue);
+      expect(roles[Roles.caissier]!.permissions, {Permission.modifierPrixVente});
+      expect(roles[Roles.magasinier]!.modules, contains('stock'));
     });
   });
 
@@ -220,12 +222,13 @@ void main() {
       await _activer(base);
       final auth = AuthService(base.db, hachage: _hachage);
       await UtilisateurRepository(base.db).inserer(
-        const Utilisateur(code: 'USR0002', identifiant: 'amina', nom: 'Amina', role: Roles.caissier),
+        const Utilisateur(code: 'USR0002', identifiant: 'amina', nom: 'Amina', roleCode: Roles.caissier),
         _hachage.hacher('1234'),
       );
       final s = await auth.connecter('amina', '1234');
       expect(s.a(Permission.voirPrixAchat), isFalse);
-      expect(s.a(Permission.appliquerRemise), isTrue);
+      expect(s.a(Permission.modifierPrixVente), isTrue);
+      expect(s.a(Permission.annulerOperations), isFalse);
       expect(s.peutAcceder('caisse'), isTrue);
       expect(s.peutAcceder('clotures'), isFalse);
       await UtilisateurRepository(base.db).mettreAJour('USR0002', {'actif': 0});
@@ -282,7 +285,7 @@ void main() {
       expect(admin.total, 1);
 
       await UtilisateurRepository(base.db).inserer(
-        const Utilisateur(code: 'USR0002', identifiant: 'amina', nom: 'Amina', role: Roles.caissier),
+        const Utilisateur(code: 'USR0002', identifiant: 'amina', nom: 'Amina', roleCode: Roles.caissier),
         _hachage.hacher('1234'),
       );
       final caissier = await alertes.calculer(await auth.connecter('amina', '1234'));
@@ -296,22 +299,14 @@ void main() {
     });
   });
 
-  group('PermissionService', () {
-    test('la grille est enregistrée en une transaction et l’Admin garde tout', () async {
+  group('Rôles', () {
+    test('l’Admin a toutes les permissions et tous les modules', () async {
       final base = await ouvrirBaseDeTest();
-      final s = PermissionService(base.db);
-      var g = await s.lireGrille();
-      g = g
-          .basculerPermission(Roles.caissier, Permission.voirPrixAchat)
-          .basculerModule(Roles.caissier, 'clotures')
-          .basculerPermission(Roles.admin, Permission.voirPrixAchat);
-      await s.enregistrerGrille(g);
-      final relu = await s.lireGrille();
-      expect(relu.permissions[Roles.caissier], {Permission.appliquerRemise, Permission.voirPrixAchat});
-      expect(relu.modules[Roles.caissier], contains('clotures'));
-      expect(relu.permissions[Roles.admin], Permission.values.toSet());
-      final apres = relu.basculerPermission(Roles.caissier, Permission.voirPrixAchat);
-      expect(apres.permissions[Roles.caissier], {Permission.appliquerRemise});
+      await _activer(base);
+      final s = await AuthService(base.db, hachage: _hachage).connecter('admin', 'admin');
+      expect(s.estAdmin, isTrue);
+      expect(s.permissions, Permission.values.toSet());
+      expect(s.peutAcceder('utilisateurs'), isTrue);
     });
 
     test('prochain code utilisateur', () async {

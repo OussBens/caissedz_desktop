@@ -485,7 +485,7 @@ Référence : `docs/design/CaisseDZ-DS-v2.2/CaisseDZ-DS-v2.2.html`, `bundle-v2.2
     la confiance n'est affichée que si le serveur la renvoie ; le prix de vente reste éditable dans les lignes
     (règle §8 « vente > achat », colonne en lecture seule dans le DS) ; « Imprimer » produit le PDF du tableau
     des lignes (pas encore de bon de réception mis en page) ; l'annulation exige la permission « Annuler »
-    (`annulerVente`, ⚠️ PROVISOIRE en attendant `annulerOperations`).
+    (`annulerOperations` depuis la v17).
   - ✅ Gestion caisse (`GestionCaisseScreen` + `GestionKit`) : migration v16 (caisse : solde initial proposé comme
     fond d'ouverture, observation ; transfert entre caisses : annulation douce ; clôture : `caisse_code`,
     `total_annule`). Clôture Z **par caisse** (§9.13, §12.3) : agrège les tickets de la caisse depuis sa dernière
@@ -506,12 +506,37 @@ Référence : `docs/design/CaisseDZ-DS-v2.2/CaisseDZ-DS-v2.2.html`, `bundle-v2.2
     mouvement manuel avec choix de la caisse) et Sessions (théorique, réel, écart ; mouvements de la session,
     clôture). La route `/clotures` ouvre l'onglet Clôtures Z ; l'ancien écran Clôtures est supprimé. Libellés des
     types de mouvement alignés sur le DS (Versement client, Entrée manuelle, Ouverture…).
-    Écarts Gestion caisse : la permission `gererTransfertsCaisse` (§9.13) n'existe pas encore (onglet ouvert à qui
-    accède au module) ; pas de journal fiscal (`journal_fiscal`, ligne `CLOTURE_CAISSE`) ; une date reste
+    Écarts Gestion caisse : pas de journal fiscal (`journal_fiscal`, ligne `CLOTURE_CAISSE`) ; une date reste
     « clôturée » dès qu'une clôture de n'importe quelle caisse la couvre (⚠️ PROVISOIRE, plus strict que par
     caisse) ; colonnes Client / Fournisseur / Code versement du grand-livre absentes (le mouvement ne porte que la
     référence) ; l'archive complète contient JSON + CSV + LISEZMOI, sans PDF ; l'écart cumulé et les sessions du
     détail portent sur l'historique chargé.
+  - ✅ Utilisateurs (`UtilisateursScreen` + `UtilisateursKit`, remplace l'écran Rôles) : migration v17 — table
+    `role` (codes `ROL`, nom unique, observation, état ; Admin `ROL0000` système, Caissier `ROL0001`, Magasinier
+    `ROL0002`), `role_permission` / `role_module` reliés par **code**, `utilisateur.role_code` (le nom du rôle
+    n'est plus stocké), prénom, téléphone, caisse attachée, observation, créé / modifié par. Les 7 permissions
+    d'action sont désormais celles du §6.2 (`voirPrixAchat`, `voirMarge`, `modifierPrixVente`,
+    `annulerOperations`, `changerCaisseMagasin`, `gererTransfertsCaisse`, `voirStockTousMagasins`) ; conversion
+    des anciennes : prix / remise → `modifierPrixVente`, annuler / supprimer → `annulerOperations`, gérer les
+    utilisateurs → accès au module Utilisateurs, exporter → supprimée (l'export suit l'accès au module).
+    Appliquées : marge des ventes (`voirMarge`), onglet Transferts de Gestion caisse (`gererTransfertsCaisse`,
+    sinon « accès refusé »), magasins consultables du Stock (`voirStockTousMagasins`), caisse et magasin du poste
+    (`changerCaisseMagasin`, sinon caisse attachée de l'utilisateur ouverte par défaut à l'écran Caisse) ; la
+    remise Par Montant du panier n'exige plus de permission (§8.9). L'Admin a toujours tout (accès total, rôle
+    non modifiable, non assignable : admin unique). `UtilisateurService` (créer / modifier / réinitialiser le mot
+    de passe / désactiver, une transaction, journal Historique) et `RoleService` (créer / modifier / désactiver).
+    Écrans : onglet Utilisateurs (KPI actifs, ventes 30 j, total vendu ; filtres rôle et état ; avatar ;
+    formulaire 900 px avec identifiant unique, jauge de robustesse du mot de passe — force 2 exigée à la
+    création —, rôle hors Admin, caisse attachée, magasins ordonnés dont le premier est le défaut ; détail 940 px
+    avec la grille des permissions du rôle ; mot de passe temporaire ; désactivation en lot bloquée pour
+    l'administrateur principal et son propre compte) et onglet Rôles (modules, spéciales, utilisateurs ;
+    assistant 900 px en 3 étapes avec confirmation à la modification ; Admin non modifiable ; dupliquer ;
+    désactivation bloquée si des utilisateurs ont le rôle). `PermissionGrid` refait d'après le DS (tuiles).
+    Écarts Utilisateurs : « Crédit caissier » (KPI, stat, colonne, blocage de désactivation) non repris faute de
+    règle dans la spec (`utilisateur.credit` sans calcul décrit) ; la réinitialisation donne un mot de passe
+    temporaire affiché à l'administrateur, sans obligation de le changer à la connexion ; `userparam` /
+    `caisseparam` ne sont pas créés (préférences et poste gérés ailleurs) ; marges de Situation non soumises à
+    `voirMarge` (elles suivent `voirPrixAchat`).
   - Écarts : colonnes d'audit « modifié le / par » absentes du schéma (seuls créé par et annulation) ;
     tendances des KPI calculées seulement pour les ventes ; ventes antérieures à la v10 valorisées au prix
     d'achat actuel ; `mouvement_stock` sans valorisation (prix_achat / prix_vente de §7.3).

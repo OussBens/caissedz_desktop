@@ -482,44 +482,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get accesRefuseRetour => 'Retour au tableau de bord';
 
   @override
-  String get rolesTitre => 'Rôles et permissions';
-
-  @override
-  String get rolesIntro =>
-      'Cochez les permissions d\'action et les modules accessibles pour chaque rôle. L\'administrateur conserve toujours tous les droits.';
-
-  @override
-  String get rolesPermissions => 'Permissions d\'action';
-
-  @override
-  String get rolesModules => 'Modules accessibles';
-
-  @override
-  String get rolesEnregistre => 'Grille des rôles enregistrée.';
-
-  @override
-  String get rolesAdminTotal => 'Tous les droits';
-
-  @override
   String get permVoirPrixAchat => 'Voir le prix d\'achat';
-
-  @override
-  String get permModifierPrix => 'Modifier le prix en caisse';
-
-  @override
-  String get permAppliquerRemise => 'Appliquer une remise';
-
-  @override
-  String get permAnnulerVente => 'Annuler une vente';
-
-  @override
-  String get permSupprimerDocument => 'Supprimer un document';
-
-  @override
-  String get permExporterDonnees => 'Exporter les données';
-
-  @override
-  String get permGererUtilisateurs => 'Gérer les utilisateurs';
 
   @override
   String get roleAdmin => 'Admin';
@@ -6926,4 +6889,399 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get gcSolde => 'Solde';
+
+  @override
+  String get permVoirMarge => 'Voir la marge / taux de marge';
+
+  @override
+  String get permModifierPrixVente => 'Modifier le prix de vente';
+
+  @override
+  String get permAnnulerOperations => 'Annuler des opérations';
+
+  @override
+  String get permChangerCaisseMagasin => 'Changer sa caisse / son magasin';
+
+  @override
+  String get permGererTransfertsCaisse => 'Gérer les transferts entre caisses';
+
+  @override
+  String get permVoirStockTousMagasins => 'Voir le stock de tous les magasins';
+
+  @override
+  String get usrDescription => 'Comptes, rôles et permissions';
+
+  @override
+  String get usrOngletUtilisateurs => 'Utilisateurs';
+
+  @override
+  String get usrOngletRoles => 'Rôles';
+
+  @override
+  String get usrEntiteUtilisateurs => 'utilisateurs';
+
+  @override
+  String get usrEntiteUtilisateur => 'utilisateur';
+
+  @override
+  String get usrEntiteRoles => 'rôles';
+
+  @override
+  String get usrEntiteRole => 'rôle';
+
+  @override
+  String get usrKpiActifs => 'Utilisateurs actifs';
+
+  @override
+  String get usrKpiVentes => 'Ventes (30 j)';
+
+  @override
+  String get usrKpiTotal => 'Total vendu';
+
+  @override
+  String get usrRole => 'Rôle';
+
+  @override
+  String get usrEtat => 'État';
+
+  @override
+  String get usrActif => 'Actif';
+
+  @override
+  String get usrInactif => 'Inactif';
+
+  @override
+  String get usrRecherche => 'Nom, identifiant ou téléphone…';
+
+  @override
+  String get usrColUtilisateur => 'Utilisateur';
+
+  @override
+  String get usrColCaisse => 'Caisse';
+
+  @override
+  String get usrColMagasins => 'Magasins';
+
+  @override
+  String get usrColVentes => 'Ventes';
+
+  @override
+  String get usrColDernierAcces => 'Dernier accès';
+
+  @override
+  String get usrTelephone => 'Téléphone';
+
+  @override
+  String get usrLibre => 'Libre';
+
+  @override
+  String get usrReinitialiser => 'Réinitialiser le mot de passe';
+
+  @override
+  String get usrDesactiver => 'Désactiver';
+
+  @override
+  String get usrNouvel => 'Nouvel utilisateur';
+
+  @override
+  String get usrModifierTitre => 'Modifier l\'utilisateur';
+
+  @override
+  String get usrFormDescription =>
+      'Le rôle définit les modules visibles ; la caisse attachée verrouille l\'écran Caisse.';
+
+  @override
+  String get usrSectionCompte => 'Compte';
+
+  @override
+  String get usrSectionAcces => 'Accès';
+
+  @override
+  String get usrCode => 'Code';
+
+  @override
+  String get usrIdentifiant => 'Identifiant';
+
+  @override
+  String get usrIdentifiantIndice => 'ex. amina';
+
+  @override
+  String get usrIdentifiantPris => 'Identifiant déjà utilisé';
+
+  @override
+  String get usrIdentifiantInvalide => '3 à 32 caractères : lettres, chiffres, . _ -';
+
+  @override
+  String get usrMotDePasse => 'Mot de passe';
+
+  @override
+  String get usrNouveauMotDePasse => 'Nouveau mot de passe';
+
+  @override
+  String get usrMdpIndice => '8 caractères minimum';
+
+  @override
+  String get usrMdpVide => 'Laisser vide pour ne pas changer';
+
+  @override
+  String get usrForce0 => 'Très faible';
+
+  @override
+  String get usrForce1 => 'Faible';
+
+  @override
+  String get usrForce2 => 'Moyen';
+
+  @override
+  String get usrForce3 => 'Bon';
+
+  @override
+  String get usrForce4 => 'Fort';
+
+  @override
+  String get usrPrenom => 'Prénom';
+
+  @override
+  String get usrNom => 'Nom';
+
+  @override
+  String get usrTelephoneIndice => '05xx xx xx xx';
+
+  @override
+  String get usrAdminRole => 'Accès complet, ne peut pas être restreint';
+
+  @override
+  String usrNbPermissions(int n) {
+    return '$n permissions';
+  }
+
+  @override
+  String get usrCaisseAttachee => 'Caisse attachée';
+
+  @override
+  String get usrCaisseAdmin => 'L\'admin choisit sa caisse librement';
+
+  @override
+  String get usrCaisseIndice => 'Verrouille la caisse de l\'écran Caisse';
+
+  @override
+  String get usrAucune => 'Aucune';
+
+  @override
+  String get usrMagasinsIndice => 'Le premier est le magasin par défaut à la connexion';
+
+  @override
+  String get usrObservation => 'Observation';
+
+  @override
+  String get usrCree => 'Utilisateur créé';
+
+  @override
+  String get usrModifie => 'Utilisateur modifié';
+
+  @override
+  String get usrErrTelephone => 'Téléphone obligatoire';
+
+  @override
+  String get usrErrMotDePasse => 'Mot de passe trop faible';
+
+  @override
+  String get usrErrRole => 'Rôle non assignable';
+
+  @override
+  String get usrErrMagasins => 'Choisissez au moins un magasin';
+
+  @override
+  String get usrErrInconnu => 'Utilisateur introuvable';
+
+  @override
+  String get usrInfos => 'Informations générales';
+
+  @override
+  String get usrPermissionsRole => 'Permissions du rôle';
+
+  @override
+  String get usrAudit => 'Audit';
+
+  @override
+  String get usrCreePar => 'Créé par';
+
+  @override
+  String get usrCreeLe => 'Créé le';
+
+  @override
+  String get usrModifiePar => 'Modifié par';
+
+  @override
+  String get usrModifieLe => 'Modifié le';
+
+  @override
+  String get usrLibreAdmin => 'Libre (admin)';
+
+  @override
+  String get usrDefaut => '(défaut)';
+
+  @override
+  String get usrMdpReinitTitre => 'Mot de passe réinitialisé';
+
+  @override
+  String usrMdpReinitMessage(String identifiant, String mdp) {
+    return 'Communiquez ce mot de passe temporaire à @$identifiant : $mdp. Il pourra le changer dans Mon compte.';
+  }
+
+  @override
+  String get usrBloqueAdmin => 'Compte administrateur principal';
+
+  @override
+  String get usrBloqueCourant => 'Votre propre compte';
+
+  @override
+  String get usrBloqueInactif => 'Déjà inactif';
+
+  @override
+  String get usrDesactives => 'Utilisateurs désactivés';
+
+  @override
+  String get usrDesactivesDetail => 'Ils ne peuvent plus se connecter';
+
+  @override
+  String get usrColModules => 'Modules';
+
+  @override
+  String get usrColSpeciales => 'Spéciales';
+
+  @override
+  String get usrTous => 'Tous';
+
+  @override
+  String get usrToutes => 'Toutes';
+
+  @override
+  String get usrSysteme => 'Système';
+
+  @override
+  String get usrDupliquer => 'Dupliquer';
+
+  @override
+  String get usrNouveauRole => 'Nouveau rôle';
+
+  @override
+  String get usrModifierRole => 'Modifier le rôle';
+
+  @override
+  String get usrRoleDescription => 'Informations, modules accessibles, puis actions sensibles.';
+
+  @override
+  String usrRoleConcernes(String code, int n) {
+    return '$code · $n utilisateur(s) concerné(s)';
+  }
+
+  @override
+  String get usrPrecedent => 'Précédent';
+
+  @override
+  String get usrSuivant => 'Suivant';
+
+  @override
+  String get usrEnregistrerRole => 'Enregistrer le rôle';
+
+  @override
+  String get usrEtapeInfos => 'Informations';
+
+  @override
+  String get usrEtapeInfosDesc => 'Nom, état';
+
+  @override
+  String get usrEtapePermissions => 'Permissions';
+
+  @override
+  String usrEtapeModules(int n) {
+    return '$n modules';
+  }
+
+  @override
+  String get usrEtapeSpeciales => 'Permissions spéciales';
+
+  @override
+  String get usrEtapeSpecialesDesc => 'Actions sensibles';
+
+  @override
+  String get usrNomRole => 'Nom du rôle';
+
+  @override
+  String get usrNomRoleIndice => 'Ex. Caissier senior';
+
+  @override
+  String get usrNomRolePris => 'Ce nom de rôle existe déjà';
+
+  @override
+  String get usrObsRoleIndice => 'À quoi sert ce rôle ?';
+
+  @override
+  String get usrModulesTitre => 'Modules accessibles';
+
+  @override
+  String get usrModulesDesc =>
+      'Le rôle ne voit dans la barre latérale et le menu que les modules cochés. Paramètres et Historique s\'attribuent comme les autres modules.';
+
+  @override
+  String get usrSpecialesDesc =>
+      'Actions transversales, vérifiées dans tous les modules (affichage des prix d\'achat, annulations, changement de caisse…).';
+
+  @override
+  String get usrConfirmRoleTitre => 'Modifier ce rôle ?';
+
+  @override
+  String usrConfirmRoleMessage(int n) {
+    return '$n utilisateur(s) verront leurs accès changer à la prochaine connexion.';
+  }
+
+  @override
+  String get usrRoleEnregistre => 'Rôle enregistré';
+
+  @override
+  String get usrRoleEnregistreDetail => 'Permissions appliquées';
+
+  @override
+  String usrRoleTitre(String nom) {
+    return 'Rôle $nom';
+  }
+
+  @override
+  String get usrAdminBloqueTitre => 'Modification impossible';
+
+  @override
+  String get usrAdminBloqueMessage =>
+      'Le rôle Admin est un rôle système : ses permissions ne peuvent pas être modifiées.';
+
+  @override
+  String get usrRoleBloqueSysteme => 'Rôle système Admin';
+
+  @override
+  String get usrRoleBloqueUtilisateurs => 'Des utilisateurs ont ce rôle : réaffectez-les';
+
+  @override
+  String get usrRolesDesactives => 'Rôles désactivés';
+
+  @override
+  String usrNbUtilisateurs(int n) {
+    return '$n utilisateur(s)';
+  }
+
+  @override
+  String usrCopie(String nom) {
+    return '$nom (copie)';
+  }
+
+  @override
+  String get usrRoleErrModules => 'Cochez au moins un module';
+
+  @override
+  String get usrRoleErrInconnu => 'Rôle introuvable';
+
+  @override
+  String get usrAucunUtilisateur => 'Aucun utilisateur.';
+
+  @override
+  String get usrAucunRole => 'Aucun rôle.';
 }

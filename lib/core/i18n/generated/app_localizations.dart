@@ -993,83 +993,11 @@ abstract class AppLocalizations {
   /// **'Retour au tableau de bord'**
   String get accesRefuseRetour;
 
-  /// No description provided for @rolesTitre.
-  ///
-  /// In fr, this message translates to:
-  /// **'Rôles et permissions'**
-  String get rolesTitre;
-
-  /// No description provided for @rolesIntro.
-  ///
-  /// In fr, this message translates to:
-  /// **'Cochez les permissions d\'action et les modules accessibles pour chaque rôle. L\'administrateur conserve toujours tous les droits.'**
-  String get rolesIntro;
-
-  /// No description provided for @rolesPermissions.
-  ///
-  /// In fr, this message translates to:
-  /// **'Permissions d\'action'**
-  String get rolesPermissions;
-
-  /// No description provided for @rolesModules.
-  ///
-  /// In fr, this message translates to:
-  /// **'Modules accessibles'**
-  String get rolesModules;
-
-  /// No description provided for @rolesEnregistre.
-  ///
-  /// In fr, this message translates to:
-  /// **'Grille des rôles enregistrée.'**
-  String get rolesEnregistre;
-
-  /// No description provided for @rolesAdminTotal.
-  ///
-  /// In fr, this message translates to:
-  /// **'Tous les droits'**
-  String get rolesAdminTotal;
-
   /// No description provided for @permVoirPrixAchat.
   ///
   /// In fr, this message translates to:
   /// **'Voir le prix d\'achat'**
   String get permVoirPrixAchat;
-
-  /// No description provided for @permModifierPrix.
-  ///
-  /// In fr, this message translates to:
-  /// **'Modifier le prix en caisse'**
-  String get permModifierPrix;
-
-  /// No description provided for @permAppliquerRemise.
-  ///
-  /// In fr, this message translates to:
-  /// **'Appliquer une remise'**
-  String get permAppliquerRemise;
-
-  /// No description provided for @permAnnulerVente.
-  ///
-  /// In fr, this message translates to:
-  /// **'Annuler une vente'**
-  String get permAnnulerVente;
-
-  /// No description provided for @permSupprimerDocument.
-  ///
-  /// In fr, this message translates to:
-  /// **'Supprimer un document'**
-  String get permSupprimerDocument;
-
-  /// No description provided for @permExporterDonnees.
-  ///
-  /// In fr, this message translates to:
-  /// **'Exporter les données'**
-  String get permExporterDonnees;
-
-  /// No description provided for @permGererUtilisateurs.
-  ///
-  /// In fr, this message translates to:
-  /// **'Gérer les utilisateurs'**
-  String get permGererUtilisateurs;
 
   /// No description provided for @roleAdmin.
   ///
@@ -13118,6 +13046,756 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Solde'**
   String get gcSolde;
+
+  /// No description provided for @permVoirMarge.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir la marge / taux de marge'**
+  String get permVoirMarge;
+
+  /// No description provided for @permModifierPrixVente.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier le prix de vente'**
+  String get permModifierPrixVente;
+
+  /// No description provided for @permAnnulerOperations.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annuler des opérations'**
+  String get permAnnulerOperations;
+
+  /// No description provided for @permChangerCaisseMagasin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Changer sa caisse / son magasin'**
+  String get permChangerCaisseMagasin;
+
+  /// No description provided for @permGererTransfertsCaisse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Gérer les transferts entre caisses'**
+  String get permGererTransfertsCaisse;
+
+  /// No description provided for @permVoirStockTousMagasins.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir le stock de tous les magasins'**
+  String get permVoirStockTousMagasins;
+
+  /// No description provided for @usrDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Comptes, rôles et permissions'**
+  String get usrDescription;
+
+  /// No description provided for @usrOngletUtilisateurs.
+  ///
+  /// In fr, this message translates to:
+  /// **'Utilisateurs'**
+  String get usrOngletUtilisateurs;
+
+  /// No description provided for @usrOngletRoles.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rôles'**
+  String get usrOngletRoles;
+
+  /// No description provided for @usrEntiteUtilisateurs.
+  ///
+  /// In fr, this message translates to:
+  /// **'utilisateurs'**
+  String get usrEntiteUtilisateurs;
+
+  /// No description provided for @usrEntiteUtilisateur.
+  ///
+  /// In fr, this message translates to:
+  /// **'utilisateur'**
+  String get usrEntiteUtilisateur;
+
+  /// No description provided for @usrEntiteRoles.
+  ///
+  /// In fr, this message translates to:
+  /// **'rôles'**
+  String get usrEntiteRoles;
+
+  /// No description provided for @usrEntiteRole.
+  ///
+  /// In fr, this message translates to:
+  /// **'rôle'**
+  String get usrEntiteRole;
+
+  /// No description provided for @usrKpiActifs.
+  ///
+  /// In fr, this message translates to:
+  /// **'Utilisateurs actifs'**
+  String get usrKpiActifs;
+
+  /// No description provided for @usrKpiVentes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ventes (30 j)'**
+  String get usrKpiVentes;
+
+  /// No description provided for @usrKpiTotal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Total vendu'**
+  String get usrKpiTotal;
+
+  /// No description provided for @usrRole.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rôle'**
+  String get usrRole;
+
+  /// No description provided for @usrEtat.
+  ///
+  /// In fr, this message translates to:
+  /// **'État'**
+  String get usrEtat;
+
+  /// No description provided for @usrActif.
+  ///
+  /// In fr, this message translates to:
+  /// **'Actif'**
+  String get usrActif;
+
+  /// No description provided for @usrInactif.
+  ///
+  /// In fr, this message translates to:
+  /// **'Inactif'**
+  String get usrInactif;
+
+  /// No description provided for @usrRecherche.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom, identifiant ou téléphone…'**
+  String get usrRecherche;
+
+  /// No description provided for @usrColUtilisateur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Utilisateur'**
+  String get usrColUtilisateur;
+
+  /// No description provided for @usrColCaisse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Caisse'**
+  String get usrColCaisse;
+
+  /// No description provided for @usrColMagasins.
+  ///
+  /// In fr, this message translates to:
+  /// **'Magasins'**
+  String get usrColMagasins;
+
+  /// No description provided for @usrColVentes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ventes'**
+  String get usrColVentes;
+
+  /// No description provided for @usrColDernierAcces.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dernier accès'**
+  String get usrColDernierAcces;
+
+  /// No description provided for @usrTelephone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Téléphone'**
+  String get usrTelephone;
+
+  /// No description provided for @usrLibre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Libre'**
+  String get usrLibre;
+
+  /// No description provided for @usrReinitialiser.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réinitialiser le mot de passe'**
+  String get usrReinitialiser;
+
+  /// No description provided for @usrDesactiver.
+  ///
+  /// In fr, this message translates to:
+  /// **'Désactiver'**
+  String get usrDesactiver;
+
+  /// No description provided for @usrNouvel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouvel utilisateur'**
+  String get usrNouvel;
+
+  /// No description provided for @usrModifierTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier l\'utilisateur'**
+  String get usrModifierTitre;
+
+  /// No description provided for @usrFormDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le rôle définit les modules visibles ; la caisse attachée verrouille l\'écran Caisse.'**
+  String get usrFormDescription;
+
+  /// No description provided for @usrSectionCompte.
+  ///
+  /// In fr, this message translates to:
+  /// **'Compte'**
+  String get usrSectionCompte;
+
+  /// No description provided for @usrSectionAcces.
+  ///
+  /// In fr, this message translates to:
+  /// **'Accès'**
+  String get usrSectionAcces;
+
+  /// No description provided for @usrCode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code'**
+  String get usrCode;
+
+  /// No description provided for @usrIdentifiant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Identifiant'**
+  String get usrIdentifiant;
+
+  /// No description provided for @usrIdentifiantIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'ex. amina'**
+  String get usrIdentifiantIndice;
+
+  /// No description provided for @usrIdentifiantPris.
+  ///
+  /// In fr, this message translates to:
+  /// **'Identifiant déjà utilisé'**
+  String get usrIdentifiantPris;
+
+  /// No description provided for @usrIdentifiantInvalide.
+  ///
+  /// In fr, this message translates to:
+  /// **'3 à 32 caractères : lettres, chiffres, . _ -'**
+  String get usrIdentifiantInvalide;
+
+  /// No description provided for @usrMotDePasse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mot de passe'**
+  String get usrMotDePasse;
+
+  /// No description provided for @usrNouveauMotDePasse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau mot de passe'**
+  String get usrNouveauMotDePasse;
+
+  /// No description provided for @usrMdpIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'8 caractères minimum'**
+  String get usrMdpIndice;
+
+  /// No description provided for @usrMdpVide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Laisser vide pour ne pas changer'**
+  String get usrMdpVide;
+
+  /// No description provided for @usrForce0.
+  ///
+  /// In fr, this message translates to:
+  /// **'Très faible'**
+  String get usrForce0;
+
+  /// No description provided for @usrForce1.
+  ///
+  /// In fr, this message translates to:
+  /// **'Faible'**
+  String get usrForce1;
+
+  /// No description provided for @usrForce2.
+  ///
+  /// In fr, this message translates to:
+  /// **'Moyen'**
+  String get usrForce2;
+
+  /// No description provided for @usrForce3.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bon'**
+  String get usrForce3;
+
+  /// No description provided for @usrForce4.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fort'**
+  String get usrForce4;
+
+  /// No description provided for @usrPrenom.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prénom'**
+  String get usrPrenom;
+
+  /// No description provided for @usrNom.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom'**
+  String get usrNom;
+
+  /// No description provided for @usrTelephoneIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'05xx xx xx xx'**
+  String get usrTelephoneIndice;
+
+  /// No description provided for @usrAdminRole.
+  ///
+  /// In fr, this message translates to:
+  /// **'Accès complet, ne peut pas être restreint'**
+  String get usrAdminRole;
+
+  /// No description provided for @usrNbPermissions.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n} permissions'**
+  String usrNbPermissions(int n);
+
+  /// No description provided for @usrCaisseAttachee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Caisse attachée'**
+  String get usrCaisseAttachee;
+
+  /// No description provided for @usrCaisseAdmin.
+  ///
+  /// In fr, this message translates to:
+  /// **'L\'admin choisit sa caisse librement'**
+  String get usrCaisseAdmin;
+
+  /// No description provided for @usrCaisseIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Verrouille la caisse de l\'écran Caisse'**
+  String get usrCaisseIndice;
+
+  /// No description provided for @usrAucune.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune'**
+  String get usrAucune;
+
+  /// No description provided for @usrMagasinsIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le premier est le magasin par défaut à la connexion'**
+  String get usrMagasinsIndice;
+
+  /// No description provided for @usrObservation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Observation'**
+  String get usrObservation;
+
+  /// No description provided for @usrCree.
+  ///
+  /// In fr, this message translates to:
+  /// **'Utilisateur créé'**
+  String get usrCree;
+
+  /// No description provided for @usrModifie.
+  ///
+  /// In fr, this message translates to:
+  /// **'Utilisateur modifié'**
+  String get usrModifie;
+
+  /// No description provided for @usrErrTelephone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Téléphone obligatoire'**
+  String get usrErrTelephone;
+
+  /// No description provided for @usrErrMotDePasse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mot de passe trop faible'**
+  String get usrErrMotDePasse;
+
+  /// No description provided for @usrErrRole.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rôle non assignable'**
+  String get usrErrRole;
+
+  /// No description provided for @usrErrMagasins.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisissez au moins un magasin'**
+  String get usrErrMagasins;
+
+  /// No description provided for @usrErrInconnu.
+  ///
+  /// In fr, this message translates to:
+  /// **'Utilisateur introuvable'**
+  String get usrErrInconnu;
+
+  /// No description provided for @usrInfos.
+  ///
+  /// In fr, this message translates to:
+  /// **'Informations générales'**
+  String get usrInfos;
+
+  /// No description provided for @usrPermissionsRole.
+  ///
+  /// In fr, this message translates to:
+  /// **'Permissions du rôle'**
+  String get usrPermissionsRole;
+
+  /// No description provided for @usrAudit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Audit'**
+  String get usrAudit;
+
+  /// No description provided for @usrCreePar.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créé par'**
+  String get usrCreePar;
+
+  /// No description provided for @usrCreeLe.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créé le'**
+  String get usrCreeLe;
+
+  /// No description provided for @usrModifiePar.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifié par'**
+  String get usrModifiePar;
+
+  /// No description provided for @usrModifieLe.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifié le'**
+  String get usrModifieLe;
+
+  /// No description provided for @usrLibreAdmin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Libre (admin)'**
+  String get usrLibreAdmin;
+
+  /// No description provided for @usrDefaut.
+  ///
+  /// In fr, this message translates to:
+  /// **'(défaut)'**
+  String get usrDefaut;
+
+  /// No description provided for @usrMdpReinitTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mot de passe réinitialisé'**
+  String get usrMdpReinitTitre;
+
+  /// No description provided for @usrMdpReinitMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Communiquez ce mot de passe temporaire à @{identifiant} : {mdp}. Il pourra le changer dans Mon compte.'**
+  String usrMdpReinitMessage(String identifiant, String mdp);
+
+  /// No description provided for @usrBloqueAdmin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Compte administrateur principal'**
+  String get usrBloqueAdmin;
+
+  /// No description provided for @usrBloqueCourant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre propre compte'**
+  String get usrBloqueCourant;
+
+  /// No description provided for @usrBloqueInactif.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déjà inactif'**
+  String get usrBloqueInactif;
+
+  /// No description provided for @usrDesactives.
+  ///
+  /// In fr, this message translates to:
+  /// **'Utilisateurs désactivés'**
+  String get usrDesactives;
+
+  /// No description provided for @usrDesactivesDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ils ne peuvent plus se connecter'**
+  String get usrDesactivesDetail;
+
+  /// No description provided for @usrColModules.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modules'**
+  String get usrColModules;
+
+  /// No description provided for @usrColSpeciales.
+  ///
+  /// In fr, this message translates to:
+  /// **'Spéciales'**
+  String get usrColSpeciales;
+
+  /// No description provided for @usrTous.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tous'**
+  String get usrTous;
+
+  /// No description provided for @usrToutes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Toutes'**
+  String get usrToutes;
+
+  /// No description provided for @usrSysteme.
+  ///
+  /// In fr, this message translates to:
+  /// **'Système'**
+  String get usrSysteme;
+
+  /// No description provided for @usrDupliquer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dupliquer'**
+  String get usrDupliquer;
+
+  /// No description provided for @usrNouveauRole.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau rôle'**
+  String get usrNouveauRole;
+
+  /// No description provided for @usrModifierRole.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier le rôle'**
+  String get usrModifierRole;
+
+  /// No description provided for @usrRoleDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Informations, modules accessibles, puis actions sensibles.'**
+  String get usrRoleDescription;
+
+  /// No description provided for @usrRoleConcernes.
+  ///
+  /// In fr, this message translates to:
+  /// **'{code} · {n} utilisateur(s) concerné(s)'**
+  String usrRoleConcernes(String code, int n);
+
+  /// No description provided for @usrPrecedent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Précédent'**
+  String get usrPrecedent;
+
+  /// No description provided for @usrSuivant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Suivant'**
+  String get usrSuivant;
+
+  /// No description provided for @usrEnregistrerRole.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrer le rôle'**
+  String get usrEnregistrerRole;
+
+  /// No description provided for @usrEtapeInfos.
+  ///
+  /// In fr, this message translates to:
+  /// **'Informations'**
+  String get usrEtapeInfos;
+
+  /// No description provided for @usrEtapeInfosDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom, état'**
+  String get usrEtapeInfosDesc;
+
+  /// No description provided for @usrEtapePermissions.
+  ///
+  /// In fr, this message translates to:
+  /// **'Permissions'**
+  String get usrEtapePermissions;
+
+  /// No description provided for @usrEtapeModules.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n} modules'**
+  String usrEtapeModules(int n);
+
+  /// No description provided for @usrEtapeSpeciales.
+  ///
+  /// In fr, this message translates to:
+  /// **'Permissions spéciales'**
+  String get usrEtapeSpeciales;
+
+  /// No description provided for @usrEtapeSpecialesDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Actions sensibles'**
+  String get usrEtapeSpecialesDesc;
+
+  /// No description provided for @usrNomRole.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom du rôle'**
+  String get usrNomRole;
+
+  /// No description provided for @usrNomRoleIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex. Caissier senior'**
+  String get usrNomRoleIndice;
+
+  /// No description provided for @usrNomRolePris.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce nom de rôle existe déjà'**
+  String get usrNomRolePris;
+
+  /// No description provided for @usrObsRoleIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'À quoi sert ce rôle ?'**
+  String get usrObsRoleIndice;
+
+  /// No description provided for @usrModulesTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modules accessibles'**
+  String get usrModulesTitre;
+
+  /// No description provided for @usrModulesDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le rôle ne voit dans la barre latérale et le menu que les modules cochés. Paramètres et Historique s\'attribuent comme les autres modules.'**
+  String get usrModulesDesc;
+
+  /// No description provided for @usrSpecialesDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Actions transversales, vérifiées dans tous les modules (affichage des prix d\'achat, annulations, changement de caisse…).'**
+  String get usrSpecialesDesc;
+
+  /// No description provided for @usrConfirmRoleTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier ce rôle ?'**
+  String get usrConfirmRoleTitre;
+
+  /// No description provided for @usrConfirmRoleMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n} utilisateur(s) verront leurs accès changer à la prochaine connexion.'**
+  String usrConfirmRoleMessage(int n);
+
+  /// No description provided for @usrRoleEnregistre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rôle enregistré'**
+  String get usrRoleEnregistre;
+
+  /// No description provided for @usrRoleEnregistreDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Permissions appliquées'**
+  String get usrRoleEnregistreDetail;
+
+  /// No description provided for @usrRoleTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rôle {nom}'**
+  String usrRoleTitre(String nom);
+
+  /// No description provided for @usrAdminBloqueTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modification impossible'**
+  String get usrAdminBloqueTitre;
+
+  /// No description provided for @usrAdminBloqueMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le rôle Admin est un rôle système : ses permissions ne peuvent pas être modifiées.'**
+  String get usrAdminBloqueMessage;
+
+  /// No description provided for @usrRoleBloqueSysteme.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rôle système Admin'**
+  String get usrRoleBloqueSysteme;
+
+  /// No description provided for @usrRoleBloqueUtilisateurs.
+  ///
+  /// In fr, this message translates to:
+  /// **'Des utilisateurs ont ce rôle : réaffectez-les'**
+  String get usrRoleBloqueUtilisateurs;
+
+  /// No description provided for @usrRolesDesactives.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rôles désactivés'**
+  String get usrRolesDesactives;
+
+  /// No description provided for @usrNbUtilisateurs.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n} utilisateur(s)'**
+  String usrNbUtilisateurs(int n);
+
+  /// No description provided for @usrCopie.
+  ///
+  /// In fr, this message translates to:
+  /// **'{nom} (copie)'**
+  String usrCopie(String nom);
+
+  /// No description provided for @usrRoleErrModules.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cochez au moins un module'**
+  String get usrRoleErrModules;
+
+  /// No description provided for @usrRoleErrInconnu.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rôle introuvable'**
+  String get usrRoleErrInconnu;
+
+  /// No description provided for @usrAucunUtilisateur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun utilisateur.'**
+  String get usrAucunUtilisateur;
+
+  /// No description provided for @usrAucunRole.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun rôle.'**
+  String get usrAucunRole;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
