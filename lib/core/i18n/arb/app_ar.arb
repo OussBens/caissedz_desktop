@@ -1996,5 +1996,7 @@
   "posEntreeTitre": "إدخال سريع",
   "posEntreeDesc": "{nom} · {magasin}",
   "posEntreeFaite": "تم تسجيل الإدخال السريع",
-  "posEntreeFaiteDesc": "{nom} · تم تحديث المخزون"
+  "posEntreeFaiteDesc": "{nom} · تم تحديث المخزون",
+  "produitErreurUtilise": "هذا المنتج مستخدم (مبيعات أو مشتريات أو مخزون): لا يمكن حذفه.",
+  "catalogueErreurNomPris": "هذا الاسم مستخدم بالفعل."
 }

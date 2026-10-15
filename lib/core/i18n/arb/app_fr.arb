@@ -2636,5 +2636,7 @@
         "type": "String"
       }
     }
-  }
+  },
+  "produitErreurUtilise": "Ce produit est utilisé (ventes, achats ou stock) : il ne peut pas être supprimé.",
+  "catalogueErreurNomPris": "Ce nom est déjà utilisé."
 }

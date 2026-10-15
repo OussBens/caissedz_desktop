@@ -11,6 +11,7 @@ import 'v009_ecrans_ds.dart';
 import 'v010_couts_ventes.dart';
 import 'v011_type_panier.dart';
 import 'v012_retours.dart';
+import 'v013_produits.dart';
 
 export 'migration.dart';
 
@@ -28,4 +29,5 @@ const List<Migration> toutesLesMigrations = [
   MigrationV010CoutsVentes(),
   MigrationV011TypePanier(),
   MigrationV012Retours(),
+  MigrationV013Produits(),
 ];

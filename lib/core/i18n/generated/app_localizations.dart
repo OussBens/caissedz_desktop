@@ -9560,6 +9560,18 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'{nom} · stock mis à jour'**
   String posEntreeFaiteDesc(String nom);
+
+  /// No description provided for @produitErreurUtilise.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce produit est utilisé (ventes, achats ou stock) : il ne peut pas être supprimé.'**
+  String get produitErreurUtilise;
+
+  /// No description provided for @catalogueErreurNomPris.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce nom est déjà utilisé.'**
+  String get catalogueErreurNomPris;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

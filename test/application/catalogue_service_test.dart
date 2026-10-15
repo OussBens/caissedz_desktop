@@ -140,6 +140,62 @@ void main() {
         throwsA(isA<CatalogueException>()),
       );
     });
+
+    test('fiche complète : codes secondaires, emballages, stock initial, affectation, suppression', () async {
+      final base = await ouvrirBaseDeTest();
+      final s = CatalogueService(base.db, utilisateurCode: 'USR0000');
+      final repo = CatalogueRepository(base.db);
+      final p = await s.creerProduit(
+        _p(cb: '6130000000015', pv: 100).copyWith(marque: 'Soummam', service: false, taille: '1 L'),
+        codesSecondaires: ['2000000000015'],
+        emballages: const [
+          EmballageProduit(quantite: 6, prixVente: 550, codeBarres: '6130000000022'),
+          null,
+        ],
+        stockInitial: 12,
+        magasinCode: 'MAG0000',
+      );
+      expect((await repo.produitParCode(p.code))!.marque, 'Soummam');
+      expect(await repo.codesSecondaires(p.code), ['2000000000015']);
+      expect((await repo.produitParCodeBarres('2000000000015'))?.code, p.code);
+      final emb = await s.emballages(p.code);
+      expect(emb.single.quantite, 6);
+      expect(emb.single.prixVente, 550);
+      final mvt = await base.db.query('mouvement_stock', where: 'produit_code = ?', whereArgs: [p.code]);
+      expect(mvt.single['quantite'], 12);
+      // Un code secondaire déjà pris par un colis est refusé.
+      await expectLater(
+        s.creerProduit(_p(designation: 'Autre'), codesSecondaires: ['6130000000022']),
+        throwsA(isA<CatalogueException>().having((e) => e.erreur, 'e', ErreurCatalogue.codeBarresDejaUtilise)),
+      );
+      // Modification : remplacement des codes secondaires, emballage « Carton » ajouté.
+      await s.modifierProduit(
+        p,
+        codesSecondaires: const [],
+        emballages: const [
+          EmballageProduit(quantite: 6, prixVente: 540),
+          EmballageProduit(quantite: 24, prixVente: 2100),
+        ],
+      );
+      expect(await repo.codesSecondaires(p.code), isEmpty);
+      expect((await s.emballages(p.code)).map((c) => c.quantite), [6, 24]);
+
+      final c = await s.creerCategorie('Laitiers', description: 'Lait et dérivés');
+      final eau = await s.creerProduit(_p(designation: 'Eau'));
+      final rem = await s.creerRemise(const Remise(code: '', designation: '-5 %', type: 'Pourcentage', valeur: 5));
+      final sc = (await repo.sousCategories(c.code)).single;
+      expect(await s.affecter([eau.code], sousCategorieCode: sc.code), 1);
+      expect((await repo.produitParCode(eau.code))!.categorieCode, c.code);
+      expect(await s.affecter([eau.code], remiseCode: rem.code), 1);
+      expect((await repo.produitParCode(eau.code))!.remiseCode, rem.code);
+      // Produit avec stock : suppression refusée ; produit sans mouvement : supprimé.
+      await expectLater(
+        s.supprimerProduits([p.code]),
+        throwsA(isA<CatalogueException>().having((e) => e.erreur, 'e', ErreurCatalogue.produitUtilise)),
+      );
+      await s.supprimerProduits([eau.code]);
+      expect(await repo.produitParCode(eau.code), isNull);
+    });
   });
 
   group('ImportProduitsService', () {

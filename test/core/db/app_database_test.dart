@@ -125,7 +125,7 @@ void main() {
         'retour_code': 'RET0001',
       });
 
-      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [12]);
+      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [12, 13]);
       final r = (await db.query('retour')).single;
       expect(r['type'], 'Client');
       expect(r['document_code'], 'VTE0001');
@@ -148,6 +148,36 @@ void main() {
         }),
         throwsA(anything), // fournisseur obligatoire pour un retour fournisseur
       );
+    });
+  });
+
+  group('Migration v13 (fiche produit)', () {
+    test('ajoute les champs produit avec leurs valeurs par défaut et les codes-barres secondaires', () async {
+      final base = await AppDatabase.ouvrirEnMemoire(
+        cleHex: cleTestHex,
+        migrations: toutesLesMigrations.sublist(0, 12),
+      );
+      addTearDown(base.fermer);
+      final db = base.db;
+      await db.insert('produit', {
+        'code': 'PRD0001',
+        'designation': 'Lait',
+        'categorie_code': 'CATE0000',
+        'sous_categorie_code': 'SC0000',
+        'code_barres': '6130000000015',
+      });
+      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [13]);
+      final p = (await db.query('produit')).single;
+      expect(p['service'], 0);
+      expect(p['suivi_serie'], 0);
+      expect(p['marque'], isNull);
+      expect((await db.query('categorie', where: "code = 'CATE0000'")).single['actif'], 1);
+      await db.insert('produit_code_detail', {'produit_code': 'PRD0001', 'code_barres': '2000000000015'});
+      await expectLater(
+        db.insert('produit_code_detail', {'produit_code': 'PRD0001', 'code_barres': '2000000000015'}),
+        throwsA(anything),
+      );
+      expect(await db.rawQuery('PRAGMA foreign_key_check'), isEmpty);
     });
   });
 

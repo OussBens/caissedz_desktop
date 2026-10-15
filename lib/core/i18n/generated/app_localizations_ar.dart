@@ -5006,4 +5006,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String posEntreeFaiteDesc(String nom) {
     return '$nom · تم تحديث المخزون';
   }
+
+  @override
+  String get produitErreurUtilise => 'هذا المنتج مستخدم (مبيعات أو مشتريات أو مخزون): لا يمكن حذفه.';
+
+  @override
+  String get catalogueErreurNomPris => 'هذا الاسم مستخدم بالفعل.';
 }

@@ -27,6 +27,8 @@ String messageErreurCatalogue(AppLocalizations l10n, ErreurCatalogue e) => switc
   ErreurCatalogue.categorieSysteme => l10n.categorieErreurSysteme,
   ErreurCatalogue.categorieUtilisee => l10n.categorieErreurUtilisee,
   ErreurCatalogue.lignesVides => l10n.packErreurLignes,
+  ErreurCatalogue.produitUtilise => l10n.produitErreurUtilise,
+  ErreurCatalogue.nomDejaUtilise => l10n.catalogueErreurNomPris,
 };
 
 /// Formulaire détaillé de produit (création ou modification).

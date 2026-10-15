@@ -5011,4 +5011,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String posEntreeFaiteDesc(String nom) {
     return '$nom · stock updated';
   }
+
+  @override
+  String get produitErreurUtilise => 'This product is in use (sales, purchases or stock): it cannot be deleted.';
+
+  @override
+  String get catalogueErreurNomPris => 'This name is already in use.';
 }

@@ -1996,5 +1996,7 @@
   "posEntreeTitre": "Quick stock entry",
   "posEntreeDesc": "{nom} · {magasin}",
   "posEntreeFaite": "Quick entry saved",
-  "posEntreeFaiteDesc": "{nom} · stock updated"
+  "posEntreeFaiteDesc": "{nom} · stock updated",
+  "produitErreurUtilise": "This product is in use (sales, purchases or stock): it cannot be deleted.",
+  "catalogueErreurNomPris": "This name is already in use."
 }

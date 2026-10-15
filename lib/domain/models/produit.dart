@@ -23,6 +23,16 @@ class Produit {
     this.source = 'Manuel',
     this.actif = true,
     this.image,
+    this.marque,
+    this.description,
+    this.fournisseurCode,
+    this.dateExpiration,
+    this.service = false,
+    this.taille,
+    this.couleur,
+    this.observation,
+    this.suiviSerie = false,
+    this.remiseCode,
   });
 
   final String code;
@@ -45,6 +55,24 @@ class Produit {
   final String source;
   final bool actif;
   final String? image;
+  final String? marque;
+  final String? description;
+
+  /// Fournisseur habituel (code).
+  final String? fournisseurCode;
+  final DateTime? dateExpiration;
+
+  /// Produit-service (réparation, livraison…) : aucun stock.
+  final bool service;
+  final String? taille;
+  final String? couleur;
+  final String? observation;
+
+  /// Saisie du n° de série obligatoire à la vente.
+  final bool suiviSerie;
+
+  /// Remise « Par Produit » affectée (code).
+  final String? remiseCode;
 
   Produit copyWith({
     String? designation,
@@ -64,6 +92,18 @@ class Produit {
     String? source,
     bool? actif,
     String? image,
+    String? marque,
+    String? description,
+    String? fournisseurCode,
+    DateTime? dateExpiration,
+    bool effacerExpiration = false,
+    bool? service,
+    String? taille,
+    String? couleur,
+    String? observation,
+    bool? suiviSerie,
+    String? remiseCode,
+    bool effacerRemise = false,
   }) => Produit(
     code: code,
     designation: designation ?? this.designation,
@@ -81,6 +121,16 @@ class Produit {
     source: source ?? this.source,
     actif: actif ?? this.actif,
     image: image ?? this.image,
+    marque: marque ?? this.marque,
+    description: description ?? this.description,
+    fournisseurCode: fournisseurCode ?? this.fournisseurCode,
+    dateExpiration: effacerExpiration ? null : (dateExpiration ?? this.dateExpiration),
+    service: service ?? this.service,
+    taille: taille ?? this.taille,
+    couleur: couleur ?? this.couleur,
+    observation: observation ?? this.observation,
+    suiviSerie: suiviSerie ?? this.suiviSerie,
+    remiseCode: effacerRemise ? null : (remiseCode ?? this.remiseCode),
   );
 
   Map<String, Object?> versLigne() => {
@@ -100,7 +150,19 @@ class Produit {
     'source': source,
     'actif': actif ? 1 : 0,
     'image': image,
+    'marque': _vide(marque),
+    'description': _vide(description),
+    'fournisseur_code': fournisseurCode,
+    'date_expiration': dateExpiration?.toIso8601String(),
+    'service': service ? 1 : 0,
+    'taille': _vide(taille),
+    'couleur': _vide(couleur),
+    'observation': _vide(observation),
+    'suivi_serie': suiviSerie ? 1 : 0,
+    'remise_code': remiseCode,
   };
+
+  static String? _vide(String? s) => s == null || s.trim().isEmpty ? null : s.trim();
 
   factory Produit.depuisLigne(Map<String, Object?> r) => Produit(
     code: r['code'] as String,
@@ -119,6 +181,16 @@ class Produit {
     source: r['source'] as String,
     actif: (r['actif'] as int) == 1,
     image: r['image'] as String?,
+    marque: r['marque'] as String?,
+    description: r['description'] as String?,
+    fournisseurCode: r['fournisseur_code'] as String?,
+    dateExpiration: DateTime.tryParse((r['date_expiration'] as String?) ?? ''),
+    service: (r['service'] as int? ?? 0) == 1,
+    taille: r['taille'] as String?,
+    couleur: r['couleur'] as String?,
+    observation: r['observation'] as String?,
+    suiviSerie: (r['suivi_serie'] as int? ?? 0) == 1,
+    remiseCode: r['remise_code'] as String?,
   );
 
   @override
@@ -152,12 +224,27 @@ class Produit {
 /// Catégorie / sous-catégorie.
 @immutable
 class Categorie {
-  const Categorie({required this.code, required this.nom, this.systeme = false});
+  const Categorie({
+    required this.code,
+    required this.nom,
+    this.systeme = false,
+    this.description,
+    this.actif = true,
+  });
   final String code;
   final String nom;
   final bool systeme;
-  factory Categorie.depuisLigne(Map<String, Object?> r) =>
-      Categorie(code: r['code'] as String, nom: r['nom'] as String, systeme: (r['systeme'] as int) == 1);
+  final String? description;
+
+  /// Visible en caisse et dans les listes de choix.
+  final bool actif;
+  factory Categorie.depuisLigne(Map<String, Object?> r) => Categorie(
+    code: r['code'] as String,
+    nom: r['nom'] as String,
+    systeme: (r['systeme'] as int) == 1,
+    description: r['description'] as String?,
+    actif: (r['actif'] as int? ?? 1) == 1,
+  );
   @override
   bool operator ==(Object other) => other is Categorie && other.code == code && other.nom == nom;
   @override
@@ -166,22 +253,43 @@ class Categorie {
 
 @immutable
 class SousCategorie {
-  const SousCategorie({required this.code, required this.categorieCode, required this.nom, this.systeme = false});
+  const SousCategorie({
+    required this.code,
+    required this.categorieCode,
+    required this.nom,
+    this.systeme = false,
+    this.description,
+    this.actif = true,
+  });
   final String code;
   final String categorieCode;
   final String nom;
   final bool systeme;
+  final String? description;
+  final bool actif;
   factory SousCategorie.depuisLigne(Map<String, Object?> r) => SousCategorie(
     code: r['code'] as String,
     categorieCode: r['categorie_code'] as String,
     nom: r['nom'] as String,
     systeme: (r['systeme'] as int) == 1,
+    description: r['description'] as String?,
+    actif: (r['actif'] as int? ?? 1) == 1,
   );
   @override
   bool operator ==(Object other) =>
       other is SousCategorie && other.code == code && other.nom == nom && other.categorieCode == categorieCode;
   @override
   int get hashCode => Object.hash(code, nom, categorieCode);
+}
+
+/// Emballage saisi dans la fiche produit (§7.2 `emballage1/emballageP1` = petit colis, `emballage2` = grand
+/// colis) ; enregistré comme [Colis] du produit.
+@immutable
+class EmballageProduit {
+  const EmballageProduit({required this.quantite, required this.prixVente, this.codeBarres});
+  final int quantite;
+  final double prixVente;
+  final String? codeBarres;
 }
 
 /// Colis : conditionnement de N unités d'un produit, avec son propre code-barres et prix.
@@ -242,6 +350,7 @@ class Pack {
     required this.prixVente,
     this.actif = true,
     this.lignes = const [],
+    this.description,
   });
   final String code;
   final String designation;
@@ -249,6 +358,7 @@ class Pack {
   final double prixVente;
   final bool actif;
   final List<PackLigne> lignes;
+  final String? description;
   Pack copyWith({List<PackLigne>? lignes}) => Pack(
     code: code,
     designation: designation,
@@ -256,6 +366,7 @@ class Pack {
     prixVente: prixVente,
     actif: actif,
     lignes: lignes ?? this.lignes,
+    description: description,
   );
   Map<String, Object?> versLigne() => {
     'code': code,
@@ -263,6 +374,7 @@ class Pack {
     'code_barres': codeBarres,
     'prix_vente': prixVente,
     'actif': actif ? 1 : 0,
+    'description': description,
   };
   factory Pack.depuisLigne(Map<String, Object?> r, [List<PackLigne> lignes = const []]) => Pack(
     code: r['code'] as String,
@@ -271,6 +383,7 @@ class Pack {
     prixVente: (r['prix_vente'] as num).toDouble(),
     actif: (r['actif'] as int) == 1,
     lignes: lignes,
+    description: r['description'] as String?,
   );
 }
 
@@ -299,6 +412,8 @@ class Remise {
     this.dateDebut,
     this.dateFin,
     this.actif = true,
+    this.cumulable = false,
+    this.observation,
   });
   final String code;
   final String designation;
@@ -311,6 +426,24 @@ class Remise {
   final DateTime? dateDebut;
   final DateTime? dateFin;
   final bool actif;
+
+  /// Cumulable avec la remise ticket.
+  final bool cumulable;
+  final String? observation;
+
+  bool get estPourcentage => type == 'Pourcentage';
+
+  /// Statut d'affichage : `actif`, `enAttente` (programmée), `expire` ou `inactif`.
+  String statut(DateTime date) {
+    if (!actif) return 'inactif';
+    if (dateDebut != null && date.isBefore(dateDebut!)) return 'enAttente';
+    if (dateFin != null && date.isAfter(dateFin!)) return 'expire';
+    return 'actif';
+  }
+
+  /// Prix remisé d'un prix de base.
+  double appliquer(double prix) =>
+      (estPourcentage ? prix * (1 - valeur / 100) : prix - valeur).clamp(0, double.infinity).toDouble();
 
   bool estApplicable(DateTime date, {required String produitCode, required String categorieCode}) {
     if (!actif) return false;
@@ -331,6 +464,8 @@ class Remise {
     'date_debut': dateDebut?.toIso8601String(),
     'date_fin': dateFin?.toIso8601String(),
     'actif': actif ? 1 : 0,
+    'cumulable': cumulable ? 1 : 0,
+    'observation': observation,
   };
   factory Remise.depuisLigne(Map<String, Object?> r) => Remise(
     code: r['code'] as String,
@@ -342,5 +477,7 @@ class Remise {
     dateDebut: DateTime.tryParse((r['date_debut'] as String?) ?? ''),
     dateFin: DateTime.tryParse((r['date_fin'] as String?) ?? ''),
     actif: (r['actif'] as int) == 1,
+    cumulable: (r['cumulable'] as int? ?? 0) == 1,
+    observation: r['observation'] as String?,
   );
 }

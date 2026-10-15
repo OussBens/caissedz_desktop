@@ -30,11 +30,36 @@ class CatalogueRepository {
     whereArgs: categorieCode == null ? null : [categorieCode],
     orderBy: 'code',
   )).map(SousCategorie.depuisLigne).toList();
-  Future<void> insererCategorie(Categorie c) => db.insert('categorie', {'code': c.code, 'nom': c.nom, 'systeme': 0});
+  Future<void> insererCategorie(Categorie c) => db.insert('categorie', {
+    'code': c.code,
+    'nom': c.nom,
+    'systeme': 0,
+    'description': c.description,
+    'actif': c.actif ? 1 : 0,
+  });
+  Future<void> modifierCategorie(Categorie c) => db.update(
+    'categorie',
+    {'nom': c.nom, 'description': c.description, 'actif': c.actif ? 1 : 0},
+    where: 'code = ?',
+    whereArgs: [c.code],
+  );
+  Future<void> modifierSousCategorie(SousCategorie s) => db.update(
+    'sous_categorie',
+    {'nom': s.nom, 'categorie_code': s.categorieCode, 'description': s.description, 'actif': s.actif ? 1 : 0},
+    where: 'code = ?',
+    whereArgs: [s.code],
+  );
   Future<void> renommerCategorie(String code, String nom) =>
       db.update('categorie', {'nom': nom}, where: 'code = ? AND systeme = 0', whereArgs: [code]);
   Future<void> insererSousCategorie(SousCategorie s) =>
-      db.insert('sous_categorie', {'code': s.code, 'categorie_code': s.categorieCode, 'nom': s.nom, 'systeme': 0});
+      db.insert('sous_categorie', {
+        'code': s.code,
+        'categorie_code': s.categorieCode,
+        'nom': s.nom,
+        'systeme': 0,
+        'description': s.description,
+        'actif': s.actif ? 1 : 0,
+      });
   Future<void> renommerSousCategorie(String code, String nom) =>
       db.update('sous_categorie', {'nom': nom}, where: 'code = ? AND systeme = 0', whereArgs: [code]);
   Future<int> nbProduitsCategorie(String code) async =>
@@ -77,17 +102,65 @@ class CatalogueRepository {
     return rows.isEmpty ? null : Produit.depuisLigne(rows.first);
   }
 
+  /// Produit par code-barres principal ou secondaire (`produit_code_detail`).
   Future<Produit?> produitParCodeBarres(String codeBarres) async {
-    final rows = await db.query('produit', where: 'code_barres = ?', whereArgs: [codeBarres]);
+    final rows = await db.rawQuery(
+      'SELECT * FROM produit WHERE code_barres = ? '
+      'OR code IN (SELECT produit_code FROM produit_code_detail WHERE code_barres = ?) LIMIT 1',
+      [codeBarres, codeBarres],
+    );
     return rows.isEmpty ? null : Produit.depuisLigne(rows.first);
   }
 
-  Future<bool> codeBarresDisponible(String codeBarres, {String? saufProduit}) async {
-    for (final (table, col) in [('produit', 'code'), ('colis', 'code'), ('pack', 'code')]) {
+  /// Code-barres libre (produits, codes secondaires, colis, packs). [saufProduit] ignore ce produit et ses
+  /// codes secondaires ; [saufColis] ignore ce colis.
+  Future<bool> codeBarresDisponible(String codeBarres, {String? saufProduit, String? saufColis}) async {
+    for (final (table, col) in [
+      ('produit', 'code'),
+      ('produit_code_detail', 'produit_code'),
+      ('colis', 'code'),
+      ('pack', 'code'),
+    ]) {
       final rows = await db.query(table, columns: [col], where: 'code_barres = ?', whereArgs: [codeBarres]);
-      if (rows.isNotEmpty && !(table == 'produit' && rows.first[col] == saufProduit)) return false;
+      if (rows.isEmpty) continue;
+      final v = rows.first[col];
+      if ((table == 'produit' || table == 'produit_code_detail') && v == saufProduit) continue;
+      if (table == 'colis' && v == saufColis) continue;
+      return false;
     }
     return true;
+  }
+
+  Future<List<String>> codesSecondaires(String produitCode) async => [
+    for (final r in await db.query(
+      'produit_code_detail',
+      where: 'produit_code = ?',
+      whereArgs: [produitCode],
+      orderBy: 'code_barres',
+    ))
+      r['code_barres'] as String,
+  ];
+
+  Future<void> remplacerCodesSecondaires(String produitCode, List<String> codes) async {
+    await db.delete('produit_code_detail', where: 'produit_code = ?', whereArgs: [produitCode]);
+    for (final c in codes) {
+      await db.insert('produit_code_detail', {'produit_code': produitCode, 'code_barres': c});
+    }
+  }
+
+  /// Nombre de mouvements de stock et de compositions de packs qui référencent un produit.
+  Future<int> nbUsagesProduit(String code) async =>
+      (await db.rawQuery(
+            'SELECT (SELECT count(*) FROM mouvement_stock WHERE produit_code = ?) + '
+            '(SELECT count(*) FROM pack_ligne WHERE produit_code = ?) n',
+            [code, code],
+          )).first['n']
+          as int;
+
+  Future<void> supprimerProduit(String code) async {
+    await db.delete('produit_code_detail', where: 'produit_code = ?', whereArgs: [code]);
+    await db.delete('colis', where: 'produit_code = ?', whereArgs: [code]);
+    await db.delete('produit', where: 'code = ?', whereArgs: [code]);
   }
 
   Future<void> insererProduit(Produit p) => db.insert('produit', p.versLigne());
