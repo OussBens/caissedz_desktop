@@ -2200,27 +2200,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rapportCreancesDettes => 'Receivables and payables';
 
   @override
-  String get historiqueTitre => 'History';
-
-  @override
-  String get historiqueColUtilisateur => 'User';
-
-  @override
-  String get historiqueColAction => 'Action';
-
-  @override
-  String get historiqueColEntite => 'Entity';
-
-  @override
-  String get historiqueColDetail => 'Details';
-
-  @override
-  String get historiqueToutesEntites => 'All entities';
-
-  @override
-  String get historiqueAucun => 'No operation.';
-
-  @override
   String get parametresTitre => 'Settings';
 
   @override
@@ -7459,4 +7438,163 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get zkAucun => 'No zakat calculation.';
+
+  @override
+  String get hiDescription => 'Log of every action · access by role';
+
+  @override
+  String get hiEntite => 'actions';
+
+  @override
+  String get hiKpiActions => 'Actions (7 d)';
+
+  @override
+  String get hiKpiCreations => 'Creations';
+
+  @override
+  String get hiKpiModifications => 'Changes';
+
+  @override
+  String get hiKpiAnnulations => 'Cancellations';
+
+  @override
+  String get hiModule => 'Module';
+
+  @override
+  String get hiAction => 'Action';
+
+  @override
+  String get hiUtilisateur => 'User';
+
+  @override
+  String get hiPoste => 'Workstation';
+
+  @override
+  String get hiTous => 'All';
+
+  @override
+  String get hiToutes => 'All';
+
+  @override
+  String get hiRecherche => 'Ref. or description…';
+
+  @override
+  String get hiColDate => 'Date';
+
+  @override
+  String get hiColRef => 'Ref.';
+
+  @override
+  String get hiColDescription => 'Description';
+
+  @override
+  String get hiColCode => 'Code';
+
+  @override
+  String get hiAucun => 'No action in this period.';
+
+  @override
+  String get hiDetail => 'Details';
+
+  @override
+  String get hiSectionAction => 'Action';
+
+  @override
+  String get hiSectionContexte => 'Context';
+
+  @override
+  String get hiReference => 'Reference';
+
+  @override
+  String get hiEntiteTechnique => 'Entity';
+
+  @override
+  String get hiModuleConnexion => 'Sign-in';
+
+  @override
+  String get hiCatCreation => 'Creation';
+
+  @override
+  String get hiCatModification => 'Change';
+
+  @override
+  String get hiCatAnnulation => 'Cancellation';
+
+  @override
+  String get hiCatConnexion => 'Session';
+
+  @override
+  String get hiCatExport => 'Export';
+
+  @override
+  String get hiActCreation => 'Creation';
+
+  @override
+  String get hiActModification => 'Change';
+
+  @override
+  String get hiActAnnulation => 'Cancellation';
+
+  @override
+  String get hiActDesactivation => 'Deactivation';
+
+  @override
+  String get hiActActivation => 'Activation';
+
+  @override
+  String get hiActSuppression => 'Deletion';
+
+  @override
+  String get hiActVersement => 'Payment';
+
+  @override
+  String get hiActTransfert => 'Transfer';
+
+  @override
+  String get hiActReinitialisation => 'Password reset';
+
+  @override
+  String get hiActRetour => 'Return';
+
+  @override
+  String get hiActParametres => 'Settings';
+
+  @override
+  String get hiActOuverture => 'Opening';
+
+  @override
+  String get hiActFermeture => 'Closing';
+
+  @override
+  String get hiActEncaissement => 'Checkout';
+
+  @override
+  String get hiActConnexion => 'Sign-in';
+
+  @override
+  String get hiActDeconnexion => 'Sign-out';
+
+  @override
+  String get hiActConfiguration => 'Initial setup';
+
+  @override
+  String get hiActClotureZ => 'Z closing';
+
+  @override
+  String get hiActAffectation => 'Assignment';
+
+  @override
+  String get hiActAchat => 'Purchase';
+
+  @override
+  String get hiActApport => 'Cash in';
+
+  @override
+  String get hiActDepense => 'Expense';
+
+  @override
+  String get hiActPaiement => 'Payment';
+
+  @override
+  String get hiActExport => 'Export';
 }

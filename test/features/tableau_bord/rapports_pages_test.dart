@@ -133,15 +133,26 @@ void main() {
     expect(tester.widget<TextField>(_dansCle('zakat_creances')).controller!.text, '300,00');
   });
 
-  testWidgets('historique : journal filtrable', (tester) async {
+  testWidgets('historique : journal filtrable par module et par action, détail', (tester) async {
     final c = await pumpApp(tester, routeInitiale: '/historique', taille: const Size(1400, 900));
     await _jeu(c);
+    c.read(rapportsVersionProvider.notifier).incrementer();
     await tester.pumpAndSettle();
+    expect(find.text('Journal de toutes les actions · accès selon le rôle'), findsOneWidget);
     expect(find.text('Encaissement'), findsWidgets);
-    await clic(tester, find.text('Toutes les entités'));
-    await clic(tester, find.text('produit').last);
+    await clic(tester, find.byKey(const ValueKey('filtre_module_historique')));
+    await clic(tester, find.text('Produits').last);
     expect(find.text('Encaissement'), findsNothing);
     expect(find.text('Création'), findsWidgets);
+    await clic(tester, find.byKey(const ValueKey('filtre_action_historique')));
+    await clic(tester, find.text('Annulation').last);
+    expect(find.text('Création'), findsNothing);
+    await clic(tester, find.byKey(const ValueKey('filtre_action_historique')));
+    await clic(tester, find.text('Toutes').last);
+    await doubleClic(tester, find.text('Lait 1 L').first);
+    expect(find.text('Création · Produits'), findsOneWidget);
+    expect(find.text('Contexte'), findsOneWidget);
+    await clic(tester, find.text('Fermer').last);
   });
 
   testWidgets('paramètres : boutique, vente, impression, serveur, sauvegarde', (tester) async {

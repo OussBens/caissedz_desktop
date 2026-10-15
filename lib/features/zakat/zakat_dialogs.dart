@@ -14,7 +14,7 @@ import '../../domain/referentiel/referentiel.dart';
 import '../../domain/zakat.dart';
 import '../commun/referentiel_ui.dart';
 import '../commun/statuts.dart';
-import '../historique/historique_page.dart';
+import '../historique/historique_providers.dart';
 import '../produits/produits_providers.dart';
 import '../rapports/rapports_providers.dart';
 

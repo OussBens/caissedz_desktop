@@ -15,7 +15,7 @@ import '../../domain/permissions.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
 import '../commun/statuts.dart';
-import '../historique/historique_page.dart';
+import '../historique/historique_providers.dart';
 import '../produits/produits_providers.dart';
 import '../stock/stock_providers.dart';
 import '../tableau_bord/tableau_bord_page.dart';

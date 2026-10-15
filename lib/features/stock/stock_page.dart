@@ -13,7 +13,7 @@ import '../commun/export_module.dart';
 import '../commun/page_module.dart';
 import '../commun/referentiel_ui.dart';
 import '../commun/statuts.dart';
-import '../historique/historique_page.dart';
+import '../historique/historique_providers.dart';
 import '../produits/catalogue_dialogs.dart';
 import '../produits/produits_donnees.dart';
 import '../produits/produits_providers.dart';

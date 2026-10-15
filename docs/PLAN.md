@@ -549,6 +549,17 @@ Référence : `docs/design/CaisseDZ-DS-v2.2/CaisseDZ-DS-v2.2.html`, `bundle-v2.2
     900 px (calcul et audit). « Exonérée » et « Annulée » sont des statuts d'affichage dérivés.
     Écarts Zakat : nissab et taux ne sont pas encore éditables dans Paramètres (lot Paramètres de la phase D) ;
     le taux n'est pas modifiable par calcul (il suit le paramètre au moment de la création).
+  - ✅ Historique (`HistoriqueScreen`, §9.17) : migration v19 — colonne `historique.poste` (nom de la machine,
+    renseigné par `HistoriqueRepository` sur chaque ligne) et index utilisateur. Chaque ligne est rattachée à un
+    module (entité → module, connexions et déconnexions sous « Connexion ») et à une famille d'action du DS
+    (Création, Modification, Annulation, Connexion, Export) qui donne le ton du badge ; l'action stockée (valeur
+    FR) est traduite à l'affichage. Écran : 4 KPI sur 7 jours, période (7 derniers jours par défaut), filtres
+    Module / Action / Utilisateur / Poste, recherche réf. ou description, colonnes du DS (+ code `H…` masqué),
+    export, détail 860 px (Action, Contexte).
+    Écarts Historique : pas de suppression de lignes (§9.17 la prévoit, le DS ne la montre pas ; le journal reste
+    inaltérable, cohérent avec la conformité fiscale) ; pas de tableau « Changements » avant / après (les services
+    ne journalisent qu'une description) ; pas de version ni d'adresse IP dans le contexte ; les exports et
+    sauvegardes ne sont pas encore journalisés (famille « Export » prête mais vide).
   - Écarts : colonnes d'audit « modifié le / par » absentes du schéma (seuls créé par et annulation) ;
     tendances des KPI calculées seulement pour les ventes ; ventes antérieures à la v10 valorisées au prix
     d'achat actuel ; `mouvement_stock` sans valorisation (prix_achat / prix_vente de §7.3).

@@ -2206,27 +2206,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get rapportCreancesDettes => 'Créances et dettes';
 
   @override
-  String get historiqueTitre => 'Historique';
-
-  @override
-  String get historiqueColUtilisateur => 'Utilisateur';
-
-  @override
-  String get historiqueColAction => 'Action';
-
-  @override
-  String get historiqueColEntite => 'Entité';
-
-  @override
-  String get historiqueColDetail => 'Détail';
-
-  @override
-  String get historiqueToutesEntites => 'Toutes les entités';
-
-  @override
-  String get historiqueAucun => 'Aucune opération.';
-
-  @override
   String get parametresTitre => 'Paramètres';
 
   @override
@@ -7474,4 +7453,163 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get zkAucun => 'Aucun calcul de zakat.';
+
+  @override
+  String get hiDescription => 'Journal de toutes les actions · accès selon le rôle';
+
+  @override
+  String get hiEntite => 'actions';
+
+  @override
+  String get hiKpiActions => 'Actions (7 j)';
+
+  @override
+  String get hiKpiCreations => 'Créations';
+
+  @override
+  String get hiKpiModifications => 'Modifications';
+
+  @override
+  String get hiKpiAnnulations => 'Annulations';
+
+  @override
+  String get hiModule => 'Module';
+
+  @override
+  String get hiAction => 'Action';
+
+  @override
+  String get hiUtilisateur => 'Utilisateur';
+
+  @override
+  String get hiPoste => 'Poste';
+
+  @override
+  String get hiTous => 'Tous';
+
+  @override
+  String get hiToutes => 'Toutes';
+
+  @override
+  String get hiRecherche => 'Réf. ou description…';
+
+  @override
+  String get hiColDate => 'Date';
+
+  @override
+  String get hiColRef => 'Réf.';
+
+  @override
+  String get hiColDescription => 'Description';
+
+  @override
+  String get hiColCode => 'Code';
+
+  @override
+  String get hiAucun => 'Aucune action sur la période.';
+
+  @override
+  String get hiDetail => 'Détail';
+
+  @override
+  String get hiSectionAction => 'Action';
+
+  @override
+  String get hiSectionContexte => 'Contexte';
+
+  @override
+  String get hiReference => 'Référence';
+
+  @override
+  String get hiEntiteTechnique => 'Entité';
+
+  @override
+  String get hiModuleConnexion => 'Connexion';
+
+  @override
+  String get hiCatCreation => 'Création';
+
+  @override
+  String get hiCatModification => 'Modification';
+
+  @override
+  String get hiCatAnnulation => 'Annulation';
+
+  @override
+  String get hiCatConnexion => 'Connexion';
+
+  @override
+  String get hiCatExport => 'Export';
+
+  @override
+  String get hiActCreation => 'Création';
+
+  @override
+  String get hiActModification => 'Modification';
+
+  @override
+  String get hiActAnnulation => 'Annulation';
+
+  @override
+  String get hiActDesactivation => 'Désactivation';
+
+  @override
+  String get hiActActivation => 'Activation';
+
+  @override
+  String get hiActSuppression => 'Suppression';
+
+  @override
+  String get hiActVersement => 'Versement';
+
+  @override
+  String get hiActTransfert => 'Transfert';
+
+  @override
+  String get hiActReinitialisation => 'Réinitialisation du mot de passe';
+
+  @override
+  String get hiActRetour => 'Retour';
+
+  @override
+  String get hiActParametres => 'Paramètres';
+
+  @override
+  String get hiActOuverture => 'Ouverture';
+
+  @override
+  String get hiActFermeture => 'Fermeture';
+
+  @override
+  String get hiActEncaissement => 'Encaissement';
+
+  @override
+  String get hiActConnexion => 'Connexion';
+
+  @override
+  String get hiActDeconnexion => 'Déconnexion';
+
+  @override
+  String get hiActConfiguration => 'Configuration initiale';
+
+  @override
+  String get hiActClotureZ => 'Clôture Z';
+
+  @override
+  String get hiActAffectation => 'Affectation';
+
+  @override
+  String get hiActAchat => 'Achat';
+
+  @override
+  String get hiActApport => 'Apport';
+
+  @override
+  String get hiActDepense => 'Dépense';
+
+  @override
+  String get hiActPaiement => 'Paiement';
+
+  @override
+  String get hiActExport => 'Export';
 }

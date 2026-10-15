@@ -16,7 +16,7 @@ import '../../domain/referentiel/referentiel.dart';
 import '../commun/doc_form.dart';
 import '../commun/export_module.dart';
 import '../commun/statuts.dart';
-import '../historique/historique_page.dart';
+import '../historique/historique_providers.dart';
 import '../produits/produits_donnees.dart';
 import '../produits/produits_providers.dart';
 import '../tiers/tiers_providers.dart';

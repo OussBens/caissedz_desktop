@@ -4275,48 +4275,6 @@ abstract class AppLocalizations {
   /// **'Créances et dettes'**
   String get rapportCreancesDettes;
 
-  /// No description provided for @historiqueTitre.
-  ///
-  /// In fr, this message translates to:
-  /// **'Historique'**
-  String get historiqueTitre;
-
-  /// No description provided for @historiqueColUtilisateur.
-  ///
-  /// In fr, this message translates to:
-  /// **'Utilisateur'**
-  String get historiqueColUtilisateur;
-
-  /// No description provided for @historiqueColAction.
-  ///
-  /// In fr, this message translates to:
-  /// **'Action'**
-  String get historiqueColAction;
-
-  /// No description provided for @historiqueColEntite.
-  ///
-  /// In fr, this message translates to:
-  /// **'Entité'**
-  String get historiqueColEntite;
-
-  /// No description provided for @historiqueColDetail.
-  ///
-  /// In fr, this message translates to:
-  /// **'Détail'**
-  String get historiqueColDetail;
-
-  /// No description provided for @historiqueToutesEntites.
-  ///
-  /// In fr, this message translates to:
-  /// **'Toutes les entités'**
-  String get historiqueToutesEntites;
-
-  /// No description provided for @historiqueAucun.
-  ///
-  /// In fr, this message translates to:
-  /// **'Aucune opération.'**
-  String get historiqueAucun;
-
   /// No description provided for @parametresTitre.
   ///
   /// In fr, this message translates to:
@@ -14156,6 +14114,324 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Aucun calcul de zakat.'**
   String get zkAucun;
+
+  /// No description provided for @hiDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Journal de toutes les actions · accès selon le rôle'**
+  String get hiDescription;
+
+  /// No description provided for @hiEntite.
+  ///
+  /// In fr, this message translates to:
+  /// **'actions'**
+  String get hiEntite;
+
+  /// No description provided for @hiKpiActions.
+  ///
+  /// In fr, this message translates to:
+  /// **'Actions (7 j)'**
+  String get hiKpiActions;
+
+  /// No description provided for @hiKpiCreations.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créations'**
+  String get hiKpiCreations;
+
+  /// No description provided for @hiKpiModifications.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifications'**
+  String get hiKpiModifications;
+
+  /// No description provided for @hiKpiAnnulations.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annulations'**
+  String get hiKpiAnnulations;
+
+  /// No description provided for @hiModule.
+  ///
+  /// In fr, this message translates to:
+  /// **'Module'**
+  String get hiModule;
+
+  /// No description provided for @hiAction.
+  ///
+  /// In fr, this message translates to:
+  /// **'Action'**
+  String get hiAction;
+
+  /// No description provided for @hiUtilisateur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Utilisateur'**
+  String get hiUtilisateur;
+
+  /// No description provided for @hiPoste.
+  ///
+  /// In fr, this message translates to:
+  /// **'Poste'**
+  String get hiPoste;
+
+  /// No description provided for @hiTous.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tous'**
+  String get hiTous;
+
+  /// No description provided for @hiToutes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Toutes'**
+  String get hiToutes;
+
+  /// No description provided for @hiRecherche.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réf. ou description…'**
+  String get hiRecherche;
+
+  /// No description provided for @hiColDate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Date'**
+  String get hiColDate;
+
+  /// No description provided for @hiColRef.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réf.'**
+  String get hiColRef;
+
+  /// No description provided for @hiColDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Description'**
+  String get hiColDescription;
+
+  /// No description provided for @hiColCode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code'**
+  String get hiColCode;
+
+  /// No description provided for @hiAucun.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune action sur la période.'**
+  String get hiAucun;
+
+  /// No description provided for @hiDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Détail'**
+  String get hiDetail;
+
+  /// No description provided for @hiSectionAction.
+  ///
+  /// In fr, this message translates to:
+  /// **'Action'**
+  String get hiSectionAction;
+
+  /// No description provided for @hiSectionContexte.
+  ///
+  /// In fr, this message translates to:
+  /// **'Contexte'**
+  String get hiSectionContexte;
+
+  /// No description provided for @hiReference.
+  ///
+  /// In fr, this message translates to:
+  /// **'Référence'**
+  String get hiReference;
+
+  /// No description provided for @hiEntiteTechnique.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entité'**
+  String get hiEntiteTechnique;
+
+  /// No description provided for @hiModuleConnexion.
+  ///
+  /// In fr, this message translates to:
+  /// **'Connexion'**
+  String get hiModuleConnexion;
+
+  /// No description provided for @hiCatCreation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Création'**
+  String get hiCatCreation;
+
+  /// No description provided for @hiCatModification.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modification'**
+  String get hiCatModification;
+
+  /// No description provided for @hiCatAnnulation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annulation'**
+  String get hiCatAnnulation;
+
+  /// No description provided for @hiCatConnexion.
+  ///
+  /// In fr, this message translates to:
+  /// **'Connexion'**
+  String get hiCatConnexion;
+
+  /// No description provided for @hiCatExport.
+  ///
+  /// In fr, this message translates to:
+  /// **'Export'**
+  String get hiCatExport;
+
+  /// No description provided for @hiActCreation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Création'**
+  String get hiActCreation;
+
+  /// No description provided for @hiActModification.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modification'**
+  String get hiActModification;
+
+  /// No description provided for @hiActAnnulation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annulation'**
+  String get hiActAnnulation;
+
+  /// No description provided for @hiActDesactivation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Désactivation'**
+  String get hiActDesactivation;
+
+  /// No description provided for @hiActActivation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Activation'**
+  String get hiActActivation;
+
+  /// No description provided for @hiActSuppression.
+  ///
+  /// In fr, this message translates to:
+  /// **'Suppression'**
+  String get hiActSuppression;
+
+  /// No description provided for @hiActVersement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Versement'**
+  String get hiActVersement;
+
+  /// No description provided for @hiActTransfert.
+  ///
+  /// In fr, this message translates to:
+  /// **'Transfert'**
+  String get hiActTransfert;
+
+  /// No description provided for @hiActReinitialisation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réinitialisation du mot de passe'**
+  String get hiActReinitialisation;
+
+  /// No description provided for @hiActRetour.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retour'**
+  String get hiActRetour;
+
+  /// No description provided for @hiActParametres.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paramètres'**
+  String get hiActParametres;
+
+  /// No description provided for @hiActOuverture.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouverture'**
+  String get hiActOuverture;
+
+  /// No description provided for @hiActFermeture.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fermeture'**
+  String get hiActFermeture;
+
+  /// No description provided for @hiActEncaissement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Encaissement'**
+  String get hiActEncaissement;
+
+  /// No description provided for @hiActConnexion.
+  ///
+  /// In fr, this message translates to:
+  /// **'Connexion'**
+  String get hiActConnexion;
+
+  /// No description provided for @hiActDeconnexion.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déconnexion'**
+  String get hiActDeconnexion;
+
+  /// No description provided for @hiActConfiguration.
+  ///
+  /// In fr, this message translates to:
+  /// **'Configuration initiale'**
+  String get hiActConfiguration;
+
+  /// No description provided for @hiActClotureZ.
+  ///
+  /// In fr, this message translates to:
+  /// **'Clôture Z'**
+  String get hiActClotureZ;
+
+  /// No description provided for @hiActAffectation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Affectation'**
+  String get hiActAffectation;
+
+  /// No description provided for @hiActAchat.
+  ///
+  /// In fr, this message translates to:
+  /// **'Achat'**
+  String get hiActAchat;
+
+  /// No description provided for @hiActApport.
+  ///
+  /// In fr, this message translates to:
+  /// **'Apport'**
+  String get hiActApport;
+
+  /// No description provided for @hiActDepense.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dépense'**
+  String get hiActDepense;
+
+  /// No description provided for @hiActPaiement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paiement'**
+  String get hiActPaiement;
+
+  /// No description provided for @hiActExport.
+  ///
+  /// In fr, this message translates to:
+  /// **'Export'**
+  String get hiActExport;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

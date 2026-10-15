@@ -19,7 +19,7 @@ import '../commun/export_module.dart';
 import '../commun/referentiel_ui.dart';
 import '../commun/statuts.dart';
 import '../gestion_caisse/gestion_caisse_providers.dart';
-import '../historique/historique_page.dart';
+import '../historique/historique_providers.dart';
 import '../produits/produits_providers.dart';
 import '../rapports/rapports_providers.dart';
 import '../stock/stock_providers.dart';

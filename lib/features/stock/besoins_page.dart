@@ -14,7 +14,7 @@ import '../commun/export_module.dart';
 import '../commun/page_module.dart';
 import '../commun/statuts.dart';
 import '../entrees/entree_dialogs.dart';
-import '../historique/historique_page.dart';
+import '../historique/historique_providers.dart';
 import '../produits/produits_donnees.dart';
 import '../produits/produits_providers.dart';
 import '../retours/retours_dialogs.dart';

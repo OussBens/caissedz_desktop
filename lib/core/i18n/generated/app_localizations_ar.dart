@@ -2198,27 +2198,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get rapportCreancesDettes => 'الديون والمستحقات';
 
   @override
-  String get historiqueTitre => 'السجل';
-
-  @override
-  String get historiqueColUtilisateur => 'المستخدم';
-
-  @override
-  String get historiqueColAction => 'الإجراء';
-
-  @override
-  String get historiqueColEntite => 'الكيان';
-
-  @override
-  String get historiqueColDetail => 'التفاصيل';
-
-  @override
-  String get historiqueToutesEntites => 'كل الكيانات';
-
-  @override
-  String get historiqueAucun => 'لا توجد عمليات.';
-
-  @override
   String get parametresTitre => 'الإعدادات';
 
   @override
@@ -7449,4 +7428,163 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get zkAucun => 'لا يوجد حساب زكاة.';
+
+  @override
+  String get hiDescription => 'سجل جميع العمليات · الوصول حسب الدور';
+
+  @override
+  String get hiEntite => 'عمليات';
+
+  @override
+  String get hiKpiActions => 'العمليات (7 أيام)';
+
+  @override
+  String get hiKpiCreations => 'إنشاءات';
+
+  @override
+  String get hiKpiModifications => 'تعديلات';
+
+  @override
+  String get hiKpiAnnulations => 'إلغاءات';
+
+  @override
+  String get hiModule => 'الوحدة';
+
+  @override
+  String get hiAction => 'العملية';
+
+  @override
+  String get hiUtilisateur => 'المستخدم';
+
+  @override
+  String get hiPoste => 'المحطة';
+
+  @override
+  String get hiTous => 'الكل';
+
+  @override
+  String get hiToutes => 'الكل';
+
+  @override
+  String get hiRecherche => 'المرجع أو الوصف…';
+
+  @override
+  String get hiColDate => 'التاريخ';
+
+  @override
+  String get hiColRef => 'المرجع';
+
+  @override
+  String get hiColDescription => 'الوصف';
+
+  @override
+  String get hiColCode => 'الرمز';
+
+  @override
+  String get hiAucun => 'لا توجد عمليات خلال الفترة.';
+
+  @override
+  String get hiDetail => 'التفاصيل';
+
+  @override
+  String get hiSectionAction => 'العملية';
+
+  @override
+  String get hiSectionContexte => 'السياق';
+
+  @override
+  String get hiReference => 'المرجع';
+
+  @override
+  String get hiEntiteTechnique => 'الكيان';
+
+  @override
+  String get hiModuleConnexion => 'تسجيل الدخول';
+
+  @override
+  String get hiCatCreation => 'إنشاء';
+
+  @override
+  String get hiCatModification => 'تعديل';
+
+  @override
+  String get hiCatAnnulation => 'إلغاء';
+
+  @override
+  String get hiCatConnexion => 'اتصال';
+
+  @override
+  String get hiCatExport => 'تصدير';
+
+  @override
+  String get hiActCreation => 'إنشاء';
+
+  @override
+  String get hiActModification => 'تعديل';
+
+  @override
+  String get hiActAnnulation => 'إلغاء';
+
+  @override
+  String get hiActDesactivation => 'تعطيل';
+
+  @override
+  String get hiActActivation => 'تفعيل';
+
+  @override
+  String get hiActSuppression => 'حذف';
+
+  @override
+  String get hiActVersement => 'دفعة';
+
+  @override
+  String get hiActTransfert => 'تحويل';
+
+  @override
+  String get hiActReinitialisation => 'إعادة تعيين كلمة المرور';
+
+  @override
+  String get hiActRetour => 'إرجاع';
+
+  @override
+  String get hiActParametres => 'الإعدادات';
+
+  @override
+  String get hiActOuverture => 'فتح';
+
+  @override
+  String get hiActFermeture => 'إغلاق';
+
+  @override
+  String get hiActEncaissement => 'تحصيل';
+
+  @override
+  String get hiActConnexion => 'تسجيل الدخول';
+
+  @override
+  String get hiActDeconnexion => 'تسجيل الخروج';
+
+  @override
+  String get hiActConfiguration => 'الإعداد الأولي';
+
+  @override
+  String get hiActClotureZ => 'إقفال Z';
+
+  @override
+  String get hiActAffectation => 'تعيين';
+
+  @override
+  String get hiActAchat => 'شراء';
+
+  @override
+  String get hiActApport => 'إيداع';
+
+  @override
+  String get hiActDepense => 'مصروف';
+
+  @override
+  String get hiActPaiement => 'أداء';
+
+  @override
+  String get hiActExport => 'تصدير';
 }
