@@ -84,10 +84,10 @@ class ClotureService {
       ''',
       [dIso, fIso],
     )).first;
-    final retours = (await txn.rawQuery('SELECT COALESCE(SUM(total), 0) t FROM retour WHERE date > ? AND date <= ?', [
-      dIso,
-      fIso,
-    ])).first;
+    final retours = (await txn.rawQuery(
+      "SELECT COALESCE(SUM(total), 0) t FROM retour WHERE type = 'Client' AND etat = 1 AND date > ? AND date <= ?",
+      [dIso, fIso],
+    )).first;
     final totaux = await repo.totauxPeriode(debut, fin);
     final soldes = <String, double>{
       for (final c in await repo.caisses()) c.code: CalculsPrix.arrondir((await repo.solde(c.code, fin: fin)).total),

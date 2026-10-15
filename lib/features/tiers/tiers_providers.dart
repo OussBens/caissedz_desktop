@@ -99,13 +99,17 @@ String messageErreurVersement(AppLocalizations l10n, ErreurVersement e) => switc
 };
 
 String messageErreurRetour(AppLocalizations l10n, ErreurRetour e) => switch (e) {
-  ErreurRetour.venteInconnue => l10n.retourErreurVenteInconnue,
-  ErreurRetour.venteAnnulee => l10n.retourErreurVenteAnnulee,
-  ErreurRetour.lignesVides => l10n.retourErreurLignes,
+  ErreurRetour.documentInconnu => l10n.retourErreurDocumentInconnu,
+  ErreurRetour.documentAnnule => l10n.retourErreurDocumentAnnule,
+  ErreurRetour.produitAbsent => l10n.retourErreurProduitAbsent,
   ErreurRetour.quantiteInvalide => l10n.retourErreurQuantite,
   ErreurRetour.quantiteDepasse => l10n.retourErreurDepasse,
   ErreurRetour.periodeCloturee => l10n.retourErreurPeriode,
-  ErreurRetour.modeInvalide => l10n.versementErreurMode,
+  ErreurRetour.reglementInvalide => l10n.retourErreurReglement,
+  ErreurRetour.stockInsuffisant => l10n.retourErreurStock,
+  ErreurRetour.retourInconnu => l10n.retourErreurInconnu,
+  ErreurRetour.dejaAnnule => l10n.retourErreurDejaAnnule,
+  ErreurRetour.motifObligatoire => l10n.retourErreurMotif,
 };
 
 String messageErreurTiers(AppLocalizations l10n, ErreurTiers e) => switch (e) {

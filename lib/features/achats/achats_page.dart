@@ -44,6 +44,7 @@ String messageErreurAchat(AppLocalizations l10n, ErreurAchat e) => switch (e) {
   ErreurAchat.dejaAnnule => l10n.achatErreurAnnule,
   ErreurAchat.periodeCloturee => l10n.achatErreurPeriode,
   ErreurAchat.stockInsuffisant => l10n.achatErreurStock,
+  ErreurAchat.retourLie => l10n.achatErreurRetourLie,
 };
 
 /// Ligne éditable d'une entrée.

@@ -162,37 +162,6 @@ class VersementService {
     }
   }
 
-  /// Versement de remboursement lié à un retour : créé verrouillé, non modifiable ni supprimable.
-  Future<Versement> rembourserRetourDansTransaction(
-    Transaction txn, {
-    required Retour retour,
-    required double montant,
-    required String mode,
-    String? caisseCode,
-  }) async {
-    final repo = TiersRepository(txn);
-    final code = await repo.prochainCode('versement', CodeGenerator.versement);
-    final v = Versement(
-      code: code,
-      date: retour.date,
-      tiersType: TypesTiers.client,
-      tiersCode: retour.clientCode,
-      sens: SensVersement.decaissement,
-      montant: CalculsPrix.arrondir(montant),
-      mode: mode,
-      utilisateurCode: utilisateurCode,
-      caisseCode: caisseCode ?? await CaisseRepository(txn).caisseParDefaut(utilisateurCode),
-      commentaire: 'Remboursement ${retour.code}',
-      retourCode: retour.code,
-      verrouille: true,
-      type: TypesVersement.remboursement,
-    );
-    await repo.insererVersement(v);
-    await repo.lierVersementRetour(retour.code, code);
-    await journaliserVersement(txn, v, type: TypesMouvementCaisse.remboursement);
-    return v;
-  }
-
   /// Annulation douce (motif obligatoire) : refusée pour un versement verrouillé (lié à un retour) ;
   /// les imputations sont libérées et le mouvement de caisse retiré.
   Future<void> annuler(String code, {required String motif}) async {

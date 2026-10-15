@@ -56,6 +56,101 @@ void main() {
     });
   });
 
+  group('Migration v12 (retours reconstruits)', () {
+    test('conserve retours, lignes et versements liés ; clés étrangères réactivées', () async {
+      final base = await AppDatabase.ouvrirEnMemoire(
+        cleHex: cleTestHex,
+        migrations: toutesLesMigrations.sublist(0, 11),
+      );
+      addTearDown(base.fermer);
+      final db = base.db;
+      const iso = '2026-01-05T10:00:00.000Z';
+      await db.insert('produit', {
+        'code': 'PRD0001',
+        'designation': 'Lait',
+        'categorie_code': 'CATE0000',
+        'sous_categorie_code': 'SC0000',
+        'prix_achat': 80,
+      });
+      await db.insert('session_caisse', {
+        'code': 'SES0001',
+        'caisse_code': 'CIS0000',
+        'utilisateur_code': 'USR0000',
+        'ouverte_le': iso,
+      });
+      await db.insert('vente', {
+        'code': 'VTE0001',
+        'date': iso,
+        'session_code': 'SES0001',
+        'caisse_code': 'CIS0000',
+        'magasin_code': 'MAG0000',
+        'client_code': 'CLN0000',
+        'utilisateur_code': 'USR0000',
+        'total_brut': 100,
+        'total_remise': 0,
+        'total_net': 100,
+        'verse': 100,
+        'reste': 0,
+        'hash': 'h',
+        'hash_precedent': 'GENESIS',
+      });
+      await db.insert('retour', {
+        'code': 'RET0001',
+        'date': iso,
+        'vente_code': 'VTE0001',
+        'client_code': 'CLN0000',
+        'magasin_code': 'MAG0000',
+        'utilisateur_code': 'USR0000',
+        'total': 100,
+        'rembourse': 100,
+      });
+      await db.insert('retour_ligne', {
+        'retour_code': 'RET0001',
+        'ordre': 0,
+        'produit_code': 'PRD0001',
+        'designation': 'Lait',
+        'quantite': 1,
+        'prix_unitaire': 100,
+        'total': 100,
+      });
+      await db.insert('versement', {
+        'code': 'VER0001',
+        'date': iso,
+        'tiers_type': 'Client',
+        'tiers_code': 'CLN0000',
+        'sens': 'Décaissement',
+        'montant': 100,
+        'mode': 'Espèces',
+        'utilisateur_code': 'USR0000',
+        'retour_code': 'RET0001',
+      });
+
+      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [12]);
+      final r = (await db.query('retour')).single;
+      expect(r['type'], 'Client');
+      expect(r['document_code'], 'VTE0001');
+      expect(r['reglement'], 'Espèces');
+      expect(r['etat'], 1);
+      final l = (await db.query('retour_ligne')).single;
+      expect(l['prix_achat'], 80);
+      expect((await db.query('versement')).single['retour_code'], 'RET0001');
+      expect(await base.clesEtrangeresActives(), isTrue);
+      expect(await db.rawQuery('PRAGMA foreign_key_check'), isEmpty);
+      await expectLater(
+        db.insert('retour', {
+          'code': 'RET0002',
+          'date': iso,
+          'type': 'Fournisseur',
+          'document_code': 'ACH0001',
+          'magasin_code': 'MAG0000',
+          'utilisateur_code': 'USR0000',
+          'total': 1,
+        }),
+        throwsA(anything), // fournisseur obligatoire pour un retour fournisseur
+      );
+    });
+  });
+
   group('MigrationRunner', () {
     test('refuse des versions non contiguës', () {
       const runner = MigrationRunner([_MigrationFausse(2)]);

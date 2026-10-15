@@ -2136,5 +2136,138 @@
       }
     }
   },
-  "posErreurRetourLie": "Un retour est lié à ce panier : annulation impossible."
+  "posErreurRetourLie": "Un retour est lié à ce panier : annulation impossible.",
+  "retoursDescription": "Retours clients (remise en stock, remboursement) et retours fournisseurs",
+  "retoursOngletClients": "Retours clients",
+  "retoursOngletFournisseurs": "Retours fournisseurs",
+  "retoursKpiNombre": "Retours de la période",
+  "retoursKpiQuantite": "Quantité retournée",
+  "retoursKpiRembourse": "Montant remboursé",
+  "retoursKpiDeduit": "Déduit des crédits",
+  "retoursClient": "Client",
+  "retoursFournisseur": "Fournisseur",
+  "retoursRemboursement": "Remboursement",
+  "retoursReglement": "Règlement",
+  "retoursEtat": "État",
+  "retoursTous": "Tous",
+  "retoursRecherche": "Code, tiers ou produit…",
+  "retoursOrigine": "Origine",
+  "retoursProduit": "Produit",
+  "retoursQte": "Qté",
+  "retoursMontant": "Montant",
+  "retoursPrixAchat": "Prix d'achat",
+  "retoursPrixVente": "Prix de vente",
+  "retoursObservation": "Observation",
+  "retoursRegEspeces": "Espèces",
+  "retoursRegCarte": "Carte CIB",
+  "retoursRegAvoir": "Avoir client",
+  "retoursRegDeduit": "Déduit du crédit",
+  "retoursRegRembEspeces": "Remboursement espèces",
+  "retoursNouveau": "Nouveau retour",
+  "retoursModifierTitre": "Modifier le retour",
+  "retoursFormDescription": "Retour d'un produit vendu (client) ou reçu (fournisseur). Le stock est réintégré ou déduit.",
+  "retoursChoixClient": "Retour client",
+  "retoursChoixClientDesc": "Remet en stock, rembourse ou crée un avoir",
+  "retoursChoixFournisseur": "Retour fournisseur",
+  "retoursChoixFournisseurDesc": "Sort du stock, déduit du crédit fournisseur",
+  "retoursTicketOrigine": "Ticket d'origine",
+  "retoursEntreeOrigine": "Entrée d'origine",
+  "retoursChoisirClientIndice": "Choisir un client ≡",
+  "retoursChoisirFournisseurIndice": "Choisir un fournisseur ≡",
+  "retoursChoisirPanierIndice": "Choisir un panier ≡",
+  "retoursChoisirEntreeIndice": "Choisir une entrée ≡",
+  "retoursChoisirTicket": "Choisir le ticket d'origine",
+  "retoursChoisirEntree": "Choisir l'entrée d'origine",
+  "retoursProduitIndice": "Produit de la pièce d'origine",
+  "retoursProduitAideTicket": "Choisissez d'abord le ticket d'origine",
+  "retoursProduitAideEntree": "Choisissez d'abord l'entrée d'origine",
+  "retoursOptionVendu": "{nom} — {qte} vendus à {prix}",
+  "@retoursOptionVendu": {
+    "placeholders": {
+      "nom": {
+        "type": "String"
+      },
+      "prix": {
+        "type": "String"
+      },
+      "qte": {
+        "type": "String"
+      }
+    }
+  },
+  "retoursOptionRecu": "{nom} — {qte} reçus à {prix}",
+  "@retoursOptionRecu": {
+    "placeholders": {
+      "nom": {
+        "type": "String"
+      },
+      "prix": {
+        "type": "String"
+      },
+      "qte": {
+        "type": "String"
+      }
+    }
+  },
+  "retoursQuantite": "Quantité",
+  "retoursQuantiteMax": "Maximum : {maximum}",
+  "@retoursQuantiteMax": {
+    "placeholders": {
+      "maximum": {
+        "type": "String"
+      }
+    }
+  },
+  "retoursQuantiteDepasse": "Maximum {maximum} (quantité de la pièce d'origine)",
+  "@retoursQuantiteDepasse": {
+    "placeholders": {
+      "maximum": {
+        "type": "String"
+      }
+    }
+  },
+  "retoursNumSerie": "N° de série",
+  "retoursNumSerieIndice": "Si le produit est suivi",
+  "retoursRemiseStock": "Remise en stock",
+  "retoursRemiseOui": "Oui — produit revendable",
+  "retoursRemiseNon": "Non — défectueux, sortie « Casse »",
+  "retoursMotifIndice": "Motif du retour",
+  "retoursARembourser": "À rembourser au client",
+  "retoursAvoirClient": "Avoir au compte du client",
+  "retoursADeduire": "À déduire du crédit fournisseur",
+  "retoursRembourseFournisseur": "À rembourser par le fournisseur",
+  "retoursEnregistre": "Retour enregistré",
+  "retoursEnregistreDetail": "{code} · stock mis à jour",
+  "@retoursEnregistreDetail": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "retoursModifie": "Retour modifié",
+  "retoursAnnulesTitre": "Retours annulés",
+  "retoursAnnulesDetail": "Le stock a été rétabli",
+  "retoursEntite": "retour",
+  "retoursEntitePluriel": "retours",
+  "retoursDetailTitre": "Retour {code}",
+  "@retoursDetailTitre": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "retoursPieceOrigine": "Pièce d'origine",
+  "retoursBloqueDejaAnnule": "Déjà annulé",
+  "retoursAucun": "Aucun retour sur la période.",
+  "retourErreurDocumentInconnu": "Pièce d'origine introuvable.",
+  "retourErreurDocumentAnnule": "La pièce d'origine est annulée.",
+  "retourErreurProduitAbsent": "Ce produit n'est pas dans la pièce d'origine.",
+  "retourErreurReglement": "Règlement invalide (pas d'avoir pour le client de passage).",
+  "retourErreurStock": "Stock insuffisant pour ce retour.",
+  "retourErreurInconnu": "Retour introuvable.",
+  "retourErreurDejaAnnule": "Retour déjà annulé.",
+  "retourErreurMotif": "Le motif est obligatoire.",
+  "achatErreurRetourLie": "Un retour fournisseur est lié à cette entrée : annulation impossible."
 }

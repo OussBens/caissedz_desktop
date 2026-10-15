@@ -66,6 +66,8 @@
 - [x] Ventes DS v2.2 : KPI, filtres, détail, modification (complément en versement imputé), annulation en lot
       avec motif obligatoire, refusée si un retour est lié (phase D) — client non modifiable (ticket scellé)
 - [x] Retours : stock restitué, avoir, remboursement
+- [x] Retours client / fournisseur depuis la pièce d'origine (panier / entrée), plafond de quantité, versement
+      et mouvements liés, modification et annulation avec motif (phase D, migration v12)
 - [x] Clients / fournisseurs : fiches complètes §7.6 (wilaya, type, NIF / NIS / RC, banque), soldes calculés,
       situation (relevé), annulation avec motif — écrans DS v2.2 (phase D)
 - [x] Versements imputés aux documents ouverts, plus ancien d'abord ; versement retour ; annulation douce

@@ -9,6 +9,7 @@ import 'package:caissedz_desktop/domain/models/achat.dart';
 import 'package:caissedz_desktop/domain/models/panier.dart';
 import 'package:caissedz_desktop/domain/models/parametres_vente.dart';
 import 'package:caissedz_desktop/domain/models/produit.dart';
+import 'package:caissedz_desktop/domain/models/retour.dart';
 import 'package:caissedz_desktop/domain/models/vente.dart';
 import 'package:caissedz_desktop/domain/scellement.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -161,8 +162,10 @@ void main() {
       );
       await expectLater(
         retours.creer(
-          venteCode: ctx.tickets.first.code,
-          lignes: [DemandeRetourLigne(produitCode: ctx.lait.code, quantite: 1)],
+          type: TypesTiers.client,
+          documentCode: ctx.tickets.first.code,
+          produitCode: ctx.lait.code,
+          quantite: 1,
         ),
         throwsA(isA<RetourException>().having((e) => e.erreur, 'e', ErreurRetour.periodeCloturee)),
       );

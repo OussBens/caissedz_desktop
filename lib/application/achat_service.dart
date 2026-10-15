@@ -23,6 +23,7 @@ enum ErreurAchat {
   dejaAnnule,
   periodeCloturee,
   stockInsuffisant,
+  retourLie,
 }
 
 class AchatException implements Exception {
@@ -204,6 +205,11 @@ class AchatService {
       if (periodeCloturee != null && await periodeCloturee!(txn, a.date)) {
         throw const AchatException(ErreurAchat.periodeCloturee);
       }
+      final retours = await txn.rawQuery(
+        "SELECT COUNT(*) n FROM retour WHERE document_code = ? AND type = 'Fournisseur' AND etat = 1",
+        [code],
+      );
+      if ((retours.first['n']! as int) > 0) throw const AchatException(ErreurAchat.retourLie);
       final stock = StockService(txn.database, utilisateurCode: utilisateurCode);
       try {
         for (final l in a.lignes) {

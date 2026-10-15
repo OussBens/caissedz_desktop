@@ -202,7 +202,7 @@ class VenteRepository {
           WHERE i.document_type = 'vente' AND i.document_code = v.code) impute,
         (SELECT COUNT(DISTINCT i.versement_code) FROM versement_imputation i
           WHERE i.document_type = 'vente' AND i.document_code = v.code) nb_versements,
-        (SELECT COUNT(*) FROM retour r WHERE r.vente_code = v.code) nb_retours,
+        (SELECT COUNT(*) FROM retour r WHERE r.document_code = v.code AND r.type = 'Client' AND r.etat = 1) nb_retours,
         (SELECT GROUP_CONCAT(p.mode, '|') FROM vente_paiement p WHERE p.vente_code = v.code) modes,
         (SELECT h.detail FROM historique h WHERE h.entite = 'vente' AND h.entite_code = v.code
           AND h.action = 'Annulation' ORDER BY h.id DESC LIMIT 1) motif_annulation,

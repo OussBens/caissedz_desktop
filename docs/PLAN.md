@@ -413,6 +413,15 @@ Référence : `docs/design/CaisseDZ-DS-v2.2/CaisseDZ-DS-v2.2.html`, `bundle-v2.2
     en lot avec motif (bloquée si déjà annulé ou retour lié), « Nouvelle vente » ouvre la caisse.
     Migration v11 : `vente.type_panier` (Ticket / BL / BL_SC, hors scellement). `VenteService.modifier` : le
     complément payé devient un versement imputé d'abord sur ce panier ; `annuler` annule les versements liés.
+  - ✅ Retours (`RetoursScreen`) : onglets Retours clients / Retours fournisseurs, KPI, période, filtres tiers /
+    règlement / état, formulaire 920 px (type, tiers, pièce d'origine, produit, plafond = quantité d'origine −
+    déjà retourné, n° de série, règlement, remise en stock), détail 960 px, annulation en lot avec motif.
+    Migration v12 : table `retour` reconstruite (type, `document_code`, client OU fournisseur, règlement,
+    remise en stock, annulation douce) via `Migration.reconstruitTables` (clés étrangères coupées puis
+    vérifiées). `RetourService.creer / modifier / annuler` (client : stock réintégré ou sortie « Casse »,
+    remboursement ou avoir ; fournisseur : sortie de stock, dette déduite ou remboursement espèces).
+    Une entrée ou une vente avec un retour actif n'est plus annulable. `DsTextField.valeurInitiale` est
+    désormais affichée (elle était ignorée).
   - Écarts : colonnes d'audit « modifié le / par » absentes du schéma (seuls créé par et annulation) ;
     tendances des KPI calculées seulement pour les ventes ; ventes antérieures à la v10 valorisées au prix
     d'achat actuel ; `mouvement_stock` sans valorisation (prix_achat / prix_vente de §7.3).

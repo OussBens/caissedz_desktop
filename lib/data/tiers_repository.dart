@@ -51,18 +51,11 @@ class TiersRepository {
 
   // ---- Retours ----
   Future<void> insererRetour(Retour r) async {
-    await db.insert('retour', {
-      'code': r.code,
-      'date': r.date.toUtc().toIso8601String(),
-      'vente_code': r.venteCode,
-      'client_code': r.clientCode,
-      'magasin_code': r.magasinCode,
-      'utilisateur_code': r.utilisateurCode,
-      'total': r.total,
-      'rembourse': r.rembourse,
-      'motif': r.motif,
-      'versement_code': r.versementCode,
-    });
+    await db.insert('retour', r.versLigne());
+    await _insererLignesRetour(r);
+  }
+
+  Future<void> _insererLignesRetour(Retour r) async {
     for (final (i, l) in r.lignes.indexed) {
       await db.insert('retour_ligne', {
         'retour_code': r.code,
@@ -73,29 +66,60 @@ class TiersRepository {
         'nombre': l.nombre,
         'prix_unitaire': l.prixUnitaire,
         'total': l.total,
+        'prix_achat': l.prixAchat,
       });
     }
   }
 
-  Future<void> lierVersementRetour(String retourCode, String versementCode) =>
+  /// Remplace un retour (même code) et ses lignes (modification).
+  Future<void> remplacerRetour(Retour r) async {
+    await db.delete('retour_ligne', where: 'retour_code = ?', whereArgs: [r.code]);
+    await db.update('retour', r.versLigne()..remove('code'), where: 'code = ?', whereArgs: [r.code]);
+    await _insererLignesRetour(r);
+  }
+
+  Future<void> annulerRetour(String code, {required String par, required String motif, DateTime? le}) => db.update(
+    'retour',
+    {
+      'etat': 0,
+      'annule_le': (le ?? DateTime.now()).toUtc().toIso8601String(),
+      'annule_par': par,
+      'motif_annulation': motif,
+    },
+    where: 'code = ?',
+    whereArgs: [code],
+  );
+
+  Future<void> lierVersementRetour(String retourCode, String? versementCode) =>
       db.update('retour', {'versement_code': versementCode}, where: 'code = ?', whereArgs: [retourCode]);
 
-  Future<List<Retour>> retours({String? venteCode, String? clientCode, int limite = 500}) async {
+  Future<List<Retour>> retours({
+    String? type,
+    String? documentCode,
+    String? clientCode,
+    bool actifsSeulement = false,
+    int limite = 5000,
+  }) async {
     final where = <String>[];
     final args = <Object>[];
-    if (venteCode != null) {
-      where.add('vente_code = ?');
-      args.add(venteCode);
+    if (type != null) {
+      where.add('type = ?');
+      args.add(type);
+    }
+    if (documentCode != null) {
+      where.add('document_code = ?');
+      args.add(documentCode);
     }
     if (clientCode != null) {
       where.add('client_code = ?');
       args.add(clientCode);
     }
+    if (actifsSeulement) where.add('etat = 1');
     final rows = await db.query(
       'retour',
       where: where.isEmpty ? null : where.join(' AND '),
       whereArgs: args,
-      orderBy: 'date DESC',
+      orderBy: 'date DESC, code DESC',
       limit: limite,
     );
     return [for (final r in rows) Retour.depuisLigne(r, await _lignesRetour(r['code'] as String))];
@@ -113,11 +137,12 @@ class TiersRepository {
     orderBy: 'ordre',
   )).map(RetourLigne.depuisLigne).toList();
 
-  /// Quantités déjà retournées par produit pour une vente.
-  Future<Map<String, double>> quantitesRetournees(String venteCode) async {
+  /// Quantités déjà retournées (retours actifs) par produit pour une pièce d'origine, hors [sauf].
+  Future<Map<String, double>> quantitesRetournees(String documentCode, {String? sauf}) async {
     final rows = await db.rawQuery(
-      'SELECT l.produit_code p, SUM(l.quantite) q FROM retour_ligne l JOIN retour r ON r.code = l.retour_code WHERE r.vente_code = ? GROUP BY l.produit_code',
-      [venteCode],
+      'SELECT l.produit_code p, SUM(l.quantite) q FROM retour_ligne l JOIN retour r ON r.code = l.retour_code '
+      'WHERE r.document_code = ? AND r.etat = 1 AND r.code != ? GROUP BY l.produit_code',
+      [documentCode, sauf ?? ''],
     );
     return {for (final r in rows) r['p'] as String: (r['q'] as num).toDouble()};
   }
@@ -312,9 +337,13 @@ class TiersRepository {
     ''',
       [sensPaiement, sensPaiement, tiersType],
     );
-    final retours = client
-        ? await db.rawQuery('SELECT client_code c, COALESCE(SUM(total), 0) t FROM retour GROUP BY client_code')
-        : const <Map<String, Object?>>[];
+    final retours = await db.rawQuery(
+      client
+          ? 'SELECT client_code c, COALESCE(SUM(total), 0) t FROM retour WHERE type = ? AND etat = 1 GROUP BY client_code'
+          : 'SELECT fournisseur_code c, COALESCE(SUM(total), 0) t FROM retour WHERE type = ? AND etat = 1 '
+                'GROUP BY fournisseur_code',
+      [tiersType],
+    );
     double d(Object? v) => (v as num?)?.toDouble() ?? 0;
     final res = <String, StatsTiers>{};
     StatsTiers de(String c) => res[c] ?? StatsTiers.vide;
@@ -371,17 +400,19 @@ class TiersRepository {
         );
       }
     }
-    if (client) {
-      for (final r in await db.query('retour', where: 'client_code = ?', whereArgs: [tiersCode])) {
-        lignes.add(
-          LigneReleve(
-            date: dt(r['date']),
-            nature: NatureReleve.retour,
-            reference: r['code'] as String,
-            debit: d(r['total']),
-          ),
-        );
-      }
+    for (final r in await db.query(
+      'retour',
+      where: '${client ? 'client_code' : 'fournisseur_code'} = ? AND etat = 1',
+      whereArgs: [tiersCode],
+    )) {
+      lignes.add(
+        LigneReleve(
+          date: dt(r['date']),
+          nature: NatureReleve.retour,
+          reference: r['code'] as String,
+          debit: d(r['total']),
+        ),
+      );
     }
     final sensPaiement = client ? SensVersement.encaissement : SensVersement.decaissement;
     for (final r in await db.query(

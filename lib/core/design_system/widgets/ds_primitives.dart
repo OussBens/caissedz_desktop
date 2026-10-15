@@ -491,12 +491,20 @@ class _DsTextFieldState extends State<DsTextField> {
   FocusNode? _interne;
   bool _focus = false;
 
+  /// Contrôleur interne quand [DsTextField.valeurInitiale] est fourni sans contrôleur.
+  TextEditingController? _controleurInterne;
+
   FocusNode get _node => widget.focusNode ?? (_interne ??= FocusNode());
+
+  TextEditingController? get _controleur => widget.controller ?? _controleurInterne;
 
   @override
   void initState() {
     super.initState();
     _node.addListener(_ecoute);
+    if (widget.controller == null && widget.valeurInitiale != null) {
+      _controleurInterne = TextEditingController(text: widget.valeurInitiale);
+    }
   }
 
   @override
@@ -505,6 +513,14 @@ class _DsTextFieldState extends State<DsTextField> {
     if (old.focusNode != widget.focusNode) {
       (old.focusNode ?? _interne)?.removeListener(_ecoute);
       _node.addListener(_ecoute);
+    }
+    if (widget.controller == null && widget.valeurInitiale != old.valeurInitiale) {
+      // Champ en lecture seule alimenté par l'écran (ex. valeur choisie dans un sélecteur).
+      if (_controleurInterne == null) {
+        _controleurInterne = TextEditingController(text: widget.valeurInitiale);
+      } else if (!widget.actif || widget.lectureSeule) {
+        _controleurInterne!.text = widget.valeurInitiale ?? '';
+      }
     }
   }
 
@@ -516,6 +532,7 @@ class _DsTextFieldState extends State<DsTextField> {
   void dispose() {
     _node.removeListener(_ecoute);
     _interne?.dispose();
+    _controleurInterne?.dispose();
     super.dispose();
   }
 
@@ -532,7 +549,7 @@ class _DsTextFieldState extends State<DsTextField> {
     );
     final couleurBordure = erreur != null ? c.danger : (_focus ? c.borderFocus : c.borderDefault);
     final champ = TextField(
-      controller: widget.controller,
+      controller: _controleur,
       focusNode: _node,
       onChanged: widget.onChanged,
       onSubmitted: widget.onSubmitted,

@@ -4345,4 +4345,254 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get posErreurRetourLie => 'Un retour est lié à ce panier : annulation impossible.';
+
+  @override
+  String get retoursDescription => 'Retours clients (remise en stock, remboursement) et retours fournisseurs';
+
+  @override
+  String get retoursOngletClients => 'Retours clients';
+
+  @override
+  String get retoursOngletFournisseurs => 'Retours fournisseurs';
+
+  @override
+  String get retoursKpiNombre => 'Retours de la période';
+
+  @override
+  String get retoursKpiQuantite => 'Quantité retournée';
+
+  @override
+  String get retoursKpiRembourse => 'Montant remboursé';
+
+  @override
+  String get retoursKpiDeduit => 'Déduit des crédits';
+
+  @override
+  String get retoursClient => 'Client';
+
+  @override
+  String get retoursFournisseur => 'Fournisseur';
+
+  @override
+  String get retoursRemboursement => 'Remboursement';
+
+  @override
+  String get retoursReglement => 'Règlement';
+
+  @override
+  String get retoursEtat => 'État';
+
+  @override
+  String get retoursTous => 'Tous';
+
+  @override
+  String get retoursRecherche => 'Code, tiers ou produit…';
+
+  @override
+  String get retoursOrigine => 'Origine';
+
+  @override
+  String get retoursProduit => 'Produit';
+
+  @override
+  String get retoursQte => 'Qté';
+
+  @override
+  String get retoursMontant => 'Montant';
+
+  @override
+  String get retoursPrixAchat => 'Prix d\'achat';
+
+  @override
+  String get retoursPrixVente => 'Prix de vente';
+
+  @override
+  String get retoursObservation => 'Observation';
+
+  @override
+  String get retoursRegEspeces => 'Espèces';
+
+  @override
+  String get retoursRegCarte => 'Carte CIB';
+
+  @override
+  String get retoursRegAvoir => 'Avoir client';
+
+  @override
+  String get retoursRegDeduit => 'Déduit du crédit';
+
+  @override
+  String get retoursRegRembEspeces => 'Remboursement espèces';
+
+  @override
+  String get retoursNouveau => 'Nouveau retour';
+
+  @override
+  String get retoursModifierTitre => 'Modifier le retour';
+
+  @override
+  String get retoursFormDescription =>
+      'Retour d\'un produit vendu (client) ou reçu (fournisseur). Le stock est réintégré ou déduit.';
+
+  @override
+  String get retoursChoixClient => 'Retour client';
+
+  @override
+  String get retoursChoixClientDesc => 'Remet en stock, rembourse ou crée un avoir';
+
+  @override
+  String get retoursChoixFournisseur => 'Retour fournisseur';
+
+  @override
+  String get retoursChoixFournisseurDesc => 'Sort du stock, déduit du crédit fournisseur';
+
+  @override
+  String get retoursTicketOrigine => 'Ticket d\'origine';
+
+  @override
+  String get retoursEntreeOrigine => 'Entrée d\'origine';
+
+  @override
+  String get retoursChoisirClientIndice => 'Choisir un client ≡';
+
+  @override
+  String get retoursChoisirFournisseurIndice => 'Choisir un fournisseur ≡';
+
+  @override
+  String get retoursChoisirPanierIndice => 'Choisir un panier ≡';
+
+  @override
+  String get retoursChoisirEntreeIndice => 'Choisir une entrée ≡';
+
+  @override
+  String get retoursChoisirTicket => 'Choisir le ticket d\'origine';
+
+  @override
+  String get retoursChoisirEntree => 'Choisir l\'entrée d\'origine';
+
+  @override
+  String get retoursProduitIndice => 'Produit de la pièce d\'origine';
+
+  @override
+  String get retoursProduitAideTicket => 'Choisissez d\'abord le ticket d\'origine';
+
+  @override
+  String get retoursProduitAideEntree => 'Choisissez d\'abord l\'entrée d\'origine';
+
+  @override
+  String retoursOptionVendu(String nom, String prix, String qte) {
+    return '$nom — $qte vendus à $prix';
+  }
+
+  @override
+  String retoursOptionRecu(String nom, String prix, String qte) {
+    return '$nom — $qte reçus à $prix';
+  }
+
+  @override
+  String get retoursQuantite => 'Quantité';
+
+  @override
+  String retoursQuantiteMax(String maximum) {
+    return 'Maximum : $maximum';
+  }
+
+  @override
+  String retoursQuantiteDepasse(String maximum) {
+    return 'Maximum $maximum (quantité de la pièce d\'origine)';
+  }
+
+  @override
+  String get retoursNumSerie => 'N° de série';
+
+  @override
+  String get retoursNumSerieIndice => 'Si le produit est suivi';
+
+  @override
+  String get retoursRemiseStock => 'Remise en stock';
+
+  @override
+  String get retoursRemiseOui => 'Oui — produit revendable';
+
+  @override
+  String get retoursRemiseNon => 'Non — défectueux, sortie « Casse »';
+
+  @override
+  String get retoursMotifIndice => 'Motif du retour';
+
+  @override
+  String get retoursARembourser => 'À rembourser au client';
+
+  @override
+  String get retoursAvoirClient => 'Avoir au compte du client';
+
+  @override
+  String get retoursADeduire => 'À déduire du crédit fournisseur';
+
+  @override
+  String get retoursRembourseFournisseur => 'À rembourser par le fournisseur';
+
+  @override
+  String get retoursEnregistre => 'Retour enregistré';
+
+  @override
+  String retoursEnregistreDetail(String code) {
+    return '$code · stock mis à jour';
+  }
+
+  @override
+  String get retoursModifie => 'Retour modifié';
+
+  @override
+  String get retoursAnnulesTitre => 'Retours annulés';
+
+  @override
+  String get retoursAnnulesDetail => 'Le stock a été rétabli';
+
+  @override
+  String get retoursEntite => 'retour';
+
+  @override
+  String get retoursEntitePluriel => 'retours';
+
+  @override
+  String retoursDetailTitre(String code) {
+    return 'Retour $code';
+  }
+
+  @override
+  String get retoursPieceOrigine => 'Pièce d\'origine';
+
+  @override
+  String get retoursBloqueDejaAnnule => 'Déjà annulé';
+
+  @override
+  String get retoursAucun => 'Aucun retour sur la période.';
+
+  @override
+  String get retourErreurDocumentInconnu => 'Pièce d\'origine introuvable.';
+
+  @override
+  String get retourErreurDocumentAnnule => 'La pièce d\'origine est annulée.';
+
+  @override
+  String get retourErreurProduitAbsent => 'Ce produit n\'est pas dans la pièce d\'origine.';
+
+  @override
+  String get retourErreurReglement => 'Règlement invalide (pas d\'avoir pour le client de passage).';
+
+  @override
+  String get retourErreurStock => 'Stock insuffisant pour ce retour.';
+
+  @override
+  String get retourErreurInconnu => 'Retour introuvable.';
+
+  @override
+  String get retourErreurDejaAnnule => 'Retour déjà annulé.';
+
+  @override
+  String get retourErreurMotif => 'Le motif est obligatoire.';
+
+  @override
+  String get achatErreurRetourLie => 'Un retour fournisseur est lié à cette entrée : annulation impossible.';
 }

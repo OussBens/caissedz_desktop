@@ -8354,6 +8354,480 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Un retour est lié à ce panier : annulation impossible.'**
   String get posErreurRetourLie;
+
+  /// No description provided for @retoursDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retours clients (remise en stock, remboursement) et retours fournisseurs'**
+  String get retoursDescription;
+
+  /// No description provided for @retoursOngletClients.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retours clients'**
+  String get retoursOngletClients;
+
+  /// No description provided for @retoursOngletFournisseurs.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retours fournisseurs'**
+  String get retoursOngletFournisseurs;
+
+  /// No description provided for @retoursKpiNombre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retours de la période'**
+  String get retoursKpiNombre;
+
+  /// No description provided for @retoursKpiQuantite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quantité retournée'**
+  String get retoursKpiQuantite;
+
+  /// No description provided for @retoursKpiRembourse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montant remboursé'**
+  String get retoursKpiRembourse;
+
+  /// No description provided for @retoursKpiDeduit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déduit des crédits'**
+  String get retoursKpiDeduit;
+
+  /// No description provided for @retoursClient.
+  ///
+  /// In fr, this message translates to:
+  /// **'Client'**
+  String get retoursClient;
+
+  /// No description provided for @retoursFournisseur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fournisseur'**
+  String get retoursFournisseur;
+
+  /// No description provided for @retoursRemboursement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Remboursement'**
+  String get retoursRemboursement;
+
+  /// No description provided for @retoursReglement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Règlement'**
+  String get retoursReglement;
+
+  /// No description provided for @retoursEtat.
+  ///
+  /// In fr, this message translates to:
+  /// **'État'**
+  String get retoursEtat;
+
+  /// No description provided for @retoursTous.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tous'**
+  String get retoursTous;
+
+  /// No description provided for @retoursRecherche.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code, tiers ou produit…'**
+  String get retoursRecherche;
+
+  /// No description provided for @retoursOrigine.
+  ///
+  /// In fr, this message translates to:
+  /// **'Origine'**
+  String get retoursOrigine;
+
+  /// No description provided for @retoursProduit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produit'**
+  String get retoursProduit;
+
+  /// No description provided for @retoursQte.
+  ///
+  /// In fr, this message translates to:
+  /// **'Qté'**
+  String get retoursQte;
+
+  /// No description provided for @retoursMontant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montant'**
+  String get retoursMontant;
+
+  /// No description provided for @retoursPrixAchat.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix d\'achat'**
+  String get retoursPrixAchat;
+
+  /// No description provided for @retoursPrixVente.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix de vente'**
+  String get retoursPrixVente;
+
+  /// No description provided for @retoursObservation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Observation'**
+  String get retoursObservation;
+
+  /// No description provided for @retoursRegEspeces.
+  ///
+  /// In fr, this message translates to:
+  /// **'Espèces'**
+  String get retoursRegEspeces;
+
+  /// No description provided for @retoursRegCarte.
+  ///
+  /// In fr, this message translates to:
+  /// **'Carte CIB'**
+  String get retoursRegCarte;
+
+  /// No description provided for @retoursRegAvoir.
+  ///
+  /// In fr, this message translates to:
+  /// **'Avoir client'**
+  String get retoursRegAvoir;
+
+  /// No description provided for @retoursRegDeduit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déduit du crédit'**
+  String get retoursRegDeduit;
+
+  /// No description provided for @retoursRegRembEspeces.
+  ///
+  /// In fr, this message translates to:
+  /// **'Remboursement espèces'**
+  String get retoursRegRembEspeces;
+
+  /// No description provided for @retoursNouveau.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau retour'**
+  String get retoursNouveau;
+
+  /// No description provided for @retoursModifierTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier le retour'**
+  String get retoursModifierTitre;
+
+  /// No description provided for @retoursFormDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retour d\'un produit vendu (client) ou reçu (fournisseur). Le stock est réintégré ou déduit.'**
+  String get retoursFormDescription;
+
+  /// No description provided for @retoursChoixClient.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retour client'**
+  String get retoursChoixClient;
+
+  /// No description provided for @retoursChoixClientDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Remet en stock, rembourse ou crée un avoir'**
+  String get retoursChoixClientDesc;
+
+  /// No description provided for @retoursChoixFournisseur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retour fournisseur'**
+  String get retoursChoixFournisseur;
+
+  /// No description provided for @retoursChoixFournisseurDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sort du stock, déduit du crédit fournisseur'**
+  String get retoursChoixFournisseurDesc;
+
+  /// No description provided for @retoursTicketOrigine.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ticket d\'origine'**
+  String get retoursTicketOrigine;
+
+  /// No description provided for @retoursEntreeOrigine.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrée d\'origine'**
+  String get retoursEntreeOrigine;
+
+  /// No description provided for @retoursChoisirClientIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir un client ≡'**
+  String get retoursChoisirClientIndice;
+
+  /// No description provided for @retoursChoisirFournisseurIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir un fournisseur ≡'**
+  String get retoursChoisirFournisseurIndice;
+
+  /// No description provided for @retoursChoisirPanierIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir un panier ≡'**
+  String get retoursChoisirPanierIndice;
+
+  /// No description provided for @retoursChoisirEntreeIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir une entrée ≡'**
+  String get retoursChoisirEntreeIndice;
+
+  /// No description provided for @retoursChoisirTicket.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir le ticket d\'origine'**
+  String get retoursChoisirTicket;
+
+  /// No description provided for @retoursChoisirEntree.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir l\'entrée d\'origine'**
+  String get retoursChoisirEntree;
+
+  /// No description provided for @retoursProduitIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produit de la pièce d\'origine'**
+  String get retoursProduitIndice;
+
+  /// No description provided for @retoursProduitAideTicket.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisissez d\'abord le ticket d\'origine'**
+  String get retoursProduitAideTicket;
+
+  /// No description provided for @retoursProduitAideEntree.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisissez d\'abord l\'entrée d\'origine'**
+  String get retoursProduitAideEntree;
+
+  /// No description provided for @retoursOptionVendu.
+  ///
+  /// In fr, this message translates to:
+  /// **'{nom} — {qte} vendus à {prix}'**
+  String retoursOptionVendu(String nom, String prix, String qte);
+
+  /// No description provided for @retoursOptionRecu.
+  ///
+  /// In fr, this message translates to:
+  /// **'{nom} — {qte} reçus à {prix}'**
+  String retoursOptionRecu(String nom, String prix, String qte);
+
+  /// No description provided for @retoursQuantite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quantité'**
+  String get retoursQuantite;
+
+  /// No description provided for @retoursQuantiteMax.
+  ///
+  /// In fr, this message translates to:
+  /// **'Maximum : {maximum}'**
+  String retoursQuantiteMax(String maximum);
+
+  /// No description provided for @retoursQuantiteDepasse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Maximum {maximum} (quantité de la pièce d\'origine)'**
+  String retoursQuantiteDepasse(String maximum);
+
+  /// No description provided for @retoursNumSerie.
+  ///
+  /// In fr, this message translates to:
+  /// **'N° de série'**
+  String get retoursNumSerie;
+
+  /// No description provided for @retoursNumSerieIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Si le produit est suivi'**
+  String get retoursNumSerieIndice;
+
+  /// No description provided for @retoursRemiseStock.
+  ///
+  /// In fr, this message translates to:
+  /// **'Remise en stock'**
+  String get retoursRemiseStock;
+
+  /// No description provided for @retoursRemiseOui.
+  ///
+  /// In fr, this message translates to:
+  /// **'Oui — produit revendable'**
+  String get retoursRemiseOui;
+
+  /// No description provided for @retoursRemiseNon.
+  ///
+  /// In fr, this message translates to:
+  /// **'Non — défectueux, sortie « Casse »'**
+  String get retoursRemiseNon;
+
+  /// No description provided for @retoursMotifIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Motif du retour'**
+  String get retoursMotifIndice;
+
+  /// No description provided for @retoursARembourser.
+  ///
+  /// In fr, this message translates to:
+  /// **'À rembourser au client'**
+  String get retoursARembourser;
+
+  /// No description provided for @retoursAvoirClient.
+  ///
+  /// In fr, this message translates to:
+  /// **'Avoir au compte du client'**
+  String get retoursAvoirClient;
+
+  /// No description provided for @retoursADeduire.
+  ///
+  /// In fr, this message translates to:
+  /// **'À déduire du crédit fournisseur'**
+  String get retoursADeduire;
+
+  /// No description provided for @retoursRembourseFournisseur.
+  ///
+  /// In fr, this message translates to:
+  /// **'À rembourser par le fournisseur'**
+  String get retoursRembourseFournisseur;
+
+  /// No description provided for @retoursEnregistre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retour enregistré'**
+  String get retoursEnregistre;
+
+  /// No description provided for @retoursEnregistreDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'{code} · stock mis à jour'**
+  String retoursEnregistreDetail(String code);
+
+  /// No description provided for @retoursModifie.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retour modifié'**
+  String get retoursModifie;
+
+  /// No description provided for @retoursAnnulesTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retours annulés'**
+  String get retoursAnnulesTitre;
+
+  /// No description provided for @retoursAnnulesDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le stock a été rétabli'**
+  String get retoursAnnulesDetail;
+
+  /// No description provided for @retoursEntite.
+  ///
+  /// In fr, this message translates to:
+  /// **'retour'**
+  String get retoursEntite;
+
+  /// No description provided for @retoursEntitePluriel.
+  ///
+  /// In fr, this message translates to:
+  /// **'retours'**
+  String get retoursEntitePluriel;
+
+  /// No description provided for @retoursDetailTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retour {code}'**
+  String retoursDetailTitre(String code);
+
+  /// No description provided for @retoursPieceOrigine.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pièce d\'origine'**
+  String get retoursPieceOrigine;
+
+  /// No description provided for @retoursBloqueDejaAnnule.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déjà annulé'**
+  String get retoursBloqueDejaAnnule;
+
+  /// No description provided for @retoursAucun.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun retour sur la période.'**
+  String get retoursAucun;
+
+  /// No description provided for @retourErreurDocumentInconnu.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pièce d\'origine introuvable.'**
+  String get retourErreurDocumentInconnu;
+
+  /// No description provided for @retourErreurDocumentAnnule.
+  ///
+  /// In fr, this message translates to:
+  /// **'La pièce d\'origine est annulée.'**
+  String get retourErreurDocumentAnnule;
+
+  /// No description provided for @retourErreurProduitAbsent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce produit n\'est pas dans la pièce d\'origine.'**
+  String get retourErreurProduitAbsent;
+
+  /// No description provided for @retourErreurReglement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Règlement invalide (pas d\'avoir pour le client de passage).'**
+  String get retourErreurReglement;
+
+  /// No description provided for @retourErreurStock.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock insuffisant pour ce retour.'**
+  String get retourErreurStock;
+
+  /// No description provided for @retourErreurInconnu.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retour introuvable.'**
+  String get retourErreurInconnu;
+
+  /// No description provided for @retourErreurDejaAnnule.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retour déjà annulé.'**
+  String get retourErreurDejaAnnule;
+
+  /// No description provided for @retourErreurMotif.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le motif est obligatoire.'**
+  String get retourErreurMotif;
+
+  /// No description provided for @achatErreurRetourLie.
+  ///
+  /// In fr, this message translates to:
+  /// **'Un retour fournisseur est lié à cette entrée : annulation impossible.'**
+  String get achatErreurRetourLie;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

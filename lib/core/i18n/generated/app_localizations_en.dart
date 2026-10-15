@@ -4331,4 +4331,254 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get posErreurRetourLie => 'A return is linked to this basket: it cannot be cancelled.';
+
+  @override
+  String get retoursDescription => 'Customer returns (restock, refund) and supplier returns';
+
+  @override
+  String get retoursOngletClients => 'Customer returns';
+
+  @override
+  String get retoursOngletFournisseurs => 'Supplier returns';
+
+  @override
+  String get retoursKpiNombre => 'Returns in period';
+
+  @override
+  String get retoursKpiQuantite => 'Quantity returned';
+
+  @override
+  String get retoursKpiRembourse => 'Amount refunded';
+
+  @override
+  String get retoursKpiDeduit => 'Deducted from credit';
+
+  @override
+  String get retoursClient => 'Customer';
+
+  @override
+  String get retoursFournisseur => 'Supplier';
+
+  @override
+  String get retoursRemboursement => 'Refund';
+
+  @override
+  String get retoursReglement => 'Settlement';
+
+  @override
+  String get retoursEtat => 'Status';
+
+  @override
+  String get retoursTous => 'All';
+
+  @override
+  String get retoursRecherche => 'Code, party or product…';
+
+  @override
+  String get retoursOrigine => 'Origin';
+
+  @override
+  String get retoursProduit => 'Product';
+
+  @override
+  String get retoursQte => 'Qty';
+
+  @override
+  String get retoursMontant => 'Amount';
+
+  @override
+  String get retoursPrixAchat => 'Purchase price';
+
+  @override
+  String get retoursPrixVente => 'Sale price';
+
+  @override
+  String get retoursObservation => 'Note';
+
+  @override
+  String get retoursRegEspeces => 'Cash';
+
+  @override
+  String get retoursRegCarte => 'CIB card';
+
+  @override
+  String get retoursRegAvoir => 'Customer credit note';
+
+  @override
+  String get retoursRegDeduit => 'Deducted from credit';
+
+  @override
+  String get retoursRegRembEspeces => 'Cash refund';
+
+  @override
+  String get retoursNouveau => 'New return';
+
+  @override
+  String get retoursModifierTitre => 'Edit return';
+
+  @override
+  String get retoursFormDescription =>
+      'Return of a product sold (customer) or received (supplier). Stock is restored or deducted.';
+
+  @override
+  String get retoursChoixClient => 'Customer return';
+
+  @override
+  String get retoursChoixClientDesc => 'Restocks, refunds or creates a credit note';
+
+  @override
+  String get retoursChoixFournisseur => 'Supplier return';
+
+  @override
+  String get retoursChoixFournisseurDesc => 'Leaves stock, deducted from supplier credit';
+
+  @override
+  String get retoursTicketOrigine => 'Original receipt';
+
+  @override
+  String get retoursEntreeOrigine => 'Original receipt note';
+
+  @override
+  String get retoursChoisirClientIndice => 'Choose a customer ≡';
+
+  @override
+  String get retoursChoisirFournisseurIndice => 'Choose a supplier ≡';
+
+  @override
+  String get retoursChoisirPanierIndice => 'Choose a basket ≡';
+
+  @override
+  String get retoursChoisirEntreeIndice => 'Choose a receipt note ≡';
+
+  @override
+  String get retoursChoisirTicket => 'Choose the original receipt';
+
+  @override
+  String get retoursChoisirEntree => 'Choose the original receipt note';
+
+  @override
+  String get retoursProduitIndice => 'Product from the original document';
+
+  @override
+  String get retoursProduitAideTicket => 'Choose the original receipt first';
+
+  @override
+  String get retoursProduitAideEntree => 'Choose the original receipt note first';
+
+  @override
+  String retoursOptionVendu(String nom, String prix, String qte) {
+    return '$nom — $qte sold at $prix';
+  }
+
+  @override
+  String retoursOptionRecu(String nom, String prix, String qte) {
+    return '$nom — $qte received at $prix';
+  }
+
+  @override
+  String get retoursQuantite => 'Quantity';
+
+  @override
+  String retoursQuantiteMax(String maximum) {
+    return 'Maximum: $maximum';
+  }
+
+  @override
+  String retoursQuantiteDepasse(String maximum) {
+    return 'Maximum $maximum (quantity on the original document)';
+  }
+
+  @override
+  String get retoursNumSerie => 'Serial no.';
+
+  @override
+  String get retoursNumSerieIndice => 'If the product is tracked';
+
+  @override
+  String get retoursRemiseStock => 'Restock';
+
+  @override
+  String get retoursRemiseOui => 'Yes — product can be resold';
+
+  @override
+  String get retoursRemiseNon => 'No — defective, “Breakage” exit';
+
+  @override
+  String get retoursMotifIndice => 'Reason for return';
+
+  @override
+  String get retoursARembourser => 'To refund to the customer';
+
+  @override
+  String get retoursAvoirClient => 'Credit note on the customer account';
+
+  @override
+  String get retoursADeduire => 'To deduct from supplier credit';
+
+  @override
+  String get retoursRembourseFournisseur => 'To be refunded by the supplier';
+
+  @override
+  String get retoursEnregistre => 'Return saved';
+
+  @override
+  String retoursEnregistreDetail(String code) {
+    return '$code · stock updated';
+  }
+
+  @override
+  String get retoursModifie => 'Return updated';
+
+  @override
+  String get retoursAnnulesTitre => 'Returns cancelled';
+
+  @override
+  String get retoursAnnulesDetail => 'Stock has been restored';
+
+  @override
+  String get retoursEntite => 'return';
+
+  @override
+  String get retoursEntitePluriel => 'returns';
+
+  @override
+  String retoursDetailTitre(String code) {
+    return 'Return $code';
+  }
+
+  @override
+  String get retoursPieceOrigine => 'Original document';
+
+  @override
+  String get retoursBloqueDejaAnnule => 'Already cancelled';
+
+  @override
+  String get retoursAucun => 'No returns in this period.';
+
+  @override
+  String get retourErreurDocumentInconnu => 'Original document not found.';
+
+  @override
+  String get retourErreurDocumentAnnule => 'The original document is cancelled.';
+
+  @override
+  String get retourErreurProduitAbsent => 'This product is not on the original document.';
+
+  @override
+  String get retourErreurReglement => 'Invalid settlement (no credit note for walk-in customer).';
+
+  @override
+  String get retourErreurStock => 'Insufficient stock for this return.';
+
+  @override
+  String get retourErreurInconnu => 'Return not found.';
+
+  @override
+  String get retourErreurDejaAnnule => 'Return already cancelled.';
+
+  @override
+  String get retourErreurMotif => 'A reason is required.';
+
+  @override
+  String get achatErreurRetourLie => 'A supplier return is linked to this receipt note: it cannot be cancelled.';
 }

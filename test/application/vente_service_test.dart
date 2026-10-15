@@ -327,7 +327,7 @@ void main() {
       await base.db.insert('retour', {
         'code': 'RET0001',
         'date': DateTime.now().toUtc().toIso8601String(),
-        'vente_code': v2.code,
+        'document_code': v2.code,
         'client_code': 'CLN0001',
         'magasin_code': 'MAG0000',
         'utilisateur_code': 'USR0000',

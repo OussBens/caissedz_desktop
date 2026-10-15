@@ -316,7 +316,10 @@ class VenteService {
       if (periodeCloturee != null && await periodeCloturee!(txn, v.date)) {
         throw const VenteException(ErreurVente.periodeCloturee);
       }
-      final retours = await txn.rawQuery('SELECT COUNT(*) n FROM retour WHERE vente_code = ?', [code]);
+      final retours = await txn.rawQuery(
+        "SELECT COUNT(*) n FROM retour WHERE document_code = ? AND type = 'Client' AND etat = 1",
+        [code],
+      );
       if ((retours.first['n']! as int) > 0) throw const VenteException(ErreurVente.retourLie);
       final stock = StockService(txn.database, utilisateurCode: utilisateurCode);
       final catalogue = CatalogueRepository(txn);

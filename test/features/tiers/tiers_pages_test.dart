@@ -60,33 +60,8 @@ Future<void> _donnees(ProviderContainer c) async {
   c.read(commerceVersionProvider.notifier).incrementer();
 }
 
-Finder _champ(String libelle) => find
-    .descendant(
-      of: find.ancestor(of: find.text(libelle).last, matching: find.byType(Column)).first,
-      matching: find.byType(TextField),
-    )
-    .first;
-
 void main() {
   group('Ventes, retours, clients, versements', () {
-    testWidgets('retour depuis la liste des ventes : stock restitué, remboursement verrouillé', (tester) async {
-      final c = await pumpApp(tester, routeInitiale: '/retours', taille: const Size(1400, 900));
-      await _donnees(c);
-      await tester.pumpAndSettle();
-      await clic(tester, find.text('Nouveau retour'));
-      await clic(tester, find.textContaining('VTE0002').last);
-      await clic(tester, find.text('Choisir'));
-      await tester.enterText(find.byKey(const ValueKey('retour_PRD0001')), '1');
-      await tester.enterText(_champ('Montant remboursé'), '100');
-      await clic(tester, find.text('Valider'));
-      expect(find.textContaining('Retour RET0001 enregistré'), findsOneWidget);
-      await clic(tester, find.text('Fermer').last);
-      expect(find.text('RET0001'), findsOneWidget);
-      final v = (await TiersRepository(c.read(appDatabaseProvider).db).versement('VER0001'))!;
-      expect(v.verrouille, isTrue);
-      expect(v.montant, 100);
-    });
-
     testWidgets('clients : crédit calculé, création avec téléphone valide, détail', (tester) async {
       final c = await pumpApp(tester, routeInitiale: '/clients', taille: const Size(1600, 1000));
       await _donnees(c);

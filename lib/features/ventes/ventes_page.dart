@@ -18,8 +18,8 @@ import '../commun/page_module.dart';
 import '../commun/statuts.dart';
 import '../gestion_caisse/gestion_caisse_providers.dart';
 import '../produits/produits_providers.dart';
+import '../retours/retours_dialogs.dart';
 import '../tiers/tiers_providers.dart';
-import 'retour_dialog.dart';
 import 'ventes_dialogs.dart';
 import 'ventes_providers.dart';
 
@@ -375,7 +375,7 @@ class _VentesPageState extends ConsumerState<VentesPage> {
             libelle: l10n.ventesCreerRetour,
             icone: LucideIcons.undo2,
             onSelected: (p) {
-              if (!p.annule) afficherNouveauRetour(context, ref, venteCode: p.code);
+              if (!p.annule) afficherFormulaireRetour(context, ref, documentCode: p.code);
             },
           ),
         ],

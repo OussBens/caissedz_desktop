@@ -10,6 +10,10 @@ abstract class Migration {
   /// Description courte (journal).
   String get description;
 
+  /// `true` pour reconstruire une table référencée (procédure SQLite « 12 étapes ») : les clés étrangères
+  /// sont désactivées le temps de la migration puis vérifiées (`PRAGMA foreign_key_check`) avant validation.
+  bool get reconstruitTables => false;
+
   /// Applique la migration dans la transaction [txn].
   Future<void> appliquer(Transaction txn);
 }

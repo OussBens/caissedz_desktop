@@ -4327,4 +4327,253 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get posErreurRetourLie => 'يوجد إرجاع مرتبط بهذه السلة: الإلغاء غير ممكن.';
+
+  @override
+  String get retoursDescription => 'مرتجعات الزبائن (إعادة إلى المخزون، استرداد) ومرتجعات الموردين';
+
+  @override
+  String get retoursOngletClients => 'مرتجعات الزبائن';
+
+  @override
+  String get retoursOngletFournisseurs => 'مرتجعات الموردين';
+
+  @override
+  String get retoursKpiNombre => 'مرتجعات الفترة';
+
+  @override
+  String get retoursKpiQuantite => 'الكمية المرتجعة';
+
+  @override
+  String get retoursKpiRembourse => 'المبلغ المسترد';
+
+  @override
+  String get retoursKpiDeduit => 'مخصوم من الديون';
+
+  @override
+  String get retoursClient => 'الزبون';
+
+  @override
+  String get retoursFournisseur => 'المورد';
+
+  @override
+  String get retoursRemboursement => 'الاسترداد';
+
+  @override
+  String get retoursReglement => 'التسوية';
+
+  @override
+  String get retoursEtat => 'الحالة';
+
+  @override
+  String get retoursTous => 'الكل';
+
+  @override
+  String get retoursRecherche => 'الرمز، الطرف أو المنتج…';
+
+  @override
+  String get retoursOrigine => 'الأصل';
+
+  @override
+  String get retoursProduit => 'المنتج';
+
+  @override
+  String get retoursQte => 'الكمية';
+
+  @override
+  String get retoursMontant => 'المبلغ';
+
+  @override
+  String get retoursPrixAchat => 'سعر الشراء';
+
+  @override
+  String get retoursPrixVente => 'سعر البيع';
+
+  @override
+  String get retoursObservation => 'ملاحظة';
+
+  @override
+  String get retoursRegEspeces => 'نقدا';
+
+  @override
+  String get retoursRegCarte => 'بطاقة CIB';
+
+  @override
+  String get retoursRegAvoir => 'رصيد للزبون';
+
+  @override
+  String get retoursRegDeduit => 'مخصوم من الدين';
+
+  @override
+  String get retoursRegRembEspeces => 'استرداد نقدي';
+
+  @override
+  String get retoursNouveau => 'مرتجع جديد';
+
+  @override
+  String get retoursModifierTitre => 'تعديل المرتجع';
+
+  @override
+  String get retoursFormDescription => 'إرجاع منتج مباع (زبون) أو مستلم (مورد). يُعاد المخزون أو يُخصم.';
+
+  @override
+  String get retoursChoixClient => 'مرتجع زبون';
+
+  @override
+  String get retoursChoixClientDesc => 'يعيد إلى المخزون، يسترد أو ينشئ رصيدا';
+
+  @override
+  String get retoursChoixFournisseur => 'مرتجع مورد';
+
+  @override
+  String get retoursChoixFournisseurDesc => 'يخرج من المخزون، يُخصم من دين المورد';
+
+  @override
+  String get retoursTicketOrigine => 'التذكرة الأصلية';
+
+  @override
+  String get retoursEntreeOrigine => 'الإدخال الأصلي';
+
+  @override
+  String get retoursChoisirClientIndice => 'اختر زبونا ≡';
+
+  @override
+  String get retoursChoisirFournisseurIndice => 'اختر موردا ≡';
+
+  @override
+  String get retoursChoisirPanierIndice => 'اختر سلة ≡';
+
+  @override
+  String get retoursChoisirEntreeIndice => 'اختر إدخالا ≡';
+
+  @override
+  String get retoursChoisirTicket => 'اختر التذكرة الأصلية';
+
+  @override
+  String get retoursChoisirEntree => 'اختر الإدخال الأصلي';
+
+  @override
+  String get retoursProduitIndice => 'منتج الوثيقة الأصلية';
+
+  @override
+  String get retoursProduitAideTicket => 'اختر التذكرة الأصلية أولا';
+
+  @override
+  String get retoursProduitAideEntree => 'اختر الإدخال الأصلي أولا';
+
+  @override
+  String retoursOptionVendu(String nom, String prix, String qte) {
+    return '$nom — $qte مباعة بـ $prix';
+  }
+
+  @override
+  String retoursOptionRecu(String nom, String prix, String qte) {
+    return '$nom — $qte مستلمة بـ $prix';
+  }
+
+  @override
+  String get retoursQuantite => 'الكمية';
+
+  @override
+  String retoursQuantiteMax(String maximum) {
+    return 'الحد الأقصى: $maximum';
+  }
+
+  @override
+  String retoursQuantiteDepasse(String maximum) {
+    return 'الحد الأقصى $maximum (كمية الوثيقة الأصلية)';
+  }
+
+  @override
+  String get retoursNumSerie => 'الرقم التسلسلي';
+
+  @override
+  String get retoursNumSerieIndice => 'إذا كان المنتج متتبعا';
+
+  @override
+  String get retoursRemiseStock => 'الإعادة إلى المخزون';
+
+  @override
+  String get retoursRemiseOui => 'نعم — منتج قابل لإعادة البيع';
+
+  @override
+  String get retoursRemiseNon => 'لا — معيب، إخراج «كسر»';
+
+  @override
+  String get retoursMotifIndice => 'سبب الإرجاع';
+
+  @override
+  String get retoursARembourser => 'يُسترد للزبون';
+
+  @override
+  String get retoursAvoirClient => 'رصيد في حساب الزبون';
+
+  @override
+  String get retoursADeduire => 'يُخصم من دين المورد';
+
+  @override
+  String get retoursRembourseFournisseur => 'يسترده المورد';
+
+  @override
+  String get retoursEnregistre => 'تم تسجيل المرتجع';
+
+  @override
+  String retoursEnregistreDetail(String code) {
+    return '$code · تم تحديث المخزون';
+  }
+
+  @override
+  String get retoursModifie => 'تم تعديل المرتجع';
+
+  @override
+  String get retoursAnnulesTitre => 'المرتجعات الملغاة';
+
+  @override
+  String get retoursAnnulesDetail => 'تمت استعادة المخزون';
+
+  @override
+  String get retoursEntite => 'مرتجع';
+
+  @override
+  String get retoursEntitePluriel => 'مرتجعات';
+
+  @override
+  String retoursDetailTitre(String code) {
+    return 'المرتجع $code';
+  }
+
+  @override
+  String get retoursPieceOrigine => 'الوثيقة الأصلية';
+
+  @override
+  String get retoursBloqueDejaAnnule => 'ملغى مسبقا';
+
+  @override
+  String get retoursAucun => 'لا توجد مرتجعات في هذه الفترة.';
+
+  @override
+  String get retourErreurDocumentInconnu => 'الوثيقة الأصلية غير موجودة.';
+
+  @override
+  String get retourErreurDocumentAnnule => 'الوثيقة الأصلية ملغاة.';
+
+  @override
+  String get retourErreurProduitAbsent => 'هذا المنتج غير موجود في الوثيقة الأصلية.';
+
+  @override
+  String get retourErreurReglement => 'تسوية غير صالحة (لا رصيد للزبون العابر).';
+
+  @override
+  String get retourErreurStock => 'مخزون غير كاف لهذا المرتجع.';
+
+  @override
+  String get retourErreurInconnu => 'المرتجع غير موجود.';
+
+  @override
+  String get retourErreurDejaAnnule => 'المرتجع ملغى مسبقا.';
+
+  @override
+  String get retourErreurMotif => 'السبب إلزامي.';
+
+  @override
+  String get achatErreurRetourLie => 'يوجد مرتجع مورد مرتبط بهذا الإدخال: الإلغاء غير ممكن.';
 }
