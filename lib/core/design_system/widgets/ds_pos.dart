@@ -1232,7 +1232,7 @@ class _DsProductTileState extends State<DsProductTile> {
         borderRadius: DsRadius.borderMd,
         image: w.image != null ? DecorationImage(image: w.image!, fit: BoxFit.cover) : null,
       ),
-      child: w.image == null ? Icon(LucideIcons.package, size: w.enLigne ? 18 : 26, color: teinte) : null,
+      child: w.image == null ? Icon(LucideIcons.package, size: w.enLigne ? 18 : 36, color: teinte) : null,
     );
     final entree = w.onEntree == null
         ? null
@@ -1344,7 +1344,7 @@ class _DsProductTileState extends State<DsProductTile> {
                 mainAxisSize: MainAxisSize.min,
                 spacing: 6,
                 children: [
-                  vignette(52),
+                  vignette(104),
                   Text(
                     w.nom,
                     style: t.bodySmStrong.copyWith(height: 1.25),

@@ -725,7 +725,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                   padding: const EdgeInsets.fromLTRB(2, 2, 2, 48),
                   gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                     maxCrossAxisExtent: 200,
-                    mainAxisExtent: 196,
+                    mainAxisExtent: 172,
                     crossAxisSpacing: DsSpacing.s3,
                     mainAxisSpacing: DsSpacing.s3,
                   ),
