@@ -379,8 +379,8 @@ class VenteService {
     });
   }
 
-  /// Annule une vente (motif obligatoire, refusée si un retour y est lié) : stock restitué, points repris, versements imputés uniquement
-  /// sur ce panier annulés (les autres libèrent leur imputation), statut Annulée (le ticket scellé est
+  /// Annule une vente (motif obligatoire, refusée si un retour y est lié) : stock restitué, points repris, versements entièrement imputés
+  /// sur ce panier annulés (les autres libèrent leur imputation et restent en avance), statut Annulée (le ticket scellé est
   /// conservé). Refusée si la vente est dans une période clôturée (lot 7).
   Future<Vente> annuler(String code, {required String motif}) async {
     if (motif.trim().isEmpty) throw const VenteException(ErreurVente.motifObligatoire);
@@ -443,17 +443,18 @@ class VenteService {
       final tiers = TiersRepository(txn);
       final lies = await txn.rawQuery(
         '''
-        SELECT DISTINCT i.versement_code c,
-          (SELECT COUNT(*) FROM versement_imputation j WHERE j.versement_code = i.versement_code
-            AND NOT (j.document_type = 'vente' AND j.document_code = ?)) autres
+        SELECT i.versement_code c, ve.montant - SUM(i.montant) hors
         FROM versement_imputation i JOIN versement ve ON ve.code = i.versement_code
         WHERE i.document_type = 'vente' AND i.document_code = ? AND ve.etat = 1
+        GROUP BY i.versement_code, ve.montant
         ''',
-        [code, code],
+        [code],
       );
       for (final l in lies) {
         final vc = l['c']! as String;
-        if ((l['autres']! as int) == 0) {
+        // Annulé seulement s'il est tout entier imputé sur ce panier : une part imputée ailleurs ou non imputée
+        // (avance) n'est pas rendue en caisse, le versement reste et devient une avance du client.
+        if ((l['hors']! as num).toDouble() < 0.005) {
           await tiers.annulerVersement(vc, par: utilisateurCode, motif: motif.trim());
           await CaisseRepository(txn).contrePasserReference(
             'versement',

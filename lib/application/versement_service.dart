@@ -173,8 +173,9 @@ class VersementService {
     }
   }
 
-  /// Annulation douce (motif obligatoire) : refusée pour un versement verrouillé (lié à un retour) ;
-  /// les imputations sont libérées et le mouvement de caisse contre-passé (écriture inverse datée du jour).
+  /// Annulation douce (motif obligatoire, session ouverte comme à la saisie) : refusée pour un versement
+  /// verrouillé (lié à un retour) ; possible après la Z (chèque rejeté) : les imputations sont libérées et le
+  /// mouvement de caisse contre-passé (écriture inverse datée du jour, la Z scellée ne change pas).
   Future<void> annuler(String code, {required String motif}) async {
     if (motif.trim().isEmpty) throw const VersementException(ErreurVersement.motifObligatoire);
     await db.transaction((txn) async {
@@ -183,6 +184,9 @@ class VersementService {
       if (v == null) throw const VersementException(ErreurVersement.inconnu);
       if (v.verrouille) throw const VersementException(ErreurVersement.verrouille);
       if (!v.actif) throw const VersementException(ErreurVersement.dejaAnnule);
+      if (!await SessionCaisseService.sessionOuverte(txn, utilisateurCode)) {
+        throw const VersementException(ErreurVersement.sessionRequise);
+      }
       await repo.annulerVersement(code, par: utilisateurCode, motif: motif.trim());
       await CaisseRepository(txn).contrePasserReference(
         'versement',
@@ -200,7 +204,7 @@ class VersementService {
     });
   }
 
-  /// Modification d'un versement non verrouillé : montant, mode, date, caisse, type, observation.
+  /// Modification d'un versement non verrouillé (session ouverte) : montant, mode, date, caisse, type, observation.
   /// Les imputations sont recalculées (plus ancien d'abord) ; l'ancien mouvement de caisse est contre-passé
   /// puis le nouveau journalisé. Refusée si l'ancienne ou la nouvelle date est dans une période clôturée.
   Future<Versement> modifier(
@@ -222,6 +226,9 @@ class VersementService {
       if (ancien == null) throw const VersementException(ErreurVersement.inconnu);
       if (ancien.verrouille) throw const VersementException(ErreurVersement.verrouille);
       if (!ancien.actif) throw const VersementException(ErreurVersement.dejaAnnule);
+      if (!await SessionCaisseService.sessionOuverte(txn, utilisateurCode)) {
+        throw const VersementException(ErreurVersement.sessionRequise);
+      }
       final caisses = CaisseRepository(txn);
       if (await caisses.periodeCloturee(ancien.date, caisseCode: ancien.caisseCode) ||
           await caisses.periodeCloturee(date, caisseCode: caisseCode ?? ancien.caisseCode)) {

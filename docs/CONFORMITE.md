@@ -88,6 +88,8 @@
 - [x] Versements imputés aux documents ouverts, plus ancien d'abord ; versement retour ; annulation douce
       avec motif (phase D)
 - [x] Versement lié à un retour verrouillé
+- [x] Modification / annulation d'un versement : session ouverte exigée ; cohérence
+      stock / caisse / soldes vérifiée sur les 11 scénarios retours, sorties, ventes, versements (2026-10-16)
 
 ## Achats (lot 6)
 - [x] Entrées / achats : transaction unique, stock par mouvements, prix d'achat, dette fournisseur

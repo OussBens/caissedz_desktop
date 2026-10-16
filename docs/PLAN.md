@@ -799,3 +799,16 @@ workflows et calculs » du projet.
   m15 facture : reste dû du jour.
 - ○ Restent : écran de liste des inventaires (annulation INV sans interface), barème du timbre et présentation
   G50 à confirmer avec la spécification 06, Bluetooth natif, vue avant / après de l'Historique.
+
+## Caisse, stock et vérification des workflows ✅ (2026-10-16)
+
+- ✅ Scan d'un produit déjà au panier (unité, sans colis ni pack) : quantité + 1 sans dialog ; dialog de sélection
+  ouvert : une rafale du lecteur (frappes ≤ 60 ms, ≥ 4 caractères, Entrée) ajoute 1 si c'est le même produit,
+  sinon valide le dialog et traite le nouveau code ; la quantité saisie n'est plus polluée par le code-barres.
+- ✅ Écran Stock : la colonne « Total » reste la somme de tous les magasins consultables quand le filtre magasin
+  est posé (seule la colonne du magasin filtré est affichée à côté).
+- ✅ Vérification des 11 scénarios (retour client / fournisseur créé, modifié, annulé ; sortie créée, modifiée,
+  annulée ; vente créée, annulée ; versement client / fournisseur créé, modifié, annulé) : stock, caisse (solde et
+  espèces de session) et soldes tiers cohérents à chaque étape (`test/application/workflows_coherence_test.dart`).
+  Corrigé : modifier / annuler un versement exige une session ouverte (comme la saisie) ; l'annulation d'une vente n'annule un versement que s'il est
+  entièrement imputé sur ce panier (sinon l'imputation est libérée et le versement reste en avance).
