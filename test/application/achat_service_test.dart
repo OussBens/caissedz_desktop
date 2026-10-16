@@ -43,7 +43,7 @@ void main() {
         RetourService(
           base.db,
           utilisateurCode: 'USR0000',
-        ).creer(type: TypesTiers.fournisseur, documentCode: 'SS0001', produitCode: 'X', quantite: 1),
+        ).creer(type: TypesTiers.fournisseur, documentCode: 'ENT0001', produitCode: 'X', quantite: 1),
         throwsA(isA<RetourException>().having((e) => e.erreur, 'e', ErreurRetour.sessionRequise)),
       );
       await expectLater(
@@ -82,7 +82,7 @@ void main() {
         verse: 500,
         reference: 'FAC-12',
       );
-      expect(a.code, 'SS0001');
+      expect(a.code, 'ENT0001');
       expect(a.total, 1700);
       expect(a.verse, 500);
       expect(a.reste, 1200);
@@ -97,7 +97,7 @@ void main() {
         base.db,
         utilisateurCode: 'USR0000',
       ).imputer(tiersType: TypesTiers.fournisseur, tiersCode: f.code, montant: 1000, mode: 'Virement');
-      expect(v.imputations.single.documentCode, 'SS0001');
+      expect(v.imputations.single.documentCode, 'ENT0001');
       expect(await repo.soldeFournisseur(f.code), 200);
       await expectLater(
         s.enregistrer(

@@ -21,7 +21,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../../helpers/app_test_helper.dart';
 
-/// Une vente du jour (VTE0001, 2 laits payés) et une entrée fournisseur (SS0001, 10 laits).
+/// Une vente du jour (VTE0001, 2 laits payés) et une entrée fournisseur (ENT0001, 10 laits).
 Future<void> _donnees(ProviderContainer c) async {
   final db = c.read(appDatabaseProvider).db;
   final lait = await CatalogueService(db, utilisateurCode: 'USR0000').creerProduit(
@@ -106,7 +106,7 @@ void main() {
       final db = c.read(appDatabaseProvider).db;
       await RetourService(db, utilisateurCode: 'USR0000').creer(
         type: TypesTiers.fournisseur,
-        documentCode: 'SS0001',
+        documentCode: 'ENT0001',
         produitCode: 'PRD0001',
         quantite: 2,
         reglement: ReglementsRetour.avoir,

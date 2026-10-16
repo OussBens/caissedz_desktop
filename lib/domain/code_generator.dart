@@ -35,7 +35,7 @@ class CodeGenerator {
   static const String vente = 'VTE';
   static const String retour = 'RET';
   static const String versement = 'VER';
-  static const String achat = 'SS';
+  static const String achat = 'ENT';
   static const String bonReception = 'BON';
   static const String cloture = 'CLT';
   static const String inventaire = 'INV';

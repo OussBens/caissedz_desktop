@@ -22,6 +22,7 @@ import 'v020_audit.dart';
 import 'v021_vente_montant.dart';
 import 'v022_audit_complement.dart';
 import 'v023_sortie_retour.dart';
+import 'v024_codes_entree.dart';
 
 export 'migration.dart';
 
@@ -50,4 +51,5 @@ const List<Migration> toutesLesMigrations = [
   MigrationV021VenteMontant(),
   MigrationV022AuditComplement(),
   MigrationV023SortieRetour(),
+  MigrationV024CodesEntree(),
 ];

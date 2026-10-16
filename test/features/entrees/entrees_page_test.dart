@@ -115,7 +115,7 @@ void main() {
       await tester.pump();
       await clic(tester, _cle('entree_suivant'));
       await clic(tester, _cle('entree_valider'));
-      expect(find.text('SS0001'), findsWidgets);
+      expect(find.text('ENT0001'), findsWidgets);
       final db = c.read(appDatabaseProvider).db;
       expect((await StockRepository(db).niveau('PRD0001', 'MAG0000')).quantite, 2);
       expect(await TiersRepository(db).soldeFournisseur('FOR0001'), 100);
