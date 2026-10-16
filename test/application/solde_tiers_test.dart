@@ -67,7 +67,9 @@ void main() {
     Future<String> vendre(String client, double quantite, double prix, double paye) async => (await ventes.encaisser(
       Panier(id: 1, clientCode: client)
           .ajouter(PanierLigne(produit: lait, quantite: quantite, prixUnitaire: prix))
-          .copyWith(paiements: [Paiement(mode: 'Espèces', montant: paye)]),
+          .copyWith(
+            paiements: [Paiement(mode: 'Espèces', montant: paye)],
+          ),
       session: session,
       magasinCode: 'MAG0000',
       creditAutorise: true,

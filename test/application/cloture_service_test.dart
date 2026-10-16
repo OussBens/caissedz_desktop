@@ -198,7 +198,7 @@ void main() {
       expect(await clotures.verifierChaine(), z.code);
     });
 
-    test('période clôturée : annulation de vente, retour et annulation d’achat refusés', () async {
+    test('période clôturée : annulation de vente et d’achat refusées, retour daté du jour accepté', () async {
       final base = await ouvrirBaseDeTest();
       final ctx = _Ctx(base.db);
       await ctx.preparer();
@@ -211,7 +211,7 @@ void main() {
         magasinCode: 'MAG0000',
         lignes: [DemandeAchatLigne(produitCode: ctx.lait.code, quantite: 1, prixAchat: 80)],
       );
-      await ClotureService(base.db, utilisateurCode: 'USR0000').cloturer(caisseCode: 'CIS0000');
+      final z = await ClotureService(base.db, utilisateurCode: 'USR0000').cloturer(caisseCode: 'CIS0000');
       await expectLater(
         ctx.ventes.annuler(ctx.tickets.first.code, motif: 'test'),
         throwsA(isA<VenteException>().having((e) => e.erreur, 'e', ErreurVente.periodeCloturee)),
@@ -221,15 +221,26 @@ void main() {
         utilisateurCode: 'USR0000',
         periodeCloturee: ClotureService.periodeCloturee,
       );
+      // Un retour antidaté dans la période close est refusé ; daté du jour, il passe après la Z de la vente.
       await expectLater(
         retours.creer(
           type: TypesTiers.client,
           documentCode: ctx.tickets.first.code,
           produitCode: ctx.lait.code,
           quantite: 1,
+          date: z.fin.subtract(const Duration(minutes: 1)),
         ),
         throwsA(isA<RetourException>().having((e) => e.erreur, 'e', ErreurRetour.periodeCloturee)),
       );
+      final r = await retours.creer(
+        type: TypesTiers.client,
+        documentCode: ctx.tickets.first.code,
+        produitCode: ctx.lait.code,
+        quantite: 1,
+      );
+      expect(r.date.isAfter(z.fin), isTrue);
+      expect(r.caisseCode, 'CIS0000');
+      expect((await retours.annuler(r.code, motif: 'Erreur')).actif, isFalse, reason: 'période du retour ouverte');
       await expectLater(
         achats.annuler(a.code, motif: 'Erreur'),
         throwsA(isA<AchatException>().having((e) => e.erreur, 'e', ErreurAchat.periodeCloturee)),

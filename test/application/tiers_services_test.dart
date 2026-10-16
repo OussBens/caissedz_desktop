@@ -237,7 +237,11 @@ void main() {
         c.retours.creer(type: TypesTiers.client, documentCode: v.code, produitCode: c.lait.code, quantite: 0),
         throwsA(isA<RetourException>().having((e) => e.erreur, 'e', ErreurRetour.quantiteInvalide)),
       );
-      final ferme = RetourService(base.db, utilisateurCode: 'USR0000', periodeCloturee: (_, _) async => true);
+      final ferme = RetourService(
+        base.db,
+        utilisateurCode: 'USR0000',
+        periodeCloturee: (_, _, {caisseCode}) async => true,
+      );
       await expectLater(
         ferme.creer(type: TypesTiers.client, documentCode: v.code, produitCode: c.lait.code, quantite: 1),
         throwsA(isA<RetourException>().having((e) => e.erreur, 'e', ErreurRetour.periodeCloturee)),

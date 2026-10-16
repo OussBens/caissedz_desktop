@@ -57,12 +57,15 @@ class StatistiquesRepository {
     return rows.first['n'] as int;
   }
 
-  /// CA par jour sur [debut, fin], jours sans vente à 0.
+  /// CA net par jour sur [debut, fin] (retours clients déduits à leur date), jours sans vente à 0.
   Future<List<PointSerie>> caParJour(DateTime debut, DateTime fin) async {
     final rows = await db.rawQuery(
       '''
-      SELECT date(date, 'localtime') j, SUM(total_net) t FROM vente
-      WHERE statut = ? AND date >= ? AND date < ? GROUP BY j
+      SELECT j, SUM(t) t FROM (
+        SELECT date(date, 'localtime') j, total_net t FROM vente WHERE statut = ?1 AND date >= ?2 AND date < ?3
+        UNION ALL
+        SELECT date(date, 'localtime'), -total FROM retour WHERE type = 'Client' AND etat = 1 AND date >= ?2 AND date < ?3
+      ) GROUP BY j
       ''',
       [_validee, _iso(DateTime(debut.year, debut.month, debut.day)), _iso(DateTime(fin.year, fin.month, fin.day + 1))],
     );

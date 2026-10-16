@@ -2427,5 +2427,9 @@
   "remiseSectionPeriode": "فترة الصلاحية",
   "stkQteDansMagasin": "الكمية في {magasin}",
   "stkStockMagasinN": "{magasin}: {quantite}",
-  "versementErreurPeriode": "فترة مغلقة: لم يعد بالإمكان تعديل هذا الدفع. ألغِه ثم أدخل دفعًا جديدًا."
+  "versementErreurPeriode": "فترة مغلقة: لم يعد بالإمكان تعديل هذا الدفع. ألغِه ثم أدخل دفعًا جديدًا.",
+  "retoursDateDuJour": "مؤرخ بتاريخ اليوم، حتى بعد إقفال Z ليوم البيع.",
+  "situationCasse": "تالف (خسارة)",
+  "situationPiecesTheoriques": "القطع النظرية",
+  "situationPiecesComptees": "القطع المحسوبة"
 }

@@ -34,22 +34,31 @@ String libelleReglementRetour(AppLocalizations l10n, String type, String regleme
 String nomTiersRetour(AppLocalizations l10n, Retour r, Map<String, String> noms) =>
     r.estClient && r.clientCode == 'CLN0000' ? l10n.posClientPassage : (noms[r.tiersCode] ?? r.tiersCode);
 
-/// Produit d'une pièce d'origine proposé au retour.
+/// Ligne d'une pièce d'origine proposée au retour : une ligne de vente (client) ou un produit de l'entrée
+/// (fournisseur).
 @immutable
 class _LigneOrigine {
   const _LigneOrigine({
+    required this.cle,
+    this.ordre,
     required this.produitCode,
     required this.nom,
     required this.quantite,
     required this.prix,
     required this.prixAchat,
   });
+
+  /// Clé de sélection : `L<ordre>` pour une ligne de vente, code produit pour une entrée.
+  final String cle;
+  final int? ordre;
   final String produitCode;
   final String nom;
   final double quantite;
   final double prix;
   final double prixAchat;
 }
+
+String _cleLigneVente(int ordre) => 'L$ordre';
 
 /// Formulaire de retour (`RetourFormDialog` du DS, 920 px) : création (client ou fournisseur) ou modification.
 Future<void> afficherFormulaireRetour(
@@ -89,7 +98,10 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
   );
   late final _serie = TextEditingController(text: widget.retour?.numeroSerie);
   late final _obs = TextEditingController(text: widget.retour?.motif);
-  late DateTime _date = widget.retour?.date ?? DateTime.now();
+
+  /// Un retour est daté du jour de sa saisie (possible après la clôture Z du jour de la vente) ; un retour
+  /// modifié garde sa date.
+  late final DateTime _date = widget.retour?.date ?? DateTime.now();
   late bool _remise = widget.retour?.remiseEnStock ?? true;
   String? _erreur;
 
@@ -107,7 +119,9 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
     final r = widget.retour;
     if (r != null) {
       _tiers = r.tiersCode;
-      _produit = r.ligne?.produitCode;
+      _produit = r.estClient && r.ligne?.ordreOrigine != null
+          ? _cleLigneVente(r.ligne!.ordreOrigine!)
+          : r.ligne?.produitCode;
       unawaited(_chargerDocument(r.documentCode));
     } else if (widget.documentCode != null) {
       unawaited(_chargerDocument(widget.documentCode!));
@@ -129,10 +143,13 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
       final v = await ref.read(venteRepositoryProvider).vente(code);
       if (v == null) return;
       tiers = v.clientCode;
+      // Une option par ligne du ticket : un produit vendu en colis et à l'unité, ou seul et dans un pack, donne
+      // plusieurs lignes, chacune avec son prix et sa quantité.
       for (final l in v.lignes.where((l) => l.packCode == null || l.composantPack)) {
-        if (lignes.any((x) => x.produitCode == l.produitCode)) continue;
         lignes.add(
           _LigneOrigine(
+            cle: _cleLigneVente(l.ordre),
+            ordre: l.ordre,
             produitCode: l.produitCode,
             nom: l.designation,
             quantite: l.quantite,
@@ -151,6 +168,7 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
           final x = lignes[i];
           final q = x.quantite + l.quantite;
           lignes[i] = _LigneOrigine(
+            cle: x.cle,
             produitCode: x.produitCode,
             nom: x.nom,
             quantite: q,
@@ -160,6 +178,7 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
         } else {
           lignes.add(
             _LigneOrigine(
+              cle: l.produitCode,
               produitCode: l.produitCode,
               nom: l.designation,
               quantite: l.quantite,
@@ -170,15 +189,25 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
         }
       }
     }
-    final deja = await ref.read(tiersRepositoryProvider).quantitesRetournees(code, sauf: widget.retour?.code);
+    final repo = ref.read(tiersRepositoryProvider);
+    final deja = _client
+        ? {
+            for (final e in (await repo.quantitesRetourneesParLigne(code, sauf: widget.retour?.code)).entries)
+              _cleLigneVente(e.key): e.value,
+          }
+        : await repo.quantitesRetournees(code, sauf: widget.retour?.code);
     if (!mounted) return;
     setState(() {
       _document = code;
       _tiers = tiers;
       _lignes = lignes;
       _deja = deja;
-      if (!lignes.any((l) => l.produitCode == _produit)) {
-        _produit = lignes.length == 1 ? lignes.first.produitCode : null;
+      if (!lignes.any((l) => l.cle == _produit)) {
+        // Ancien retour sans ligne d'origine : 1ʳᵉ ligne du produit.
+        final produit = widget.retour?.ligne?.produitCode;
+        _produit =
+            lignes.where((l) => l.produitCode == produit).firstOrNull?.cle ??
+            (lignes.length == 1 ? lignes.first.cle : null);
       }
     });
   }
@@ -270,17 +299,16 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
               remiseEnStock: _client && _remise,
               numeroSerie: _serie.text,
               observation: _obs.text,
-              date: _date,
             )
           : await service.creer(
               type: _type,
               documentCode: _document!,
-              produitCode: _produit!,
+              produitCode: _lignes.firstWhere((l) => l.cle == _produit).produitCode,
+              ligneOrdre: _lignes.firstWhere((l) => l.cle == _produit).ordre,
               quantite: quantite,
               remiseEnStock: _client && _remise,
               numeroSerie: _serie.text,
               observation: _obs.text,
-              date: _date,
             );
       rafraichirCommerce(ref);
       rafraichirStock(ref);
@@ -306,8 +334,8 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
     final noms = _client
         ? {for (final x in ref.watch(clientsProvider).value ?? const <Client>[]) x.code: x.nom}
         : {for (final x in ref.watch(fournisseursProvider).value ?? const <Fournisseur>[]) x.code: x.nom};
-    final sel = _lignes.where((l) => l.produitCode == _produit).firstOrNull;
-    final max = sel == null ? 0.0 : sel.quantite - (_deja[sel.produitCode] ?? 0);
+    final sel = _lignes.where((l) => l.cle == _produit).firstOrNull;
+    final max = sel == null ? 0.0 : sel.quantite - (_deja[sel.cle] ?? 0);
     final qn = lireNombre(_qte.text) ?? 0;
     final depasse = sel != null && qn > max + 1e-9;
     final montant = sel == null ? 0.0 : qn * (_client ? sel.prix : sel.prixAchat);
@@ -378,7 +406,8 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
                 libelle: l10n.communDate,
                 obligatoire: true,
                 largeurLibelle: lw,
-                child: DsDateField(valeur: _date, onChanged: (d) => setState(() => _date = d ?? _date)),
+                aide: _edition ? null : l10n.retoursDateDuJour,
+                child: DsDateField(valeur: _date, actif: false, onChanged: (_) {}),
               ),
               DsFormRow(
                 libelle: _client ? l10n.retoursClient : l10n.retoursFournisseur,
@@ -417,14 +446,28 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
                     valeur: _produit,
                     actif: _document != null && !_edition,
                     placeholder: l10n.retoursProduitIndice,
-                    options: [for (final l in _lignes) l.produitCode],
-                    libelle: (code) {
-                      final l = _lignes.firstWhere((x) => x.produitCode == code);
+                    options: [for (final l in _lignes) l.cle],
+                    libelle: (cle) {
+                      final l = _lignes.firstWhere((x) => x.cle == cle);
                       return _client
                           ? l10n.retoursOptionVendu(l.nom, da(l.prix), formaterNombre(l.quantite))
                           : l10n.retoursOptionRecu(l.nom, da(l.prix), formaterNombre(l.quantite));
                     },
-                    recherche: rechercheListe(context, ref, ListeMetier.produit),
+                    // Recherche par produit, ramenée à la 1ʳᵉ ligne de ce produit.
+                    recherche: (_, valeur) async {
+                      final parProduit = <String, String>{};
+                      for (final l in _lignes) {
+                        parProduit.putIfAbsent(l.produitCode, () => l.cle);
+                      }
+                      final code = await choisirDansListe(
+                        context,
+                        ref,
+                        ListeMetier.produit,
+                        codes: parProduit.keys.toSet(),
+                        valeur: _lignes.where((l) => l.cle == valeur).firstOrNull?.produitCode,
+                      );
+                      return code == null ? null : parProduit[code];
+                    },
                     onChanged: (v) => setState(() {
                       _produit = v;
                       _erreur = null;

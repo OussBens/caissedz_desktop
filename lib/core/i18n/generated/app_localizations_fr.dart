@@ -7136,4 +7136,16 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get versementErreurPeriode =>
       'Période clôturée : ce versement ne peut plus être modifié. Annulez-le puis saisissez un nouveau versement.';
+
+  @override
+  String get retoursDateDuJour => 'Daté du jour, même après la clôture Z du jour de la vente.';
+
+  @override
+  String get situationCasse => 'Casse (perte)';
+
+  @override
+  String get situationPiecesTheoriques => 'Pièces théoriques';
+
+  @override
+  String get situationPiecesComptees => 'Pièces comptées';
 }

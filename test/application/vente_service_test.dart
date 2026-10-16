@@ -222,7 +222,7 @@ void main() {
           base.db,
           utilisateurCode: 'USR0000',
           parametres: _params,
-          periodeCloturee: (_, _) async => true,
+          periodeCloturee: (_, _, {caisseCode}) async => true,
         );
         await expectLater(
           verrouille.annuler(v2.code, motif: 'test'),

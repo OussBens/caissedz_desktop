@@ -19,7 +19,8 @@ class ClotureException implements Exception {
 
 /// Clôtures Z (§9.13, §12.3) : rapport figé d'UNE caisse depuis sa clôture précédente (ventes validées et
 /// annulées, tickets, répartition des paiements), scellé SHA-256 et chaîné par caisse. Une période clôturée
-/// interdit toute annulation (ventes, retours, achats). Aucune modification ni suppression (déclencheurs SQL).
+/// interdit toute annulation dans cette caisse (ventes, retours datés de la période, achats) ; un retour reste
+/// possible après la Z, daté du jour. Aucune modification ni suppression (déclencheurs SQL).
 ///
 /// Les clôtures globales antérieures à la v16 (`caisse_code` nul) forment leur propre chaîne ; la première
 /// clôture d'une caisse part de la fin de la dernière clôture globale.
@@ -31,10 +32,11 @@ class ClotureService {
 
   CaisseRepository get _repo => CaisseRepository(db);
 
-  /// Vérificateur à brancher sur `VenteService`, `RetourService`, `AchatService`.
-  ///
-  /// ⚠️ PROVISOIRE : une date est « clôturée » dès qu'une clôture (toutes caisses) la couvre.
-  static Future<bool> periodeCloturee(DatabaseExecutor ex, DateTime date) => CaisseRepository(ex).periodeCloturee(date);
+  /// Vérificateur à brancher sur `VenteService`, `RetourService`, `AchatService` : une date est « clôturée »
+  /// si une clôture de [caisseCode] (ou une clôture globale d'avant la v16) la couvre ; sans caisse (entrées),
+  /// dès qu'une clôture de n'importe quelle caisse la couvre.
+  static Future<bool> periodeCloturee(DatabaseExecutor ex, DateTime date, {String? caisseCode}) =>
+      CaisseRepository(ex).periodeCloturee(date, caisseCode: caisseCode);
 
   Future<List<Cloture>> clotures({String? caisseCode}) => _repo.clotures(caisseCode: caisseCode);
 

@@ -56,6 +56,14 @@ class SituationRepository {
     _iso(DateTime(fin.year, fin.month, fin.day + 1)),
   ];
 
+  /// Retours clients actifs avec leur coût d'achat (prix d'achat figé × quantité) : `r.*`, `cout`.
+  /// Retour remis en stock : le coût revient en stock (déduit du coût des ventes) ; « Casse » : le coût reste
+  /// une perte.
+  static const String _retoursClients = '''
+    (SELECT r.*, COALESCE((SELECT SUM(rl.prix_achat * rl.quantite) FROM retour_ligne rl
+      WHERE rl.retour_code = r.code), 0) cout
+     FROM retour r WHERE r.type = 'Client' AND r.etat = 1)''';
+
   /// Reste effectif d'une vente : reste − imputations des versements actifs.
   static const String _resteVente = '''
     (v.reste - COALESCE((SELECT SUM(i.montant) FROM versement_imputation i
@@ -92,18 +100,23 @@ class SituationRepository {
     ];
   }
 
-  /// 2 · Recette par produit : quantité, prix moyen, recette.
+  /// 2 · Recette par produit : quantité, prix moyen, recette, nettes des retours clients (à leur date).
   Future<List<LigneSituation>> recetteParProduit(DateTime debut, DateTime fin, FiltresSituation f) async {
     final rows = await db.rawQuery(
       '''
-      SELECT l.produit_code code, p.designation nom, cat.nom categorie, SUM(l.quantite) q, SUM(l.total) ca
-      FROM vente_ligne l JOIN vente v ON v.code = l.vente_code
-      JOIN produit p ON p.code = l.produit_code LEFT JOIN categorie cat ON cat.code = p.categorie_code
-      WHERE v.statut = ? AND v.date >= ? AND v.date < ?
-        AND (? IS NULL OR p.categorie_code = ?) AND (? IS NULL OR v.caisse_code = ?)
-      GROUP BY l.produit_code ORDER BY ca DESC
+      SELECT x.code, p.designation nom, cat.nom categorie, SUM(x.q) q, SUM(x.ca) ca FROM (
+        SELECT l.produit_code code, l.quantite q, l.total ca
+        FROM vente_ligne l JOIN vente v ON v.code = l.vente_code
+        WHERE v.statut = ?1 AND v.date >= ?2 AND v.date < ?3 AND (?4 IS NULL OR v.caisse_code = ?4)
+        UNION ALL
+        SELECT rl.produit_code, -rl.quantite, -rl.total
+        FROM retour_ligne rl JOIN retour r ON r.code = rl.retour_code
+        WHERE r.type = 'Client' AND r.etat = 1 AND r.date >= ?2 AND r.date < ?3 AND (?4 IS NULL OR r.caisse_code = ?4)
+      ) x JOIN produit p ON p.code = x.code LEFT JOIN categorie cat ON cat.code = p.categorie_code
+      WHERE (?5 IS NULL OR p.categorie_code = ?5)
+      GROUP BY x.code ORDER BY ca DESC
       ''',
-      [_venteValidee, ..._bornes(debut, fin), f.categorie, f.categorie, f.caisse, f.caisse],
+      [_venteValidee, ..._bornes(debut, fin), f.caisse, f.categorie],
     );
     return [
       for (final r in rows)
@@ -198,12 +211,14 @@ class SituationRepository {
       '''
       SELECT p.code, p.designation nom, p.prix_achat pa, cat.nom categorie,
         COALESCE((SELECT SUM(m.quantite) FROM mouvement_stock m WHERE m.produit_code = p.code
-          AND (? IS NULL OR m.magasin_code = ?)), 0) theo
+          AND (? IS NULL OR m.magasin_code = ?)), 0) theo,
+        COALESCE((SELECT SUM(m.nombre) FROM mouvement_stock m WHERE m.produit_code = p.code
+          AND (? IS NULL OR m.magasin_code = ?)), 0) theo_n
       FROM produit p LEFT JOIN categorie cat ON cat.code = p.categorie_code
       WHERE p.actif = 1 AND p.service = 0 AND (? IS NULL OR p.categorie_code = ?)
       ORDER BY p.designation
       ''',
-      [f.magasin, f.magasin, f.categorie, f.categorie],
+      [f.magasin, f.magasin, f.magasin, f.magasin, f.categorie, f.categorie],
     );
     return [
       for (final r in rows)
@@ -212,6 +227,7 @@ class SituationRepository {
           'nom': r['nom'],
           'categorie': r['categorie'] ?? '',
           'theorique': _d(r['theo']),
+          'theoriqueNombre': _d(r['theo_n']),
           'prixAchat': _d(r['pa']),
           'valeur': CalculsPrix.arrondir(_d(r['theo']) * _d(r['pa'])),
         },
@@ -258,12 +274,19 @@ class SituationRepository {
 
   // ---------------------------------------------------------------- Marges
 
-  /// 5 · Marge par panier : vente, coût (figé à la vente), marge, taux (sur le coût).
+  /// 5 · Marge par panier : vente nette de ses retours, coût (figé à la vente, moins les retours remis en stock),
+  /// marge, taux (sur le coût), montant retourné et perte « Casse ».
   Future<List<LigneSituation>> margeParPanier(DateTime debut, DateTime fin, FiltresSituation f) async {
     final rows = await db.rawQuery(
       '''
-      SELECT v.code, v.date, c.nom client, v.total_net montant,
-        COALESCE((SELECT SUM(l.total_achat) FROM vente_ligne l WHERE l.vente_code = v.code), 0) cout
+      SELECT v.code, v.date, c.nom client,
+        v.total_net - COALESCE((SELECT SUM(r.total) FROM $_retoursClients r WHERE r.document_code = v.code), 0) montant,
+        COALESCE((SELECT SUM(l.total_achat) FROM vente_ligne l WHERE l.vente_code = v.code), 0)
+          - COALESCE((SELECT SUM(r.cout) FROM $_retoursClients r WHERE r.document_code = v.code
+            AND r.remise_en_stock = 1), 0) cout,
+        COALESCE((SELECT SUM(r.total) FROM $_retoursClients r WHERE r.document_code = v.code), 0) retours,
+        COALESCE((SELECT SUM(r.cout) FROM $_retoursClients r WHERE r.document_code = v.code
+          AND r.remise_en_stock = 0), 0) casse
       FROM vente v JOIN client c ON c.code = v.client_code
       WHERE v.statut = ? AND v.date >= ? AND v.date < ?
         AND (? IS NULL OR v.utilisateur_code = ?) AND (? IS NULL OR v.client_code = ?)
@@ -287,22 +310,31 @@ class SituationRepository {
       'cout': cout,
       'marge': marge,
       'taux': cout <= 0 ? null : CalculsPrix.arrondir(marge / cout * 100),
+      'retours': CalculsPrix.arrondir(_d(r['retours'])),
+      'casse': CalculsPrix.arrondir(_d(r['casse'])),
     };
   }
 
-  /// 6 · Marge par période : CA, coût, marge, taux par jour, semaine ou mois.
+  /// 6 · Marge par période : CA et coût nets des retours clients (à la date du retour), marge, taux par jour,
+  /// semaine ou mois ; un retour « Casse » garde son coût (perte).
   Future<List<LigneSituation>> margeParPeriode(DateTime debut, DateTime fin, FiltresSituation f) async {
-    final cle = switch (f.regroupement) {
-      Regroupement.jour => "date(v.date, 'localtime')",
-      Regroupement.semaine => "strftime('%Y-S%W', v.date, 'localtime')",
-      Regroupement.mois => "strftime('%Y-%m', v.date, 'localtime')",
+    String cle(String col) => switch (f.regroupement) {
+      Regroupement.jour => "date($col, 'localtime')",
+      Regroupement.semaine => "strftime('%Y-S%W', $col, 'localtime')",
+      Regroupement.mois => "strftime('%Y-%m', $col, 'localtime')",
     };
     final rows = await db.rawQuery(
       '''
-      SELECT $cle k, SUM(v.total_net) montant,
-        SUM(COALESCE((SELECT SUM(l.total_achat) FROM vente_ligne l WHERE l.vente_code = v.code), 0)) cout
-      FROM vente v WHERE v.statut = ? AND v.date >= ? AND v.date < ?
-      GROUP BY k ORDER BY k
+      SELECT k, SUM(montant) montant, SUM(cout) cout, SUM(retours) retours, SUM(casse) casse FROM (
+        SELECT ${cle('v.date')} k, v.total_net montant,
+          COALESCE((SELECT SUM(l.total_achat) FROM vente_ligne l WHERE l.vente_code = v.code), 0) cout,
+          0 retours, 0 casse
+        FROM vente v WHERE v.statut = ?1 AND v.date >= ?2 AND v.date < ?3
+        UNION ALL
+        SELECT ${cle('r.date')}, -r.total, CASE WHEN r.remise_en_stock = 1 THEN -r.cout ELSE 0 END,
+          r.total, CASE WHEN r.remise_en_stock = 0 THEN r.cout ELSE 0 END
+        FROM $_retoursClients r WHERE r.date >= ?2 AND r.date < ?3
+      ) GROUP BY k ORDER BY k
       ''',
       [_venteValidee, ..._bornes(debut, fin)],
     );
@@ -313,12 +345,17 @@ class SituationRepository {
 
   // ---------------------------------------------------------------- Tableau de bord
 
-  /// Total des ventes validées sur [debut, fin] (jours inclus).
-  Future<double> totalVentes(DateTime debut, DateTime fin) async => _d(
-    (await db.rawQuery('SELECT COALESCE(SUM(total_net), 0) t FROM vente WHERE statut = ? AND date >= ? AND date < ?', [
-      _venteValidee,
-      ..._bornes(debut, fin),
-    ])).first['t'],
+  /// Chiffre d'affaires net sur [debut, fin] (jours inclus) : ventes validées − retours clients (à leur date).
+  Future<double> totalVentes(DateTime debut, DateTime fin) async => CalculsPrix.arrondir(
+    _d(
+      (await db.rawQuery(
+        '''
+        SELECT COALESCE((SELECT SUM(total_net) FROM vente WHERE statut = ?1 AND date >= ?2 AND date < ?3), 0)
+          - COALESCE((SELECT SUM(total) FROM retour WHERE type = 'Client' AND etat = 1 AND date >= ?2 AND date < ?3), 0) t
+        ''',
+        [_venteValidee, ..._bornes(debut, fin)],
+      )).first['t'],
+    ),
   );
 
   /// Total des entrées (achats) validées sur [debut, fin].
@@ -329,20 +366,24 @@ class SituationRepository {
     ])).first['t'],
   );
 
-  /// Ventes par caissier : (nom, nombre de tickets, total), décroissant.
+  /// Ventes par caissier : (nom, nombre de tickets, total net des retours de ses tickets), décroissant.
   Future<List<({String nom, int tickets, double total})>> ventesParCaissier(DateTime debut, DateTime fin) async {
     final rows = await db.rawQuery(
       '''
-      SELECT COALESCE(u.nom, v.utilisateur_code) nom, COUNT(*) n, SUM(v.total_net) t
-      FROM vente v LEFT JOIN utilisateur u ON u.code = v.utilisateur_code
-      WHERE v.statut = ? AND v.date >= ? AND v.date < ? GROUP BY v.utilisateur_code ORDER BY t DESC
+      SELECT COALESCE(u.nom, x.u) nom, SUM(x.n) n, SUM(x.t) t FROM (
+        SELECT v.utilisateur_code u, 1 n, v.total_net t FROM vente v
+        WHERE v.statut = ?1 AND v.date >= ?2 AND v.date < ?3
+        UNION ALL
+        SELECT v.utilisateur_code, 0, -r.total FROM retour r JOIN vente v ON v.code = r.document_code
+        WHERE r.type = 'Client' AND r.etat = 1 AND r.date >= ?2 AND r.date < ?3
+      ) x LEFT JOIN utilisateur u ON u.code = x.u GROUP BY x.u ORDER BY t DESC
       ''',
       [_venteValidee, ..._bornes(debut, fin)],
     );
     return [for (final r in rows) (nom: r['nom'] as String, tickets: r['n'] as int, total: _d(r['t']))];
   }
 
-  /// Top produits : (désignation, quantité, total), décroissant.
+  /// Top produits : (désignation, quantité, total) nets des retours clients, décroissant.
   Future<List<({String nom, double quantite, double total})>> topProduits(
     DateTime debut,
     DateTime fin, {
@@ -350,9 +391,13 @@ class SituationRepository {
   }) async {
     final rows = await db.rawQuery(
       '''
-      SELECT p.designation d, SUM(l.quantite) q, SUM(l.total) t FROM vente_ligne l
-      JOIN vente v ON v.code = l.vente_code JOIN produit p ON p.code = l.produit_code
-      WHERE v.statut = ? AND v.date >= ? AND v.date < ? GROUP BY l.produit_code ORDER BY t DESC LIMIT ?
+      SELECT p.designation d, SUM(x.q) q, SUM(x.t) t FROM (
+        SELECT l.produit_code c, l.quantite q, l.total t FROM vente_ligne l JOIN vente v ON v.code = l.vente_code
+        WHERE v.statut = ?1 AND v.date >= ?2 AND v.date < ?3
+        UNION ALL
+        SELECT rl.produit_code, -rl.quantite, -rl.total FROM retour_ligne rl JOIN retour r ON r.code = rl.retour_code
+        WHERE r.type = 'Client' AND r.etat = 1 AND r.date >= ?2 AND r.date < ?3
+      ) x JOIN produit p ON p.code = x.c GROUP BY x.c HAVING SUM(x.t) > 0 ORDER BY t DESC LIMIT ?4
       ''',
       [_venteValidee, ..._bornes(debut, fin), n],
     );

@@ -256,20 +256,24 @@ class StockService {
     });
   }
 
-  /// Inventaire d'un magasin : un mouvement d'écart par produit compté, dans UNE transaction.
+  /// Inventaire d'un magasin : un mouvement d'écart par produit compté (unités et pièces du 2ᵉ stock), dans
+  /// UNE transaction. Un produit absent d'une des deux listes garde son théorique pour cette grandeur.
   /// Retourne le nombre de produits ajustés.
   Future<int> inventorierLot({
     required String magasinCode,
     required Map<String, double> quantitesConstatees,
+    Map<String, double> nombresConstates = const {},
     String? commentaire,
   }) => db.transaction((txn) async {
     final repo = StockRepository(txn);
     var n = 0;
     final maintenant = DateTime.now();
-    for (final MapEntry(key: produitCode, value: constate) in quantitesConstatees.entries) {
+    for (final produitCode in {...quantitesConstatees.keys, ...nombresConstates.keys}) {
       await _verifierProduit(txn, produitCode);
-      final ecart = constate - (await repo.niveau(produitCode, magasinCode)).quantite;
-      if (ecart.abs() < 1e-9) continue;
+      final niveau = await repo.niveau(produitCode, magasinCode);
+      final ecart = (quantitesConstatees[produitCode] ?? niveau.quantite) - niveau.quantite;
+      final ecartNombre = (nombresConstates[produitCode] ?? niveau.nombre) - niveau.nombre;
+      if (ecart.abs() < 1e-9 && ecartNombre.abs() < 1e-9) continue;
       await repo.insererMouvement(
         MouvementStock(
           date: maintenant,
@@ -277,6 +281,7 @@ class StockService {
           magasinCode: magasinCode,
           type: TypesMouvement.inventaire,
           quantite: ecart,
+          nombre: ecartNombre,
           utilisateurCode: utilisateurCode,
           commentaire: commentaire,
         ),

@@ -76,6 +76,7 @@ class VenteLigne {
     required this.total,
     this.prixAchat = 0,
     this.totalAchat = 0,
+    this.unites = 0,
   });
   final int ordre;
   final String produitCode;
@@ -97,6 +98,15 @@ class VenteLigne {
   final double prixAchat;
   final double totalAchat;
 
+  /// Unités de stock sorties par la ligne (quantité × colis, figées à la vente ; 0 pour une vente au nombre).
+  final double unites;
+
+  /// Unités de stock de [q] articles de la ligne (au prorata de la quantité vendue).
+  double unitesPour(double q) => quantite == 0 ? 0 : unites * q / quantite;
+
+  /// Pièces (2ᵉ stock) de [q] articles de la ligne (au prorata de la quantité vendue).
+  double nombrePour(double q) => quantite == 0 ? 0 : nombre * q / quantite;
+
   Map<String, Object?> versLigne(String venteCode) => {
     'vente_code': venteCode,
     'ordre': ordre,
@@ -113,6 +123,7 @@ class VenteLigne {
     'total': total,
     'prix_achat': prixAchat,
     'total_achat': totalAchat,
+    'unites': unites,
   };
   factory VenteLigne.depuisLigne(Map<String, Object?> r) => VenteLigne(
     ordre: r['ordre'] as int,
@@ -129,6 +140,7 @@ class VenteLigne {
     total: (r['total'] as num).toDouble(),
     prixAchat: ((r['prix_achat'] as num?) ?? 0).toDouble(),
     totalAchat: ((r['total_achat'] as num?) ?? 0).toDouble(),
+    unites: ((r['unites'] as num?) ?? 0).toDouble(),
   );
   Map<String, Object?> versCanonique() => {
     'o': ordre,

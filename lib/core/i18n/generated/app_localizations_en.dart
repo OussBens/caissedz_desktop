@@ -7122,4 +7122,16 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get versementErreurPeriode =>
       'Closed period: this payment can no longer be edited. Cancel it and enter a new payment.';
+
+  @override
+  String get retoursDateDuJour => 'Dated today, even after the Z closing of the sale day.';
+
+  @override
+  String get situationCasse => 'Breakage (loss)';
+
+  @override
+  String get situationPiecesTheoriques => 'Theoretical pieces';
+
+  @override
+  String get situationPiecesComptees => 'Counted pieces';
 }

@@ -68,6 +68,7 @@ class TiersRepository {
         'prix_unitaire': l.prixUnitaire,
         'total': l.total,
         'prix_achat': l.prixAchat,
+        'ordre_origine': l.ordreOrigine,
       });
     }
   }
@@ -146,6 +147,17 @@ class TiersRepository {
       [documentCode, sauf ?? ''],
     );
     return {for (final r in rows) r['p'] as String: (r['q'] as num).toDouble()};
+  }
+
+  /// Quantités déjà retournées (retours clients actifs) par ligne de la vente (`ordre`), hors [sauf].
+  Future<Map<int, double>> quantitesRetourneesParLigne(String venteCode, {String? sauf}) async {
+    final rows = await db.rawQuery(
+      'SELECT l.ordre_origine o, SUM(l.quantite) q FROM retour_ligne l JOIN retour r ON r.code = l.retour_code '
+      "WHERE r.type = 'Client' AND r.document_code = ? AND r.etat = 1 AND r.code != ? AND l.ordre_origine IS NOT NULL "
+      'GROUP BY l.ordre_origine',
+      [venteCode, sauf ?? ''],
+    );
+    return {for (final r in rows) r['o'] as int: (r['q'] as num).toDouble()};
   }
 
   // ---- Versements ----

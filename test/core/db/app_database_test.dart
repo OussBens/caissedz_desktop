@@ -97,6 +97,15 @@ void main() {
         'hash': 'h',
         'hash_precedent': 'GENESIS',
       });
+      await db.insert('vente_ligne', {
+        'vente_code': 'VTE0001',
+        'ordre': 0,
+        'produit_code': 'PRD0001',
+        'designation': 'Lait',
+        'quantite': 1,
+        'prix_unitaire': 100,
+        'total': 100,
+      });
       await db.insert('retour', {
         'code': 'RET0001',
         'date': iso,
@@ -131,6 +140,10 @@ void main() {
       expect(await const MigrationRunner(toutesLesMigrations).executer(db), _depuis(12));
       final r = (await db.query('retour')).single;
       expect(r['type'], 'Client');
+      // v28 : caisse du retour reprise de la vente, ligne d'origine et unités figées.
+      expect(r['caisse_code'], 'CIS0000');
+      expect((await db.query('retour_ligne')).single['ordre_origine'], 0);
+      expect((await db.query('vente_ligne')).single['unites'], 1);
       expect(r['document_code'], 'VTE0001');
       expect(r['reglement'], 'Espèces');
       expect(r['etat'], 1);

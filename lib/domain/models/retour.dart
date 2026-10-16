@@ -13,6 +13,7 @@ class RetourLigne {
     required this.prixUnitaire,
     required this.total,
     this.prixAchat = 0,
+    this.ordreOrigine,
   });
   final String produitCode;
   final String designation;
@@ -24,6 +25,9 @@ class RetourLigne {
   final double total;
   final double prixAchat;
 
+  /// Ligne de la vente retournée (`vente_ligne.ordre`) ; nul pour un retour fournisseur.
+  final int? ordreOrigine;
+
   factory RetourLigne.depuisLigne(Map<String, Object?> r) => RetourLigne(
     produitCode: r['produit_code'] as String,
     designation: r['designation'] as String,
@@ -32,6 +36,7 @@ class RetourLigne {
     prixUnitaire: (r['prix_unitaire'] as num).toDouble(),
     total: (r['total'] as num).toDouble(),
     prixAchat: (r['prix_achat'] as num?)?.toDouble() ?? 0,
+    ordreOrigine: r['ordre_origine'] as int?,
   );
 }
 
@@ -75,6 +80,8 @@ class Retour {
     this.annuleLe,
     this.annulePar,
     this.motifAnnulation,
+    this.caisseCode,
+    this.pointsRepris = 0,
     this.lignes = const [],
   });
 
@@ -107,6 +114,12 @@ class Retour {
   final DateTime? annuleLe;
   final String? annulePar;
   final String? motifAnnulation;
+
+  /// Caisse du retour (période close contrôlée par caisse).
+  final String? caisseCode;
+
+  /// Points de fidélité retirés au client (prorata des points gagnés sur la vente).
+  final int pointsRepris;
   final List<RetourLigne> lignes;
 
   bool get estClient => type == TypesTiers.client;
@@ -134,6 +147,8 @@ class Retour {
     'annule_le': annuleLe?.toUtc().toIso8601String(),
     'annule_par': annulePar,
     'motif_annulation': motifAnnulation,
+    'caisse_code': caisseCode,
+    'points_repris': pointsRepris,
   };
 
   factory Retour.depuisLigne(Map<String, Object?> r, [List<RetourLigne> lignes = const []]) => Retour(
@@ -157,6 +172,8 @@ class Retour {
     annuleLe: r['annule_le'] == null ? null : DateTime.parse(r['annule_le'] as String).toLocal(),
     annulePar: r['annule_par'] as String?,
     motifAnnulation: r['motif_annulation'] as String?,
+    caisseCode: r['caisse_code'] as String?,
+    pointsRepris: r['points_repris'] as int? ?? 0,
     lignes: lignes,
   );
 }

@@ -13532,6 +13532,30 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Période clôturée : ce versement ne peut plus être modifié. Annulez-le puis saisissez un nouveau versement.'**
   String get versementErreurPeriode;
+
+  /// No description provided for @retoursDateDuJour.
+  ///
+  /// In fr, this message translates to:
+  /// **'Daté du jour, même après la clôture Z du jour de la vente.'**
+  String get retoursDateDuJour;
+
+  /// No description provided for @situationCasse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Casse (perte)'**
+  String get situationCasse;
+
+  /// No description provided for @situationPiecesTheoriques.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pièces théoriques'**
+  String get situationPiecesTheoriques;
+
+  /// No description provided for @situationPiecesComptees.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pièces comptées'**
+  String get situationPiecesComptees;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

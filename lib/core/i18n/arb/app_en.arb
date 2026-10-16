@@ -2427,5 +2427,9 @@
   "remiseSectionPeriode": "Validity period",
   "stkQteDansMagasin": "Qty in {magasin}",
   "stkStockMagasinN": "{magasin}: {quantite}",
-  "versementErreurPeriode": "Closed period: this payment can no longer be edited. Cancel it and enter a new payment."
+  "versementErreurPeriode": "Closed period: this payment can no longer be edited. Cancel it and enter a new payment.",
+  "retoursDateDuJour": "Dated today, even after the Z closing of the sale day.",
+  "situationCasse": "Breakage (loss)",
+  "situationPiecesTheoriques": "Theoretical pieces",
+  "situationPiecesComptees": "Counted pieces"
 }

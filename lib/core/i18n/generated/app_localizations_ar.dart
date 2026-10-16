@@ -7109,4 +7109,16 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get versementErreurPeriode => 'فترة مغلقة: لم يعد بالإمكان تعديل هذا الدفع. ألغِه ثم أدخل دفعًا جديدًا.';
+
+  @override
+  String get retoursDateDuJour => 'مؤرخ بتاريخ اليوم، حتى بعد إقفال Z ليوم البيع.';
+
+  @override
+  String get situationCasse => 'تالف (خسارة)';
+
+  @override
+  String get situationPiecesTheoriques => 'القطع النظرية';
+
+  @override
+  String get situationPiecesComptees => 'القطع المحسوبة';
 }

@@ -238,14 +238,15 @@ class _VueAnalyseState extends ConsumerState<_VueAnalyse> {
   bool _charge = false;
   int _version = -1;
 
-  /// Quantités comptées (inventaire), par code produit.
+  /// Quantités et pièces (2ᵉ stock) comptées (inventaire), par code produit.
   final Map<String, TextEditingController> _comptes = {};
+  final Map<String, TextEditingController> _comptesNombre = {};
 
   String get _id => widget.analyse.id;
 
   @override
   void dispose() {
-    for (final c in _comptes.values) {
+    for (final c in [..._comptes.values, ..._comptesNombre.values]) {
       c.dispose();
     }
     super.dispose();
@@ -282,17 +283,17 @@ class _VueAnalyseState extends ConsumerState<_VueAnalyse> {
       _lignes = lignes;
       _charge = true;
       if (_id == 'inv') {
-        for (final c in _comptes.values) {
+        for (final c in [..._comptes.values, ..._comptesNombre.values]) {
           c.dispose();
         }
+        TextEditingController champ(LigneSituation l, String cle) =>
+            TextEditingController(text: formaterNombre(l[cle]! as double, decimales: 2, grouper: false));
         _comptes
           ..clear()
-          ..addAll({
-            for (final l in lignes)
-              l['code']! as String: TextEditingController(
-                text: formaterNombre(l['theorique']! as double, decimales: 2, grouper: false),
-              ),
-          });
+          ..addAll({for (final l in lignes) l['code']! as String: champ(l, 'theorique')});
+        _comptesNombre
+          ..clear()
+          ..addAll({for (final l in lignes) l['code']! as String: champ(l, 'theoriqueNombre')});
       }
     });
   }
@@ -533,7 +534,13 @@ class _VueAnalyseState extends ConsumerState<_VueAnalyse> {
         if (lireNombre(_comptes[l['code']]?.text ?? '') case final q?)
           if ((q - (l['theorique']! as double)).abs() > 1e-9) l['code']! as String: q,
     };
-    if (comptes.isEmpty) {
+    final pieces = <String, double>{
+      for (final l in _lignes)
+        if (lireNombre(_comptesNombre[l['code']]?.text ?? '') case final n?)
+          if ((n - (l['theoriqueNombre']! as double)).abs() > 1e-9) l['code']! as String: n,
+    };
+    final produits = {...comptes.keys, ...pieces.keys};
+    if (produits.isEmpty) {
       unawaited(
         afficherResultat(
           context,
@@ -547,10 +554,12 @@ class _VueAnalyseState extends ConsumerState<_VueAnalyse> {
     final ok = await afficherConfirmation(
       context,
       titre: l10n.situationValiderInventaire,
-      message: l10n.situationConfirmerInventaire(comptes.length),
+      message: l10n.situationConfirmerInventaire(produits.length),
     );
     if (ok != true || !mounted) return;
-    final n = await ref.read(stockServiceProvider).inventorierLot(magasinCode: magasin, quantitesConstatees: comptes);
+    final n = await ref
+        .read(stockServiceProvider)
+        .inventorierLot(magasinCode: magasin, quantitesConstatees: comptes, nombresConstates: pieces);
     ref.read(stockVersionProvider.notifier).incrementer();
     rafraichirRapports(ref);
     if (!mounted) return;
@@ -664,6 +673,8 @@ class _VueAnalyseState extends ConsumerState<_VueAnalyse> {
         montant('cout', l10n.situationCoutLibelle),
         montant('marge', l10n.situationMarge),
         taux('taux', l10n.situationTaux),
+        montant('retours', l10n.situationRetours),
+        montant('casse', l10n.situationCasse, danger: true),
       ],
       'mgper' => [
         DsColonne(
@@ -680,6 +691,8 @@ class _VueAnalyseState extends ConsumerState<_VueAnalyse> {
         montant('cout', l10n.situationCoutLibelle),
         montant('marge', l10n.situationMarge),
         taux('taux', l10n.situationTaux),
+        montant('retours', l10n.situationRetours),
+        montant('casse', l10n.situationCasse, danger: true),
       ],
       'inv' => [
         code,
@@ -720,6 +733,25 @@ class _VueAnalyseState extends ConsumerState<_VueAnalyse> {
               ),
             );
           },
+        ),
+        quantite('theoriqueNombre', l10n.situationPiecesTheoriques),
+        DsColonne(
+          id: 'compteNombre',
+          libelle: l10n.situationPiecesComptees,
+          numerique: true,
+          triable: false,
+          valeur: (r) => _comptesNombre[r['code']]?.text,
+          cellule: (_, r) => SizedBox(
+            width: 100,
+            child: DsTextField(
+              key: ValueKey('inventaire_nombre_${r['code']}'),
+              controller: _comptesNombre[r['code']],
+              numerique: true,
+              taille: DsTailles.controleSm,
+              alignement: TextAlign.end,
+              onChanged: (_) => setState(() {}),
+            ),
+          ),
         ),
         DsColonne(
           id: 'valeur',
@@ -765,6 +797,11 @@ class _VueAnalyseState extends ConsumerState<_VueAnalyse> {
     return compte == null ? 0 : compte - (r['theorique']! as double);
   }
 
+  double _ecartNombre(LigneSituation r) {
+    final compte = lireNombre(_comptesNombre[r['code']]?.text ?? '');
+    return compte == null ? 0 : compte - (r['theoriqueNombre']! as double);
+  }
+
   List<DsStatItem> _stats(AppLocalizations l10n, String devise, List<LigneSituation> ls) {
     double s(String k) => ls.fold(0.0, (a, r) => a + ((r[k] as num?) ?? 0).toDouble());
     DsStatItem m(String libelle, double v, IconData icone, [DsBadgeTon? ton]) =>
@@ -803,12 +840,14 @@ class _VueAnalyseState extends ConsumerState<_VueAnalyse> {
         m(l10n.situationCoutLibelle, s('cout'), LucideIcons.shoppingCart),
         m(l10n.situationMarge, s('marge'), LucideIcons.trendingUp, DsBadgeTon.succes),
         pct(l10n.situationTauxMoyen, s('cout'), s('marge')),
+        m(l10n.situationRetours, s('retours'), LucideIcons.undo2, DsBadgeTon.avertissement),
+        m(l10n.situationCasse, s('casse'), LucideIcons.packageX, DsBadgeTon.danger),
       ],
       'inv' => [
         n(l10n.situationProduitsComptes, ls.length, LucideIcons.clipboardCheck),
         n(
           l10n.situationEcarts,
-          ls.where((r) => _ecart(r) != 0).length,
+          ls.where((r) => _ecart(r) != 0 || _ecartNombre(r) != 0).length,
           LucideIcons.triangleAlert,
           DsBadgeTon.avertissement,
         ),

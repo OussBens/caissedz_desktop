@@ -155,7 +155,11 @@ void main() {
         magasinCode: 'MAG0000',
         lignes: [DemandeAchatLigne(produitCode: lait.code, quantite: 5, prixAchat: 80)],
       );
-      final ferme = AchatService(base.db, utilisateurCode: 'USR0000', periodeCloturee: (_, _) async => true);
+      final ferme = AchatService(
+        base.db,
+        utilisateurCode: 'USR0000',
+        periodeCloturee: (_, _, {caisseCode}) async => true,
+      );
       await expectLater(
         ferme.annuler(a2.code, motif: 'Erreur'),
         throwsA(isA<AchatException>().having((e) => e.erreur, 'e', ErreurAchat.periodeCloturee)),

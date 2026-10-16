@@ -1,7 +1,6 @@
 import 'package:sqflite_common/sqlite_api.dart';
 
 import '../data/caisse_repository.dart';
-import '../data/catalogue_repository.dart';
 import '../data/historique_repository.dart';
 import '../data/stock_repository.dart';
 import '../data/tiers_repository.dart';
@@ -47,7 +46,8 @@ class VenteException implements Exception {
 }
 
 /// Vérifie qu'une date n'appartient pas à une période clôturée (fourni par le lot 7).
-typedef VerificateurCloture = Future<bool> Function(Transaction txn, DateTime date);
+/// Vrai si [date] est dans une période clôturée (de [caisseCode] et des clôtures globales ; toutes caisses si nul).
+typedef VerificateurCloture = Future<bool> Function(Transaction txn, DateTime date, {String? caisseCode});
 
 /// Cas d'usage de la vente : encaissement (UNE transaction : vente + lignes +
 /// paiements + mouvements de stock + points + scellement) et annulation.
@@ -161,6 +161,7 @@ class VenteService {
             total: CalculsPrix.arrondir(l.total * (1 - panier.remiseGlobalePct / 100)),
             prixAchat: l.quantite == 0 ? 0 : CalculsPrix.arrondir(coutLigne(l) / l.quantite),
             totalAchat: coutLigne(l),
+            unites: l.unitesStock,
           ),
       ];
       final hashPrecedent = await repo.dernierHash() ?? Scellement.genese;
@@ -240,7 +241,7 @@ class VenteService {
       final v = await repo.vente(code);
       if (v == null) throw const VenteException(ErreurVente.venteInconnue);
       if (v.statut == StatutsVente.annulee) throw const VenteException(ErreurVente.dejaAnnulee);
-      if (periodeCloturee != null && await periodeCloturee!(txn, v.date)) {
+      if (periodeCloturee != null && await periodeCloturee!(txn, v.date, caisseCode: v.caisseCode)) {
         throw const VenteException(ErreurVente.periodeCloturee);
       }
       final impute = await TiersRepository(txn).imputeSur('vente', code);
@@ -296,7 +297,7 @@ class VenteService {
       final v = await repo.vente(code);
       if (v == null) throw const VenteException(ErreurVente.venteInconnue);
       if (v.statut == StatutsVente.annulee) throw const VenteException(ErreurVente.dejaAnnulee);
-      if (periodeCloturee != null && await periodeCloturee!(txn, v.date)) {
+      if (periodeCloturee != null && await periodeCloturee!(txn, v.date, caisseCode: v.caisseCode)) {
         throw const VenteException(ErreurVente.periodeCloturee);
       }
       final retours = await txn.rawQuery(
@@ -304,38 +305,29 @@ class VenteService {
         [code],
       );
       if ((retours.first['n']! as int) > 0) throw const VenteException(ErreurVente.retourLie);
+      // Stock rétabli d'après les mouvements réels de la vente (et non la définition actuelle des colis / packs).
       final stock = StockService(txn.database, utilisateurCode: utilisateurCode);
-      final catalogue = CatalogueRepository(txn);
-      for (final l in v.lignes) {
-        if (l.packCode != null && !l.composantPack) {
-          // Ancienne ligne de pack (quantité = nombre de packs) : composants remis en stock.
-          final pack = (await catalogue.packs()).where((p) => p.code == l.packCode).firstOrNull;
-          for (final c in pack?.lignes ?? const []) {
-            await stock.entrerDansTransaction(
-              txn,
-              produitCode: c.produitCode,
-              magasinCode: v.magasinCode,
-              quantite: c.quantite * l.quantite,
-              type: TypesMouvement.retour,
-              referenceType: 'annulation',
-              referenceCode: code,
-            );
-          }
-        } else {
-          final colisQ = l.colisCode == null
-              ? 1
-              : ((await catalogue.colis()).where((c) => c.code == l.colisCode).firstOrNull?.quantite ?? 1);
-          await stock.entrerDansTransaction(
-            txn,
-            produitCode: l.produitCode,
-            magasinCode: v.magasinCode,
-            quantite: l.uniteVente == 'Nombre' ? 0 : l.quantite * colisQ,
-            nombre: l.nombre,
-            type: TypesMouvement.retour,
-            referenceType: 'annulation',
-            referenceCode: code,
-          );
-        }
+      final net = await txn.rawQuery(
+        '''
+        SELECT produit_code p, magasin_code m, SUM(quantite) q, SUM(nombre) n FROM mouvement_stock
+        WHERE reference_type = 'vente' AND reference_code = ? GROUP BY produit_code, magasin_code
+        ''',
+        [code],
+      );
+      for (final m in net) {
+        final q = -(m['q']! as num).toDouble();
+        final n = -(m['n']! as num).toDouble();
+        if (q.abs() < 1e-9 && n.abs() < 1e-9) continue;
+        await stock.entrerDansTransaction(
+          txn,
+          produitCode: m['p']! as String,
+          magasinCode: m['m']! as String,
+          quantite: q,
+          nombre: n,
+          type: TypesMouvement.retour,
+          referenceType: 'annulation',
+          referenceCode: code,
+        );
       }
       if (v.pointsGagnes - v.pointsUtilises != 0) {
         await repo.ajusterPoints(v.clientCode, -(v.pointsGagnes - v.pointsUtilises));

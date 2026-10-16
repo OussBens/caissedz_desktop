@@ -3721,5 +3721,9 @@
       }
     }
   },
-  "versementErreurPeriode": "Période clôturée : ce versement ne peut plus être modifié. Annulez-le puis saisissez un nouveau versement."
+  "versementErreurPeriode": "Période clôturée : ce versement ne peut plus être modifié. Annulez-le puis saisissez un nouveau versement.",
+  "retoursDateDuJour": "Daté du jour, même après la clôture Z du jour de la vente.",
+  "situationCasse": "Casse (perte)",
+  "situationPiecesTheoriques": "Pièces théoriques",
+  "situationPiecesComptees": "Pièces comptées"
 }

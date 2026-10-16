@@ -40,11 +40,15 @@ class RetourException implements Exception {
   String toString() => 'RetourException($erreur)';
 }
 
-/// Retours clients et fournisseurs (§9.3), un produit de la pièce d'origine par retour.
+/// Retours clients et fournisseurs (§9.3), une ligne de la pièce d'origine par retour.
 ///
-/// - Client (depuis un panier) : stock réintégré dans le magasin de la vente (ou sortie « Casse » si le
-///   produit n'est pas revendable), remboursement Espèces / Carte (versement verrouillé, sortie de caisse)
-///   ou avoir imputé sur les documents ouverts du client (le panier d'origine d'abord).
+/// Un retour est un nouveau document daté du jour : il reste possible après la clôture Z du jour de la vente ;
+/// seule la période de la date du retour, dans sa caisse, est contrôlée.
+///
+/// - Client (depuis une ligne du panier) : unités et pièces réintégrées au prorata de ce que la ligne a sorti
+///   (colis figé à la vente) dans le magasin de la vente (ou sortie « Casse » si le produit n'est pas
+///   revendable), points de fidélité repris au prorata, remboursement Espèces / Carte (versement verrouillé,
+///   sortie de caisse) ou avoir imputé sur les documents ouverts du client (le panier d'origine d'abord).
 /// - Fournisseur (depuis une entrée) : sortie du stock du magasin de l'entrée, déduit de la dette
 ///   (avoir imputé, l'entrée d'origine d'abord) ou remboursé en espèces (entrée de caisse).
 ///
@@ -62,6 +66,7 @@ class RetourService {
     required String documentCode,
     required String produitCode,
     required double quantite,
+    int? ligneOrdre,
     String? reglement,
     bool remiseEnStock = true,
     String? numeroSerie,
@@ -79,6 +84,7 @@ class RetourService {
       type: type,
       documentCode: documentCode,
       produitCode: produitCode,
+      ligneOrdre: ligneOrdre,
       quantite: quantite,
       reglement: reglement,
       remiseEnStock: remiseEnStock,
@@ -118,12 +124,13 @@ class RetourService {
       type: ancien.type,
       documentCode: ancien.documentCode,
       produitCode: ancien.ligne?.produitCode ?? '',
+      ligneOrdre: ancien.ligne?.ordreOrigine,
       quantite: quantite,
       reglement: reglement,
       remiseEnStock: remiseEnStock,
       numeroSerie: numeroSerie,
       observation: observation,
-      caisseCode: caisseCode,
+      caisseCode: caisseCode ?? ancien.caisseCode,
       date: date ?? ancien.date,
       nouveau: false,
     );
@@ -159,7 +166,7 @@ class RetourService {
     final r = await TiersRepository(txn).retour(code);
     if (r == null) throw const RetourException(ErreurRetour.retourInconnu);
     if (!r.actif) throw const RetourException(ErreurRetour.dejaAnnule);
-    if (periodeCloturee != null && await periodeCloturee!(txn, r.date)) {
+    if (periodeCloturee != null && await periodeCloturee!(txn, r.date, caisseCode: r.caisseCode)) {
       throw const RetourException(ErreurRetour.periodeCloturee);
     }
     return r;
@@ -228,6 +235,10 @@ class RetourService {
           .contrePasserReference('versement', vc, utilisateurCode: utilisateurCode, commentaire: '$motif ${r.code}');
     }
     await tiers.lierVersementRetour(r.code, null);
+    // Points de fidélité repris rendus au client.
+    if (r.pointsRepris != 0 && r.clientCode != null) {
+      await VenteRepository(txn).ajusterPoints(r.clientCode!, r.pointsRepris);
+    }
   }
 
   Future<Retour> _appliquer(
@@ -236,6 +247,7 @@ class RetourService {
     required String type,
     required String documentCode,
     required String produitCode,
+    int? ligneOrdre,
     required double quantite,
     required String? reglement,
     required bool remiseEnStock,
@@ -251,7 +263,11 @@ class RetourService {
       throw const RetourException(ErreurRetour.reglementInvalide);
     }
     final repo = TiersRepository(txn);
-    final deja = (await repo.quantitesRetournees(documentCode, sauf: code))[produitCode] ?? 0;
+    // Le retour est daté du jour : seule sa propre période (dans sa caisse) doit être ouverte.
+    final caisse = caisseCode ?? await CaisseRepository(txn).caisseParDefaut(utilisateurCode);
+    if (periodeCloturee != null && await periodeCloturee!(txn, date, caisseCode: caisse)) {
+      throw const RetourException(ErreurRetour.periodeCloturee);
+    }
     final stock = StockService(txn.database, utilisateurCode: utilisateurCode);
     final obs = (observation?.trim().isEmpty ?? true) ? null : observation!.trim();
     final serie = (numeroSerie?.trim().isEmpty ?? true) ? null : numeroSerie!.trim();
@@ -261,29 +277,40 @@ class RetourService {
       final v = await VenteRepository(txn).vente(documentCode);
       if (v == null) throw const RetourException(ErreurRetour.documentInconnu);
       if (v.statut == StatutsVente.annulee) throw const RetourException(ErreurRetour.documentAnnule);
-      if (periodeCloturee != null && await periodeCloturee!(txn, v.date)) {
-        throw const RetourException(ErreurRetour.periodeCloturee);
-      }
       // Sans règlement imposé : avoir sur le solde du client, espèces pour le client de passage.
       reglement ??= ReglementsRetour.parDefaut(v.clientCode);
       if (reglement == ReglementsRetour.avoir && v.clientCode == CodeGenerator.systeme(CodeGenerator.client)) {
         throw const RetourException(ErreurRetour.reglementInvalide);
       }
+      // La ligne retournée : celle désignée (`ordre`), sinon la 1ʳᵉ ligne du produit (anciens appels).
       final vl = v.lignes
-          .where((l) => l.produitCode == produitCode && (l.packCode == null || l.composantPack))
+          .where(
+            (l) =>
+                l.produitCode == produitCode &&
+                (l.packCode == null || l.composantPack) &&
+                (ligneOrdre == null || l.ordre == ligneOrdre),
+          )
           .firstOrNull;
       if (vl == null) throw RetourException(ErreurRetour.produitAbsent, produitCode);
+      final deja = (await repo.quantitesRetourneesParLigne(documentCode, sauf: code))[vl.ordre] ?? 0;
       _verifierPlafond(vl.quantite, deja, quantite);
       final prixNet = vl.quantite == 0 ? 0.0 : CalculsPrix.arrondir(vl.total / vl.quantite);
       final total = CalculsPrix.arrondir(prixNet * quantite);
       final parNombre = vl.uniteVente == 'Nombre';
-      final unites = parNombre ? 0.0 : quantite * (vl.colisCode == null ? 1 : await _quantiteColis(txn, vl.colisCode!));
+      // Unités et pièces réellement sorties par la ligne, au prorata (colis figé à la vente) ; anciennes lignes
+      // sans unités figées : colis actuel.
+      final unites = parNombre
+          ? 0.0
+          : vl.unites > 0
+          ? vl.unitesPour(quantite)
+          : quantite * (vl.colisCode == null ? 1 : await _quantiteColis(txn, vl.colisCode!));
+      final nombre = vl.nombrePour(quantite);
       await stock.entrerDansTransaction(
         txn,
         produitCode: produitCode,
         magasinCode: v.magasinCode,
         quantite: unites,
-        nombre: parNombre ? quantite : 0,
+        nombre: nombre,
         type: TypesMouvement.retour,
         referenceType: 'retour',
         referenceCode: code,
@@ -300,7 +327,7 @@ class RetourService {
             LigneStock(
               produitCode: produitCode,
               quantite: unites,
-              nombre: parNombre ? quantite : 0,
+              nombre: nombre,
               prix: unites <= 0 ? vl.prixAchat : CalculsPrix.arrondir(vl.prixAchat * quantite / unites),
             ),
           ],
@@ -309,6 +336,9 @@ class RetourService {
           retourCode: code,
         );
       }
+      // Fidélité : points gagnés sur la vente repris au prorata du montant retourné.
+      final points = v.totalNet <= 0 || v.pointsGagnes <= 0 ? 0 : (v.pointsGagnes * total / v.totalNet).floor();
+      if (points > 0) await VenteRepository(txn).ajusterPoints(v.clientCode, -points);
       retour = Retour(
         code: code,
         date: date,
@@ -322,15 +352,18 @@ class RetourService {
         remiseEnStock: remiseEnStock,
         numeroSerie: serie,
         motif: obs,
+        caisseCode: caisse,
+        pointsRepris: points,
         lignes: [
           RetourLigne(
             produitCode: produitCode,
             designation: vl.designation,
             quantite: quantite,
-            nombre: parNombre ? quantite : 0,
+            nombre: nombre,
             prixUnitaire: prixNet,
             total: total,
             prixAchat: vl.prixAchat,
+            ordreOrigine: vl.ordre,
           ),
         ],
       );
@@ -338,10 +371,8 @@ class RetourService {
       final a = await AchatService(txn.database, utilisateurCode: utilisateurCode).achat(documentCode, txn);
       if (a == null) throw const RetourException(ErreurRetour.documentInconnu);
       if (a.statut == StatutsAchat.annule) throw const RetourException(ErreurRetour.documentAnnule);
-      if (periodeCloturee != null && await periodeCloturee!(txn, a.date)) {
-        throw const RetourException(ErreurRetour.periodeCloturee);
-      }
       reglement ??= ReglementsRetour.avoir;
+      final deja = (await repo.quantitesRetournees(documentCode, sauf: code))[produitCode] ?? 0;
       final lignesProduit = a.lignes.where((l) => l.produitCode == produitCode).toList();
       if (lignesProduit.isEmpty) throw RetourException(ErreurRetour.produitAbsent, produitCode);
       final recue = lignesProduit.fold(0.0, (s, l) => s + l.quantite);
@@ -380,6 +411,7 @@ class RetourService {
         remiseEnStock: false,
         numeroSerie: serie,
         motif: obs,
+        caisseCode: caisse,
         lignes: [
           RetourLigne(
             produitCode: produitCode,
@@ -399,7 +431,7 @@ class RetourService {
     } else {
       await repo.remplacerRetour(retour);
     }
-    final versement = await _regler(txn, retour, caisseCode: caisseCode);
+    final versement = await _regler(txn, retour, caisseCode: caisse);
     if (versement != null) await repo.lierVersementRetour(code, versement.code);
     return (await repo.retour(code))!;
   }
