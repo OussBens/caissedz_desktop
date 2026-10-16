@@ -98,7 +98,8 @@ class _StockPageState extends ConsumerState<StockPage> {
       for (final p in produits)
         () {
           final par = {for (final m in colonnesMagasins) m.code: stocks[p.code]?[m.code] ?? 0.0};
-          final total = par.values.fold(0.0, (a, b) => a + b);
+          // Le total reste celui de tous les magasins consultables, même filtré sur un magasin.
+          final total = consultables.fold(0.0, (a, m) => a + (stocks[p.code]?[m.code] ?? 0.0));
           return _LigneStock(p, par, total, etatStockProduit(p, total, seuilGlobal));
         }(),
     ];
