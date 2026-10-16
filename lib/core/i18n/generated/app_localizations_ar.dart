@@ -7271,4 +7271,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get factureChaineOk => 'سلسلة الفواتير سليمة';
+
+  @override
+  String get achatErreurCommandeInconnue => 'لم يتم العثور على طلبية المورد لهذا المورد';
+
+  @override
+  String get achatErreurCommandeCloturee => 'طلبية المورد ملغاة أو مُسوّاة: الاستلام غير ممكن';
 }

@@ -3784,5 +3784,7 @@
   "factureKpiFacture": "Total facturé",
   "factureKpiAvoirs": "Total des avoirs",
   "factureImprimer": "Imprimer (duplicata)",
-  "factureChaineOk": "Chaîne des factures intacte"
+  "factureChaineOk": "Chaîne des factures intacte",
+  "achatErreurCommandeInconnue": "Commande fournisseur introuvable pour ce fournisseur",
+  "achatErreurCommandeCloturee": "Commande fournisseur annulée ou soldée : réception impossible"
 }

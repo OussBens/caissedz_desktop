@@ -32,6 +32,7 @@ import 'v030_integrite_fiscale.dart';
 import 'v031_fiscalite.dart';
 import 'v032_inventaire_types.dart';
 import 'v033_solde_initial.dart';
+import 'v034_documents_commerciaux.dart';
 
 export 'migration.dart';
 
@@ -70,4 +71,5 @@ const List<Migration> toutesLesMigrations = [
   MigrationV031Fiscalite(),
   MigrationV032InventaireTypes(),
   MigrationV033SoldeInitial(),
+  MigrationV034DocumentsCommerciaux(),
 ];

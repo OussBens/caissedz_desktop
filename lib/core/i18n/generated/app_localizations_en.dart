@@ -7286,4 +7286,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get factureChaineOk => 'Invoice chain intact';
+
+  @override
+  String get achatErreurCommandeInconnue => 'Supplier order not found for this supplier';
+
+  @override
+  String get achatErreurCommandeCloturee => 'Supplier order cancelled or closed: cannot receive';
 }

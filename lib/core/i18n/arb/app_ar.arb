@@ -2480,5 +2480,7 @@
   "factureKpiFacture": "إجمالي المفوتر",
   "factureKpiAvoirs": "إجمالي الفواتير العكسية",
   "factureImprimer": "طباعة (نسخة)",
-  "factureChaineOk": "سلسلة الفواتير سليمة"
+  "factureChaineOk": "سلسلة الفواتير سليمة",
+  "achatErreurCommandeInconnue": "لم يتم العثور على طلبية المورد لهذا المورد",
+  "achatErreurCommandeCloturee": "طلبية المورد ملغاة أو مُسوّاة: الاستلام غير ممكن"
 }

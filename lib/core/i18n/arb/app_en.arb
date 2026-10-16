@@ -2480,5 +2480,7 @@
   "factureKpiFacture": "Total invoiced",
   "factureKpiAvoirs": "Total credit notes",
   "factureImprimer": "Print (duplicate)",
-  "factureChaineOk": "Invoice chain intact"
+  "factureChaineOk": "Invoice chain intact",
+  "achatErreurCommandeInconnue": "Supplier order not found for this supplier",
+  "achatErreurCommandeCloturee": "Supplier order cancelled or closed: cannot receive"
 }

@@ -83,6 +83,7 @@ class Achat {
     this.lignes = const [],
     this.annulation,
     this.besoinCode,
+    this.commandeCode,
     this.nbVersements = 0,
   });
 
@@ -107,6 +108,9 @@ class Achat {
 
   /// Liste de besoins livrée par cette entrée (passée « Disponible »).
   final String? besoinCode;
+
+  /// Commande fournisseur (BCF) réceptionnée, en tout ou en partie, par cette entrée.
+  final String? commandeCode;
 
   /// Versements imputés à l'entrée (calculé).
   final int nbVersements;
@@ -140,6 +144,7 @@ class Achat {
     lignes: lignes,
     annulation: r['statut'] == StatutsAchat.annule ? Annulation.depuisLigne({...r, 'actif': 0}) : null,
     besoinCode: r['besoin_code'] as String?,
+    commandeCode: r['commande_code'] as String?,
     nbVersements: (r['nb_versements'] as int?) ?? 0,
   );
 }

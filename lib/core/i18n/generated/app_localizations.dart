@@ -13850,6 +13850,18 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Chaîne des factures intacte'**
   String get factureChaineOk;
+
+  /// No description provided for @achatErreurCommandeInconnue.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commande fournisseur introuvable pour ce fournisseur'**
+  String get achatErreurCommandeInconnue;
+
+  /// No description provided for @achatErreurCommandeCloturee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commande fournisseur annulée ou soldée : réception impossible'**
+  String get achatErreurCommandeCloturee;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

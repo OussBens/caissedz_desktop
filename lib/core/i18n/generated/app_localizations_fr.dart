@@ -7301,4 +7301,10 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get factureChaineOk => 'Chaîne des factures intacte';
+
+  @override
+  String get achatErreurCommandeInconnue => 'Commande fournisseur introuvable pour ce fournisseur';
+
+  @override
+  String get achatErreurCommandeCloturee => 'Commande fournisseur annulée ou soldée : réception impossible';
 }

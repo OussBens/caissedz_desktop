@@ -172,18 +172,14 @@ void main() {
     expect(g50.timbre, 15, reason: 'FAC0002 (119 DA) exonérée de timbre');
     expect(ExportG50.generer(g50, nomBoutique: 'Test').isNotEmpty, isTrue);
     // Même base par caisse (clôture Z) ; une autre caisse n'a rien.
-    final parCaisse = await FiscaliteRepository(
-      db,
-    ).g50(DateTime(2000), DateTime.now().add(const Duration(minutes: 1)), caisseCode: 'CIS0000');
+    final parCaisse = await FiscaliteRepository(db)
+        .g50(DateTime(2000), DateTime.now().add(const Duration(minutes: 1)), caisseCode: 'CIS0000');
     expect(parCaisse.tvaCollectee, 152);
-    final autre = await FiscaliteRepository(
-      db,
-    ).g50(DateTime(2000), DateTime.now().add(const Duration(minutes: 1)), caisseCode: 'CS9999');
+    final autre = await FiscaliteRepository(db)
+        .g50(DateTime(2000), DateTime.now().add(const Duration(minutes: 1)), caisseCode: 'CS9999');
     expect(autre.tvaCollectee, 0);
     // Situation « TVA par taux » : mêmes montants, TVA nette = collectée − déductible.
-    final situation = await SituationRepository(
-      db,
-    ).tva(DateTime(2000), DateTime.now().add(const Duration(minutes: 1)));
+    final situation = await SituationRepository(db).tva(DateTime(2000), DateTime.now().add(const Duration(minutes: 1)));
     final l19 = situation.firstWhere((l) => l['taux'] == 19.0);
     expect((l19['collectee'], l19['deductible'], l19['nette']), (152.0, 95.0, 57.0));
     expect(l19['baseVentes'], 800.0);

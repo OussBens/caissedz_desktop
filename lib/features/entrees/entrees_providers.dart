@@ -74,6 +74,8 @@ String messageErreurAchat(AppLocalizations l10n, ErreurAchat e) => switch (e) {
   ErreurAchat.repartitionIncomplete => l10n.entRepartitionIncomplete,
   ErreurAchat.bonInconnu => l10n.entErreurBonInconnu,
   ErreurAchat.bonTraite => l10n.entErreurBonTraite,
+  ErreurAchat.commandeInconnue => l10n.achatErreurCommandeInconnue,
+  ErreurAchat.commandeCloturee => l10n.achatErreurCommandeCloturee,
   ErreurAchat.sessionRequise => l10n.communSessionRequise,
   ErreurAchat.nombreObligatoire => l10n.communNombreObligatoire,
 };

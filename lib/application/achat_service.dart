@@ -34,6 +34,8 @@ enum ErreurAchat {
   repartitionIncomplete,
   bonInconnu,
   bonTraite,
+  commandeInconnue,
+  commandeCloturee,
   sessionRequise,
   nombreObligatoire,
 }
@@ -70,6 +72,7 @@ class AchatService {
     MajPrixAchat majPrix = MajPrixAchat.dernier,
     String? besoinCode,
     String? bonCode,
+    String? commandeCode,
   }) async {
     _verifier(lignes, verse);
     return db.transaction((txn) async {
@@ -84,6 +87,7 @@ class AchatService {
         if (bon == null) throw const AchatException(ErreurAchat.bonInconnu);
         if (bon.statut == StatutsBon.traite) throw const AchatException(ErreurAchat.bonTraite);
       }
+      if (commandeCode != null) await _verifierCommande(txn, commandeCode, fournisseurCode);
       final code = await TiersRepository(txn).prochainCode('achat', CodeGenerator.achat);
       final d = date ?? DateTime.now();
       await _ecrire(
@@ -101,6 +105,9 @@ class AchatService {
         besoinCode: besoinCode,
         nouveau: true,
       );
+      if (commandeCode != null) {
+        await txn.update('achat', {'commande_code': commandeCode}, where: 'code = ?', whereArgs: [code]);
+      }
       final total = await _total(txn, code);
       await _paiement(
         txn,
@@ -134,6 +141,15 @@ class AchatService {
       );
       return (await achat(code, txn))!;
     });
+  }
+
+  /// Réception d'une commande fournisseur : commande active, non soldée, du même fournisseur.
+  Future<void> _verifierCommande(Transaction txn, String commandeCode, String fournisseurCode) async {
+    final r = await txn.query('commande_fournisseur', where: 'code = ?', whereArgs: [commandeCode]);
+    if (r.isEmpty || r.first['fournisseur_code'] != fournisseurCode) {
+      throw const AchatException(ErreurAchat.commandeInconnue);
+    }
+    if (r.first['actif'] == 0 || r.first['soldee'] == 1) throw const AchatException(ErreurAchat.commandeCloturee);
   }
 
   /// Modifie une entrée validée : lignes, en-tête, mouvements de stock (défaits puis réécrits) et paiement
