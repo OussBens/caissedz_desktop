@@ -108,7 +108,14 @@
 - [x] Clôture Z par caisse, chaînage par caisse (§12.3), tickets annulés et répartition des paiements ; export de
       contrôle fiscal en archive / JSON / PDF / CSV avec état de la chaîne
 - [x] Permission `gererTransfertsCaisse` (§9.13) : onglet Transferts en « accès refusé » sans elle
-- [ ] Journal fiscal `journal_fiscal` avec ligne `CLOTURE_CAISSE` (§12.3)
+- [x] Journal fiscal `journal_fiscal` chaîné (ventes, annulations, retours, `CLOTURE_CAISSE`, factures, avoirs),
+      en ajout seul, vérifié par l'export fiscal (migration v30)
+- [x] Immuabilité en base : colonnes scellées des tickets, lignes, paiements, journal de stock, factures
+      (déclencheurs v30 / v31) ; ticket scellé v2 (coût, unités, TVA)
+- [x] Caisse Coffre (dépôt à la fermeture, fond pris à l'ouverture) ; Z sans mouvements techniques
+- [x] TVA figée par ligne (vente et entrée), régime Réel / IFU ; factures FAC et avoirs AVO à numérotation propre,
+      identités fiscales (NIF, NIS, RC, AI), montant en lettres ; droit de timbre (barème ⚠️ PROVISOIRE) ;
+      export G50 (Excel)
 - [x] Période clôturée évaluée par caisse (ventes, retours, versements ; les entrées, sans caisse, restent bloquées
       par toute clôture couvrant la date)
 - [x] Journal de caisse en ajout seul : contre-passations au lieu de suppressions, déclencheurs (migration v26)
@@ -202,8 +209,8 @@ Recopie de la checklist de la spec 06. `[x]` = fait et testé ; `[ ]` = manquant
 - [x] Versements liés à un retour verrouillés
 - [x] Caisses (Physique / Compte), sessions (1 ouverte max par caisse), grand-livre (§ 8.6), mouvements manuels
 - [x] Session obligatoire pour vente / achat / retour / versement
-- [x] Clôture de session (théorique / réel / écart), clôture Z scellée + PDF, export contrôle fiscal (pas de ligne
-      `CLOTURE_CAISSE` dans un `journal_fiscal` distinct)
+- [x] Clôture de session (théorique / réel / écart), clôture Z scellée + PDF, export contrôle fiscal avec
+      `journal_fiscal` distinct (ligne `CLOTURE_CAISSE`)
 - [x] Transferts d'argent entre caisses (permission dédiée)
 
 ### Pilotage

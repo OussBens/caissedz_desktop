@@ -774,5 +774,28 @@ workflows et calculs » du projet.
   annulé) ; pièces réintégrées au prorata de la ligne ; inventaire avec colonnes pièces théoriques / comptées.
 - ✅ m2 / m1 — Retour par ligne de vente (`retour_ligne.ordre_origine`, plafond par ligne) ; unités figées sur
   `vente_ligne.unites` (migration v28) ; annulation de vente d'après les mouvements de stock réels.
-- ○ Suite du plan : plafond de crédit, coût des ventes au nombre, valorisation du prix d'achat (M4, M7, M8),
-  intégrité fiscale (M11, M12), TVA / timbre / facture.
+
+## Plan d'amélioration — points 4 à 7 ✅ (2026-10-16)
+
+- ✅ Point 4 (M4, M7, M8, migration v29) — Coût d'une vente au nombre = pièces × prix d'achat ÷ pièces par unité ;
+  plafond de crédit client bloquant (permission « Dépasser le plafond de crédit ») ; prix d'achat / vente avant et
+  après figés par ligne d'entrée et restaurés à l'annulation ou à la modification.
+- ✅ Point 5 (M11, M12, m7, migration v30) — `journal_fiscal` chaîné en ajout seul (VENTE, ANNULATION_VENTE,
+  RETOUR, MODIFICATION / ANNULATION_RETOUR, CLOTURE_CAISSE, FACTURE, AVOIR), dans l'export fiscal (format 2,
+  extrait de période vérifiable) ; déclencheurs d'immuabilité (ticket, lignes, paiements, stock ; « Annulée »
+  seulement avec son événement) ; ticket scellé v2 ; caisse Coffre `CIS0001` ; Z sans fond / retrait / écart /
+  coffre / transferts.
+- ✅ Point 6 (migration v31) — TVA par ligne de vente (collectée) et d'entrée (déductible), prix TTC, régime Réel /
+  IFU ; factures FAC et avoirs AVO (numérotations distinctes, identités fiscales figées, article d'imposition des
+  tiers, TVA par taux, montant en lettres, scellement, jamais modifiées ; annulation ou retour d'une vente
+  facturée → avoir) ; droit de timbre sur la part espèces (⚠️ PROVISOIRE : ≤ 300 DA exonéré, 1 % / 1,5 % / 2 %,
+  minimum 5 DA) encaissé en caisse ; facture A4 (duplicata, avoirs, reste du jour) ; export G50 (Excel).
+- ✅ Point 7 (migration v32) — m3 retour fournisseur selon la répartition d'origine ; m5 seuil « ≤ » et périmètre
+  magasins de l'utilisateur partout ; m6 écart d'arrondi de la remise globale sur la dernière ligne, retour qui
+  solde une ligne = reste exact ; m8 document INV au théorique figé, annulable (service) ; m9 pas de monnaie au-delà
+  des espèces ; m10 session exigée (complément de paiement, modification / annulation de retour) ; m11 magasin de
+  la caisse ouverte ; m12 points sur l'encaissé hors points et crédit, jamais négatifs ; m13 prix à la pièce
+  pour une ligne « pièces seules » ; m14 types `Stock initial` et `Annulation`, transferts ignorés tous magasins ;
+  m15 facture : reste dû du jour.
+- ○ Restent : écran de liste des inventaires (annulation INV sans interface), barème du timbre et présentation
+  G50 à confirmer avec la spécification 06, Bluetooth natif, vue avant / après de l'Historique.
