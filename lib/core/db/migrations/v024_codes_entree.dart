@@ -21,6 +21,9 @@ class MigrationV024CodesEntree extends Migration {
   Future<void> appliquer(Transaction txn) async {
     Future<void> renommer(String table, String colonne, [String condition = '1']) =>
         txn.execute('UPDATE $table SET $colonne = ${_nouveau(colonne)} WHERE $colonne $_ancien AND ($condition)');
+    // `achat_ligne` et `bon_reception` référencent `achat(code)` sans ON UPDATE CASCADE : les clés étrangères ne
+    // sont vérifiées qu'à la validation, une fois le parent et les enfants renommés.
+    await txn.execute('PRAGMA defer_foreign_keys = ON');
     await renommer('achat', 'code');
     await renommer('achat_ligne', 'achat_code');
     await renommer('bon_reception', 'achat_code');

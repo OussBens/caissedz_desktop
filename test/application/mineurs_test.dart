@@ -122,7 +122,7 @@ void main() {
     expect((await VenteRepository(db).pointsClient(client.code)) >= 0, isTrue, reason: 'jamais négatif');
 
     // m9 : pas de monnaie sur une carte.
-    final carte = Panier(id: 2)
+    final carte = const Panier(id: 2)
         .ajouter(PanierLigne(produit: p, quantite: 1, prixUnitaire: 100))
         .ajouterPaiement(const Paiement(mode: 'Carte', montant: 150));
     await expectLater(

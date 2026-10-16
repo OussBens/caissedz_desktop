@@ -439,6 +439,23 @@ void main() {
         'utilisateur_code': 'USR0000',
         'total': 100,
       });
+      // Enfants référençant achat(code) sans ON UPDATE CASCADE : le renommage ne doit pas violer la clé étrangère.
+      await db.insert('achat_ligne', {
+        'achat_code': 'SS0003',
+        'ordre': 1,
+        'produit_code': 'PRD0000',
+        'designation': 'Produit',
+        'quantite': 1,
+        'prix_achat': 100,
+        'total': 100,
+      });
+      await db.insert('bon_reception', {
+        'code': 'BON0001',
+        'date_reception': '2026-10-01T10:00:00.000',
+        'fichier': 'facture.jpg',
+        'utilisateur_code': 'USR0000',
+        'achat_code': 'SS0003',
+      });
       await db.insert('mouvement_stock', {
         'date': '2026-10-01T10:00:00.000',
         'produit_code': 'PRD0000',
@@ -466,6 +483,9 @@ void main() {
       final v = (await db.query('versement')).single;
       expect((v['reference'], v['commentaire']), ('ENT0003', 'Paiement ENT0003'));
       expect((await db.query('achat')).single['code'], 'ENT0003');
+      expect((await db.query('achat_ligne')).single['achat_code'], 'ENT0003');
+      expect((await db.query('bon_reception')).single['achat_code'], 'ENT0003');
+      expect(await db.rawQuery('PRAGMA foreign_key_check'), isEmpty);
       expect(
         (await db.query('mouvement_stock', where: "reference_type = 'achat'")).single['reference_code'],
         'ENT0003',
