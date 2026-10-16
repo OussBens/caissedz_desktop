@@ -2426,5 +2426,6 @@
   "remiseSectionCalcul": "Discount value",
   "remiseSectionPeriode": "Validity period",
   "stkQteDansMagasin": "Qty in {magasin}",
-  "stkStockMagasinN": "{magasin}: {quantite}"
+  "stkStockMagasinN": "{magasin}: {quantite}",
+  "versementErreurPeriode": "Closed period: this payment can no longer be edited. Cancel it and enter a new payment."
 }

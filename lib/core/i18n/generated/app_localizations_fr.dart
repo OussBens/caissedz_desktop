@@ -7132,4 +7132,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String stkStockMagasinN(String magasin, String quantite) {
     return '$magasin : $quantite';
   }
+
+  @override
+  String get versementErreurPeriode =>
+      'Période clôturée : ce versement ne peut plus être modifié. Annulez-le puis saisissez un nouveau versement.';
 }

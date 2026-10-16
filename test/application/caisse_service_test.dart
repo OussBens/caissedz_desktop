@@ -1,5 +1,6 @@
 import 'package:caissedz_desktop/application/caisse_service.dart';
 import 'package:caissedz_desktop/application/catalogue_service.dart';
+import 'package:caissedz_desktop/application/cloture_service.dart';
 import 'package:caissedz_desktop/application/session_caisse_service.dart';
 import 'package:caissedz_desktop/application/stock_service.dart';
 import 'package:caissedz_desktop/application/tiers_service.dart';
@@ -179,6 +180,66 @@ void main() {
       expect((await caisse.solde('CIS0000')).especes, 0);
     });
 
+    test('journal en ajout seul : contre-passation après la Z, période close, suppression interdite', () async {
+      final base = await ouvrirBaseDeTest();
+      final db = base.db;
+      final client = await TiersService(
+        db,
+        utilisateurCode: 'USR0000',
+      ).creerClient(const Client(code: '', nom: 'Amina'));
+      final sessions = SessionCaisseService(db, utilisateurCode: 'USR0000');
+      await sessions.ouvrir(caisseCode: 'CIS0000', fondInitial: 0);
+      final versements = VersementService(db, utilisateurCode: 'USR0000');
+      final ver = await versements.imputer(
+        tiersType: TypesTiers.client,
+        tiersCode: client.code,
+        montant: 20000,
+        mode: 'Espèces',
+      );
+      await sessions.fermer(montantCompte: 20000);
+      final z = await ClotureService(db, utilisateurCode: 'USR0000').cloturer(caisseCode: 'CIS0000');
+      final repo = CaisseRepository(db);
+      final avant = await repo.totauxPeriode(z.debut, z.fin, caisseCode: 'CIS0000');
+      // Le lendemain : modifier le versement (période close) est refusé, l'annuler le contre-passe.
+      await sessions.ouvrir(caisseCode: 'CIS0000', fondInitial: 20000);
+      await expectLater(
+        versements.modifier(ver.code, montant: 15000, mode: 'Espèces', date: ver.date),
+        throwsA(isA<VersementException>().having((e) => e.erreur, 'e', ErreurVersement.periodeCloturee)),
+      );
+      await expectLater(
+        versements.imputer(
+          tiersType: TypesTiers.client,
+          tiersCode: client.code,
+          montant: 10,
+          mode: 'Espèces',
+          date: ver.date,
+        ),
+        throwsA(isA<VersementException>().having((e) => e.erreur, 'e', ErreurVersement.periodeCloturee)),
+      );
+      await versements.annuler(ver.code, motif: 'Chèque rejeté');
+      final lignes = await repo.mouvements(referenceType: 'versement', referenceCode: ver.code);
+      expect(lignes.map((m) => (m.sens, m.montant, m.type)), [
+        (SensMouvementCaisse.sortie, 20000.0, TypesMouvementCaisse.annulation),
+        (SensMouvementCaisse.entree, 20000.0, TypesMouvementCaisse.encaissement),
+      ]);
+      expect(lignes.first.date.isAfter(z.fin), isTrue, reason: 'contre-écriture datée du jour');
+      final apres = await repo.totauxPeriode(z.debut, z.fin, caisseCode: 'CIS0000');
+      expect((apres.entrees, apres.sorties), (avant.entrees, avant.sorties), reason: 'la Z reste égale au grand-livre');
+      expect(await sessions.especesAttendues((await sessions.courante())!.code), 0);
+      // Le journal refuse suppressions et réécritures des montants.
+      await expectLater(db.delete('mouvement_caisse'), throwsA(anything));
+      await expectLater(db.update('mouvement_caisse', {'montant': 1}), throwsA(anything));
+      expect(
+        (await repo.mouvements(caisseCode: 'CIS0000')).length,
+        4,
+        reason: 'versement, retrait, fond, contre-écriture',
+      );
+      // La clôture d'une caisse ne ferme pas la période d'une autre.
+      final coffre = await CaisseService(db, utilisateurCode: 'USR0000').creer(nom: 'Coffre');
+      expect(await repo.periodeCloturee(ver.date, caisseCode: 'CIS0000'), isTrue);
+      expect(await repo.periodeCloturee(ver.date, caisseCode: coffre.code), isFalse);
+    });
+
     test('DS v2.2 : solde initial, observation, désactivation en lot bloquée, annulation de transferts', () async {
       final base = await ouvrirBaseDeTest();
       final s = CaisseService(base.db, utilisateurCode: 'USR0000');
@@ -206,7 +267,7 @@ void main() {
         throwsA(isA<CaisseException>().having((e) => e.erreur, 'e', ErreurCaisse.sessionOuverte)),
       );
       expect((await s.caisses(actives: true)).map((c) => c.code), contains(coffre.code), reason: 'tout ou rien');
-      // Transfert vers le coffre puis annulation : mouvements retirés, transfert conservé avec son motif.
+      // Transfert vers le coffre puis annulation : mouvements contre-passés, transfert conservé avec son motif.
       final t = await s.transferer(caisseSource: c1.code, caisseDestination: coffre.code, montant: 2000);
       expect((await s.solde(coffre.code)).especes, 2000);
       expect(await s.blocageDesactivation(coffre), ErreurCaisse.soldeNonNul);
@@ -221,6 +282,9 @@ void main() {
       await s.annulerTransferts([t.code], motif: 'Erreur de caisse');
       expect((await s.solde(coffre.code)).especes, 0);
       expect((await s.solde(c1.code)).especes, 3000);
+      final mvts = await CaisseRepository(base.db).mouvements(referenceType: 'transfert_caisse', referenceCode: t.code);
+      expect(mvts.length, 4);
+      expect(mvts.every((m) => m.type == TypesMouvementCaisse.transfert), isTrue, reason: 'hors totaux de la Z');
       final annule = (await s.transferts()).single;
       expect(annule.actif, isFalse);
       expect(annule.motifAnnulation, 'Erreur de caisse');

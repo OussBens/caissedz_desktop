@@ -24,6 +24,7 @@ import 'v022_audit_complement.dart';
 import 'v023_sortie_retour.dart';
 import 'v024_codes_entree.dart';
 import 'v025_reference_versement.dart';
+import 'v026_journal_caisse_immuable.dart';
 
 export 'migration.dart';
 
@@ -54,4 +55,5 @@ const List<Migration> toutesLesMigrations = [
   MigrationV023SortieRetour(),
   MigrationV024CodesEntree(),
   MigrationV025ReferenceVersement(),
+  MigrationV026JournalCaisseImmuable(),
 ];

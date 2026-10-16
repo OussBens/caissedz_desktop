@@ -97,6 +97,7 @@ String messageErreurVersement(AppLocalizations l10n, ErreurVersement e) => switc
   ErreurVersement.motifObligatoire => l10n.dsMotifAnnulation,
   ErreurVersement.dejaAnnule => l10n.tiersBloqueDejaAnnule,
   ErreurVersement.sessionRequise => l10n.communSessionRequise,
+  ErreurVersement.periodeCloturee => l10n.versementErreurPeriode,
 };
 
 String messageErreurRetour(AppLocalizations l10n, ErreurRetour e) => switch (e) {

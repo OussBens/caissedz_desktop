@@ -371,7 +371,12 @@ class VenteService {
         final vc = l['c']! as String;
         if ((l['autres']! as int) == 0) {
           await tiers.annulerVersement(vc, par: utilisateurCode, motif: motif.trim());
-          await CaisseRepository(txn).supprimerMouvementsReference('versement', vc);
+          await CaisseRepository(txn).contrePasserReference(
+            'versement',
+            vc,
+            utilisateurCode: utilisateurCode,
+            commentaire: 'Annulation $code : ${motif.trim()}',
+          );
         } else {
           await txn.delete(
             'versement_imputation',

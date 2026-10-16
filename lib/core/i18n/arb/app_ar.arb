@@ -2426,5 +2426,6 @@
   "remiseSectionCalcul": "قيمة التخفيض",
   "remiseSectionPeriode": "فترة الصلاحية",
   "stkQteDansMagasin": "الكمية في {magasin}",
-  "stkStockMagasinN": "{magasin}: {quantite}"
+  "stkStockMagasinN": "{magasin}: {quantite}",
+  "versementErreurPeriode": "فترة مغلقة: لم يعد بالإمكان تعديل هذا الدفع. ألغِه ثم أدخل دفعًا جديدًا."
 }

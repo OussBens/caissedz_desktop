@@ -22,6 +22,7 @@ enum ErreurVersement {
   motifObligatoire,
   dejaAnnule,
   sessionRequise,
+  periodeCloturee,
 }
 
 class VersementException implements Exception {
@@ -71,13 +72,18 @@ class VersementService {
       if (!await SessionCaisseService.sessionOuverte(txn, utilisateurCode)) {
         throw const VersementException(ErreurVersement.sessionRequise);
       }
+      final caisses = CaisseRepository(txn);
+      final caisse = caisseCode ?? await caisses.caisseParDefaut(utilisateurCode);
+      if (date != null && await caisses.periodeCloturee(date, caisseCode: caisse)) {
+        throw const VersementException(ErreurVersement.periodeCloturee);
+      }
       return imputerDansTransaction(
         txn,
         tiersType: tiersType,
         tiersCode: tiersCode,
         montant: montant,
         mode: mode,
-        caisseCode: caisseCode,
+        caisseCode: caisse,
         reference: reference,
         commentaire: commentaire,
         date: date,
@@ -168,7 +174,7 @@ class VersementService {
   }
 
   /// Annulation douce (motif obligatoire) : refusée pour un versement verrouillé (lié à un retour) ;
-  /// les imputations sont libérées et le mouvement de caisse retiré.
+  /// les imputations sont libérées et le mouvement de caisse contre-passé (écriture inverse datée du jour).
   Future<void> annuler(String code, {required String motif}) async {
     if (motif.trim().isEmpty) throw const VersementException(ErreurVersement.motifObligatoire);
     await db.transaction((txn) async {
@@ -178,7 +184,12 @@ class VersementService {
       if (v.verrouille) throw const VersementException(ErreurVersement.verrouille);
       if (!v.actif) throw const VersementException(ErreurVersement.dejaAnnule);
       await repo.annulerVersement(code, par: utilisateurCode, motif: motif.trim());
-      await CaisseRepository(txn).supprimerMouvementsReference('versement', code);
+      await CaisseRepository(txn).contrePasserReference(
+        'versement',
+        code,
+        utilisateurCode: utilisateurCode,
+        commentaire: 'Annulation $code : ${motif.trim()}',
+      );
       await HistoriqueRepository(txn).journaliser(
         utilisateurCode: utilisateurCode,
         action: 'Annulation',
@@ -190,7 +201,8 @@ class VersementService {
   }
 
   /// Modification d'un versement non verrouillé : montant, mode, date, caisse, type, observation.
-  /// Les imputations sont recalculées (plus ancien d'abord) et le journal de caisse réécrit.
+  /// Les imputations sont recalculées (plus ancien d'abord) ; l'ancien mouvement de caisse est contre-passé
+  /// puis le nouveau journalisé. Refusée si l'ancienne ou la nouvelle date est dans une période clôturée.
   Future<Versement> modifier(
     String code, {
     required double montant,
@@ -210,8 +222,18 @@ class VersementService {
       if (ancien == null) throw const VersementException(ErreurVersement.inconnu);
       if (ancien.verrouille) throw const VersementException(ErreurVersement.verrouille);
       if (!ancien.actif) throw const VersementException(ErreurVersement.dejaAnnule);
+      final caisses = CaisseRepository(txn);
+      if (await caisses.periodeCloturee(ancien.date, caisseCode: ancien.caisseCode) ||
+          await caisses.periodeCloturee(date, caisseCode: caisseCode ?? ancien.caisseCode)) {
+        throw const VersementException(ErreurVersement.periodeCloturee);
+      }
       await txn.delete('versement_imputation', where: 'versement_code = ?', whereArgs: [code]);
-      await CaisseRepository(txn).supprimerMouvementsReference('versement', code);
+      await caisses.contrePasserReference(
+        'versement',
+        code,
+        utilisateurCode: utilisateurCode,
+        commentaire: 'Modification $code',
+      );
       final docs = ancien.estRetour
           ? const <DocumentOuvert>[]
           : ancien.tiersType == TypesTiers.client

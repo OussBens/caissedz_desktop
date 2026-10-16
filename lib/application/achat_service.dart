@@ -211,7 +211,12 @@ class AchatService {
         final paiement = await _paiementImmediat(txn, code);
         if (paiement != null) {
           await TiersRepository(txn).annulerVersement(paiement, par: utilisateurCode, motif: motif.trim());
-          await CaisseRepository(txn).supprimerMouvementsReference('versement', paiement);
+          await CaisseRepository(txn).contrePasserReference(
+            'versement',
+            paiement,
+            utilisateurCode: utilisateurCode,
+            commentaire: 'Annulation $code : ${motif.trim()}',
+          );
         }
         await txn.update(
           'achat',
@@ -552,7 +557,12 @@ class AchatService {
     final tiers = TiersRepository(txn);
     final existant = await _paiementImmediat(txn, code);
     if (existant != null) {
-      await CaisseRepository(txn).supprimerMouvementsReference('versement', existant);
+      await CaisseRepository(txn).contrePasserReference(
+        'versement',
+        existant,
+        utilisateurCode: utilisateurCode,
+        commentaire: 'Modification $code',
+      );
       if (paye <= 0) {
         await tiers.annulerVersement(existant, par: utilisateurCode, motif: 'Modification $code');
         return;

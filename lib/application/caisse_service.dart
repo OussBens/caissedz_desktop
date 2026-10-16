@@ -285,7 +285,7 @@ class CaisseService {
     return null;
   }
 
-  /// Annule des transferts dans UNE transaction : leurs 2 mouvements quittent le journal (soldes rétablis),
+  /// Annule des transferts dans UNE transaction : leurs 2 mouvements sont contre-passés (soldes rétablis),
   /// le transfert reste visible, marqué annulé avec son motif.
   Future<void> annulerTransferts(List<String> codes, {required String motif}) async {
     if (motif.trim().isEmpty) throw const CaisseException(ErreurCaisse.motifObligatoire);
@@ -296,7 +296,12 @@ class CaisseService {
         if (t == null) throw const CaisseException(ErreurCaisse.transfertInconnu);
         final e = await _blocageTransfert(txn, t);
         if (e != null) throw CaisseException(e, code);
-        await repo.supprimerMouvementsReference('transfert_caisse', code);
+        await repo.contrePasserReference(
+          'transfert_caisse',
+          code,
+          utilisateurCode: utilisateurCode,
+          commentaire: 'Annulation $code : ${motif.trim()}',
+        );
         await repo.annulerTransfert(code, par: utilisateurCode, motif: motif.trim(), le: DateTime.now());
         await HistoriqueRepository(txn).journaliser(
           utilisateurCode: utilisateurCode,

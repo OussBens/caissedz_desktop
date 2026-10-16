@@ -9,6 +9,9 @@ import 'package:sqflite_common/sqlite_api.dart';
 
 import '../../helpers/bases.dart';
 
+/// Versions appliquées de [debut] à la dernière migration.
+List<int> _depuis(int debut) => [for (var v = debut; v <= toutesLesMigrations.last.version; v++) v];
+
 void main() {
   group('AppDatabase', () {
     test('ouvre une base chiffrée, applique les migrations et active les FK', () async {
@@ -125,22 +128,7 @@ void main() {
         'retour_code': 'RET0001',
       });
 
-      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-      ]);
+      expect(await const MigrationRunner(toutesLesMigrations).executer(db), _depuis(12));
       final r = (await db.query('retour')).single;
       expect(r['type'], 'Client');
       expect(r['document_code'], 'VTE0001');
@@ -181,21 +169,7 @@ void main() {
         'sous_categorie_code': 'SC0000',
         'code_barres': '6130000000015',
       });
-      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-      ]);
+      expect(await const MigrationRunner(toutesLesMigrations).executer(db), _depuis(13));
       final p = (await db.query('produit', where: "code = 'PRD0001'")).single;
       expect(p['service'], 0);
       expect(p['suivi_serie'], 0);
@@ -241,20 +215,7 @@ void main() {
         'utilisateur_code': 'USR0000',
       });
       await db.insert('sortie_stock_ligne', {'sortie_code': 'SOR0001', 'produit_code': 'PRD0001', 'quantite': 2});
-      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-      ]);
+      expect(await const MigrationRunner(toutesLesMigrations).executer(db), _depuis(14));
       final b = (await db.query('besoin')).single;
       expect(b['fournisseur_code'], 'FOR0000');
       expect(b['statut'], 'Commande');
@@ -285,19 +246,7 @@ void main() {
         'utilisateur_code': 'USR0000',
         'total': 100,
       });
-      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-      ]);
+      expect(await const MigrationRunner(toutesLesMigrations).executer(db), _depuis(15));
       final a = (await db.query('achat')).single;
       expect(a['annule_par'], isNull);
       expect(a['besoin_code'], isNull);
@@ -339,7 +288,7 @@ void main() {
         'mode': 'Espèces',
         'utilisateur_code': 'USR0000',
       });
-      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [16, 17, 18, 19, 20, 21, 22, 23, 24, 25]);
+      expect(await const MigrationRunner(toutesLesMigrations).executer(db), _depuis(16));
       final c = (await db.query('caisse', where: "code = 'CIS0000'")).single;
       expect(c['solde_initial'], 0);
       expect(c['observation'], isNull);
@@ -364,7 +313,7 @@ void main() {
       await db.insert('role_permission', {'role': 'Caissier', 'permission': 'annulerVente'});
       await db.insert('role_permission', {'role': 'Caissier', 'permission': 'gererUtilisateurs'});
       await db.insert('role_permission', {'role': 'Magasinier', 'permission': 'exporterDonnees'});
-      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [17, 18, 19, 20, 21, 22, 23, 24, 25]);
+      expect(await const MigrationRunner(toutesLesMigrations).executer(db), _depuis(17));
       final roles = await db.query('role', orderBy: 'code');
       expect(roles.map((r) => '${r['code']}:${r['nom']}:${r['systeme']}'), [
         'ROL0000:Admin:1',
@@ -404,7 +353,7 @@ void main() {
       addTearDown(base.fermer);
       final db = base.db;
       await db.insert('parametre', {'cle': 'zakat_prix_gramme_or', 'valeur': '12000.0'});
-      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [18, 19, 20, 21, 22, 23, 24, 25]);
+      expect(await const MigrationRunner(toutesLesMigrations).executer(db), _depuis(18));
       final p = {for (final r in await db.query('parametre')) r['cle']: r['valeur']};
       expect(p['zakat_nissab'], '1020000.0');
       expect(p.containsKey('zakat_prix_gramme_or'), isFalse);
@@ -422,7 +371,7 @@ void main() {
       addTearDown(base.fermer);
       final db = base.db;
       await db.insert('historique', {'utilisateur_code': 'USR0000', 'action': 'Connexion', 'entite': 'utilisateur'});
-      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [19, 20, 21, 22, 23, 24, 25]);
+      expect(await const MigrationRunner(toutesLesMigrations).executer(db), _depuis(19));
       final ligne = (await db.query('historique')).single;
       expect(ligne['action'], 'Connexion');
       expect(ligne.containsKey('poste'), isTrue);
@@ -439,7 +388,7 @@ void main() {
       addTearDown(base.fermer);
       final db = base.db;
       await db.insert('client', {'code': 'CLN0001', 'nom': 'Amina'});
-      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [20, 21, 22, 23, 24, 25]);
+      expect(await const MigrationRunner(toutesLesMigrations).executer(db), _depuis(20));
       var amina = (await db.query('client', where: "code = 'CLN0001'")).single;
       expect(amina.keys, containsAll(['cree_le', 'cree_par', 'modifie_le', 'modifie_par']));
       expect(amina['modifie_le'], isNull);
@@ -499,7 +448,7 @@ void main() {
         'reference': 'SS0003',
         'commentaire': 'Paiement SS0003',
       });
-      expect(await const MigrationRunner(toutesLesMigrations).executer(db), [24, 25]);
+      expect(await const MigrationRunner(toutesLesMigrations).executer(db), _depuis(24));
       // v25 : le paiement immédiat reste retrouvé par sa référence (modification / annulation de l'entrée).
       final v = (await db.query('versement')).single;
       expect((v['reference'], v['commentaire']), ('ENT0003', 'Paiement ENT0003'));

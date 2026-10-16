@@ -13526,6 +13526,12 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'{magasin} : {quantite}'**
   String stkStockMagasinN(String magasin, String quantite);
+
+  /// No description provided for @versementErreurPeriode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Période clôturée : ce versement ne peut plus être modifié. Annulez-le puis saisissez un nouveau versement.'**
+  String get versementErreurPeriode;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

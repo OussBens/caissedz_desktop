@@ -92,11 +92,50 @@ class CaisseRepository {
     return rows.map(MouvementCaisse.depuisLigne).toList();
   }
 
-  Future<int> supprimerMouvementsReference(String referenceType, String referenceCode) => db.delete(
-    'mouvement_caisse',
-    where: 'reference_type = ? AND reference_code = ?',
-    whereArgs: [referenceType, referenceCode],
-  );
+  /// Contre-passation (journal en ajout seul) : pour chaque caisse et mode, le solde net des mouvements de la
+  /// référence est annulé par un mouvement de sens opposé, daté de [date] (maintenant par défaut), qui garde la
+  /// même référence. Les lignes d'origine restent : la Z déjà scellée et l'historique ne changent pas.
+  /// Un transfert interne reste typé `Transfert` (exclu des totaux de la Z), le reste est typé `Annulation`.
+  /// Retourne le nombre de contre-écritures.
+  Future<int> contrePasserReference(
+    String referenceType,
+    String referenceCode, {
+    required String utilisateurCode,
+    String? commentaire,
+    DateTime? date,
+  }) async {
+    final rows = await db.rawQuery(
+      '''
+      SELECT caisse_code, mode, type = ?3 transfert,
+        COALESCE(SUM(CASE WHEN sens = 'Entrée' THEN montant ELSE -montant END), 0) net
+      FROM mouvement_caisse WHERE reference_type = ?1 AND reference_code = ?2
+      GROUP BY caisse_code, mode, type = ?3
+      ''',
+      [referenceType, referenceCode, TypesMouvementCaisse.transfert],
+    );
+    var n = 0;
+    final le = date ?? DateTime.now();
+    for (final r in rows) {
+      final net = CalculsPrix.arrondir((r['net'] as num).toDouble());
+      if (net.abs() < 0.005) continue;
+      await insererMouvement(
+        MouvementCaisse(
+          date: le,
+          caisseCode: r['caisse_code']! as String,
+          type: r['transfert'] == 1 ? TypesMouvementCaisse.transfert : TypesMouvementCaisse.annulation,
+          sens: net > 0 ? SensMouvementCaisse.sortie : SensMouvementCaisse.entree,
+          montant: net.abs(),
+          mode: r['mode']! as String,
+          referenceType: referenceType,
+          referenceCode: referenceCode,
+          utilisateurCode: utilisateurCode,
+          commentaire: commentaire ?? 'Contre-passation $referenceCode',
+        ),
+      );
+      n++;
+    }
+    return n;
+  }
 
   /// Espèces attendues dans le tiroir pour la session [sessionCode] : solde Espèces du grand-livre de la caisse
   /// depuis la fermeture précédente (fond initial, ventes nettes de la monnaie, versements, paiements d'entrées,
@@ -222,13 +261,15 @@ class CaisseRepository {
     return rows.isEmpty ? null : Cloture.depuisLigne(rows.first);
   }
 
-  /// Vrai si [date] appartient à une période déjà clôturée (≤ fin de la dernière clôture).
-  Future<bool> periodeCloturee(DateTime date) async {
+  /// Vrai si [date] appartient à une période déjà clôturée (≤ fin d'une clôture). Avec [caisseCode], seules
+  /// les clôtures de cette caisse (et les clôtures globales d'avant la v16) comptent : clôturer la caisse A ne
+  /// bloque pas la caisse B.
+  Future<bool> periodeCloturee(DateTime date, {String? caisseCode}) async {
     final rows = await db.query(
       'cloture',
       columns: ['code'],
-      where: 'fin >= ?',
-      whereArgs: [date.toUtc().toIso8601String()],
+      where: caisseCode == null ? 'fin >= ?' : 'fin >= ? AND (caisse_code = ? OR caisse_code IS NULL)',
+      whereArgs: [date.toUtc().toIso8601String(), ?caisseCode],
       limit: 1,
     );
     return rows.isNotEmpty;

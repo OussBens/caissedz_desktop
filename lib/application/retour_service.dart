@@ -224,7 +224,8 @@ class RetourService {
     for (final v in lies) {
       final vc = v['code']! as String;
       await tiers.annulerVersement(vc, par: utilisateurCode, motif: motif);
-      await CaisseRepository(txn).supprimerMouvementsReference('versement', vc);
+      await CaisseRepository(txn)
+          .contrePasserReference('versement', vc, utilisateurCode: utilisateurCode, commentaire: '$motif ${r.code}');
     }
     await tiers.lierVersementRetour(r.code, null);
   }

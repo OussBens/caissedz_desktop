@@ -7106,4 +7106,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String stkStockMagasinN(String magasin, String quantite) {
     return '$magasin: $quantite';
   }
+
+  @override
+  String get versementErreurPeriode => 'فترة مغلقة: لم يعد بالإمكان تعديل هذا الدفع. ألغِه ثم أدخل دفعًا جديدًا.';
 }

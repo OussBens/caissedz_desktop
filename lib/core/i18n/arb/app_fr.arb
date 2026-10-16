@@ -3720,5 +3720,6 @@
         "type": "String"
       }
     }
-  }
+  },
+  "versementErreurPeriode": "Période clôturée : ce versement ne peut plus être modifié. Annulez-le puis saisissez un nouveau versement."
 }
