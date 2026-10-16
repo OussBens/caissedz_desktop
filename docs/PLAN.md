@@ -742,3 +742,16 @@ Référence : `docs/design/CaisseDZ-DS-v2.2/CaisseDZ-DS-v2.2.html`, `bundle-v2.2
   validité, Produits concernés.
 - ✅ Filtres Produits : 1ʳᵉ ligne Catégorie, Stock, Marque ; 2ᵉ ligne Quantité, Prix de vente, Prix d'achat.
 - ✅ Mouvements : Produit sur la 1ʳᵉ ligne avec Du / Au / Période ; Type, Magasin, Utilisateur sur la 2ᵉ.
+
+## Audit des workflows — correctifs critiques ✅ (2026-10-16)
+
+Rapport complet (3 critiques, 12 majeurs, 15 mineurs, manques vs références, plan) : document « Audit CaisseDZ —
+workflows et calculs » du projet.
+
+- ✅ C1 : codes au-delà de 9 999 — dernier code lu par numéro (`CodeGenerator.ordreDecroissant` : longueur puis
+  texte) dans tous les `prochainCode`, la chaîne de scellement, la clôture Z et l'export fiscal.
+- ✅ C2 : espèces attendues à la fermeture de session = solde Espèces du journal de caisse depuis la fermeture
+  précédente (`CaisseRepository.especesSession`) : versements, paiements, remboursements, dépenses compris.
+- ✅ C3 : migration v25 — références « SS… » des paiements immédiats d'entrées passées en ENT.
+- ○ Majeurs M1–M12 et mineurs m1–m15 : voir le plan du rapport (journal de caisse en ajout seul, solde unique des
+  tiers, retours, coûts / crédit, intégrité fiscale, TVA / timbre / facture).

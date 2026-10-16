@@ -8,6 +8,7 @@ import 'package:sqflite_common/sqlite_api.dart';
 import '../../data/boutique_repository.dart';
 import '../../data/caisse_repository.dart';
 import '../../data/vente_repository.dart';
+import '../../domain/code_generator.dart';
 import '../../domain/models/caisse.dart';
 import '../../domain/models/panier.dart';
 import '../../domain/models/vente.dart';
@@ -53,7 +54,7 @@ class ExportFiscal {
   }) async {
     final boutique = await BoutiqueRepository(db).lire();
     final ventes = (await VenteRepository(db).ventes(depuis: debut, jusqua: fin, limite: 1 << 30, avecLignes: true))
-      ..sort((a, b) => a.code.compareTo(b.code));
+      ..sort((a, b) => CodeGenerator.comparer(a.code, b.code));
     final clotures = await CaisseRepository(db).clotures(debut: debut, fin: fin, croissant: true);
     final donnees = <String, Object?>{
       'ventes': [for (final v in ventes) _vente(v)],

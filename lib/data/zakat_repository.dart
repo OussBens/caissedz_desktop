@@ -17,7 +17,7 @@ class ZakatRepository {
   }
 
   Future<String> prochainCode() async {
-    final rows = await db.query('zakat', columns: ['code'], orderBy: 'code DESC', limit: 1);
+    final rows = await db.query('zakat', columns: ['code'], orderBy: CodeGenerator.ordreDecroissant, limit: 1);
     return CodeGenerator.suivant(CodeGenerator.zakat, rows.isEmpty ? null : rows.first['code'] as String);
   }
 

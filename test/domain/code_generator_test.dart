@@ -1,5 +1,8 @@
+import 'package:caissedz_desktop/data/client_repository.dart';
 import 'package:caissedz_desktop/domain/code_generator.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import '../helpers/bases.dart';
 
 void main() {
   group('CodeGenerator (§8.10)', () {
@@ -29,6 +32,16 @@ void main() {
       expect(CodeGenerator.numero('for0010', 'FOR'), isNull);
       expect(CodeGenerator.estValide('TRM0001', 'TRM'), isTrue);
       expect(CodeGenerator.estValide('TRM-1', 'TRM'), isFalse);
+    });
+
+    test('au-delà de 9 999 : ordre par numéro, pas par texte (code suivant, tri)', () async {
+      expect(CodeGenerator.comparer('VTE10000', 'VTE9999'), greaterThan(0));
+      expect((['VTE10000', 'VTE9999', 'VTE0001']..sort(CodeGenerator.comparer)), ['VTE0001', 'VTE9999', 'VTE10000']);
+      final base = await ouvrirBaseDeTest();
+      for (final code in ['CLN9999', 'CLN10000']) {
+        await base.db.insert('client', {'code': code, 'nom': code});
+      }
+      expect(await ClientRepository(base.db).prochainCode(), 'CLN10001');
     });
   });
 }

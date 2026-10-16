@@ -16,7 +16,7 @@ class CatalogueRepository {
       columns: ['code'],
       where: 'code LIKE ?',
       whereArgs: ['$prefixe%'],
-      orderBy: 'code DESC',
+      orderBy: CodeGenerator.ordreDecroissant,
       limit: 1,
     );
     return CodeGenerator.suivant(prefixe, rows.isEmpty ? null : rows.first['code'] as String);

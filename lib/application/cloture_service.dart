@@ -81,8 +81,11 @@ class ClotureService {
              COALESCE(SUM(CASE WHEN statut = 'Validée' THEN total_remise END), 0) remise,
              COALESCE(SUM(CASE WHEN statut = 'Annulée' THEN total_net END), 0) annule,
              COALESCE(SUM(CASE WHEN statut = 'Validée' AND verse > total_net THEN verse - total_net END), 0) rendu,
-             MIN(code) premiere, MAX(code) derniere
-      FROM vente WHERE caisse_code = ? AND date > ? AND date <= ?
+             (SELECT code FROM vente WHERE caisse_code = ?1 AND date > ?2 AND date <= ?3
+              ORDER BY ${CodeGenerator.ordreCroissant} LIMIT 1) premiere,
+             (SELECT code FROM vente WHERE caisse_code = ?1 AND date > ?2 AND date <= ?3
+              ORDER BY ${CodeGenerator.ordreDecroissant} LIMIT 1) derniere
+      FROM vente WHERE caisse_code = ?1 AND date > ?2 AND date <= ?3
       ''',
       [caisseCode, dIso, fIso],
     )).first;

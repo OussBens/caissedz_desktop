@@ -41,6 +41,14 @@ class CodeGenerator {
   static const String inventaire = 'INV';
   static const String zakat = 'ZKT';
 
+  /// Ordre SQL des codes par numéro (longueur puis texte) : `VTE10000` après `VTE9999`, contrairement à
+  /// l'ordre texte seul.
+  static const String ordreCroissant = 'length(code), code';
+  static const String ordreDecroissant = 'length(code) DESC, code DESC';
+
+  /// Comparaison de deux codes par numéro (même règle que [ordreCroissant]).
+  static int comparer(String a, String b) => a.length != b.length ? a.length - b.length : a.compareTo(b);
+
   static final RegExp _format = RegExp(r'^([A-Z]+)(\d+)$');
 
   /// Code système (`PREFIXE0000`).

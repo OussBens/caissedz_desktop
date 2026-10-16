@@ -16,7 +16,7 @@ class VenteRepository {
       columns: ['code'],
       where: 'code LIKE ?',
       whereArgs: ['$prefixe%'],
-      orderBy: 'code DESC',
+      orderBy: CodeGenerator.ordreDecroissant,
       limit: 1,
     );
     return CodeGenerator.suivant(prefixe, rows.isEmpty ? null : rows.first['code'] as String);
@@ -96,7 +96,7 @@ class VenteRepository {
 
   // ---- Ventes ----
   Future<String?> dernierHash() async {
-    final rows = await db.query('vente', columns: ['hash'], orderBy: 'code DESC', limit: 1);
+    final rows = await db.query('vente', columns: ['hash'], orderBy: CodeGenerator.ordreDecroissant, limit: 1);
     return rows.isEmpty ? null : rows.first['hash'] as String;
   }
 
@@ -237,7 +237,7 @@ class VenteRepository {
 
   /// Toutes les ventes dans l'ordre de la chaîne (par code), avec lignes et paiements.
   Future<List<Vente>> chaine() async {
-    final rows = await db.query('vente', orderBy: 'code');
+    final rows = await db.query('vente', orderBy: CodeGenerator.ordreCroissant);
     return [for (final r in rows) await _charger(r)];
   }
 
