@@ -151,7 +151,7 @@ class DocumentsPdf {
   }) async {
     final doc = pw.Document();
     final largeurMm = largeur == LargeurTicket.mm58 ? 58.0 : 80.0;
-    final hauteur = 90 + v.lignes.length * 9.0 + v.paiements.length * 5.0 + 60;
+    final hauteur = 90 + v.lignes.length * 9.0 + v.paiements.length * 5.0 + v.parTaux.length * 4.0 + 64;
     doc.addPage(
       pw.Page(
         pageFormat: PdfPageFormat(
@@ -180,6 +180,17 @@ class DocumentsPdf {
               pw.Divider(thickness: 0.5),
               if (v.totalRemise > 0) _ligneCle(libelles.remise, '-${montant(v.totalRemise)}'),
               _ligneCle(libelles.netAPayer, montant(v.totalNet), taille: 10, gras: true),
+              if (v.totalTva > 0.004) ...[
+                for (final MapEntry(key: taux, value: t) in v.parTaux.entries)
+                  if (t.tva > 0.004)
+                    _ligneCle(
+                      '${libelles.tva} ${taux == taux.roundToDouble() ? taux.toInt() : taux}% '
+                      '(${libelles.ht} ${montant(t.ht)})',
+                      montant(t.tva),
+                      taille: 7,
+                    ),
+                _ligneCle('${libelles.total} ${libelles.ht}', montant(v.totalHt), taille: 7),
+              ],
               for (final p in v.paiements) _ligneCle(p.mode, montant(p.montant)),
               _ligneCle(libelles.verse, montant(v.verse)),
               if (v.monnaie > 0) _ligneCle(libelles.monnaie, montant(v.monnaie)),

@@ -71,9 +71,34 @@ Widget _tableauLignes(
         numerique: true,
         cellule: (_, l) => Text(da(l.prixUnitaire)),
       ),
+      if (detail) ...[
+        DsColonne(
+          id: 'taux_tva',
+          libelle: l10n.tvaTaux,
+          valeur: (l) => l.tauxTva,
+          numerique: true,
+          cellule: (_, l) => Text('${formaterNombre(l.tauxTva)} %'),
+        ),
+        DsColonne(
+          id: 'ht',
+          libelle: l10n.tvaHt,
+          valeur: (l) => l.montantHt,
+          numerique: true,
+          cellule: (_, l) => Text(da(l.montantHt)),
+          total: (ls) => da(ls.fold(0.0, (s, l) => s + l.montantHt)),
+        ),
+        DsColonne(
+          id: 'tva',
+          libelle: l10n.tvaMontant,
+          valeur: (l) => l.montantTva,
+          numerique: true,
+          cellule: (_, l) => Text(da(l.montantTva)),
+          total: (ls) => da(ls.fold(0.0, (s, l) => s + l.montantTva)),
+        ),
+      ],
       DsColonne(
         id: 'total',
-        libelle: l10n.ventesTotal,
+        libelle: detail ? l10n.tvaTtc : l10n.ventesTotal,
         valeur: (l) => l.total,
         numerique: true,
         cellule: (_, l) => Text(da(l.total)),
@@ -196,6 +221,8 @@ Future<void> afficherDetailPanier(
           icone: LucideIcons.banknote,
           items: [
             DsKeyValue(l10n.ventesMontantTotal, da(vente.totalNet), fort: true),
+            DsKeyValue('${l10n.ventesTotal} ${l10n.tvaHt}', da(vente.totalHt)),
+            DsKeyValue(l10n.tvaMontant, da(vente.totalTva)),
             if (voirAchat) DsKeyValue(l10n.ventesTotalAchat, da(p.totalAchat)),
             if (voirMarge)
               DsKeyValue(

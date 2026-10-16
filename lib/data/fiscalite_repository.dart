@@ -50,7 +50,10 @@ class FiscaliteRepository {
   const FiscaliteRepository(this.db);
   final DatabaseExecutor db;
 
-  Future<DeclarationG50> g50(DateTime debut, DateTime fin) async {
+  /// Bases de la période ; [caisseCode] limite les ventes et retours clients à une caisse (clôture Z).
+  Future<DeclarationG50> g50(DateTime debut, DateTime fin, {String? caisseCode}) async {
+    final caisse = caisseCode == null ? '' : ' AND v.caisse_code = ?';
+    final caisseRetour = caisseCode == null ? '' : ' AND r.caisse_code = ?';
     final d = debut.toUtc().toIso8601String();
     final f = fin.toUtc().toIso8601String();
     Map<double, BaseTva> parTaux(List<Map<String, Object?>> rows, {bool ttc = false}) => {
@@ -66,18 +69,18 @@ class FiscaliteRepository {
       '''
       SELECT l.taux_tva t, SUM(l.montant_ht) ht, SUM(l.montant_tva) tva FROM vente_ligne l
       JOIN vente v ON v.code = l.vente_code
-      WHERE v.statut = 'Validée' AND v.date >= ? AND v.date <= ? GROUP BY l.taux_tva
+      WHERE v.statut = 'Validée' AND v.date >= ? AND v.date <= ?$caisse GROUP BY l.taux_tva
       ''',
-      [d, f],
+      [d, f, ?caisseCode],
     );
     final retoursClients = await db.rawQuery(
       '''
       SELECT COALESCE(vl.taux_tva, 0) t, SUM(rl.total) m FROM retour_ligne rl
       JOIN retour r ON r.code = rl.retour_code
       LEFT JOIN vente_ligne vl ON vl.vente_code = r.document_code AND vl.ordre = rl.ordre_origine
-      WHERE r.type = 'Client' AND r.etat = 1 AND r.date >= ? AND r.date <= ? GROUP BY 1
+      WHERE r.type = 'Client' AND r.etat = 1 AND r.date >= ? AND r.date <= ?$caisseRetour GROUP BY 1
       ''',
-      [d, f],
+      [d, f, ?caisseCode],
     );
     final achats = await db.rawQuery(
       '''

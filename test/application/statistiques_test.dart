@@ -124,7 +124,7 @@ void main() {
       final s = SituationRepository(base.db);
       final auj = DateTime.now();
       const f = FiltresSituation();
-      expect(SituationRepository.analyses.length, 10);
+      expect(SituationRepository.analyses.length, 11);
 
       final rcp = await s.recetteParPanier(auj, auj, f);
       expect(rcp.length, 3);

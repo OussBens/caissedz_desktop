@@ -29,7 +29,7 @@ import '../tiers/tiers_providers.dart';
 import 'tableau_bord_page.dart';
 
 /// Groupe d'analyses de la navigation de la Situation.
-enum GroupeSituation { tresorerie, stock, ventes, marges, tiers }
+enum GroupeSituation { tresorerie, stock, ventes, marges, tiers, fiscalite }
 
 /// Filtre proposé par une analyse.
 enum FiltreSituation { caisse, typeCaisse, produit, magasin, caissier, categorie, client, regrouper, typeTiers, wilaya }
@@ -78,6 +78,7 @@ class AnalyseSituation {
       FiltreSituation.typeTiers,
       FiltreSituation.wilaya,
     ], periode: false),
+    AnalyseSituation('tva', GroupeSituation.fiscalite, LucideIcons.landmark, []),
   ];
 }
 
@@ -92,6 +93,7 @@ String libelleAnalyse(AppLocalizations l10n, String id) => switch (id) {
   'cout' => l10n.situationCout,
   'scli' => l10n.situationScli,
   'sfrn' => l10n.situationSfrn,
+  'tva' => l10n.situationTva,
   _ => id,
 };
 
@@ -101,6 +103,7 @@ String libelleGroupeSituation(AppLocalizations l10n, GroupeSituation g) => switc
   GroupeSituation.ventes => l10n.situationGroupeVentes,
   GroupeSituation.marges => l10n.situationGroupeMarges,
   GroupeSituation.tiers => l10n.situationGroupeTiers,
+  GroupeSituation.fiscalite => l10n.situationGroupeFiscalite,
 };
 
 /// Onglet Situation du tableau de bord : navigation par groupes (220 px) et vue de l'analyse.
@@ -276,6 +279,7 @@ class _VueAnalyseState extends ConsumerState<_VueAnalyse> {
       'mgper' => await r.margeParPeriode(du, au, f),
       'inv' => await r.inventaire(f),
       'cout' => await r.coutProduit(f),
+      'tva' => await r.tva(du, au),
       _ => const <LigneSituation>[],
     };
     if (!mounted) return;
@@ -774,6 +778,20 @@ class _VueAnalyseState extends ConsumerState<_VueAnalyse> {
           total: (ls) => da(s(ls, 'valeur')),
         ),
       ],
+      'tva' => [
+        DsColonne(
+          id: 'taux',
+          libelle: l10n.tvaTaux,
+          fort: true,
+          valeur: (r) => r['taux'] as Comparable?,
+          cellule: (_, r) => Text('${formaterNombre(r['taux']! as double)} %'),
+        ),
+        montant('baseVentes', '${l10n.tvaBaseHt} · ${l10n.situationGroupeVentes}'),
+        montant('collectee', l10n.tvaCollectee),
+        montant('baseAchats', '${l10n.tvaBaseHt} · ${l10n.situationAchats}'),
+        montant('deductible', l10n.tvaDeductible),
+        montant('nette', l10n.tvaNette, danger: true),
+      ],
       'cout' => [
         code,
         texte('nom', l10n.tableauBordProduit, fort: true, flex: 2),
@@ -845,6 +863,11 @@ class _VueAnalyseState extends ConsumerState<_VueAnalyse> {
         n(l10n.situationProduitsVendus, ls.length, LucideIcons.package),
         n(l10n.situationQuantite, s('quantite'), LucideIcons.hash),
         m(l10n.situationRecette, s('recette'), LucideIcons.banknote, DsBadgeTon.succes),
+      ],
+      'tva' => [
+        m(l10n.tvaCollectee, s('collectee'), LucideIcons.arrowDownLeft, DsBadgeTon.primaire),
+        m(l10n.tvaDeductible, s('deductible'), LucideIcons.arrowUpRight, DsBadgeTon.succes),
+        m(l10n.tvaNette, s('nette'), LucideIcons.landmark, DsBadgeTon.danger),
       ],
       'mgp' || 'mgper' => [
         m(l10n.situationCa, s('montant'), LucideIcons.banknote),

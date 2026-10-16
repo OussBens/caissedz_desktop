@@ -239,6 +239,19 @@ class Vente {
 
   double get monnaie => (verse - totalNet) > 0 ? verse - totalNet : 0;
 
+  /// Récapitulatif par taux de TVA (prix TTC figés par ligne) : taux → (HT, TVA).
+  Map<double, ({double ht, double tva})> get parTaux {
+    final m = <double, ({double ht, double tva})>{};
+    for (final l in lignes) {
+      final p = m[l.tauxTva];
+      m[l.tauxTva] = (ht: (p?.ht ?? 0) + l.montantHt, tva: (p?.tva ?? 0) + l.montantTva);
+    }
+    return m;
+  }
+
+  double get totalHt => lignes.fold(0.0, (s, l) => s + l.montantHt);
+  double get totalTva => lignes.fold(0.0, (s, l) => s + l.montantTva);
+
   Map<String, Object?> versLigne() => {
     'code': code,
     'date': date.toUtc().toIso8601String(),

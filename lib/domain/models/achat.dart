@@ -34,13 +34,22 @@ class AchatLigne {
     this.nombre = 0,
     required this.prixAchat,
     required this.total,
+    this.tauxTva = 0,
+    this.montantTva = 0,
   });
   final String produitCode;
   final String designation;
   final double quantite;
   final double nombre;
   final double prixAchat;
+
+  /// Montant TTC de la ligne.
   final double total;
+
+  /// TVA déductible figée à l'entrée (régime réel ; 0 en IFU).
+  final double tauxTva;
+  final double montantTva;
+  double get montantHt => total - montantTva;
 
   factory AchatLigne.depuisLigne(Map<String, Object?> r) => AchatLigne(
     produitCode: r['produit_code'] as String,
@@ -49,6 +58,8 @@ class AchatLigne {
     nombre: (r['nombre'] as num).toDouble(),
     prixAchat: (r['prix_achat'] as num).toDouble(),
     total: (r['total'] as num).toDouble(),
+    tauxTva: ((r['taux_tva'] as num?) ?? 0).toDouble(),
+    montantTva: ((r['montant_tva'] as num?) ?? 0).toDouble(),
   );
 }
 

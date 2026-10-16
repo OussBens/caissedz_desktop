@@ -2,6 +2,7 @@ import 'package:sqflite_common/sqlite_api.dart';
 
 import '../domain/calculs_prix.dart';
 import '../domain/models/stock.dart';
+import 'fiscalite_repository.dart';
 
 /// Ligne d'une analyse de la Situation (valeurs brutes par clé de colonne).
 typedef LigneSituation = Map<String, Object?>;
@@ -41,8 +42,20 @@ class SituationRepository {
   static const String _venteValidee = 'Validée';
   static const String _achatValide = 'Validé';
 
-  /// Identifiants des 10 analyses, dans l'ordre de la navigation du DS.
-  static const List<String> analyses = ['mvc', 'mvp', 'rcp', 'rcpr', 'mgp', 'mgper', 'inv', 'cout', 'scli', 'sfrn'];
+  /// Identifiants des 11 analyses, dans l'ordre de la navigation du DS (+ TVA par taux).
+  static const List<String> analyses = [
+    'mvc',
+    'mvp',
+    'rcp',
+    'rcpr',
+    'mgp',
+    'mgper',
+    'inv',
+    'cout',
+    'scli',
+    'sfrn',
+    'tva',
+  ];
 
   /// Analyses qui exposent le coût d'achat (permission `voirPrixAchat`).
   static const Set<String> analysesCout = {'mgp', 'mgper', 'cout'};
@@ -320,6 +333,31 @@ class SituationRepository {
       'retours': CalculsPrix.arrondir(_d(r['retours'])),
       'casse': CalculsPrix.arrondir(_d(r['casse'])),
     };
+  }
+
+  /// 11 · TVA par taux de la période (aide à la G50) : base HT et TVA collectée des ventes nettes des retours
+  /// clients, base HT et TVA déductible des entrées nettes des retours fournisseurs, TVA nette.
+  Future<List<LigneSituation>> tva(DateTime debut, DateTime fin) async {
+    final g = await FiscaliteRepository(db).g50(debut, fin);
+    double net(Map<double, BaseTva> m, Map<double, BaseTva> r, double t, double Function(BaseTva) f) =>
+        CalculsPrix.arrondir((m[t] == null ? 0 : f(m[t]!)) - (r[t] == null ? 0 : f(r[t]!)));
+    final taux = {...g.taux, ...g.achats.keys, ...g.retoursFournisseurs.keys}.toList()..sort((a, b) => b.compareTo(a));
+    return [
+      for (final t in taux)
+        () {
+          final collectee = net(g.ventes, g.retoursClients, t, (b) => b.tva);
+          final deductible = net(g.achats, g.retoursFournisseurs, t, (b) => b.tva);
+          return <String, Object?>{
+            'code': '$t',
+            'taux': t,
+            'baseVentes': net(g.ventes, g.retoursClients, t, (b) => b.ht),
+            'collectee': collectee,
+            'baseAchats': net(g.achats, g.retoursFournisseurs, t, (b) => b.ht),
+            'deductible': deductible,
+            'nette': CalculsPrix.arrondir(collectee - deductible),
+          };
+        }(),
+    ];
   }
 
   /// 6 · Marge par période : CA et coût nets des retours clients (à la date du retour), marge, taux par jour,

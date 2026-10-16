@@ -805,12 +805,29 @@ String empreinteCourte(String hash) =>
 String nomCaisseCloture(AppLocalizations l10n, Cloture z, Map<String, String> caisses) =>
     z.caisseCode == null ? l10n.gcToutesCaisses : (caisses[z.caisseCode] ?? z.caisseCode!);
 
-/// Détail d'une clôture Z (`ClotureZDetail`, 940 px) : totaux, répartition, intégrité, PDF.
+/// TVA d'une clôture Z par taux : ventes validées de la période de la caisse, retours clients déduits.
+Future<List<({double taux, double ht, double tva})>> tvaCloture(WidgetRef ref, Cloture z) async {
+  final g = await FiscaliteRepository(ref.read(appDatabaseProvider).db)
+      .g50(z.debut.add(const Duration(microseconds: 1)), z.fin, caisseCode: z.caisseCode);
+  return [
+    for (final t in g.taux)
+      (
+        taux: t,
+        ht: (g.ventes[t]?.ht ?? 0) - (g.retoursClients[t]?.ht ?? 0),
+        tva: (g.ventes[t]?.tva ?? 0) - (g.retoursClients[t]?.tva ?? 0),
+      ),
+  ];
+}
+
+String _pct(double t) => '${t == t.roundToDouble() ? t.toInt() : t} %';
+
+/// Détail d'une clôture Z (`ClotureZDetail`, 940 px) : totaux, répartition, TVA, intégrité, PDF.
 Future<void> afficherDetailCloture(BuildContext context, WidgetRef ref, Cloture z) async {
   final l10n = AppLocalizations.of(context);
   final devise = ref.read(deviseProvider);
   final caisses = {for (final c in await ref.read(caissesListeProvider.future)) c.code: c.nom};
   final utilisateurs = await ref.read(nomsUtilisateursProvider.future);
+  final tva = await tvaCloture(ref, z);
   if (!context.mounted) return;
   final valide = Scellement.hacher(z.versCanonique(), z.hashPrecedent) == z.hash;
   final repartition = z.encaissementsParMode.entries.toList();
@@ -897,6 +914,53 @@ Future<void> afficherDetailCloture(BuildContext context, WidgetRef ref, Cloture 
           ),
         ),
         DsSectionDetail(
+          titre: l10n.tvaRecapitulatif,
+          icone: LucideIcons.percent,
+          nbLignes: tva.length,
+          tableau: DsDataTable<({double taux, double ht, double tva})>(
+            dense: true,
+            encadre: false,
+            pagine: false,
+            cle: (e) => '${e.taux}',
+            lignes: tva,
+            messageVide: l10n.dsAucunElement,
+            afficherTotaux: true,
+            colonnes: [
+              DsColonne(
+                id: 'taux',
+                libelle: l10n.tvaTaux,
+                fort: true,
+                valeur: (e) => e.taux,
+                cellule: (_, e) => Text(_pct(e.taux)),
+              ),
+              DsColonne(
+                id: 'ht',
+                libelle: l10n.tvaBaseHt,
+                numerique: true,
+                valeur: (e) => e.ht,
+                cellule: (_, e) => Text(formaterMontant(e.ht, devise)),
+                total: (ls) => formaterMontant(ls.fold(0.0, (s, e) => s + e.ht), devise),
+              ),
+              DsColonne(
+                id: 'tva',
+                libelle: l10n.tvaMontant,
+                numerique: true,
+                valeur: (e) => e.tva,
+                cellule: (_, e) => Text(formaterMontant(e.tva, devise)),
+                total: (ls) => formaterMontant(ls.fold(0.0, (s, e) => s + e.tva), devise),
+              ),
+              DsColonne(
+                id: 'ttc',
+                libelle: l10n.tvaTtc,
+                numerique: true,
+                valeur: (e) => e.ht + e.tva,
+                cellule: (_, e) => Text(formaterMontant(e.ht + e.tva, devise)),
+                total: (ls) => formaterMontant(ls.fold(0.0, (s, e) => s + e.ht + e.tva), devise),
+              ),
+            ],
+          ),
+        ),
+        DsSectionDetail(
           titre: l10n.gcZTotaux,
           icone: LucideIcons.calculator,
           items: [
@@ -933,6 +997,8 @@ Future<void> imprimerCloture(BuildContext context, WidgetRef ref, Cloture z) asy
   final caisses = {for (final c in await ref.read(caissesListeProvider.future)) c.code: c.nom};
   if (!context.mounted) return;
   final caisse = nomCaisseCloture(l10n, z, caisses);
+  final tva = await tvaCloture(ref, z);
+  if (!context.mounted) return;
   final lignes = <List<Object?>>[
     [l10n.gcColCaisse, caisse],
     [l10n.dsDu, formatDateHeure.format(z.debut)],
@@ -947,6 +1013,10 @@ Future<void> imprimerCloture(BuildContext context, WidgetRef ref, Cloture z) asy
       ['${l10n.gcZRepartition} · ${libelleMode(context, e.key)}', f2(e.value)],
     [l10n.clotureColEncaissements, f2(z.totalEncaissements)],
     [l10n.clotureColDecaissements, f2(z.totalDecaissements)],
+    for (final t in tva) ...[
+      ['${l10n.tvaBaseHt} ${_pct(t.taux)}', f2(t.ht)],
+      ['${l10n.tvaMontant} ${_pct(t.taux)}', f2(t.tva)],
+    ],
     [l10n.gcColEmpreinte, z.hash],
     [l10n.gcZEmpreintePrecedente, z.hashPrecedent],
   ];
