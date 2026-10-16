@@ -225,7 +225,7 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
         valeur: _tiers,
         titre: l10n.tiersChoisirClient,
       );
-      if (code != null) setState(() => _tiers = code);
+      if (code != null) _changerTiers(code);
     } else {
       final fournisseurs = (await ref.read(fournisseursProvider.future)).where((f) => f.actif);
       if (!mounted) return;
@@ -237,8 +237,20 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
         valeur: _tiers,
         titre: l10n.tiersChoisirFournisseur,
       );
-      if (code != null) setState(() => _tiers = code);
+      if (code != null) _changerTiers(code);
     }
+  }
+
+  /// Un autre tiers : la pièce d'origine choisie (d'un autre tiers) et son produit sont oubliés.
+  void _changerTiers(String code) {
+    if (code == _tiers) return;
+    setState(() {
+      _tiers = code;
+      _document = null;
+      _lignes = const [];
+      _deja = const {};
+      _produit = null;
+    });
   }
 
   Future<void> _choisirOrigine() async {
@@ -247,7 +259,9 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
     final noms = _nomsTiers();
     String? code;
     if (_client) {
-      final ventes = (await ref.read(ventesProvider.future)).where((v) => v.statut == StatutsVente.validee);
+      // Seulement les ventes du client choisi (toutes tant qu'aucun client n'est choisi).
+      final ventes = (await ref.read(ventesProvider.future))
+          .where((v) => v.statut == StatutsVente.validee && (_tiers == null || v.clientCode == _tiers));
       if (!mounted) return;
       code = await choisirDansListe(
         context,
@@ -258,8 +272,10 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
         titre: l10n.retoursChoisirTicket,
       );
     } else {
-      final achats = (await ref.read(achatsProvider.future)).where((a) => a.statut == StatutsAchat.valide).toList()
-        ..sort((a, b) => (a.fournisseurCode == _tiers ? 0 : 1).compareTo(b.fournisseurCode == _tiers ? 0 : 1));
+      // Seulement les entrées du fournisseur choisi (toutes tant qu'aucun fournisseur n'est choisi).
+      final achats = (await ref.read(achatsProvider.future))
+          .where((a) => a.statut == StatutsAchat.valide && (_tiers == null || a.fournisseurCode == _tiers))
+          .toList();
       if (!mounted) return;
       code = (await afficherSelecteur<Achat>(
         context,

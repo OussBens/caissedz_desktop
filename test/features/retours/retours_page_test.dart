@@ -40,6 +40,7 @@ Future<void> _donnees(ProviderContainer c) async {
   ).entrerStock(produitCode: lait.code, magasinCode: 'MAG0000', quantite: 20);
   final tiers = TiersService(db, utilisateurCode: 'USR0000');
   final client = await tiers.creerClient(const Client(code: '', nom: 'Amina', telephone: '0661 12 34 56'));
+  await tiers.creerClient(const Client(code: '', nom: 'Karim'));
   final f = await tiers.creerFournisseur(const Fournisseur(code: '', nom: 'Djurdjura', telephone: '021 23 45 67'));
   final session = await SessionCaisseService(
     db,
@@ -99,6 +100,22 @@ void main() {
       expect(v.verrouille, isTrue);
       expect(v.montant, 100);
       expect(v.mode, ReglementsRetour.avoir);
+    });
+
+    testWidgets('client choisi : seules ses ventes sont proposées', (tester) async {
+      await _ouvrir(tester);
+      await clic(tester, find.byKey(const ValueKey('retour_nouveau')));
+      await clic(tester, find.byTooltip('Choisir dans la liste').at(0));
+      await clic(tester, find.text('Karim').last);
+      await clic(tester, find.text('Choisir'));
+      await clic(tester, find.byTooltip('Choisir dans la liste').at(1));
+      expect(find.text('VTE0001'), findsNothing, reason: 'vente d\'Amina');
+      await clic(tester, find.text('Annuler').last);
+      await clic(tester, find.byTooltip('Choisir dans la liste').at(0));
+      await clic(tester, find.text('Amina').last);
+      await clic(tester, find.text('Choisir'));
+      await clic(tester, find.byTooltip('Choisir dans la liste').at(1));
+      expect(find.text('VTE0001'), findsWidgets);
     });
 
     testWidgets('onglet fournisseurs, détail et annulation avec motif', (tester) async {
