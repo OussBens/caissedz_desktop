@@ -14,6 +14,7 @@ class FicheTiers {
     this.nif = '',
     this.nis = '',
     this.nrc = '',
+    this.ai = '',
     this.banque = '',
     this.rib = '',
     this.observation = '',
@@ -25,6 +26,9 @@ class FicheTiers {
   final String nif;
   final String nis;
   final String nrc;
+
+  /// Article d'imposition (mention obligatoire de la facture).
+  final String ai;
   final String banque;
   final String rib;
   final String observation;
@@ -37,6 +41,7 @@ class FicheTiers {
     'nif': nif,
     'nis': nis,
     'nrc': nrc,
+    'ai': ai,
     'banque': banque,
     'rib': rib,
     'observation': observation,
@@ -52,6 +57,7 @@ class FicheTiers {
       nif: s('nif'),
       nis: s('nis'),
       nrc: s('nrc'),
+      ai: s('ai'),
       banque: s('banque'),
       rib: s('rib'),
       observation: s('observation'),

@@ -5,10 +5,12 @@ import 'package:sqflite_common/sqlite_api.dart';
 import '../data/caisse_repository.dart';
 import '../data/catalogue_repository.dart';
 import '../data/historique_repository.dart';
+import '../data/parametre_repository.dart';
 import '../data/stock_repository.dart';
 import '../data/tiers_repository.dart';
 import '../domain/calculs_prix.dart';
 import '../domain/code_generator.dart';
+import '../domain/fiscalite.dart';
 import '../domain/models/achat.dart';
 import '../domain/models/retour.dart';
 import '../domain/models/stock.dart';
@@ -449,6 +451,9 @@ class AchatService {
     // Prix de la fiche avant / après chaque ligne : restaurés si l'entrée est annulée ou modifiée (audit M8).
     final prix = <({double achatAvant, double achatApres, double venteAvant, double venteApres})>[];
     final nombreGlobal = await StockService.nombreGlobalActif(txn);
+    // TVA déductible figée par ligne (prix TTC) ; régime IFU : aucune.
+    final regime = await ParametreRepository(txn).lire(Fiscalite.cleRegime) ?? RegimesFiscaux.reel;
+    final taux = <double>[];
     for (final l in lignes) {
       final p = await catalogue.produitParCode(l.produitCode);
       if (p == null) throw AchatException(ErreurAchat.produitInconnu, l.produitCode);
@@ -456,6 +461,7 @@ class AchatService {
         throw AchatException(ErreurAchat.nombreObligatoire, p.code);
       }
       final stockAvant = (await stockRepo.niveauTotal(p.code)).quantite;
+      taux.add(Fiscalite.taux(p.tvaPct, regime));
       lignesAchat.add(
         AchatLigne(
           produitCode: p.code,
@@ -538,6 +544,8 @@ class AchatService {
         'prix_achat_apres': prix[i].achatApres,
         'prix_vente_avant': prix[i].venteAvant,
         'prix_vente_apres': prix[i].venteApres,
+        'taux_tva': taux[i],
+        'montant_tva': Fiscalite.ventiler(l.total, taux[i]).tva,
       });
     }
   }

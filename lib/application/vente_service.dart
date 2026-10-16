@@ -3,11 +3,13 @@ import 'package:sqflite_common/sqlite_api.dart';
 import '../data/caisse_repository.dart';
 import '../data/historique_repository.dart';
 import '../data/journal_fiscal_repository.dart';
+import '../data/parametre_repository.dart';
 import '../data/stock_repository.dart';
 import '../data/tiers_repository.dart';
 import '../data/vente_repository.dart';
 import '../domain/calculs_prix.dart';
 import '../domain/code_generator.dart';
+import '../domain/fiscalite.dart';
 import '../domain/models/caisse.dart';
 import '../domain/models/journal_fiscal.dart';
 import '../domain/models/panier.dart';
@@ -18,6 +20,7 @@ import '../domain/models/vente.dart';
 import '../domain/referentiel/referentiel.dart';
 import '../domain/scellement.dart';
 import 'caisse_service.dart';
+import 'facture_service.dart';
 import 'stock_service.dart';
 import 'versement_service.dart';
 
@@ -162,26 +165,31 @@ class VenteService {
         return CalculsPrix.arrondir(f.pa * l.unitesStock);
       }
 
+      // TVA figée par ligne (prix TTC) selon le régime fiscal (IFU : sans TVA).
+      final regime = await ParametreRepository(txn).lire(Fiscalite.cleRegime) ?? RegimesFiscaux.reel;
       final lignes = [
         for (final (i, l) in panier.lignes.indexed)
-          VenteLigne(
-            ordre: i,
-            produitCode: l.produit.code,
-            colisCode: l.colis?.code,
-            packCode: l.pack?.code,
-            composantPack: l.pack != null,
-            designation: l.designation,
-            quantite: l.quantite,
-            nombre: l.nombreStock,
-            uniteVente: l.uniteVente == UniteVente.nombre ? 'Nombre' : 'Unité',
-            prixUnitaire: l.prixUnitaire,
-            remise: CalculsPrix.arrondir(
-              l.remise + (panier.remiseGlobalePct > 0 ? l.total * panier.remiseGlobalePct / 100 : 0),
+          _avecTva(
+            VenteLigne(
+              ordre: i,
+              produitCode: l.produit.code,
+              colisCode: l.colis?.code,
+              packCode: l.pack?.code,
+              composantPack: l.pack != null,
+              designation: l.designation,
+              quantite: l.quantite,
+              nombre: l.nombreStock,
+              uniteVente: l.uniteVente == UniteVente.nombre ? 'Nombre' : 'Unité',
+              prixUnitaire: l.prixUnitaire,
+              remise: CalculsPrix.arrondir(
+                l.remise + (panier.remiseGlobalePct > 0 ? l.total * panier.remiseGlobalePct / 100 : 0),
+              ),
+              total: CalculsPrix.arrondir(l.total * (1 - panier.remiseGlobalePct / 100)),
+              prixAchat: l.quantite == 0 ? 0 : CalculsPrix.arrondir(coutLigne(l) / l.quantite),
+              totalAchat: coutLigne(l),
+              unites: l.unitesStock,
             ),
-            total: CalculsPrix.arrondir(l.total * (1 - panier.remiseGlobalePct / 100)),
-            prixAchat: l.quantite == 0 ? 0 : CalculsPrix.arrondir(coutLigne(l) / l.quantite),
-            totalAchat: coutLigne(l),
-            unites: l.unitesStock,
+            Fiscalite.taux(l.produit.tvaPct, regime),
           ),
       ];
       final hashPrecedent = await repo.dernierHash() ?? Scellement.genese;
@@ -253,6 +261,11 @@ class VenteService {
       );
       return vente;
     });
+  }
+
+  static VenteLigne _avecTva(VenteLigne l, double taux) {
+    final v = Fiscalite.ventiler(l.total, taux);
+    return VenteLigne.depuisLigne({...l.versLigne(''), 'taux_tva': taux, 'montant_ht': v.ht, 'montant_tva': v.tva});
   }
 
   static Future<void> _controlerPlafond(Transaction txn, String clientCode, double reste) async {
@@ -429,6 +442,8 @@ class VenteService {
         details: {'hash': v.hash, 'motif': motif.trim()},
       );
       await repo.annulerVente(code, par: utilisateurCode, le: DateTime.now());
+      // Vente facturée : la facture reste, un avoir total l'annule.
+      await FactureService.avoirPourAnnulation(txn, code, motif: motif.trim(), utilisateurCode: utilisateurCode);
       await HistoriqueRepository(txn).journaliser(
         utilisateurCode: utilisateurCode,
         action: 'Annulation',

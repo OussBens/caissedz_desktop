@@ -226,6 +226,9 @@ class ExportFiscal {
           'prix_achat': l.prixAchat,
           'total_achat': l.totalAchat,
           'unites': l.unites,
+          'taux_tva': l.tauxTva,
+          'montant_ht': l.montantHt,
+          'montant_tva': l.montantTva,
         },
     ],
     'paiements': [

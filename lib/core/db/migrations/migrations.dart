@@ -29,6 +29,7 @@ import 'v027_solde_tiers.dart';
 import 'v028_retours_lignes.dart';
 import 'v029_prix_entree.dart';
 import 'v030_integrite_fiscale.dart';
+import 'v031_fiscalite.dart';
 
 export 'migration.dart';
 
@@ -64,4 +65,5 @@ const List<Migration> toutesLesMigrations = [
   MigrationV028RetoursLignes(),
   MigrationV029PrixEntree(),
   MigrationV030IntegriteFiscale(),
+  MigrationV031Fiscalite(),
 ];

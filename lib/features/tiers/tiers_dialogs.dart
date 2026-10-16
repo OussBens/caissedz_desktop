@@ -126,6 +126,7 @@ class _FormulaireTiersState extends ConsumerState<_FormulaireTiers> {
   late final _nif = TextEditingController(text: t?.fiche.nif);
   late final _nis = TextEditingController(text: t?.fiche.nis);
   late final _nrc = TextEditingController(text: t?.fiche.nrc);
+  late final _ai = TextEditingController(text: t?.fiche.ai);
   late final _rib = TextEditingController(text: t?.fiche.rib);
   late final _obs = TextEditingController(text: t?.fiche.observation);
   late final _plafond = TextEditingController(
@@ -144,7 +145,7 @@ class _FormulaireTiersState extends ConsumerState<_FormulaireTiers> {
 
   @override
   void dispose() {
-    for (final c in [_nom, _tel, _activite, _adresse, _email, _fax, _nif, _nis, _nrc, _rib, _obs, _plafond]) {
+    for (final c in [_nom, _tel, _activite, _adresse, _email, _fax, _nif, _nis, _nrc, _ai, _rib, _obs, _plafond]) {
       c.dispose();
     }
     super.dispose();
@@ -160,6 +161,7 @@ class _FormulaireTiersState extends ConsumerState<_FormulaireTiers> {
       nif: _nif.text.trim(),
       nis: _nis.text.trim(),
       nrc: _nrc.text.trim(),
+      ai: _ai.text.trim(),
       banque: _banque ?? '',
       rib: _rib.text.trim(),
       observation: _obs.text.trim(),
@@ -353,7 +355,11 @@ class _FormulaireTiersState extends ConsumerState<_FormulaireTiers> {
             largeurLibelle: lw,
             child: DsTextField(controller: _nrc, indice: '16/00-1234567B12'),
           ),
-          const SizedBox(),
+          DsFormRow(
+            libelle: l10n.tiersArticleImposition,
+            largeurLibelle: lw,
+            child: DsTextField(key: const ValueKey('tiers_ai'), controller: _ai, indice: '16012345678'),
+          ),
           DsSpan(child: DsSubHead(l10n.tiersInfosBancaires, icone: LucideIcons.landmark)),
           DsFormRow(
             libelle: l10n.tiersBanque,
@@ -505,6 +511,7 @@ Future<void> afficherDetailTiers(
             DsKeyValue('NIF', f.nif, mono: true),
             DsKeyValue('NIS', f.nis, mono: true),
             DsKeyValue(l10n.tiersNrc, f.nrc),
+            DsKeyValue(l10n.tiersArticleImposition, f.ai, mono: true),
             DsKeyValue(l10n.tiersBanque, f.banque),
             DsKeyValue('RIB', f.rib, mono: true, span: 2),
             DsKeyValue(l10n.tiersObservation, f.observation, span: 3),

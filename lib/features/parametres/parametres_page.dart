@@ -15,6 +15,7 @@ import '../../core/i18n/generated/app_localizations.dart';
 import '../../core/print/imprimante.dart';
 import '../../core/print/ticket_escpos.dart';
 import '../../data/vente_repository.dart';
+import '../../domain/fiscalite.dart';
 import '../../domain/models/licence.dart';
 import '../../domain/models/panier.dart';
 import '../../domain/models/parametres_paiement.dart';
@@ -51,6 +52,8 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
   String _devise = 'DA';
   int _decimales = 2;
   bool _nombreActif = false;
+  String _regime = RegimesFiscaux.reel;
+  bool _timbre = true;
   String _typeMarge = ParametresVente.typeMargePourcentage;
   final _margePct = TextEditingController();
   final _margeMontant = TextEditingController();
@@ -153,6 +156,8 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
       _devise = v.devise;
       _decimales = v.decimalesQuantite;
       _nombreActif = v.nombreActif;
+      _regime = v.regimeFiscal;
+      _timbre = v.timbreActif;
       _typeMarge = v.typeMarge;
       _margePct.text = _entier(v.margeDefautPct);
       _margeMontant.text = _entier(v.margeMontant);
@@ -216,6 +221,8 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
         devise: _devise,
         decimalesQuantite: _decimales,
         nombreActif: _nombreActif,
+        regimeFiscal: _regime,
+        timbreActif: _timbre,
         typeMarge: _typeMarge,
         margeDefautPct: _v(_margePct),
         margeMontant: _v(_margeMontant),
@@ -547,8 +554,28 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
               l10n.pmNombreActif,
               description: l10n.pmNombreActifDesc,
               valeur: _nombreActif,
-              derniere: true,
               onChanged: (v) => _changer(() => _nombreActif = v),
+            ),
+            _ligne(
+              l10n.pmRegimeFiscal,
+              description: l10n.pmRegimeFiscalDesc,
+              child: DsSegmentedControl<String>(
+                key: const ValueKey('param_regime'),
+                valeur: _regime,
+                options: [
+                  DsOption(RegimesFiscaux.reel, libelle: l10n.pmRegimeReel),
+                  DsOption(RegimesFiscaux.ifu, libelle: l10n.pmRegimeIfu),
+                ],
+                onChanged: (v) => _changer(() => _regime = v),
+              ),
+            ),
+            _interrupteur(
+              'param_timbre',
+              l10n.pmTimbre,
+              description: l10n.pmTimbreDesc,
+              valeur: _timbre,
+              derniere: true,
+              onChanged: (v) => _changer(() => _timbre = v),
             ),
           ],
         ),

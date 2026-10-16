@@ -103,6 +103,7 @@ String messageErreurRetour(AppLocalizations l10n, ErreurRetour e) => switch (e) 
   ErreurRetour.dejaAnnule => l10n.retourErreurDejaAnnule,
   ErreurRetour.motifObligatoire => l10n.retourErreurMotif,
   ErreurRetour.sessionRequise => l10n.communSessionRequise,
+  ErreurRetour.avoirEmis => l10n.retoursAvoirEmis,
 };
 
 String messageErreurTiers(AppLocalizations l10n, ErreurTiers e) => switch (e) {

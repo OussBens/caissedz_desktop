@@ -13586,6 +13586,78 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Coffre'**
   String get mvtCoffre;
+
+  /// No description provided for @mvtTimbre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Droit de timbre'**
+  String get mvtTimbre;
+
+  /// No description provided for @retoursAvoirEmis.
+  ///
+  /// In fr, this message translates to:
+  /// **'Un avoir a été émis pour ce retour (vente facturée) : il ne peut plus être modifié ni annulé.'**
+  String get retoursAvoirEmis;
+
+  /// No description provided for @tiersArticleImposition.
+  ///
+  /// In fr, this message translates to:
+  /// **'Article d\'imposition'**
+  String get tiersArticleImposition;
+
+  /// No description provided for @pmRegimeFiscal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Régime fiscal'**
+  String get pmRegimeFiscal;
+
+  /// No description provided for @pmRegimeFiscalDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réel : TVA collectée sur les ventes et déductible sur les entrées. IFU : ventes sans TVA.'**
+  String get pmRegimeFiscalDesc;
+
+  /// No description provided for @pmRegimeReel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réel'**
+  String get pmRegimeReel;
+
+  /// No description provided for @pmRegimeIfu.
+  ///
+  /// In fr, this message translates to:
+  /// **'IFU'**
+  String get pmRegimeIfu;
+
+  /// No description provided for @pmTimbre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Droit de timbre'**
+  String get pmTimbre;
+
+  /// No description provided for @pmTimbreDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouté aux factures sur la part payée en espèces (1 % à 2 %, minimum 5 DA).'**
+  String get pmTimbreDesc;
+
+  /// No description provided for @factureVenteAnnulee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vente annulée : aucune facture ne peut être émise.'**
+  String get factureVenteAnnulee;
+
+  /// No description provided for @exportFiscalG50.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déclaration G50 (Excel)'**
+  String get exportFiscalG50;
+
+  /// No description provided for @exportFiscalG50Desc.
+  ///
+  /// In fr, this message translates to:
+  /// **'TVA collectée et déductible par taux, timbre, TVA à payer'**
+  String get exportFiscalG50Desc;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

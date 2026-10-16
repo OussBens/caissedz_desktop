@@ -8,6 +8,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
 import '../../app/providers.dart';
+import '../../application/facture_service.dart';
 import '../../application/session_caisse_service.dart';
 import '../../application/vente_service.dart';
 import '../../core/design_system/design_system.dart';
@@ -23,6 +24,7 @@ import '../../domain/models/tiers.dart';
 import '../../domain/models/vente.dart';
 import '../commun/selecteurs.dart';
 import '../produits/produits_providers.dart';
+import 'pos_controller.dart';
 
 String messageErreurSession(AppLocalizations l10n, ErreurSession e) => switch (e) {
   ErreurSession.dejaOuverte => l10n.posErreurSessionDejaOuverte,
@@ -235,16 +237,7 @@ Future<void> afficherResultatVente(BuildContext context, WidgetRef ref, Vente ve
     }
   }
 
-  Future<void> facture() async {
-    final police = await policePdf(arabe);
-    final Uint8List octets = await DocumentsPdf(libelles: libelles, devise: devise, police: police).factureA4(
-      vente,
-      boutique: boutique,
-      nomClient: nomClient ?? l10n.posClientPassage,
-      adresseClient: client?.adresse,
-    );
-    await Printing.layoutPdf(onLayout: (_) async => octets, name: 'facture_${vente.code}.pdf');
-  }
+  Future<void> facture() => imprimerFactureVente(context, ref, vente);
 
   await afficherDialog<void>(
     context,
@@ -317,32 +310,43 @@ Future<void> afficherResultatVente(BuildContext context, WidgetRef ref, Vente ve
   );
 }
 
-/// Facture A4 d'une vente (BL / SC) : impression ou enregistrement / partage du PDF.
+/// Facture fiscale A4 d'une vente : émise au premier appel (FAC, timbre éventuel), puis réimprimée en
+/// duplicata avec ses avoirs ; le reste dû est celui du jour (versements imputés déduits).
 Future<void> imprimerFactureVente(BuildContext context, WidgetRef ref, Vente vente, {bool partager = false}) async {
   final l10n = AppLocalizations.of(context);
   final devise = ref.read(deviseProvider);
   final arabe = Localizations.localeOf(context).languageCode == 'ar';
-  final db = ref.read(appDatabaseProvider).db;
-  final boutique = await BoutiqueRepository(db).lire() ?? const Boutique(nom: 'CaisseDZ');
-  final client = await ClientRepository(db).parCode(vente.clientCode);
+  final service = ref.read(factureServiceProvider);
   try {
+    final existante = await service.factureDeVente(vente.code);
+    final facture = existante ?? await service.emettre(vente.code);
+    final avoirs = await service.avoirsDe(facture.code);
+    final reste = await service.resteAujourdhui(vente);
     final police = await policePdf(arabe);
     final octets =
         await DocumentsPdf(
           libelles: arabe ? LibellesTicket.ar : LibellesTicket.fr,
           devise: devise,
           police: police,
-        ).factureA4(
-          vente,
-          boutique: boutique,
-          nomClient: client == null || client.estDePassage ? l10n.posClientPassage : client.nom,
-          adresseClient: client?.adresse,
+        ).facturesFiscales(
+          [facture, ...avoirs],
+          mentions: arabe ? LibellesFacture.ar : LibellesFacture.fr,
+          duplicata: existante != null,
+          resteDu: reste,
         );
     if (partager) {
-      await Printing.sharePdf(bytes: octets, filename: 'facture_${vente.code}.pdf');
+      await Printing.sharePdf(bytes: octets, filename: 'facture_${facture.code}.pdf');
     } else {
-      await Printing.layoutPdf(onLayout: (_) async => octets, name: 'facture_${vente.code}.pdf');
+      await Printing.layoutPdf(onLayout: (_) async => octets, name: 'facture_${facture.code}.pdf');
     }
+  } on FactureException catch (e) {
+    if (!context.mounted) return;
+    await afficherResultat(
+      context,
+      type: DsResultatType.erreur,
+      titre: l10n.posImprimerFacture,
+      message: e.erreur == ErreurFacture.venteAnnulee ? l10n.factureVenteAnnulee : l10n.posImpressionErreur('$e'),
+    );
   } on Object catch (e) {
     if (!context.mounted) return;
     await afficherResultat(

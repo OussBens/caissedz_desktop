@@ -2436,5 +2436,17 @@
   "posErreurPlafondCredit": "تم تجاوز سقف ائتمان الزبون ({plafond}، الائتمان الحالي {solde}).",
   "tiersPlafondCredit": "سقف الائتمان",
   "tiersPlafondCreditAide": "فارغ أو 0: بدون سقف.",
-  "mvtCoffre": "الخزنة"
+  "mvtCoffre": "الخزنة",
+  "mvtTimbre": "حق الطابع",
+  "retoursAvoirEmis": "تم إصدار فاتورة تخفيض لهذا الإرجاع (بيع مفوتر): لا يمكن تعديله أو إلغاؤه.",
+  "tiersArticleImposition": "المادة الجبائية",
+  "pmRegimeFiscal": "النظام الجبائي",
+  "pmRegimeFiscalDesc": "الحقيقي: رسم على القيمة المضافة في المبيعات وقابل للخصم في المشتريات. الضريبة الجزافية الوحيدة: مبيعات دون رسم.",
+  "pmRegimeReel": "الحقيقي",
+  "pmRegimeIfu": "IFU",
+  "pmTimbre": "حق الطابع",
+  "pmTimbreDesc": "يضاف إلى الفواتير على الجزء المدفوع نقدا (1% إلى 2%، 5 دج كحد أدنى).",
+  "factureVenteAnnulee": "بيع ملغى: لا يمكن إصدار فاتورة.",
+  "exportFiscalG50": "تصريح G50 (Excel)",
+  "exportFiscalG50Desc": "الرسم المحصل والقابل للخصم حسب النسبة، الطابع، الرسم المستحق"
 }

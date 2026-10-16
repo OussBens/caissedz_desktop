@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+import '../fiscalite.dart';
+
 /// Paramètres métier de vente et de stock (table `parametre`, `parametre` du §7.9).
 @immutable
 class ParametresVente {
@@ -15,6 +17,8 @@ class ParametresVente {
     this.seuilStockMax = 0,
     this.venteSousAchat = venteSousAchatAvertir,
     this.nombreActif = false,
+    this.regimeFiscal = RegimesFiscaux.reel,
+    this.timbreActif = true,
   });
 
   static const String cleMarge = 'marge_defaut_pct';
@@ -29,6 +33,8 @@ class ParametresVente {
   static const String cleVenteSousAchat = 'vente_sous_achat';
   static const String cleNombre = 'nombre_actif';
   static const List<String> cles = [
+    Fiscalite.cleRegime,
+    Fiscalite.cleTimbre,
     cleMarge,
     cleSeuil,
     cleFidelite,
@@ -79,6 +85,12 @@ class ParametresVente {
   /// produits (sinon seulement pour ceux qui l'activent).
   final bool nombreActif;
 
+  /// Régime fiscal (`Réel` : TVA collectée et déductible ; `IFU` : sans TVA).
+  final String regimeFiscal;
+
+  /// Droit de timbre sur la part payée en espèces des factures.
+  final bool timbreActif;
+
   bool get margeEnMontant => typeMarge == typeMargeMontant;
 
   ParametresVente copyWith({
@@ -93,6 +105,8 @@ class ParametresVente {
     int? seuilStockMax,
     String? venteSousAchat,
     bool? nombreActif,
+    String? regimeFiscal,
+    bool? timbreActif,
   }) => ParametresVente(
     margeDefautPct: margeDefautPct ?? this.margeDefautPct,
     seuilStockGlobal: seuilStockGlobal ?? this.seuilStockGlobal,
@@ -105,6 +119,8 @@ class ParametresVente {
     seuilStockMax: seuilStockMax ?? this.seuilStockMax,
     venteSousAchat: venteSousAchat ?? this.venteSousAchat,
     nombreActif: nombreActif ?? this.nombreActif,
+    regimeFiscal: regimeFiscal ?? this.regimeFiscal,
+    timbreActif: timbreActif ?? this.timbreActif,
   );
 
   Map<String, String> versCles() => {
@@ -119,6 +135,8 @@ class ParametresVente {
     cleSeuilMax: seuilStockMax.toString(),
     cleVenteSousAchat: venteSousAchat,
     cleNombre: nombreActif ? '1' : '0',
+    Fiscalite.cleRegime: regimeFiscal,
+    Fiscalite.cleTimbre: timbreActif ? '1' : '0',
   };
 
   factory ParametresVente.depuisCles(Map<String, String?> m) => ParametresVente(
@@ -137,6 +155,8 @@ class ParametresVente {
       _ => venteSousAchatAvertir,
     },
     nombreActif: m[cleNombre] == '1',
+    regimeFiscal: m[Fiscalite.cleRegime] == RegimesFiscaux.ifu ? RegimesFiscaux.ifu : RegimesFiscaux.reel,
+    timbreActif: m[Fiscalite.cleTimbre] != '0',
   );
 
   @override
@@ -152,7 +172,9 @@ class ParametresVente {
       other.margeMontant == margeMontant &&
       other.seuilStockMax == seuilStockMax &&
       other.venteSousAchat == venteSousAchat &&
-      other.nombreActif == nombreActif;
+      other.nombreActif == nombreActif &&
+      other.regimeFiscal == regimeFiscal &&
+      other.timbreActif == timbreActif;
   @override
   int get hashCode => Object.hash(
     margeDefautPct,
@@ -166,5 +188,7 @@ class ParametresVente {
     seuilStockMax,
     venteSousAchat,
     nombreActif,
+    regimeFiscal,
+    timbreActif,
   );
 }

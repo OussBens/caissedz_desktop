@@ -37,6 +37,9 @@ class TypesMouvementCaisse {
 
   /// Mouvements techniques (tiroir, coffre, transferts internes) : hors encaissements / décaissements de la Z.
   static const List<String> techniques = [fondInitial, retrait, ecart, transfert, coffre];
+
+  /// Droit de timbre encaissé à l'émission d'une facture (part payée en espèces).
+  static const String timbre = 'Timbre';
   static const List<String> tous = [
     vente,
     annulation,
@@ -50,6 +53,7 @@ class TypesMouvementCaisse {
     retrait,
     ecart,
     coffre,
+    timbre,
   ];
 }
 

@@ -13,6 +13,7 @@ import '../../domain/models/tiers.dart';
 import '../../domain/models/vente.dart';
 import '../../domain/permissions.dart';
 import '../caisse/pos_controller.dart';
+import '../caisse/pos_dialogs.dart';
 import '../commun/carte_entite.dart';
 import '../commun/colonnes_audit.dart';
 import '../commun/export_module.dart';
@@ -363,6 +364,14 @@ class _VentesPageState extends ConsumerState<VentesPage> {
             icone: LucideIcons.listOrdered,
             regle: DsRegleSelection.une,
             onPressed: (choix, _) => afficherProduitsPanier(context, ref, choix.first, nomsClients: nomsClients),
+          ),
+          DsActionModule(
+            cle: const ValueKey('ventes_action_facture'),
+            libelle: l10n.posImprimerFacture,
+            icone: LucideIcons.fileText,
+            regle: DsRegleSelection.une,
+            desactive: (choix) => choix.isNotEmpty && choix.first.annule,
+            onPressed: (choix, _) => imprimerFactureVente(context, ref, choix.first.vente),
           ),
           DsActionModule(
             libelle: l10n.communModifier,

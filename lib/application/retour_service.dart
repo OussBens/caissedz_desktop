@@ -1,6 +1,7 @@
 import 'package:sqflite_common/sqlite_api.dart';
 
 import '../data/caisse_repository.dart';
+import '../data/facture_repository.dart';
 import '../data/historique_repository.dart';
 import '../data/journal_fiscal_repository.dart';
 import '../data/tiers_repository.dart';
@@ -14,6 +15,7 @@ import '../domain/models/retour.dart';
 import '../domain/models/stock.dart';
 import '../domain/models/vente.dart';
 import 'achat_service.dart';
+import 'facture_service.dart';
 import 'session_caisse_service.dart';
 import 'stock_service.dart';
 import 'vente_service.dart';
@@ -32,6 +34,9 @@ enum ErreurRetour {
   dejaAnnule,
   motifObligatoire,
   sessionRequise,
+
+  /// Un avoir a été émis pour ce retour (vente facturée) : il ne peut plus être modifié ni annulé.
+  avoirEmis,
 }
 
 class RetourException implements Exception {
@@ -97,6 +102,8 @@ class RetourService {
       nouveau: true,
     );
     await _journalFiscal(txn, TypesEvenementFiscal.retour, r);
+    // Vente facturée : avoir des lignes retournées (la facture n'est jamais modifiée).
+    await FactureService.avoirPourRetour(txn, r, utilisateurCode: utilisateurCode);
     await HistoriqueRepository(txn).journaliser(
       utilisateurCode: utilisateurCode,
       action: 'Retour',
@@ -123,6 +130,7 @@ class RetourService {
       throw const RetourException(ErreurRetour.sessionRequise);
     }
     final ancien = await _charger(txn, code);
+    await _sansAvoir(txn, code);
     await _defaire(txn, ancien, motif: 'Modification du retour');
     final r = await _appliquer(
       txn,
@@ -159,6 +167,7 @@ class RetourService {
         throw const RetourException(ErreurRetour.sessionRequise);
       }
       final r = await _charger(txn, code);
+      await _sansAvoir(txn, code);
       await _defaire(txn, r, motif: motif.trim());
       await TiersRepository(txn).annulerRetour(code, par: utilisateurCode, motif: motif.trim());
       await _journalFiscal(txn, TypesEvenementFiscal.annulationRetour, r, detail: {'motif': motif.trim()});
@@ -171,6 +180,10 @@ class RetourService {
       );
       return (await TiersRepository(txn).retour(code))!;
     });
+  }
+
+  static Future<void> _sansAvoir(Transaction txn, String code) async {
+    if (await FactureRepository(txn).avoirDuRetour(code) != null) throw const RetourException(ErreurRetour.avoirEmis);
   }
 
   /// Événement du journal fiscal chaîné (§12.3) : montant positif pour un retour client (sortie de CA).

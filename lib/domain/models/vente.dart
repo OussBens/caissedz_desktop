@@ -77,6 +77,9 @@ class VenteLigne {
     this.prixAchat = 0,
     this.totalAchat = 0,
     this.unites = 0,
+    this.tauxTva = 0,
+    this.montantHt = 0,
+    this.montantTva = 0,
   });
   final int ordre;
   final String produitCode;
@@ -101,6 +104,11 @@ class VenteLigne {
   /// Unités de stock sorties par la ligne (quantité × colis, figées à la vente ; 0 pour une vente au nombre).
   final double unites;
 
+  /// TVA figée à la vente (prix TTC) : taux du produit selon le régime, total ventilé HT + TVA (v31).
+  final double tauxTva;
+  final double montantHt;
+  final double montantTva;
+
   /// Unités de stock de [q] articles de la ligne (au prorata de la quantité vendue).
   double unitesPour(double q) => quantite == 0 ? 0 : unites * q / quantite;
 
@@ -124,6 +132,9 @@ class VenteLigne {
     'prix_achat': prixAchat,
     'total_achat': totalAchat,
     'unites': unites,
+    'taux_tva': tauxTva,
+    'montant_ht': montantHt,
+    'montant_tva': montantTva,
   };
   factory VenteLigne.depuisLigne(Map<String, Object?> r) => VenteLigne(
     ordre: r['ordre'] as int,
@@ -141,10 +152,13 @@ class VenteLigne {
     prixAchat: ((r['prix_achat'] as num?) ?? 0).toDouble(),
     totalAchat: ((r['total_achat'] as num?) ?? 0).toDouble(),
     unites: ((r['unites'] as num?) ?? 0).toDouble(),
+    tauxTva: ((r['taux_tva'] as num?) ?? 0).toDouble(),
+    montantHt: ((r['montant_ht'] as num?) ?? 0).toDouble(),
+    montantTva: ((r['montant_tva'] as num?) ?? 0).toDouble(),
   );
 
   /// Forme canonique scellée. Version 1 : contenu d'origine ; version 2 : quantités à 3 décimales, coût
-  /// d'achat figé et unités de stock scellés.
+  /// d'achat figé, unités de stock et TVA (taux, HT, TVA) scellés.
   Map<String, Object?> versCanonique([int version = 1]) => version < 2
       ? {'o': ordre, 'p': produitCode, 'q': quantite, 'n': nombre, 'pu': prixUnitaire, 'r': remise, 't': total}
       : {
@@ -158,6 +172,9 @@ class VenteLigne {
           't': total,
           'pa': prixAchat,
           'ta': totalAchat,
+          'tx': tauxTva,
+          'ht': montantHt,
+          'tva': montantTva,
         };
 }
 

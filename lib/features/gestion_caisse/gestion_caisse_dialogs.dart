@@ -11,7 +11,10 @@ import '../../application/caisse_service.dart';
 import '../../application/cloture_service.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/export/export_fiscal.dart';
+import '../../core/export/export_g50.dart';
 import '../../core/i18n/generated/app_localizations.dart';
+import '../../data/boutique_repository.dart';
+import '../../data/fiscalite_repository.dart';
 import '../../domain/models/caisse.dart';
 import '../../domain/models/rapport.dart';
 import '../../domain/models/vente.dart';
@@ -962,7 +965,7 @@ Future<void> imprimerCloture(BuildContext context, WidgetRef ref, Cloture z) asy
 
 // ———————————————————————————— Export contrôle fiscal ————————————————————————————
 
-enum _FormatFiscal { zip, json, pdf, csv }
+enum _FormatFiscal { zip, json, pdf, csv, g50 }
 
 /// Export pour contrôle fiscal (`ExportFiscalDialog`, 760 px) : période, format, état de la chaîne.
 Future<void> afficherExportFiscal(BuildContext context, WidgetRef ref) async {
@@ -1013,6 +1016,25 @@ class _ExportFiscalDialogState extends ConsumerState<_ExportFiscalDialog> {
         format: DsFormatExport.pdf,
       );
       if (mounted) Navigator.of(context).pop();
+      return;
+    }
+    if (_format == _FormatFiscal.g50) {
+      final jour = DateFormat('yyyyMMdd');
+      final nom = 'G50_${jour.format(du)}_${jour.format(au)}.xlsx';
+      final chemin = await ref.read(selecteurExportProvider)(nom);
+      if (chemin == null || !mounted) return;
+      final db = ref.read(appDatabaseProvider).db;
+      final boutique = await BoutiqueRepository(db).lire();
+      final octets = ExportG50.generer(
+        await FiscaliteRepository(db).g50(du, au),
+        nomBoutique: boutique?.nom ?? '',
+        nif: boutique?.nif ?? '',
+      );
+      await ref.read(ecrivainExportProvider)(chemin, octets);
+      await ref.read(journalServiceProvider).export(id: 'g50', format: 'XLSX', fichier: nom);
+      if (!mounted) return;
+      Navigator.of(context).pop();
+      afficherToast(context, titre: l10n.gcFiscalGenere, description: nom);
       return;
     }
     final ext = switch (_format) {
@@ -1128,6 +1150,12 @@ class _ExportFiscalDialogState extends ConsumerState<_ExportFiscalDialog> {
                 libelle: l10n.gcFiscalCsv,
                 icone: LucideIcons.fileSpreadsheet,
                 description: l10n.gcFiscalCsvDesc,
+              ),
+              DsOption(
+                _FormatFiscal.g50,
+                libelle: l10n.exportFiscalG50,
+                icone: LucideIcons.receiptText,
+                description: l10n.exportFiscalG50Desc,
               ),
             ],
           ),

@@ -42,7 +42,7 @@ void main() {
     ).ouvrir(caisseCode: 'CIS0000', fondInitial: 0);
     final ventes = VenteService(db, utilisateurCode: 'USR0000', parametres: const ParametresVente());
     Future<String> vendre(double q) async => (await ventes.encaisser(
-      Panier(id: 1)
+      const Panier(id: 1)
           .ajouter(PanierLigne(produit: p, quantite: q, prixUnitaire: 100))
           .ajouterPaiement(Paiement(mode: 'Espèces', montant: q * 100)),
       session: session,

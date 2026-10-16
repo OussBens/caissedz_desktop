@@ -7165,4 +7165,42 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get mvtCoffre => 'Coffre';
+
+  @override
+  String get mvtTimbre => 'Droit de timbre';
+
+  @override
+  String get retoursAvoirEmis =>
+      'Un avoir a été émis pour ce retour (vente facturée) : il ne peut plus être modifié ni annulé.';
+
+  @override
+  String get tiersArticleImposition => 'Article d\'imposition';
+
+  @override
+  String get pmRegimeFiscal => 'Régime fiscal';
+
+  @override
+  String get pmRegimeFiscalDesc =>
+      'Réel : TVA collectée sur les ventes et déductible sur les entrées. IFU : ventes sans TVA.';
+
+  @override
+  String get pmRegimeReel => 'Réel';
+
+  @override
+  String get pmRegimeIfu => 'IFU';
+
+  @override
+  String get pmTimbre => 'Droit de timbre';
+
+  @override
+  String get pmTimbreDesc => 'Ajouté aux factures sur la part payée en espèces (1 % à 2 %, minimum 5 DA).';
+
+  @override
+  String get factureVenteAnnulee => 'Vente annulée : aucune facture ne peut être émise.';
+
+  @override
+  String get exportFiscalG50 => 'Déclaration G50 (Excel)';
+
+  @override
+  String get exportFiscalG50Desc => 'TVA collectée et déductible par taux, timbre, TVA à payer';
 }

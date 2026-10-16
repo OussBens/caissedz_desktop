@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app/demarrage_providers.dart';
 import '../../app/providers.dart';
 import '../../application/cloture_service.dart';
+import '../../application/facture_service.dart';
 import '../../application/session_caisse_service.dart';
 import '../../application/vente_service.dart';
 import '../../data/catalogue_repository.dart';
@@ -457,6 +458,12 @@ final produitsPosProvider = FutureProvider<List<Produit>>((ref) {
   ref.watch(catalogueVersionProvider);
   return ref.watch(catalogueRepositoryProvider).produits(actifsSeulement: true);
 });
+
+/// Facturation conforme (factures FAC, avoirs AVO).
+final factureServiceProvider = Provider<FactureService>(
+  (ref) =>
+      FactureService(ref.watch(appDatabaseProvider).db, utilisateurCode: ref.watch(utilisateurCourantCodeProvider)),
+);
 
 /// Caisses actives (ouverture de session), hors coffre.
 final caissesProvider = FutureProvider<List<Map<String, Object?>>>(

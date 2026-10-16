@@ -97,6 +97,7 @@ String libelleTypeMouvementCaisse(AppLocalizations l10n, String type) => switch 
   TypesMouvementCaisse.retrait => l10n.mvtRetrait,
   TypesMouvementCaisse.ecart => l10n.mvtEcart,
   TypesMouvementCaisse.coffre => l10n.mvtCoffre,
+  TypesMouvementCaisse.timbre => l10n.mvtTimbre,
   _ => type,
 };
 

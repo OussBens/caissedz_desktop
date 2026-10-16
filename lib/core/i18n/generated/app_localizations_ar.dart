@@ -7138,4 +7138,41 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get mvtCoffre => 'الخزنة';
+
+  @override
+  String get mvtTimbre => 'حق الطابع';
+
+  @override
+  String get retoursAvoirEmis => 'تم إصدار فاتورة تخفيض لهذا الإرجاع (بيع مفوتر): لا يمكن تعديله أو إلغاؤه.';
+
+  @override
+  String get tiersArticleImposition => 'المادة الجبائية';
+
+  @override
+  String get pmRegimeFiscal => 'النظام الجبائي';
+
+  @override
+  String get pmRegimeFiscalDesc =>
+      'الحقيقي: رسم على القيمة المضافة في المبيعات وقابل للخصم في المشتريات. الضريبة الجزافية الوحيدة: مبيعات دون رسم.';
+
+  @override
+  String get pmRegimeReel => 'الحقيقي';
+
+  @override
+  String get pmRegimeIfu => 'IFU';
+
+  @override
+  String get pmTimbre => 'حق الطابع';
+
+  @override
+  String get pmTimbreDesc => 'يضاف إلى الفواتير على الجزء المدفوع نقدا (1% إلى 2%، 5 دج كحد أدنى).';
+
+  @override
+  String get factureVenteAnnulee => 'بيع ملغى: لا يمكن إصدار فاتورة.';
+
+  @override
+  String get exportFiscalG50 => 'تصريح G50 (Excel)';
+
+  @override
+  String get exportFiscalG50Desc => 'الرسم المحصل والقابل للخصم حسب النسبة، الطابع، الرسم المستحق';
 }

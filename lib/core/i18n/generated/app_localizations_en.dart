@@ -7151,4 +7151,41 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mvtCoffre => 'Safe';
+
+  @override
+  String get mvtTimbre => 'Stamp duty';
+
+  @override
+  String get retoursAvoirEmis =>
+      'A credit note was issued for this return (invoiced sale): it can no longer be edited or cancelled.';
+
+  @override
+  String get tiersArticleImposition => 'Tax article (AI)';
+
+  @override
+  String get pmRegimeFiscal => 'Tax regime';
+
+  @override
+  String get pmRegimeFiscalDesc => 'Real: VAT collected on sales and deductible on purchases. IFU: sales without VAT.';
+
+  @override
+  String get pmRegimeReel => 'Real';
+
+  @override
+  String get pmRegimeIfu => 'IFU';
+
+  @override
+  String get pmTimbre => 'Stamp duty';
+
+  @override
+  String get pmTimbreDesc => 'Added to invoices on the cash-paid part (1% to 2%, minimum 5 DA).';
+
+  @override
+  String get factureVenteAnnulee => 'Cancelled sale: no invoice can be issued.';
+
+  @override
+  String get exportFiscalG50 => 'G50 return (Excel)';
+
+  @override
+  String get exportFiscalG50Desc => 'VAT collected and deductible by rate, stamp duty, VAT due';
 }
