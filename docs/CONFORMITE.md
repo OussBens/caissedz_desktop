@@ -109,7 +109,9 @@
       contrôle fiscal en archive / JSON / PDF / CSV avec état de la chaîne
 - [x] Permission `gererTransfertsCaisse` (§9.13) : onglet Transferts en « accès refusé » sans elle
 - [ ] Journal fiscal `journal_fiscal` avec ligne `CLOTURE_CAISSE` (§12.3)
-- [ ] Période clôturée évaluée par caisse (aujourd'hui : toute clôture couvrant la date bloque, ⚠️ PROVISOIRE)
+- [x] Période clôturée évaluée par caisse (ventes, retours, versements ; les entrées, sans caisse, restent bloquées
+      par toute clôture couvrant la date)
+- [x] Journal de caisse en ajout seul : contre-passations au lieu de suppressions, déclencheurs (migration v26)
 
 ## Rapports et paramètres (lot 8)
 - [x] Tableau de bord §9.14 (phase D) : période Jour / Semaine / Mois / Période, 6 KPI (ventes, période précédente,
@@ -181,9 +183,11 @@ Recopie de la checklist de la spec 06. `[x]` = fait et testé ; `[ ]` = manquant
       paramétrables
 - [x] Bonus fidélité (accrual, reprise à l'annulation)
 - [x] Ticket scellé + journal fiscal ; contenu verrouillé ; annulation avec motif, interdite en période clôturée
-      (période évaluée toutes caisses confondues, ⚠️ provisoire)
+      de la caisse de la vente
 - [x] Liste des paniers avec versé/reste dynamiques, détail, réimpression
 - [x] Retours client/fournisseur depuis le document d'origine, plafond de quantité, versement et mouvements liés
+- [x] Retour client par ligne de vente, daté du jour (possible après la Z), unités figées à la vente, pièces et
+      points de fidélité repris au prorata ; CA et marges nets des retours, casse en perte
 
 ### Achats
 - [x] Smart Scan multi-produits → magasin principal, mise à jour des prix, paiement partiel
@@ -194,7 +198,7 @@ Recopie de la checklist de la spec 06. `[x]` = fait et testé ; `[ ]` = manquant
 
 ### Tiers et argent
 - [x] Clients / fournisseurs avec stats calculées (crédit / dette), situations, versements et conventions de sens
-      (§ 8.5)
+      (§ 8.5) ; solde unique (vue `solde_tiers`) partout : liste, caisse, relevé, alertes, tableau de bord, zakat
 - [x] Versements liés à un retour verrouillés
 - [x] Caisses (Physique / Compte), sessions (1 ouverte max par caisse), grand-livre (§ 8.6), mouvements manuels
 - [x] Session obligatoire pour vente / achat / retour / versement

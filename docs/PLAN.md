@@ -755,3 +755,24 @@ workflows et calculs » du projet.
 - ✅ C3 : migration v25 — références « SS… » des paiements immédiats d'entrées passées en ENT.
 - ○ Majeurs M1–M12 et mineurs m1–m15 : voir le plan du rapport (journal de caisse en ajout seul, solde unique des
   tiers, retours, coûts / crédit, intégrité fiscale, TVA / timbre / facture).
+
+## Plan d'amélioration — points 1 à 3 ✅ (2026-10-16)
+
+- ✅ M9 — Journal de caisse en ajout seul : annuler / modifier un versement, un retour, un paiement d'entrée ou un
+  transfert contre-passe (écriture inverse datée du jour, même référence, `CaisseRepository.contrePasserReference`) ;
+  versements refusés si leur date (ancienne ou nouvelle) est dans une période clôturée de leur caisse ; migration
+  v26 : déclencheurs interdisant DELETE et la réécriture des colonnes financières de `mouvement_caisse`.
+- ✅ M1 / M2 / m4 — Solde unique des tiers : vue `solde_tiers` (migration v27) = restes à la pièce − règlements
+  (avoirs compris) + argent rendu hors retour, indépendante des imputations ; lue par la liste, la caisse, la
+  situation, les alertes, le tableau de bord et la zakat. Relevé : payé = total − reste (hors monnaie rendue) ;
+  graphique des modes : monnaie déduite des espèces ; entrée réduite sous le payé : excédent désimputé (avance).
+- ✅ M10 — Retour daté du jour, possible après la Z du jour de la vente ; période contrôlée sur la date du retour,
+  par caisse (`retour.caisse_code`, vérificateur de clôture par caisse pour ventes, retours, versements).
+- ✅ M3 — CA (tableau de bord, CA par jour, ventes par caissier, top produits, recette par produit) et marges (par
+  panier, par période) nets des retours clients à leur date ; un retour « Casse » garde son coût (perte affichée).
+- ✅ M6 / M5 — Points gagnés repris au prorata du montant retourné (`retour.points_repris`, rendus si le retour est
+  annulé) ; pièces réintégrées au prorata de la ligne ; inventaire avec colonnes pièces théoriques / comptées.
+- ✅ m2 / m1 — Retour par ligne de vente (`retour_ligne.ordre_origine`, plafond par ligne) ; unités figées sur
+  `vente_ligne.unites` (migration v28) ; annulation de vente d'après les mouvements de stock réels.
+- ○ Suite du plan : plafond de crédit, coût des ventes au nombre, valorisation du prix d'achat (M4, M7, M8),
+  intégrité fiscale (M11, M12), TVA / timbre / facture.
