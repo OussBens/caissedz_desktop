@@ -1,383 +1,603 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../app/demarrage_providers.dart';
-import '../../application/stock_service.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
 import '../../domain/models/produit.dart';
 import '../../domain/models/stock.dart';
 import '../../domain/permissions.dart';
-import '../produits/produit_dialogs.dart';
+import '../../domain/referentiel/referentiel.dart';
+import '../commun/colonnes_audit.dart';
+import '../commun/export_module.dart';
+import '../commun/page_module.dart';
+import '../commun/referentiel_ui.dart';
+import '../commun/selecteurs.dart';
+import '../commun/statuts.dart';
+import '../historique/historique_providers.dart';
+import '../produits/produits_donnees.dart';
 import '../produits/produits_providers.dart';
+import '../retours/retours_dialogs.dart';
+import '../tiers/tiers_providers.dart';
+import '../ventes/ventes_dialogs.dart';
+import 'stock_dialogs.dart';
 import 'stock_providers.dart';
 
-/// Ligne « niveau » affichée : produit + quantités.
-class _LigneNiveau {
-  const _LigneNiveau(this.produit, this.quantite, this.nombre, this.seuil);
+/// Ligne du tableau Stock : produit, quantités par magasin consultable, total.
+class _LigneStock {
+  const _LigneStock(this.produit, this.parMagasin, this.total, this.etat);
   final Produit produit;
-  final double quantite;
-  final double nombre;
-  final int seuil;
-  bool get sousSeuil => quantite <= seuil;
+  final Map<String, double> parMagasin;
+  final double total;
+  final String etat;
 }
 
-/// Module Stock : niveaux par magasin et journal des mouvements.
+/// Écran Stock (`StockScreen` du DS v2.2) : onglets Stock (quantités par magasin, KPI, détail, distribution)
+/// et Mouvements (journal filtrable, « Voir la pièce »).
 class StockPage extends ConsumerStatefulWidget {
-  const StockPage({super.key});
+  const StockPage({super.key, this.ongletInitial = 0});
+  final int ongletInitial;
 
   @override
   ConsumerState<StockPage> createState() => _StockPageState();
 }
 
 class _StockPageState extends ConsumerState<StockPage> {
-  int _onglet = 0;
-  String _recherche = '';
-  bool _sousSeuilSeulement = false;
-
-  Future<void> executerStock(BuildContext context, WidgetRef ref, Future<void> Function() action) async {
-    final l10n = AppLocalizations.of(context);
-    try {
-      await action();
-      rafraichirStock(ref);
-    } on StockException catch (e) {
-      if (!context.mounted) return;
-      unawaited(
-        afficherResultat(
-          context,
-          type: DsResultatType.erreur,
-          titre: l10n.stockTitre,
-          message: messageErreurStock(l10n, e.erreur),
-        ),
-      );
-    }
-  }
+  late int _onglet = widget.ongletInitial;
+  String? _magasin;
+  String? _categorie;
+  String? _etat;
+  String? _produit;
+  String? _marque;
+  String? _type;
+  String? _produitMvt;
+  String? _magasinMvt;
+  String? _utilisateur;
+  DsPeriode _periode = DsPeriode.calculer('month');
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final magasins = ref.watch(magasinsProvider).value ?? const [];
-    final filtre = ref.watch(filtreMagasinProvider);
-    return DsPage(
-      titre: l10n.stockTitre,
-      onRecherche: (v) => setState(() => _recherche = v),
-      actions: [
-        DsButton(
-          libelle: l10n.stockInventaire,
-          icone: LucideIcons.clipboardCheck,
-          variante: DsButtonVariante.secondaire,
-          onPressed: () {
-            _dialogueMouvement(inventaire: true);
-          },
-        ),
-        DsButton(
-          libelle: l10n.stockEntreeManuelle,
-          icone: LucideIcons.packagePlus,
-          onPressed: () {
-            _dialogueMouvement(inventaire: false);
-          },
-        ),
-      ],
-      filtres: Row(
-        children: [
-          SizedBox(
-            width: 260,
-            child: DsSelect<String?>(
-              valeur: filtre,
-              options: [null, ...magasins.map((m) => m.code)],
-              libelle: (c) => c == null ? l10n.stockTousMagasins : magasins.firstWhere((m) => m.code == c).nom,
-              onChanged: (v) => ref.read(filtreMagasinProvider.notifier).changer(v),
-            ),
-          ),
-          const SizedBox(width: DsSpacing.md),
-          DsButton(
-            libelle: l10n.stockSousSeuil,
-            icone: LucideIcons.triangleAlert,
-            taille: DsButtonTaille.sm,
-            variante: _sousSeuilSeulement ? DsButtonVariante.primaire : DsButtonVariante.secondaire,
-            onPressed: () => setState(() => _sousSeuilSeulement = !_sousSeuilSeulement),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          DsOnglets(
-            onglets: [l10n.stockOngletNiveaux, l10n.stockOngletJournal],
-            courant: _onglet,
-            onChanged: (i) => setState(() => _onglet = i),
-          ),
-          const SizedBox(height: DsSpacing.lg),
-          Expanded(child: _onglet == 0 ? _niveaux(l10n) : _journal(l10n)),
-        ],
-      ),
-    );
-  }
-
-  Widget _niveaux(AppLocalizations l10n) {
-    final produits = ref.watch(produitsProvider).value ?? const [];
-    final niveaux = ref.watch(niveauxStockProvider).value ?? const [];
-    final seuilGlobal = ref.watch(parametresVenteProvider).value?.seuilStockGlobal ?? 5;
+    final magasins = ref.watch(magasinsProvider).value ?? const <Magasin>[];
+    final mes = ref.watch(mesMagasinsProvider).value ?? const <String>[];
     final session = ref.watch(sessionProvider);
-    final devise = ref.watch(deviseProvider);
-    final parProduit = {for (final n in niveaux) n.produitCode: n};
-    final r = _recherche.trim().toLowerCase();
-    final lignes = [
-      for (final p in produits)
-        if (r.isEmpty ||
-            p.designation.toLowerCase().contains(r) ||
-            p.code.toLowerCase().contains(r) ||
-            (p.codeBarres?.contains(r) ?? false))
-          _LigneNiveau(
-            p,
-            parProduit[p.code]?.quantite ?? 0,
-            parProduit[p.code]?.nombre ?? 0,
-            p.seuilStock ?? seuilGlobal,
-          ),
-    ].where((l) => !_sousSeuilSeulement || l.sousSeuil).toList();
-    return DsDataTable<_LigneNiveau>(
-      colonnes: [
-        DsColonne(id: 'code', libelle: l10n.produitsColCode, valeur: (l) => l.produit.code, largeur: 100),
-        DsColonne(id: 'p', libelle: l10n.stockColProduit, valeur: (l) => l.produit.designation, flex: 3),
-        DsColonne(
-          id: 'q',
-          libelle: l10n.stockColQuantite,
-          valeur: (l) => l.quantite,
-          numerique: true,
-          cellule: (_, l) =>
-              DsBadge(libelle: _fmt(l.quantite), ton: l.sousSeuil ? DsBadgeTon.danger : DsBadgeTon.succes),
-          total: (ls) => _fmt(ls.fold(0.0, (s, l) => s + l.quantite)),
-        ),
-        DsColonne(
-          id: 'n',
-          libelle: l10n.stockColNombre,
-          valeur: (l) => l.nombre,
-          numerique: true,
-          cellule: (_, l) => Text(l.produit.suiviNombre ? _fmt(l.nombre) : ''),
-        ),
-        DsColonne(id: 's', libelle: l10n.stockColSeuil, valeur: (l) => l.seuil, numerique: true),
-        DsColonne(
-          id: 'v',
-          libelle: l10n.stockColValeur,
-          valeur: (l) => l.quantite * l.produit.prixAchat,
-          numerique: true,
-          permission: Permission.voirPrixAchat.code,
-          cellule: (_, l) => Text(formaterMontant(l.quantite * l.produit.prixAchat, devise)),
-          total: (ls) => formaterMontant(ls.fold(0.0, (s, l) => s + l.quantite * l.produit.prixAchat), devise),
-        ),
-      ],
-      lignes: lignes,
-      cle: (l) => l.produit.code,
-      permissions: session?.permissions.map((p) => p.code).toSet() ?? const {},
-      afficherTotaux: true,
-      actionsContextuelles: [
-        DsActionContextuelle(
-          libelle: l10n.stockEntreeManuelle,
-          icone: LucideIcons.packagePlus,
-          onSelected: (l) => _dialogueMouvement(inventaire: false, produit: l.produit),
-        ),
-        DsActionContextuelle(
-          libelle: l10n.stockInventaire,
-          icone: LucideIcons.clipboardCheck,
-          onSelected: (l) => _dialogueMouvement(inventaire: true, produit: l.produit),
-        ),
-        DsActionContextuelle(
-          libelle: l10n.produitModifier,
-          icone: LucideIcons.pencil,
-          onSelected: (l) => afficherFormulaireProduit(context, produit: l.produit),
-        ),
-      ],
+    // §6.2 : magasins consultables = tous pour l'Admin ou `voirStockTousMagasins`, sinon ceux de l'utilisateur.
+    final tous = mes.isEmpty || (session?.estAdmin ?? false) || (session?.a(Permission.voirStockTousMagasins) ?? false);
+    final consultables = [
+      for (final m in magasins)
+        if (m.actif && (tous || mes.contains(m.code))) m,
+    ];
+    final produits = (ref.watch(produitsProvider).value ?? const <Produit>[]).where((p) => !p.service).toList();
+    final mouvements = ref.watch(mouvementsProvider).value ?? const <MouvementStock>[];
+    return PageModule(
+      moduleId: 'stock',
+      sousTitre: l10n.stkDescriptionStock(consultables.length),
+      onglets: [l10n.stockTitre, l10n.stkOngletMouvements],
+      comptes: [produits.length, mouvements.length],
+      ongletCourant: _onglet,
+      onOnglet: (i) => setState(() => _onglet = i),
+      child: _onglet == 0 ? _stock(l10n, consultables, produits) : _mouvements(l10n, magasins, mouvements),
     );
   }
 
-  Widget _journal(AppLocalizations l10n) {
-    final produits = ref.watch(produitsProvider).value ?? const [];
-    final magasins = ref.watch(magasinsProvider).value ?? const [];
-    final mouvements = ref.watch(mouvementsProvider).value ?? const [];
-    final r = _recherche.trim().toLowerCase();
-    String nomProduit(String code) => produits.where((p) => p.code == code).firstOrNull?.designation ?? code;
-    final lignes = mouvements
+  Widget _stock(AppLocalizations l10n, List<Magasin> consultables, List<Produit> produits) {
+    final devise = ref.watch(deviseProvider);
+    String da(double v) => formaterMontant(v, devise);
+    final stocks = ref.watch(stocksParMagasinProvider).value ?? const <String, Map<String, double>>{};
+    final seuilGlobal = ref.watch(parametresVenteProvider).value?.seuilStockGlobal ?? 5;
+    final categories = {for (final c in ref.watch(categoriesProvider).value ?? const <Categorie>[]) c.code: c.nom};
+    final sousCategories = {
+      for (final s in ref.watch(sousCategoriesProvider).value ?? const <SousCategorie>[]) s.code: s.nom,
+    };
+    final remises = {for (final r in ref.watch(remisesProvider).value ?? const <Remise>[]) r.code: r.designation};
+    final licence = ref.watch(licenceProvider);
+    final avance = licence.couvre(NiveauLicence.avance);
+    final colonnesMagasins = _magasin == null ? consultables : consultables.where((m) => m.code == _magasin).toList();
+    final toutes = [
+      for (final p in produits)
+        () {
+          final par = {for (final m in colonnesMagasins) m.code: stocks[p.code]?[m.code] ?? 0.0};
+          // Le total reste celui de tous les magasins consultables, même filtré sur un magasin.
+          final total = consultables.fold(0.0, (a, m) => a + (stocks[p.code]?[m.code] ?? 0.0));
+          return _LigneStock(p, par, total, etatStockProduit(p, total, seuilGlobal));
+        }(),
+    ];
+    final lignes = toutes
         .where(
-          (m) =>
-              r.isEmpty ||
-              nomProduit(m.produitCode).toLowerCase().contains(r) ||
-              (m.referenceCode?.toLowerCase().contains(r) ?? false),
+          (l) =>
+              (_categorie == null || l.produit.categorieCode == _categorie) &&
+              (_etat == null || (_etat == 'actif' ? l.etat == 'actif' : l.etat == _etat)) &&
+              (_produit == null || l.produit.code == _produit) &&
+              (_marque == null || (l.produit.marque ?? '').trim() == _marque),
         )
         .toList();
-    final df = DateFormat('dd/MM/yyyy HH:mm');
-    return DsDataTable<MouvementStock>(
-      colonnes: [
+    double valeurAchat(_LigneStock l) => l.total * l.produit.prixAchat;
+    final colis = ref.watch(colisProvider).value ?? const <Colis>[];
+    String embLib(Produit p, int i) {
+      final e = colis.where((c) => c.produitCode == p.code && c.actif).toList()
+        ..sort((a, b) => a.quantite - b.quantite);
+      return i < e.length ? l10n.prdEmballagePieces(e[i].quantite) : '';
+    }
+
+    final colonnes = <DsColonne<_LigneStock>>[
+      DsColonne(id: 'code', libelle: l10n.produitsColCode, valeur: (l) => l.produit.code, attenue: true),
+      DsColonne(id: 'nom', libelle: l10n.dsPosProduit, valeur: (l) => l.produit.designation, fort: true, flex: 3),
+      DsColonne(
+        id: 'cat',
+        libelle: l10n.produitsColCategorie,
+        valeur: (l) => categories[l.produit.categorieCode] ?? '',
+        flex: 2,
+      ),
+      for (final m in colonnesMagasins)
         DsColonne(
-          id: 'd',
-          libelle: l10n.stockColDate,
-          valeur: (m) => m.date,
-          largeur: 140,
-          cellule: (_, m) => Text(df.format(m.date)),
+          id: 'mag_${m.code}',
+          libelle: m.nom,
+          numerique: true,
+          valeur: (l) => l.parMagasin[m.code] ?? 0,
+          cellule: (_, l) => Text(formaterNombre(l.parMagasin[m.code] ?? 0)),
+          total: (ls) => formaterNombre(ls.fold(0.0, (s, l) => s + (l.parMagasin[m.code] ?? 0))),
         ),
-        DsColonne(id: 'p', libelle: l10n.stockColProduit, valeur: (m) => nomProduit(m.produitCode), flex: 3),
-        DsColonne(
-          id: 'm',
+      DsColonne(
+        id: 'total',
+        libelle: l10n.communTotal,
+        numerique: true,
+        fort: true,
+        valeur: (l) => l.total,
+        cellule: (_, l) => Text(formaterNombre(l.total)),
+        total: (ls) => formaterNombre(ls.fold(0.0, (s, l) => s + l.total)),
+      ),
+      DsColonne(
+        id: 'val',
+        libelle: l10n.stockColValeur,
+        numerique: true,
+        permission: Permission.voirPrixAchat.code,
+        valeur: valeurAchat,
+        cellule: (_, l) => Text(da(valeurAchat(l))),
+        total: (ls) => da(ls.fold(0.0, (s, l) => s + valeurAchat(l))),
+      ),
+      DsColonne(
+        id: 'etat',
+        libelle: l10n.retoursEtat,
+        valeur: (l) => l.etat,
+        cellule: (_, l) =>
+            l.etat == 'actif' ? DsStatusBadge(statut: 'actif', libelle: l10n.stkDisponibleEtat) : BadgeStatut(l.etat),
+      ),
+      DsColonne(id: 'marque', libelle: l10n.prdMarque, visibleParDefaut: false, valeur: (l) => l.produit.marque ?? ''),
+      DsColonne(
+        id: 'description',
+        libelle: l10n.prdDescriptionChamp,
+        visibleParDefaut: false,
+        valeur: (l) => l.produit.description ?? '',
+      ),
+      DsColonne(id: 'taille', libelle: l10n.prdTaille, visibleParDefaut: false, valeur: (l) => l.produit.taille ?? ''),
+      DsColonne(
+        id: 'couleur',
+        libelle: l10n.prdCouleur,
+        visibleParDefaut: false,
+        valeur: (l) => l.produit.couleur ?? '',
+      ),
+      DsColonne(
+        id: 'achat',
+        libelle: l10n.produitsColPrixAchat,
+        numerique: true,
+        visibleParDefaut: false,
+        permission: Permission.voirPrixAchat.code,
+        valeur: (l) => l.produit.prixAchat,
+        cellule: (_, l) => Text(da(l.produit.prixAchat)),
+      ),
+      DsColonne(
+        id: 'vente',
+        libelle: l10n.produitsColPrixVente,
+        numerique: true,
+        visibleParDefaut: false,
+        valeur: (l) => l.produit.prixVente,
+        cellule: (_, l) => Text(da(l.produit.prixVente)),
+      ),
+      DsColonne(
+        id: 'sousCat',
+        libelle: l10n.produitChampSousCategorie,
+        visibleParDefaut: false,
+        valeur: (l) => sousCategories[l.produit.sousCategorieCode] ?? '',
+      ),
+      DsColonne(
+        id: 'remise',
+        libelle: l10n.prdRemise,
+        visibleParDefaut: false,
+        valeur: (l) => remises[l.produit.remiseCode] ?? '',
+      ),
+      DsColonne(
+        id: 'unite',
+        libelle: l10n.produitChampUnite,
+        visibleParDefaut: false,
+        valeur: (l) => libelleRef(context, Referentiel.unitesMesure, l.produit.unite),
+      ),
+      DsColonne(
+        id: 'emb1',
+        libelle: l10n.prdEmballageN(1),
+        visibleParDefaut: false,
+        valeur: (l) => embLib(l.produit, 0),
+      ),
+      DsColonne(
+        id: 'emb2',
+        libelle: l10n.prdEmballageN(2),
+        visibleParDefaut: false,
+        valeur: (l) => embLib(l.produit, 1),
+      ),
+      DsColonne(
+        id: 'codeBarre',
+        libelle: l10n.produitsColCodeBarres,
+        visibleParDefaut: false,
+        attenue: true,
+        mono: true,
+        valeur: (l) => l.produit.codeBarres ?? '',
+      ),
+      DsColonne(
+        id: 'numeroSerie',
+        libelle: l10n.prdNumeroSerie,
+        visibleParDefaut: false,
+        valeur: (l) => l.produit.suiviSerie ? 1 : 0,
+        cellule: (_, l) => Text(l.produit.suiviSerie ? l10n.communOui : l10n.communNon),
+      ),
+      DsColonne(
+        id: 'tva',
+        libelle: l10n.prdTva,
+        numerique: true,
+        visibleParDefaut: false,
+        valeur: (l) => l.produit.tvaPct,
+        cellule: (_, l) => Text('${formaterNombre(l.produit.tvaPct)} %'),
+      ),
+    ];
+    final marques = {
+      for (final p in produits)
+        if ((p.marque ?? '').trim().isNotEmpty) p.marque!.trim(),
+    }.toList()..sort();
+    final sousSeuil = toutes.where((l) => l.etat == 'rupture' || l.etat == 'seuil').length;
+    final achat = ref.watch(sessionProvider)?.a(Permission.voirPrixAchat) ?? false;
+    return DsModuleTable<_LigneStock>(
+      key: const ValueKey('stock_produits'),
+      entite: l10n.prdEntiteProduits,
+      lignes: lignes,
+      colonnes: colonnes,
+      cle: (l) => l.produit.code,
+      afficherTotaux: true,
+      permissions: permissionsSession(ref),
+      filtresOuverts: true,
+      kpis: [
+        DsStatCard(
+          libelle: l10n.stkQuantiteTotale,
+          valeur: formaterNombre(toutes.fold(0.0, (s, l) => s + l.total)),
+          icone: LucideIcons.boxes,
+        ),
+        if (achat)
+          DsStatCard(
+            libelle: l10n.stkValeurAchat,
+            valeur: f2(toutes.fold(0.0, (s, l) => s + valeurAchat(l))),
+            suffixe: devise,
+            icone: LucideIcons.wallet,
+          ),
+        DsStatCard(
+          libelle: l10n.stkValeurVente,
+          valeur: f2(toutes.fold(0.0, (s, l) => s + l.total * l.produit.prixVente)),
+          suffixe: devise,
+          icone: LucideIcons.tag,
+        ),
+        DsStatCard(libelle: l10n.stkAReapprovisionner, valeur: '$sousSeuil', icone: LucideIcons.triangleAlert),
+      ],
+      indiceRecherche: l10n.prdRechercheProduits,
+      texteRecherche: (l) => '${l.produit.code} ${l.produit.designation} ${l.produit.codeBarres ?? ''}',
+      nbFiltresActifs: [_magasin, _categorie, _etat, _produit, _marque].where((f) => f != null).length,
+      onReinitialiser: () => setState(() {
+        _magasin = null;
+        _categorie = null;
+        _etat = null;
+        _produit = null;
+        _marque = null;
+      }),
+      filtres: [
+        DsFormRow(
           libelle: l10n.stockColMagasin,
-          valeur: (m) => magasins.where((x) => x.code == m.magasinCode).firstOrNull?.nom ?? m.magasinCode,
-          flex: 2,
-        ),
-        DsColonne(
-          id: 't',
-          libelle: l10n.stockColType,
-          valeur: (m) => m.type,
-          cellule: (_, m) => DsBadge(
-            libelle: libelleTypeMouvement(l10n, m.type),
-            ton: m.quantite >= 0 ? DsBadgeTon.succes : DsBadgeTon.avertissement,
+          largeurLibelle: 80,
+          child: DsSelect<String?>(
+            cle: const ValueKey('stock_filtre_magasin'),
+            valeur: _magasin,
+            options: [null, for (final m in consultables) m.code],
+            libelle: (c) => c == null ? l10n.retoursTous : consultables.firstWhere((m) => m.code == c).nom,
+            recherche: rechercheListe(context, ref, ListeMetier.magasin),
+            onChanged: (v) => setState(() => _magasin = v),
           ),
         ),
-        DsColonne(
-          id: 'q',
-          libelle: l10n.stockColQuantite,
-          valeur: (m) => m.quantite,
-          numerique: true,
-          cellule: (_, m) => Text(_fmt(m.quantite)),
+        DsFormRow(
+          libelle: l10n.produitsColCategorie,
+          largeurLibelle: 80,
+          child: DsSelect<String?>(
+            valeur: _categorie,
+            options: [null, ...categories.keys],
+            libelle: (c) => c == null ? l10n.prdToutes : (categories[c] ?? c),
+            recherche: rechercheListe(context, ref, ListeMetier.categorie),
+            onChanged: (v) => setState(() => _categorie = v),
+          ),
         ),
-        DsColonne(
-          id: 'n',
-          libelle: l10n.stockColNombre,
-          valeur: (m) => m.nombre,
-          numerique: true,
-          visibleParDefaut: false,
-          cellule: (_, m) => Text(m.nombre == 0 ? '' : _fmt(m.nombre)),
+        DsFormRow(
+          libelle: l10n.retoursEtat,
+          largeurLibelle: 80,
+          child: DsSelect<String?>(
+            cle: const ValueKey('stock_filtre_etat'),
+            valeur: _etat,
+            options: const [null, 'actif', 'seuil', 'rupture'],
+            libelle: (e) => switch (e) {
+              null => l10n.retoursTous,
+              'actif' => l10n.stkDisponibleEtat,
+              'seuil' => l10n.stkSousSeuilEtat,
+              _ => libelleStatut(l10n, e),
+            },
+            onChanged: (v) => setState(() => _etat = v),
+          ),
         ),
-        DsColonne(id: 'ref', libelle: l10n.stockColReference, valeur: (m) => m.referenceCode, flex: 2),
-        DsColonne(
-          id: 'mo',
-          libelle: l10n.stockColMotif,
-          valeur: (m) => m.motif,
-          flex: 2,
-          cellule: (_, m) => Text(m.motif == null ? '' : libelleMotif(l10n, m.motif!)),
+        filtreProduit(
+          context,
+          ref,
+          cle: const ValueKey('stock_filtre_produit'),
+          valeur: _produit,
+          onChanged: (v) => setState(() => _produit = v),
         ),
-        DsColonne(
-          id: 'u',
-          libelle: l10n.stockColUtilisateur,
-          valeur: (m) => m.utilisateurCode,
-          visibleParDefaut: false,
+        DsFormRow(
+          libelle: l10n.prdMarque,
+          child: DsSelect<String?>(
+            cle: const ValueKey('stock_filtre_marque'),
+            valeur: _marque,
+            options: [null, ...marques],
+            libelle: (m) => m ?? l10n.prdToutes,
+            onChanged: (v) => setState(() => _marque = v),
+          ),
         ),
       ],
-      lignes: lignes,
-      cle: (m) => m.id ?? m.hashCode,
-      messageVide: l10n.stockAucunMouvement,
-      taillePage: 50,
+      onExport: peutExporter(ref)
+          ? (format, ls) => exporterTableau(
+              context,
+              ref,
+              id: 'stock',
+              titre: l10n.stockTitre,
+              colonnes: colonnes,
+              lignes: ls,
+              format: format,
+            )
+          : null,
+      onOuvrir: (l) => afficherDetailStock(context, ref, l.produit),
+      actions: [
+        DsActionModule(
+          libelle: l10n.tiersDetail,
+          icone: LucideIcons.eye,
+          regle: DsRegleSelection.une,
+          detail: true,
+          onPressed: (choix, _) => afficherDetailStock(context, ref, choix.first.produit),
+        ),
+        if (avance)
+          DsActionModule(
+            cle: const ValueKey('stock_distribuer'),
+            libelle: l10n.stkDistribuer,
+            icone: LucideIcons.split,
+            regle: DsRegleSelection.une,
+            desactive: (choix) =>
+                choix.isNotEmpty &&
+                (stocks[choix.first.produit.code]?.values ?? const <double>[]).fold(0.0, (a, b) => a + b) <= 0,
+            onPressed: (choix, _) => afficherDistribution(context, ref, choix.first.produit),
+          ),
+      ],
+      primaire: DsButton(
+        key: const ValueKey('stock_voir_mouvements'),
+        libelle: l10n.stkVoirMouvements,
+        icone: LucideIcons.arrowLeftRight,
+        variante: DsButtonVariante.secondaire,
+        onPressed: () => setState(() => _onglet = 1),
+      ),
     );
   }
 
-  static String _fmt(double v) => v == v.roundToDouble() ? v.toInt().toString() : v.toStringAsFixed(2);
-
-  Future<void> _dialogueMouvement({required bool inventaire, Produit? produit}) async {
-    final l10n = AppLocalizations.of(context);
-    final produits = await ref.read(produitsProvider.future);
-    if (!context.mounted) return;
-    final magasins = (await ref.read(magasinsProvider.future)).where((m) => m.actif).toList();
-    if (produits.isEmpty || magasins.isEmpty) return;
-    var produitCode = produit?.code ?? produits.first.code;
-    var magasinCode = await ref.read(magasinPrincipalProvider.future);
-    final quantite = TextEditingController();
-    final nombre = TextEditingController();
-    final commentaire = TextEditingController();
-    if (!mounted) return;
-    final ok = await showDialog<bool>(
-      context: context,
-      barrierColor: context.ds.colors.overlay,
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setState) {
-          final p = produits.firstWhere((x) => x.code == produitCode);
-          return DsDialog(
-            titre: inventaire ? l10n.stockInventaire : l10n.stockEntreeManuelle,
-            largeur: 520,
-            actions: [
-              DsButton(
-                libelle: l10n.communAnnuler,
-                variante: DsButtonVariante.secondaire,
-                onPressed: () => Navigator.of(ctx).pop(false),
-              ),
-              DsButton(
-                libelle: l10n.communEnregistrer,
-                icone: LucideIcons.check,
-                onPressed: () => Navigator.of(ctx).pop(true),
-              ),
-            ],
-            contenu: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                DsSelect<String>(
-                  titre: l10n.stockColProduit,
-                  valeur: produitCode,
-                  options: produits.map((x) => x.code).toList(),
-                  libelle: (c) => produits.firstWhere((x) => x.code == c).designation,
-                  onChanged: (v) => setState(() => produitCode = v ?? produitCode),
-                ),
-                const SizedBox(height: DsSpacing.md),
-                DsSelect<String>(
-                  titre: l10n.stockColMagasin,
-                  valeur: magasinCode,
-                  options: magasins.map((x) => x.code).toList(),
-                  libelle: (c) => magasins.firstWhere((x) => x.code == c).nom,
-                  onChanged: (v) => setState(() => magasinCode = v ?? magasinCode),
-                ),
-                const SizedBox(height: DsSpacing.md),
-                Row(
-                  children: [
-                    Expanded(
-                      child: DsTextField(
-                        controller: quantite,
-                        libelle: inventaire ? l10n.stockQuantiteConstatee : l10n.stockColQuantite,
-                        typeClavier: TextInputType.number,
-                        autofocus: true,
-                      ),
-                    ),
-                    if (p.suiviNombre) ...[
-                      const SizedBox(width: DsSpacing.md),
-                      Expanded(
-                        child: DsTextField(
-                          controller: nombre,
-                          libelle: inventaire ? l10n.stockNombreConstate : l10n.stockColNombre,
-                          typeClavier: TextInputType.number,
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-                const SizedBox(height: DsSpacing.md),
-                DsTextField(controller: commentaire, libelle: l10n.communCommentaire),
-              ],
-            ),
-          );
-        },
+  Widget _mouvements(AppLocalizations l10n, List<Magasin> magasins, List<MouvementStock> tous) {
+    final devise = ref.watch(deviseProvider);
+    final produits = {for (final p in ref.watch(produitsProvider).value ?? const <Produit>[]) p.code: p};
+    final utilisateurs = ref.watch(nomsUtilisateursProvider).value ?? const <String, String>{};
+    final noms = {for (final m in magasins) m.code: m.nom};
+    final lignes = tous
+        .where(
+          (m) =>
+              dansPeriode(m.date, _periode) &&
+              (_type == null || m.type == _type) &&
+              (_magasinMvt == null || m.magasinCode == _magasinMvt) &&
+              (_utilisateur == null || m.utilisateurCode == _utilisateur) &&
+              (_produitMvt == null || m.produitCode == _produitMvt),
+        )
+        .toList();
+    String nomProduit(MouvementStock m) => produits[m.produitCode]?.designation ?? m.produitCode;
+    final colonnes = <DsColonne<MouvementStock>>[
+      DsColonne(
+        id: 'd',
+        libelle: l10n.communDate,
+        attenue: true,
+        valeur: (m) => m.date,
+        cellule: (_, m) => Text(formatDateHeure.format(m.date)),
       ),
+      DsColonne(id: 't', libelle: l10n.stockColType, valeur: (m) => libelleTypeMouvement(l10n, m.type)),
+      DsColonne(id: 'r', libelle: l10n.stkReference, attenue: true, valeur: (m) => m.referenceCode ?? ''),
+      DsColonne(id: 'nom', libelle: l10n.dsPosProduit, fort: true, flex: 3, valeur: nomProduit),
+      DsColonne(id: 'mag', libelle: l10n.stockColMagasin, flex: 2, valeur: (m) => noms[m.magasinCode] ?? m.magasinCode),
+      DsColonne(
+        id: 'q',
+        libelle: l10n.stockColQuantite,
+        numerique: true,
+        valeur: (m) => m.quantite,
+        cellule: (_, m) => QuantiteSignee(m.quantite),
+      ),
+      DsColonne(
+        id: 'u',
+        libelle: l10n.stockColUtilisateur,
+        valeur: (m) => utilisateurs[m.utilisateurCode] ?? m.utilisateurCode,
+      ),
+      DsColonne(
+        id: 'achat',
+        libelle: l10n.produitsColPrixAchat,
+        numerique: true,
+        visibleParDefaut: false,
+        permission: Permission.voirPrixAchat.code,
+        valeur: (m) => produits[m.produitCode]?.prixAchat ?? 0,
+        cellule: (_, m) => Text(formaterMontant(produits[m.produitCode]?.prixAchat ?? 0, devise)),
+      ),
+      DsColonne(
+        id: 'vente',
+        libelle: l10n.produitsColPrixVente,
+        numerique: true,
+        visibleParDefaut: false,
+        valeur: (m) => produits[m.produitCode]?.prixVente ?? 0,
+        cellule: (_, m) => Text(formaterMontant(produits[m.produitCode]?.prixVente ?? 0, devise)),
+      ),
+      DsColonne(
+        id: 'motif',
+        libelle: l10n.stockColMotif,
+        visibleParDefaut: false,
+        valeur: (m) => m.motif == null ? '' : libelleMotif(l10n, m.motif!),
+      ),
+      DsColonne(
+        id: 'obs',
+        libelle: l10n.retoursObservation,
+        visibleParDefaut: false,
+        valeur: (m) => m.commentaire ?? '',
+      ),
+      ...colonnesAudit(context, ref, (MouvementStock x) => x.audit),
+    ];
+    final codesUtilisateurs = tous.map((m) => m.utilisateurCode).toSet().toList()..sort();
+    return DsModuleTable<MouvementStock>(
+      key: const ValueKey('stock_mouvements'),
+      entite: l10n.stkEntiteMouvements,
+      lignes: lignes,
+      colonnes: colonnes,
+      cle: (m) => m.id ?? m.hashCode,
+      permissions: permissionsSession(ref),
+      messageVide: l10n.stockAucunMouvement,
+      filtresOuverts: true,
+      periode: _periode,
+      onPeriode: (p) => setState(() => _periode = p),
+      colonnesFiltres: 4,
+      indiceRecherche: l10n.stkRechercheMouvement,
+      texteRecherche: (m) => '${m.referenceCode ?? ''} ${nomProduit(m)}',
+      nbFiltresActifs: [_type, _magasinMvt, _utilisateur, _produitMvt].where((f) => f != null).length,
+      onReinitialiser: () => setState(() {
+        _type = null;
+        _magasinMvt = null;
+        _utilisateur = null;
+        _produitMvt = null;
+        _periode = DsPeriode.calculer('month');
+      }),
+      // 1re ligne : Du, Au, Période rapide et Produit ; 2e ligne : type, magasin, utilisateur.
+      filtres: [
+        filtreProduit(
+          context,
+          ref,
+          cle: const ValueKey('mouvement_filtre_produit'),
+          valeur: _produitMvt,
+          onChanged: (v) => setState(() => _produitMvt = v),
+        ),
+        const DsFinLigne(),
+        DsFormRow(
+          libelle: l10n.stockColType,
+          largeurLibelle: 90,
+          child: DsSelect<String?>(
+            cle: const ValueKey('mouvement_filtre_type'),
+            valeur: _type,
+            options: const [
+              null,
+              TypesMouvement.vente,
+              TypesMouvement.entree,
+              TypesMouvement.sortie,
+              TypesMouvement.transfert,
+              TypesMouvement.retour,
+              TypesMouvement.inventaire,
+              TypesMouvement.initial,
+              TypesMouvement.annulation,
+            ],
+            libelle: (t) => t == null ? l10n.retoursTous : libelleTypeMouvement(l10n, t),
+            onChanged: (v) => setState(() => _type = v),
+          ),
+        ),
+        DsFormRow(
+          libelle: l10n.stockColMagasin,
+          largeurLibelle: 90,
+          child: DsSelect<String?>(
+            valeur: _magasinMvt,
+            options: [null, for (final m in magasins) m.code],
+            libelle: (c) => c == null ? l10n.retoursTous : (noms[c] ?? c),
+            recherche: rechercheListe(context, ref, ListeMetier.magasin),
+            onChanged: (v) => setState(() => _magasinMvt = v),
+          ),
+        ),
+        DsFormRow(
+          libelle: l10n.stockColUtilisateur,
+          largeurLibelle: 90,
+          child: DsSelect<String?>(
+            valeur: _utilisateur,
+            options: [null, ...codesUtilisateurs],
+            libelle: (c) => c == null ? l10n.retoursTous : (utilisateurs[c] ?? c),
+            recherche: rechercheListe(context, ref, ListeMetier.utilisateur),
+            onChanged: (v) => setState(() => _utilisateur = v),
+          ),
+        ),
+      ],
+      onExport: peutExporter(ref)
+          ? (format, ls) => exporterTableau(
+              context,
+              ref,
+              id: 'mouvements',
+              titre: l10n.stkOngletMouvements,
+              colonnes: colonnes,
+              lignes: ls,
+              format: format,
+            )
+          : null,
+      onOuvrir: _voirPiece,
+      actions: [
+        DsActionModule(
+          libelle: l10n.stkVoirPiece,
+          icone: LucideIcons.eye,
+          regle: DsRegleSelection.une,
+          detail: true,
+          desactive: (choix) => choix.isNotEmpty && choix.first.referenceCode == null,
+          onPressed: (choix, _) => _voirPiece(choix.first),
+        ),
+      ],
     );
-    if (ok != true || !mounted) return;
-    final q = double.tryParse(quantite.text.replaceAll(',', '.')) ?? 0;
-    final n = double.tryParse(nombre.text.replaceAll(',', '.'));
-    final service = ref.read(stockServiceProvider);
-    await executerStock(context, ref, () async {
-      if (inventaire) {
-        await service.inventorier(
-          produitCode: produitCode,
-          magasinCode: magasinCode,
-          quantiteConstatee: q,
-          nombreConstate: n,
-          commentaire: commentaire.text.trim().isEmpty ? null : commentaire.text.trim(),
-        );
-      } else {
-        await service.entrerStock(
-          produitCode: produitCode,
-          magasinCode: magasinCode,
-          quantite: q,
-          nombre: n ?? 0,
-          commentaire: commentaire.text.trim().isEmpty ? null : commentaire.text.trim(),
-        );
-      }
-    });
+  }
+
+  /// Ouvre le détail de la pièce d'origine d'un mouvement (vente, retour, sortie, transfert).
+  Future<void> _voirPiece(MouvementStock m) async {
+    final code = m.referenceCode;
+    if (code == null) return;
+    final repo = ref.read(stockRepositoryProvider);
+    switch (m.referenceType) {
+      case 'sortie':
+        final s = await repo.sortie(code);
+        if (s != null && mounted) await afficherDetailSortie(context, ref, s);
+      case 'transfert':
+        final t = await repo.transfert(code);
+        if (t != null && mounted) await afficherDetailTransfert(context, ref, t);
+      case 'vente':
+        final d = m.date;
+        final paniers = await ref
+            .read(venteRepositoryProvider)
+            .paniers(depuis: d.subtract(const Duration(days: 366)), jusqua: DateTime(d.year, d.month, d.day + 1));
+        final p = paniers.where((x) => x.vente.code == code).firstOrNull;
+        final clients = {for (final c in await ref.read(clientsProvider.future)) c.code: c.nom};
+        if (p != null && mounted) await afficherDetailPanier(context, ref, p, nomsClients: clients);
+      case 'retour':
+        final r = await ref.read(tiersRepositoryProvider).retour(code);
+        if (r == null) return;
+        final noms = r.estClient
+            ? {for (final c in await ref.read(clientsProvider.future)) c.code: c.nom}
+            : {for (final f in await ref.read(fournisseursProvider.future)) f.code: f.nom};
+        if (mounted) await afficherDetailRetour(context, ref, r, nomsTiers: noms);
+      default:
+        if (mounted) {
+          afficherToast(context, titre: code, description: libelleTypeMouvement(AppLocalizations.of(context), m.type));
+        }
+    }
   }
 }

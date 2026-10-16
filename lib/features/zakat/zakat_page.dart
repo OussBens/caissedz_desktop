@@ -1,175 +1,212 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-import '../../application/parametres_service.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
 import '../../domain/zakat.dart';
-import '../gestion_caisse/gestion_caisse_providers.dart';
+import '../commun/colonnes_audit.dart';
+import '../commun/export_module.dart';
+import '../commun/page_module.dart';
+import '../commun/statuts.dart';
 import '../produits/produits_providers.dart';
-import '../rapports/rapports_providers.dart';
-import '../stock/stock_providers.dart';
-import '../tiers/tiers_providers.dart';
+import 'zakat_dialogs.dart';
 
-final zakatProvider = FutureProvider<ResultatZakat>((ref) async {
-  ref.watch(rapportsVersionProvider);
-  ref.watch(commerceVersionProvider);
-  ref.watch(stockVersionProvider);
-  ref.watch(caisseVersionProvider);
-  final stats = ref.watch(statistiquesRepositoryProvider);
-  return CalculZakat.calculer(
-    stock: await stats.valeurStockAchat(),
-    caisses: await stats.soldeCaisses(),
-    creances: await stats.creancesClients(),
-    dettes: await stats.dettesFournisseurs(),
-    prixGrammeOr: await ref.watch(parametresServiceProvider).lirePrixGrammeOr(),
-  );
-});
-
-/// Zakat sur les biens commerciaux : assiette, nissab (85 g d'or au cours saisi), taux 2,5 %.
-class ZakatPage extends ConsumerStatefulWidget {
+/// Écran Zakat (`ZakatScreen` du DS v2.2, §9.15) : calculs annuels enregistrés, KPI provisoires de l'année.
+class ZakatPage extends ConsumerWidget {
   const ZakatPage({super.key});
 
   @override
-  ConsumerState<ZakatPage> createState() => _ZakatPageState();
-}
-
-class _ZakatPageState extends ConsumerState<ZakatPage> {
-  final _prix = TextEditingController();
-  bool _initialise = false;
-
-  @override
-  void dispose() {
-    _prix.dispose();
-    super.dispose();
-  }
-
-  Future<void> _enregistrerPrix() async {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    try {
-      await ref
-          .read(parametresServiceProvider)
-          .enregistrerPrixGrammeOr(double.tryParse(_prix.text.replaceAll(',', '.')) ?? -1);
-      rafraichirRapports(ref);
-    } on ParametresException catch (e) {
-      if (!mounted) return;
-      unawaited(
-        afficherResultat(
-          context,
-          type: DsResultatType.erreur,
-          titre: l10n.zakatTitre,
-          message: messageErreurParametres(l10n, e.erreur),
-        ),
-      );
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final c = context.ds.colors;
-    final t = context.ds.typo;
     final devise = ref.watch(deviseProvider);
-    final r = ref.watch(zakatProvider).value;
-    if (r != null && !_initialise) {
-      _initialise = true;
-      _prix.text = r.prixGrammeOr > 0 ? r.prixGrammeOr.toStringAsFixed(0) : '';
-    }
-    String m(double? v) => v == null ? '—' : formaterMontant(v, devise);
-    return DsPage(
-      titre: l10n.zakatTitre,
-      defilable: true,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(l10n.zakatIntro, style: t.corps.copyWith(color: c.texteSecondaire)),
-          const SizedBox(height: DsSpacing.lg),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              SizedBox(
-                width: 260,
-                child: DsTextField(
-                  controller: _prix,
-                  libelle: l10n.zakatPrixOr(devise),
-                  typeClavier: TextInputType.number,
-                ),
-              ),
-              const SizedBox(width: DsSpacing.md),
-              DsButton(
-                libelle: l10n.zakatEnregistrerPrix,
-                icone: LucideIcons.save,
-                onPressed: () {
-                  _enregistrerPrix();
-                },
-              ),
-            ],
+    final calculs = ref.watch(calculsZakatProvider).value ?? const <Zakat>[];
+    final patrimoine = ref.watch(patrimoineZakatProvider).value ?? const PatrimoineZakat();
+    final parametres = ref.watch(parametresZakatProvider).value;
+    final annee = DateTime.now().year;
+    final nissab = parametres?.nissab ?? 0;
+    final taux = parametres?.tauxPct ?? CalculZakat.tauxDefautPct;
+    final aujourdhui = DateUtils.dateOnly(DateTime.now());
+    final prochaine = calculs.where((z) => z.actif && !z.estPayee && z.obligatoire).toList()
+      ..sort((a, b) => a.dateDue.compareTo(b.dateDue));
+    String da(double v) => formaterMontant(v, devise);
+    final colonnes = <DsColonne<Zakat>>[
+      DsColonne(id: 'code', libelle: l10n.zkColCode, attenue: true, valeur: (z) => z.code),
+      DsColonne(id: 'annee', libelle: l10n.zkColAnnee, fort: true, valeur: (z) => z.annee),
+      DsColonne(
+        id: 'capital',
+        libelle: l10n.zkColCapital,
+        numerique: true,
+        valeur: (z) => z.capital,
+        cellule: (_, z) => Text(da(z.capital)),
+      ),
+      DsColonne(
+        id: 'nissab',
+        libelle: l10n.zkColNissab,
+        numerique: true,
+        valeur: (z) => z.nissab,
+        cellule: (_, z) => Text(da(z.nissab)),
+      ),
+      DsColonne(
+        id: 'obligatoire',
+        libelle: l10n.zkColObligatoire,
+        valeur: (z) => z.obligatoire ? 1 : 0,
+        cellule: (_, z) => Align(
+          alignment: AlignmentDirectional.centerStart,
+          child: DsBadge(
+            libelle: z.obligatoire ? l10n.zkOui : l10n.zkNon,
+            ton: z.obligatoire ? DsBadgeTon.succes : DsBadgeTon.neutre,
+            point: true,
           ),
-          const SizedBox(height: DsSpacing.lg),
-          Wrap(
-            spacing: DsSpacing.md,
-            runSpacing: DsSpacing.md,
-            children: [
-              for (final (libelle, valeur, icone, ton) in [
-                (l10n.zakatStock, m(r?.stock), LucideIcons.package, DsBadgeTon.info),
-                (l10n.zakatCaisses, m(r?.caisses), LucideIcons.wallet, DsBadgeTon.info),
-                (l10n.zakatCreances, m(r?.creances), LucideIcons.handCoins, DsBadgeTon.succes),
-                (l10n.zakatDettes, m(r?.dettes), LucideIcons.minusCircle, DsBadgeTon.danger),
-              ])
-                SizedBox(
-                  width: 240,
-                  child: DsStatCard(libelle: libelle, valeur: valeur, icone: icone, ton: ton),
-                ),
-            ],
+        ),
+      ),
+      DsColonne(
+        id: 'montant',
+        libelle: l10n.zkColZakat,
+        numerique: true,
+        fort: true,
+        valeur: (z) => z.montant,
+        cellule: (_, z) => Text(z.montant > 0 ? da(z.montant) : '—'),
+        total: (zs) => da(zs.where((z) => z.actif).fold(0.0, (a, z) => a + z.montant)),
+      ),
+      DsColonne(
+        id: 'due',
+        libelle: l10n.zkColDue,
+        attenue: true,
+        valeur: (z) => z.dateDue,
+        cellule: (_, z) => Text(formatJour.format(z.dateDue)),
+      ),
+      DsColonne(
+        id: 'payee',
+        libelle: l10n.zkColPayee,
+        attenue: true,
+        valeur: (z) => z.datePaiement,
+        cellule: (_, z) => Text(z.datePaiement == null ? '—' : formatJour.format(z.datePaiement!)),
+      ),
+      DsColonne(
+        id: 'statut',
+        libelle: l10n.zkColStatut,
+        valeur: cleStatutZakat,
+        cellule: (context, z) =>
+            Align(alignment: AlignmentDirectional.centerStart, child: badgeStatutZakat(context, z)),
+      ),
+      for (final (id, libelle, valeur) in [
+        ('stock', l10n.zkColStock, (Zakat z) => z.stock),
+        ('liquidites', l10n.zkColLiquidites, (Zakat z) => z.liquidites),
+        ('creances', l10n.zkColCreances, (Zakat z) => z.creances),
+        ('dettes', l10n.zkColDettes, (Zakat z) => z.dettes),
+      ])
+        DsColonne(
+          id: id,
+          libelle: libelle,
+          numerique: true,
+          visibleParDefaut: false,
+          valeur: valeur,
+          cellule: (_, z) => Text(da(valeur(z))),
+        ),
+      DsColonne(
+        id: 'taux',
+        libelle: l10n.zkColTaux,
+        numerique: true,
+        visibleParDefaut: false,
+        valeur: (z) => z.tauxPct,
+        cellule: (_, z) => Text('${formaterNombre(z.tauxPct, decimales: 1)} %'),
+      ),
+      DsColonne(
+        id: 'hawl',
+        libelle: l10n.zkColHawl,
+        attenue: true,
+        visibleParDefaut: false,
+        valeur: (z) => z.debutHawl,
+        cellule: (_, z) => Text(formatJour.format(z.debutHawl)),
+      ),
+      DsColonne(id: 'obs', libelle: l10n.zkColObservation, visibleParDefaut: false, valeur: (z) => z.observation),
+      ...colonnesAudit(context, ref, (Zakat x) => x.audit),
+    ];
+    return PageModule(
+      moduleId: 'zakat',
+      sousTitre: l10n.zkDescription,
+      child: DsModuleTable<Zakat>(
+        key: const ValueKey('zakat'),
+        entite: l10n.zkEntite,
+        lignes: calculs,
+        colonnes: colonnes,
+        cle: (z) => z.code,
+        afficherTotaux: true,
+        permissions: permissionsSession(ref),
+        messageVide: l10n.zkAucun,
+        kpis: [
+          DsStatCard(
+            libelle: l10n.zkKpiCapital(annee),
+            valeur: f2(patrimoine.capital),
+            suffixe: devise,
+            icone: LucideIcons.scale,
           ),
-          const SizedBox(height: DsSpacing.lg),
-          Wrap(
-            spacing: DsSpacing.md,
-            runSpacing: DsSpacing.md,
-            children: [
-              SizedBox(
-                width: 320,
-                child: DsStatCard(libelle: l10n.zakatAssiette, valeur: m(r?.assiette), icone: LucideIcons.sigma),
-              ),
-              SizedBox(
-                width: 320,
-                child: DsStatCard(
-                  libelle: l10n.zakatNissab,
-                  valeur: r == null || r.prixGrammeOr <= 0 ? '—' : m(r.nissab),
-                  icone: LucideIcons.gem,
-                  ton: DsBadgeTon.avertissement,
-                ),
-              ),
-              SizedBox(
-                width: 320,
-                child: DsStatCard(
-                  libelle: l10n.zakatMontant,
-                  valeur: m(r?.montant),
-                  icone: LucideIcons.heartHandshake,
-                  ton: (r?.assujetti ?? false) ? DsBadgeTon.succes : DsBadgeTon.neutre,
-                ),
-              ),
-            ],
+          DsStatCard(libelle: l10n.zkKpiNissab, valeur: f2(nissab), suffixe: devise, icone: LucideIcons.gem),
+          DsStatCard(
+            libelle: l10n.zkKpiEstimee(annee),
+            valeur: f2(CalculZakat.montant(patrimoine.capital, nissab, taux)),
+            suffixe: devise,
+            icone: LucideIcons.handCoins,
           ),
-          const SizedBox(height: DsSpacing.lg),
-          if (r != null)
-            DsBadge(
-              libelle: r.prixGrammeOr <= 0
-                  ? l10n.zakatPrixManquant
-                  : r.assujetti
-                  ? l10n.zakatAssujetti
-                  : l10n.zakatNonAssujetti,
-              ton: r.prixGrammeOr <= 0
-                  ? DsBadgeTon.avertissement
-                  : r.assujetti
-                  ? DsBadgeTon.succes
-                  : DsBadgeTon.neutre,
-              icone: r.assujetti ? LucideIcons.circleCheck : LucideIcons.info,
-            ),
+          DsStatCard(
+            libelle: l10n.zkKpiEcheance,
+            valeur: prochaine.isEmpty ? '—' : '${prochaine.first.dateDue.difference(aujourdhui).inDays}',
+            suffixe: prochaine.isEmpty ? null : l10n.zkJours,
+            icone: LucideIcons.calendarClock,
+          ),
         ],
+        texteRecherche: (z) => '${z.code} ${z.annee} ${z.observation}',
+        onExport: peutExporter(ref)
+            ? (format, zs) => exporterTableau(
+                context,
+                ref,
+                id: 'zakat',
+                titre: l10n.moduleZakat,
+                colonnes: colonnes,
+                lignes: zs,
+                format: format,
+              )
+            : null,
+        onOuvrir: (z) => afficherDetailZakat(context, ref, z),
+        actions: [
+          DsActionModule(
+            libelle: l10n.tiersDetail,
+            icone: LucideIcons.eye,
+            regle: DsRegleSelection.une,
+            detail: true,
+            onPressed: (choix, _) => afficherDetailZakat(context, ref, choix.first),
+          ),
+          DsActionModule(
+            cle: const ValueKey('zakat_modifier'),
+            libelle: l10n.communModifier,
+            icone: LucideIcons.pencil,
+            regle: DsRegleSelection.une,
+            desactive: (choix) => choix.isNotEmpty && (choix.first.estPayee || !choix.first.actif),
+            onPressed: (choix, _) => afficherFormulaireZakat(context, ref, zakat: choix.first),
+          ),
+          DsActionModule(
+            cle: const ValueKey('zakat_payee'),
+            libelle: l10n.zkMarquerPayee,
+            icone: LucideIcons.circleCheck,
+            regle: DsRegleSelection.une,
+            desactive: (choix) => choix.isNotEmpty && (choix.first.estPayee || !choix.first.actif),
+            onPressed: (choix, _) => marquerZakatPayee(context, ref, choix.first),
+          ),
+          DsActionModule(
+            cle: const ValueKey('zakat_annuler'),
+            libelle: l10n.zkAnnuler,
+            icone: LucideIcons.ban,
+            danger: true,
+            onPressed: (choix, effacer) => annulerZakats(context, ref, choix, effacer),
+          ),
+        ],
+        primaire: DsButton(
+          key: const ValueKey('zakat_nouveau'),
+          libelle: l10n.zkNouveau,
+          icone: LucideIcons.calculator,
+          onPressed: () => afficherFormulaireZakat(context, ref),
+        ),
       ),
     );
   }

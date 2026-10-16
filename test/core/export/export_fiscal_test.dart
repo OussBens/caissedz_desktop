@@ -46,7 +46,7 @@ void main() {
       );
     }
     await sessions.fermer(montantCompte: 190);
-    await ClotureService(db, utilisateurCode: 'USR0000').cloturer();
+    await ClotureService(db, utilisateurCode: 'USR0000').cloturer(caisseCode: 'CIS0000');
     final export = ExportFiscal(db);
     final zip = await export.generer(
       debut: DateTime(2000),
@@ -64,6 +64,13 @@ void main() {
     expect(ok.valide, isTrue, reason: ok.erreurs.join(', '));
     expect(ok.nbVentes, 2);
     expect(ok.nbClotures, 1);
+    // Variantes JSON seul et CSV des tickets (ExportFiscalDialog).
+    final seul = await export.genererJson(debut: DateTime(2000), fin: DateTime.now(), utilisateurCode: 'USR0000');
+    expect(ExportFiscal.verifier(seul).valide, isTrue);
+    final csv = await export.genererCsv(debut: DateTime(2000), fin: DateTime.now(), utilisateurCode: 'USR0000');
+    expect(csv.take(3), [0xEF, 0xBB, 0xBF]);
+    expect(utf8.decode(csv.skip(3).toList()), contains('VTE0002'));
+    expect(utf8.decode(archive.findFile('clotures.csv')!.content as List<int>), contains('CIS0000'));
     // Le JSON brut se vérifie aussi.
     final brut = Uint8List.fromList(utf8.encode(jsonEncode(json)));
     expect(ExportFiscal.verifier(brut).valide, isTrue);

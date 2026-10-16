@@ -1,3 +1,5 @@
+import 'dart:math';
+
 /// Codes-barres : EAN-13 (contrôle et génération), code interne CAISSEDZ+date, QR.
 ///
 /// ⚠️ PROVISOIRE : le format exact du code interne « CAISSEDZ + date » sera
@@ -29,6 +31,14 @@ class CodesBarres {
   static String genererEan13Interne(int numero, {String prefixe = '20'}) {
     if (!RegExp(r'^2\d$').hasMatch(prefixe)) throw ArgumentError('préfixe 20 à 29 attendu');
     final corps = (prefixe + numero.toString().padLeft(10, '0')).substring(0, 12);
+    return corps + controleEan13(corps).toString();
+  }
+
+  /// EAN-13 aléatoire au préfixe GS1 Algérie `613` (bouton « Générer un EAN-13 » du DS) ; l'unicité est
+  /// vérifiée à l'enregistrement.
+  static String genererEan13({Random? aleatoire, String prefixe = '613'}) {
+    final r = aleatoire ?? Random();
+    final corps = prefixe + List.generate(12 - prefixe.length, (_) => r.nextInt(10)).join();
     return corps + controleEan13(corps).toString();
   }
 

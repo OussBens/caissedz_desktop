@@ -1,136 +1,236 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
+import '../../i18n/generated/app_localizations.dart';
 import '../tokens/ds_theme.dart';
+import 'ds_button.dart';
 
-/// Ligne de la grille : une permission (ou un module) et son libellé.
-class PermissionGridLigne {
-  const PermissionGridLigne({required this.id, required this.libelle, this.icone});
-  final String id;
+/// Élément de la grille : un module ou une permission spéciale.
+class PermissionItem {
+  const PermissionItem({
+    required this.cle,
+    required this.libelle,
+    this.icone,
+    this.description,
+    this.verrouille = false,
+  });
+  final String cle;
   final String libelle;
   final IconData? icone;
+  final String? description;
+
+  /// Réservé à l'administrateur : non modifiable.
+  final bool verrouille;
 }
 
-/// Colonne de la grille : un rôle.
-class PermissionGridColonne {
-  const PermissionGridColonne({required this.id, required this.libelle, this.verrouillee = false, this.infoVerrou});
-  final String id;
-  final String libelle;
-
-  /// Colonne non modifiable (ex. Admin : tous les droits).
-  final bool verrouillee;
-  final String? infoVerrou;
-}
-
-/// Grille rôles × permissions avec cases à cocher.
+/// Grille de permissions (`PermissionGrid` du DS v2.2) : tuiles cochables (icône, libellé, case),
+/// en-tête « titre · n / total » et bouton Tout sélectionner / Tout désélectionner.
 class PermissionGrid extends StatelessWidget {
   const PermissionGrid({
     super.key,
-    required this.lignes,
-    required this.colonnes,
-    required this.estCoche,
-    required this.onBasculer,
+    required this.items,
+    required this.valeur,
+    this.onChanged,
+    this.colonnes = 3,
+    this.titre,
+    this.description,
     this.lectureSeule = false,
+    this.prefixeCle,
   });
 
-  final List<PermissionGridLigne> lignes;
-  final List<PermissionGridColonne> colonnes;
-  final bool Function(String colonneId, String ligneId) estCoche;
-  final void Function(String colonneId, String ligneId) onBasculer;
+  final List<PermissionItem> items;
+  final Set<String> valeur;
+  final ValueChanged<Set<String>>? onChanged;
+  final int colonnes;
+  final String? titre;
+  final String? description;
   final bool lectureSeule;
+
+  /// Préfixe des clés des tuiles (`<prefixe>_<cle>`), pour les tests.
+  final String? prefixeCle;
 
   @override
   Widget build(BuildContext context) {
     final c = context.ds.colors;
     final t = context.ds.typo;
-    const largeurColonne = 120.0;
-    return Container(
-      decoration: BoxDecoration(
-        color: c.surface,
-        borderRadius: DsRadius.borderLg,
-        border: Border.all(color: c.bordure),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Column(
-        children: [
-          Container(
-            height: 52,
-            color: c.surfaceAttenuee,
-            child: Row(
-              children: [
-                const Expanded(child: SizedBox()),
-                for (final col in colonnes)
-                  SizedBox(
-                    width: largeurColonne,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          col.libelle,
-                          style: t.petitFort.copyWith(color: c.texteSecondaire, height: 1.2),
-                          textAlign: TextAlign.center,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+    final l10n = AppLocalizations.of(context);
+    final editables = items.where((i) => !i.verrouille).toList();
+    final tout = editables.isNotEmpty && editables.every((i) => valeur.contains(i.cle));
+    final n = items.where((i) => valeur.contains(i.cle)).length;
+    void basculerTout() {
+      final s = {...valeur};
+      for (final i in editables) {
+        tout ? s.remove(i.cle) : s.add(i.cle);
+      }
+      onChanged?.call(s);
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      spacing: DsSpacing.s3,
+      children: [
+        if (titre != null || description != null || !lectureSeule)
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            spacing: DsSpacing.s3,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (titre != null)
+                      Text.rich(
+                        TextSpan(
+                          text: '$titre ',
+                          children: [
+                            TextSpan(
+                              text: '· $n / ${items.length}',
+                              style: t.bodyStrong.copyWith(fontWeight: FontWeight.w500, color: c.textMuted),
+                            ),
+                          ],
                         ),
-                        if (col.verrouillee && col.infoVerrou != null)
-                          Text(
-                            col.infoVerrou!,
-                            style: t.legende.copyWith(color: c.texteAttenue, height: 1.2),
-                            textAlign: TextAlign.center,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                      ],
+                        style: t.bodyStrong.copyWith(color: c.textPrimary),
+                      ),
+                    if (description != null)
+                      Text(description!, style: t.bodySm.copyWith(color: c.textSecondary, height: 1.45)),
+                  ],
+                ),
+              ),
+              if (!lectureSeule)
+                DsButton(
+                  libelle: tout ? l10n.dsPermRien : l10n.dsPermTout,
+                  icone: tout ? LucideIcons.square : LucideIcons.checkCheck,
+                  variante: DsButtonVariante.fantome,
+                  taille: DsButtonTaille.sm,
+                  onPressed: onChanged == null ? null : basculerTout,
+                ),
+            ],
+          ),
+        LayoutBuilder(
+          builder: (context, contraintes) {
+            const ecart = DsSpacing.s2;
+            final parLigne = ((contraintes.maxWidth + ecart) / (190 + ecart)).floor().clamp(1, colonnes);
+            final largeur = (contraintes.maxWidth - ecart * (parLigne - 1)) / parLigne;
+            return Wrap(
+              spacing: ecart,
+              runSpacing: ecart,
+              children: [
+                for (final i in items)
+                  SizedBox(
+                    width: largeur,
+                    child: _Tuile(
+                      key: prefixeCle == null ? null : ValueKey('${prefixeCle}_${i.cle}'),
+                      item: i,
+                      coche: valeur.contains(i.cle),
+                      lectureSeule: lectureSeule || onChanged == null,
+                      onTap: () {
+                        final s = {...valeur};
+                        s.contains(i.cle) ? s.remove(i.cle) : s.add(i.cle);
+                        onChanged?.call(s);
+                      },
                     ),
                   ),
               ],
+            );
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class _Tuile extends StatefulWidget {
+  const _Tuile({super.key, required this.item, required this.coche, required this.lectureSeule, required this.onTap});
+  final PermissionItem item;
+  final bool coche;
+  final bool lectureSeule;
+  final VoidCallback onTap;
+
+  @override
+  State<_Tuile> createState() => _TuileState();
+}
+
+class _TuileState extends State<_Tuile> {
+  bool _survol = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.ds.colors;
+    final t = context.ds.typo;
+    final i = widget.item;
+    final on = widget.coche;
+    final inactif = i.verrouille || widget.lectureSeule;
+    final tuile = AnimatedContainer(
+      duration: DsMotion.fast,
+      curve: DsMotion.standard,
+      constraints: const BoxConstraints(minHeight: DsSpacing.s12),
+      padding: const EdgeInsets.symmetric(horizontal: DsSpacing.s3, vertical: 10),
+      decoration: BoxDecoration(
+        color: on
+            ? c.primaryTint
+            : _survol && !inactif
+            ? c.surfaceHover
+            : c.surfaceCard,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: on ? c.primary : c.borderDefault),
+      ),
+      child: Row(
+        spacing: 10,
+        children: [
+          AnimatedContainer(
+            duration: DsMotion.fast,
+            width: 30,
+            height: 30,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(color: on ? c.primary : c.surfaceSunken, borderRadius: DsRadius.borderMd),
+            child: Icon(
+              i.icone ?? LucideIcons.shield,
+              size: DsTailles.iconeSm,
+              color: on ? c.primaryFg : c.iconDefault,
             ),
           ),
-          for (final (i, ligne) in lignes.indexed)
+          Expanded(
+            child: Text(
+              i.libelle,
+              style: t.bodySm.copyWith(
+                fontWeight: FontWeight.w500,
+                height: 1.3,
+                color: on ? c.primaryTintFg : c.textPrimary,
+              ),
+            ),
+          ),
+          if (i.verrouille)
+            Icon(LucideIcons.lock, size: 14, color: c.iconMuted)
+          else
             Container(
-              height: DsTailles.ligneTable,
+              width: 18,
+              height: 18,
+              alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: i.isOdd ? c.surfaceAttenuee.withValues(alpha: 0.4) : c.surface,
-                border: Border(top: BorderSide(color: c.bordure)),
+                color: on ? c.primary : null,
+                borderRadius: BorderRadius.circular(5),
+                border: Border.all(color: on ? c.primary : c.borderStrong, width: 1.5),
               ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: DsSpacing.lg),
-                      child: Row(
-                        children: [
-                          if (ligne.icone != null) ...[
-                            Icon(ligne.icone, size: DsTailles.iconeSm, color: c.texteSecondaire),
-                            const SizedBox(width: DsSpacing.sm),
-                          ],
-                          Expanded(
-                            child: Text(ligne.libelle, style: t.corps, overflow: TextOverflow.ellipsis),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  for (final col in colonnes)
-                    SizedBox(
-                      width: largeurColonne,
-                      child: Center(
-                        child: col.verrouillee
-                            ? Icon(LucideIcons.check, size: DsTailles.icone, color: c.succes)
-                            : Checkbox(
-                                key: ValueKey('perm_${col.id}_${ligne.id}'),
-                                value: estCoche(col.id, ligne.id),
-                                activeColor: c.primaire,
-                                onChanged: lectureSeule ? null : (_) => onBasculer(col.id, ligne.id),
-                              ),
-                      ),
-                    ),
-                ],
-              ),
+              child: on ? Icon(LucideIcons.check, size: DsTailles.iconeXs, color: c.primaryFg) : null,
             ),
         ],
       ),
+    );
+    final message = i.verrouille ? AppLocalizations.of(context).dsPermReserve : i.description;
+    final zone = MouseRegion(
+      cursor: inactif ? SystemMouseCursors.basic : SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _survol = true),
+      onExit: (_) => setState(() => _survol = false),
+      child: GestureDetector(
+        onTap: inactif ? null : widget.onTap,
+        child: Opacity(opacity: i.verrouille ? .6 : 1, child: tuile),
+      ),
+    );
+    return Semantics(
+      checked: on,
+      enabled: !inactif,
+      child: message == null ? zone : Tooltip(message: message, child: zone),
     );
   }
 }

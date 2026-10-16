@@ -65,14 +65,16 @@ final versementsProvider = FutureProvider<List<Versement>>((ref) {
   return ref.watch(tiersRepositoryProvider).versements();
 });
 
-final soldeClientProvider = FutureProvider.family<double, String>((ref, code) {
+/// Statistiques calculées des clients (total achats, crédit, avance…), par code.
+final statsClientsProvider = FutureProvider<Map<String, StatsTiers>>((ref) {
   ref.watch(commerceVersionProvider);
-  return ref.watch(tiersRepositoryProvider).soldeClient(code);
+  return ref.watch(tiersRepositoryProvider).statistiques(TypesTiers.client);
 });
 
-final soldeFournisseurProvider = FutureProvider.family<double, String>((ref, code) {
+/// Statistiques calculées des fournisseurs, par code.
+final statsFournisseursProvider = FutureProvider<Map<String, StatsTiers>>((ref) {
   ref.watch(commerceVersionProvider);
-  return ref.watch(tiersRepositoryProvider).soldeFournisseur(code);
+  return ref.watch(tiersRepositoryProvider).statistiques(TypesTiers.fournisseur);
 });
 
 String messageErreurVersement(AppLocalizations l10n, ErreurVersement e) => switch (e) {
@@ -82,20 +84,34 @@ String messageErreurVersement(AppLocalizations l10n, ErreurVersement e) => switc
   ErreurVersement.verrouille => l10n.versementErreurVerrouille,
   ErreurVersement.inconnu => l10n.versementErreurInconnu,
   ErreurVersement.tiersInvalide => l10n.versementErreurTiers,
+  ErreurVersement.motifObligatoire => l10n.dsMotifAnnulation,
+  ErreurVersement.dejaAnnule => l10n.tiersBloqueDejaAnnule,
+  ErreurVersement.sessionRequise => l10n.communSessionRequise,
+  ErreurVersement.periodeCloturee => l10n.versementErreurPeriode,
 };
 
 String messageErreurRetour(AppLocalizations l10n, ErreurRetour e) => switch (e) {
-  ErreurRetour.venteInconnue => l10n.retourErreurVenteInconnue,
-  ErreurRetour.venteAnnulee => l10n.retourErreurVenteAnnulee,
-  ErreurRetour.lignesVides => l10n.retourErreurLignes,
+  ErreurRetour.documentInconnu => l10n.retourErreurDocumentInconnu,
+  ErreurRetour.documentAnnule => l10n.retourErreurDocumentAnnule,
+  ErreurRetour.produitAbsent => l10n.retourErreurProduitAbsent,
   ErreurRetour.quantiteInvalide => l10n.retourErreurQuantite,
   ErreurRetour.quantiteDepasse => l10n.retourErreurDepasse,
   ErreurRetour.periodeCloturee => l10n.retourErreurPeriode,
-  ErreurRetour.modeInvalide => l10n.versementErreurMode,
+  ErreurRetour.reglementInvalide => l10n.retourErreurReglement,
+  ErreurRetour.stockInsuffisant => l10n.retourErreurStock,
+  ErreurRetour.retourInconnu => l10n.retourErreurInconnu,
+  ErreurRetour.dejaAnnule => l10n.retourErreurDejaAnnule,
+  ErreurRetour.motifObligatoire => l10n.retourErreurMotif,
+  ErreurRetour.sessionRequise => l10n.communSessionRequise,
+  ErreurRetour.avoirEmis => l10n.retoursAvoirEmis,
 };
 
 String messageErreurTiers(AppLocalizations l10n, ErreurTiers e) => switch (e) {
   ErreurTiers.nomVide => l10n.tiersErreurNom,
   ErreurTiers.systeme => l10n.tiersErreurSysteme,
   ErreurTiers.inconnu => l10n.communAucunResultat,
+  ErreurTiers.nomExistant => l10n.tiersErreurNomExistant,
+  ErreurTiers.telephoneInvalide => l10n.tiersFormatTelephone,
+  ErreurTiers.nifInvalide => l10n.tiersFormatNif,
+  ErreurTiers.motifObligatoire => l10n.dsMotifAnnulation,
 };

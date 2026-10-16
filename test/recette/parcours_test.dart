@@ -3,7 +3,6 @@ import 'package:caissedz_desktop/app/router.dart';
 import 'package:caissedz_desktop/core/design_system/design_system.dart';
 import 'package:caissedz_desktop/domain/modules.dart';
 import 'package:caissedz_desktop/domain/permissions.dart';
-import 'package:caissedz_desktop/features/shell/acces_refuse_page.dart';
 import 'package:caissedz_desktop/features/shell/app_shell.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -13,7 +12,8 @@ import '../helpers/app_test_helper.dart';
 /// Recette (lot 9) : parcours de tous les modules FR / AR (RTL) / EN, clair / sombre, Basic / Avancé,
 /// rôles Admin / Caissier / Magasinier. Chaque module est monté sur une base neuve ; aucune exception tolérée.
 void main() {
-  final modules = Modules.tous;
+  final modules = [...Modules.tous, ...Modules.rattachees];
+  const accesRefuse = ValueKey('acces_refuse');
   const taille = Size(1400, 900);
 
   group('Recette — parcours de tous les modules (admin, licence Avancé)', () {
@@ -26,9 +26,10 @@ void main() {
         for (final m in modules) {
           await pumpApp(tester, locale: locale, routeInitiale: m.route, taille: taille);
           expect(tester.takeException(), isNull, reason: m.id);
-          expect(find.byType(AccesRefusePage), findsNothing, reason: m.id);
+          expect(find.byKey(accesRefuse), findsNothing, reason: m.id);
           expect(find.byType(AppShell), findsOneWidget, reason: m.id);
           expect(Directionality.of(tester.element(find.byType(AppShell))), rtl ? TextDirection.rtl : TextDirection.ltr);
+          // Caisse plein écran (sans en-tête de page).
           if (m.id != 'caisse') expect(find.byType(DsPage), findsOneWidget, reason: m.id);
         }
       });
@@ -46,7 +47,7 @@ void main() {
         expect(tester.takeException(), isNull, reason: route);
         final ctx = tester.element(find.byType(AppShell));
         expect(Theme.of(ctx).brightness, Brightness.dark, reason: route);
-        expect(ctx.ds.colors.fond.computeLuminance() < 0.2, isTrue, reason: route);
+        expect(ctx.ds.colors.surfaceApp.computeLuminance() < 0.2, isTrue, reason: route);
       }
       await c.read(themeModeProvider.notifier).changer(ThemeMode.light);
       await tester.pumpAndSettle();
@@ -60,7 +61,7 @@ void main() {
         await pumpApp(tester, etat: EtatApp.connecteeAdminBasic, routeInitiale: m.route, taille: taille);
         expect(tester.takeException(), isNull, reason: m.id);
         expect(
-          find.text('Fonction disponible avec la licence Avancé'),
+          find.text('Disponible avec le palier Avancé'),
           m.niveauRequis == NiveauLicence.avance ? findsOneWidget : findsNothing,
           reason: m.id,
         );
@@ -69,18 +70,21 @@ void main() {
   });
 
   group('Recette — rôles', () {
-    for (final (etat, role) in [
-      (EtatApp.connecteeCaissier, Roles.caissier),
-      (EtatApp.connecteeMagasinier, Roles.magasinier),
+    for (final (etat, role, autorises) in [
+      (EtatApp.connecteeCaissier, 'Caissier', {'tableau_bord', 'caisse', 'ventes', 'retours', 'clients', 'historique'}),
+      (
+        EtatApp.connecteeMagasinier,
+        'Magasinier',
+        {'tableau_bord', 'produits', 'stock', 'magasins', 'entrees', 'besoins', 'sorties', 'fournisseurs'},
+      ),
     ]) {
       testWidgets('$role : accès limité aux modules du rôle', (tester) async {
-        final autorises = Roles.modulesParDefaut[role]!;
         for (final m in modules) {
           await pumpApp(tester, etat: etat, routeInitiale: m.route, taille: taille);
           expect(tester.takeException(), isNull, reason: m.id);
           expect(
-            find.byType(AccesRefusePage),
-            autorises.contains(m.id) ? findsNothing : findsOneWidget,
+            find.byKey(accesRefuse),
+            autorises.contains(m.idAcces) ? findsNothing : findsOneWidget,
             reason: '$role ${m.id}',
           );
         }

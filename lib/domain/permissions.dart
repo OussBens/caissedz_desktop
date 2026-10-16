@@ -1,18 +1,16 @@
-import 'referentiel/referentiel.dart';
-
-/// Les 7 permissions d'action (§8, rôles).
-///
-/// ⚠️ PROVISOIRE : seule `voirPrixAchat` est nommée dans la commande ; les six
-/// autres sont une hypothèse à confirmer avec la spec 06. L'identifiant [code]
-/// est la valeur stockée en base (jamais le libellé).
+/// Les permissions d'action du rôle (§6.2, `roledetail`), vérifiées dans tous les modules.
+/// L'identifiant [code] est la valeur stockée en base (jamais le libellé). L'Admin les a toutes.
 enum Permission {
   voirPrixAchat('voirPrixAchat'),
-  modifierPrix('modifierPrix'),
-  appliquerRemise('appliquerRemise'),
-  annulerVente('annulerVente'),
-  supprimerDocument('supprimerDocument'),
-  exporterDonnees('exporterDonnees'),
-  gererUtilisateurs('gererUtilisateurs');
+  voirMarge('voirMarge'),
+  modifierPrixVente('modifierPrixVente'),
+  annulerOperations('annulerOperations'),
+  changerCaisseMagasin('changerCaisseMagasin'),
+  gererTransfertsCaisse('gererTransfertsCaisse'),
+  voirStockTousMagasins('voirStockTousMagasins'),
+
+  /// Vendre à crédit au-delà du plafond de crédit du client (audit M7).
+  depasserPlafondCredit('depasserPlafondCredit');
 
   const Permission(this.code);
   final String code;
@@ -20,45 +18,13 @@ enum Permission {
   static Permission? parCode(String code) => values.where((p) => p.code == code).firstOrNull;
 }
 
-/// Rôles : valeurs stockées du référentiel (`Admin`, `Caissier`, `Magasinier`).
+/// Codes des rôles créés par le seed (table `role`, §6.2). Seul l'Admin est un rôle système :
+/// accès complet, non modifiable, non assignable (§15 « admin unique non assignable »).
 class Roles {
   const Roles._();
-  static const String admin = 'Admin';
-  static const String caissier = 'Caissier';
-  static const String magasinier = 'Magasinier';
-  static List<String> get tous => Referentiel.roles.valeurs.map((v) => v.stocke).toList();
-
-  /// Permissions accordées par défaut (seed, modifiables par l'Admin).
-  static const Map<String, Set<Permission>> permissionsParDefaut = {
-    admin: {
-      Permission.voirPrixAchat,
-      Permission.modifierPrix,
-      Permission.appliquerRemise,
-      Permission.annulerVente,
-      Permission.supprimerDocument,
-      Permission.exporterDonnees,
-      Permission.gererUtilisateurs,
-    },
-    caissier: {Permission.appliquerRemise},
-    magasinier: {Permission.voirPrixAchat},
-  };
-
-  /// Modules accessibles par défaut (seed, modifiables par l'Admin).
-  /// L'Admin accède à tout ; cette carte ne liste que les autres rôles.
-  static const Map<String, Set<String>> modulesParDefaut = {
-    caissier: {'tableau_bord', 'caisse', 'ventes', 'retours', 'clients', 'historique'},
-    magasinier: {
-      'tableau_bord',
-      'produits',
-      'stock',
-      'magasins',
-      'entrees',
-      'transferts',
-      'besoins',
-      'sorties',
-      'fournisseurs',
-    },
-  };
+  static const String admin = 'ROL0000';
+  static const String caissier = 'ROL0001';
+  static const String magasinier = 'ROL0002';
 }
 
 /// Niveaux de licence (valeur stockée FR du référentiel).

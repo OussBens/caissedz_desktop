@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../app/demarrage_providers.dart';
 import '../../app/providers.dart';
 import '../../application/stock_service.dart';
 import '../../core/i18n/generated/app_localizations.dart';
@@ -32,28 +33,48 @@ final mesMagasinsProvider = FutureProvider<List<String>>((ref) {
   return ref.watch(stockRepositoryProvider).magasinsUtilisateur(ref.watch(utilisateurCourantCodeProvider));
 });
 
+/// Périmètre « magasins » des alertes et indicateurs de stock : tous pour un administrateur, sinon ceux de
+/// l'utilisateur connecté (même règle que les alertes, m5).
+Future<List<String>?> magasinsDeLaSession(Ref ref) async {
+  final session = ref.read(sessionProvider);
+  if (session == null || session.estAdmin) return null;
+  return ref.read(mesMagasinsProvider.future);
+}
+
 final magasinPrincipalProvider = FutureProvider<String>((ref) {
   ref.watch(stockVersionProvider);
   return ref.watch(stockServiceProvider).magasinPrincipal(ref.watch(utilisateurCourantCodeProvider));
 });
 
-/// Filtre magasin des écrans de stock (`null` = tous).
-class FiltreMagasinNotifier extends Notifier<String?> {
-  @override
-  String? build() => null;
-  void changer(String? v) => state = v;
-}
-
-final filtreMagasinProvider = NotifierProvider<FiltreMagasinNotifier, String?>(FiltreMagasinNotifier.new);
-
-final niveauxStockProvider = FutureProvider<List<NiveauStock>>((ref) {
-  ref.watch(stockVersionProvider);
-  return ref.watch(stockRepositoryProvider).niveaux(magasinCode: ref.watch(filtreMagasinProvider));
-});
-
+/// Journal complet des mouvements (les filtres sont appliqués à l'écran).
 final mouvementsProvider = FutureProvider<List<MouvementStock>>((ref) {
   ref.watch(stockVersionProvider);
-  return ref.watch(stockRepositoryProvider).mouvements(magasinCode: ref.watch(filtreMagasinProvider));
+  ref.watch(catalogueVersionProvider);
+  return ref.watch(stockRepositoryProvider).mouvements(limite: 5000);
+});
+
+/// Quantités par produit et par magasin : `{produit: {magasin: quantité}}`.
+final stocksParMagasinProvider = FutureProvider<Map<String, Map<String, double>>>((ref) {
+  ref.watch(stockVersionProvider);
+  ref.watch(catalogueVersionProvider);
+  return ref.watch(stockRepositoryProvider).stocksParMagasin();
+});
+
+/// Pièces (2ᵉ stock « nombre ») par produit et par magasin.
+final nombresParMagasinProvider = FutureProvider<Map<String, Map<String, double>>>((ref) {
+  ref.watch(stockVersionProvider);
+  ref.watch(catalogueVersionProvider);
+  return ref.watch(stockRepositoryProvider).nombresParMagasin();
+});
+
+final utilisateursParMagasinProvider = FutureProvider<Map<String, List<String>>>((ref) {
+  ref.watch(stockVersionProvider);
+  return ref.watch(stockRepositoryProvider).utilisateursParMagasin();
+});
+
+final caissesParMagasinProvider = FutureProvider<Map<String, List<String>>>((ref) {
+  ref.watch(stockVersionProvider);
+  return ref.watch(stockRepositoryProvider).caissesParMagasin();
 });
 
 final transfertsProvider = FutureProvider<List<TransfertStock>>((ref) {
@@ -71,12 +92,6 @@ final sortiesProvider = FutureProvider<List<SortieStock>>((ref) {
   return ref.watch(stockRepositoryProvider).sorties();
 });
 
-/// Mouvements de type Vente (onglet « Ventes » des sorties).
-final mouvementsVenteProvider = FutureProvider<List<MouvementStock>>((ref) {
-  ref.watch(stockVersionProvider);
-  return ref.watch(stockRepositoryProvider).mouvements(type: TypesMouvement.vente);
-});
-
 String libelleTypeMouvement(AppLocalizations l10n, String type) => switch (type) {
   TypesMouvement.entree => l10n.typeMouvementEntree,
   TypesMouvement.sortie => l10n.typeMouvementSortie,
@@ -85,25 +100,28 @@ String libelleTypeMouvement(AppLocalizations l10n, String type) => switch (type)
   TypesMouvement.transfert => l10n.typeMouvementTransfert,
   TypesMouvement.inventaire => l10n.typeMouvementInventaire,
   TypesMouvement.initial => l10n.typeMouvementInitial,
+  TypesMouvement.annulation => l10n.typeMouvementAnnulation,
   _ => type,
 };
 
 String libelleMotif(AppLocalizations l10n, String motif) => switch (motif) {
   'Casse' => l10n.motifCasse,
   'Périmé' => l10n.motifPerime,
-  'Perte/vol' => l10n.motifPerteVol,
+  'Perte / vol' => l10n.motifPerteVol,
   'Consommation interne' => l10n.motifConsommationInterne,
   'Don' => l10n.motifDon,
   'Échantillon' => l10n.motifEchantillon,
   _ => Referentiel.motifsSortie.libelle(motif, const Locale('fr')),
 };
 
-String libelleStatutBesoin(AppLocalizations l10n, String statut) => switch (statut) {
-  StatutsBesoin.enAttente => l10n.statutBesoinEnAttente,
-  StatutsBesoin.commande => l10n.statutBesoinCommande,
-  StatutsBesoin.disponible => l10n.statutBesoinDisponible,
-  _ => statut,
-};
+/// Statut du DS (`StatusBadge`) d'une liste de besoins.
+String statutBesoinDs(Besoin b) => !b.actif
+    ? 'annule'
+    : switch (b.statut) {
+        StatutsBesoin.commande => 'commande',
+        StatutsBesoin.disponible => 'disponible',
+        _ => 'enAttente',
+      };
 
 String messageErreurStock(AppLocalizations l10n, ErreurStock e) => switch (e) {
   ErreurStock.quantiteInvalide => l10n.stockErreurQuantite,
@@ -115,4 +133,15 @@ String messageErreurStock(AppLocalizations l10n, ErreurStock e) => switch (e) {
   ErreurStock.magasinSysteme => l10n.stockErreurMagasinSysteme,
   ErreurStock.produitInconnu => l10n.stockErreurProduit,
   ErreurStock.statutInvalide => l10n.stockErreurStatut,
+  ErreurStock.nomPris => l10n.stkErreurNomPris,
+  ErreurStock.magasinPrincipal => l10n.stkBloqueMagasinPrincipal,
+  ErreurStock.stockNonNul => l10n.stkBloqueStockNonNul,
+  ErreurStock.dejaAnnule => l10n.stkBloqueDejaAnnule,
+  ErreurStock.documentInconnu => l10n.stkErreurDocumentInconnu,
+  ErreurStock.motifObligatoire => l10n.stkErreurMotifObligatoire,
+  ErreurStock.fournisseurObligatoire => l10n.stkErreurFournisseur,
+  ErreurStock.besoinRecu => l10n.stkBloqueBesoinRecu,
+  ErreurStock.aucunChangement => l10n.stkAucunChangement,
+  ErreurStock.nombreObligatoire => l10n.communNombreObligatoire,
+  ErreurStock.sortieRetour => l10n.stkErreurSortieRetour,
 };

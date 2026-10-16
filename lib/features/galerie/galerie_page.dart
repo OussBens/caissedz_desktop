@@ -5,9 +5,8 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../app/providers.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
-import '../../domain/permissions.dart';
 import '../../domain/referentiel/referentiel.dart';
-import '../roles/roles_page.dart';
+import '../utilisateurs/utilisateurs_providers.dart';
 
 /// Page interne de vérification du design system (clair / sombre / RTL).
 class GaleriePage extends ConsumerWidget {
@@ -24,13 +23,13 @@ class GaleriePage extends ConsumerWidget {
     final mode = ref.watch(themeModeProvider);
 
     return ListView(
-      padding: const EdgeInsets.all(DsSpacing.xl),
+      padding: const EdgeInsets.all(DsSpacing.s6),
       children: [
         Row(
           children: [
-            Expanded(child: Text(l10n.galerieTitre, style: t.titreLg)),
-            Text(l10n.galerieLangue, style: t.petitFort.copyWith(color: c.texteSecondaire)),
-            const SizedBox(width: DsSpacing.sm),
+            Expanded(child: Text(l10n.galerieTitre, style: t.pageTitle)),
+            Text(l10n.galerieLangue, style: t.bodySmStrong.copyWith(color: c.textSecondary)),
+            const SizedBox(width: DsSpacing.s2),
             for (final l in localesSupportees) ...[
               DsButton(
                 libelle: l.languageCode.toUpperCase(),
@@ -38,11 +37,11 @@ class GaleriePage extends ConsumerWidget {
                 variante: locale == l ? DsButtonVariante.primaire : DsButtonVariante.secondaire,
                 onPressed: () => ref.read(localeProvider.notifier).changer(l),
               ),
-              const SizedBox(width: DsSpacing.xs),
+              const SizedBox(width: DsSpacing.s1),
             ],
-            const SizedBox(width: DsSpacing.lg),
-            Text(l10n.galerieTheme, style: t.petitFort.copyWith(color: c.texteSecondaire)),
-            const SizedBox(width: DsSpacing.sm),
+            const SizedBox(width: DsSpacing.s4),
+            Text(l10n.galerieTheme, style: t.bodySmStrong.copyWith(color: c.textSecondary)),
+            const SizedBox(width: DsSpacing.s2),
             DsButton(
               libelle: mode == ThemeMode.dark ? l10n.galerieClair : l10n.galerieSombre,
               icone: mode == ThemeMode.dark ? LucideIcons.sun : LucideIcons.moon,
@@ -52,27 +51,27 @@ class GaleriePage extends ConsumerWidget {
             ),
           ],
         ),
-        const SizedBox(height: DsSpacing.xl),
+        const SizedBox(height: DsSpacing.s6),
         _Section(
           titre: 'Couleurs',
           enfant: Wrap(
-            spacing: DsSpacing.sm,
-            runSpacing: DsSpacing.sm,
+            spacing: DsSpacing.s2,
+            runSpacing: DsSpacing.s2,
             children: [
               for (final e in {
-                'fond': c.fond,
-                'surface': c.surface,
-                'surfaceAttenuee': c.surfaceAttenuee,
-                'bordure': c.bordure,
-                'texte': c.texte,
-                'texteSecondaire': c.texteSecondaire,
-                'primaire': c.primaire,
-                'primaireDoux': c.primaireDoux,
-                'succes': c.succes,
-                'avertissement': c.avertissement,
+                'fond': c.surfaceApp,
+                'surface': c.surfaceCard,
+                'surfaceAttenuee': c.surfaceSunken,
+                'bordure': c.borderDefault,
+                'texte': c.textPrimary,
+                'texteSecondaire': c.textSecondary,
+                'primaire': c.primary,
+                'primaireDoux': c.primaryTint,
+                'succes': c.success,
+                'avertissement': c.warning,
                 'danger': c.danger,
                 'info': c.info,
-                'sidebarFond': c.sidebarFond,
+                'sidebarFond': c.surfaceSidebar,
               }.entries)
                 _Pastille(nom: e.key, couleur: e.value),
             ],
@@ -83,15 +82,15 @@ class GaleriePage extends ConsumerWidget {
           enfant: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('titreXl — ${t.famille}', style: t.titreXl),
-              Text('titreLg', style: t.titreLg),
-              Text('titreMd', style: t.titreMd),
-              Text('titreSm', style: t.titreSm),
-              Text('corps — Le prix TTC est de 1 250,00 DA', style: t.corps),
-              Text('corpsFort', style: t.corpsFort),
-              Text('petit', style: t.petit),
-              Text('legende', style: t.legende),
-              Text('12 345,67 DA', style: t.chiffreXl),
+              Text('titreXl — ${t.famille}', style: t.display),
+              Text('titreLg', style: t.pageTitle),
+              Text('titreMd', style: t.heading),
+              Text('titreSm', style: t.cardTitle),
+              Text('corps — Le prix TTC est de 1 250,00 DA', style: t.body),
+              Text('corpsFort', style: t.bodyStrong),
+              Text('petit', style: t.bodySm),
+              Text('legende', style: t.caption),
+              Text('12 345,67 DA', style: t.montantXl),
               Text('MAG0001 · CLN0042', style: t.mono),
             ],
           ),
@@ -99,8 +98,8 @@ class GaleriePage extends ConsumerWidget {
         _Section(
           titre: 'Boutons',
           enfant: Wrap(
-            spacing: DsSpacing.sm,
-            runSpacing: DsSpacing.sm,
+            spacing: DsSpacing.s2,
+            runSpacing: DsSpacing.s2,
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               DsButton(libelle: 'Primaire', icone: LucideIcons.check, onPressed: () {}),
@@ -112,7 +111,7 @@ class GaleriePage extends ConsumerWidget {
                 icone: LucideIcons.trash2,
                 onPressed: () {},
               ),
-              DsButton(libelle: 'Succès', variante: DsButtonVariante.succes, onPressed: () {}),
+              DsButton(libelle: 'Succès', variante: DsButtonVariante.accent, onPressed: () {}),
               const DsButton(libelle: 'Désactivé'),
               const DsButton(libelle: 'Chargement', chargement: true),
               DsButton(
@@ -134,11 +133,11 @@ class GaleriePage extends ConsumerWidget {
               Expanded(
                 child: DsTextField(libelle: 'Libellé', indice: 'Saisir…', iconePrefixe: LucideIcons.search),
               ),
-              SizedBox(width: DsSpacing.md),
+              SizedBox(width: DsSpacing.s3),
               Expanded(
                 child: DsTextField(libelle: 'Erreur', erreur: 'Valeur obligatoire'),
               ),
-              SizedBox(width: DsSpacing.md),
+              SizedBox(width: DsSpacing.s3),
               Expanded(
                 child: DsTextField(libelle: 'Désactivé', actif: false, indice: 'Non modifiable'),
               ),
@@ -148,8 +147,8 @@ class GaleriePage extends ConsumerWidget {
         _Section(
           titre: 'Pastilles',
           enfant: Wrap(
-            spacing: DsSpacing.sm,
-            runSpacing: DsSpacing.sm,
+            spacing: DsSpacing.s2,
+            runSpacing: DsSpacing.s2,
             children: [
               for (final ton in DsBadgeTon.values) DsBadge(libelle: ton.name, ton: ton),
               for (final v in Referentiel.statutsBesoin.valeurs)
@@ -169,11 +168,11 @@ class GaleriePage extends ConsumerWidget {
                   sousTexte: '+12 % vs hier',
                 ),
               ),
-              SizedBox(width: DsSpacing.md),
+              SizedBox(width: DsSpacing.s3),
               Expanded(
                 child: DsStatCard(libelle: 'Tickets', valeur: '87', icone: LucideIcons.ticket, ton: DsBadgeTon.info),
               ),
-              SizedBox(width: DsSpacing.md),
+              SizedBox(width: DsSpacing.s3),
               Expanded(
                 child: DsStatCard(
                   libelle: 'Stock sous seuil',
@@ -188,7 +187,7 @@ class GaleriePage extends ConsumerWidget {
         _Section(
           titre: 'Dialogues',
           enfant: Wrap(
-            spacing: DsSpacing.sm,
+            spacing: DsSpacing.s2,
             children: [
               DsButton(
                 libelle: 'Confirmation',
@@ -248,21 +247,10 @@ class GaleriePage extends ConsumerWidget {
         _Section(
           titre: 'Grille des permissions',
           enfant: PermissionGrid(
-            lignes: [
-              for (final p in Permission.values.take(3))
-                PermissionGridLigne(id: p.code, libelle: libellePermission(l10n, p), icone: LucideIcons.shieldCheck),
-            ],
-            colonnes: [
-              for (final r in Roles.tous)
-                PermissionGridColonne(
-                  id: r,
-                  libelle: libelleRole(l10n, r),
-                  verrouillee: r == Roles.admin,
-                  infoVerrou: l10n.rolesAdminTotal,
-                ),
-            ],
-            estCoche: (role, id) => Roles.permissionsParDefaut[role]?.contains(Permission.parCode(id)) ?? false,
-            onBasculer: (_, _) {},
+            titre: 'Permissions spéciales',
+            items: itemsSpeciales(l10n),
+            valeur: const {'voirPrixAchat', 'annulerOperations'},
+            onChanged: (_) {},
           ),
         ),
         _Section(
@@ -326,7 +314,7 @@ class _Section extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: DsSpacing.xl),
+      padding: const EdgeInsets.only(bottom: DsSpacing.s6),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -355,11 +343,11 @@ class _Pastille extends StatelessWidget {
           decoration: BoxDecoration(
             color: couleur,
             borderRadius: DsRadius.borderMd,
-            border: Border.all(color: c.bordure),
+            border: Border.all(color: c.borderDefault),
           ),
         ),
-        const SizedBox(height: DsSpacing.xs),
-        Text(nom, style: t.legende.copyWith(color: c.texteSecondaire)),
+        const SizedBox(height: DsSpacing.s1),
+        Text(nom, style: t.caption.copyWith(color: c.textSecondary)),
       ],
     );
   }

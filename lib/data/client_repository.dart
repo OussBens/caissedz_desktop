@@ -10,7 +10,7 @@ class ClientRepository {
   final DatabaseExecutor db;
 
   Future<String> prochainCode() async {
-    final rows = await db.query('client', columns: ['code'], orderBy: 'code DESC', limit: 1);
+    final rows = await db.query('client', columns: ['code'], orderBy: CodeGenerator.ordreDecroissant, limit: 1);
     return CodeGenerator.suivant(CodeGenerator.client, rows.isEmpty ? null : rows.first['code'] as String);
   }
 

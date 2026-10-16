@@ -1,5 +1,8 @@
 import 'package:flutter/foundation.dart';
 
+import '../scellement.dart';
+import 'audit.dart';
+
 /// Types de caisse (§13, valeur stockée FR) : `Physique` ou `Compte`.
 class TypesCaisse {
   const TypesCaisse._();
@@ -28,6 +31,15 @@ class TypesMouvementCaisse {
   static const String fondInitial = 'Fond initial';
   static const String retrait = 'Retrait';
   static const String ecart = 'Écart';
+
+  /// Dépôt au coffre des espèces retirées à la fermeture, ou fond de caisse pris au coffre à l'ouverture.
+  static const String coffre = 'Coffre';
+
+  /// Mouvements techniques (tiroir, coffre, transferts internes) : hors encaissements / décaissements de la Z.
+  static const List<String> techniques = [fondInitial, retrait, ecart, transfert, coffre];
+
+  /// Droit de timbre encaissé à l'émission d'une facture (part payée en espèces).
+  static const String timbre = 'Timbre';
   static const List<String> tous = [
     vente,
     annulation,
@@ -40,6 +52,8 @@ class TypesMouvementCaisse {
     fondInitial,
     retrait,
     ecart,
+    coffre,
+    timbre,
   ];
 }
 
@@ -47,29 +61,47 @@ class TypesMouvementCaisse {
 @immutable
 class Caisse {
   const Caisse({
+    this.audit = Audit.vide,
     required this.code,
     required this.nom,
     this.type = TypesCaisse.physique,
     this.magasinCode,
     this.actif = true,
     this.systeme = false,
+    this.soldeInitial = 0,
+    this.observation,
+    this.coffre = false,
   });
+
+  /// Colonnes d'audit (créé / modifié le / par), en lecture seule.
+  final Audit audit;
   final String code;
   final String nom;
   final String type;
+
+  /// Proposé comme fond de caisse à chaque ouverture de session.
+  final double soldeInitial;
+  final String? observation;
 
   /// `null` = caisse sans magasin.
   final String? magasinCode;
   final bool actif;
   final bool systeme;
 
+  /// Caisse « Coffre » : hors POS, reçoit les espèces des fermetures et fournit les fonds de caisse.
+  final bool coffre;
+
   factory Caisse.depuisLigne(Map<String, Object?> r) => Caisse(
+    audit: Audit.depuisLigne(r),
     code: r['code'] as String,
     nom: r['nom'] as String,
     type: r['type'] as String,
     magasinCode: r['magasin_code'] as String?,
     actif: (r['actif'] as int) == 1,
     systeme: (r['systeme'] as int) == 1,
+    soldeInitial: ((r['solde_initial'] as num?) ?? 0).toDouble(),
+    observation: r['observation'] as String?,
+    coffre: ((r['coffre'] as int?) ?? 0) == 1,
   );
 
   Map<String, Object?> versLigne() => {
@@ -79,15 +111,30 @@ class Caisse {
     'magasin_code': magasinCode,
     'actif': actif ? 1 : 0,
     'systeme': systeme ? 1 : 0,
+    'solde_initial': soldeInitial,
+    'observation': observation,
+    'coffre': coffre ? 1 : 0,
   };
 
-  Caisse copyWith({String? nom, String? type, String? magasinCode, bool sansMagasin = false, bool? actif}) => Caisse(
+  Caisse copyWith({
+    String? nom,
+    String? type,
+    String? magasinCode,
+    bool sansMagasin = false,
+    bool? actif,
+    double? soldeInitial,
+    String? Function()? observation,
+  }) => Caisse(
+    audit: audit,
     code: code,
     nom: nom ?? this.nom,
     type: type ?? this.type,
     magasinCode: sansMagasin ? null : (magasinCode ?? this.magasinCode),
     actif: actif ?? this.actif,
     systeme: systeme,
+    soldeInitial: soldeInitial ?? this.soldeInitial,
+    observation: observation != null ? observation() : this.observation,
+    coffre: coffre,
   );
 }
 
@@ -95,6 +142,7 @@ class Caisse {
 @immutable
 class MouvementCaisse {
   const MouvementCaisse({
+    this.audit = Audit.vide,
     this.id,
     required this.date,
     required this.caisseCode,
@@ -107,6 +155,9 @@ class MouvementCaisse {
     required this.utilisateurCode,
     this.commentaire,
   });
+
+  /// Colonnes d'audit (créé / modifié le / par), en lecture seule.
+  final Audit audit;
   final int? id;
   final DateTime date;
   final String caisseCode;
@@ -123,6 +174,7 @@ class MouvementCaisse {
   double get signe => sens == SensMouvementCaisse.entree ? montant : -montant;
 
   factory MouvementCaisse.depuisLigne(Map<String, Object?> r) => MouvementCaisse(
+    audit: Audit.depuisLigne(r),
     id: r['id'] as int?,
     date: DateTime.parse(r['date'] as String).toLocal(),
     caisseCode: r['caisse_code'] as String,
@@ -164,6 +216,7 @@ class SoldeCaisse {
 @immutable
 class TransfertCaisse {
   const TransfertCaisse({
+    this.audit = Audit.vide,
     required this.code,
     required this.date,
     required this.caisseSource,
@@ -172,7 +225,13 @@ class TransfertCaisse {
     this.mode = 'Espèces',
     required this.utilisateurCode,
     this.commentaire,
+    this.actif = true,
+    this.annulePar,
+    this.motifAnnulation,
   });
+
+  /// Colonnes d'audit (créé / modifié le / par), en lecture seule.
+  final Audit audit;
   final String code;
   final DateTime date;
   final String caisseSource;
@@ -182,7 +241,12 @@ class TransfertCaisse {
   final String utilisateurCode;
   final String? commentaire;
 
+  final bool actif;
+  final String? annulePar;
+  final String? motifAnnulation;
+
   factory TransfertCaisse.depuisLigne(Map<String, Object?> r) => TransfertCaisse(
+    audit: Audit.depuisLigne(r),
     code: r['code'] as String,
     date: DateTime.parse(r['date'] as String).toLocal(),
     caisseSource: r['caisse_source'] as String,
@@ -191,6 +255,9 @@ class TransfertCaisse {
     mode: r['mode'] as String,
     utilisateurCode: r['utilisateur_code'] as String,
     commentaire: r['commentaire'] as String?,
+    actif: ((r['actif'] as int?) ?? 1) == 1,
+    annulePar: r['annule_par'] as String?,
+    motifAnnulation: r['motif_annulation'] as String?,
   );
 
   Map<String, Object?> versLigne() => {
@@ -209,6 +276,7 @@ class TransfertCaisse {
 @immutable
 class Cloture {
   const Cloture({
+    this.audit = Audit.vide,
     required this.code,
     required this.date,
     required this.debut,
@@ -228,7 +296,12 @@ class Cloture {
     required this.hashDerniereVente,
     required this.hashPrecedent,
     required this.hash,
+    this.caisseCode,
+    this.totalAnnule = 0,
   });
+
+  /// Colonnes d'audit (créé / modifié le / par), en lecture seule.
+  final Audit audit;
   final String code;
   final DateTime date;
   final DateTime debut;
@@ -249,6 +322,28 @@ class Cloture {
   final String hashPrecedent;
   final String hash;
 
+  /// Caisse clôturée (`null` : clôture globale antérieure à la v16).
+  final String? caisseCode;
+
+  /// Montant des ventes annulées sur la période.
+  final double totalAnnule;
+
+  /// Vérifie des clôtures données dans l'ordre de chaînage, une chaîne par caisse (les clôtures globales
+  /// antérieures à la v16 forment la leur) ; `null` = intactes, sinon code de la première clôture altérée.
+  static String? verifierChaines(Iterable<Cloture> croissantes, {bool depuisPremier = false}) {
+    final parCaisse = <String?, List<Cloture>>{};
+    for (final c in croissantes) {
+      (parCaisse[c.caisseCode] ??= []).add(c);
+    }
+    for (final cs in parCaisse.values) {
+      final i = Scellement.verifier([
+        for (final c in cs) (doc: c.versCanonique(), hashPrecedent: c.hashPrecedent, hash: c.hash),
+      ], depuisPremier: depuisPremier);
+      if (i != null) return cs[i].code;
+    }
+    return null;
+  }
+
   /// Contenu scellé (tout sauf le hash lui-même).
   Map<String, Object?> versCanonique() => {
     'code': code,
@@ -268,6 +363,8 @@ class Cloture {
     'premiere_vente': premiereVente,
     'derniere_vente': derniereVente,
     'hash_derniere_vente': hashDerniereVente,
+    // Clôtures par caisse (v16) : caisse et total annulé scellés ; absents des clôtures globales antérieures.
+    if (caisseCode != null) ...{'caisse': caisseCode, 'total_annule': totalAnnule},
   };
 
   Map<String, Object?> versLigne() => {
@@ -290,9 +387,13 @@ class Cloture {
     'hash_derniere_vente': hashDerniereVente,
     'hash_precedent': hashPrecedent,
     'hash': hash,
+    'caisse_code': caisseCode,
+    'total_annule': totalAnnule,
   };
 
   factory Cloture.depuisLigne(Map<String, Object?> r) => Cloture(
+    // Clôture immuable (pas de modification) : création = date et auteur de la clôture.
+    audit: Audit(creeLe: DateTime.parse(r['date'] as String).toLocal(), creePar: r['utilisateur_code'] as String),
     code: r['code'] as String,
     date: DateTime.parse(r['date'] as String).toLocal(),
     debut: DateTime.parse(r['debut'] as String).toLocal(),
@@ -312,9 +413,12 @@ class Cloture {
     hashDerniereVente: r['hash_derniere_vente'] as String,
     hashPrecedent: r['hash_precedent'] as String,
     hash: r['hash'] as String,
+    caisseCode: r['caisse_code'] as String?,
+    totalAnnule: ((r['total_annule'] as num?) ?? 0).toDouble(),
   );
 
   Cloture copyWith({String? hash}) => Cloture(
+    audit: audit,
     code: code,
     date: date,
     debut: debut,
@@ -334,6 +438,8 @@ class Cloture {
     hashDerniereVente: hashDerniereVente,
     hashPrecedent: hashPrecedent,
     hash: hash ?? this.hash,
+    caisseCode: caisseCode,
+    totalAnnule: totalAnnule,
   );
 
   /// Encodage stable `cle=valeur;...` (clés triées) ; `valeur` au centime.

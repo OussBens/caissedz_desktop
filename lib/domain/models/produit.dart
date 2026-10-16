@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+import 'audit.dart';
+
 /// Produit du catalogue (table `produit`).
 ///
 /// ⚠️ PROVISOIRE : colonnes à aligner sur la spec 06. `suiviNombre` active le
@@ -7,6 +9,7 @@ import 'package:flutter/foundation.dart';
 @immutable
 class Produit {
   const Produit({
+    this.audit = Audit.vide,
     required this.code,
     required this.designation,
     this.codeBarres,
@@ -23,7 +26,20 @@ class Produit {
     this.source = 'Manuel',
     this.actif = true,
     this.image,
+    this.marque,
+    this.description,
+    this.fournisseurCode,
+    this.dateExpiration,
+    this.service = false,
+    this.taille,
+    this.couleur,
+    this.observation,
+    this.suiviSerie = false,
+    this.remiseCode,
   });
+
+  /// Colonnes d'audit (créé / modifié le / par), en lecture seule.
+  final Audit audit;
 
   final String code;
   final String designation;
@@ -41,10 +57,31 @@ class Produit {
   final bool suiviNombre;
   final int nombreParUnite;
 
+  /// 2ᵉ stock « nombre » obligatoire (> 0) à la saisie (§8.1) : paramètre global [global] ou propre au produit.
+  bool exigeNombre({required bool global}) => !service && (global || suiviNombre);
+
   /// `Manuel` ou `IA` (valeur stockée FR).
   final String source;
   final bool actif;
   final String? image;
+  final String? marque;
+  final String? description;
+
+  /// Fournisseur habituel (code).
+  final String? fournisseurCode;
+  final DateTime? dateExpiration;
+
+  /// Produit-service (réparation, livraison…) : aucun stock.
+  final bool service;
+  final String? taille;
+  final String? couleur;
+  final String? observation;
+
+  /// Saisie du n° de série obligatoire à la vente.
+  final bool suiviSerie;
+
+  /// Remise « Par Produit » affectée (code).
+  final String? remiseCode;
 
   Produit copyWith({
     String? designation,
@@ -64,7 +101,20 @@ class Produit {
     String? source,
     bool? actif,
     String? image,
+    String? marque,
+    String? description,
+    String? fournisseurCode,
+    DateTime? dateExpiration,
+    bool effacerExpiration = false,
+    bool? service,
+    String? taille,
+    String? couleur,
+    String? observation,
+    bool? suiviSerie,
+    String? remiseCode,
+    bool effacerRemise = false,
   }) => Produit(
+    audit: audit,
     code: code,
     designation: designation ?? this.designation,
     codeBarres: effacerCodeBarres ? null : (codeBarres ?? this.codeBarres),
@@ -81,6 +131,16 @@ class Produit {
     source: source ?? this.source,
     actif: actif ?? this.actif,
     image: image ?? this.image,
+    marque: marque ?? this.marque,
+    description: description ?? this.description,
+    fournisseurCode: fournisseurCode ?? this.fournisseurCode,
+    dateExpiration: effacerExpiration ? null : (dateExpiration ?? this.dateExpiration),
+    service: service ?? this.service,
+    taille: taille ?? this.taille,
+    couleur: couleur ?? this.couleur,
+    observation: observation ?? this.observation,
+    suiviSerie: suiviSerie ?? this.suiviSerie,
+    remiseCode: effacerRemise ? null : (remiseCode ?? this.remiseCode),
   );
 
   Map<String, Object?> versLigne() => {
@@ -100,9 +160,22 @@ class Produit {
     'source': source,
     'actif': actif ? 1 : 0,
     'image': image,
+    'marque': _vide(marque),
+    'description': _vide(description),
+    'fournisseur_code': fournisseurCode,
+    'date_expiration': dateExpiration?.toIso8601String(),
+    'service': service ? 1 : 0,
+    'taille': _vide(taille),
+    'couleur': _vide(couleur),
+    'observation': _vide(observation),
+    'suivi_serie': suiviSerie ? 1 : 0,
+    'remise_code': remiseCode,
   };
 
+  static String? _vide(String? s) => s == null || s.trim().isEmpty ? null : s.trim();
+
   factory Produit.depuisLigne(Map<String, Object?> r) => Produit(
+    audit: Audit.depuisLigne(r),
     code: r['code'] as String,
     designation: r['designation'] as String,
     codeBarres: r['code_barres'] as String?,
@@ -119,6 +192,16 @@ class Produit {
     source: r['source'] as String,
     actif: (r['actif'] as int) == 1,
     image: r['image'] as String?,
+    marque: r['marque'] as String?,
+    description: r['description'] as String?,
+    fournisseurCode: r['fournisseur_code'] as String?,
+    dateExpiration: DateTime.tryParse((r['date_expiration'] as String?) ?? ''),
+    service: (r['service'] as int? ?? 0) == 1,
+    taille: r['taille'] as String?,
+    couleur: r['couleur'] as String?,
+    observation: r['observation'] as String?,
+    suiviSerie: (r['suivi_serie'] as int? ?? 0) == 1,
+    remiseCode: r['remise_code'] as String?,
   );
 
   @override
@@ -152,12 +235,32 @@ class Produit {
 /// Catégorie / sous-catégorie.
 @immutable
 class Categorie {
-  const Categorie({required this.code, required this.nom, this.systeme = false});
+  const Categorie({
+    this.audit = Audit.vide,
+    required this.code,
+    required this.nom,
+    this.systeme = false,
+    this.description,
+    this.actif = true,
+  });
+
+  /// Colonnes d'audit (créé / modifié le / par), en lecture seule.
+  final Audit audit;
   final String code;
   final String nom;
   final bool systeme;
-  factory Categorie.depuisLigne(Map<String, Object?> r) =>
-      Categorie(code: r['code'] as String, nom: r['nom'] as String, systeme: (r['systeme'] as int) == 1);
+  final String? description;
+
+  /// Visible en caisse et dans les listes de choix.
+  final bool actif;
+  factory Categorie.depuisLigne(Map<String, Object?> r) => Categorie(
+    audit: Audit.depuisLigne(r),
+    code: r['code'] as String,
+    nom: r['nom'] as String,
+    systeme: (r['systeme'] as int) == 1,
+    description: r['description'] as String?,
+    actif: (r['actif'] as int? ?? 1) == 1,
+  );
   @override
   bool operator ==(Object other) => other is Categorie && other.code == code && other.nom == nom;
   @override
@@ -166,22 +269,48 @@ class Categorie {
 
 @immutable
 class SousCategorie {
-  const SousCategorie({required this.code, required this.categorieCode, required this.nom, this.systeme = false});
+  const SousCategorie({
+    this.audit = Audit.vide,
+    required this.code,
+    required this.categorieCode,
+    required this.nom,
+    this.systeme = false,
+    this.description,
+    this.actif = true,
+  });
+
+  /// Colonnes d'audit (créé / modifié le / par), en lecture seule.
+  final Audit audit;
   final String code;
   final String categorieCode;
   final String nom;
   final bool systeme;
+  final String? description;
+  final bool actif;
   factory SousCategorie.depuisLigne(Map<String, Object?> r) => SousCategorie(
+    audit: Audit.depuisLigne(r),
     code: r['code'] as String,
     categorieCode: r['categorie_code'] as String,
     nom: r['nom'] as String,
     systeme: (r['systeme'] as int) == 1,
+    description: r['description'] as String?,
+    actif: (r['actif'] as int? ?? 1) == 1,
   );
   @override
   bool operator ==(Object other) =>
       other is SousCategorie && other.code == code && other.nom == nom && other.categorieCode == categorieCode;
   @override
   int get hashCode => Object.hash(code, nom, categorieCode);
+}
+
+/// Emballage saisi dans la fiche produit (§7.2 `emballage1/emballageP1` = petit colis, `emballage2` = grand
+/// colis) ; enregistré comme [Colis] du produit.
+@immutable
+class EmballageProduit {
+  const EmballageProduit({required this.quantite, required this.prixVente, this.codeBarres});
+  final int quantite;
+  final double prixVente;
+  final String? codeBarres;
 }
 
 /// Colis : conditionnement de N unités d'un produit, avec son propre code-barres et prix.
@@ -236,26 +365,34 @@ class Colis {
 @immutable
 class Pack {
   const Pack({
+    this.audit = Audit.vide,
     required this.code,
     required this.designation,
     this.codeBarres,
     required this.prixVente,
     this.actif = true,
     this.lignes = const [],
+    this.description,
   });
+
+  /// Colonnes d'audit (créé / modifié le / par), en lecture seule.
+  final Audit audit;
   final String code;
   final String designation;
   final String? codeBarres;
   final double prixVente;
   final bool actif;
   final List<PackLigne> lignes;
-  Pack copyWith({List<PackLigne>? lignes}) => Pack(
+  final String? description;
+  Pack copyWith({List<PackLigne>? lignes, bool? actif}) => Pack(
+    audit: audit,
     code: code,
     designation: designation,
     codeBarres: codeBarres,
     prixVente: prixVente,
-    actif: actif,
+    actif: actif ?? this.actif,
     lignes: lignes ?? this.lignes,
+    description: description,
   );
   Map<String, Object?> versLigne() => {
     'code': code,
@@ -263,14 +400,17 @@ class Pack {
     'code_barres': codeBarres,
     'prix_vente': prixVente,
     'actif': actif ? 1 : 0,
+    'description': description,
   };
   factory Pack.depuisLigne(Map<String, Object?> r, [List<PackLigne> lignes = const []]) => Pack(
+    audit: Audit.depuisLigne(r),
     code: r['code'] as String,
     designation: r['designation'] as String,
     codeBarres: r['code_barres'] as String?,
     prixVente: (r['prix_vente'] as num).toDouble(),
     actif: (r['actif'] as int) == 1,
     lignes: lignes,
+    description: r['description'] as String?,
   );
 }
 
@@ -290,6 +430,7 @@ class PackLigne {
 @immutable
 class Remise {
   const Remise({
+    this.audit = Audit.vide,
     required this.code,
     required this.designation,
     required this.type,
@@ -299,11 +440,18 @@ class Remise {
     this.dateDebut,
     this.dateFin,
     this.actif = true,
+    this.cumulable = false,
+    this.observation,
+    this.portee = porteeProduit,
+    this.seuil = 0,
   });
+
+  /// Colonnes d'audit (créé / modifié le / par), en lecture seule.
+  final Audit audit;
   final String code;
   final String designation;
 
-  /// `Pourcentage` ou `Montant` (valeur stockée FR).
+  /// Type de taux (`taux_type` du §7) : `Pourcentage` ou `Montant` (valeur stockée FR).
   final String type;
   final double valeur;
   final String? produitCode;
@@ -312,13 +460,62 @@ class Remise {
   final DateTime? dateFin;
   final bool actif;
 
+  /// Cumulable avec la remise ticket.
+  final bool cumulable;
+  final String? observation;
+
+  /// Type de remise (§8.9) : [porteeProduit] (assignée aux produits) ou [porteeMontant] (choisie sur le
+  /// panier, active seulement si le sous-total atteint [seuil]).
+  final String portee;
+  final double seuil;
+
+  static const porteeProduit = 'Par Produit';
+  static const porteeMontant = 'Par Montant';
+
+  bool get estPourcentage => type == 'Pourcentage';
+  bool get parMontant => portee == porteeMontant;
+
+  Remise copyWith({String? code, bool? actif}) => Remise(
+    audit: audit,
+    code: code ?? this.code,
+    designation: designation,
+    type: type,
+    valeur: valeur,
+    produitCode: produitCode,
+    categorieCode: categorieCode,
+    dateDebut: dateDebut,
+    dateFin: dateFin,
+    actif: actif ?? this.actif,
+    cumulable: cumulable,
+    observation: observation,
+    portee: portee,
+    seuil: seuil,
+  );
+
+  /// Vrai si [date] (à la journée) est dans la période Du / Au, bornes incluses.
+  bool dansPeriode(DateTime date) {
+    final jour = DateTime(date.year, date.month, date.day);
+    if (dateDebut != null && jour.isBefore(DateTime(dateDebut!.year, dateDebut!.month, dateDebut!.day))) return false;
+    if (dateFin != null && jour.isAfter(DateTime(dateFin!.year, dateFin!.month, dateFin!.day))) return false;
+    return true;
+  }
+
+  /// Active à [date] : non annulée et [date] dans la période. Une remise inactive n'est ni proposée (listes,
+  /// dialogs de sélection, caisse) ni appliquée aux produits.
+  bool estActive(DateTime date) => actif && dansPeriode(date);
+
+  /// Statut d'affichage : `actif` ou `inactif` selon la période, `annule` si la remise a été annulée.
+  String statut(DateTime date) => !actif ? 'annule' : (dansPeriode(date) ? 'actif' : 'inactif');
+
+  /// Prix remisé d'un prix de base.
+  double appliquer(double prix) =>
+      (estPourcentage ? prix * (1 - valeur / 100) : prix - valeur).clamp(0, double.infinity).toDouble();
+
   bool estApplicable(DateTime date, {required String produitCode, required String categorieCode}) {
-    if (!actif) return false;
-    if (dateDebut != null && date.isBefore(dateDebut!)) return false;
-    if (dateFin != null && date.isAfter(dateFin!)) return false;
+    if (parMontant || !estActive(date)) return false;
     if (this.produitCode != null) return this.produitCode == produitCode;
     if (this.categorieCode != null) return this.categorieCode == categorieCode;
-    return true;
+    return false;
   }
 
   Map<String, Object?> versLigne() => {
@@ -331,8 +528,13 @@ class Remise {
     'date_debut': dateDebut?.toIso8601String(),
     'date_fin': dateFin?.toIso8601String(),
     'actif': actif ? 1 : 0,
+    'cumulable': cumulable ? 1 : 0,
+    'observation': observation,
+    'portee': portee,
+    'seuil': seuil,
   };
   factory Remise.depuisLigne(Map<String, Object?> r) => Remise(
+    audit: Audit.depuisLigne(r),
     code: r['code'] as String,
     designation: r['designation'] as String,
     type: r['type'] as String,
@@ -342,5 +544,9 @@ class Remise {
     dateDebut: DateTime.tryParse((r['date_debut'] as String?) ?? ''),
     dateFin: DateTime.tryParse((r['date_fin'] as String?) ?? ''),
     actif: (r['actif'] as int) == 1,
+    cumulable: (r['cumulable'] as int? ?? 0) == 1,
+    observation: r['observation'] as String?,
+    portee: r['portee'] as String? ?? porteeProduit,
+    seuil: (r['seuil'] as num? ?? 0).toDouble(),
   );
 }

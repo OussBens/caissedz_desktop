@@ -10,6 +10,7 @@ import 'package:caissedz_desktop/application/import_produits_service.dart';
 import 'package:caissedz_desktop/application/licence_service.dart';
 import 'package:caissedz_desktop/core/db/app_database.dart';
 import 'package:caissedz_desktop/core/db/machine_key.dart';
+import 'package:caissedz_desktop/core/db/migrations/v008_shell_ds.dart';
 import 'package:caissedz_desktop/core/licence/cle_activation.dart';
 import 'package:caissedz_desktop/core/securite/mot_de_passe.dart';
 import 'package:caissedz_desktop/data/utilisateur_repository.dart';
@@ -28,6 +29,17 @@ import 'bases.dart';
 Future<void> clic(WidgetTester tester, Finder finder) async {
   await tester.ensureVisible(finder);
   await tester.pumpAndSettle();
+  await tester.tap(finder);
+  await tester.pumpAndSettle();
+  await tester.pump(const Duration(milliseconds: 700));
+}
+
+/// Double-clic sur une ligne de tableau (ouvre le détail d'un `DsModuleTable`).
+Future<void> doubleClic(WidgetTester tester, Finder finder) async {
+  await tester.ensureVisible(finder);
+  await tester.pumpAndSettle();
+  await tester.tap(finder);
+  await tester.pump(const Duration(milliseconds: 50));
   await tester.tap(finder);
   await tester.pumpAndSettle();
   await tester.pump(const Duration(milliseconds: 700));
@@ -68,6 +80,7 @@ Future<ProviderContainer> pumpApp(
   String? routeInitiale,
   Size taille = const Size(1280, 800),
   bool settle = true,
+  bool sequence = false,
   List<Override> overrides = const [],
 }) async {
   final base = await ouvrirBaseEnMemoire();
@@ -81,7 +94,7 @@ Future<ProviderContainer> pumpApp(
       controlesFenetreProvider.overrideWithValue(false),
       licenceServiceProvider.overrideWithValue(LicenceService(base.db, identifiant: const MachineTest())),
       authServiceProvider.overrideWithValue(AuthService(base.db, hachage: hachageTest)),
-      configurationServiceProvider.overrideWithValue(ConfigurationInitialeService(base.db, hachage: hachageTest)),
+      sequencePostConnexionProvider.overrideWithValue(sequence),
       if (routeInitiale != null) routeInitialeProvider.overrideWithValue(routeInitiale),
       ...overrides,
     ],
@@ -105,11 +118,11 @@ Future<ProviderContainer> pumpApp(
     case EtatApp.connecteeAdmin:
       await licence.activer(cleTest(NiveauLicence.avance));
       await config.terminer(configurationTest());
-      await session.connecter('gerant', 'azerty');
+      await session.connecter(identifiantAdmin, motDePasseAdmin);
     case EtatApp.connecteeAdminBasic:
       await licence.activer(cleTest(NiveauLicence.basic));
       await config.terminer(configurationTest());
-      await session.connecter('gerant', 'azerty');
+      await session.connecter(identifiantAdmin, motDePasseAdmin);
     case EtatApp.connecteeDemo:
       await licence.activerDemo();
       await config.terminer(configurationTest());
@@ -118,7 +131,7 @@ Future<ProviderContainer> pumpApp(
       await licence.activer(cleTest(NiveauLicence.avance));
       await config.terminer(configurationTest());
       await UtilisateurRepository(base.db).inserer(
-        const Utilisateur(code: 'USR0003', identifiant: 'yacine', nom: 'Yacine', role: Roles.magasinier),
+        const Utilisateur(code: 'USR0003', identifiant: 'yacine', nom: 'Yacine', roleCode: Roles.magasinier),
         hachageTest.hacher('1234'),
       );
       await session.connecter('yacine', '1234');
@@ -126,7 +139,7 @@ Future<ProviderContainer> pumpApp(
       await licence.activer(cleTest(NiveauLicence.basic));
       await config.terminer(configurationTest());
       await UtilisateurRepository(base.db).inserer(
-        const Utilisateur(code: 'USR0002', identifiant: 'amina', nom: 'Amina', role: Roles.caissier),
+        const Utilisateur(code: 'USR0002', identifiant: 'amina', nom: 'Amina', roleCode: Roles.caissier),
         hachageTest.hacher('1234'),
       );
       await session.connecter('amina', '1234');
@@ -143,11 +156,12 @@ Future<ProviderContainer> pumpApp(
   return container;
 }
 
+/// Administrateur système provisoire (migration v008).
+const String identifiantAdmin = MigrationV008ShellDs.identifiantAdmin;
+const String motDePasseAdmin = MigrationV008ShellDs.motDePasseAdmin;
+
 ConfigurationInitiale configurationTest() => const ConfigurationInitiale(
   boutique: Boutique(nom: 'Superette El Baraka', rc: '16/00-123456'),
-  adminIdentifiant: 'gerant',
-  adminNom: 'Karim',
-  adminMotDePasse: 'azerty',
   parametres: ParametresVente(margeDefautPct: 25),
 );
 
@@ -157,5 +171,7 @@ Uint8List importModele() => ImportProduitsService.modele();
 /// Services de test (hachage rapide, machine fixe) sur une base donnée.
 LicenceService licenceServiceTest(AppDatabase base) => LicenceService(base.db, identifiant: const MachineTest());
 AuthService authServiceTest(AppDatabase base) => AuthService(base.db, hachage: hachageTest);
-ConfigurationInitialeService configurationServiceTest(AppDatabase base) =>
-    ConfigurationInitialeService(base.db, hachage: hachageTest);
+ConfigurationInitialeService configurationServiceTest(AppDatabase base) => ConfigurationInitialeService(base.db);
+
+/// Chemin courant du routeur.
+String routeCourante(ProviderContainer c) => c.read(routerProvider).routeInformationProvider.value.uri.path;

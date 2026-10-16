@@ -5,6 +5,7 @@ import 'package:file_selector/file_selector.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/providers.dart';
+import '../../application/journal_service.dart';
 import '../../application/parametres_service.dart';
 import '../../application/sauvegarde_service.dart';
 import '../../core/i18n/generated/app_localizations.dart';
@@ -21,7 +22,13 @@ final parametresServiceProvider = Provider<ParametresService>(
 );
 
 final sauvegardeServiceProvider = Provider<SauvegardeService>(
-  (ref) => SauvegardeService(ref.watch(appDatabaseProvider)),
+  (ref) =>
+      SauvegardeService(ref.watch(appDatabaseProvider), utilisateurCode: ref.watch(utilisateurCourantCodeProvider)),
+);
+
+final journalServiceProvider = Provider<JournalService>(
+  (ref) =>
+      JournalService(ref.watch(appDatabaseProvider).db, utilisateurCode: ref.watch(utilisateurCourantCodeProvider)),
 );
 
 /// Version des données de rapport (incrémentée après toute écriture métier pour recalculer).
@@ -40,6 +47,12 @@ final selecteurEnregistrementProvider = Provider<Future<String?> Function(String
       ))?.path,
 );
 
+/// Choix d'un dossier (remplacé dans les tests).
+final selecteurDossierProvider = Provider<Future<String?> Function()>(
+  (_) =>
+      () => getDirectoryPath(),
+);
+
 /// Choix d'un fichier existant (remplacé dans les tests).
 final selecteurFichierProvider = Provider<Future<String?> Function(List<String> extensions)>(
   (_) =>
@@ -54,25 +67,12 @@ final ecrivainFichierProvider = Provider<Future<void> Function(String chemin, Ui
       (chemin, octets) => File(chemin).writeAsBytes(octets, flush: true),
 );
 
-String libelleRapport(AppLocalizations l10n, String id) => switch (id) {
-  'ventes_jour' => l10n.rapportVentesJour,
-  'ventes_produit' => l10n.rapportVentesProduit,
-  'ventes_categorie' => l10n.rapportVentesCategorie,
-  'ventes_client' => l10n.rapportVentesClient,
-  'ventes_vendeur' => l10n.rapportVentesVendeur,
-  'encaissements_mode' => l10n.rapportEncaissementsMode,
-  'achats_fournisseur' => l10n.rapportAchatsFournisseur,
-  'retours' => l10n.rapportRetours,
-  'etat_stock' => l10n.rapportEtatStock,
-  'creances_dettes' => l10n.rapportCreancesDettes,
-  _ => id,
-};
-
 String messageErreurParametres(AppLocalizations l10n, ErreurParametres e) => switch (e) {
   ErreurParametres.nomBoutiqueVide => l10n.parametresErreurNom,
   ErreurParametres.valeurInvalide => l10n.parametresErreurValeur,
   ErreurParametres.typeImprimanteInvalide => l10n.parametresErreurImprimanteType,
   ErreurParametres.adresseImprimanteRequise => l10n.parametresErreurImprimanteAdresse,
+  ErreurParametres.sauvegardeIncomplete => l10n.pmSauvegardeIncomplete,
 };
 
 String messageErreurSauvegarde(AppLocalizations l10n, SauvegardeException e) => switch (e.erreur) {

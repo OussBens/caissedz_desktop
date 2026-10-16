@@ -10,8 +10,20 @@ import '../domain/models/retour.dart';
 import '../domain/referentiel/referentiel.dart';
 
 import 'caisse_service.dart';
+import 'session_caisse_service.dart';
 
-enum ErreurVersement { montantInvalide, modeInvalide, tiersSysteme, verrouille, inconnu, tiersInvalide }
+enum ErreurVersement {
+  montantInvalide,
+  modeInvalide,
+  tiersSysteme,
+  verrouille,
+  inconnu,
+  tiersInvalide,
+  motifObligatoire,
+  dejaAnnule,
+  sessionRequise,
+  periodeCloturee,
+}
 
 class VersementException implements Exception {
   const VersementException(this.erreur);
@@ -52,7 +64,42 @@ class VersementService {
     String? commentaire,
     DateTime? date,
     String? sens,
+    String type = TypesVersement.paiement,
+    String? documentCible,
   }) async {
+    _controler(tiersType: tiersType, tiersCode: tiersCode, montant: montant, mode: mode);
+    return db.transaction((txn) async {
+      if (!await SessionCaisseService.sessionOuverte(txn, utilisateurCode)) {
+        throw const VersementException(ErreurVersement.sessionRequise);
+      }
+      final caisses = CaisseRepository(txn);
+      final caisse = caisseCode ?? await caisses.caisseParDefaut(utilisateurCode);
+      if (date != null && await caisses.periodeCloturee(date, caisseCode: caisse)) {
+        throw const VersementException(ErreurVersement.periodeCloturee);
+      }
+      return imputerDansTransaction(
+        txn,
+        tiersType: tiersType,
+        tiersCode: tiersCode,
+        montant: montant,
+        mode: mode,
+        caisseCode: caisse,
+        reference: reference,
+        commentaire: commentaire,
+        date: date,
+        sens: sens,
+        type: type,
+        documentCible: documentCible,
+      );
+    });
+  }
+
+  void _controler({
+    required String tiersType,
+    required String tiersCode,
+    required double montant,
+    required String mode,
+  }) {
     if (montant <= 0) throw const VersementException(ErreurVersement.montantInvalide);
     if (!Referentiel.modesPaiement.contient(mode) || mode == 'Points') {
       throw const VersementException(ErreurVersement.modeInvalide);
@@ -64,13 +111,38 @@ class VersementService {
         tiersCode == CodeGenerator.systeme(CodeGenerator.fournisseur)) {
       throw const VersementException(ErreurVersement.tiersSysteme);
     }
+  }
+
+  /// Versement imputé (plus ancien d'abord, [documentCible] en premier) dans la transaction d'un autre service.
+  Future<Versement> imputerDansTransaction(
+    Transaction txn, {
+    required String tiersType,
+    required String tiersCode,
+    required double montant,
+    required String mode,
+    String? caisseCode,
+    String? reference,
+    String? commentaire,
+    DateTime? date,
+    String? sens,
+    String type = TypesVersement.paiement,
+    String? documentCible,
+  }) async {
+    _controler(tiersType: tiersType, tiersCode: tiersCode, montant: montant, mode: mode);
     final s = sens ?? (tiersType == TypesTiers.client ? SensVersement.encaissement : SensVersement.decaissement);
-    return db.transaction((txn) async {
+    {
       final repo = TiersRepository(txn);
       final code = await repo.prochainCode('versement', CodeGenerator.versement);
-      final docs = tiersType == TypesTiers.client
+      final retour = s != (tiersType == TypesTiers.client ? SensVersement.encaissement : SensVersement.decaissement);
+      // Un versement « retour » (argent rendu) n'est imputé sur aucun document.
+      final docs = retour
+          ? const <DocumentOuvert>[]
+          : tiersType == TypesTiers.client
           ? await repo.documentsOuvertsClient(tiersCode)
           : await repo.documentsOuvertsFournisseur(tiersCode);
+      if (documentCible != null && !retour) {
+        docs.sort((a, b) => (a.code == documentCible ? 0 : 1).compareTo(b.code == documentCible ? 0 : 1));
+      }
       final imputations = repartir(code, montant, docs);
       final caisse = caisseCode ?? await CaisseRepository(txn).caisseParDefaut(utilisateurCode);
       final v = Versement(
@@ -86,6 +158,7 @@ class VersementService {
         reference: reference,
         commentaire: commentaire,
         imputations: imputations,
+        type: type,
       );
       await repo.insererVersement(v);
       await journaliserVersement(txn, v);
@@ -97,50 +170,107 @@ class VersementService {
         detail: '$tiersType $tiersCode $montant',
       );
       return v;
-    });
+    }
   }
 
-  /// Versement de remboursement lié à un retour : créé verrouillé, non modifiable ni supprimable.
-  Future<Versement> rembourserRetourDansTransaction(
-    Transaction txn, {
-    required Retour retour,
-    required double montant,
-    required String mode,
-    String? caisseCode,
-  }) async {
-    final repo = TiersRepository(txn);
-    final code = await repo.prochainCode('versement', CodeGenerator.versement);
-    final v = Versement(
-      code: code,
-      date: retour.date,
-      tiersType: TypesTiers.client,
-      tiersCode: retour.clientCode,
-      sens: SensVersement.decaissement,
-      montant: CalculsPrix.arrondir(montant),
-      mode: mode,
-      utilisateurCode: utilisateurCode,
-      caisseCode: caisseCode ?? await CaisseRepository(txn).caisseParDefaut(utilisateurCode),
-      commentaire: 'Remboursement ${retour.code}',
-      retourCode: retour.code,
-      verrouille: true,
-    );
-    await repo.insererVersement(v);
-    await repo.lierVersementRetour(retour.code, code);
-    await journaliserVersement(txn, v, type: TypesMouvementCaisse.remboursement);
-    return v;
-  }
-
-  /// Suppression refusée pour un versement verrouillé (lié à un retour).
-  Future<void> supprimer(String code) async {
+  /// Annulation douce (motif obligatoire, session ouverte comme à la saisie) : refusée pour un versement
+  /// verrouillé (lié à un retour) ; possible après la Z (chèque rejeté) : les imputations sont libérées et le
+  /// mouvement de caisse contre-passé (écriture inverse datée du jour, la Z scellée ne change pas).
+  Future<void> annuler(String code, {required String motif}) async {
+    if (motif.trim().isEmpty) throw const VersementException(ErreurVersement.motifObligatoire);
     await db.transaction((txn) async {
       final repo = TiersRepository(txn);
       final v = await repo.versement(code);
       if (v == null) throw const VersementException(ErreurVersement.inconnu);
       if (v.verrouille) throw const VersementException(ErreurVersement.verrouille);
-      await repo.supprimerVersement(code);
-      await CaisseRepository(txn).supprimerMouvementsReference('versement', code);
-      await HistoriqueRepository(txn)
-          .journaliser(utilisateurCode: utilisateurCode, action: 'Suppression', entite: 'versement', entiteCode: code);
+      if (!v.actif) throw const VersementException(ErreurVersement.dejaAnnule);
+      if (!await SessionCaisseService.sessionOuverte(txn, utilisateurCode)) {
+        throw const VersementException(ErreurVersement.sessionRequise);
+      }
+      await repo.annulerVersement(code, par: utilisateurCode, motif: motif.trim());
+      await CaisseRepository(txn).contrePasserReference(
+        'versement',
+        code,
+        utilisateurCode: utilisateurCode,
+        commentaire: 'Annulation $code : ${motif.trim()}',
+      );
+      await HistoriqueRepository(txn).journaliser(
+        utilisateurCode: utilisateurCode,
+        action: 'Annulation',
+        entite: 'versement',
+        entiteCode: code,
+        detail: motif.trim(),
+      );
+    });
+  }
+
+  /// Modification d'un versement non verrouillé (session ouverte) : montant, mode, date, caisse, type, observation.
+  /// Les imputations sont recalculées (plus ancien d'abord) ; l'ancien mouvement de caisse est contre-passé
+  /// puis le nouveau journalisé. Refusée si l'ancienne ou la nouvelle date est dans une période clôturée.
+  Future<Versement> modifier(
+    String code, {
+    required double montant,
+    required String mode,
+    required DateTime date,
+    String? caisseCode,
+    String? type,
+    String? commentaire,
+  }) async {
+    if (montant <= 0) throw const VersementException(ErreurVersement.montantInvalide);
+    if (!Referentiel.modesPaiement.contient(mode) || mode == 'Points') {
+      throw const VersementException(ErreurVersement.modeInvalide);
+    }
+    return db.transaction((txn) async {
+      final repo = TiersRepository(txn);
+      final ancien = await repo.versement(code);
+      if (ancien == null) throw const VersementException(ErreurVersement.inconnu);
+      if (ancien.verrouille) throw const VersementException(ErreurVersement.verrouille);
+      if (!ancien.actif) throw const VersementException(ErreurVersement.dejaAnnule);
+      if (!await SessionCaisseService.sessionOuverte(txn, utilisateurCode)) {
+        throw const VersementException(ErreurVersement.sessionRequise);
+      }
+      final caisses = CaisseRepository(txn);
+      if (await caisses.periodeCloturee(ancien.date, caisseCode: ancien.caisseCode) ||
+          await caisses.periodeCloturee(date, caisseCode: caisseCode ?? ancien.caisseCode)) {
+        throw const VersementException(ErreurVersement.periodeCloturee);
+      }
+      await txn.delete('versement_imputation', where: 'versement_code = ?', whereArgs: [code]);
+      await caisses.contrePasserReference(
+        'versement',
+        code,
+        utilisateurCode: utilisateurCode,
+        commentaire: 'Modification $code',
+      );
+      final docs = ancien.estRetour
+          ? const <DocumentOuvert>[]
+          : ancien.tiersType == TypesTiers.client
+          ? await repo.documentsOuvertsClient(ancien.tiersCode)
+          : await repo.documentsOuvertsFournisseur(ancien.tiersCode);
+      final v = Versement(
+        code: code,
+        date: date,
+        tiersType: ancien.tiersType,
+        tiersCode: ancien.tiersCode,
+        sens: ancien.sens,
+        montant: CalculsPrix.arrondir(montant),
+        mode: mode,
+        utilisateurCode: ancien.utilisateurCode,
+        caisseCode: caisseCode ?? ancien.caisseCode,
+        reference: ancien.reference,
+        commentaire: commentaire ?? ancien.commentaire,
+        type: type ?? ancien.type,
+        imputations: repartir(code, montant, docs),
+      );
+      await repo.remplacerVersement(v);
+      await journaliserVersement(txn, v);
+      await HistoriqueRepository(txn).journaliser(
+        utilisateurCode: utilisateurCode,
+        action: 'Modification',
+        entite: 'versement',
+        entiteCode: code,
+        detail: '${ancien.montant} → ${v.montant}',
+      );
+      return v;
     });
   }
 

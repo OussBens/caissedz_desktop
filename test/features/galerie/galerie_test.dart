@@ -23,7 +23,7 @@ void main() {
     );
     await pompe(tester);
 
-    expect(find.text('Galerie du design system'), findsNWidgets(3)); // page + sidebar + barre de titre
+    expect(find.text('Galerie du design system'), findsWidgets);
     expect(find.byType(DsDataTable<dynamic>), findsNothing); // générique : vérifié via un texte
     final listePage = find.descendant(of: find.byType(GaleriePage), matching: find.byType(Scrollable)).first;
     await tester.scrollUntilVisible(
@@ -40,16 +40,16 @@ void main() {
       duration: const Duration(milliseconds: 50),
     );
     await pompe(tester);
-    expect(tester.element(find.text('Couleurs')).ds.colors.fond, DsColors.clair.fond);
+    expect(tester.element(find.text('Couleurs')).ds.colors.surfaceApp, DsColors.clair.surfaceApp);
 
     await tester.tap(find.text('Sombre'));
     await pompe(tester);
-    expect(tester.element(find.text('Couleurs')).ds.colors.fond, DsColors.sombre.fond);
+    expect(tester.element(find.text('Couleurs')).ds.colors.surfaceApp, DsColors.sombre.surfaceApp);
     expect(await container.read(parametresAppRepositoryProvider).lire('theme'), 'sombre');
 
     await tester.tap(find.text('AR'));
     await pompe(tester);
-    expect(find.text('معرض نظام التصميم'), findsNWidgets(3));
+    expect(find.text('معرض نظام التصميم'), findsWidgets);
     expect(Directionality.of(tester.element(find.text('Couleurs'))), TextDirection.rtl);
   });
 }

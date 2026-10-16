@@ -75,7 +75,7 @@ void main() {
       expect(journal.length, 3);
       expect(journal.first.type, TypesMouvement.sortie);
       expect(journal.first.motif, 'Casse');
-      expect(journal.first.referenceCode, 'SOR0001');
+      expect(journal.first.referenceCode, 'SRT0001');
     });
 
     test('2ᵉ stock « nombre » suivi en parallèle', () async {
@@ -158,11 +158,12 @@ void main() {
         throwsA(isA<StockException>().having((e) => e.erreur, 'e', ErreurStock.stockInsuffisant)),
       );
       expect((await repo.transferts()).length, 1, reason: 'transfert refusé non enregistré');
-      await s.modifierMagasin(Magasin(code: depot.code, nom: 'Dépôt', actif: false));
+      final reserve = await s.creerMagasin('Réserve');
+      await s.modifierMagasin(Magasin(code: reserve.code, nom: 'Réserve', actif: false));
       await expectLater(
         s.transferer(
           magasinSource: 'MAG0000',
-          magasinDestination: depot.code,
+          magasinDestination: reserve.code,
           lignes: [LigneStock(produitCode: lait.code, quantite: 1)],
         ),
         throwsA(isA<StockException>().having((e) => e.erreur, 'e', ErreurStock.magasinInactif)),
@@ -174,27 +175,148 @@ void main() {
     });
   });
 
-  group('StockService — besoins', () {
-    test('cycle En attente → Commande → Disponible et génération sous seuil', () async {
+  group('StockService — documents (DS v2.2)', () {
+    test('sortie : prix d\'achat figé, modification puis annulation avec réintégration', () async {
+      final base = await ouvrirBaseDeTest();
+      final (s, lait, _) = await _prepare(base);
+      final repo = StockRepository(base.db);
+      await s.entrerStock(produitCode: lait.code, magasinCode: 'MAG0000', quantite: 10);
+      final so = await s.sortir(
+        magasinCode: 'MAG0000',
+        motif: 'Casse',
+        lignes: [LigneStock(produitCode: lait.code, quantite: 3)],
+      );
+      expect(so.code, 'SRT0001');
+      expect(so.valeur, 240, reason: '3 × 80 (prix d\'achat)');
+      await s.modifierSortie(
+        so.code,
+        magasinCode: 'MAG0000',
+        motif: 'Périmé',
+        lignes: [LigneStock(produitCode: lait.code, quantite: 5)],
+      );
+      expect((await repo.niveau(lait.code, 'MAG0000')).quantite, 5);
+      expect((await repo.sortie(so.code))!.motif, 'Périmé');
+      await expectLater(
+        s.annulerSorties([so.code], motif: ' '),
+        throwsA(isA<StockException>().having((e) => e.erreur, 'e', ErreurStock.motifObligatoire)),
+      );
+      await s.annulerSorties([so.code], motif: 'Erreur de saisie');
+      expect((await repo.niveau(lait.code, 'MAG0000')).quantite, 10);
+      final annulee = (await repo.sortie(so.code))!;
+      expect(annulee.actif, isFalse);
+      expect(annulee.annulation!.motif, 'Erreur de saisie');
+      await expectLater(
+        s.annulerSorties([so.code], motif: 'x'),
+        throwsA(isA<StockException>().having((e) => e.erreur, 'e', ErreurStock.dejaAnnule)),
+      );
+    });
+
+    test('transfert : modification, annulation et distribution (total conservé)', () async {
+      final base = await ouvrirBaseDeTest();
+      final (s, lait, _) = await _prepare(base);
+      final repo = StockRepository(base.db);
+      final depot = await s.creerMagasin('Dépôt');
+      final boutique = await s.creerMagasin('Boutique');
+      await s.entrerStock(produitCode: lait.code, magasinCode: 'MAG0000', quantite: 30);
+      final t = await s.transferer(
+        magasinSource: 'MAG0000',
+        magasinDestination: depot.code,
+        lignes: [LigneStock(produitCode: lait.code, quantite: 10)],
+      );
+      await s.modifierTransfert(
+        t.code,
+        magasinSource: 'MAG0000',
+        magasinDestination: boutique.code,
+        lignes: [LigneStock(produitCode: lait.code, quantite: 4)],
+      );
+      expect((await repo.niveau(lait.code, depot.code)).quantite, 0);
+      expect((await repo.niveau(lait.code, boutique.code)).quantite, 4);
+      expect((await repo.niveau(lait.code, 'MAG0000')).quantite, 26);
+      await s.annulerTransferts([t.code], motif: 'Doublon');
+      expect((await repo.niveau(lait.code, boutique.code)).quantite, 0);
+      expect((await repo.niveau(lait.code, 'MAG0000')).quantite, 30);
+      expect((await repo.transfert(t.code))!.actif, isFalse);
+
+      final crees = await s.distribuer(lait.code, cible: {'MAG0000': 18, depot.code: 9, boutique.code: 3});
+      expect(crees.length, 2);
+      expect((await repo.niveau(lait.code, 'MAG0000')).quantite, 18);
+      expect((await repo.niveau(lait.code, depot.code)).quantite, 9);
+      expect((await repo.niveau(lait.code, boutique.code)).quantite, 3);
+      expect((await repo.niveauTotal(lait.code)).quantite, 30);
+      await expectLater(
+        s.distribuer(lait.code, cible: {'MAG0000': 10}),
+        throwsA(isA<StockException>().having((e) => e.erreur, 'e', ErreurStock.quantiteInvalide)),
+      );
+    });
+
+    test('magasins : nom unique, désactivation bloquée si stock ou magasin principal', () async {
+      final base = await ouvrirBaseDeTest();
+      final (s, lait, _) = await _prepare(base);
+      final depot = await s.creerMagasin('Dépôt', telephone: '021 00 00 00');
+      await expectLater(
+        s.creerMagasin('dépôt'),
+        throwsA(isA<StockException>().having((e) => e.erreur, 'e', ErreurStock.nomPris)),
+      );
+      await s.entrerStock(produitCode: lait.code, magasinCode: depot.code, quantite: 2);
+      expect(await s.blocageDesactivation(depot), ErreurStock.stockNonNul);
+      expect(
+        await s.blocageDesactivation((await StockRepository(base.db).magasin('MAG0000'))!),
+        ErreurStock.magasinSysteme,
+      );
+      await s.transferer(
+        magasinSource: depot.code,
+        magasinDestination: 'MAG0000',
+        lignes: [LigneStock(produitCode: lait.code, quantite: 2)],
+      );
+      await s.definirMagasinsUtilisateur('USR0001', [depot.code, 'MAG0000']);
+      expect(await s.blocageDesactivation(depot), ErreurStock.magasinPrincipal);
+      await s.definirMagasinsUtilisateur('USR0001', ['MAG0000', depot.code]);
+      await s.changerEtatMagasins([depot.code], actif: false);
+      expect((await StockRepository(base.db).magasin(depot.code))!.actif, isFalse);
+    });
+  });
+
+  group('StockService — listes de besoins', () {
+    test('liste fournisseur : lignes, montant, statuts, modification et annulation', () async {
       final base = await ouvrirBaseDeTest();
       final (s, lait, carton) = await _prepare(base);
-      final b = await s.creerBesoin(produitCode: lait.code, quantite: 20);
-      expect(b.code, 'BES0001');
+      final b = await s.creerBesoin(
+        fournisseurCode: 'FOR0000',
+        lignes: [
+          LigneStock(produitCode: lait.code, quantite: 20, prix: 80),
+          LigneStock(produitCode: carton.code, quantite: 2, prix: 300),
+        ],
+      );
+      expect(b.code, 'BL0001');
+      expect(b.montant, 2200);
       expect(b.statut, StatutsBesoin.enAttente);
+      await s.modifierBesoin(
+        b.code,
+        fournisseurCode: 'FOR0000',
+        lignes: [LigneStock(produitCode: lait.code, quantite: 10, prix: 75)],
+      );
+      expect((await StockRepository(base.db).besoin(b.code))!.montant, 750);
       expect((await s.changerStatutBesoin(b.code, StatutsBesoin.commande)).statut, 'Commande');
-      expect((await s.changerStatutBesoin(b.code, StatutsBesoin.disponible)).statut, 'Disponible');
       await expectLater(
         s.changerStatutBesoin(b.code, 'Autre'),
         throwsA(isA<StockException>().having((e) => e.erreur, 'e', ErreurStock.statutInvalide)),
       );
-      // lait : besoin disponible (clos) et stock 0 ≤ seuil 5 → nouveau besoin ; carton : stock 10 > seuil → rien
-      await s.entrerStock(produitCode: carton.code, magasinCode: 'MAG0000', quantite: 10);
-      final crees = await s.genererBesoinsSousSeuil(seuilGlobal: 5);
-      expect(crees.map((x) => x.produitCode), [lait.code]);
-      expect(crees.single.quantite, 10);
-      expect(await s.genererBesoinsSousSeuil(seuilGlobal: 5), isEmpty, reason: 'besoin déjà ouvert');
-      await s.supprimerBesoin(crees.single.code);
-      expect((await StockRepository(base.db).besoins()).length, 1);
+      await s.changerStatutBesoin(b.code, StatutsBesoin.disponible);
+      await expectLater(
+        s.annulerBesoins([b.code]),
+        throwsA(isA<StockException>().having((e) => e.erreur, 'e', ErreurStock.besoinRecu)),
+      );
+      final b2 = await s.creerBesoin(
+        fournisseurCode: 'FOR0000',
+        lignes: [LigneStock(produitCode: lait.code, quantite: 1)],
+      );
+      await s.annulerBesoins([b2.code]);
+      expect((await StockRepository(base.db).besoin(b2.code))!.actif, isFalse);
+      expect(StockService.suggestion(2, 5), 8);
+      expect(StockService.suggestion(20, 5), 1);
+      // Seuil maximum des Paramètres : on remonte au maximum (ignoré s'il ne dépasse pas le seuil).
+      expect(StockService.suggestion(2, 5, maximum: 30), 28);
+      expect(StockService.suggestion(2, 5, maximum: 4), 8);
     });
   });
 }

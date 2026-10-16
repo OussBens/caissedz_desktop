@@ -37,14 +37,14 @@ void main() {
       );
       await tester.tap(find.text('Encaisser'));
       await tester.pump();
-      expect(find.byIcon(LucideIcons.loader), findsOneWidget);
+      expect(find.byIcon(LucideIcons.loaderCircle), findsOneWidget);
       await tester.tap(find.text('Encaisser'));
       await tester.pump(const Duration(milliseconds: 500));
       await tester.tap(find.text('Encaisser'));
       expect(clics, 1);
       await tester.pump(const Duration(seconds: 2));
       await tester.pumpAndSettle();
-      expect(find.byIcon(LucideIcons.loader), findsNothing);
+      expect(find.byIcon(LucideIcons.loaderCircle), findsNothing);
       await tester.tap(find.text('Encaisser'));
       expect(clics, 2);
       await tester.pump(const Duration(seconds: 3));

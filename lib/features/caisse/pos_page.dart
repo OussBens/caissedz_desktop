@@ -9,15 +9,26 @@ import '../../app/demarrage_providers.dart';
 import '../../application/vente_service.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
+import '../../domain/models/caisse.dart';
 import '../../domain/models/panier.dart';
 import '../../domain/models/produit.dart';
+import '../../domain/models/retour.dart';
+import '../../domain/models/tiers.dart';
+import '../../domain/models/vente.dart';
 import '../../domain/permissions.dart';
-import '../../domain/referentiel/referentiel.dart';
+import '../entrees/entree_dialogs.dart';
+import '../gestion_caisse/gestion_caisse_providers.dart';
+import '../produits/produit_form_dialog.dart';
+import '../produits/produits_donnees.dart';
 import '../produits/produits_providers.dart';
+import '../tiers/tiers_dialogs.dart';
+import '../tiers/tiers_providers.dart';
+import 'caisse_dialogs.dart';
 import 'pos_controller.dart';
 import 'pos_dialogs.dart';
 
-/// Écran de caisse (POS) : produits, 5 paniers, paiements, raccourcis.
+/// Écran Caisse (`CaisseScreen` du DS v2.2) : session compacte, 5 ventes en parallèle (onglets), grille ou
+/// liste des produits / packs, panier (client, remise, mode), total et encaissement ticket / BL-SC / crédit.
 class PosPage extends ConsumerStatefulWidget {
   const PosPage({super.key});
 
@@ -25,25 +36,30 @@ class PosPage extends ConsumerStatefulWidget {
   ConsumerState<PosPage> createState() => _PosPageState();
 }
 
+enum _Vue { produits, packs }
+
 class _PosPageState extends ConsumerState<PosPage> {
   final _scan = TextEditingController();
   final _scanFocus = FocusNode();
   String _recherche = '';
   String? _categorie;
+  _Vue _vue = _Vue.produits;
+  DsVueModule _disposition = DsVueModule.grille;
+  bool _afficherProduits = true;
   int? _ligneSelectionnee;
-  String _mode = 'Espèces';
-  String _montant = '';
-  bool _credit = false;
-  String? _nomClient;
 
   @override
   void initState() {
     super.initState();
     unawaited(ref.read(posControllerProvider.notifier).initialiser());
+    // Raccourcis globaux : la caisse les reçoit où que soit le focus (barre latérale, carte, panier…),
+    // tant qu'aucun dialog n'est ouvert par-dessus.
+    HardwareKeyboard.instance.addHandler(_clavierGlobal);
   }
 
   @override
   void dispose() {
+    HardwareKeyboard.instance.removeHandler(_clavierGlobal);
     _scan.dispose();
     _scanFocus.dispose();
     super.dispose();
@@ -51,7 +67,7 @@ class _PosPageState extends ConsumerState<PosPage> {
 
   AppLocalizations get l10n => AppLocalizations.of(context);
   PosController get ctrl => ref.read(posControllerProvider.notifier);
-  String get devise => ref.read(deviseProvider);
+  String _da(double v) => formaterMontant(v, ref.read(deviseProvider));
 
   void _erreur(String message) =>
       unawaited(afficherResultat(context, type: DsResultatType.erreur, titre: l10n.posTitre, message: message));
@@ -67,558 +83,964 @@ class _PosPageState extends ConsumerState<PosPage> {
         ErreurPos.sessionRequise => l10n.posSessionAucune,
       });
     } on VenteException catch (e) {
-      _erreur(messageErreurVente(l10n, e, devise));
+      _erreur(messageErreurVente(l10n, e, ref.read(deviseProvider)));
+    }
+  }
+
+  // ------------------------------------------------------------------ Données
+
+  Map<String, double> get _stocks => ref.read(stocksCaisseProvider).value ?? const {};
+
+  /// Unités disponibles d'un produit dans le magasin de la caisse, hors réservations des paniers ouverts
+  /// (la ligne [sauf] du panier courant est exclue lors d'une modification).
+  double _disponible(Produit p, {PanierLigne? sauf}) {
+    final etat = ref.read(posControllerProvider);
+    final reserve = etat.unitesReservees(p.code) - (sauf?.unitesStock ?? 0);
+    return (_stocks[p.code] ?? 0) - reserve;
+  }
+
+  List<Colis> _colisDe(Produit p) => [
+    for (final c in ref.read(colisProvider).value ?? const <Colis>[])
+      if (c.produitCode == p.code && c.actif) c,
+  ];
+
+  String _nomCaisse() {
+    final etat = ref.read(posControllerProvider);
+    final code = etat.session?.caisseCode ?? etat.caisseCode;
+    final caisses = ref.read(caissesListeProvider).value ?? const <Caisse>[];
+    return caisses.where((c) => c.code == code).firstOrNull?.nom ?? caisses.firstOrNull?.nom ?? l10n.posTitre;
+  }
+
+  String _nomClient(String code) {
+    if (code == 'CLN0000') return l10n.posClientPassage;
+    final clients = ref.read(clientsProvider).value ?? const <Client>[];
+    return clients.where((c) => c.code == code).firstOrNull?.nom ?? code;
+  }
+
+  // ------------------------------------------------------------------ Produits
+
+  Future<void> _choisirProduit(Produit p, {bool scanne = false}) async {
+    String? scanSuivant;
+    final choix = await afficherSelectionProduit(
+      context,
+      produit: p,
+      colis: _colisDe(p),
+      stock: _disponible(p),
+      scanne: scanne,
+      // Scan pendant que le dialog est ouvert : même produit → + 1, autre code → traité après validation.
+      estMemeProduit: (code) async {
+        final r = await ctrl.resoudre(code);
+        return r != null && r.produit.code == p.code && r.colis == null && r.pack == null;
+      },
+      autreScan: (code) => scanSuivant = code,
+    );
+    if (choix != null && mounted) {
+      await _executer(() => ctrl.ajouter(p, colis: choix.colis, nombre: choix.nombre, quantite: choix.quantite));
+    }
+    if (!mounted) return;
+    _scanFocus.requestFocus();
+    if (scanSuivant != null) {
+      _scan.text = scanSuivant!;
+      await _scanner();
+    }
+  }
+
+  Future<void> _modifierColis(int index) async {
+    final l = ref.read(posControllerProvider).panier.lignes[index];
+    if (l.pack != null || l.estMontant) return;
+    final choix = await afficherSelectionProduit(
+      context,
+      produit: l.produit,
+      colis: _colisDe(l.produit),
+      stock: _disponible(l.produit, sauf: l),
+      colisInitial: l.colis,
+      nombreInitial: l.uniteVente == UniteVente.nombre,
+      quantiteInitiale: l.quantite,
+      modification: true,
+    );
+    if (choix == null || !mounted) return;
+    await _executer(
+      () => ctrl.remplacerLigne(index, l.produit, colis: choix.colis, nombre: choix.nombre, quantite: choix.quantite),
+    );
+  }
+
+  Future<void> _ajouterPack(Pack pack) => _executer(() => ctrl.ajouterPack(pack));
+
+  /// Vente au montant : « Autre montant » (saisie) ou modification de la ligne existante ([index]).
+  Future<void> _saisirMontant({int? index}) async {
+    final lignes = ref.read(posControllerProvider).panier.lignes;
+    final v = await afficherSaisieMontant(context, initial: index == null ? null : lignes[index].prixUnitaire);
+    if (v == null || !mounted) return;
+    if (index == null) {
+      await _executer(() => ctrl.ajouterMontant(v));
+    } else {
+      ctrl.modifierMontant(index, v);
+      if (v <= 0) setState(() => _ligneSelectionnee = null);
     }
   }
 
   Future<void> _scanner() async {
     final code = _scan.text.trim();
     if (code.isEmpty) return;
-    await _executer(() async {
-      final ok = await ctrl.scanner(code);
-      if (!ok) {
-        // Pas un code : filtre la grille.
-        setState(() => _recherche = code);
-        return;
+    final r = await ctrl.resoudre(code);
+    if (!mounted) return;
+    if (r == null) {
+      if (RegExp(r'^\d{8,}$').hasMatch(code)) {
+        final suite = await afficherProduitIntrouvable(context, code);
+        if (!mounted) return;
+        if (suite == true) await _rechercheAvancee();
+        if (suite == false) await _nouveauProduit();
       }
-      _scan.clear();
-      setState(() => _recherche = '');
-    });
+      return;
+    }
+    _scan.clear();
+    setState(() => _recherche = '');
+    // Produit déjà au panier (à l'unité, hors pack) : le scan augmente sa quantité sans rouvrir le dialog.
+    final lignes = ref.read(posControllerProvider).panier.lignes;
+    final deja = r.colis == null && r.pack == null
+        ? lignes.indexWhere(
+            (l) =>
+                l.produit.code == r.produit.code &&
+                l.colis == null &&
+                l.pack == null &&
+                !l.estMontant &&
+                l.uniteVente != UniteVente.nombre,
+          )
+        : -1;
+    if (deja >= 0) {
+      await _executer(() => ctrl.modifierQuantite(deja, lignes[deja].quantite + 1));
+      if (mounted) setState(() => _ligneSelectionnee = deja);
+    } else if (r.colis != null || r.pack != null) {
+      await _executer(() => ctrl.ajouter(r.produit, colis: r.colis, pack: r.pack));
+    } else {
+      await _choisirProduit(r.produit, scanne: true);
+    }
     _scanFocus.requestFocus();
   }
 
-  Future<void> _ajouterPaiement({String? mode, double? montant}) async {
-    final etat = ref.read(posControllerProvider);
-    final m = montant ?? double.tryParse(_montant.replaceAll(',', '.')) ?? etat.panier.reste;
-    if (m <= 0) return;
-    ctrl.ajouterPaiement(mode ?? _mode, m);
-    setState(() => _montant = '');
+  Future<void> _rechercheAvancee() async {
+    final produits = ref.read(produitsPosProvider).value ?? const <Produit>[];
+    final choix = await afficherRechercheProduit(context, ref, produits: produits, stocks: _stocks);
+    if (choix == null || choix.isEmpty || !mounted) return;
+    for (final p in choix) {
+      await _executer(() => ctrl.ajouter(p));
+    }
+    if (!mounted) return;
+    afficherToast(
+      context,
+      titre: l10n.posRechAjoutes(choix.length),
+      description: l10n.posVente(ref.read(posControllerProvider).panier.id),
+      ton: DsToastTon.info,
+    );
   }
 
-  Future<void> _encaisser() async {
-    final etat = ref.read(posControllerProvider);
-    if (etat.session == null) {
-      _erreur(l10n.posSessionAucune);
-      return;
-    }
-    if (etat.panier.estVide) {
-      _erreur(l10n.posErreurPanierVide);
-      return;
-    }
-    // Sans paiement saisi : espèces pour le montant exact.
-    if (etat.panier.paiements.isEmpty && !_credit) ctrl.ajouterPaiement('Espèces', etat.panier.totalNet);
-    await _executer(() async {
-      final v = await ctrl.encaisser(creditAutorise: _credit);
-      setState(() {
-        _ligneSelectionnee = null;
-        _montant = '';
-        _credit = false;
-        _nomClient = null;
-      });
-      if (!mounted) return;
-      unawaited(afficherResultatVente(context, ref, v));
-    });
-    _scanFocus.requestFocus();
+  /// Entrée rapide (§9.6, touche `E`) : achat d'un produit payé intégralement, stock rafraîchi ensuite.
+  Future<void> _entreeRapide([Produit? p]) async {
+    await afficherEntreeRapide(context, ref, produit: p);
+    ref.invalidate(stocksCaisseProvider);
   }
+
+  Future<void> _nouveauProduit() async {
+    await afficherFormulaireProduit(context);
+    ref.invalidate(produitsPosProvider);
+  }
+
+  // ------------------------------------------------------------------ Panier
 
   Future<void> _choisirClient() async {
-    final c = await afficherChoixClient(context, ref);
-    if (c == null) return;
-    ctrl.choisirClient(c.code);
-    setState(() => _nomClient = c.estDePassage ? null : c.nom);
+    final c = await afficherChoixClient(context, ref, onCreer: () => unawaited(_nouveauClient()));
+    if (c != null) ctrl.choisirClient(c.code);
   }
 
-  Future<void> _remiseGlobale() async {
-    if (!(ref.read(sessionProvider)?.a(Permission.appliquerRemise) ?? false)) return;
-    final pct = await afficherRemise(context, initiale: ref.read(posControllerProvider).panier.remiseGlobalePct);
-    if (pct != null) ctrl.remiseGlobale(pct);
+  Future<void> _nouveauClient() async {
+    final avant = {for (final c in ref.read(clientsProvider).value ?? const <Client>[]) c.code};
+    await afficherFormulaireTiers(context, ref, type: TypesTiers.client);
+    final apres = await ref.read(clientsProvider.future);
+    final nouveau = apres.where((c) => !avant.contains(c.code)).firstOrNull;
+    if (nouveau != null) ctrl.choisirClient(nouveau.code);
   }
 
-  KeyEventResult _raccourci(FocusNode node, KeyEvent e) {
+  List<Remise> _remisesGlobales() {
+    final n = DateTime.now();
+    return [
+      for (final r in ref.read(remisesProvider).value ?? const <Remise>[])
+        if (r.parMontant && r.estActive(n)) r,
+    ];
+  }
+
+  String _libelleRemise(Remise r) =>
+      '${r.designation} · ${r.type == 'Pourcentage' ? '${formaterNombre(r.valeur)} %' : _da(r.valeur)}';
+
+  Future<void> _choisirRemise() async {
+    final r = await afficherSelecteur<Remise>(
+      context,
+      titre: l10n.posChoisirRemise,
+      icone: LucideIcons.percent,
+      elements: _remisesGlobales(),
+      libelle: _libelleRemise,
+    );
+    if (r != null) ctrl.appliquerRemise(r);
+  }
+
+  Future<void> _modifierPrix(int index) async {
+    if (!ref.read(permissionProvider(Permission.modifierPrixVente))) return;
+    final l = ref.read(posControllerProvider).panier.lignes[index];
+    final r = await afficherModifPrix(
+      context,
+      ligne: l,
+      voirAchat: ref.read(permissionProvider(Permission.voirPrixAchat)),
+    );
+    if (r == null || !mounted) return;
+    ctrl.prixLigne(index, r.prix);
+    if (r.catalogue) {
+      await ref.read(catalogueServiceProvider).modifierProduit(l.produit.copyWith(prixVente: r.prix));
+      ref.read(catalogueVersionProvider.notifier).incrementer();
+    }
+    if (!mounted) return;
+    afficherToast(
+      context,
+      titre: l10n.posPrixModifie,
+      description: r.catalogue ? l10n.posPrixModifieProduit(l.designation) : l10n.posPrixModifieTicket(l.designation),
+      ton: DsToastTon.info,
+    );
+  }
+
+  void _vider() {
+    ctrl.viderPanier();
+    setState(() => _ligneSelectionnee = null);
+  }
+
+  Future<void> _fermerVente(Object cle) async {
+    final etat = ref.read(posControllerProvider);
+    final index = etat.paniers.indexWhere((p) => p.id == cle);
+    if (index < 0) return;
+    final p = etat.paniers[index];
+    if (p.lignes.isNotEmpty) {
+      final ok = await afficherConfirmation(
+        context,
+        titre: l10n.posFermerVenteTitre(p.id),
+        message: l10n.posFermerVenteMsg('${p.lignes.length}'),
+        libelleConfirmer: l10n.posFermerVenteOk,
+        genre: DsConfirmGenre.avertissement,
+      );
+      if (!ok) return;
+    }
+    ctrl.fermerPanier(index);
+  }
+
+  // ------------------------------------------------------------------ Encaissement
+
+  Future<void> _encaisser(NatureEncaissement nature) async {
+    var etat = ref.read(posControllerProvider);
+    if (etat.panier.estVide) return;
+    if (etat.session == null) {
+      final ouvrir = await afficherCaisseFermee(context, caisse: _nomCaisse());
+      if (!ouvrir || !mounted) return;
+      if (!await afficherOuvertureCaisse(context, ref) || !mounted) return;
+      etat = ref.read(posControllerProvider);
+    }
+    final panier = etat.panier;
+    final r = await afficherEncaisser(
+      context,
+      nature: nature,
+      panier: panier,
+      numeroVente: panier.id,
+      nomClient: _nomClient(panier.clientCode),
+      caissier: ref.read(sessionProvider)?.utilisateur.nom ?? '',
+    );
+    if (r == null || !mounted) return;
+    Vente? vente;
+    await _executer(() async {
+      vente = await ctrl.encaisser(creditAutorise: panier.clientCode != 'CLN0000', montantPaye: r.paye, mode: r.mode);
+    });
+    final v = vente;
+    if (v == null || !mounted) return;
+    rafraichirCommerce(ref);
+    rafraichirCaisse(ref);
+    setState(() => _ligneSelectionnee = null);
+    afficherToast(
+      context,
+      titre: nature == NatureEncaissement.enregistrer
+          ? l10n.posToastEnregistre(v.code)
+          : l10n.posToastEncaisse(l10n.posTicket, v.code),
+      description: nature == NatureEncaissement.enregistrer || v.reste > 0
+          ? l10n.posToastResteCredit(_da(v.reste))
+          : l10n.posToastRendu(_da(v.totalNet), _da(v.monnaie)),
+      libelleAction: l10n.posReimprimer,
+      iconeAction: LucideIcons.printer,
+      onAction: () => unawaited(afficherResultatVente(context, ref, v)),
+    );
+    switch (nature) {
+      case NatureEncaissement.ticket:
+        if (!await imprimerTicketDirect(context, ref, v) && mounted) await afficherResultatVente(context, ref, v);
+      case NatureEncaissement.enregistrer:
+        break;
+    }
+    _scanFocus.requestFocus();
+  }
+
+  // ------------------------------------------------------------------ Raccourcis
+
+  bool _clavierGlobal(KeyEvent e) {
+    if (!mounted || e is! KeyDownEvent) return false;
+    // Un dialog (sélection, encaissement…) gère lui-même son clavier.
+    if (Navigator.of(context, rootNavigator: true).canPop() || ModalRoute.of(context)?.isCurrent == false) {
+      return false;
+    }
+    return _raccourci(e) == KeyEventResult.handled;
+  }
+
+  /// Un champ de saisie a le focus (scan, recherche, remise…) : lettres et touches d'édition lui reviennent.
+  bool get _saisieEnCours {
+    if (_scanFocus.hasFocus) return true;
+    final ctx = FocusManager.instance.primaryFocus?.context;
+    return ctx != null && (ctx.widget is EditableText || ctx.findAncestorStateOfType<EditableTextState>() != null);
+  }
+
+  KeyEventResult _raccourci(KeyEvent e) {
     if (e is! KeyDownEvent) return KeyEventResult.ignored;
-    final ctrlPressed = HardwareKeyboard.instance.isControlPressed;
+    final ctrlPresse = HardwareKeyboard.instance.isControlPressed;
     final k = e.logicalKey;
     final etat = ref.read(posControllerProvider);
-    void exact(String mode) => _ajouterPaiement(mode: mode, montant: etat.panier.reste);
+    final saisie = _saisieEnCours;
+    final i = _ligneSelectionnee;
+    final ligne = i != null && i < etat.panier.lignes.length ? etat.panier.lignes[i] : null;
     if (k == LogicalKeyboardKey.f1) {
-      _scanFocus.requestFocus();
-    } else if (k == LogicalKeyboardKey.f2) {
-      unawaited(_choisirClient());
-    } else if (k == LogicalKeyboardKey.f3) {
-      unawaited(_remiseGlobale());
-    } else if (k == LogicalKeyboardKey.f4) {
-      exact('Espèces');
-    } else if (k == LogicalKeyboardKey.f5) {
-      exact('Carte');
-    } else if (k == LogicalKeyboardKey.f6) {
-      exact('Chèque');
-    } else if (k == LogicalKeyboardKey.f7) {
-      exact('Virement');
-    } else if (k == LogicalKeyboardKey.f8) {
-      setState(() => _mode = 'Points');
-    } else if (k == LogicalKeyboardKey.f9) {
-      unawaited(
-        afficherCalculatrice(context).then((v) {
-          if (v != null && mounted) setState(() => _montant = v.toStringAsFixed(2));
-        }),
-      );
-    } else if (k == LogicalKeyboardKey.f10) {
-      ctrl.viderPanier();
-      setState(() => _ligneSelectionnee = null);
-    } else if (k == LogicalKeyboardKey.f11) {
       unawaited(afficherAideRaccourcis(context));
+    } else if (k == LogicalKeyboardKey.f2) {
+      _scanFocus.requestFocus();
+    } else if (k == LogicalKeyboardKey.f3) {
+      unawaited(_rechercheAvancee());
+    } else if (k == LogicalKeyboardKey.f4) {
+      unawaited(_encaisser(NatureEncaissement.ticket));
+    } else if (k == LogicalKeyboardKey.f6) {
+      unawaited(_encaisser(NatureEncaissement.enregistrer));
+    } else if (k == LogicalKeyboardKey.f7) {
+      unawaited(_choisirClient());
+    } else if (k == LogicalKeyboardKey.f8) {
+      unawaited(_choisirRemise());
+    } else if (k == LogicalKeyboardKey.f9) {
+      unawaited(afficherCalculatrice(context));
+    } else if (k == LogicalKeyboardKey.f10) {
+      _vider();
+    } else if (k == LogicalKeyboardKey.f11) {
+      setState(() => _afficherProduits = !_afficherProduits);
     } else if (k == LogicalKeyboardKey.f12) {
-      unawaited(_encaisser());
-    } else if (ctrlPressed && k == LogicalKeyboardKey.keyN) {
+      unawaited(afficherVentesDuJour(context, ref, nomCaisse: _nomCaisse()));
+    } else if (ctrlPresse && k == LogicalKeyboardKey.keyN) {
       unawaited(_executer(() async => ctrl.nouveauPanier()));
-    } else if (ctrlPressed && k == LogicalKeyboardKey.tab) {
+    } else if (ctrlPresse && k == LogicalKeyboardKey.tab) {
       ctrl.panierSuivant();
-    } else if (k == LogicalKeyboardKey.delete && _ligneSelectionnee != null && !_scanFocus.hasFocus) {
-      ctrl.retirerLigne(_ligneSelectionnee!);
+    } else if (k == LogicalKeyboardKey.keyE && !ctrlPresse && !saisie) {
+      unawaited(_entreeRapide());
+    } else if (k == LogicalKeyboardKey.delete && ligne != null && !saisie) {
+      ctrl.retirerLigne(i!);
       setState(() => _ligneSelectionnee = null);
     } else if ((k == LogicalKeyboardKey.numpadAdd || k == LogicalKeyboardKey.add) &&
-        _ligneSelectionnee != null &&
-        !_scanFocus.hasFocus) {
-      final l = etat.panier.lignes[_ligneSelectionnee!];
-      unawaited(_executer(() => ctrl.modifierQuantite(_ligneSelectionnee!, l.quantite + 1)));
+        ligne != null &&
+        !ligne.estMontant &&
+        !saisie) {
+      unawaited(_executer(() => ctrl.modifierQuantite(i!, ligne.quantite + 1)));
     } else if ((k == LogicalKeyboardKey.numpadSubtract || k == LogicalKeyboardKey.minus) &&
-        _ligneSelectionnee != null &&
-        !_scanFocus.hasFocus) {
-      final l = etat.panier.lignes[_ligneSelectionnee!];
-      unawaited(_executer(() => ctrl.modifierQuantite(_ligneSelectionnee!, l.quantite - 1)));
+        ligne != null &&
+        !ligne.estMontant &&
+        !saisie) {
+      unawaited(_executer(() => ctrl.modifierQuantite(i!, ligne.quantite - 1)));
     } else {
       return KeyEventResult.ignored;
     }
     return KeyEventResult.handled;
   }
 
+  // ------------------------------------------------------------------ Rendu
+
   @override
   Widget build(BuildContext context) {
-    final c = context.ds.colors;
-    final t = context.ds.typo;
     final etat = ref.watch(posControllerProvider);
-    final panier = etat.panier;
-    final session = ref.watch(sessionProvider);
-    final devise = ref.watch(deviseProvider);
-    final peutRemise = session?.a(Permission.appliquerRemise) ?? false;
-    final peutPrix = session?.a(Permission.modifierPrix) ?? false;
+    ref
+      ..watch(stocksCaisseProvider)
+      ..watch(colisProvider)
+      ..watch(clientsProvider)
+      ..watch(remisesProvider)
+      ..watch(caissesListeProvider);
+    final large = !_afficherProduits;
     return Focus(
-      onKeyEvent: _raccourci,
-      child: Column(
-        children: [
-          _barreSession(etat, c, t),
-          Expanded(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(flex: 5, child: _colonneProduits(c, t)),
-                Container(width: 1, color: c.bordure),
-                Expanded(
-                  flex: 4,
-                  child: _colonnePanier(etat, panier, c, t, devise, peutRemise: peutRemise, peutPrix: peutPrix),
-                ),
-              ],
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(
+          DsTailles.pagePaddingX,
+          DsTailles.pagePaddingY - DsSpacing.s2,
+          DsTailles.pagePaddingX,
+          0,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: DsSpacing.s3,
+          children: [
+            _entete(etat),
+            _ongletsVentes(etat),
+            Expanded(
+              child: large
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      spacing: DsSpacing.s4,
+                      children: [
+                        _barreRecherche(),
+                        Expanded(child: _panier(etat, large: true)),
+                      ],
+                    )
+                  : Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      spacing: DsSpacing.s4,
+                      children: [
+                        Expanded(child: _colonneProduits()),
+                        SizedBox(width: 540, child: _panier(etat, large: false)),
+                      ],
+                    ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
-  Widget _barreSession(PosEtat etat, DsColors c, DsTypography t) {
+  Widget _entete(PosEtat etat) {
+    final t = context.ds.typo;
     final s = etat.session;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: DsSpacing.lg, vertical: DsSpacing.sm),
-      decoration: BoxDecoration(
-        color: s == null ? c.avertissementDoux : c.surface,
-        border: Border(bottom: BorderSide(color: c.bordure)),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            s == null ? LucideIcons.triangleAlert : LucideIcons.badgeCheck,
-            size: DsTailles.icone,
-            color: s == null ? c.avertissement : c.succes,
+    final solde = s == null ? null : ref.watch(soldesCaissesProvider).value?[s.caisseCode]?.especes;
+    return Wrap(
+      spacing: 10,
+      runSpacing: 8,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        Text(l10n.posTitre, style: t.pageTitle),
+        DsCashSessionCard(
+          key: const ValueKey('caisse_session'),
+          compact: true,
+          ouverte: s != null,
+          caisse: _nomCaisse(),
+          code: s?.code,
+          ouvertureHeure: s == null ? null : formatHeure(s.ouverteLe),
+          solde: solde,
+          devise: ref.watch(deviseProvider),
+          onOuvrir: () => unawaited(afficherOuvertureCaisse(context, ref)),
+          onCloturer: () => unawaited(afficherClotureSession(context, ref, nomCaisse: _nomCaisse())),
+          onMouvement: s == null
+              ? null
+              : () => unawaited(afficherMouvementManuel(context, ref, caisseCode: s.caisseCode)),
+        ),
+        LayoutBuilder(
+          builder: (context, _) => Row(
+            mainAxisSize: MainAxisSize.min,
+            spacing: 6,
+            children: [
+              DsButton(
+                libelle: l10n.posVentesDuJour,
+                icone: LucideIcons.receiptText,
+                taille: DsButtonTaille.sm,
+                variante: DsButtonVariante.fantome,
+                onPressed: () => afficherVentesDuJour(context, ref, nomCaisse: _nomCaisse()),
+              ),
+              DsButton(
+                libelle: l10n.posRecetteProduit,
+                icone: LucideIcons.chartColumn,
+                taille: DsButtonTaille.sm,
+                variante: DsButtonVariante.fantome,
+                onPressed: () => afficherRecetteProduit(context, ref, nomCaisse: _nomCaisse()),
+              ),
+              DsIconButton(
+                icone: LucideIcons.keyboard,
+                tooltip: l10n.posAide,
+                taille: DsTailles.controleSm,
+                contour: true,
+                onPressed: () => unawaited(afficherAideRaccourcis(context)),
+              ),
+              DsIconButton(
+                icone: LucideIcons.calculator,
+                tooltip: l10n.posCalculatrice,
+                taille: DsTailles.controleSm,
+                contour: true,
+                onPressed: () => unawaited(afficherCalculatrice(context)),
+              ),
+              DsIconButton(
+                key: const ValueKey('caisse_basculer_produits'),
+                icone: _afficherProduits ? LucideIcons.panelLeftClose : LucideIcons.panelLeftOpen,
+                tooltip: _afficherProduits ? l10n.posMasquerProduits : l10n.posAfficherProduits,
+                taille: DsTailles.controleSm,
+                contour: _afficherProduits,
+                actif: !_afficherProduits,
+                onPressed: () => setState(() => _afficherProduits = !_afficherProduits),
+              ),
+              DsIconButton(
+                icone: LucideIcons.settings2,
+                tooltip: l10n.posParametres,
+                taille: DsTailles.controleSm,
+                contour: true,
+                onPressed: () => unawaited(afficherParametresCaisse(context, ref)),
+              ),
+            ],
           ),
-          const SizedBox(width: DsSpacing.sm),
-          Expanded(
-            child: Text(
-              s == null ? l10n.posSessionAucune : l10n.posSessionOuverte(s.code, s.caisseCode),
-              style: t.petitFort,
-            ),
-          ),
-          DsButton(
-            libelle: l10n.posAide,
-            icone: LucideIcons.keyboard,
-            taille: DsButtonTaille.sm,
-            variante: DsButtonVariante.fantome,
-            onPressed: () {
-              afficherAideRaccourcis(context);
-            },
-          ),
-          const SizedBox(width: DsSpacing.xs),
-          DsButton(
-            libelle: l10n.posCalculatrice,
-            icone: LucideIcons.calculator,
-            taille: DsButtonTaille.sm,
-            variante: DsButtonVariante.fantome,
-            onPressed: () {
-              afficherCalculatrice(context).then((v) {
-                if (v != null && mounted) setState(() => _montant = v.toStringAsFixed(2));
-              });
-            },
-          ),
-          const SizedBox(width: DsSpacing.sm),
-          if (s == null)
-            DsButton(
-              libelle: l10n.posSessionOuvrir,
-              icone: LucideIcons.doorOpen,
-              taille: DsButtonTaille.sm,
-              onPressed: () {
-                afficherOuvertureSession(context, ref);
-              },
-            )
-          else
-            DsButton(
-              libelle: l10n.posSessionFermer,
-              icone: LucideIcons.doorClosed,
-              taille: DsButtonTaille.sm,
-              variante: DsButtonVariante.secondaire,
-              onPressed: () {
-                afficherFermetureSession(context, ref);
-              },
-            ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
-  Widget _colonneProduits(DsColors c, DsTypography t) {
-    final produits = ref.watch(produitsPosProvider).value ?? const [];
-    final categories = ref.watch(categoriesProvider).value ?? const [];
+  Widget _ongletsVentes(PosEtat etat) => DsSaleTabs(
+    max: maxPaniers,
+    courant: etat.panier.id,
+    onChanged: (cle) {
+      ctrl.selectionnerPanier(etat.paniers.indexWhere((p) => p.id == cle));
+      setState(() => _ligneSelectionnee = null);
+    },
+    onAjouter: () => unawaited(_executer(() async => ctrl.nouveauPanier())),
+    onFermer: (cle) => unawaited(_fermerVente(cle)),
+    onglets: [
+      for (final p in etat.paniers)
+        DsOngletVente(
+          cle: p.id,
+          libelle: l10n.posVente(p.id),
+          compte: p.lignes.length,
+          meta: p.lignes.isNotEmpty
+              ? l10n.posVenteMeta(formaterNombre(p.pieces), _da(p.totalNet))
+              : (p.clientCode != 'CLN0000' ? _nomClient(p.clientCode) : l10n.posVenteVide),
+        ),
+    ],
+  );
+
+  Widget _barreRecherche() => Row(
+    spacing: DsSpacing.s2,
+    children: [
+      Expanded(
+        child: DsSearchField(
+          controller: _scan,
+          focusNode: _scanFocus,
+          grand: true,
+          kbd: 'F2',
+          autofocus: true,
+          indice: l10n.posScanIndice,
+          onChanged: (v) => setState(() => _recherche = v),
+          onSubmitted: (_) => unawaited(_scanner()),
+        ),
+      ),
+      DsButton(
+        libelle: l10n.posRecherche,
+        icone: LucideIcons.slidersHorizontal,
+        kbd: 'F3',
+        taille: DsButtonTaille.lg,
+        variante: DsButtonVariante.secondaire,
+        onPressed: _rechercheAvancee,
+      ),
+    ],
+  );
+
+  Widget _colonneProduits() {
+    final produits = ref.watch(produitsPosProvider).value ?? const <Produit>[];
+    final packs = (ref.watch(packsProvider).value ?? const <Pack>[]).where((p) => p.actif).toList();
+    final categories = ref.watch(categoriesProvider).value ?? const <Categorie>[];
+    final nomsCategories = {for (final c in categories) c.code: c.nom};
+    final stocks = ref.watch(stocksCaisseProvider).value ?? const <String, double>{};
     final devise = ref.watch(deviseProvider);
     final r = _recherche.trim().toLowerCase();
-    final filtres = produits
-        .where(
-          (p) =>
-              (_categorie == null || p.categorieCode == _categorie) &&
+    final liste = _disposition == DsVueModule.liste;
+    final List<Widget> tuiles;
+    if (_vue == _Vue.packs) {
+      tuiles = [
+        for (final k in packs)
+          if (r.isEmpty || '${k.designation} ${k.code}'.toLowerCase().contains(r))
+            DsProductTile(
+              key: ValueKey('tuile_${k.code}'),
+              nom: k.designation,
+              code: k.code,
+              prix: k.prixVente,
+              categorie: l10n.posPack,
+              devise: devise,
+              enLigne: liste,
+              onAjouter: () => unawaited(_ajouterPack(k)),
+            ),
+      ];
+    } else {
+      tuiles = [
+        for (final p in produits)
+          if ((_categorie == null || p.categorieCode == _categorie) &&
               (r.isEmpty ||
                   p.designation.toLowerCase().contains(r) ||
                   p.code.toLowerCase().contains(r) ||
-                  (p.codeBarres?.contains(r) ?? false)),
-        )
-        .toList();
-    return Padding(
-      padding: const EdgeInsets.all(DsSpacing.md),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          DsTextField(
-            controller: _scan,
-            focusNode: _scanFocus,
-            indice: l10n.posScan,
-            iconePrefixe: LucideIcons.scanBarcode,
-            autofocus: true,
-            onSubmitted: (_) => _scanner(),
-            onChanged: (v) => setState(() => _recherche = v),
-          ),
-          const SizedBox(height: DsSpacing.sm),
-          SizedBox(
-            height: 32,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              children: [
-                for (final cat in [null, ...categories.map((x) => x.code)]) ...[
-                  DsButton(
-                    libelle: cat == null ? l10n.posCategoriesToutes : categories.firstWhere((x) => x.code == cat).nom,
-                    taille: DsButtonTaille.sm,
-                    delaiGarde: Duration.zero,
-                    variante: _categorie == cat ? DsButtonVariante.primaire : DsButtonVariante.secondaire,
-                    onPressed: () => setState(() => _categorie = cat),
-                  ),
-                  const SizedBox(width: DsSpacing.xs),
-                ],
+                  (p.codeBarres?.contains(r) ?? false)))
+            DsProductTile(
+              key: ValueKey('tuile_${p.code}'),
+              nom: p.designation,
+              code: p.code,
+              prix: p.prixVente,
+              stock: stocks[p.code] ?? 0,
+              categorie: nomsCategories[p.categorieCode],
+              image: imageProduit(p.image),
+              seuilBas: (p.seuilStock ?? 5).toDouble(),
+              devise: devise,
+              enLigne: liste,
+              onAjouter: () => unawaited(_choisirProduit(p)),
+              onEntree: () => unawaited(_entreeRapide(p)),
+            ),
+      ];
+    }
+    final c = context.ds.colors;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      spacing: DsSpacing.s3,
+      children: [
+        _barreRecherche(),
+        Row(
+          spacing: DsSpacing.s3,
+          children: [
+            DsSegmentedControl<_Vue>(
+              valeur: _vue,
+              onChanged: (v) => setState(() => _vue = v),
+              options: [
+                DsOption(_Vue.produits, libelle: l10n.posProduits, icone: LucideIcons.package),
+                DsOption(_Vue.packs, libelle: l10n.posPacks, icone: LucideIcons.gift),
               ],
             ),
-          ),
-          const SizedBox(height: DsSpacing.sm),
-          Expanded(
-            child: filtres.isEmpty
-                ? DsVide(message: l10n.posAucunProduit, icone: LucideIcons.package)
-                : GridView.builder(
-                    gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: 170,
-                      mainAxisExtent: 92,
-                      crossAxisSpacing: DsSpacing.sm,
-                      mainAxisSpacing: DsSpacing.sm,
-                    ),
-                    itemCount: filtres.length,
-                    itemBuilder: (_, i) => _tuileProduit(filtres[i], c, t, devise),
+            if (_vue == _Vue.produits)
+              Expanded(
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: DsSegmentedControl<String?>(
+                    valeur: _categorie,
+                    onChanged: (v) => setState(() => _categorie = v),
+                    options: [
+                      DsOption(null, libelle: l10n.posCategoriesToutes),
+                      for (final cat in categories) DsOption(cat.code, libelle: cat.nom),
+                    ],
                   ),
+                ),
+              )
+            else
+              const Spacer(),
+            DsSegmentedControl<DsVueModule>(
+              valeur: _disposition,
+              onChanged: (v) => setState(() => _disposition = v),
+              options: [
+                DsOption(DsVueModule.grille, icone: LucideIcons.layoutGrid, tooltip: l10n.posAffichageGrille),
+                DsOption(DsVueModule.liste, icone: LucideIcons.list, tooltip: l10n.posAffichageListe),
+              ],
+            ),
+          ],
+        ),
+        Expanded(
+          child: tuiles.isEmpty
+              ? DsVide(
+                  message: l10n.posAucunProduit,
+                  icone: _vue == _Vue.packs ? LucideIcons.gift : LucideIcons.package,
+                )
+              : liste
+              ? Container(
+                  margin: const EdgeInsets.only(bottom: DsSpacing.s4),
+                  decoration: BoxDecoration(
+                    color: c.surfaceCard,
+                    borderRadius: DsRadius.borderLg,
+                    border: Border.all(color: c.borderDefault),
+                  ),
+                  child: ListView(padding: const EdgeInsets.all(6), children: tuiles),
+                )
+              : GridView(
+                  padding: const EdgeInsets.fromLTRB(2, 2, 2, 48),
+                  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 200,
+                    mainAxisExtent: 172,
+                    crossAxisSpacing: DsSpacing.s3,
+                    mainAxisSpacing: DsSpacing.s3,
+                  ),
+                  children: tuiles,
+                ),
+        ),
+      ],
+    );
+  }
+
+  /// Montants rapides de la vente au montant (balance, articles non codifiés) : cumulés sur une seule ligne.
+  Widget _montantsRapides() {
+    return Tooltip(
+      message: l10n.posMontantAide,
+      waitDuration: const Duration(seconds: 1),
+      child: Row(
+        spacing: DsSpacing.s2,
+        children: [
+          Icon(LucideIcons.coins, size: 16, color: context.ds.colors.textMuted),
+          for (final m in _montants)
+            Expanded(
+              child: DsButton(
+                key: ValueKey('montant_$m'),
+                libelle: '+$m',
+                taille: DsButtonTaille.sm,
+                variante: DsButtonVariante.secondaire,
+                pleineLargeur: true,
+                onPressed: () => _executer(() => ctrl.ajouterMontant(m.toDouble())),
+              ),
+            ),
+          DsButton(
+            key: const ValueKey('montant_autre'),
+            libelle: l10n.posMontantAutre,
+            icone: LucideIcons.pencil,
+            taille: DsButtonTaille.sm,
+            variante: DsButtonVariante.fantome,
+            onPressed: () => _saisirMontant(),
           ),
         ],
       ),
     );
   }
 
-  Widget _tuileProduit(Produit p, DsColors c, DsTypography t, String devise) {
-    return Material(
-      color: c.surface,
-      borderRadius: DsRadius.borderMd,
-      child: InkWell(
-        key: ValueKey('tuile_${p.code}'),
-        borderRadius: DsRadius.borderMd,
-        onTap: () => _executer(() => ctrl.ajouter(p)),
-        onLongPress: p.suiviNombre ? () => _executer(() => ctrl.ajouter(p, nombre: true)) : null,
-        child: Container(
-          padding: const EdgeInsets.all(DsSpacing.sm),
-          decoration: BoxDecoration(
-            borderRadius: DsRadius.borderMd,
-            border: Border.all(color: c.bordure),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(p.designation, style: t.petitFort, maxLines: 2, overflow: TextOverflow.ellipsis),
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      formaterMontant(p.prixVente, devise),
-                      style: t.petit.copyWith(color: c.primaire, fontWeight: FontWeight.w700),
-                    ),
-                  ),
-                  if (p.suiviNombre)
-                    Tooltip(
-                      message: l10n.posVendreNombre,
-                      child: Icon(LucideIcons.hash, size: 14, color: c.texteAttenue),
-                    ),
-                ],
-              ),
-            ],
+  static const _montants = [200, 500, 1000];
+
+  Widget _panier(PosEtat etat, {required bool large}) {
+    final c = context.ds.colors;
+    final t = context.ds.typo;
+    final panier = etat.panier;
+    final devise = ref.watch(deviseProvider);
+    final peutPrix = ref.watch(permissionProvider(Permission.modifierPrixVente));
+    final clients = ref.watch(clientsProvider).value ?? const <Client>[];
+    final remises = _remisesGlobales();
+
+    final tete = Row(
+      spacing: DsSpacing.s2,
+      children: [
+        Expanded(
+          child: Text.rich(
+            TextSpan(
+              text: '${l10n.posPanierTitre} ',
+              children: [
+                TextSpan(
+                  text: '· ${l10n.posVente(panier.id)}',
+                  style: TextStyle(color: c.textMuted, fontWeight: FontWeight.w500),
+                ),
+              ],
+            ),
+            style: t.cardTitle.copyWith(fontSize: 16),
           ),
         ),
-      ),
+        DsIconButton(
+          icone: LucideIcons.packagePlus,
+          tooltip: l10n.posNouveauProduit,
+          taille: DsTailles.controleSm,
+          onPressed: () => unawaited(_nouveauProduit()),
+        ),
+        DsIconButton(
+          icone: LucideIcons.userPlus,
+          tooltip: l10n.posNouveauClient,
+          taille: DsTailles.controleSm,
+          onPressed: () => unawaited(_nouveauClient()),
+        ),
+        DsIconButton(
+          key: const ValueKey('panier_vider'),
+          icone: LucideIcons.trash2,
+          tooltip: l10n.posViderPanier,
+          taille: DsTailles.controleSm,
+          onPressed: panier.estVide ? null : _vider,
+        ),
+      ],
     );
-  }
 
-  Widget _colonnePanier(
-    PosEtat etat,
-    Panier panier,
-    DsColors c,
-    DsTypography t,
-    String devise, {
-    required bool peutRemise,
-    required bool peutPrix,
-  }) {
-    final modes = [for (final v in Referentiel.modesPaiement.valeurs) (v.stocke, libelleModePaiement(l10n, v.stocke))];
-    return Column(
+    final selects = Row(
+      spacing: DsSpacing.s2,
+      children: [
+        Expanded(
+          flex: 100,
+          child: DsSelect<String>(
+            key: const ValueKey('panier_client'),
+            taille: DsTailles.controleSm,
+            icone: LucideIcons.user,
+            valeur: panier.clientCode,
+            options: [
+              'CLN0000',
+              // Clients inactifs masqués (le client déjà choisi reste affiché).
+              for (final cl in clients)
+                if (!cl.estDePassage && (cl.actif || cl.code == panier.clientCode)) cl.code,
+            ],
+            libelle: _nomClient,
+            onChanged: (v) => ctrl.choisirClient(v ?? 'CLN0000'),
+            onLookup: () => unawaited(_choisirClient()),
+            lookupTooltip: l10n.posChoisirClient,
+          ),
+        ),
+        Expanded(
+          flex: 115,
+          child: DsSelect<String?>(
+            key: const ValueKey('panier_remise'),
+            taille: DsTailles.controleSm,
+            icone: LucideIcons.percent,
+            valeur: panier.remiseCode,
+            options: [null, for (final r in remises) r.code],
+            libelle: (code) =>
+                code == null ? l10n.posAucuneRemise : _libelleRemise(remises.firstWhere((r) => r.code == code)),
+            onChanged: (code) => ctrl.appliquerRemise(remises.where((r) => r.code == code).firstOrNull),
+            onLookup: () => unawaited(_choisirRemise()),
+            lookupTooltip: l10n.posChoisirRemise,
+          ),
+        ),
+      ],
+    );
+
+    final lignes = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // Onglets des paniers
-        Container(
-          padding: const EdgeInsets.fromLTRB(DsSpacing.sm, DsSpacing.sm, DsSpacing.sm, 0),
-          decoration: BoxDecoration(
-            border: Border(bottom: BorderSide(color: c.bordure)),
-          ),
-          child: Row(
-            children: [
-              for (final (i, p) in etat.paniers.indexed)
-                Padding(
-                  padding: const EdgeInsets.only(right: DsSpacing.xs),
-                  child: InkWell(
-                    onTap: () => ctrl.selectionnerPanier(i),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: DsSpacing.md, vertical: DsSpacing.sm),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(color: i == etat.courant ? c.primaire : const Color(0x00000000), width: 2),
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          Text(
-                            l10n.posPanier(p.id),
-                            style: (i == etat.courant ? t.petitFort : t.petit).copyWith(
-                              color: i == etat.courant ? c.primaire : c.texteSecondaire,
-                            ),
-                          ),
-                          if (p.lignes.isNotEmpty) ...[
-                            const SizedBox(width: DsSpacing.xs),
-                            DsBadge(libelle: '${p.lignes.length}', ton: DsBadgeTon.primaire),
-                          ],
-                          if (etat.paniers.length > 1) ...[
-                            const SizedBox(width: DsSpacing.xs),
-                            DsIconButton(
-                              icone: LucideIcons.x,
-                              tooltip: '×',
-                              taille: 20,
-                              onPressed: () => ctrl.fermerPanier(i),
-                            ),
-                          ],
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              const Spacer(),
-              DsIconButton(
-                icone: LucideIcons.plus,
-                tooltip: l10n.posNouveauPanier,
-                onPressed: etat.paniers.length >= maxPaniers ? null : () => _executer(() async => ctrl.nouveauPanier()),
-              ),
-            ],
-          ),
-        ),
-        // Client + remise
-        Padding(
-          padding: const EdgeInsets.fromLTRB(DsSpacing.md, DsSpacing.sm, DsSpacing.md, 0),
-          child: Row(
-            children: [
-              Expanded(
-                child: DsButton(
-                  libelle: _nomClient ?? l10n.posClientPassage,
-                  icone: LucideIcons.user,
-                  taille: DsButtonTaille.sm,
-                  variante: DsButtonVariante.secondaire,
-                  pleineLargeur: true,
-                  onPressed: () {
-                    _choisirClient();
-                  },
-                ),
-              ),
-              const SizedBox(width: DsSpacing.xs),
-              DsButton(
-                libelle: panier.remiseGlobalePct > 0
-                    ? '−${panier.remiseGlobalePct.toStringAsFixed(0)} %'
-                    : l10n.posRemise,
-                icone: LucideIcons.percent,
-                taille: DsButtonTaille.sm,
-                variante: DsButtonVariante.secondaire,
-                onPressed: peutRemise
-                    ? () {
-                        _remiseGlobale();
-                      }
-                    : null,
-              ),
-            ],
-          ),
-        ),
-        // Lignes
+        if (panier.lignes.isNotEmpty) const DsCartLineHeader(),
         Expanded(
           child: panier.estVide
-              ? DsVide(message: l10n.posPanierVide, icone: LucideIcons.shoppingCart)
+              ? DsVide(
+                  petit: true,
+                  icone: LucideIcons.shoppingBasket,
+                  message: l10n.posPanierVideTitre,
+                  description: l10n.posPanierVideDesc,
+                )
               : ListView.builder(
                   itemCount: panier.lignes.length,
                   itemBuilder: (_, i) {
                     final l = panier.lignes[i];
-                    return CartLine(
-                      key: ValueKey('ligne_$i'),
-                      designation: l.designation,
-                      sousTitre: l.uniteVente == UniteVente.nombre
-                          ? l10n.posVendreNombre
-                          : (l.colis != null ? l10n.posColis : (l.pack != null ? l10n.posPack : null)),
-                      quantite: l.quantite,
-                      prixUnitaire: l.prixUnitaire,
-                      remisePct: l.remisePct,
-                      total: l.total,
-                      devise: devise,
-                      selectionnee: _ligneSelectionnee == i,
-                      onTap: () => setState(() => _ligneSelectionnee = i),
-                      onPlus: () => _executer(() => ctrl.modifierQuantite(i, l.quantite + 1)),
-                      onMoins: () => _executer(() => ctrl.modifierQuantite(i, l.quantite - 1)),
-                      onSupprimer: () {
-                        ctrl.retirerLigne(i);
-                        setState(() => _ligneSelectionnee = null);
-                      },
+                    final montant = l.estMontant;
+                    // Ligne issue d'un pack : colonne colis « Pack », nom du pack sous le produit.
+                    final colis = montant
+                        ? l10n.posMontantColis
+                        : l.pack != null
+                        ? l10n.posPack
+                        : l.colis?.designation ??
+                              (l.uniteVente == UniteVente.nombre ? l10n.posVendreNombre : l10n.posSelUnite);
+                    return Tooltip(
+                      message: montant ? l10n.posMontantLigneAide : l10n.posLigneAide,
+                      waitDuration: const Duration(seconds: 1),
+                      child: GestureDetector(
+                        onDoubleTap: montant
+                            ? () => unawaited(_saisirMontant(index: i))
+                            : peutPrix
+                            ? () => unawaited(_modifierPrix(i))
+                            : null,
+                        child: DsCartLine(
+                          key: ValueKey('ligne_$i'),
+                          nom: montant ? l10n.posMontantTitre : l.designation,
+                          code: l.pack != null ? '${l.produit.code} · ${l.pack!.designation}' : l.produit.code,
+                          prix: l.quantite == 0 ? l.prixUnitaire : l.total / l.quantite,
+                          qte: l.quantite,
+                          devise: devise,
+                          colis: colis,
+                          pieces: montant ? 0 : l.unitesStock + l.nombreStock,
+                          selectionnee: _ligneSelectionnee == i,
+                          onTap: () => setState(() => _ligneSelectionnee = i),
+                          onColis: l.pack == null && !montant ? () => unawaited(_modifierColis(i)) : null,
+                          onPlus: montant
+                              ? null
+                              : () => unawaited(_executer(() => ctrl.modifierQuantite(i, l.quantite + 1))),
+                          onMoins: montant
+                              ? null
+                              : () => unawaited(_executer(() => ctrl.modifierQuantite(i, l.quantite - 1))),
+                          onRetirer: () {
+                            ctrl.retirerLigne(i);
+                            setState(() => _ligneSelectionnee = null);
+                          },
+                        ),
+                      ),
                     );
                   },
                 ),
         ),
-        // Totaux + paiement
-        Container(
-          padding: const EdgeInsets.all(DsSpacing.md),
-          decoration: BoxDecoration(
-            color: c.surfaceAttenuee,
-            border: Border(top: BorderSide(color: c.bordure)),
-          ),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+      ],
+    );
+
+    final bas = Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      spacing: DsSpacing.s2,
+      children: [
+        _montantsRapides(),
+        DsTotalPanel(
+          key: const ValueKey('pos_total'),
+          total: panier.totalNet,
+          sousTotal: panier.totalBrut,
+          remise: panier.totalRemise,
+          articles: panier.pieces.round(),
+          devise: devise,
+        ),
+        LayoutBuilder(
+          builder: (context, contraintes) {
+            final compact = contraintes.maxWidth < 480;
+            final enregistrer = DsButton(
+              key: const ValueKey('caisse_enregistrer'),
+              libelle: l10n.posEnregistrer,
+              icone: LucideIcons.save,
+              kbd: compact ? null : 'F6',
+              taille: DsButtonTaille.lg,
+              pleineLargeur: compact,
+              variante: DsButtonVariante.secondaire,
+              onPressed: panier.estVide ? null : () => _encaisser(NatureEncaissement.enregistrer),
+            );
+            final encaisser = DsButton(
+              key: const ValueKey('caisse_encaisser'),
+              libelle: l10n.posEncaisserBouton,
+              icone: LucideIcons.receipt,
+              kbd: 'F4',
+              taille: DsButtonTaille.lg,
+              pleineLargeur: true,
+              onPressed: panier.estVide ? null : () => _encaisser(NatureEncaissement.ticket),
+            );
+            // Colonne étroite (panier élargi, 380 px) : Encaisser passe sur sa propre ligne.
+            if (compact) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                spacing: DsSpacing.s2,
+                children: [enregistrer, encaisser],
+              );
+            }
+            return Row(
+              spacing: DsSpacing.s2,
               children: [
-                Row(
-                  children: [
-                    Expanded(child: Text(l10n.posTotal, style: t.titreSm)),
-                    Text(
-                      formaterMontant(panier.totalNet, devise),
-                      key: const ValueKey('pos_total'),
-                      style: t.chiffreLg.copyWith(color: c.primaire),
-                    ),
-                  ],
-                ),
-                if (panier.totalRemise > 0)
-                  Text(
-                    '${l10n.posRemise} : −${formaterMontant(panier.totalRemise, devise)}',
-                    style: t.petit.copyWith(color: c.texteSecondaire),
-                  ),
-                const SizedBox(height: DsSpacing.sm),
-                PaymentPanel(
-                  modes: modes,
-                  modeCourant: _mode,
-                  onMode: (m) => setState(() => _mode = m),
-                  montantSaisi: _montant,
-                  onMontantChange: (v) => setState(() => _montant = v),
-                  onAjouter: _ajouterPaiement,
-                  paiements: [for (final p in panier.paiements) (libelleModePaiement(l10n, p.mode), p.montant)],
-                  onRetirerPaiement: ctrl.retirerPaiement,
-                  totalNet: panier.totalNet,
-                  verse: panier.verse,
-                  reste: panier.reste,
-                  monnaie: panier.monnaie,
-                  devise: devise,
-                  libelleVerse: l10n.posVerse,
-                  libelleReste: l10n.posReste,
-                  libelleMonnaie: l10n.posMonnaie,
-                ),
-                if (panier.clientCode != 'CLN0000')
-                  DsSwitch(
-                    valeur: _credit,
-                    libelle: l10n.posCreditAutoriser,
-                    onChanged: (v) => setState(() => _credit = v),
-                  ),
-                const SizedBox(height: DsSpacing.sm),
-                Row(
-                  children: [
-                    DsButton(
-                      libelle: l10n.posVider,
-                      icone: LucideIcons.trash2,
-                      variante: DsButtonVariante.fantome,
-                      onPressed: panier.estVide
-                          ? null
-                          : () {
-                              ctrl.viderPanier();
-                              setState(() => _ligneSelectionnee = null);
-                            },
-                    ),
-                    const SizedBox(width: DsSpacing.sm),
-                    Expanded(
-                      child: DsButton(
-                        libelle: l10n.posEncaisser,
-                        icone: LucideIcons.circleCheck,
-                        taille: DsButtonTaille.lg,
-                        variante: DsButtonVariante.succes,
-                        pleineLargeur: true,
-                        onPressed: etat.session == null || panier.estVide ? null : _encaisser,
-                      ),
-                    ),
-                  ],
-                ),
+                enregistrer,
+                Expanded(child: encaisser),
               ],
-            ),
-          ),
+            );
+          },
         ),
       ],
+    );
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: DsSpacing.s4),
+      padding: const EdgeInsets.all(DsSpacing.s4),
+      decoration: BoxDecoration(
+        color: c.surfaceCard,
+        borderRadius: DsRadius.borderXl,
+        border: Border.all(color: c.borderDefault),
+        boxShadow: c.shadowXs,
+      ),
+      child: large
+          ? Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              spacing: DsSpacing.s6,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    spacing: DsSpacing.s3,
+                    children: [
+                      tete,
+                      Expanded(child: lignes),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  width: 380,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    spacing: DsSpacing.s3,
+                    children: [selects, const Spacer(), bas],
+                  ),
+                ),
+              ],
+            )
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              spacing: DsSpacing.s3,
+              children: [
+                tete,
+                selects,
+                Expanded(child: lignes),
+                bas,
+              ],
+            ),
     );
   }
 }

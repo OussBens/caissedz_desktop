@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:developer' as developer;
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -9,6 +11,7 @@ import 'package:window_manager/window_manager.dart';
 import 'app/app.dart';
 import 'app/demarrage_providers.dart';
 import 'app/providers.dart';
+import 'application/sauvegarde_service.dart';
 import 'core/db/app_database.dart';
 import 'core/design_system/design_system.dart';
 
@@ -38,7 +41,21 @@ Future<void> main() async {
   await container.read(themeModeProvider.notifier).charger();
   await container.read(sidebarReduiteProvider.notifier).charger();
   await chargerEtatDemarrage(container);
+  unawaited(sauvegardeAutomatique(base));
   container.read(internetProvider.notifier).demarrer();
 
   runApp(UncontrolledProviderScope(container: container, child: const CaisseDzApp()));
+}
+
+/// Sauvegarde automatique au démarrage si elle est due (§4.1 étape 8) ; un échec ne bloque jamais l'ouverture.
+Future<void> sauvegardeAutomatique(AppDatabase base) async {
+  try {
+    final chemin = await SauvegardeService(
+      base,
+      utilisateurCode: SauvegardeService.utilisateurSysteme,
+    ).sauvegarderAutoSiDue();
+    if (chemin != null) developer.log('Sauvegarde automatique : $chemin', name: 'caissedz.sauvegarde');
+  } on Object catch (e, pile) {
+    developer.log('Sauvegarde automatique impossible', name: 'caissedz.sauvegarde', error: e, stackTrace: pile);
+  }
 }

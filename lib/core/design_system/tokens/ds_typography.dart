@@ -1,41 +1,61 @@
 import 'package:flutter/material.dart';
 
-/// Typographie du design system : Plus Jakarta Sans (latin) et Cairo (arabe).
+/// Typographie du DS v2.2 : Plus Jakarta Sans (latin) et Cairo (arabe), échelle `--type-*`.
 ///
-/// ⚠️ PROVISOIRE : échelle neutre en attendant les tailles exactes du DS v2.2.
+/// | Token DS        | Champ        | Style                       |
+/// |-----------------|--------------|-----------------------------|
+/// | type-display    | [display]    | 700 36/1.1                  |
+/// | type-page-title | [pageTitle]  | 700 24/1.2, −0.02em         |
+/// | type-heading    | [heading]    | 600 20/1.2                  |
+/// | type-card-title | [cardTitle]  | 600 14/1.35                 |
+/// | type-kpi        | [kpi]        | 700 28/1.1, −0.02em, tabular|
+/// | type-body       | [body]       | 400 14/1.5                  |
+/// | type-body-sm    | [bodySm]     | 400 13/1.5                  |
+/// | type-label      | [label]      | 500 13/1.35                 |
+/// | type-caption    | [caption]    | 400 12/1.35                 |
+/// | type-overline   | [overline]   | 600 11/1.2, +0.06em, CAPS   |
 @immutable
 class DsTypography extends ThemeExtension<DsTypography> {
   const DsTypography({
     required this.famille,
-    required this.titreXl,
-    required this.titreLg,
-    required this.titreMd,
-    required this.titreSm,
-    required this.corps,
-    required this.corpsFort,
-    required this.petit,
-    required this.petitFort,
-    required this.legende,
-    required this.chiffreXl,
-    required this.chiffreLg,
+    required this.display,
+    required this.pageTitle,
+    required this.heading,
+    required this.cardTitle,
+    required this.kpi,
+    required this.montantXl,
+    required this.body,
+    required this.bodyStrong,
+    required this.bodySm,
+    required this.bodySmStrong,
+    required this.label,
+    required this.caption,
+    required this.overline,
     required this.mono,
   });
 
   static const String familleLatin = 'PlusJakartaSans';
   static const String familleArabe = 'Cairo';
 
+  /// Chiffres à largeur fixe (`font-variant-numeric: tabular-nums`).
+  static const List<FontFeature> tabular = [FontFeature.tabularFigures()];
+
   final String famille;
-  final TextStyle titreXl;
-  final TextStyle titreLg;
-  final TextStyle titreMd;
-  final TextStyle titreSm;
-  final TextStyle corps;
-  final TextStyle corpsFort;
-  final TextStyle petit;
-  final TextStyle petitFort;
-  final TextStyle legende;
-  final TextStyle chiffreXl;
-  final TextStyle chiffreLg;
+  final TextStyle display;
+  final TextStyle pageTitle;
+  final TextStyle heading;
+  final TextStyle cardTitle;
+  final TextStyle kpi;
+
+  /// Total à payer de la caisse (700 32/1).
+  final TextStyle montantXl;
+  final TextStyle body;
+  final TextStyle bodyStrong;
+  final TextStyle bodySm;
+  final TextStyle bodySmStrong;
+  final TextStyle label;
+  final TextStyle caption;
+  final TextStyle overline;
   final TextStyle mono;
 
   static String familleParLocale(Locale locale) => locale.languageCode == 'ar' ? familleArabe : familleLatin;
@@ -44,70 +64,52 @@ class DsTypography extends ThemeExtension<DsTypography> {
     final famille = familleParLocale(locale);
     final arabe = famille == familleArabe;
     // Cairo a une hauteur de ligne naturelle plus grande que Plus Jakarta Sans.
-    final hauteur = arabe ? 1.6 : 1.4;
-    TextStyle s(double taille, FontWeight poids, {double? h, double? espacement}) => TextStyle(
+    double h(double v) => arabe ? v + 0.15 : v;
+    TextStyle s(
+      double taille,
+      FontWeight poids,
+      double hauteur, {
+      double? espacement,
+      bool tabulaire = false,
+      Color? couleur,
+    }) => TextStyle(
       fontFamily: famille,
+      fontFamilyFallback: const [familleLatin, familleArabe],
       fontSize: taille,
       fontWeight: poids,
-      height: h ?? hauteur,
+      height: h(hauteur),
       letterSpacing: espacement,
-      color: couleurTexte,
+      color: couleur ?? couleurTexte,
+      fontFeatures: tabulaire ? tabular : null,
     );
     return DsTypography(
       famille: famille,
-      titreXl: s(28, FontWeight.w800, h: 1.2, espacement: -0.5),
-      titreLg: s(22, FontWeight.w700, h: 1.25, espacement: -0.3),
-      titreMd: s(18, FontWeight.w700, h: 1.3),
-      titreSm: s(15, FontWeight.w600, h: 1.35),
-      corps: s(14, FontWeight.w400),
-      corpsFort: s(14, FontWeight.w600),
-      petit: s(12.5, FontWeight.w400),
-      petitFort: s(12.5, FontWeight.w600),
-      legende: s(11, FontWeight.w500, espacement: 0.3),
-      chiffreXl: s(32, FontWeight.w800, h: 1.1, espacement: -0.8),
-      chiffreLg: s(20, FontWeight.w700, h: 1.2),
+      display: s(36, FontWeight.w700, 1.1, espacement: -0.72),
+      pageTitle: s(24, FontWeight.w700, 1.2, espacement: -0.48),
+      heading: s(20, FontWeight.w600, 1.2),
+      cardTitle: s(14, FontWeight.w600, 1.35),
+      kpi: s(28, FontWeight.w700, 1.1, espacement: -0.56, tabulaire: true),
+      montantXl: s(32, FontWeight.w700, 1.0, espacement: -0.64, tabulaire: true),
+      body: s(14, FontWeight.w400, 1.5),
+      bodyStrong: s(14, FontWeight.w600, 1.5),
+      bodySm: s(13, FontWeight.w400, 1.5),
+      bodySmStrong: s(13, FontWeight.w600, 1.5),
+      label: s(13, FontWeight.w500, 1.35),
+      caption: s(12, FontWeight.w400, 1.35),
+      overline: s(11, FontWeight.w600, 1.2, espacement: 0.66),
       mono: TextStyle(
         fontFamily: 'monospace',
-        fontFamilyFallback: [famille],
+        fontFamilyFallback: const [familleLatin],
         fontSize: 13,
         height: 1.4,
         color: couleurTexte,
+        fontFeatures: tabular,
       ),
     );
   }
 
   @override
-  DsTypography copyWith({
-    String? famille,
-    TextStyle? titreXl,
-    TextStyle? titreLg,
-    TextStyle? titreMd,
-    TextStyle? titreSm,
-    TextStyle? corps,
-    TextStyle? corpsFort,
-    TextStyle? petit,
-    TextStyle? petitFort,
-    TextStyle? legende,
-    TextStyle? chiffreXl,
-    TextStyle? chiffreLg,
-    TextStyle? mono,
-  }) {
-    return DsTypography(
-      famille: famille ?? this.famille,
-      titreXl: titreXl ?? this.titreXl,
-      titreLg: titreLg ?? this.titreLg,
-      titreMd: titreMd ?? this.titreMd,
-      titreSm: titreSm ?? this.titreSm,
-      corps: corps ?? this.corps,
-      corpsFort: corpsFort ?? this.corpsFort,
-      petit: petit ?? this.petit,
-      petitFort: petitFort ?? this.petitFort,
-      legende: legende ?? this.legende,
-      chiffreXl: chiffreXl ?? this.chiffreXl,
-      chiffreLg: chiffreLg ?? this.chiffreLg,
-      mono: mono ?? this.mono,
-    );
-  }
+  DsTypography copyWith({String? famille}) => this;
 
   @override
   DsTypography lerp(ThemeExtension<DsTypography>? other, double t) {
@@ -115,17 +117,19 @@ class DsTypography extends ThemeExtension<DsTypography> {
     TextStyle l(TextStyle a, TextStyle b) => TextStyle.lerp(a, b, t)!;
     return DsTypography(
       famille: t < 0.5 ? famille : other.famille,
-      titreXl: l(titreXl, other.titreXl),
-      titreLg: l(titreLg, other.titreLg),
-      titreMd: l(titreMd, other.titreMd),
-      titreSm: l(titreSm, other.titreSm),
-      corps: l(corps, other.corps),
-      corpsFort: l(corpsFort, other.corpsFort),
-      petit: l(petit, other.petit),
-      petitFort: l(petitFort, other.petitFort),
-      legende: l(legende, other.legende),
-      chiffreXl: l(chiffreXl, other.chiffreXl),
-      chiffreLg: l(chiffreLg, other.chiffreLg),
+      display: l(display, other.display),
+      pageTitle: l(pageTitle, other.pageTitle),
+      heading: l(heading, other.heading),
+      cardTitle: l(cardTitle, other.cardTitle),
+      kpi: l(kpi, other.kpi),
+      montantXl: l(montantXl, other.montantXl),
+      body: l(body, other.body),
+      bodyStrong: l(bodyStrong, other.bodyStrong),
+      bodySm: l(bodySm, other.bodySm),
+      bodySmStrong: l(bodySmStrong, other.bodySmStrong),
+      label: l(label, other.label),
+      caption: l(caption, other.caption),
+      overline: l(overline, other.overline),
       mono: l(mono, other.mono),
     );
   }

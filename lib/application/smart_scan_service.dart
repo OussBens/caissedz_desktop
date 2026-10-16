@@ -11,6 +11,7 @@ class LigneSmartScan {
     required this.quantite,
     required this.prixAchat,
     this.produitCode,
+    this.confiance,
   });
   final String designation;
   final String? codeBarres;
@@ -20,12 +21,16 @@ class LigneSmartScan {
   /// Produit local rapproché (par code-barres ou désignation), s'il existe.
   final String? produitCode;
 
+  /// Confiance de la lecture (0–100), si le serveur la renvoie.
+  final double? confiance;
+
   LigneSmartScan copyWith({String? produitCode, double? quantite, double? prixAchat}) => LigneSmartScan(
     designation: designation,
     codeBarres: codeBarres,
     quantite: quantite ?? this.quantite,
     prixAchat: prixAchat ?? this.prixAchat,
     produitCode: produitCode ?? this.produitCode,
+    confiance: confiance,
   );
 }
 
@@ -117,6 +122,7 @@ class SmartScanService {
             codeBarres: l['code_barres']?.toString(),
             quantite: ((l['quantite'] as num?) ?? 1).toDouble(),
             prixAchat: ((l['prix_achat'] as num?) ?? 0).toDouble(),
+            confiance: (l['confiance'] as num?)?.toDouble(),
           ),
       ],
       quota: QuotaSmartScan(

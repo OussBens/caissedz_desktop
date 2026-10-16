@@ -4,13 +4,9 @@ import 'package:caissedz_desktop/domain/referentiel/referentiel.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  group('Referentiel (§13)', () {
-    test('la valeur stockée est toujours la valeur FR', () {
-      for (final liste in Referentiel.toutes) {
-        for (final v in liste.valeurs) {
-          expect(v.stocke, v.fr, reason: '${liste.nom}/${v.stocke}');
-        }
-      }
+  group('Referentiel (§13, donnees/ref.js)', () {
+    test('les listes du DS (sans le type de panier, retiré) et les listes système sont présentes', () {
+      expect(Referentiel.toutes.length, 15);
     });
 
     test('aucune valeur stockée en double dans une liste', () {
@@ -20,15 +16,16 @@ void main() {
     });
 
     test('libellé par locale et repli sur la valeur stockée', () {
-      expect(Referentiel.modesPaiement.libelle('Espèces', const Locale('ar')), 'نقدًا');
+      expect(Referentiel.modesPaiement.libelle('Carte', const Locale('fr')), 'Carte CIB');
+      expect(Referentiel.modesPaiement.libelle('Espèces', const Locale('ar')), 'نقدا');
       expect(Referentiel.modesPaiement.libelle('Espèces', const Locale('en')), 'Cash');
-      expect(Referentiel.modesPaiement.libelle('Espèces', const Locale('fr')), 'Espèces');
       expect(Referentiel.modesPaiement.libelle('Inconnu', const Locale('en')), 'Inconnu');
       expect(Referentiel.motifsSortie.contient('Casse'), isTrue);
       expect(Referentiel.motifsSortie.contient('casse'), isFalse);
+      expect(Referentiel.statutsZakat.libelle('Non payé', const Locale('fr')), 'Non payée');
     });
 
-    test('listes de la commande initiale présentes', () {
+    test('valeurs stockées de ref.js', () {
       expect(Referentiel.modesPaiement.valeurs.map((v) => v.stocke), [
         'Espèces',
         'Carte',
@@ -36,9 +33,18 @@ void main() {
         'Virement',
         'Points',
       ]);
-      expect(Referentiel.motifsSortie.valeurs.length, 6);
-      expect(Referentiel.statutsBesoin.valeurs.map((v) => v.stocke), ['En attente', 'Commande', 'Disponible']);
+      expect(Referentiel.motifsSortie.valeurs.map((v) => v.stocke), [
+        'Casse',
+        'Périmé',
+        'Perte / vol',
+        'Consommation interne',
+        'Don',
+        'Échantillon',
+      ]);
+      expect(Referentiel.statutsBesoin.valeurs.map((v) => v.stocke), ['En Attente', 'Commande', 'Disponible']);
       expect(Referentiel.typesCaisse.valeurs.map((v) => v.stocke), ['Physique', 'Compte']);
+      expect(Referentiel.typesClient.valeurs.first.stocke, 'Consommateur');
+      expect(Referentiel.typesFournisseur.valeurs.length, 7);
     });
   });
 }

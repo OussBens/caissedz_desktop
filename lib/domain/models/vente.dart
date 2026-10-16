@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 
+import 'audit.dart';
 import 'panier.dart';
 
 class StatutsVente {
@@ -18,6 +19,7 @@ class StatutsSession {
 @immutable
 class SessionCaisse {
   const SessionCaisse({
+    this.audit = Audit.vide,
     required this.code,
     required this.caisseCode,
     required this.utilisateurCode,
@@ -28,6 +30,9 @@ class SessionCaisse {
     this.ecart,
     this.statut = StatutsSession.ouverte,
   });
+
+  /// Colonnes d'audit (créé / modifié le / par), en lecture seule.
+  final Audit audit;
   final String code;
   final String caisseCode;
   final String utilisateurCode;
@@ -40,6 +45,7 @@ class SessionCaisse {
   bool get estOuverte => statut == StatutsSession.ouverte;
 
   factory SessionCaisse.depuisLigne(Map<String, Object?> r) => SessionCaisse(
+    audit: Audit.depuisLigne(r),
     code: r['code'] as String,
     caisseCode: r['caisse_code'] as String,
     utilisateurCode: r['utilisateur_code'] as String,
@@ -60,6 +66,7 @@ class VenteLigne {
     required this.produitCode,
     this.colisCode,
     this.packCode,
+    this.composantPack = false,
     required this.designation,
     required this.quantite,
     this.nombre = 0,
@@ -67,11 +74,21 @@ class VenteLigne {
     required this.prixUnitaire,
     required this.remise,
     required this.total,
+    this.prixAchat = 0,
+    this.totalAchat = 0,
+    this.unites = 0,
+    this.tauxTva = 0,
+    this.montantHt = 0,
+    this.montantTva = 0,
   });
   final int ordre;
   final String produitCode;
   final String? colisCode;
   final String? packCode;
+
+  /// Ligne d'un produit issu d'un pack éclaté (quantité en unités du produit) ; `false` pour les anciennes
+  /// lignes de pack (quantité = nombre de packs, composants déduits du pack).
+  final bool composantPack;
   final String designation;
   final double quantite;
   final double nombre;
@@ -80,12 +97,31 @@ class VenteLigne {
   final double remise;
   final double total;
 
+  /// Coût d'achat unitaire figé à la vente et coût total de la ligne (§7.4, marges).
+  final double prixAchat;
+  final double totalAchat;
+
+  /// Unités de stock sorties par la ligne (quantité × colis, figées à la vente ; 0 pour une vente au nombre).
+  final double unites;
+
+  /// TVA figée à la vente (prix TTC) : taux du produit selon le régime, total ventilé HT + TVA (v31).
+  final double tauxTva;
+  final double montantHt;
+  final double montantTva;
+
+  /// Unités de stock de [q] articles de la ligne (au prorata de la quantité vendue).
+  double unitesPour(double q) => quantite == 0 ? 0 : unites * q / quantite;
+
+  /// Pièces (2ᵉ stock) de [q] articles de la ligne (au prorata de la quantité vendue).
+  double nombrePour(double q) => quantite == 0 ? 0 : nombre * q / quantite;
+
   Map<String, Object?> versLigne(String venteCode) => {
     'vente_code': venteCode,
     'ordre': ordre,
     'produit_code': produitCode,
     'colis_code': colisCode,
     'pack_code': packCode,
+    'composant_pack': composantPack ? 1 : 0,
     'designation': designation,
     'quantite': quantite,
     'nombre': nombre,
@@ -93,12 +129,19 @@ class VenteLigne {
     'prix_unitaire': prixUnitaire,
     'remise': remise,
     'total': total,
+    'prix_achat': prixAchat,
+    'total_achat': totalAchat,
+    'unites': unites,
+    'taux_tva': tauxTva,
+    'montant_ht': montantHt,
+    'montant_tva': montantTva,
   };
   factory VenteLigne.depuisLigne(Map<String, Object?> r) => VenteLigne(
     ordre: r['ordre'] as int,
     produitCode: r['produit_code'] as String,
     colisCode: r['colis_code'] as String?,
     packCode: r['pack_code'] as String?,
+    composantPack: ((r['composant_pack'] as int?) ?? 0) == 1,
     designation: r['designation'] as String,
     quantite: (r['quantite'] as num).toDouble(),
     nombre: (r['nombre'] as num).toDouble(),
@@ -106,22 +149,40 @@ class VenteLigne {
     prixUnitaire: (r['prix_unitaire'] as num).toDouble(),
     remise: (r['remise'] as num).toDouble(),
     total: (r['total'] as num).toDouble(),
+    prixAchat: ((r['prix_achat'] as num?) ?? 0).toDouble(),
+    totalAchat: ((r['total_achat'] as num?) ?? 0).toDouble(),
+    unites: ((r['unites'] as num?) ?? 0).toDouble(),
+    tauxTva: ((r['taux_tva'] as num?) ?? 0).toDouble(),
+    montantHt: ((r['montant_ht'] as num?) ?? 0).toDouble(),
+    montantTva: ((r['montant_tva'] as num?) ?? 0).toDouble(),
   );
-  Map<String, Object?> versCanonique() => {
-    'o': ordre,
-    'p': produitCode,
-    'q': quantite,
-    'n': nombre,
-    'pu': prixUnitaire,
-    'r': remise,
-    't': total,
-  };
+
+  /// Forme canonique scellée. Version 1 : contenu d'origine ; version 2 : quantités à 3 décimales, coût
+  /// d'achat figé, unités de stock et TVA (taux, HT, TVA) scellés.
+  Map<String, Object?> versCanonique([int version = 1]) => version < 2
+      ? {'o': ordre, 'p': produitCode, 'q': quantite, 'n': nombre, 'pu': prixUnitaire, 'r': remise, 't': total}
+      : {
+          'o': ordre,
+          'p': produitCode,
+          'q': quantite.toStringAsFixed(3),
+          'n': nombre.toStringAsFixed(3),
+          'u': unites.toStringAsFixed(3),
+          'pu': prixUnitaire,
+          'r': remise,
+          't': total,
+          'pa': prixAchat,
+          'ta': totalAchat,
+          'tx': tauxTva,
+          'ht': montantHt,
+          'tva': montantTva,
+        };
 }
 
 /// Vente enregistrée (ticket scellé).
 @immutable
 class Vente {
   const Vente({
+    this.audit = Audit.vide,
     required this.code,
     required this.date,
     required this.sessionCode,
@@ -142,7 +203,14 @@ class Vente {
     this.lignes = const [],
     this.paiements = const [],
     this.commentaire,
+    this.versionScellement = versionScellementCourante,
   });
+
+  /// Version de la forme canonique des nouveaux tickets (voir [versCanonique]).
+  static const int versionScellementCourante = 2;
+
+  /// Colonnes d'audit (créé / modifié le / par), en lecture seule.
+  final Audit audit;
   final String code;
   final DateTime date;
   final String sessionCode;
@@ -166,6 +234,9 @@ class Vente {
   final List<Paiement> paiements;
   final String? commentaire;
 
+  /// Version de la forme canonique avec laquelle le ticket a été scellé (1 avant la v30).
+  final int versionScellement;
+
   double get monnaie => (verse - totalNet) > 0 ? verse - totalNet : 0;
 
   Map<String, Object?> versLigne() => {
@@ -187,6 +258,7 @@ class Vente {
     'hash': hash,
     'hash_precedent': hashPrecedent,
     'commentaire': commentaire,
+    'version_scellement': versionScellement,
   };
 
   factory Vente.depuisLigne(
@@ -194,6 +266,7 @@ class Vente {
     List<VenteLigne> lignes = const [],
     List<Paiement> paiements = const [],
   }) => Vente(
+    audit: Audit.depuisLigne(r),
     code: r['code'] as String,
     date: DateTime.parse(r['date'] as String).toLocal(),
     sessionCode: r['session_code'] as String,
@@ -214,6 +287,7 @@ class Vente {
     commentaire: r['commentaire'] as String?,
     lignes: lignes,
     paiements: paiements,
+    versionScellement: (r['version_scellement'] as int?) ?? 1,
   );
 
   /// Document canonique scellé (contenu immuable du ticket).
@@ -232,7 +306,74 @@ class Vente {
     'reste': reste,
     'points_gagnes': pointsGagnes,
     'points_utilises': pointsUtilises,
-    'lignes': lignes.map((l) => l.versCanonique()).toList(),
+    'lignes': lignes.map((l) => l.versCanonique(versionScellement)).toList(),
     'paiements': paiements.map((p) => {'m': p.mode, 'v': p.montant}).toList(),
+    if (versionScellement >= 2) 'v': versionScellement,
   };
+}
+
+/// Vue d'un panier pour l'écran Ventes (`PaniersScreen` du DS) : la vente scellée et ses agrégats
+/// (lignes, coût, versements imputés, retours, caissier, motif d'annulation).
+@immutable
+class PanierResume {
+  const PanierResume({
+    required this.vente,
+    required this.caissier,
+    required this.nbArticles,
+    required this.quantite,
+    required this.totalAchat,
+    required this.impute,
+    required this.nbVersements,
+    required this.nbRetours,
+    required this.modes,
+    this.annuleeLe,
+    this.annuleePar,
+    this.motifAnnulation,
+    this.modifieLe,
+    this.modifiePar,
+  });
+
+  final Vente vente;
+  final String caissier;
+  final int nbArticles;
+  final double quantite;
+  final double totalAchat;
+
+  /// Montant des versements imputés sur ce panier après l'encaissement.
+  final double impute;
+  final int nbVersements;
+  final int nbRetours;
+
+  /// Modes de paiement de l'encaissement (valeurs stockées).
+  final List<String> modes;
+  final DateTime? annuleeLe;
+  final String? annuleePar;
+  final String? motifAnnulation;
+
+  /// Dernière modification (colonnes d'audit, §3.2) : modification du paiement, annulation…
+  final DateTime? modifieLe;
+  final String? modifiePar;
+
+  String get code => vente.code;
+  bool get annule => vente.statut == StatutsVente.annulee;
+
+  /// Montant payé à ce jour (encaissement + versements imputés).
+  double get paye => vente.totalNet - resteActuel;
+
+  /// Reste dû à ce jour.
+  double get resteActuel {
+    final r = vente.reste - impute;
+    return r > 0.004 ? r : 0;
+  }
+
+  double get marge => vente.totalNet - totalAchat;
+
+  /// Statut d'affichage (`StatusBadge` du DS) : `annule`, `retourne`, `credit` ou `paye`.
+  String get statut => annule
+      ? 'annule'
+      : nbRetours > 0
+      ? 'retourne'
+      : resteActuel > 0
+      ? 'credit'
+      : 'paye';
 }

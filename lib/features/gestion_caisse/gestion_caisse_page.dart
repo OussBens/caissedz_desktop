@@ -1,590 +1,660 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-import '../../application/caisse_service.dart';
+import '../../app/demarrage_providers.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
 import '../../domain/models/caisse.dart';
-import '../caisse/pos_dialogs.dart';
+import '../../domain/models/vente.dart';
+import '../../domain/permissions.dart';
+import '../caisse/caisse_dialogs.dart';
+import '../commun/colonnes_audit.dart';
+import '../commun/export_module.dart';
+import '../commun/page_module.dart';
+import '../commun/selecteurs.dart';
+import '../commun/statuts.dart';
+import '../historique/historique_providers.dart';
 import '../produits/produits_providers.dart';
 import '../stock/stock_providers.dart';
+import 'gestion_caisse_dialogs.dart';
 import 'gestion_caisse_providers.dart';
 
-const _modes = ['Espèces', 'Carte', 'Chèque', 'Virement'];
-
-/// Module Gestion de caisse : caisses (Physique / Compte, avec ou sans magasin), journal des mouvements
-/// (apports, dépenses), transferts TRF entre caisses.
+/// Écran Gestion caisse (`GestionCaisseScreen` du DS v2.2, §9.13) : onglets Caisses (cartes de session +
+/// tableau), Transferts, Clôtures Z (par caisse, export de contrôle fiscal), Mouvements (grand-livre) et Sessions.
 class GestionCaissePage extends ConsumerStatefulWidget {
-  const GestionCaissePage({super.key});
+  const GestionCaissePage({super.key, this.ongletInitial = 0});
+
+  /// 0 Caisses · 1 Transferts · 2 Clôtures Z · 3 Mouvements · 4 Sessions.
+  final int ongletInitial;
 
   @override
   ConsumerState<GestionCaissePage> createState() => _GestionCaissePageState();
 }
 
 class _GestionCaissePageState extends ConsumerState<GestionCaissePage> {
-  int _onglet = 0;
-  String? _filtreCaisse;
+  late int _onglet = widget.ongletInitial;
+  DsPeriode _periodeTransferts = DsPeriode.calculer('month');
+  DsPeriode _periodeClotures = DsPeriode.calculer('year');
+  DsPeriode _periodeMouvements = DsPeriode.calculer('month');
+  DsPeriode _periodeSessions = DsPeriode.calculer('month');
+  String? _caisseClotures;
+  String? _caisseMouvements;
+  String? _sessionMouvements;
+  String? _typeMouvements;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final caisses = ref.watch(caissesListeProvider).value ?? const <Caisse>[];
+    final transferts = ref.watch(transfertsCaisseProvider).value ?? const <TransfertCaisse>[];
+    final clotures = ref.watch(cloturesProvider).value ?? const <Cloture>[];
+    final mouvements = ref.watch(mouvementsCaisseProvider).value ?? const <MouvementCaisse>[];
+    final sessions = ref.watch(sessionsCaisseProvider).value ?? const <SessionCaisse>[];
+    final noms = {for (final c in caisses) c.code: c.nom};
+    final utilisateurs = ref.watch(nomsUtilisateursProvider).value ?? const <String, String>{};
+    return PageModule(
+      moduleId: 'gestion_caisse',
+      sousTitre: l10n.gcDescription,
+      onglets: [
+        l10n.gcOngletCaisses,
+        l10n.gcOngletTransferts,
+        l10n.gcOngletClotures,
+        l10n.gcOngletMouvements,
+        l10n.gcOngletSessions,
+      ],
+      comptes: [caisses.length, transferts.length, clotures.length, mouvements.length, sessions.length],
+      ongletCourant: _onglet,
+      onOnglet: (i) => setState(() => _onglet = i),
+      child: switch (_onglet) {
+        // §9.13 : transferts caisse réservés à la permission `gererTransfertsCaisse` (sinon « accès refusé »).
+        1 when !ref.watch(permissionProvider(Permission.gererTransfertsCaisse)) => LicenceGate(
+          key: const ValueKey('transferts_refuse'),
+          autorise: false,
+          genre: DsGateGenre.refuse,
+          description: l10n.dsGateRefuseDetail(l10n.gcOngletTransferts),
+          child: const SizedBox.shrink(),
+        ),
+        1 => _transferts(l10n, transferts, noms, utilisateurs),
+        2 => _clotures(l10n, clotures, caisses, noms, utilisateurs),
+        3 => _mouvements(l10n, mouvements, sessions, caisses, noms, utilisateurs),
+        4 => _sessions(l10n, sessions, noms, utilisateurs),
+        _ => _caisses(l10n, caisses, sessions, utilisateurs),
+      },
+    );
+  }
+
+  // ———————————————————————————— Caisses ————————————————————————————
+
+  Widget _caisses(
+    AppLocalizations l10n,
+    List<Caisse> caisses,
+    List<SessionCaisse> sessions,
+    Map<String, String> utilisateurs,
+  ) {
     final devise = ref.watch(deviseProvider);
-    final caisses = ref.watch(caissesListeProvider).value ?? const [];
-    final soldes = ref.watch(soldesCaissesProvider).value ?? const {};
-    final magasins = ref.watch(magasinsProvider).value ?? const [];
-    final df = DateFormat('dd/MM/yyyy HH:mm');
-    String nomCaisse(String code) => caisses.where((c) => c.code == code).firstOrNull?.nom ?? code;
-    String nomMagasin(String? code) =>
-        code == null ? l10n.caisseSansMagasin : magasins.where((m) => m.code == code).firstOrNull?.nom ?? code;
-    return DsPage(
-      titre: l10n.gestionCaisseTitre,
-      actions: switch (_onglet) {
-        0 => [
-          DsButton(
+    final soldes = ref.watch(soldesCaissesProvider).value ?? const <String, SoldeCaisse>{};
+    final magasins = {for (final m in ref.watch(magasinsProvider).value ?? const []) m.code: m.nom};
+    final ouvertes = {
+      for (final s in sessions)
+        if (s.estOuverte) s.caisseCode: s,
+    };
+    double solde(Caisse c) => soldes[c.code]?.total ?? 0;
+    final physiques = caisses.where((c) => c.actif && c.type == TypesCaisse.physique).toList();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      spacing: DsTailles.gridGap,
+      children: [
+        if (physiques.isNotEmpty)
+          LayoutBuilder(
+            builder: (context, contraintes) {
+              const gap = 16.0;
+              final n = ((contraintes.maxWidth + gap) / (300 + gap)).floor().clamp(1, physiques.length);
+              final largeur = (contraintes.maxWidth - gap * (n - 1)) / n;
+              return Wrap(
+                spacing: gap,
+                runSpacing: gap,
+                children: [
+                  for (final c in physiques)
+                    SizedBox(
+                      key: ValueKey('carte_${c.code}'),
+                      width: largeur,
+                      child: DsCashSessionCard(
+                        ouverte: ouvertes.containsKey(c.code),
+                        caisse: c.nom,
+                        code: ouvertes[c.code]?.code,
+                        ouvertureHeure: ouvertes[c.code] == null ? null : formatHeure(ouvertes[c.code]!.ouverteLe),
+                        ouverturePar: ouvertes[c.code] == null
+                            ? null
+                            : (utilisateurs[ouvertes[c.code]!.utilisateurCode] ?? ouvertes[c.code]!.utilisateurCode),
+                        solde: solde(c),
+                        devise: devise,
+                        onOuvrir: () => afficherOuvertureCaisse(context, ref, caisseCode: c.code),
+                        onCloturer: () =>
+                            afficherClotureSession(context, ref, nomCaisse: c.nom, sessionCible: ouvertes[c.code]),
+                        onMouvement: () => afficherMouvementManuel(context, ref, caisseCode: c.code),
+                      ),
+                    ),
+                ],
+              );
+            },
+          ),
+        DsModuleTable<Caisse>(
+          key: const ValueKey('gc_caisses'),
+          entite: l10n.gcEntiteCaisses,
+          lignes: caisses,
+          cle: (c) => c.code,
+          afficherTotaux: true,
+          permissions: permissionsSession(ref),
+          messageVide: l10n.caisseAucune,
+          indiceRecherche: l10n.gcRechercheCaisses,
+          texteRecherche: (c) => '${c.code} ${c.nom}',
+          colonnes: [
+            DsColonne(id: 'code', libelle: l10n.produitsColCode, attenue: true, valeur: (c) => c.code),
+            DsColonne(id: 'nom', libelle: l10n.gcColCaisse, fort: true, flex: 2, valeur: (c) => c.nom),
+            DsColonne(
+              id: 'type',
+              libelle: l10n.caisseType,
+              valeur: (c) => c.type,
+              cellule: (_, c) => DsBadge(
+                libelle: libelleTypeCaisse(l10n, c.type),
+                ton: c.type == TypesCaisse.compte ? DsBadgeTon.accent : DsBadgeTon.neutre,
+              ),
+            ),
+            DsColonne(
+              id: 'initial',
+              libelle: l10n.gcColSoldeInitial,
+              numerique: true,
+              valeur: (c) => c.soldeInitial,
+              cellule: (_, c) => Text(formaterMontant(c.soldeInitial, devise)),
+            ),
+            DsColonne(
+              id: 'solde',
+              libelle: l10n.gcColSoldeActuel,
+              numerique: true,
+              fort: true,
+              valeur: solde,
+              cellule: (_, c) => Text(formaterMontant(solde(c), devise)),
+              total: (cs) => formaterMontant(cs.fold(0.0, (x, c) => x + solde(c)), devise),
+            ),
+            DsColonne(
+              id: 'session',
+              libelle: l10n.gcColSession,
+              valeur: (c) => ouvertes.containsKey(c.code) ? 'ouverte' : 'fermee',
+              cellule: (_, c) => BadgeStatut(ouvertes.containsKey(c.code) ? 'ouverte' : 'fermee'),
+            ),
+            DsColonne(
+              id: 'etat',
+              libelle: l10n.gcColEtat,
+              valeur: (c) => c.actif ? 'actif' : 'inactif',
+              cellule: (_, c) => BadgeStatut(c.actif ? 'actif' : 'inactif'),
+            ),
+            DsColonne(
+              id: 'magasin',
+              libelle: l10n.caisseMagasin,
+              visibleParDefaut: false,
+              valeur: (c) => c.magasinCode == null ? '—' : (magasins[c.magasinCode] ?? c.magasinCode!),
+            ),
+            DsColonne(
+              id: 'obs',
+              libelle: l10n.retoursObservation,
+              visibleParDefaut: false,
+              valeur: (c) => c.observation ?? '',
+            ),
+            ...colonnesAudit(context, ref, (Caisse x) => x.audit),
+          ],
+          onOuvrir: (c) => afficherDetailCaisse(context, ref, c),
+          actions: [
+            DsActionModule(
+              libelle: l10n.tiersDetail,
+              icone: LucideIcons.eye,
+              regle: DsRegleSelection.une,
+              detail: true,
+              onPressed: (choix, _) => afficherDetailCaisse(context, ref, choix.first),
+            ),
+            DsActionModule(
+              cle: const ValueKey('caisses_modifier'),
+              libelle: l10n.communModifier,
+              icone: LucideIcons.pencil,
+              regle: DsRegleSelection.une,
+              onPressed: (choix, _) => afficherFormulaireCaisse(context, ref, caisse: choix.first),
+            ),
+            DsActionModule(
+              cle: const ValueKey('caisses_desactiver'),
+              libelle: l10n.caisseDesactiver,
+              icone: LucideIcons.circlePause,
+              danger: true,
+              onPressed: (choix, effacer) => desactiverCaisses(context, ref, choix, effacer),
+            ),
+          ],
+          primaire: DsButton(
+            key: const ValueKey('caisse_nouvelle'),
             libelle: l10n.caisseNouvelle,
             icone: LucideIcons.plus,
-            onPressed: () {
-              _formulaireCaisse();
-            },
-          ),
-        ],
-        1 => [
-          DsButton(
-            libelle: l10n.mouvementDepense,
-            icone: LucideIcons.minus,
-            variante: DsButtonVariante.secondaire,
-            onPressed: () {
-              _mouvement(apport: false);
-            },
-          ),
-          DsButton(
-            libelle: l10n.mouvementApport,
-            icone: LucideIcons.plus,
-            onPressed: () {
-              _mouvement(apport: true);
-            },
-          ),
-        ],
-        _ => [
-          DsButton(
-            libelle: l10n.transfertCaisseNouveau,
-            icone: LucideIcons.arrowLeftRight,
-            onPressed: () {
-              _transfert();
-            },
-          ),
-        ],
-      },
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          DsOnglets(
-            onglets: [
-              l10n.gestionCaisseOngletCaisses,
-              l10n.gestionCaisseOngletMouvements,
-              l10n.gestionCaisseOngletTransferts,
-            ],
-            courant: _onglet,
-            onChanged: (i) => setState(() => _onglet = i),
-          ),
-          const SizedBox(height: DsSpacing.lg),
-          Expanded(
-            child: switch (_onglet) {
-              0 => DsDataTable<Caisse>(
-                colonnes: [
-                  DsColonne(id: 'code', libelle: l10n.produitsColCode, valeur: (c) => c.code, largeur: 100),
-                  DsColonne(id: 'nom', libelle: l10n.caisseNom, valeur: (c) => c.nom, flex: 2),
-                  DsColonne(
-                    id: 'type',
-                    libelle: l10n.caisseType,
-                    valeur: (c) => c.type,
-                    cellule: (_, c) => DsBadge(
-                      libelle: libelleTypeCaisse(l10n, c.type),
-                      ton: c.type == TypesCaisse.compte ? DsBadgeTon.info : DsBadgeTon.primaire,
-                      icone: c.type == TypesCaisse.compte ? LucideIcons.landmark : LucideIcons.wallet,
-                    ),
-                  ),
-                  DsColonne(id: 'mag', libelle: l10n.caisseMagasin, valeur: (c) => nomMagasin(c.magasinCode), flex: 2),
-                  DsColonne(
-                    id: 'esp',
-                    libelle: l10n.caisseSoldeEspeces,
-                    valeur: (c) => soldes[c.code]?.especes ?? 0,
-                    numerique: true,
-                    cellule: (_, c) => Text(formaterMontant(soldes[c.code]?.especes ?? 0, devise)),
-                  ),
-                  DsColonne(
-                    id: 'tot',
-                    libelle: l10n.caisseSoldeTotal,
-                    valeur: (c) => soldes[c.code]?.total ?? 0,
-                    numerique: true,
-                    cellule: (_, c) => Text(formaterMontant(soldes[c.code]?.total ?? 0, devise)),
-                  ),
-                  DsColonne(
-                    id: 'actif',
-                    libelle: l10n.caisseActive,
-                    valeur: (c) => c.actif ? 1 : 0,
-                    cellule: (_, c) => DsBadge(
-                      libelle: c.actif ? l10n.caisseActive : l10n.caisseInactive,
-                      ton: c.actif ? DsBadgeTon.succes : DsBadgeTon.neutre,
-                    ),
-                  ),
-                ],
-                lignes: caisses,
-                cle: (c) => c.code,
-                messageVide: l10n.caisseAucune,
-                actionsContextuelles: [
-                  DsActionContextuelle(
-                    libelle: l10n.caisseModifier,
-                    icone: LucideIcons.pencil,
-                    onSelected: (c) => _formulaireCaisse(existante: c),
-                  ),
-                  DsActionContextuelle(
-                    libelle: l10n.caisseDesactiver,
-                    icone: LucideIcons.ban,
-                    destructif: true,
-                    visible: (c) => c.actif && !c.systeme,
-                    onSelected: (c) => _enregistrerCaisse(c.copyWith(actif: false)),
-                  ),
-                  DsActionContextuelle(
-                    libelle: l10n.caisseActiver,
-                    icone: LucideIcons.check,
-                    visible: (c) => !c.actif,
-                    onSelected: (c) => _enregistrerCaisse(c.copyWith(actif: true)),
-                  ),
-                ],
-              ),
-              1 => Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  SizedBox(
-                    width: 280,
-                    child: DsSelect<String>(
-                      valeur: _filtreCaisse ?? '',
-                      options: ['', ...caisses.map((c) => c.code)],
-                      libelle: (c) => c.isEmpty ? l10n.mouvementToutesCaisses : nomCaisse(c),
-                      onChanged: (v) => setState(() => _filtreCaisse = v == null || v.isEmpty ? null : v),
-                    ),
-                  ),
-                  const SizedBox(height: DsSpacing.md),
-                  Expanded(
-                    child: DsDataTable<MouvementCaisse>(
-                      colonnes: [
-                        DsColonne(
-                          id: 'd',
-                          libelle: l10n.communDate,
-                          valeur: (m) => m.date,
-                          largeur: 150,
-                          cellule: (_, m) => Text(df.format(m.date)),
-                        ),
-                        DsColonne(
-                          id: 'c',
-                          libelle: l10n.mouvementCaisse,
-                          valeur: (m) => nomCaisse(m.caisseCode),
-                          flex: 2,
-                        ),
-                        DsColonne(
-                          id: 't',
-                          libelle: l10n.mouvementColType,
-                          valeur: (m) => m.type,
-                          flex: 2,
-                          cellule: (_, m) => Text(libelleTypeMouvementCaisse(l10n, m.type)),
-                        ),
-                        DsColonne(
-                          id: 's',
-                          libelle: l10n.mouvementColSens,
-                          valeur: (m) => m.sens,
-                          cellule: (_, m) => DsBadge(
-                            libelle: m.sens == SensMouvementCaisse.entree ? l10n.sensEntree : l10n.sensSortie,
-                            ton: m.sens == SensMouvementCaisse.entree ? DsBadgeTon.succes : DsBadgeTon.danger,
-                          ),
-                        ),
-                        DsColonne(
-                          id: 'm',
-                          libelle: l10n.mouvementColMontant,
-                          valeur: (m) => m.signe,
-                          numerique: true,
-                          total: (ls) => formaterMontant(ls.fold(0.0, (s, m) => s + m.signe), devise),
-                          cellule: (_, m) => Text(formaterMontant(m.signe, devise)),
-                        ),
-                        DsColonne(
-                          id: 'mode',
-                          libelle: l10n.mouvementColMode,
-                          valeur: (m) => m.mode,
-                          cellule: (_, m) => Text(libelleModePaiement(l10n, m.mode)),
-                        ),
-                        DsColonne(
-                          id: 'ref',
-                          libelle: l10n.mouvementColReference,
-                          valeur: (m) => m.referenceCode,
-                          flex: 2,
-                        ),
-                        DsColonne(id: 'com', libelle: l10n.communCommentaire, valeur: (m) => m.commentaire, flex: 2),
-                      ],
-                      lignes: (ref.watch(mouvementsCaisseProvider).value ?? const [])
-                          .where((m) => _filtreCaisse == null || m.caisseCode == _filtreCaisse)
-                          .toList(),
-                      cle: (m) => m.id ?? m.hashCode,
-                      afficherTotaux: true,
-                      messageVide: l10n.mouvementAucun,
-                    ),
-                  ),
-                ],
-              ),
-              _ => DsDataTable<TransfertCaisse>(
-                colonnes: [
-                  DsColonne(id: 'code', libelle: l10n.produitsColCode, valeur: (t) => t.code, largeur: 100),
-                  DsColonne(
-                    id: 'd',
-                    libelle: l10n.communDate,
-                    valeur: (t) => t.date,
-                    largeur: 150,
-                    cellule: (_, t) => Text(df.format(t.date)),
-                  ),
-                  DsColonne(
-                    id: 's',
-                    libelle: l10n.transfertCaisseSource,
-                    valeur: (t) => nomCaisse(t.caisseSource),
-                    flex: 2,
-                  ),
-                  DsColonne(
-                    id: 'dest',
-                    libelle: l10n.transfertCaisseDestination,
-                    valeur: (t) => nomCaisse(t.caisseDestination),
-                    flex: 2,
-                  ),
-                  DsColonne(
-                    id: 'm',
-                    libelle: l10n.mouvementColMontant,
-                    valeur: (t) => t.montant,
-                    numerique: true,
-                    cellule: (_, t) => Text(formaterMontant(t.montant, devise)),
-                  ),
-                  DsColonne(
-                    id: 'mode',
-                    libelle: l10n.mouvementColMode,
-                    valeur: (t) => t.mode,
-                    cellule: (_, t) => Text(libelleModePaiement(l10n, t.mode)),
-                  ),
-                  DsColonne(id: 'c', libelle: l10n.communCommentaire, valeur: (t) => t.commentaire, flex: 2),
-                ],
-                lignes: ref.watch(transfertsCaisseProvider).value ?? const [],
-                cle: (t) => t.code,
-                messageVide: l10n.transfertCaisseAucun,
-              ),
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Future<void> _erreur(String titre, CaisseException e) async {
-    if (!mounted) return;
-    final l10n = AppLocalizations.of(context);
-    unawaited(
-      afficherResultat(
-        context,
-        type: DsResultatType.erreur,
-        titre: titre,
-        message: messageErreurCaisse(l10n, e.erreur),
-      ),
-    );
-  }
-
-  Future<void> _enregistrerCaisse(Caisse c) async {
-    final l10n = AppLocalizations.of(context);
-    try {
-      await ref.read(caisseServiceProvider).modifier(c);
-      rafraichirCaisse(ref);
-    } on CaisseException catch (e) {
-      await _erreur(l10n.caisseModifier, e);
-    }
-  }
-
-  Future<void> _formulaireCaisse({Caisse? existante}) async {
-    final l10n = AppLocalizations.of(context);
-    final magasins = await ref.read(magasinsProvider.future);
-    if (!mounted) return;
-    final nom = TextEditingController(text: existante?.nom ?? '');
-    var type = existante?.type ?? TypesCaisse.physique;
-    var magasin = existante?.magasinCode ?? '';
-    final ok = await showDialog<bool>(
-      context: context,
-      barrierColor: context.ds.colors.overlay,
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setState) => DsDialog(
-          titre: existante == null ? l10n.caisseNouvelle : l10n.caisseModifier,
-          actions: [
-            DsButton(
-              libelle: l10n.communAnnuler,
-              variante: DsButtonVariante.secondaire,
-              onPressed: () => Navigator.of(ctx).pop(false),
-            ),
-            DsButton(
-              libelle: l10n.communEnregistrer,
-              icone: LucideIcons.save,
-              onPressed: () => Navigator.of(ctx).pop(true),
-            ),
-          ],
-          contenu: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              DsTextField(controller: nom, libelle: l10n.caisseNom, autofocus: true),
-              const SizedBox(height: DsSpacing.md),
-              DsSelect<String>(
-                titre: l10n.caisseType,
-                valeur: type,
-                options: const [TypesCaisse.physique, TypesCaisse.compte],
-                libelle: (t) => libelleTypeCaisse(l10n, t),
-                onChanged: (v) => setState(() => type = v ?? type),
-              ),
-              const SizedBox(height: DsSpacing.md),
-              DsSelect<String>(
-                titre: l10n.caisseMagasin,
-                valeur: magasin,
-                options: ['', ...magasins.map((m) => m.code)],
-                libelle: (c) => c.isEmpty ? l10n.caisseSansMagasin : magasins.firstWhere((m) => m.code == c).nom,
-                onChanged: (v) => setState(() => magasin = v ?? ''),
-              ),
-            ],
+            onPressed: () => afficherFormulaireCaisse(context, ref),
           ),
         ),
+      ],
+    );
+  }
+
+  // ———————————————————————————— Transferts ————————————————————————————
+
+  Widget _transferts(
+    AppLocalizations l10n,
+    List<TransfertCaisse> tous,
+    Map<String, String> noms,
+    Map<String, String> utilisateurs,
+  ) {
+    final devise = ref.watch(deviseProvider);
+    final lignes = tous.where((t) => dansPeriode(t.date, _periodeTransferts)).toList();
+    return DsModuleTable<TransfertCaisse>(
+      key: const ValueKey('gc_transferts'),
+      entite: l10n.gcEntiteTransferts,
+      lignes: lignes,
+      cle: (t) => t.code,
+      afficherTotaux: true,
+      permissions: permissionsSession(ref),
+      messageVide: l10n.transfertCaisseAucun,
+      periode: _periodeTransferts,
+      onPeriode: (p) => setState(() => _periodeTransferts = p),
+      indiceRecherche: l10n.gcRechercheTransferts,
+      texteRecherche: (t) =>
+          '${t.code} ${noms[t.caisseSource] ?? ''} ${noms[t.caisseDestination] ?? ''} ${t.commentaire ?? ''}',
+      colonnes: [
+        DsColonne(id: 'code', libelle: l10n.produitsColCode, attenue: true, valeur: (t) => t.code),
+        DsColonne(
+          id: 'date',
+          libelle: l10n.communDate,
+          attenue: true,
+          valeur: (t) => t.date,
+          cellule: (_, t) => Text(formatDateHeure.format(t.date)),
+        ),
+        DsColonne(id: 'src', libelle: l10n.gcColDepuis, valeur: (t) => noms[t.caisseSource] ?? t.caisseSource),
+        DsColonne(
+          id: 'dst',
+          libelle: l10n.gcColVers,
+          fort: true,
+          valeur: (t) => noms[t.caisseDestination] ?? t.caisseDestination,
+        ),
+        DsColonne(
+          id: 'montant',
+          libelle: l10n.retoursMontant,
+          numerique: true,
+          valeur: (t) => t.montant,
+          cellule: (_, t) => Text(formaterMontant(t.montant, devise)),
+          total: (ts) => formaterMontant(ts.where((t) => t.actif).fold(0.0, (x, t) => x + t.montant), devise),
+        ),
+        DsColonne(
+          id: 'statut',
+          libelle: l10n.gcColStatut,
+          valeur: (t) => t.actif ? 'valide' : 'annule',
+          cellule: (_, t) => BadgeStatut(t.actif ? 'valide' : 'annule'),
+        ),
+        DsColonne(id: 'mode', libelle: l10n.gcColMode, visibleParDefaut: false, valeur: (t) => t.mode),
+        DsColonne(
+          id: 'obs',
+          libelle: l10n.retoursObservation,
+          visibleParDefaut: false,
+          valeur: (t) => t.commentaire ?? '',
+        ),
+        DsColonne(
+          id: 'annule_par',
+          libelle: l10n.ventesAnnulePar,
+          visibleParDefaut: false,
+          valeur: (t) => t.annulePar == null ? '' : (utilisateurs[t.annulePar] ?? t.annulePar!),
+        ),
+        DsColonne(
+          id: 'motif',
+          libelle: l10n.ventesMotifAnnulation,
+          visibleParDefaut: false,
+          valeur: (t) => t.motifAnnulation ?? '',
+        ),
+        ...colonnesAudit(context, ref, (TransfertCaisse x) => x.audit),
+      ],
+      actions: [
+        DsActionModule(
+          cle: const ValueKey('transferts_annuler'),
+          libelle: l10n.dsAnnuler,
+          icone: LucideIcons.ban,
+          danger: true,
+          onPressed: (choix, effacer) => annulerTransfertsCaisse(context, ref, choix, effacer),
+        ),
+      ],
+      primaire: DsButton(
+        key: const ValueKey('transfert_nouveau'),
+        libelle: l10n.transfertCaisseNouveau,
+        icone: LucideIcons.arrowLeftRight,
+        onPressed: () => afficherTransfertCaisse(context, ref),
       ),
     );
-    if (ok != true || !mounted) return;
-    try {
-      if (existante == null) {
-        await ref
-            .read(caisseServiceProvider)
-            .creer(nom: nom.text, type: type, magasinCode: magasin.isEmpty ? null : magasin);
-      } else {
-        await ref
-            .read(caisseServiceProvider)
-            .modifier(
-              existante.copyWith(
-                nom: nom.text,
-                type: type,
-                magasinCode: magasin.isEmpty ? null : magasin,
-                sansMagasin: magasin.isEmpty,
+  }
+
+  // ———————————————————————————— Clôtures Z ————————————————————————————
+
+  Widget _clotures(
+    AppLocalizations l10n,
+    List<Cloture> toutes,
+    List<Caisse> caisses,
+    Map<String, String> noms,
+    Map<String, String> utilisateurs,
+  ) {
+    final devise = ref.watch(deviseProvider);
+    final lignes = toutes
+        .where(
+          (z) => dansPeriode(z.fin, _periodeClotures) && (_caisseClotures == null || z.caisseCode == _caisseClotures),
+        )
+        .toList();
+    final colonnes = [
+      ...colonnesClotures(l10n, devise, noms, utilisateurs),
+      ...colonnesAudit(context, ref, (Cloture x) => x.audit),
+    ];
+    return DsModuleTable<Cloture>(
+      key: const ValueKey('gc_clotures'),
+      entite: l10n.gcEntiteClotures,
+      lignes: lignes,
+      cle: (z) => z.code,
+      afficherTotaux: true,
+      permissions: permissionsSession(ref),
+      messageVide: l10n.clotureAucune,
+      periode: _periodeClotures,
+      onPeriode: (p) => setState(() => _periodeClotures = p),
+      indiceRecherche: l10n.gcRechercheClotures,
+      texteRecherche: (z) => '${z.code} ${nomCaisseCloture(l10n, z, noms)}',
+      nbFiltresActifs: _caisseClotures == null ? 0 : 1,
+      onReinitialiser: () => setState(() => _caisseClotures = null),
+      filtres: [
+        DsFormRow(
+          libelle: l10n.gcColCaisse,
+          largeurLibelle: 90,
+          child: DsSelect<String?>(
+            cle: const ValueKey('clotures_filtre_caisse'),
+            valeur: _caisseClotures,
+            options: [null, for (final c in caisses) c.code],
+            libelle: (code) => code == null ? l10n.tiersToutes : (noms[code] ?? code),
+            recherche: rechercheListe(context, ref, ListeMetier.caisse),
+            onChanged: (v) => setState(() => _caisseClotures = v),
+          ),
+        ),
+      ],
+      colonnes: colonnes,
+      onExport: peutExporter(ref)
+          ? (format, zs) => exporterTableau(
+              context,
+              ref,
+              id: 'clotures_z',
+              titre: l10n.gcOngletClotures,
+              colonnes: colonnes,
+              lignes: zs,
+              format: format,
+            )
+          : null,
+      onOuvrir: (z) => afficherDetailCloture(context, ref, z),
+      actions: [
+        DsActionModule(
+          libelle: l10n.tiersDetail,
+          icone: LucideIcons.eye,
+          regle: DsRegleSelection.une,
+          detail: true,
+          onPressed: (choix, _) => afficherDetailCloture(context, ref, choix.first),
+        ),
+        DsActionModule(
+          cle: const ValueKey('clotures_pdf'),
+          libelle: 'PDF',
+          icone: LucideIcons.fileDown,
+          regle: DsRegleSelection.une,
+          onPressed: (choix, _) => imprimerCloture(context, ref, choix.first),
+        ),
+      ],
+      secondaire: DsButton(
+        key: const ValueKey('cloture_fiscal'),
+        libelle: l10n.gcExportFiscal,
+        icone: LucideIcons.landmark,
+        variante: DsButtonVariante.secondaire,
+        onPressed: peutExporter(ref) ? () => afficherExportFiscal(context, ref) : null,
+      ),
+      primaire: DsButton(
+        key: const ValueKey('cloture_nouvelle'),
+        libelle: l10n.gcNouvelleClotureZ,
+        icone: LucideIcons.fileLock2,
+        onPressed: () => afficherClotureZ(context, ref, caisseCode: _caisseClotures),
+      ),
+    );
+  }
+
+  // ———————————————————————————— Mouvements ————————————————————————————
+
+  Widget _mouvements(
+    AppLocalizations l10n,
+    List<MouvementCaisse> tous,
+    List<SessionCaisse> sessions,
+    List<Caisse> caisses,
+    Map<String, String> noms,
+    Map<String, String> utilisateurs,
+  ) {
+    final devise = ref.watch(deviseProvider);
+    final sessionsDe = {for (final m in tous) m: sessionDuMouvement(m, sessions)};
+    final types = {for (final m in tous) m.type}.toList()..sort();
+    final lignes = tous
+        .where(
+          (m) =>
+              dansPeriode(m.date, _periodeMouvements) &&
+              (_caisseMouvements == null || m.caisseCode == _caisseMouvements) &&
+              (_sessionMouvements == null || sessionsDe[m] == _sessionMouvements) &&
+              (_typeMouvements == null || m.type == _typeMouvements),
+        )
+        .toList();
+    final colonnes = [
+      ...colonnesMouvements(l10n, devise, noms, utilisateurs, session: (m) => sessionsDe[m]),
+      ...colonnesAudit(context, ref, (MouvementCaisse x) => x.audit),
+    ];
+    return DsModuleTable<MouvementCaisse>(
+      key: const ValueKey('gc_mouvements'),
+      entite: l10n.gcEntiteMouvements,
+      lignes: lignes,
+      cle: (m) => m.id ?? m.hashCode,
+      afficherTotaux: true,
+      permissions: permissionsSession(ref),
+      messageVide: l10n.mouvementAucun,
+      periode: _periodeMouvements,
+      onPeriode: (p) => setState(() => _periodeMouvements = p),
+      indiceRecherche: l10n.gcRechercheMouvements,
+      texteRecherche: (m) =>
+          '${m.referenceCode ?? ''} ${libelleTypeMouvementCaisse(l10n, m.type)} ${m.commentaire ?? ''}',
+      nbFiltresActifs: [_caisseMouvements, _sessionMouvements, _typeMouvements].where((f) => f != null).length,
+      onReinitialiser: () => setState(() {
+        _caisseMouvements = null;
+        _sessionMouvements = null;
+        _typeMouvements = null;
+      }),
+      filtres: [
+        DsFormRow(
+          libelle: l10n.gcColCaisse,
+          largeurLibelle: 90,
+          child: DsSelect<String?>(
+            cle: const ValueKey('mouvements_filtre_caisse'),
+            valeur: _caisseMouvements,
+            options: [null, for (final c in caisses) c.code],
+            libelle: (code) => code == null ? l10n.tiersToutes : (noms[code] ?? code),
+            recherche: rechercheListe(context, ref, ListeMetier.caisse),
+            onChanged: (v) => setState(() => _caisseMouvements = v),
+          ),
+        ),
+        DsFormRow(
+          libelle: l10n.gcColSession,
+          largeurLibelle: 90,
+          child: DsSelect<String?>(
+            cle: const ValueKey('mouvements_filtre_session'),
+            valeur: _sessionMouvements,
+            options: [
+              null,
+              for (final s in sessions)
+                if (_caisseMouvements == null || s.caisseCode == _caisseMouvements) s.code,
+            ],
+            libelle: (code) => code ?? l10n.tiersToutes,
+            recherche: rechercheListe(context, ref, ListeMetier.session),
+            onChanged: (v) => setState(() => _sessionMouvements = v),
+          ),
+        ),
+        DsFormRow(
+          libelle: l10n.caisseType,
+          largeurLibelle: 90,
+          child: DsSelect<String?>(
+            cle: const ValueKey('mouvements_filtre_type'),
+            valeur: _typeMouvements,
+            options: [null, ...types],
+            libelle: (t) => t == null ? l10n.retoursTous : libelleTypeMouvementCaisse(l10n, t),
+            onChanged: (v) => setState(() => _typeMouvements = v),
+          ),
+        ),
+      ],
+      colonnes: colonnes,
+      onExport: peutExporter(ref)
+          ? (format, ms) => exporterTableau(
+              context,
+              ref,
+              id: 'mouvements_caisse',
+              titre: l10n.gcOngletMouvements,
+              colonnes: colonnes,
+              lignes: ms,
+              format: format,
+            )
+          : null,
+      primaire: DsButton(
+        key: const ValueKey('mouvement_manuel'),
+        libelle: l10n.gcMouvementManuel,
+        icone: LucideIcons.plus,
+        onPressed: () => afficherMouvementManuel(context, ref, caisseCode: _caisseMouvements),
+      ),
+    );
+  }
+
+  // ———————————————————————————— Sessions ————————————————————————————
+
+  Widget _sessions(
+    AppLocalizations l10n,
+    List<SessionCaisse> toutes,
+    Map<String, String> noms,
+    Map<String, String> utilisateurs,
+  ) {
+    final devise = ref.watch(deviseProvider);
+    final lignes = toutes.where((s) => s.estOuverte || dansPeriode(s.ouverteLe, _periodeSessions)).toList();
+    double? theorique(SessionCaisse s) => s.montantFermeture == null ? null : s.montantFermeture! - (s.ecart ?? 0);
+    String montant(double? v) => v == null ? '—' : formaterMontant(v, devise);
+    return DsModuleTable<SessionCaisse>(
+      key: const ValueKey('gc_sessions'),
+      entite: l10n.gcEntiteSessions,
+      lignes: lignes,
+      cle: (s) => s.code,
+      permissions: permissionsSession(ref),
+      messageVide: l10n.gcAucuneSession,
+      periode: _periodeSessions,
+      onPeriode: (p) => setState(() => _periodeSessions = p),
+      indiceRecherche: l10n.gcRechercheSessions,
+      texteRecherche: (s) => '${s.code} ${noms[s.caisseCode] ?? ''}',
+      colonnes: [
+        DsColonne(id: 'code', libelle: l10n.gcColSession, fort: true, valeur: (s) => s.code),
+        DsColonne(id: 'caisse', libelle: l10n.gcColCaisse, valeur: (s) => noms[s.caisseCode] ?? s.caisseCode),
+        DsColonne(
+          id: 'ouv',
+          libelle: l10n.gcColOuverture,
+          attenue: true,
+          valeur: (s) => s.ouverteLe,
+          cellule: (_, s) => Text(formatJourHeure.format(s.ouverteLe)),
+        ),
+        DsColonne(
+          id: 'clo',
+          libelle: l10n.gcColCloture,
+          attenue: true,
+          valeur: (s) => s.fermeeLe,
+          cellule: (_, s) => Text(s.fermeeLe == null ? '—' : formatJourHeure.format(s.fermeeLe!)),
+        ),
+        DsColonne(
+          id: 'fond',
+          libelle: l10n.gcColFond,
+          numerique: true,
+          valeur: (s) => s.fondInitial,
+          cellule: (_, s) => Text(formaterMontant(s.fondInitial, devise)),
+        ),
+        DsColonne(
+          id: 'theorique',
+          libelle: l10n.gcColTheorique,
+          numerique: true,
+          valeur: theorique,
+          cellule: (_, s) => Text(montant(theorique(s))),
+        ),
+        DsColonne(
+          id: 'reel',
+          libelle: l10n.gcColReel,
+          numerique: true,
+          valeur: (s) => s.montantFermeture,
+          cellule: (_, s) => Text(montant(s.montantFermeture)),
+        ),
+        DsColonne(
+          id: 'ecart',
+          libelle: l10n.gcColEcart,
+          numerique: true,
+          valeur: (s) => s.ecart,
+          cellule: (ctx, s) {
+            final e = s.ecart;
+            if (e == null) return const Text('—');
+            final c = ctx.ds.colors;
+            return Text(
+              '${e > 0.005 ? '+' : ''}${f2(e)}',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: e < -0.005
+                    ? c.dangerFg
+                    : e > 0.005
+                    ? c.successFg
+                    : c.textSecondary,
               ),
             );
-      }
-      rafraichirCaisse(ref);
-    } on CaisseException catch (e) {
-      await _erreur(existante == null ? l10n.caisseNouvelle : l10n.caisseModifier, e);
-    }
-  }
-
-  Future<void> _mouvement({required bool apport}) async {
-    final l10n = AppLocalizations.of(context);
-    final caisses = (await ref.read(caissesListeProvider.future)).where((c) => c.actif).toList();
-    if (!mounted || caisses.isEmpty) return;
-    final titre = apport ? l10n.mouvementApport : l10n.mouvementDepense;
-    var caisse = _filtreCaisse ?? caisses.first.code;
-    var mode = 'Espèces';
-    final montant = TextEditingController();
-    final commentaire = TextEditingController();
-    final ok = await showDialog<bool>(
-      context: context,
-      barrierColor: context.ds.colors.overlay,
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setState) => DsDialog(
-          titre: titre,
-          actions: [
-            DsButton(
-              libelle: l10n.communAnnuler,
-              variante: DsButtonVariante.secondaire,
-              onPressed: () => Navigator.of(ctx).pop(false),
-            ),
-            DsButton(
-              libelle: l10n.communValider,
-              icone: LucideIcons.check,
-              onPressed: () => Navigator.of(ctx).pop(true),
-            ),
-          ],
-          contenu: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              DsSelect<String>(
-                titre: l10n.mouvementCaisse,
-                valeur: caisse,
-                options: caisses.map((c) => c.code).toList(),
-                libelle: (c) => caisses.firstWhere((x) => x.code == c).nom,
-                onChanged: (v) => setState(() => caisse = v ?? caisse),
-              ),
-              const SizedBox(height: DsSpacing.md),
-              Row(
-                children: [
-                  Expanded(
-                    child: DsTextField(
-                      controller: montant,
-                      libelle: l10n.mouvementColMontant,
-                      autofocus: true,
-                      typeClavier: TextInputType.number,
-                    ),
-                  ),
-                  const SizedBox(width: DsSpacing.md),
-                  Expanded(
-                    child: DsSelect<String>(
-                      titre: l10n.mouvementColMode,
-                      valeur: mode,
-                      options: _modes,
-                      libelle: (m) => libelleModePaiement(l10n, m),
-                      onChanged: (v) => setState(() => mode = v ?? mode),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: DsSpacing.md),
-              DsTextField(controller: commentaire, libelle: l10n.communCommentaire),
-            ],
+          },
+        ),
+        DsColonne(
+          id: 'statut',
+          libelle: l10n.gcColStatut,
+          valeur: statutSession,
+          cellule: (_, s) => BadgeStatut(statutSession(s)),
+        ),
+        DsColonne(
+          id: 'par',
+          libelle: l10n.gcColOuvertePar,
+          visibleParDefaut: false,
+          valeur: (s) => utilisateurs[s.utilisateurCode] ?? s.utilisateurCode,
+        ),
+        ...colonnesAudit(context, ref, (SessionCaisse x) => x.audit),
+      ],
+      onOuvrir: (s) => afficherMouvementsSession(context, ref, s),
+      actions: [
+        DsActionModule(
+          libelle: l10n.gcVoirMouvements,
+          icone: LucideIcons.list,
+          regle: DsRegleSelection.une,
+          detail: true,
+          onPressed: (choix, _) => afficherMouvementsSession(context, ref, choix.first),
+        ),
+        DsActionModule(
+          cle: const ValueKey('sessions_cloturer'),
+          libelle: l10n.gcCloturer,
+          icone: LucideIcons.lock,
+          regle: DsRegleSelection.une,
+          desactive: (choix) => choix.isNotEmpty && !choix.first.estOuverte,
+          onPressed: (choix, _) => afficherClotureSession(
+            context,
+            ref,
+            nomCaisse: noms[choix.first.caisseCode] ?? choix.first.caisseCode,
+            sessionCible: choix.first,
           ),
         ),
+      ],
+      primaire: DsButton(
+        key: const ValueKey('session_ouvrir'),
+        libelle: l10n.gcOuvrirSession,
+        icone: LucideIcons.lockOpen,
+        onPressed: () => afficherOuvertureCaisse(context, ref),
       ),
     );
-    if (ok != true || !mounted) return;
-    try {
-      await ref
-          .read(caisseServiceProvider)
-          .mouvementManuel(
-            caisseCode: caisse,
-            apport: apport,
-            montant: double.tryParse(montant.text.replaceAll(',', '.')) ?? 0,
-            mode: mode,
-            commentaire: commentaire.text.trim().isEmpty ? null : commentaire.text.trim(),
-          );
-      rafraichirCaisse(ref);
-    } on CaisseException catch (e) {
-      await _erreur(titre, e);
-    }
-  }
-
-  Future<void> _transfert() async {
-    final l10n = AppLocalizations.of(context);
-    final devise = ref.read(deviseProvider);
-    final caisses = (await ref.read(caissesListeProvider.future)).where((c) => c.actif).toList();
-    if (!mounted) return;
-    if (caisses.length < 2) {
-      unawaited(
-        afficherResultat(
-          context,
-          type: DsResultatType.info,
-          titre: l10n.transfertCaisseNouveau,
-          message: l10n.caisseErreurMemeCaisse,
-        ),
-      );
-      return;
-    }
-    var source = caisses.first.code;
-    var destination = caisses[1].code;
-    var mode = 'Espèces';
-    final montant = TextEditingController();
-    final commentaire = TextEditingController();
-    final ok = await showDialog<bool>(
-      context: context,
-      barrierColor: context.ds.colors.overlay,
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setState) => DsDialog(
-          titre: l10n.transfertCaisseNouveau,
-          largeur: 560,
-          actions: [
-            DsButton(
-              libelle: l10n.communAnnuler,
-              variante: DsButtonVariante.secondaire,
-              onPressed: () => Navigator.of(ctx).pop(false),
-            ),
-            DsButton(
-              libelle: l10n.communValider,
-              icone: LucideIcons.arrowLeftRight,
-              onPressed: () => Navigator.of(ctx).pop(true),
-            ),
-          ],
-          contenu: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: DsSelect<String>(
-                      titre: l10n.transfertCaisseSource,
-                      valeur: source,
-                      options: caisses.map((c) => c.code).toList(),
-                      libelle: (c) => caisses.firstWhere((x) => x.code == c).nom,
-                      onChanged: (v) => setState(() => source = v ?? source),
-                    ),
-                  ),
-                  const SizedBox(width: DsSpacing.md),
-                  Expanded(
-                    child: DsSelect<String>(
-                      titre: l10n.transfertCaisseDestination,
-                      valeur: destination,
-                      options: caisses.map((c) => c.code).toList(),
-                      libelle: (c) => caisses.firstWhere((x) => x.code == c).nom,
-                      onChanged: (v) => setState(() => destination = v ?? destination),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: DsSpacing.md),
-              Row(
-                children: [
-                  Expanded(
-                    child: DsTextField(
-                      controller: montant,
-                      libelle: '${l10n.mouvementColMontant} ($devise)',
-                      autofocus: true,
-                      typeClavier: TextInputType.number,
-                    ),
-                  ),
-                  const SizedBox(width: DsSpacing.md),
-                  Expanded(
-                    child: DsSelect<String>(
-                      titre: l10n.mouvementColMode,
-                      valeur: mode,
-                      options: _modes,
-                      libelle: (m) => libelleModePaiement(l10n, m),
-                      onChanged: (v) => setState(() => mode = v ?? mode),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: DsSpacing.md),
-              DsTextField(controller: commentaire, libelle: l10n.communCommentaire),
-            ],
-          ),
-        ),
-      ),
-    );
-    if (ok != true || !mounted) return;
-    try {
-      final t = await ref
-          .read(caisseServiceProvider)
-          .transferer(
-            caisseSource: source,
-            caisseDestination: destination,
-            montant: double.tryParse(montant.text.replaceAll(',', '.')) ?? 0,
-            mode: mode,
-            commentaire: commentaire.text.trim().isEmpty ? null : commentaire.text.trim(),
-          );
-      rafraichirCaisse(ref);
-      if (!mounted) return;
-      unawaited(
-        afficherResultat(
-          context,
-          type: DsResultatType.succes,
-          titre: l10n.transfertCaisseNouveau,
-          message: l10n.transfertCaisseCree(t.code),
-        ),
-      );
-    } on CaisseException catch (e) {
-      await _erreur(l10n.transfertCaisseNouveau, e);
-    }
   }
 }

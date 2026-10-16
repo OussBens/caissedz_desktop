@@ -13,7 +13,10 @@ class CodeGenerator {
   static const int chiffres = 4;
 
   static const String magasin = 'MAG';
-  static const String caisse = 'CIS';
+  static const String caisse = 'CS';
+
+  /// Préfixe de la caisse système `CIS0000` (les caisses créées sont en `CS`).
+  static const String caisseSysteme = 'CIS';
   static const String client = 'CLN';
   static const String fournisseur = 'FOR';
   static const String categorie = 'CATE';
@@ -21,19 +24,30 @@ class CodeGenerator {
   static const String transfertStock = 'TRM';
   static const String transfertCaisse = 'TRF';
   static const String utilisateur = 'USR';
+  static const String role = 'ROL';
   static const String produit = 'PRD';
   static const String colis = 'COL';
   static const String pack = 'PCK';
   static const String remise = 'REM';
-  static const String besoin = 'BES';
-  static const String sortie = 'SOR';
+  static const String besoin = 'BL';
+  static const String sortie = 'SRT';
   static const String sessionCaisse = 'SES';
   static const String vente = 'VTE';
   static const String retour = 'RET';
   static const String versement = 'VER';
-  static const String achat = 'ACH';
-  static const String cloture = 'CLZ';
+  static const String achat = 'ENT';
+  static const String bonReception = 'BON';
+  static const String cloture = 'CLT';
   static const String inventaire = 'INV';
+  static const String zakat = 'ZKT';
+
+  /// Ordre SQL des codes par numéro (longueur puis texte) : `VTE10000` après `VTE9999`, contrairement à
+  /// l'ordre texte seul.
+  static const String ordreCroissant = 'length(code), code';
+  static const String ordreDecroissant = 'length(code) DESC, code DESC';
+
+  /// Comparaison de deux codes par numéro (même règle que [ordreCroissant]).
+  static int comparer(String a, String b) => a.length != b.length ? a.length - b.length : a.compareTo(b);
 
   static final RegExp _format = RegExp(r'^([A-Z]+)(\d+)$');
 

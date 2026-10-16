@@ -52,16 +52,16 @@ void main() {
     testWidgets('trie par colonne (asc, desc, puis sans tri)', (tester) async {
       await pumpDs(tester, DsDataTable<_L>(colonnes: _colonnes(), lignes: _lignes, cle: (l) => l.code, taillePage: 5));
       Offset y(String texte) => tester.getTopLeft(find.text(texte));
-      await tester.tap(find.text('Qté'));
+      await tester.tap(find.text('QTÉ'));
       await tester.pumpAndSettle();
       // Tri ascendant : la plus petite quantité (0 pour i=11, 22) en premier.
       expect(find.text('C011'), findsOneWidget);
-      await tester.tap(find.text('Qté'));
+      await tester.tap(find.text('QTÉ'));
       await tester.pumpAndSettle();
       // Tri descendant : quantité 10 (i=3, 14, 25) en premier.
       expect(find.text('C003'), findsOneWidget);
       expect(y('C003').dy < y('C014').dy, isTrue);
-      await tester.tap(find.text('Qté'));
+      await tester.tap(find.text('QTÉ'));
       await tester.pumpAndSettle();
       expect(find.text('C001'), findsOneWidget);
     });
@@ -93,16 +93,11 @@ void main() {
     testWidgets('masque et réaffiche une colonne', (tester) async {
       await pumpDs(tester, DsDataTable<_L>(colonnes: _colonnes(), lignes: _lignes, cle: (l) => l.code, taillePage: 5));
       expect(find.text('Article 1'), findsOneWidget);
-      await tester.tap(find.byTooltip('Colonnes'));
+      await tester.tap(find.byKey(const ValueKey('table_colonnes')));
       await tester.pumpAndSettle();
-      await tester.tap(
-        find.descendant(
-          of: find.ancestor(of: find.text('Nom').last, matching: find.byType(Row)).first,
-          matching: find.byType(Checkbox),
-        ),
-      );
+      await tester.tap(find.byKey(const ValueKey('colonne_nom')));
       await tester.pumpAndSettle();
-      await tester.tapAt(const Offset(5, 5)); // ferme le menu
+      await tester.tap(find.text('Appliquer'));
       await tester.pumpAndSettle();
       expect(find.text('Article 1'), findsNothing);
     });
@@ -133,7 +128,34 @@ void main() {
 
     testWidgets('message vide', (tester) async {
       await pumpDs(tester, DsDataTable<_L>(colonnes: _colonnes(), lignes: const [], cle: (l) => l.code));
-      expect(find.text('Aucun résultat'), findsOneWidget);
+      expect(find.text('Aucun élément'), findsOneWidget);
+    });
+
+    testWidgets('bouton colonnes au début (après les cases) ; défilement horizontal si trop de colonnes', (
+      tester,
+    ) async {
+      List<DsColonne<_L>> colonnes(int n) => [
+        for (var i = 0; i < n; i++) DsColonne<_L>(id: 'c$i', libelle: 'Col $i', valeur: (l) => '${l.nom} $i'),
+      ];
+      Widget tableau(int n) => SizedBox(
+        width: 700,
+        height: 500,
+        child: DsDataTable<_L>(colonnes: colonnes(n), lignes: _lignes, cle: (l) => l.code, onSelectionChanged: (_) {}),
+      );
+      await pumpDs(tester, tableau(4));
+      final bouton = tester.getCenter(find.byKey(const ValueKey('table_colonnes'))).dx;
+      expect(bouton, lessThan(tester.getCenter(find.text('COL 0')).dx));
+      expect(bouton, greaterThan(tester.getCenter(find.byKey(const ValueKey('table_tout_selectionner'))).dx));
+      expect(find.byKey(const ValueKey('table_defilement_horizontal')), findsNothing);
+
+      // 10 colonnes × 110 px > 700 px : en-tête et lignes défilent ensemble.
+      await pumpDs(tester, tableau(10));
+      expect(find.byKey(const ValueKey('table_defilement_horizontal')), findsOneWidget);
+      final avant = tester.getTopLeft(find.text('COL 9')).dx;
+      await tester.drag(find.byKey(const ValueKey('table_defilement_horizontal')), const Offset(-400, 0));
+      await tester.pumpAndSettle();
+      expect(tester.getTopLeft(find.text('COL 9')).dx, lessThan(avant));
+      expect(tester.takeException(), isNull);
     });
   });
 }

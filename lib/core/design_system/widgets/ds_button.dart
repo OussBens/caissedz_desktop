@@ -7,27 +7,31 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../tokens/ds_theme.dart';
 
-enum DsButtonVariante { primaire, secondaire, fantome, danger, succes }
+/// Variantes du bouton DS v2.2 (`Button.variant`).
+enum DsButtonVariante { primaire, secondaire, fantome, doux, danger, accent, inverse }
 
+/// Tailles du bouton DS : sm 32, md 36, lg 44.
 enum DsButtonTaille { sm, md, lg }
 
-/// Bouton du design system avec garde anti double-clic intégrée.
+/// Bouton du design system (`Button`) avec garde anti double-clic intégrée (450 ms).
 ///
-/// - Si [onPressed] renvoie un `Future`, le bouton est désactivé (avec un
-///   indicateur de chargement) jusqu'à sa complétion.
-/// - Dans tous les cas, un second clic survenant moins de [delaiGarde] après
-///   le précédent est ignoré.
+/// - Si [onPressed] renvoie un `Future`, le bouton affiche le glyphe « chargement » (statique,
+///   pour ne pas bloquer les dialogs ouverts depuis le bouton) et reste inactif jusqu'à sa complétion ;
+///   [chargement] affiche le spinner animé du DS.
+/// - Un second clic survenant moins de [delaiGarde] après le précédent est ignoré.
 class DsButton extends StatefulWidget {
   const DsButton({
     super.key,
     required this.libelle,
     this.onPressed,
     this.icone,
+    this.iconeDroite,
+    this.kbd,
     this.variante = DsButtonVariante.primaire,
     this.taille = DsButtonTaille.md,
     this.pleineLargeur = false,
     this.chargement = false,
-    this.delaiGarde = const Duration(milliseconds: 600),
+    this.delaiGarde = const Duration(milliseconds: 450),
     this.tooltip,
     this.autofocus = false,
   });
@@ -35,6 +39,10 @@ class DsButton extends StatefulWidget {
   final String libelle;
   final FutureOr<void> Function()? onPressed;
   final IconData? icone;
+  final IconData? iconeDroite;
+
+  /// Raccourci clavier affiché dans une puce (`kbd`), ex. « F12 ».
+  final String? kbd;
   final DsButtonVariante variante;
   final DsButtonTaille taille;
   final bool pleineLargeur;
@@ -79,68 +87,59 @@ class _DsButtonState extends State<DsButton> {
     final c = context.ds.colors;
     final t = context.ds.typo;
     final actif = _actif;
-    final enChargement = _enCours || widget.chargement;
+    final desactive = widget.onPressed == null;
 
-    final hauteur = switch (widget.taille) {
-      DsButtonTaille.sm => DsTailles.controleSm,
-      DsButtonTaille.md => DsTailles.controleMd,
-      DsButtonTaille.lg => DsTailles.controleLg,
+    final (hauteur, paddingH, taillePolice, tailleIcone) = switch (widget.taille) {
+      DsButtonTaille.sm => (DsTailles.controleSm, 12.0, 13.0, 16.0),
+      DsButtonTaille.md => (DsTailles.controleMd, 14.0, 14.0, 18.0),
+      DsButtonTaille.lg => (DsTailles.controleLg, 18.0, 15.0, 18.0),
     };
-    final paddingH = switch (widget.taille) {
-      DsButtonTaille.sm => DsSpacing.md,
-      DsButtonTaille.md => DsSpacing.lg,
-      DsButtonTaille.lg => DsSpacing.xl,
-    };
-    final style = widget.taille == DsButtonTaille.sm ? t.petitFort : t.corpsFort;
 
-    Color fond;
-    Color texte;
-    Color? bordure;
-    switch (widget.variante) {
-      case DsButtonVariante.primaire:
-        fond = _presse ? c.primaireActif : (_survol ? c.primaireSurvol : c.primaire);
-        texte = c.surPrimaire;
-      case DsButtonVariante.secondaire:
-        fond = _presse ? c.surfaceAttenuee : (_survol ? c.surfaceAttenuee : c.surface);
-        texte = c.texte;
-        bordure = c.bordureForte;
-      case DsButtonVariante.fantome:
-        fond = _presse || _survol ? c.surfaceAttenuee : const Color(0x00000000);
-        texte = c.texteSecondaire;
-      case DsButtonVariante.danger:
-        fond = _presse || _survol ? c.danger.withValues(alpha: 0.9) : c.danger;
-        texte = c.texteInverse;
-      case DsButtonVariante.succes:
-        fond = _presse || _survol ? c.succes.withValues(alpha: 0.9) : c.succes;
-        texte = c.texteInverse;
-    }
-    if (!actif) {
-      fond = fond.withValues(alpha: fond.a * 0.55);
-      texte = texte.withValues(alpha: 0.7);
-    }
+    // (fond, fond survol, texte, bordure)
+    final (fondBase, fondSurvol, texte, bordure) = switch (widget.variante) {
+      DsButtonVariante.primaire => (c.primary, c.primaryHover, c.primaryFg, null),
+      DsButtonVariante.secondaire => (c.surfaceCard, c.surfaceHover, c.textPrimary, c.borderDefault),
+      DsButtonVariante.fantome => (null, c.surfaceHover, c.textSecondary, null),
+      DsButtonVariante.doux => (c.primaryTint, c.primaryTintHover, c.primaryTintFg, null),
+      DsButtonVariante.danger => (c.danger, c.dangerHover, DsColors.blanc, null),
+      DsButtonVariante.accent => (c.accent, c.accentHover, c.accentFg, null),
+      DsButtonVariante.inverse => (c.surfaceInverse, DsColors.ink750, c.textInverse, null),
+    };
+    final fond = _survol && actif ? fondSurvol : fondBase;
+    final kbdFond = widget.variante == DsButtonVariante.primaire || widget.variante == DsButtonVariante.danger
+        ? DsColors.blanc.withValues(alpha: 0.18)
+        : c.surfaceSunken;
+
+    final style = t.body.copyWith(fontSize: taillePolice, fontWeight: FontWeight.w600, height: 1, color: texte);
 
     final contenu = Row(
       mainAxisSize: widget.pleineLargeur ? MainAxisSize.max : MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
+      spacing: DsSpacing.s2,
       children: [
         if (widget.chargement)
           SizedBox(
-            width: DsTailles.iconeSm,
-            height: DsTailles.iconeSm,
+            width: tailleIcone - 4,
+            height: tailleIcone - 4,
             child: CircularProgressIndicator(strokeWidth: 2, color: texte),
           )
         else if (_enCours)
-          Icon(LucideIcons.loader, size: DsTailles.icone, color: texte)
+          Icon(LucideIcons.loaderCircle, size: tailleIcone, color: texte)
         else if (widget.icone != null)
-          Icon(widget.icone, size: DsTailles.icone, color: texte),
-        if (enChargement || widget.icone != null) const SizedBox(width: DsSpacing.sm),
+          Icon(widget.icone, size: tailleIcone, color: texte),
         Flexible(
-          child: Text(
-            widget.libelle,
-            style: style.copyWith(color: texte),
-            overflow: TextOverflow.ellipsis,
-          ),
+          child: Text(widget.libelle, style: style, maxLines: 1, overflow: TextOverflow.ellipsis),
         ),
+        if (widget.kbd != null)
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
+            decoration: BoxDecoration(color: kbdFond, borderRadius: DsRadius.borderXs),
+            child: Text(
+              widget.kbd!,
+              style: t.caption.copyWith(fontSize: 11, fontWeight: FontWeight.w500, height: 1, color: texte),
+            ),
+          ),
+        if (widget.iconeDroite != null) Icon(widget.iconeDroite, size: tailleIcone, color: texte),
       ],
     );
 
@@ -153,7 +152,7 @@ class _DsButtonState extends State<DsButton> {
         autofocus: widget.autofocus,
         onShowHoverHighlight: (v) => setState(() => _survol = v),
         onShowFocusHighlight: (v) => setState(() => _focus = v),
-        mouseCursor: actif ? SystemMouseCursors.click : SystemMouseCursors.basic,
+        mouseCursor: actif ? SystemMouseCursors.click : SystemMouseCursors.forbidden,
         shortcuts: const {
           SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
           SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
@@ -165,17 +164,27 @@ class _DsButtonState extends State<DsButton> {
           onTapUp: actif ? (_) => setState(() => _presse = false) : null,
           onTapCancel: actif ? () => setState(() => _presse = false) : null,
           onTap: actif ? _declencher : null,
-          child: AnimatedContainer(
-            duration: DsMotion.rapide,
-            curve: DsMotion.courbe,
-            height: hauteur,
-            padding: EdgeInsets.symmetric(horizontal: paddingH),
-            decoration: BoxDecoration(
-              color: fond,
-              borderRadius: DsRadius.borderMd,
-              border: Border.all(color: _focus ? c.focus : (bordure ?? const Color(0x00000000)), width: _focus ? 2 : 1),
+          child: AnimatedScale(
+            scale: _presse && actif ? DsMotion.pressScale : 1,
+            duration: DsMotion.fast,
+            curve: DsMotion.standard,
+            child: AnimatedOpacity(
+              opacity: desactive ? 0.5 : 1,
+              duration: DsMotion.fast,
+              child: AnimatedContainer(
+                duration: DsMotion.fast,
+                curve: DsMotion.standard,
+                height: hauteur,
+                padding: EdgeInsets.symmetric(horizontal: paddingH),
+                decoration: BoxDecoration(
+                  color: fond,
+                  borderRadius: DsRadius.borderMd,
+                  border: Border.all(color: _focus ? c.borderFocus : (bordure ?? DsColors.transparent)),
+                  boxShadow: widget.variante == DsButtonVariante.secondaire ? c.shadowXs : null,
+                ),
+                child: contenu,
+              ),
             ),
-            child: contenu,
           ),
         ),
       ),
@@ -187,17 +196,22 @@ class _DsButtonState extends State<DsButton> {
   }
 }
 
-/// Bouton icône carré (barre de titre, actions de ligne…).
-class DsIconButton extends StatelessWidget {
+/// Bouton icône du DS (`IconButton`) : fantôme ou contour, badge facultatif.
+///
+/// [taille] est la dimension du carré (sm 32, md 36, lg 40). Icône 16 px sous 36, 18 px sinon.
+class DsIconButton extends StatefulWidget {
   const DsIconButton({
     super.key,
     required this.icone,
     required this.tooltip,
     this.onPressed,
-    this.taille = DsTailles.controleSm,
+    this.taille = DsTailles.controleMd,
     this.couleur,
     this.couleurSurvol,
     this.actif = false,
+    this.contour = false,
+    this.badge,
+    this.point = false,
   });
 
   final IconData icone;
@@ -206,31 +220,188 @@ class DsIconButton extends StatelessWidget {
   final double taille;
   final Color? couleur;
   final Color? couleurSurvol;
+
+  /// État « actif » (surface active + icône primaire).
   final bool actif;
+
+  /// Variante `outline` : fond carte, bordure et ombre xs.
+  final bool contour;
+
+  /// Compteur affiché en pastille rouge (ex. alertes). `0` ou `null` : rien.
+  final int? badge;
+
+  /// Point rouge sans compteur.
+  final bool point;
+
+  @override
+  State<DsIconButton> createState() => _DsIconButtonState();
+}
+
+class _DsIconButtonState extends State<DsIconButton> {
+  bool _survol = false;
 
   @override
   Widget build(BuildContext context) {
     final c = context.ds.colors;
+    final t = context.ds.typo;
+    final desactive = widget.onPressed == null;
+    final fond = widget.actif
+        ? c.surfaceActive
+        : (_survol && !desactive ? (widget.couleurSurvol ?? c.surfaceHover) : (widget.contour ? c.surfaceCard : null));
+    final couleurIcone =
+        widget.couleur ?? (widget.actif ? c.iconActive : (_survol && !desactive ? c.textPrimary : c.iconDefault));
+    final tailleIcone = widget.taille < 36 ? DsTailles.iconeSm : DsTailles.icone;
+    final badge = widget.badge;
     return Tooltip(
-      message: tooltip,
-      child: Material(
-        color: actif ? c.primaireDoux : const Color(0x00000000),
-        borderRadius: DsRadius.borderSm,
-        child: InkWell(
-          onTap: onPressed,
-          borderRadius: DsRadius.borderSm,
-          hoverColor: couleurSurvol ?? c.surfaceAttenuee,
-          child: SizedBox(
-            width: taille,
-            height: taille,
-            child: Icon(
-              icone,
-              size: DsTailles.icone,
-              color: onPressed == null ? c.texteAttenue : (actif ? c.primaire : (couleur ?? c.texteSecondaire)),
+      message: widget.tooltip,
+      child: Semantics(
+        button: true,
+        enabled: !desactive,
+        label: widget.tooltip,
+        child: MouseRegion(
+          cursor: desactive ? SystemMouseCursors.forbidden : SystemMouseCursors.click,
+          onEnter: (_) => setState(() => _survol = true),
+          onExit: (_) => setState(() => _survol = false),
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: widget.onPressed,
+            child: Opacity(
+              opacity: desactive ? 0.45 : 1,
+              child: AnimatedContainer(
+                duration: DsMotion.fast,
+                curve: DsMotion.standard,
+                width: widget.taille,
+                height: widget.taille,
+                decoration: BoxDecoration(
+                  color: fond,
+                  borderRadius: DsRadius.borderMd,
+                  border: Border.all(color: widget.contour ? c.borderDefault : DsColors.transparent),
+                  boxShadow: widget.contour ? c.shadowXs : null,
+                ),
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Center(
+                      child: Icon(widget.icone, size: tailleIcone, color: couleurIcone),
+                    ),
+                    if (badge != null && badge > 0)
+                      PositionedDirectional(
+                        top: 2,
+                        end: 1,
+                        child: Container(
+                          constraints: const BoxConstraints(minWidth: 16),
+                          height: 16,
+                          padding: const EdgeInsets.symmetric(horizontal: 4),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: c.danger,
+                            borderRadius: DsRadius.borderMd,
+                            border: Border.all(color: c.surfaceCard, width: 2),
+                          ),
+                          child: Text(
+                            '$badge',
+                            style: t.caption.copyWith(
+                              fontSize: 9,
+                              fontWeight: FontWeight.w700,
+                              height: 1,
+                              color: DsColors.blanc,
+                            ),
+                          ),
+                        ),
+                      )
+                    else if (widget.point)
+                      PositionedDirectional(
+                        top: 7,
+                        end: 7,
+                        child: Container(
+                          width: 7,
+                          height: 7,
+                          decoration: BoxDecoration(
+                            color: c.danger,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: c.surfaceCard, width: 2),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
             ),
           ),
         ),
       ),
     );
   }
+}
+
+/// Puce « raccourci clavier » (`kbd`) : fond enfoncé, bordure, 11 px.
+class DsKbd extends StatelessWidget {
+  const DsKbd(this.texte, {super.key});
+  final String texte;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.ds.colors;
+    final t = context.ds.typo;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+      decoration: BoxDecoration(
+        color: c.surfaceSunken,
+        borderRadius: DsRadius.borderXs,
+        border: Border.all(color: c.borderDefault),
+      ),
+      child: Text(
+        texte,
+        style: t.caption.copyWith(fontSize: 11, fontWeight: FontWeight.w500, height: 1, color: c.textMuted),
+      ),
+    );
+  }
+}
+
+/// Icône Lucide dans une boîte 28 px bordée (en-tête de carte, KPI…).
+class DsIconBox extends StatelessWidget {
+  const DsIconBox(this.icone, {super.key, this.taille = 28, this.tailleIcone = 15, this.fond, this.couleur});
+  final IconData icone;
+  final double taille;
+  final double tailleIcone;
+  final Color? fond;
+  final Color? couleur;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.ds.colors;
+    return Container(
+      width: taille,
+      height: taille,
+      decoration: BoxDecoration(
+        color: fond,
+        borderRadius: BorderRadius.circular(taille * 0.25),
+        border: fond == null ? Border.all(color: c.borderDefault) : null,
+      ),
+      child: Icon(icone, size: tailleIcone, color: couleur ?? c.iconDefault),
+    );
+  }
+}
+
+/// Icône de chargement discrète (spinner 2 px).
+class DsSpinner extends StatelessWidget {
+  const DsSpinner({super.key, this.taille = 16, this.couleur});
+  final double taille;
+  final Color? couleur;
+  @override
+  Widget build(BuildContext context) => SizedBox(
+    width: taille,
+    height: taille,
+    child: CircularProgressIndicator(strokeWidth: 2, color: couleur ?? context.ds.colors.primary),
+  );
+}
+
+/// Icône « fermer » 32 px utilisée par les dialogs et toasts.
+class DsBoutonFermer extends StatelessWidget {
+  const DsBoutonFermer({super.key, required this.onPressed, required this.tooltip});
+  final VoidCallback onPressed;
+  final String tooltip;
+  @override
+  Widget build(BuildContext context) =>
+      DsIconButton(icone: LucideIcons.x, tooltip: tooltip, taille: DsTailles.controleSm, onPressed: onPressed);
 }

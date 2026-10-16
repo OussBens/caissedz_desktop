@@ -4,10 +4,9 @@ Découpage en lots. Pour chaque lot : écrans, règles (n° de § de la spec 06 
 cases de la checklist §15 (`docs/CONFORMITE.md`). Statut : ⬜ à faire · 🟨 en cours · ✅ terminé · ⚠️ provisoire
 (dépend d'une source absente).
 
-> **Blocage connu (2026-10-14)** : `docs/spec/06_specification_reconstruction.md` et
-> `docs/design/CaisseDZ-DS-v2.2/` ne sont pas dans le dépôt. Les références de § ci-dessous reprennent celles
-> données dans la commande initiale ; le détail (écrans exacts, libellés, tokens, 45 tables, checklist §15) sera
-> complété dès réception des sources.
+> **Sources reçues (2026-10-14)** : `docs/spec/06_specification_reconstruction.md` et
+> `docs/design/CaisseDZ-DS-v2.2/` sont maintenant dans le dépôt. Les lots 0 à 9 avaient été livrés sous hypothèses ;
+> le réalignement sur les sources est mené en quatre phases (voir « Réalignement DS v2.2 » en fin de document).
 
 ## Lot 0 — Socle 🟨 (partie indépendante des sources livrée ; partie dépendante ⚠️)
 
@@ -324,3 +323,492 @@ entièrement cochée ; build Windows (msix ou installeur).
 
 **Reste (hors périmètre d'un poste Linux)** : exécuter `flutter build windows --release` puis `dart run
 msix:create` sur Windows ; recette manuelle de l'impression (USB / réseau / Bluetooth) et du lecteur de codes-barres.
+
+## Réalignement DS v2.2 (après réception des sources) 🟨
+
+Référence : `docs/design/CaisseDZ-DS-v2.2/CaisseDZ-DS-v2.2.html`, `bundle-v2.2/ds-bundle.v2.2.js` (66 composants,
+17 écrans), `nouveaux-composants/*.jsx`, `donnees/ref.js`, `LISEZ-MOI.md` ; règles : spec 06.
+
+- **Phase A — tokens ✅** : `ds_colors.dart` (clair / sombre exacts, primitives violet / ink / teal, chart-1..6,
+  teintes, dégradés brand / night / bar, ombres), `ds_typography.dart` (échelle `--type-*`, chiffres tabulaires,
+  Cairo), `ds_metrics.dart` (espacements, rayons, mouvement, dimensions shell / page / contrôles). Alias
+  historiques supprimés en fin de phase D.
+- **Phase B — composants ✅** : réécriture fidèle au bundle, mêmes APIs publiques (ou compatibles) :
+  - `ds_button.dart` : variantes primary / secondary / ghost / soft / danger / accent / inverse, tailles 32 / 36 /
+    44, puce `kbd`, garde 450 ms, `DsIconButton` (ghost / outline, badge), `DsKbd`, `DsIconBox`.
+  - `ds_primitives.dart` : `DsCard` (en-tête icône + actions + info), `DsBadge` (7 tons, point, sm),
+    `DsStatusBadge` + presets, `DsTrendBadge`, `DsStatCard`, `DsTextField`, `DsAvatar`, `DsLogo` (glyphe
+    panier), `DsProgressBar`, `DsKeyValueGrid`, `DsDetailSection`, `DsStatsStrip`, `DsToast`.
+  - `ds_forms.dart` : `DsCheckbox`, `DsSearchField`, `DsDateField`, `DsFormRow` (+ bouton ≡), `DsSegmentedControl`,
+    `DsChoiceCards`, `DsChipGroup` (+ couleurs produit), `DsKeyInput`, `DsOrderedMultiSelect`, `DsPeriodFilter`
+    (+ `DsPeriode.calculer`), `DsRangeFilter`, `DsSplitAllocator`, `DsPhotoUploader`.
+  - `ds_page.dart` : `DsPage` (PageHeader + zone 24 / 32), `DsOnglets` (compteurs), `DsSelect` (liste flottante
+    en route transparente), `DsSwitch`, `DsVide` (EmptyState), formatage `formaterNombre` / `formaterK` / `lireNombre`.
+  - `ds_dialog.dart` : `DsDialog` (icône tonale, description, pied), `afficherConfirmation` (genres confirm /
+    danger / warning / refuse), `afficherResultat`, `DsPickerDialog` (recherche, sélection simple ou multiple,
+    double-clic, « Nouveau »), `afficherActionLot` (BulkActionDialog), `afficherReglageColonnes`
+    (ColumnSettings : obligatoires / par défaut / autres, « Garder ma sélection »), `afficherMenuContextuel`.
+  - `ds_data_table.dart` : en-tête capitales 11 px, lignes 52 / 40, colonnes fortes / atténuées / mono,
+    verrous implicites (`code` + première colonne forte), dialog colonnes avec compteur, totaux, menu contextuel,
+    pagination DS.
+  - `ds_module.dart` : `DsFilterPanel`, `DsPagination`, `DsSelectionBar` (règles une / plusieurs), `DsExportMenu`.
+  - `ds_navigation.dart` : `DsSidebar` / `DsNavItem` (248 / 72, badges), `DsTopBar`, `DsTemoinLigne`,
+    `DsThemeToggle`, `DsStoreSwitcher`, `DsFavorisBar`, `DsModuleLauncher` (tuiles, favoris 7 max, verrous).
+  - `ds_charts.dart` : `DsLineChart` (séries, aire, grille pointillée, « k »), `DsBarChart`, `DsRankedBars`,
+    `DsDonutChart` ; enveloppes de compatibilité `DsGraphique*`.
+  - `ds_pos.dart` : `DsCartLineHeader` / `DsCartLine` (grille CART_COLS) / `DsCartLineQN`, `DsCashSessionCard`,
+    `DsNumpad`, `DsPaymentPanel` (bandeau nuit, paiement complet, à rendre / reste), `DsProductTile`,
+    `DsQuotaCard`, `DsSaleTabs`, `DsTotalPanel`, `DsCalculator` (parenthèses, %, clavier).
+  - `ds_barcode.dart` : `DsBarcode` (EAN-13, CODE128, QR via `barcode`), `DsBarcodeCard`, code auto §8.10.
+  - `ds_line_items.dart` : `DsLineItemsEditor`. `licence_gate.dart` : genres licence / role / refuse /
+    activation. `ds_stepper.dart`, `permission_grid.dart` (+ `DsPermissionTiles` = MODULES / SPECIAL du DS).
+  - Libellés des composants : clés ARB `ds*` (FR / AR / EN).
+  - Écarts de la phase B levés en phase D : alias historiques et `pos_widgets.dart` supprimés.
+- **Phase C — shell et démarrage ✅** (2026-10-15) :
+  - Étape 1 (données) : `modules.dart` = 17 modules du DS en 4 groupes (Général : tableau de bord, caisse,
+    ventes, retours ; Stock : produits, stock, entrées (badge IA), sorties, magasins, besoins ; Tiers : clients,
+    fournisseurs ; Gestion : gestion caisse, utilisateurs, zakat, historique, paramètres) + pages rattachées
+    (transferts → magasins, versements → clients, clôtures → gestion caisse, situation → tableau de bord), accès
+    via `idAcces`. Migration `v008_shell_ds` : compte admin / admin provisoire, `utilisateur.dernier_acces`,
+    boutique NIS / article / message ticket / logo, renommage des anciens identifiants de modules (rôles,
+    favoris). Services `ConfigurationInitialeService` (4 étapes, une transaction, journal) et `AlertesService`
+    (§5.3, familles visibles selon l'accès au module, masquage du jour). Séquence de connexion (§4.4) : droits →
+    favoris → magasins (magasin courant, Admin = tous) → alertes ; journal Connexion / Déconnexion ; « Rester
+    connecté ». Application non activée : demo / demo active le mode démo (§4.3). Accueil = `/caisse`.
+  - Étape 2 (écrans) : `app_shell.dart` (DsSidebar filtrée par accès, sélecteur de magasin Avancé,
+    déconnexion ; DsTopBar avec favoris, témoin Internet, cloche, thème, compte, contrôles de fenêtre ;
+    bandeau démo ; portes Accès refusé / palier Avancé ; Ctrl+M `MenuModulesDialog` = DsModuleLauncher),
+    séquence post-connexion §4.5 (configuration 1ʳᵉ fois pour l'admin → alertes s'il y en a → menu des
+    modules), `alertes_dialog.dart`, `connexion_page.dart` (split + panneau nuit, langue, thème, Rester connecté,
+    encart démo), `activation_page.dart` (DsKeyInput 8×8, palier détecté en direct, cartes Basic / Avancé),
+    `configuration_dialog.dart` (4 étapes), `mon_compte_dialog.dart` (Profil / Mot de passe / Préférences).
+    Supprimés : `sidebar.dart`, `title_bar.dart`, `modules_menu.dart`, `alertes_panel.dart`,
+    `cadre_demarrage.dart`, `configuration_page.dart`, `mon_compte_page.dart`, `acces_refuse_page.dart`.
+  - Tests : `pumpApp(sequence: false)` par défaut (opt-out de la séquence post-connexion) ; tests démarrage,
+    connexion, activation, configuration, Mon compte, shell, accès et recette réécrits.
+  - Décisions et hypothèses ⚠️ :
+    - Spec > DS : configuration en 4 étapes (Langue & devise / Boutique / Paiements / Marge et stock), le DS
+      en montre 3 ; proposée après la connexion de l'admin, « Plus tard » possible.
+    - Seuls Magasins et Transferts exigent le palier Avancé (§6.1) ; Retours et Zakat passent en Basic.
+    - Pages rattachées routables mais absentes de la barre latérale et du menu jusqu'à la phase D.
+    - Familles « Produits expirés » et « Bientôt expirés » branchées en phase D sur `produit.date_expiration`
+      (migration v13) : date passée / dans au plus 30 jours, produits en stock seulement.
+    - Logo de la boutique non demandé à la configuration (colonne prête, saisie en phase D dans Paramètres).
+    - Compte admin / admin provisoire en attendant la création de comptes par l'écran Utilisateurs (phase D).
+- **Phase D — écrans ✅** (2026-10-15) : les 17 écrans et leurs dialogs d'après les kits du bundle, listes de `ref.js`,
+  tests réécrits, suppression des alias.
+  - ✅ Briques communes : `DsModuleTable`, `DsEntityDetailDialog`, `PageModule` (fil d'Ariane, favori, onglets),
+    export Excel / PDF des tableaux, barre de sélection qui passe à la ligne sous 1300 px.
+  - ✅ Clients / Fournisseurs (`TiersKit`) : onglets [Tiers | Versements], KPI, filtres Type / Wilaya / Crédit,
+    colonnes masquables (fiche §7.6), formulaire 920 px (téléphone algérien, NIF 15 chiffres, nom unique),
+    détail (5 derniers documents), Situation (relevé débit / crédit / solde), annulation avec motif.
+    Versements : sens reçu / retour, modification, annulation douce (motif, caisse rétablie), versement retour.
+    La route `/versements` ouvre l'onglet Versements des clients.
+  - ✅ Tableau de bord (`DashboardV22`) + onglet Situation (`SituationScreen`) : `SituationRepository` (10 analyses
+    de §9.14), migration v10 (coût d'achat figé sur `vente_ligne`), inventaire validé en une transaction
+    (`StockService.inventorierLot`). Les anciens rapports génériques sont retirés ; `/situation` ouvre l'onglet.
+  - ✅ Ventes (`PaniersScreen`) : KPI (nombre, CA, marge si `voirPrixAchat`, encaissé, crédit), période du jour
+    par défaut, filtres Type / Statut / Caissier / Client / Caisse / Session / Montant, colonnes masquables,
+    détail 1100 px (stats, paiement et marge, produits, audit avec empreinte), modification 980 px, annulation
+    en lot avec motif (bloquée si déjà annulé ou retour lié), « Nouvelle vente » ouvre la caisse.
+    Migration v11 : `vente.type_panier` (Ticket / BL / BL_SC, hors scellement). `VenteService.modifier` : le
+    complément payé devient un versement imputé d'abord sur ce panier ; `annuler` annule les versements liés.
+  - ✅ Retours (`RetoursScreen`) : onglets Retours clients / Retours fournisseurs, KPI, période, filtres tiers /
+    règlement / état, formulaire 920 px (type, tiers, pièce d'origine, produit, plafond = quantité d'origine −
+    déjà retourné, n° de série, règlement, remise en stock), détail 960 px, annulation en lot avec motif.
+    Migration v12 : table `retour` reconstruite (type, `document_code`, client OU fournisseur, règlement,
+    remise en stock, annulation douce) via `Migration.reconstruitTables` (clés étrangères coupées puis
+    vérifiées). `RetourService.creer / modifier / annuler` (client : stock réintégré ou sortie « Casse »,
+    remboursement ou avoir ; fournisseur : sortie de stock, dette déduite ou remboursement espèces).
+    Une entrée ou une vente avec un retour actif n'est plus annulable. `DsTextField.valeurInitiale` est
+    désormais affichée (elle était ignorée).
+  - ✅ Caisse (`CaisseScreen` + `CaisseKit`) : en-tête avec session compacte (ouverture, mouvement manuel,
+    clôture avec solde théorique et écart), Ventes du jour, Recette produit, masquer les produits, paramètres
+    du poste (caisse, magasin) ; 5 ventes en onglets (pièces · total ou client) ; recherche / scan (F2),
+    recherche avancée multi-sélection (F3), produit introuvable ; Produits / Packs, catégories, grille ou liste
+    avec entrée rapide ; dialog « Quantité et colis » (unité, colis, vente à la pièce, pavé, contrôle du stock
+    réservé, ajout automatique au bout de 3 s) ; panier 540 px : client (liste + recherche + création),
+    remise du référentiel (montant recalculé sur le sous-total), mode de paiement, lignes (double-clic : prix
+    avec mot de passe et portée ticket / catalogue ; clic sur le colis : changement), total, Enregistrer
+    (F6, crédit), BL / SC (F5, `type_panier = BL_SC`, facture A4 imprimée ou PDF) et Encaisser (F4, ticket
+    ESC/POS direct ou choix 58 / 80 / A4). Toast avec « Réimprimer ».
+  - ✅ Produits (`ProduitsScreen` + `ProduitKit` / `CatalogueKit`) : onglets Produits / Catégories / Sous-catégories /
+    Remises / Packs avec compteurs. Produits : KPI (actifs, valeur du stock si `voirPrixAchat`, sous seuil,
+    rupture), filtres catégorie / état du stock / prix / marque, vue grille (cartes) par défaut ou liste, colonnes
+    masquables. Formulaire 960 px en 3 modes (Rapide, Détaillé en 3 étapes, IA par code-barres) : photos (4 max,
+    copiées dans `photos/` à côté de la base), codes secondaires, marge % ou montant, TVA, boîte / carton, stock
+    initial, taille / couleur, fournisseur. Détail 1120 px (stats prix moyen d'achat et vendus), étiquette 760 px
+    (A4 38×21, rouleau 40 / 58), affectation en lot, suppression bloquée si stock ≠ 0, import Excel en 3 étapes
+    avec correspondance des colonnes et stock initial. Catégories / sous-catégories 600 px, Remises (DocForm
+    980 px, portée Par Produit / Par Montant avec seuil), Packs (940 px, économie calculée).
+    Migration v13 : `produit_photo`, `remise.portee` / `remise.seuil`, champs de fiche.
+    Écarts Produits : le bouton « Synchro catalogue » passe dans Paramètres ; tailles / couleurs stockées en
+    liste sur le produit (pas de produits variantes) ; pas de « jours d'alerte » de péremption (aucune date de
+    péremption au schéma) ; libellés de tailles enfant non traduits ; « Annuler » désactive (catégorie avec
+    produits bloquée) ; le mode IA est gardé comme 3ᵉ segment (§9.4 exige 3 modes).
+  - ✅ Stock / Sorties / Magasins / Besoins (`StockKit`) : migration v14 (annulation douce des sorties et
+    transferts, prix d'achat figé sur les lignes de sortie, magasin téléphone / responsable / observation, liste
+    de besoins = document fournisseur `BL…` avec lignes et livraison souhaitée ; chaque ancien besoin devient une
+    liste d'une ligne au fournisseur système). `StockService` : `modifierSortie` / `annulerSorties`,
+    `modifierTransfert` / `annulerTransferts` (mouvements défaits puis réécrits, §8.3), `distribuer` (écarts soldés
+    par transferts, total conservé), `changerEtatMagasins` (bloqué si magasin principal d'un utilisateur ou stock
+    non nul), nom de magasin unique, listes de besoins (créer, modifier, statut, annuler). Préfixes alignés sur
+    §8.10 : `SRT` (sorties) et `BL` (listes de besoins). Écrans : Stock (une colonne par magasin consultable, KPI,
+    filtres magasin / catégorie / état, colonnes masquables, détail 1000 px, distribution 680 px, onglet
+    Mouvements filtrable avec « Voir la pièce » vers vente / retour / sortie / transfert), Sorties (DocForm avec
+    stock du magasin, détail 940 px, annulation avec motif), Magasins + onglet Transferts (la route
+    `/transferts` ouvre l'onglet), Besoins (Listes, Ruptures & seuils → « Créer une liste », Expirés → sortie
+    « Périmé » pré-remplie ou retour fournisseur ; détail avec « PDF fournisseur »).
+    Écarts Stock : l'onglet « Vente » de §9.7 n'est pas repris (le DS n'a qu'un tableau ; les ventes restent
+    visibles dans Stock › Mouvements, filtre Vente) ; colonnes catégorie / sous-catégorie d'une sortie absentes
+    (une sortie a plusieurs lignes) ; pas de lots ni de « jours d'alerte » : les expirés viennent de la date
+    d'expiration du produit (fenêtre de 30 jours) ; la sortie « Périmé » ouvre le formulaire pré-rempli au lieu
+    de sortir directement ; le statut « Commande » d'une liste n'a pas encore de déclencheur ; en l'absence de la permission `voirStockTousMagasins`, l'administrateur voit
+    tous les magasins (⚠️ PROVISOIRE) ; l'entrée manuelle et l'inventaire unitaire de l'ancien écran sont retirés
+    (inventaire dans Situation, entrées dans Entrées).
+  - ✅ Entrées (`EntreesScreen`) : migration v15 (annulation douce des entrées, liste de besoins d'origine, table
+    `bon_reception` = file des bons lus par l'IA, statut Reçu / Traité / Erreur avec lignes détectées). Préfixe des
+    entrées aligné sur §8.10 : `SS` ; bons `BON`. `AchatService` : `modifier` (mouvements défaits puis réécrits,
+    paiement immédiat ajusté, créé ou annulé), `annulerEntrees` en lot avec motif (paiement immédiat annulé),
+    `blocage` (déjà annulée, période clôturée, retour lié, produits déjà vendus), répartition d'une ligne entre
+    magasins, mise à jour du prix d'achat au choix (garder / prix moyen pondéré / dernier prix), versé / reste /
+    nb de versements calculés depuis les imputations (§8.5), liste de besoins passée « Disponible » et bon marqué
+    « Traité » dans la même transaction. Écrans : onglets Smart Scan (KPI, filtres fournisseur / paiement /
+    magasin, colonnes masquables, détail 1060 px avec « Imprimer ») et Mode IA (bandeau, quota, file des bons :
+    Traiter, Voir le bon, Supprimer) ; nouvelle entrée Smart Scan 1040 px en 2 étapes (bon & paiement, puis scan
+    continu par code ou code-barres + « Liste ») ; Entrée rapide 720 px (un produit payé intégralement, réparti
+    entre magasins ; « Modifier » y renvoie quand l'entrée n'a qu'un produit) ; Reçu IA 1040 px en 3 étapes
+    (photo + quota, rapprochement avec suggestions par similarité et « + Créer », fournisseur pré-résolu et
+    paiement) ; « Créer l'entrée » depuis une liste de besoins.
+    Écarts Entrées : pas de contrôle « session de caisse ouverte » (§9.6 étape 1, déjà absent des lots 5–6) ;
+    « Depuis le téléphone » inactif (pas d'application mobile) ; pas de raccourci `E` d'entrée rapide en caisse ;
+    la confiance n'est affichée que si le serveur la renvoie ; le prix de vente reste éditable dans les lignes
+    (règle §8 « vente > achat », colonne en lecture seule dans le DS) ; « Imprimer » produit le PDF du tableau
+    des lignes (pas encore de bon de réception mis en page) ; l'annulation exige la permission « Annuler »
+    (`annulerOperations` depuis la v17).
+  - ✅ Gestion caisse (`GestionCaisseScreen` + `GestionKit`) : migration v16 (caisse : solde initial proposé comme
+    fond d'ouverture, observation ; transfert entre caisses : annulation douce ; clôture : `caisse_code`,
+    `total_annule`). Clôture Z **par caisse** (§9.13, §12.3) : agrège les tickets de la caisse depuis sa dernière
+    clôture (validés, annulés, montant annulé, répartition des paiements, espèces nettes de la monnaie rendue),
+    chaîne SHA-256 propre à chaque caisse ; les clôtures globales des lots 7–9 forment leur propre chaîne et bornent
+    la première clôture par caisse ; `Cloture.verifierChaines` (service et export fiscal) vérifie chaque chaîne.
+    La clôture Z n'exige plus que les sessions soient fermées (le DS clôture une caisse dont la session est
+    ouverte). Préfixes §8.10 : caisses créées `CS` (la caisse système reste `CIS0000`), clôtures `CLT`.
+    `CaisseService` : solde initial / observation, `desactiver` en lot et `blocageDesactivation` (caisse système,
+    session ouverte, solde non nul), transfert daté (refusé en période clôturée), `annulerTransferts` avec motif
+    (mouvements retirés du journal, refus si la caisse destinataire n'a plus le montant). `SessionCaisseService`
+    ferme une session désignée (onglet Sessions). Écrans : onglets Caisses (cartes de session par caisse
+    physique : ouvrir avec fond pré-rempli, mouvement, clôturer ; tableau avec soldes, détail 940 px, formulaire
+    620 px, désactivation en lot), Transferts (620 px avec solde disponible et aperçu, annulation avec motif),
+    Clôtures Z (filtre caisse, nouvelle clôture 820 px avec confirmation explicite, détail 940 px avec intégrité,
+    PDF, export de contrôle fiscal 760 px : archive complète, JSON, PDF des clôtures ou CSV des tickets, état de la
+    chaîne, vérification d'une archive), Mouvements (grand-livre filtrable par caisse, session déduite, type ;
+    mouvement manuel avec choix de la caisse) et Sessions (théorique, réel, écart ; mouvements de la session,
+    clôture). La route `/clotures` ouvre l'onglet Clôtures Z ; l'ancien écran Clôtures est supprimé. Libellés des
+    types de mouvement alignés sur le DS (Versement client, Entrée manuelle, Ouverture…).
+    Écarts Gestion caisse : pas de journal fiscal (`journal_fiscal`, ligne `CLOTURE_CAISSE`) ; une date reste
+    « clôturée » dès qu'une clôture de n'importe quelle caisse la couvre (⚠️ PROVISOIRE, plus strict que par
+    caisse) ; colonnes Client / Fournisseur / Code versement du grand-livre absentes (le mouvement ne porte que la
+    référence) ; l'archive complète contient JSON + CSV + LISEZMOI, sans PDF ; l'écart cumulé et les sessions du
+    détail portent sur l'historique chargé.
+  - ✅ Utilisateurs (`UtilisateursScreen` + `UtilisateursKit`, remplace l'écran Rôles) : migration v17 — table
+    `role` (codes `ROL`, nom unique, observation, état ; Admin `ROL0000` système, Caissier `ROL0001`, Magasinier
+    `ROL0002`), `role_permission` / `role_module` reliés par **code**, `utilisateur.role_code` (le nom du rôle
+    n'est plus stocké), prénom, téléphone, caisse attachée, observation, créé / modifié par. Les 7 permissions
+    d'action sont désormais celles du §6.2 (`voirPrixAchat`, `voirMarge`, `modifierPrixVente`,
+    `annulerOperations`, `changerCaisseMagasin`, `gererTransfertsCaisse`, `voirStockTousMagasins`) ; conversion
+    des anciennes : prix / remise → `modifierPrixVente`, annuler / supprimer → `annulerOperations`, gérer les
+    utilisateurs → accès au module Utilisateurs, exporter → supprimée (l'export suit l'accès au module).
+    Appliquées : marge des ventes (`voirMarge`), onglet Transferts de Gestion caisse (`gererTransfertsCaisse`,
+    sinon « accès refusé »), magasins consultables du Stock (`voirStockTousMagasins`), caisse et magasin du poste
+    (`changerCaisseMagasin`, sinon caisse attachée de l'utilisateur ouverte par défaut à l'écran Caisse) ; la
+    remise Par Montant du panier n'exige plus de permission (§8.9). L'Admin a toujours tout (accès total, rôle
+    non modifiable, non assignable : admin unique). `UtilisateurService` (créer / modifier / réinitialiser le mot
+    de passe / désactiver, une transaction, journal Historique) et `RoleService` (créer / modifier / désactiver).
+    Écrans : onglet Utilisateurs (KPI actifs, ventes 30 j, total vendu ; filtres rôle et état ; avatar ;
+    formulaire 900 px avec identifiant unique, jauge de robustesse du mot de passe — force 2 exigée à la
+    création —, rôle hors Admin, caisse attachée, magasins ordonnés dont le premier est le défaut ; détail 940 px
+    avec la grille des permissions du rôle ; mot de passe temporaire ; désactivation en lot bloquée pour
+    l'administrateur principal et son propre compte) et onglet Rôles (modules, spéciales, utilisateurs ;
+    assistant 900 px en 3 étapes avec confirmation à la modification ; Admin non modifiable ; dupliquer ;
+    désactivation bloquée si des utilisateurs ont le rôle). `PermissionGrid` refait d'après le DS (tuiles).
+    Écarts Utilisateurs : « Crédit caissier » (KPI, stat, colonne, blocage de désactivation) non repris faute de
+    règle dans la spec (`utilisateur.credit` sans calcul décrit) ; la réinitialisation donne un mot de passe
+    temporaire affiché à l'administrateur, sans obligation de le changer à la connexion ; `userparam` /
+    `caisseparam` ne sont pas créés (préférences et poste gérés ailleurs) ; marges de Situation non soumises à
+    `voirMarge` (elles suivent `voirPrixAchat`).
+  - ✅ Zakat (`ZakatScreen` + `ZakatFormDialog` / `ZakatDetailDialog`, §9.15) : migration v18 — table `zakat`
+    (codes `ZKT`, année, début du hawl, échéance, stock, liquidités, créances, dettes, nissab, taux, statut
+    Brouillon / Non payé / Payée, date de paiement, observation, annulation avec motif, audit) ; l'ancien
+    paramètre « prix du gramme d'or » devient `zakat_nissab` (prix × 85 g) et le taux `zakat_taux` (2,5 % par
+    défaut). `ZakatService` (créer / modifier / marquer payée / annuler, une transaction, journal Historique) ;
+    capital = stock + liquidités + créances − dettes, obligatoire si capital ≥ nissab > 0, montant = capital ×
+    taux, échéance = début + 354 jours. Écran : 4 KPI (capital provisoire de l'année, nissab, zakat estimée,
+    jours avant la prochaine échéance), tableau avec totaux et colonnes masquables, formulaire 860 px pré-rempli
+    depuis le patrimoine courant (bouton de reprise par poste) avec résumé capital / obligation / montant, détail
+    900 px (calcul et audit). « Exonérée » et « Annulée » sont des statuts d'affichage dérivés.
+    Nissab et taux se règlent dans Paramètres › Système. Écart Zakat : le taux n'est pas modifiable par calcul (il suit le paramètre au moment de la création).
+  - ✅ Historique (`HistoriqueScreen`, §9.17) : migration v19 — colonne `historique.poste` (nom de la machine,
+    renseigné par `HistoriqueRepository` sur chaque ligne) et index utilisateur. Chaque ligne est rattachée à un
+    module (entité → module, connexions et déconnexions sous « Connexion ») et à une famille d'action du DS
+    (Création, Modification, Annulation, Connexion, Export) qui donne le ton du badge ; l'action stockée (valeur
+    FR) est traduite à l'affichage. Écran : 4 KPI sur 7 jours, période (7 derniers jours par défaut), filtres
+    Module / Action / Utilisateur / Poste, recherche réf. ou description, colonnes du DS (+ code `H…` masqué),
+    export, détail 860 px (Action, Contexte).
+    Écarts Historique : pas de suppression de lignes (§9.17 la prévoit, le DS ne la montre pas ; le journal reste
+    inaltérable, cohérent avec la conformité fiscale) ; pas de tableau « Changements » avant / après (les services
+    ne journalisent qu'une description) ; pas de version ni d'adresse IP dans le contexte. Exports et sauvegardes : journalisés depuis la phase E.
+  - ✅ Paramètres (`ParametresScreen` + compléments `ParametresV22`, §9.16) : navigation latérale fixe en 7 groupes
+    (Système, Boutique, Caisse et ventes, Impression, Alertes, Sauvegarde, Licence), badge « Modifications non
+    enregistrées » et barre d'enregistrement unique : `ParametresService.enregistrerTout` valide tout puis écrit
+    boutique et paramètres dans UNE transaction avec une ligne d'historique. Thème et langue s'appliquent tout de
+    suite (préférences du poste). Nouveaux paramètres de la spec appliqués : type de marge (`Pourcentage` /
+    `Montant`, valeur proposée à la création d'un produit), seuil maximum, vente sous le prix d'achat
+    (`Interdire` / `Avertir` / `Autoriser`, contrôlée à la modification du prix en caisse), moyens de paiement
+    visibles (Points compris, proposés en caisse seulement si le bonus fidélité est actif), nissab et taux de la
+    zakat ; côté DS : alertes à la connexion (désactivables) et seuil de crédit client signalé. Services en ligne
+    (URL CaisseDZ, clé, Mantouj) avec bouton « Synchroniser le catalogue ». Imprimante : 4 cartes de type, adresse,
+    largeur et « Imprimer un test » (page ESC/POS). Sauvegarde : mot de passe demandé dans un dialog, restauration
+    confirmée puis vérifiée avant préparation. Licence : palier, clé masquée, accès à l'activation.
+    Écarts Paramètres : densité, réduction des animations, TVA par défaut, remise ticket maximale, mode de paiement
+    par défaut, impression automatique, tiroir-caisse, imprimante A4, postes activés et quota Smart Scan, marge
+    gros et valeur d'un point non repris (aucune règle ni donnée derrière dans la spec ou le schéma actuel) ;
+    fenêtre « Bientôt expiré » fixe à 30 jours (§5.3). Sauvegarde automatique, 2ᵉ stock « nombre », seuil
+    maximum des besoins, arrondi de la marge et aperçu du ticket : faits en phase E.
+  - ✅ Nettoyage final : alias historiques des tokens supprimés (couleurs `fond` / `texte` / `primaire`…,
+    typographie `petit` / `legende`…, espacements, mouvement, variante de bouton `succes`) ; tous les écrans
+    utilisent les noms du DS (`surfaceApp`, `textPrimary`, `bodySm`, `DsSpacing.s4`…). Enveloppes de graphiques
+    `DsGraphique*` et page provisoire de module supprimées (les 17 modules et les 4 pages rattachées sont routés ;
+    Transferts, Versements, Clôtures et Situation ouvrent l'onglet de leur module parent). Clés ARB jamais
+    référencées retirées des trois langues (`tool/arb_nettoyer.py`).
+  - Écarts : tendances des KPI calculées seulement pour les ventes ; ventes antérieures à la v10 valorisées au prix
+    d'achat actuel ; `mouvement_stock` sans valorisation (prix_achat / prix_vente de §7.3).
+    Ventes : le client d'un panier n'est pas modifiable (§9.2 le permet, mais il fait partie du ticket scellé ;
+    décision : retour puis nouvelle vente) et le montant payé ne peut que monter (une baisse passe par un retour).
+    Caisse : le n° de panier « PN… » du DS n'est connu qu'à l'encaissement (onglets « Vente n ») ; le
+    paramètre « colis par défaut » n'est pas repris (les colis sont libres par produit) ; la clôture détaille
+    fond + ventes espèces nettes, sans versements, mouvements manuels ni remboursements (rattachés à la caisse,
+    pas à la session) ; le mot de passe demandé pour le prix est celui de l'utilisateur connecté.
+
+## Phase E — Écarts §15 ✅ (2026-10-15)
+
+- ✅ Session de caisse ouverte exigée pour une entrée / un achat, un retour et un versement (§8.4, §9.6), vérifiée
+  dans la transaction du service (`sessionRequise`) et avant l'ouverture des formulaires ; touche `E` en caisse
+  pour l'entrée rapide (produit sélectionné pré-rempli).
+- ✅ Historique : chaque export (Excel, PDF, CSV, archive fiscale) écrit une ligne `Export` rattachée au module
+  d'origine (`JournalService.export`) ; sauvegardes (`Sauvegarde`, famille Export) et restaurations journalisées.
+- ✅ Marge en pourcentage arrondie au multiple de 5 DA supérieur (§8, `CalculsPrix.prixVenteDepuisMarge`).
+- ✅ Besoins : suggestion = seuil maximum − stock quand un maximum est défini (sinon 2 × seuil − stock).
+- ✅ Aperçu du ticket (58 / 80 mm, latin ou arabe) depuis le résultat de vente et Paramètres › Impression, avec
+  impression ESC/POS ou PDF.
+- ✅ Sauvegarde automatique (§9.16) : dossier, fréquence (Désactivée / À chaque démarrage / Quotidienne), mot de
+  passe conservé dans la base chiffrée, lancée au démarrage, 30 archives `caissedz_auto_*` conservées, journalisée
+  sous l'utilisateur `SYSTEME`.
+- ✅ Audit (migration v20) : `cree_le`, `cree_par`, `modifie_le`, `modifie_par` sur 17 tables métier, renseignés
+  par triggers depuis `audit_contexte` (utilisateur connecté) ; affichés dans le détail d'un panier.
+- ✅ 2ᵉ stock « nombre » (§8.1) : paramètre global `nombre_actif` (Paramètres › Système) ; quand il est actif ou
+  que le produit le suit, le nombre est obligatoire (> 0) dans les entrées, achats, sorties et transferts
+  (colonne « Nombre » proposée à quantité × pièces par unité), réparti au prorata entre magasins.
+  ⚠️ PROVISOIRE : en caisse, la vente à l'unité sort les pièces correspondantes (unités × pièces par unité) sans
+  saisie séparée ; un pack étant éclaté en lignes produit, ses produits suivent la même règle.
+- Restent ouverts : tableau « Changements » avant / après dans le détail de l'Historique, `journal_fiscal` distinct
+  avec ligne `CLOTURE_CAISSE`, période clôturée par caisse, Bluetooth natif, règle du crédit caissier, dérivation de
+  la clé §4.2.
+- Décisions conservées par défaut : Historique inaltérable (pas de suppression de lignes) ; client d'une vente
+  scellée non modifiable (retour puis nouvelle vente).
+
+## Retours utilisateur — Caisse ✅ (2026-10-15)
+
+- ✅ Dialog quantité / colis : saisie directe au clavier, barre d'ajout automatique sur toute la largeur.
+- ✅ Raccourcis clavier actifs (écoute globale, ignorés pendant une saisie ou un dialog).
+- ✅ Photos sur les cartes produit ; cartes plus basses, bouton « Entrée » flottant au survol (violet, délai).
+- ✅ Mode de paiement choisi dans le dialog d'encaissement (retiré du panier) ; Points proposés seulement si la
+  fidélité est active et le client identifié.
+- ✅ Recherche produit (F3) : filtres catégorie, fourchette de stock, fourchette de prix ; hauteur fixe des dialogs
+  recette produit, ventes du jour et recherche.
+- ✅ Clients inactifs masqués en caisse.
+- ✅ Vente au montant (migration v21) : produit système `PRD0000` « Vente au montant » (service, masqué du catalogue,
+  des ruptures et de l'inventaire) ; boutons +200 / +500 / +1000 et « Autre montant » cumulés sur une seule ligne,
+  modifiable par double-clic. Les services ne passent plus par le journal de stock.
+- ✅ Packs éclatés : une ligne par produit (quantité dans le pack × nombre de packs, colonne colis « Pack »), prix
+  du pack réparti au prorata des prix de vente, ajout tout ou rien selon le stock, quantité modifiable, ligne
+  distincte du même produit ajouté seul. `vente_ligne.composant_pack` (v21) distingue ces lignes des anciennes lignes
+  de pack à l'annulation ; elles sont retournables comme un produit.
+  ⚠️ PROVISOIRE : montants rapides fixes (200 / 500 / 1000), non paramétrables.
+
+## Retours utilisateur — Général et Ventes ✅ (2026-10-15)
+
+- ✅ Listes déroulantes et menus contextuels positionnés dans l'overlay du navigateur qui les affiche (navigateur
+  imbriqué du shell) : la liste s'ouvre sous son champ.
+- ✅ `DsDataTable` : bouton « colonnes » au début (après les cases à cocher) ; défilement horizontal de l'en-tête,
+  des lignes et des totaux quand la somme des largeurs minimales (`largeurMin`, 110 px par défaut, 180 px si flex > 1)
+  dépasse la largeur disponible.
+- ✅ Filtres de période : Du, Au et Période rapide occupent chacun une cellule de la grille des filtres, dans tous
+  les modules.
+- ✅ Ventes : action « Liste des produits » (dialog des lignes du panier, colonne Colis) ; aperçu PDF des exports
+  avec « Imprimer » à côté de « Fermer ».
+
+## Retours utilisateur — Listes métier et vues grille ✅ (2026-10-15)
+
+- ✅ Bouton « Rechercher dans la liste » à côté des listes déroulantes métier, dans les dialogs et les filtres
+  (`DsSelect.recherche` → `choisirDansListe`, `features/commun/selecteurs.dart`) : produit, catégorie,
+  sous-catégorie, remise, pack, client, fournisseur, magasin, caisse, session, utilisateur, vente ; dialogs
+  d'entrée, d'entrée rapide, de sortie, de transfert, de stock, de retour, de versement, de caisse et filtres des
+  modules. Le dialog reprend les seules options de la liste (recherche, filtres propres à la liste, affichage
+  liste ou cartes pour produit, client, fournisseur et vente).
+- ✅ Choix du client en caisse, du client / fournisseur et du ticket d'origine des retours, et ajout de produits
+  aux documents : mêmes dialogs, avec cartes.
+- ✅ Affichage liste ou grille (`CarteEntite`) dans Clients, Fournisseurs, Ventes et Utilisateurs (Produits
+  l'avait déjà) ; les cartes coupent leur contenu dans une grille à hauteur fixe au lieu de déborder.
+
+## Retours utilisateur — Dialogs, Retours et Remises ✅ (2026-10-15)
+
+- ✅ `DsDialog` : boutons du pied centrés dans tous les dialogs (le contenu de début de pied reste à gauche).
+- ✅ Panneaux de filtres : une même largeur de libellé dans toutes les cellules (`DsLargeurLibelle`), colonnes
+  alignées ; Retours : période sur la 1ʳᵉ ligne, Client / Fournisseur, Remboursement et État sur la 2ᵉ.
+- ✅ Retours : « Nouveau retour client » et « Nouveau retour fournisseur » selon l'onglet ; le dialog n'affiche que
+  la carte du type de l'onglet (plus de bascule client / fournisseur).
+- ✅ Remises : type (Par produit / Par montant) en tête du formulaire ; une remise par montant n'a plus d'éditeur de
+  produits et s'enregistre sans ligne (elle était bloquée) ; option « Cumulable » retirée (colonne conservée en base,
+  toujours 0) ; champ Observation.
+- ✅ Remises : état calculé sur la période (`Remise.estActive`, bornes incluses à la journée) : Active / Inactive,
+  Annulée si annulée. Une remise inactive n'est proposée ni dans les listes, ni dans le dialog de sélection, ni en
+  caisse, et ne s'applique pas aux produits.
+
+## Retours utilisateur — Audit, détails, produits et suppressions ✅ (2026-10-15)
+
+- ✅ Audit : tous les modèles affichés en tableau portent `Audit` (créé le / par, modifié le / par) ; migration v22
+  (sessions, mouvements de caisse et de stock, bons de réception, zakat) ; quatre colonnes masquées par défaut
+  (`colonnesAudit`) dans tous les tableaux. Les clôtures, immuables, prennent leur création de `date` / auteur.
+- ✅ Double-clic sur une ligne ou une carte : détail du module, ou à défaut dialog de détail générique
+  (`afficherDetailLigne`) listant toutes les colonnes autorisées.
+- ✅ Formulaires : titres de section colorés avec icône (`DsSubHead`) ; nouveau produit : description par mode, textes
+  IA raccourcis ; filtres Produits : quantité en stock et prix d'achat (le prix de vente existait).
+- ✅ Catégorie, sous-catégorie, remise, pack : « Supprimer » remplace « Annuler » (suppression réelle, une
+  transaction, journalisée). Produits d'une catégorie / sous-catégorie supprimée basculés vers Sans catégorie
+  (CATE0000 / SC0000) ; remise supprimée retirée des produits ; un pack déjà vendu ne peut pas être supprimé.
+
+## Retours utilisateur — Stock, mouvements, entrées, sorties, transferts, besoins ✅ (2026-10-15)
+
+- ✅ Panneau de filtres : `periodeSeule` (marqueur `DsFinLigne`) place Du / Au / Période rapide seuls sur la 1ʳᵉ
+  ligne ; Mouvements (4 filtres sur la 2ᵉ ligne), Entrées, Sorties, Transferts et Listes de besoins.
+- ✅ Filtres : Stock (Produit, Marque), Mouvements (Produit), Entrées (Type d'entrée rapide / normale, Produit),
+  Sorties (Produit) ; filtre Produit commun (`filtreProduit`).
+- ✅ « Liste des produits » à côté de « Détail » : Entrées, Sorties, Transferts, Listes de besoins.
+- ✅ Sorties et transferts : quand il ne reste plus de pièces (2ᵉ stock) dans le magasin, le nombre n'est plus exigé
+  et la quantité restante peut sortir jusqu'à 0 ; nombre proposé plafonné aux pièces disponibles (erreur sinon).
+- ✅ Nouveau transfert : colonnes Stock total et Qté (Depuis).
+- ✅ Nouvelle liste de besoins : boutons « Produits sous le seuil » et « Produits en rupture » (quantité suggérée).
+
+## Retours utilisateur — Infobulles et pied des dialogs ✅ (2026-10-16)
+
+- ✅ Barre latérale repliée : infobulle des modules (et « Replier / Déplier » des catégories) à droite de l'icône
+  (à gauche en RTL), centrée verticalement (`positionLaterale`) ; elle ne masque plus le module suivant.
+- ✅ `DsDialog` avec contenu de début de pied (« * obligatoire », « Précédent »…) : boutons au centre exact du pied
+  (deux zones égales de part et d'autre) dans tous les dialogs d'insertion.
+
+## Retours utilisateur — Tiers, retours, situations, caisse ✅ (2026-10-16)
+
+- ✅ Versements clients : plus de bouton « Versement retour » (un remboursement client passe uniquement par un
+  retour) ; il reste côté fournisseurs.
+- ✅ Retour client non remis en stock (produit cassé) : l'entrée Retour est compensée par une sortie « Casse »
+  équivalente (SRT…, migration v23 `sortie_stock.retour_code`), valorisée au prix d'achat de la vente, dans la même
+  transaction. La sortie est verrouillée (ni modification ni annulation seule) ; modifier ou annuler le retour la
+  remplace ou l'annule.
+- ✅ Retour fournisseur : champ « Remise en stock » supprimé (le produit repart chez le fournisseur).
+- ✅ Champs Remboursement (retour client) et Règlement (retour fournisseur) supprimés : le montant va directement au
+  solde (avoir client, déduction du crédit fournisseur) ; le client de passage, sans solde, est remboursé en
+  espèces. Colonne et filtre Règlement retirés de l'écran Retours (colonne masquable conservée).
+- ✅ Situation client / fournisseur : dialog plus haut, filtres alignés sur une ligne (Du, Au, Période, Type),
+  colonnes « Solde avant » et « Solde après » pour chaque opération.
+- ✅ Cartes clients / fournisseurs redessinées : initiales, téléphone et code, statut, bandeau Total achats / Crédit ;
+  adresse et étoiles retirées.
+- ✅ Caisse : carte produit moins haute (172 au lieu de 196) et photo deux fois plus haute (104 au lieu de 52).
+
+## Retours utilisateur — Listes, codes ENT, type de panier, packs, remises, filtres ✅ (2026-10-16)
+
+- ✅ Dialogs de listes de produits plus hauts : la hauteur suit l'écran (`hauteurListeDialog`, `DsDataTable.reserveEcran`,
+  `DsLineItemsEditor` par défaut) — liste des produits d'un document ou d'un panier, détail d'entrée / sortie /
+  transfert / besoin, lignes des formulaires, sélecteur de produits, recherche caisse, ventes du jour.
+- ✅ Entrées (normales et rapides) codées `ENT` au lieu de `SS` ; migration v24 : les entrées existantes sont renommées
+  partout où leur code est repris (lignes, bons reçus, imputations, retours fournisseurs, mouvements, historique).
+- ✅ Type de panier (Ticket / BL / BL SC) supprimé : bouton BL / SC et raccourci F5 de la caisse, filtre et colonne
+  Type des Ventes et des ventes du jour, badge et ligne du détail, référentiel `typePannier`. La colonne
+  `vente.type_panier` reste en base (valeur par défaut), hors scellement.
+- ✅ Recherche produit (caisse) : « Réinitialiser » en bouton icône seule (infobulle).
+- ✅ Caisse : les lignes d'un pack vont ensemble — supprimer un produit retire tout le pack ; changer la quantité
+  d'une ligne ramène tout le pack à un nombre entier de packs (contrôle de stock sur chaque produit).
+- ✅ Nouvelle / modifier remise : sections Type de remise, Informations générales, Valeur de la remise, Période de
+  validité, Produits concernés.
+- ✅ Filtres Produits : 1ʳᵉ ligne Catégorie, Stock, Marque ; 2ᵉ ligne Quantité, Prix de vente, Prix d'achat.
+- ✅ Mouvements : Produit sur la 1ʳᵉ ligne avec Du / Au / Période ; Type, Magasin, Utilisateur sur la 2ᵉ.
+
+## Audit des workflows — correctifs critiques ✅ (2026-10-16)
+
+Rapport complet (3 critiques, 12 majeurs, 15 mineurs, manques vs références, plan) : document « Audit CaisseDZ —
+workflows et calculs » du projet.
+
+- ✅ C1 : codes au-delà de 9 999 — dernier code lu par numéro (`CodeGenerator.ordreDecroissant` : longueur puis
+  texte) dans tous les `prochainCode`, la chaîne de scellement, la clôture Z et l'export fiscal.
+- ✅ C2 : espèces attendues à la fermeture de session = solde Espèces du journal de caisse depuis la fermeture
+  précédente (`CaisseRepository.especesSession`) : versements, paiements, remboursements, dépenses compris.
+- ✅ C3 : migration v25 — références « SS… » des paiements immédiats d'entrées passées en ENT.
+- ○ Majeurs M1–M12 et mineurs m1–m15 : voir le plan du rapport (journal de caisse en ajout seul, solde unique des
+  tiers, retours, coûts / crédit, intégrité fiscale, TVA / timbre / facture).
+
+## Plan d'amélioration — points 1 à 3 ✅ (2026-10-16)
+
+- ✅ M9 — Journal de caisse en ajout seul : annuler / modifier un versement, un retour, un paiement d'entrée ou un
+  transfert contre-passe (écriture inverse datée du jour, même référence, `CaisseRepository.contrePasserReference`) ;
+  versements refusés si leur date (ancienne ou nouvelle) est dans une période clôturée de leur caisse ; migration
+  v26 : déclencheurs interdisant DELETE et la réécriture des colonnes financières de `mouvement_caisse`.
+- ✅ M1 / M2 / m4 — Solde unique des tiers : vue `solde_tiers` (migration v27) = restes à la pièce − règlements
+  (avoirs compris) + argent rendu hors retour, indépendante des imputations ; lue par la liste, la caisse, la
+  situation, les alertes, le tableau de bord et la zakat. Relevé : payé = total − reste (hors monnaie rendue) ;
+  graphique des modes : monnaie déduite des espèces ; entrée réduite sous le payé : excédent désimputé (avance).
+- ✅ M10 — Retour daté du jour, possible après la Z du jour de la vente ; période contrôlée sur la date du retour,
+  par caisse (`retour.caisse_code`, vérificateur de clôture par caisse pour ventes, retours, versements).
+- ✅ M3 — CA (tableau de bord, CA par jour, ventes par caissier, top produits, recette par produit) et marges (par
+  panier, par période) nets des retours clients à leur date ; un retour « Casse » garde son coût (perte affichée).
+- ✅ M6 / M5 — Points gagnés repris au prorata du montant retourné (`retour.points_repris`, rendus si le retour est
+  annulé) ; pièces réintégrées au prorata de la ligne ; inventaire avec colonnes pièces théoriques / comptées.
+- ✅ m2 / m1 — Retour par ligne de vente (`retour_ligne.ordre_origine`, plafond par ligne) ; unités figées sur
+  `vente_ligne.unites` (migration v28) ; annulation de vente d'après les mouvements de stock réels.
+
+## Plan d'amélioration — points 4 à 7 ✅ (2026-10-16)
+
+- ✅ Point 4 (M4, M7, M8, migration v29) — Coût d'une vente au nombre = pièces × prix d'achat ÷ pièces par unité ;
+  plafond de crédit client bloquant (permission « Dépasser le plafond de crédit ») ; prix d'achat / vente avant et
+  après figés par ligne d'entrée et restaurés à l'annulation ou à la modification.
+- ✅ Point 5 (M11, M12, m7, migration v30) — `journal_fiscal` chaîné en ajout seul (VENTE, ANNULATION_VENTE,
+  RETOUR, MODIFICATION / ANNULATION_RETOUR, CLOTURE_CAISSE, FACTURE, AVOIR), dans l'export fiscal (format 2,
+  extrait de période vérifiable) ; déclencheurs d'immuabilité (ticket, lignes, paiements, stock ; « Annulée »
+  seulement avec son événement) ; ticket scellé v2 ; caisse Coffre `CIS0001` ; Z sans fond / retrait / écart /
+  coffre / transferts.
+- ✅ Point 6 (migration v31) — TVA par ligne de vente (collectée) et d'entrée (déductible), prix TTC, régime Réel /
+  IFU ; factures FAC et avoirs AVO (numérotations distinctes, identités fiscales figées, article d'imposition des
+  tiers, TVA par taux, montant en lettres, scellement, jamais modifiées ; annulation ou retour d'une vente
+  facturée → avoir) ; droit de timbre sur la part espèces (⚠️ PROVISOIRE : ≤ 300 DA exonéré, 1 % / 1,5 % / 2 %,
+  minimum 5 DA) encaissé en caisse ; facture A4 (duplicata, avoirs, reste du jour) ; export G50 (Excel).
+- ✅ Point 7 (migration v32) — m3 retour fournisseur selon la répartition d'origine ; m5 seuil « ≤ » et périmètre
+  magasins de l'utilisateur partout ; m6 écart d'arrondi de la remise globale sur la dernière ligne, retour qui
+  solde une ligne = reste exact ; m8 document INV au théorique figé, annulable (service) ; m9 pas de monnaie au-delà
+  des espèces ; m10 session exigée (complément de paiement, modification / annulation de retour) ; m11 magasin de
+  la caisse ouverte ; m12 points sur l'encaissé hors points et crédit, jamais négatifs ; m13 prix à la pièce
+  pour une ligne « pièces seules » ; m14 types `Stock initial` et `Annulation`, transferts ignorés tous magasins ;
+  m15 facture : reste dû du jour.
+- ○ Restent : écran de liste des inventaires (annulation INV sans interface), barème du timbre et présentation
+  G50 à confirmer avec la spécification 06, Bluetooth natif, vue avant / après de l'Historique.
+
+## Caisse, stock et vérification des workflows ✅ (2026-10-16)
+
+- ✅ Scan d'un produit déjà au panier (unité, sans colis ni pack) : quantité + 1 sans dialog ; dialog de sélection
+  ouvert : une rafale du lecteur (frappes ≤ 60 ms, ≥ 4 caractères, Entrée) ajoute 1 si c'est le même produit,
+  sinon valide le dialog et traite le nouveau code ; la quantité saisie n'est plus polluée par le code-barres.
+- ✅ Écran Stock : la colonne « Total » reste la somme de tous les magasins consultables quand le filtre magasin
+  est posé (seule la colonne du magasin filtré est affichée à côté).
+- ✅ Vérification des 11 scénarios (retour client / fournisseur créé, modifié, annulé ; sortie créée, modifiée,
+  annulée ; vente créée, annulée ; versement client / fournisseur créé, modifié, annulé) : stock, caisse (solde et
+  espèces de session) et soldes tiers cohérents à chaque étape (`test/application/workflows_coherence_test.dart`).
+  Corrigé : modifier / annuler un versement exige une session ouverte (comme la saisie) ; l'annulation d'une vente n'annule un versement que s'il est
+  entièrement imputé sur ce panier (sinon l'imputation est libérée et le versement reste en avance).

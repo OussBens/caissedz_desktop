@@ -1,7 +1,9 @@
 import 'package:sqflite_common/sqlite_api.dart';
 
+import '../data/caisse_repository.dart';
 import '../data/historique_repository.dart';
 import '../data/vente_repository.dart';
+import '../domain/calculs_prix.dart';
 import '../domain/code_generator.dart';
 import '../domain/models/caisse.dart';
 import '../domain/models/vente.dart';
@@ -25,6 +27,10 @@ class SessionCaisseService {
 
   VenteRepository get _repo => VenteRepository(db);
 
+  /// §8.4 : aucun achat, retour ni versement n'est enregistré sans session `Ouverte` de l'utilisateur.
+  static Future<bool> sessionOuverte(DatabaseExecutor db, String utilisateurCode) async =>
+      await VenteRepository(db).sessionOuverte(utilisateurCode: utilisateurCode) != null;
+
   Future<SessionCaisse?> courante() => _repo.sessionOuverte(utilisateurCode: utilisateurCode);
 
   Future<SessionCaisse> ouvrir({required String caisseCode, required double fondInitial}) async {
@@ -37,7 +43,7 @@ class SessionCaisseService {
       if (await repo.sessionOuverte(caisseCode: caisseCode) != null) {
         throw const SessionException(ErreurSession.dejaOuverte);
       }
-      final caisse = await txn.query('caisse', where: 'code = ? AND actif = 1', whereArgs: [caisseCode]);
+      final caisse = await txn.query('caisse', where: 'code = ? AND actif = 1 AND coffre = 0', whereArgs: [caisseCode]);
       if (caisse.isEmpty) throw const SessionException(ErreurSession.caisseInconnue);
       final code = await repo.prochainCode('session_caisse', CodeGenerator.sessionCaisse);
       final s = SessionCaisse(
@@ -59,6 +65,27 @@ class SessionCaisseService {
         utilisateurCode: utilisateurCode,
         date: s.ouverteLe,
       );
+      // Le fond de caisse est pris au coffre, dans la limite de ses espèces (le surplus est un apport externe).
+      final caisses = CaisseRepository(txn);
+      final coffre = await caisses.coffre();
+      if (coffre != null && fondInitial > 0) {
+        final dispo = (await caisses.solde(coffre)).parMode['Espèces'] ?? 0;
+        final pris = CalculsPrix.arrondir(fondInitial < dispo ? fondInitial : (dispo > 0 ? dispo : 0));
+        if (pris > 0) {
+          await CaisseService.journaliser(
+            txn,
+            caisseCode: coffre,
+            type: TypesMouvementCaisse.coffre,
+            sens: SensMouvementCaisse.sortie,
+            montant: pris,
+            referenceType: 'session_caisse',
+            referenceCode: code,
+            utilisateurCode: utilisateurCode,
+            date: s.ouverteLe,
+            commentaire: 'Fond de caisse $caisseCode',
+          );
+        }
+      }
       await HistoriqueRepository(txn).journaliser(
         utilisateurCode: utilisateurCode,
         action: 'Ouverture',
@@ -70,15 +97,22 @@ class SessionCaisseService {
     });
   }
 
-  /// Ferme la session ouverte de l'utilisateur. Écart = compté − (fond + espèces encaissées).
-  Future<SessionCaisse> fermer({required double montantCompte}) async {
+  /// Historique des sessions, plus récentes d'abord.
+  Future<List<SessionCaisse>> sessions() => _repo.sessions();
+
+  /// Ferme la session ouverte de l'utilisateur, ou la session [sessionCode] (Gestion caisse).
+  /// Écart = compté − espèces attendues ([especesAttendues] : grand-livre Espèces de la caisse depuis la
+  /// fermeture précédente).
+  Future<SessionCaisse> fermer({required double montantCompte, String? sessionCode}) async {
     if (montantCompte < 0) throw const SessionException(ErreurSession.montantInvalide);
     return db.transaction((txn) async {
       final repo = VenteRepository(txn);
-      final s = await repo.sessionOuverte(utilisateurCode: utilisateurCode);
+      final trouvee = sessionCode == null
+          ? await repo.sessionOuverte(utilisateurCode: utilisateurCode)
+          : await repo.session(sessionCode);
+      final s = trouvee != null && trouvee.statut == StatutsSession.ouverte ? trouvee : null;
       if (s == null) throw const SessionException(ErreurSession.aucuneOuverte);
-      final especes = (await repo.encaissementsSession(s.code))['Espèces'] ?? 0;
-      final attendu = s.fondInitial + especes - await repo.monnaieRendueSession(s.code);
+      final attendu = await CaisseRepository(txn).especesSession(s.caisseCode, s.code);
       final ecart = montantCompte - attendu;
       final fermeeLe = DateTime.now();
       await repo.fermerSession(s.code, fermeeLe: fermeeLe, montant: montantCompte, ecart: ecart);
@@ -105,6 +139,22 @@ class SessionCaisseService {
         utilisateurCode: utilisateurCode,
         date: fermeeLe,
       );
+      // Les espèces retirées vont au coffre (remise en banque ensuite par transfert vers une caisse Compte).
+      final coffre = await CaisseRepository(txn).coffre();
+      if (coffre != null && coffre != s.caisseCode && montantCompte > 0) {
+        await CaisseService.journaliser(
+          txn,
+          caisseCode: coffre,
+          type: TypesMouvementCaisse.coffre,
+          sens: SensMouvementCaisse.entree,
+          montant: montantCompte,
+          referenceType: 'session_caisse',
+          referenceCode: s.code,
+          utilisateurCode: utilisateurCode,
+          date: fermeeLe,
+          commentaire: 'Fermeture ${s.caisseCode}',
+        );
+      }
       await HistoriqueRepository(txn).journaliser(
         utilisateurCode: utilisateurCode,
         action: 'Fermeture',
@@ -116,12 +166,11 @@ class SessionCaisseService {
     });
   }
 
-  /// Montant d'espèces attendu en caisse (fond + espèces encaissées).
+  /// Montant d'espèces attendu en caisse : fond initial et tous les mouvements d'espèces du tiroir depuis la
+  /// fermeture précédente (ventes nettes de la monnaie, versements, paiements, remboursements, dépenses…).
   Future<double> especesAttendues(String sessionCode) async {
     final s = await _repo.session(sessionCode);
     if (s == null) return 0;
-    return s.fondInitial +
-        ((await _repo.encaissementsSession(sessionCode))['Espèces'] ?? 0) -
-        await _repo.monnaieRendueSession(sessionCode);
+    return CaisseRepository(db).especesSession(s.caisseCode, s.code);
   }
 }
