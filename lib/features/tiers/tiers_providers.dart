@@ -77,16 +77,6 @@ final statsFournisseursProvider = FutureProvider<Map<String, StatsTiers>>((ref) 
   return ref.watch(tiersRepositoryProvider).statistiques(TypesTiers.fournisseur);
 });
 
-final soldeClientProvider = FutureProvider.family<double, String>((ref, code) {
-  ref.watch(commerceVersionProvider);
-  return ref.watch(tiersRepositoryProvider).soldeClient(code);
-});
-
-final soldeFournisseurProvider = FutureProvider.family<double, String>((ref, code) {
-  ref.watch(commerceVersionProvider);
-  return ref.watch(tiersRepositoryProvider).soldeFournisseur(code);
-});
-
 String messageErreurVersement(AppLocalizations l10n, ErreurVersement e) => switch (e) {
   ErreurVersement.montantInvalide => l10n.versementErreurMontant,
   ErreurVersement.modeInvalide => l10n.versementErreurMode,

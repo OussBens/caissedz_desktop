@@ -18,38 +18,19 @@ class StatistiquesRepository {
   Future<double> _somme(String sql, List<Object?> args) async =>
       ((await db.rawQuery(sql, args)).first.values.first as num? ?? 0).toDouble();
 
-  /// Créances clients = Σ (reste − imputations) des ventes validées − versements clients non imputés.
-  Future<double> creancesClients() async {
-    final du = await _somme(
-      '''
-      SELECT COALESCE(SUM(v.reste - COALESCE((SELECT SUM(i.montant) FROM versement_imputation i
-        WHERE i.document_type = 'vente' AND i.document_code = v.code), 0)), 0)
-      FROM vente v WHERE v.statut = ? AND v.reste > 0
-      ''',
-      [_validee],
-    );
-    final avances = await _somme('''
-      SELECT COALESCE(SUM(v.montant - COALESCE((SELECT SUM(i.montant) FROM versement_imputation i
-        WHERE i.versement_code = v.code), 0)), 0)
-      FROM versement v WHERE v.tiers_type = 'Client' AND v.sens = 'Encaissement' AND v.etat = 1
-      ''', const []);
-    return CalculsPrix.arrondir(du - avances);
-  }
+  /// Créances clients = Σ des soldes clients positifs (vue `solde_tiers`, même valeur que la liste Clients).
+  Future<double> creancesClients() async => CalculsPrix.arrondir(
+    await _somme("SELECT COALESCE(SUM(solde), 0) FROM solde_tiers WHERE tiers_type = 'Client' AND solde > 0", const []),
+  );
 
-  /// Dettes fournisseurs = Σ (total − imputations) des achats validés − versements fournisseurs non imputés.
-  Future<double> dettesFournisseurs() async {
-    final du = await _somme('''
-      SELECT COALESCE(SUM(a.total - COALESCE((SELECT SUM(i.montant) FROM versement_imputation i
-        WHERE i.document_type = 'achat' AND i.document_code = a.code), 0)), 0)
-      FROM achat a WHERE a.statut = 'Validé'
-      ''', const []);
-    final avances = await _somme('''
-      SELECT COALESCE(SUM(v.montant - COALESCE((SELECT SUM(i.montant) FROM versement_imputation i
-        WHERE i.versement_code = v.code), 0)), 0)
-      FROM versement v WHERE v.tiers_type = 'Fournisseur' AND v.sens = 'Décaissement' AND v.etat = 1
-      ''', const []);
-    return CalculsPrix.arrondir(du - avances);
-  }
+  /// Dettes fournisseurs = Σ des soldes fournisseurs positifs (vue `solde_tiers`) ; une avance chez un
+  /// fournisseur ne réduit pas la dette envers un autre.
+  Future<double> dettesFournisseurs() async => CalculsPrix.arrondir(
+    await _somme(
+      "SELECT COALESCE(SUM(solde), 0) FROM solde_tiers WHERE tiers_type = 'Fournisseur' AND solde > 0",
+      const [],
+    ),
+  );
 
   /// Valeur du stock au prix d'achat (tous magasins, quantités positives).
   Future<double> valeurStockAchat() => _somme('''
@@ -98,14 +79,26 @@ class StatistiquesRepository {
     return points;
   }
 
+  /// Encaissements des ventes par mode ; la monnaie rendue est déduite des espèces (comme la Z).
   Future<List<PointSerie>> paiementsParMode(DateTime debut, DateTime fin) async {
     final rows = await db.rawQuery(
       '''
       SELECT p.mode m, SUM(p.montant) t FROM vente_paiement p JOIN vente v ON v.code = p.vente_code
-      WHERE v.statut = ? AND v.date >= ? AND v.date <= ? GROUP BY p.mode ORDER BY t DESC
+      WHERE v.statut = ?1 AND v.date >= ?2 AND v.date <= ?3 GROUP BY p.mode
       ''',
       [_validee, _iso(debut), _iso(fin)],
     );
-    return [for (final r in rows) (etiquette: r['m'] as String, valeur: (r['t'] as num).toDouble())];
+    final rendu = await _somme(
+      '''
+      SELECT COALESCE(SUM(CASE WHEN verse > total_net THEN verse - total_net ELSE 0 END), 0) FROM vente
+      WHERE statut = ?1 AND date >= ?2 AND date <= ?3
+      ''',
+      [_validee, _iso(debut), _iso(fin)],
+    );
+    final parMode = {for (final r in rows) r['m'] as String: (r['t'] as num).toDouble()};
+    if (rendu > 0) parMode['Espèces'] = (parMode['Espèces'] ?? 0) - rendu;
+    parMode.removeWhere((_, m) => m.abs() < 0.005);
+    final tries = parMode.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
+    return [for (final e in tries) (etiquette: e.key, valeur: CalculsPrix.arrondir(e.value))];
   }
 }

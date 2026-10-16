@@ -306,7 +306,7 @@ Future<_Config> _charger(BuildContext context, WidgetRef ref, ListeMetier liste)
         elements: [
           for (final c in await ref.read(clientsProvider.future))
             () {
-              final du = stats[c.code]?.du ?? 0;
+              final du = stats[c.code]?.credit ?? 0;
               final nom = c.estDePassage ? l10n.posClientPassage : c.nom;
               return _Element(
                 code: c.code,

@@ -221,44 +221,33 @@ class Fournisseur {
 /// Statistiques calculées d'un tiers (jamais stockées, §7.6).
 @immutable
 class StatsTiers {
-  const StatsTiers({this.achats = 0, this.du = 0, this.avance = 0, this.rendu = 0, this.retours = 0, this.dernier});
+  const StatsTiers({this.achats = 0, this.du = 0, this.solde = 0, this.retours = 0, this.dernier});
 
   static const StatsTiers vide = StatsTiers();
 
   /// Total des documents validés (ventes du client, achats du fournisseur).
   final double achats;
 
-  /// Restes ouverts des documents (crédit du client, dette envers le fournisseur).
+  /// Restes ouverts des documents après imputations (crédit du client, dette envers le fournisseur).
   final double du;
 
-  /// Versements non imputés (avances, trop-perçus).
-  final double avance;
-
-  /// Versements « retour » non liés à un retour (argent rendu au client / remboursé par le fournisseur).
-  final double rendu;
+  /// Solde unique du tiers (vue `solde_tiers`) : positif = dû par le client (ou au fournisseur), négatif =
+  /// avance (trop-payé, avoir non imputé). Même valeur dans la liste, la caisse, la situation, les alertes,
+  /// le tableau de bord et la zakat.
+  final double solde;
   final double retours;
   final DateTime? dernier;
 
-  /// Solde dû par le client (ou au fournisseur) : positif = crédit, négatif = avance.
-  double get solde => du - avance + rendu;
   double get credit => solde > 0 ? solde : 0;
   double get avanceNette => solde < 0 ? -solde : 0;
 
   /// Total réglé des documents.
   double get paye => achats - du;
 
-  StatsTiers copyWith({
-    double? achats,
-    double? du,
-    double? avance,
-    double? rendu,
-    double? retours,
-    DateTime? dernier,
-  }) => StatsTiers(
+  StatsTiers copyWith({double? achats, double? du, double? solde, double? retours, DateTime? dernier}) => StatsTiers(
     achats: achats ?? this.achats,
     du: du ?? this.du,
-    avance: avance ?? this.avance,
-    rendu: rendu ?? this.rendu,
+    solde: solde ?? this.solde,
     retours: retours ?? this.retours,
     dernier: dernier ?? this.dernier,
   );

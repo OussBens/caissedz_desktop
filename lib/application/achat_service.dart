@@ -184,6 +184,9 @@ class AchatService {
         caisseCode: caisseCode,
         date: d,
       );
+      // Entrée réduite sous le montant déjà payé (ou changée de fournisseur) : l'excédent redevient une avance.
+      await TiersRepository(txn)
+          .plafonnerImputations('achat', code, total, tiersType: TypesTiers.fournisseur, tiersCode: fournisseurCode);
       await HistoriqueRepository(txn).journaliser(
         utilisateurCode: utilisateurCode,
         action: 'Modification',

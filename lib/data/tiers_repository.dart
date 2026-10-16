@@ -1,5 +1,6 @@
 import 'package:sqflite_common/sqlite_api.dart';
 
+import '../domain/calculs_prix.dart';
 import '../domain/code_generator.dart';
 import '../domain/models/retour.dart';
 import '../domain/models/tiers.dart';
@@ -223,6 +224,50 @@ class TiersRepository {
           )
           .toList();
 
+  /// Ramène les imputations d'un document à [plafond] : celles des versements d'un autre tiers que
+  /// [tiersCode] sont libérées, puis les plus récentes sont réduites d'abord. L'excédent redevient une avance
+  /// du versement (le solde du tiers, lui, ne dépend pas des imputations).
+  Future<void> plafonnerImputations(
+    String documentType,
+    String documentCode,
+    double plafond, {
+    required String tiersType,
+    required String tiersCode,
+  }) async {
+    await db.rawDelete(
+      '''
+      DELETE FROM versement_imputation WHERE document_type = ?1 AND document_code = ?2 AND versement_code IN
+        (SELECT code FROM versement WHERE NOT (tiers_type = ?3 AND tiers_code = ?4))
+      ''',
+      [documentType, documentCode, tiersType, tiersCode],
+    );
+    final rows = await db.rawQuery(
+      '''
+      SELECT i.versement_code c, i.montant m FROM versement_imputation i JOIN versement v ON v.code = i.versement_code
+      WHERE i.document_type = ? AND i.document_code = ? ORDER BY v.date DESC, length(v.code) DESC, v.code DESC
+      ''',
+      [documentType, documentCode],
+    );
+    var excedent = CalculsPrix.arrondir(rows.fold(0.0, (s, r) => s + (r['m']! as num).toDouble()) - plafond);
+    for (final r in rows) {
+      if (excedent <= 0.004) break;
+      final m = (r['m']! as num).toDouble();
+      final where = 'versement_code = ? AND document_type = ? AND document_code = ?';
+      final args = [r['c'], documentType, documentCode];
+      if (m <= excedent + 0.004) {
+        await db.delete('versement_imputation', where: where, whereArgs: args);
+      } else {
+        await db.update(
+          'versement_imputation',
+          {'montant': CalculsPrix.arrondir(m - excedent)},
+          where: where,
+          whereArgs: args,
+        );
+      }
+      excedent = CalculsPrix.arrondir(excedent - m);
+    }
+  }
+
   /// Montant déjà imputé sur un document.
   Future<double> imputeSur(String documentType, String documentCode) async {
     final rows = await db.rawQuery(
@@ -280,63 +325,41 @@ class TiersRepository {
     ];
   }
 
-  /// Solde d'un client : Σ restes ouverts − versements non imputés (positif = dû par le client).
-  Future<double> soldeClient(String clientCode) async {
-    final docs = await documentsOuvertsClient(clientCode);
-    final du = docs.fold(0.0, (s, d) => s + d.reste);
-    final avances = await db.rawQuery(
-      '''
-      SELECT COALESCE(SUM(v.montant - COALESCE((SELECT SUM(i.montant) FROM versement_imputation i WHERE i.versement_code = v.code), 0)), 0) m
-      FROM versement v WHERE v.tiers_type = 'Client' AND v.tiers_code = ? AND v.sens = 'Encaissement' AND v.etat = 1
-    ''',
-      [clientCode],
+  /// Solde unique d'un tiers (vue `solde_tiers`) : positif = dû par le client / au fournisseur, négatif = avance.
+  Future<double> solde(String tiersType, String tiersCode) async {
+    final r = await db.query(
+      'solde_tiers',
+      columns: ['solde'],
+      where: 'tiers_type = ? AND tiers_code = ?',
+      whereArgs: [tiersType, tiersCode],
     );
-    return du - (avances.first['m'] as num).toDouble();
+    return r.isEmpty ? 0 : (r.first['solde'] as num).toDouble();
   }
 
-  Future<double> soldeFournisseur(String fournisseurCode) async {
-    final docs = await documentsOuvertsFournisseur(fournisseurCode);
-    final du = docs.fold(0.0, (s, d) => s + d.reste);
-    final avances = await db.rawQuery(
-      '''
-      SELECT COALESCE(SUM(v.montant - COALESCE((SELECT SUM(i.montant) FROM versement_imputation i WHERE i.versement_code = v.code), 0)), 0) m
-      FROM versement v WHERE v.tiers_type = 'Fournisseur' AND v.tiers_code = ? AND v.sens = 'Décaissement' AND v.etat = 1
-    ''',
-      [fournisseurCode],
-    );
-    return du - (avances.first['m'] as num).toDouble();
-  }
+  Future<double> soldeClient(String clientCode) => solde(TypesTiers.client, clientCode);
+
+  Future<double> soldeFournisseur(String fournisseurCode) => solde(TypesTiers.fournisseur, fournisseurCode);
 
   // ---- Statistiques et relevés (calculés en direct, §7.6) ----
 
-  /// Statistiques de tous les clients ou fournisseurs ([tiersType]), par code.
+  /// Statistiques de tous les clients ou fournisseurs ([tiersType]), par code. Le solde vient de la vue
+  /// `solde_tiers` ; `du` (restes ouverts après imputations) est informatif.
   Future<Map<String, StatsTiers>> statistiques(String tiersType) async {
     final client = tiersType == TypesTiers.client;
-    final docs = client
+    final soldes = await db.query('solde_tiers', where: 'tiers_type = ?', whereArgs: [tiersType]);
+    final ouverts = client
         ? await db.rawQuery('''
-      SELECT v.client_code c, COALESCE(SUM(v.total_net), 0) total, MAX(v.date) dernier,
+      SELECT v.client_code c,
         COALESCE(SUM(MAX(v.reste - COALESCE((SELECT SUM(i.montant) FROM versement_imputation i
           WHERE i.document_type = 'vente' AND i.document_code = v.code), 0), 0)), 0) du
       FROM vente v WHERE v.statut = 'Validée' GROUP BY v.client_code
     ''')
         : await db.rawQuery('''
-      SELECT a.fournisseur_code c, COALESCE(SUM(a.total), 0) total, MAX(a.date) dernier,
+      SELECT a.fournisseur_code c,
         COALESCE(SUM(MAX(a.reste - COALESCE((SELECT SUM(i.montant) FROM versement_imputation i
           WHERE i.document_type = 'achat' AND i.document_code = a.code), 0), 0)), 0) du
       FROM achat a WHERE a.statut = 'Validé' GROUP BY a.fournisseur_code
     ''');
-    final sensPaiement = client ? SensVersement.encaissement : SensVersement.decaissement;
-    final versements = await db.rawQuery(
-      '''
-      SELECT v.tiers_code c,
-        COALESCE(SUM(CASE WHEN v.sens = ? AND v.mode != 'Avoir'
-          THEN v.montant - COALESCE((SELECT SUM(i.montant) FROM versement_imputation i WHERE i.versement_code = v.code), 0)
-          ELSE 0 END), 0) avance,
-        COALESCE(SUM(CASE WHEN v.sens != ? AND v.verrouille = 0 THEN v.montant ELSE 0 END), 0) rendu
-      FROM versement v WHERE v.tiers_type = ? AND v.etat = 1 GROUP BY v.tiers_code
-    ''',
-      [sensPaiement, sensPaiement, tiersType],
-    );
     final retours = await db.rawQuery(
       client
           ? 'SELECT client_code c, COALESCE(SUM(total), 0) t FROM retour WHERE type = ? AND etat = 1 GROUP BY client_code'
@@ -347,17 +370,17 @@ class TiersRepository {
     double d(Object? v) => (v as num?)?.toDouble() ?? 0;
     final res = <String, StatsTiers>{};
     StatsTiers de(String c) => res[c] ?? StatsTiers.vide;
-    for (final r in docs) {
-      final c = r['c'] as String;
+    for (final r in soldes) {
+      final c = r['tiers_code'] as String;
       res[c] = de(c).copyWith(
-        achats: d(r['total']),
-        du: d(r['du']),
+        achats: d(r['documents']),
+        solde: d(r['solde']),
         dernier: r['dernier'] == null ? null : DateTime.parse(r['dernier'] as String).toLocal(),
       );
     }
-    for (final r in versements) {
+    for (final r in ouverts) {
       final c = r['c'] as String;
-      res[c] = de(c).copyWith(avance: d(r['avance']), rendu: d(r['rendu']));
+      res[c] = de(c).copyWith(du: d(r['du']));
     }
     for (final r in retours) {
       final c = r['c'] as String;
@@ -375,13 +398,13 @@ class TiersRepository {
     final docs = client
         ? await db.query(
             'vente',
-            columns: ['code', 'date', 'total_net t', 'verse'],
+            columns: ['code', 'date', 'total_net t', 'total_net - reste paye'],
             where: "client_code = ? AND statut = 'Validée'",
             whereArgs: [tiersCode],
           )
         : await db.query(
             'achat',
-            columns: ['code', 'date', 'total t', 'verse'],
+            columns: ['code', 'date', 'total t', 'total - reste paye'],
             where: "fournisseur_code = ? AND statut = 'Validé'",
             whereArgs: [tiersCode],
           );
@@ -389,13 +412,14 @@ class TiersRepository {
       lignes.add(
         LigneReleve(date: dt(r['date']), nature: NatureReleve.achat, reference: r['code'] as String, credit: d(r['t'])),
       );
-      if (d(r['verse']) > 0) {
+      // Payé à la pièce hors monnaie rendue (total − reste), jamais le montant remis par le client.
+      if (d(r['paye']) > 0.004) {
         lignes.add(
           LigneReleve(
             date: dt(r['date']),
             nature: NatureReleve.versement,
             reference: r['code'] as String,
-            debit: d(r['verse']),
+            debit: d(r['paye']),
           ),
         );
       }

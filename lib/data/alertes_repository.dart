@@ -1,6 +1,5 @@
 import 'package:sqflite_common/sqlite_api.dart';
 
-import '../domain/models/achat.dart';
 import '../domain/models/vente.dart';
 
 /// Requêtes des alertes du shell (§5.3).
@@ -47,29 +46,26 @@ class AlertesRepository {
     );
   }
 
+  /// Plus gros soldes clients débiteurs (vue `solde_tiers`, avances comprises), au-delà de [seuil].
   Future<List<Map<String, Object?>>> creditsClients({int limite = 3, double seuil = 0}) => db.rawQuery(
     '''
-    SELECT c.code, c.nom, SUM(v.reste - COALESCE((SELECT SUM(i.montant) FROM versement_imputation i
-             WHERE i.document_type = 'vente' AND i.document_code = v.code), 0)) du,
-           MAX(v.date) derniere
-    FROM vente v JOIN client c ON c.code = v.client_code
-    WHERE v.statut = ? AND v.reste > 0
-    GROUP BY c.code HAVING du > MAX(0.005, ?) ORDER BY du DESC LIMIT ?
+    SELECT c.code, c.nom, s.solde du, s.dernier derniere
+    FROM solde_tiers s JOIN client c ON c.code = s.tiers_code
+    WHERE s.tiers_type = 'Client' AND s.solde > MAX(0.005, ?)
+    ORDER BY s.solde DESC LIMIT ?
     ''',
-    [StatutsVente.validee, seuil, limite],
+    [seuil, limite],
   );
 
-  /// Plus grosses dettes par fournisseur (achats validés − imputations), [limite] premières.
+  /// Plus grosses dettes par fournisseur (vue `solde_tiers`, avances déduites), [limite] premières.
   Future<List<Map<String, Object?>>> dettesFournisseurs({int limite = 3}) => db.rawQuery(
     '''
-    SELECT f.code, f.nom, SUM(a.total - COALESCE((SELECT SUM(i.montant) FROM versement_imputation i
-             WHERE i.document_type = 'achat' AND i.document_code = a.code), 0)) du,
-           MAX(a.date) derniere
-    FROM achat a JOIN fournisseur f ON f.code = a.fournisseur_code
-    WHERE a.statut = ?
-    GROUP BY f.code HAVING du > 0.005 ORDER BY du DESC LIMIT ?
+    SELECT f.code, f.nom, s.solde du, s.dernier derniere
+    FROM solde_tiers s JOIN fournisseur f ON f.code = s.tiers_code
+    WHERE s.tiers_type = 'Fournisseur' AND s.solde > 0.005
+    ORDER BY s.solde DESC LIMIT ?
     ''',
-    [StatutsAchat.valide, limite],
+    [limite],
   );
 
   /// Sessions de caisse encore ouvertes, démarrées avant [debutJour].
