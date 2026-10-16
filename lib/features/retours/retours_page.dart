@@ -33,7 +33,6 @@ class _RetoursPageState extends ConsumerState<RetoursPage> {
   late int _onglet = widget.ongletInitial;
   DsPeriode _periode = DsPeriode.calculer('month');
   String? _tiers;
-  String? _reglement;
   bool? _actif;
 
   String get _type => _onglet == 0 ? TypesTiers.client : TypesTiers.fournisseur;
@@ -41,7 +40,6 @@ class _RetoursPageState extends ConsumerState<RetoursPage> {
   void _reinitialiser() => setState(() {
     _periode = DsPeriode.calculer('month');
     _tiers = null;
-    _reglement = null;
     _actif = null;
   });
 
@@ -62,7 +60,6 @@ class _RetoursPageState extends ConsumerState<RetoursPage> {
           (r) =>
               dansPeriode(r.date, _periode) &&
               (_tiers == null || r.tiersCode == _tiers) &&
-              (_reglement == null || r.reglement == _reglement) &&
               (_actif == null || r.actif == _actif),
         )
         .toList();
@@ -107,6 +104,7 @@ class _RetoursPageState extends ConsumerState<RetoursPage> {
       DsColonne(
         id: 'reglement',
         libelle: client ? l10n.retoursRemboursement : l10n.retoursReglement,
+        visibleParDefaut: false,
         valeur: (r) => libelleReglementRetour(l10n, r.type, r.reglement),
       ),
       DsColonne(
@@ -178,7 +176,6 @@ class _RetoursPageState extends ConsumerState<RetoursPage> {
       onOnglet: (i) => setState(() {
         _onglet = i;
         _tiers = null;
-        _reglement = null;
       }),
       child: DsModuleTable<Retour>(
         key: ValueKey('retours_$_type'),
@@ -208,7 +205,7 @@ class _RetoursPageState extends ConsumerState<RetoursPage> {
         colonnesFiltres: 3,
         indiceRecherche: l10n.retoursRecherche,
         texteRecherche: (r) => '${r.code} ${tiers(r)} ${r.ligne?.designation ?? ''}',
-        nbFiltresActifs: [_tiers, _reglement, _actif].where((f) => f != null).length,
+        nbFiltresActifs: [_tiers, _actif].where((f) => f != null).length,
         onReinitialiser: _reinitialiser,
         filtres: [
           DsFormRow(
@@ -221,17 +218,6 @@ class _RetoursPageState extends ConsumerState<RetoursPage> {
                   c == null ? l10n.retoursTous : (client && c == 'CLN0000' ? l10n.posClientPassage : (noms[c] ?? c)),
               recherche: rechercheListe(context, ref, client ? ListeMetier.client : ListeMetier.fournisseur),
               onChanged: (v) => setState(() => _tiers = v),
-            ),
-          ),
-          DsFormRow(
-            libelle: client ? l10n.retoursRemboursement : l10n.retoursReglement,
-            largeurLibelle: 90,
-            child: DsSelect<String?>(
-              key: const ValueKey('filtre_reglement_retour'),
-              valeur: _reglement,
-              options: [null, ...(client ? ReglementsRetour.client : ReglementsRetour.fournisseur)],
-              libelle: (r) => r == null ? l10n.retoursTous : libelleReglementRetour(l10n, _type, r),
-              onChanged: (v) => setState(() => _reglement = v),
             ),
           ),
           DsFormRow(

@@ -14,6 +14,7 @@ import 'package:caissedz_desktop/domain/models/panier.dart';
 import 'package:caissedz_desktop/domain/models/parametres_vente.dart';
 import 'package:caissedz_desktop/domain/models/produit.dart';
 import 'package:caissedz_desktop/domain/models/retour.dart';
+import 'package:caissedz_desktop/domain/models/stock.dart';
 import 'package:caissedz_desktop/domain/models/tiers.dart';
 import 'package:caissedz_desktop/domain/models/vente.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -204,6 +205,7 @@ void main() {
         documentCode: v.code,
         produitCode: c.lait.code,
         quantite: 3,
+        reglement: ReglementsRetour.especes,
         observation: 'Défectueux',
       );
       expect(r.code, 'RET0001');
@@ -283,6 +285,71 @@ void main() {
         ),
         throwsA(isA<RetourException>().having((e) => e.erreur, 'e', ErreurRetour.reglementInvalide)),
       );
+    });
+
+    test('retour client sans remise en stock : sortie Casse liée, valorisée, verrouillée et suivie', () async {
+      final base = await ouvrirBaseDeTest();
+      final c = _Ctx(base.db);
+      await c.preparer();
+      final v = await c.venteCredit(3, 0); // reste 300
+      final stockRepo = StockRepository(base.db);
+      // Sans règlement précisé : avoir au solde pour un client nommé.
+      final r = await c.retours.creer(
+        type: TypesTiers.client,
+        documentCode: v.code,
+        produitCode: c.lait.code,
+        quantite: 1,
+        remiseEnStock: false,
+      );
+      expect(r.reglement, ReglementsRetour.avoir);
+      expect(await TiersRepository(base.db).soldeClient(c.client.code), 200);
+      List<SortieStock> liees(List<SortieStock> ss) => ss.where((s) => s.retourCode == r.code).toList();
+      final sortie = liees(await stockRepo.sorties()).single;
+      expect(sortie.code, startsWith('SRT'));
+      expect(sortie.motif, 'Casse');
+      expect(sortie.actif, isTrue);
+      expect(sortie.quantite, 1);
+      expect(sortie.valeur, 80); // prix d'achat de la vente
+      expect((await stockRepo.niveau(c.lait.code, 'MAG0000')).quantite, 100 - 3);
+      // La sortie ne se modifie ni ne s'annule seule.
+      final stock = StockService(base.db, utilisateurCode: 'USR0000');
+      await expectLater(
+        stock.annulerSorties([sortie.code], motif: 'x'),
+        throwsA(isA<StockException>().having((e) => e.erreur, 'e', ErreurStock.sortieRetour)),
+      );
+      await expectLater(
+        stock.modifierSortie(sortie.code, magasinCode: 'MAG0000', motif: 'Casse', lignes: sortie.lignes),
+        throwsA(isA<StockException>().having((e) => e.erreur, 'e', ErreurStock.sortieRetour)),
+      );
+      // Modifier le retour remplace la sortie liée.
+      await c.retours.modifier(r.code, quantite: 2, reglement: ReglementsRetour.avoir, remiseEnStock: false);
+      final apres = liees(await stockRepo.sorties());
+      expect(apres.where((s) => s.actif).single.quantite, 2);
+      expect(apres.where((s) => s.actif).single.valeur, 160);
+      expect(apres.where((s) => !s.actif).single.code, sortie.code);
+      expect((await stockRepo.niveau(c.lait.code, 'MAG0000')).quantite, 100 - 3);
+      expect(await TiersRepository(base.db).soldeClient(c.client.code), 100);
+      // Annuler le retour annule la sortie liée ; le stock ne bouge toujours pas.
+      await c.retours.annuler(r.code, motif: 'Erreur');
+      expect(liees(await stockRepo.sorties()).where((s) => s.actif), isEmpty);
+      expect((await stockRepo.niveau(c.lait.code, 'MAG0000')).quantite, 100 - 3);
+      expect(await TiersRepository(base.db).soldeClient(c.client.code), 300);
+      // Client de passage : remboursé en espèces par défaut.
+      final passage = await c.ventes.encaisser(
+        const Panier(id: 9)
+            .ajouter(PanierLigne(produit: c.lait, quantite: 1, prixUnitaire: 100))
+            .ajouterPaiement(const Paiement(mode: 'Espèces', montant: 100)),
+        session: c.session,
+        magasinCode: 'MAG0000',
+      );
+      final rp = await c.retours.creer(
+        type: TypesTiers.client,
+        documentCode: passage.code,
+        produitCode: c.lait.code,
+        quantite: 1,
+      );
+      expect(rp.reglement, ReglementsRetour.especes);
+      expect(rp.rembourse, 100);
     });
 
     test('modifier puis annuler : stock et versements recalculés, vente annulable ensuite', () async {
@@ -366,6 +433,7 @@ void main() {
         documentCode: a.code,
         produitCode: c.lait.code,
         quantite: 1,
+        reglement: ReglementsRetour.especes,
       );
       final v = (await repo.versement(especes.versementCode!))!;
       expect(v.sens, SensVersement.encaissement);

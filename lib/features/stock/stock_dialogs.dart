@@ -593,7 +593,7 @@ Future<void> afficherDetailSortie(BuildContext context, WidgetRef ref, SortieSto
           '${formatDate.format(s.date)} · ${libelleMotif(l10n, s.motif)} · ${noms[s.magasinCode] ?? s.magasinCode}',
       badges: [BadgeStatut(s.actif ? 'actif' : 'annule')],
       onModifier: () => afficherFormulaireSortie(context, ref, sortie: s),
-      modifierDesactive: !s.actif,
+      modifierDesactive: !s.actif || s.retourCode != null,
       stats: [
         DsStatItem(libelle: l10n.stkArticles, valeur: '${s.lignes.length}', icone: LucideIcons.package),
         if (achat)
@@ -662,7 +662,9 @@ Future<void> annulerSorties(BuildContext context, WidgetRef ref, List<SortieStoc
           titre: '${s.code} · ${libelleMotif(l10n, s.motif)}',
           sousTitre: noms[s.magasinCode] ?? s.magasinCode,
           meta: formaterMontant(s.valeur, devise),
-          motifBlocage: s.actif ? null : l10n.stkBloqueDejaAnnulee,
+          motifBlocage: !s.actif
+              ? l10n.stkBloqueDejaAnnulee
+              : (s.retourCode != null ? l10n.stkErreurSortieRetour : null),
         ),
     ],
   );
@@ -671,7 +673,7 @@ Future<void> annulerSorties(BuildContext context, WidgetRef ref, List<SortieStoc
     context,
     ref,
     () => ref.read(stockServiceProvider).annulerSorties([
-      for (final s in choix.where((s) => s.actif)) s.code,
+      for (final s in choix.where((s) => s.actif && s.retourCode == null)) s.code,
     ], motif: motif),
   );
   effacer();

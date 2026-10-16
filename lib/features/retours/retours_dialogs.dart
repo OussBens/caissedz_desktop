@@ -90,15 +90,16 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
   late final _serie = TextEditingController(text: widget.retour?.numeroSerie);
   late final _obs = TextEditingController(text: widget.retour?.motif);
   late DateTime _date = widget.retour?.date ?? DateTime.now();
-  late String _reglement = widget.retour?.reglement ?? _reglementParDefaut(widget.type);
   late bool _remise = widget.retour?.remiseEnStock ?? true;
   String? _erreur;
 
   bool get _edition => widget.retour != null;
   bool get _client => _type == TypesTiers.client;
 
-  static String _reglementParDefaut(String type) =>
-      type == TypesTiers.client ? ReglementsRetour.especes : ReglementsRetour.avoir;
+  /// Règlement (plus de choix dans le formulaire) : imputé au solde du tiers, espèces pour le client de passage ;
+  /// un retour modifié garde son règlement d'origine.
+  String get _reglement =>
+      widget.retour?.reglement ?? (_client ? ReglementsRetour.parDefaut(_tiers ?? '') : ReglementsRetour.avoir);
 
   @override
   void initState() {
@@ -266,7 +267,7 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
               widget.retour!.code,
               quantite: quantite,
               reglement: _reglement,
-              remiseEnStock: _remise,
+              remiseEnStock: _client && _remise,
               numeroSerie: _serie.text,
               observation: _obs.text,
               date: _date,
@@ -276,8 +277,7 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
               documentCode: _document!,
               produitCode: _produit!,
               quantite: quantite,
-              reglement: _reglement,
-              remiseEnStock: _remise,
+              remiseEnStock: _client && _remise,
               numeroSerie: _serie.text,
               observation: _obs.text,
               date: _date,
@@ -315,7 +315,6 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
         ? ''
         : (_client && _tiers == 'CLN0000' ? l10n.posClientPassage : (noms[_tiers] ?? _tiers!));
     const lw = 128.0;
-    final reglements = _client ? ReglementsRetour.client : ReglementsRetour.fournisseur;
     final libelleMontant = _client
         ? (_reglement == ReglementsRetour.avoir ? l10n.retoursAvoirClient : l10n.retoursARembourser)
         : (_reglement == ReglementsRetour.avoir ? l10n.retoursADeduire : l10n.retoursRembourseFournisseur);
@@ -471,29 +470,19 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
                   actif: false,
                 ),
               ),
-              DsFormRow(
-                libelle: _client ? l10n.retoursRemboursement : l10n.retoursReglement,
-                obligatoire: true,
-                largeurLibelle: lw,
-                child: DsSelect<String>(
-                  key: const ValueKey('retour_reglement'),
-                  valeur: _reglement,
-                  options: reglements,
-                  libelle: (r) => libelleReglementRetour(l10n, _type, r),
-                  onChanged: (v) => setState(() => _reglement = v ?? _reglement),
+              // Fournisseur : le produit repart chez le fournisseur (sortie du stock), pas de remise en stock.
+              if (_client)
+                DsFormRow(
+                  libelle: l10n.retoursRemiseStock,
+                  largeurLibelle: lw,
+                  child: DsSelect<bool>(
+                    cle: const ValueKey('retour_remise_stock'),
+                    valeur: _remise,
+                    options: const [true, false],
+                    libelle: (b) => b ? l10n.retoursRemiseOui : l10n.retoursRemiseNon,
+                    onChanged: (v) => setState(() => _remise = v ?? _remise),
+                  ),
                 ),
-              ),
-              DsFormRow(
-                libelle: l10n.retoursRemiseStock,
-                largeurLibelle: lw,
-                child: DsSelect<bool>(
-                  valeur: _client ? _remise : false,
-                  actif: _client,
-                  options: const [true, false],
-                  libelle: (b) => b ? l10n.retoursRemiseOui : l10n.retoursRemiseNon,
-                  onChanged: (v) => setState(() => _remise = v ?? _remise),
-                ),
-              ),
               DsSpan(
                 child: DsFormRow(
                   libelle: l10n.retoursObservation,

@@ -1157,7 +1157,6 @@
       }
     }
   },
-  "tiersSolde": "Solde",
   "tiersSoldeDu": "Solde dû",
   "tiersStatut": "Statut",
   "tiersTotalAchats": "Total achats",
@@ -3706,5 +3705,8 @@
     }
   },
   "entFiltreType": "Type d'entrée",
-  "entTypeNormale": "Entrée normale"
+  "entTypeNormale": "Entrée normale",
+  "tiersSoldeAvant": "Solde avant",
+  "tiersSoldeApres": "Solde après",
+  "stkErreurSortieRetour": "Sortie liée à un retour : modifiez ou annulez le retour."
 }

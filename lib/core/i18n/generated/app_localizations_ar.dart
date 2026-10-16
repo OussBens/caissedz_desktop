@@ -2316,9 +2316,6 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get tiersSolde => 'الرصيد';
-
-  @override
   String get tiersSoldeDu => 'الرصيد المستحق';
 
   @override
@@ -7111,4 +7108,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get entTypeNormale => 'إدخال عادي';
+
+  @override
+  String get tiersSoldeAvant => 'الرصيد قبل';
+
+  @override
+  String get tiersSoldeApres => 'الرصيد بعد';
+
+  @override
+  String get stkErreurSortieRetour => 'إخراج مرتبط بإرجاع: عدّل الإرجاع أو ألغه.';
 }

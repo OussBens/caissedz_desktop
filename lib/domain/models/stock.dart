@@ -326,6 +326,7 @@ class SortieStock {
     this.commentaire,
     this.lignes = const [],
     this.annulation,
+    this.retourCode,
   });
 
   /// Colonnes d'audit (créé / modifié le / par), en lecture seule.
@@ -338,6 +339,9 @@ class SortieStock {
   final String? commentaire;
   final List<LigneStock> lignes;
   final Annulation? annulation;
+
+  /// Retour client non remis en stock à l'origine de cette sortie « Casse » (sinon `null`).
+  final String? retourCode;
   bool get actif => annulation == null;
   double get valeur => lignes.fold(0.0, (s, l) => s + l.montant);
   double get quantite => lignes.fold(0.0, (s, l) => s + l.quantite);

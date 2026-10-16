@@ -217,7 +217,7 @@ class _SortiesPageState extends ConsumerState<SortiesPage> {
             libelle: l10n.communModifier,
             icone: LucideIcons.pencil,
             regle: DsRegleSelection.une,
-            desactive: (choix) => choix.isNotEmpty && !choix.first.actif,
+            desactive: (choix) => choix.isNotEmpty && (!choix.first.actif || choix.first.retourCode != null),
             onPressed: (choix, _) => afficherFormulaireSortie(context, ref, sortie: choix.first),
           ),
           DsActionModule(

@@ -62,7 +62,7 @@ class RetourService {
     required String documentCode,
     required String produitCode,
     required double quantite,
-    String reglement = ReglementsRetour.especes,
+    String? reglement,
     bool remiseEnStock = true,
     String? numeroSerie,
     String? observation,
@@ -103,7 +103,7 @@ class RetourService {
   Future<Retour> modifier(
     String code, {
     required double quantite,
-    required String reglement,
+    String? reglement,
     bool remiseEnStock = true,
     String? numeroSerie,
     String? observation,
@@ -167,6 +167,11 @@ class RetourService {
 
   /// Défait les effets d'un retour : mouvements de stock inverses du net déjà passé, versements liés annulés.
   Future<void> _defaire(Transaction txn, Retour r, {required String motif}) async {
+    // Sortie « Casse » liée (retour non remis en stock) annulée d'abord : le produit revient en stock.
+    await StockService(
+      txn.database,
+      utilisateurCode: utilisateurCode,
+    ).annulerSortiesRetourDansTransaction(txn, r.code, motif: motif);
     final net = await txn.rawQuery(
       '''
       SELECT produit_code p, magasin_code m, SUM(quantite) q, SUM(nombre) n FROM mouvement_stock
@@ -231,7 +236,7 @@ class RetourService {
     required String documentCode,
     required String produitCode,
     required double quantite,
-    required String reglement,
+    required String? reglement,
     required bool remiseEnStock,
     required String? numeroSerie,
     required String? observation,
@@ -241,7 +246,7 @@ class RetourService {
   }) async {
     if (quantite <= 0) throw const RetourException(ErreurRetour.quantiteInvalide);
     final client = type == TypesTiers.client;
-    if (!(client ? ReglementsRetour.client : ReglementsRetour.fournisseur).contains(reglement)) {
+    if (reglement != null && !(client ? ReglementsRetour.client : ReglementsRetour.fournisseur).contains(reglement)) {
       throw const RetourException(ErreurRetour.reglementInvalide);
     }
     final repo = TiersRepository(txn);
@@ -258,6 +263,8 @@ class RetourService {
       if (periodeCloturee != null && await periodeCloturee!(txn, v.date)) {
         throw const RetourException(ErreurRetour.periodeCloturee);
       }
+      // Sans règlement imposé : avoir sur le solde du client, espèces pour le client de passage.
+      reglement ??= ReglementsRetour.parDefaut(v.clientCode);
       if (reglement == ReglementsRetour.avoir && v.clientCode == CodeGenerator.systeme(CodeGenerator.client)) {
         throw const RetourException(ErreurRetour.reglementInvalide);
       }
@@ -282,18 +289,23 @@ class RetourService {
         date: date,
       );
       if (!remiseEnStock) {
-        // DS : « Non — défectueux, sortie « Casse » » : le produit revenu ressort aussitôt du stock.
-        await stock.sortirDansTransaction(
+        // DS : « Non — défectueux, sortie « Casse » » : le produit revenu ressort aussitôt du stock par une vraie
+        // sortie SRT liée au retour (module Sorties), valorisée au coût d'achat de la vente.
+        await stock.creerSortieDansTransaction(
           txn,
-          produitCode: produitCode,
           magasinCode: v.magasinCode,
-          quantite: unites,
-          nombre: parNombre ? quantite : 0,
-          type: TypesMouvement.sortie,
-          referenceType: 'retour',
-          referenceCode: code,
           motif: 'Casse',
+          lignes: [
+            LigneStock(
+              produitCode: produitCode,
+              quantite: unites,
+              nombre: parNombre ? quantite : 0,
+              prix: unites <= 0 ? vl.prixAchat : CalculsPrix.arrondir(vl.prixAchat * quantite / unites),
+            ),
+          ],
+          commentaire: 'Retour $code',
           date: date,
+          retourCode: code,
         );
       }
       retour = Retour(
@@ -328,6 +340,7 @@ class RetourService {
       if (periodeCloturee != null && await periodeCloturee!(txn, a.date)) {
         throw const RetourException(ErreurRetour.periodeCloturee);
       }
+      reglement ??= ReglementsRetour.avoir;
       final lignesProduit = a.lignes.where((l) => l.produitCode == produitCode).toList();
       if (lignesProduit.isEmpty) throw RetourException(ErreurRetour.produitAbsent, produitCode);
       final recue = lignesProduit.fold(0.0, (s, l) => s + l.quantite);

@@ -4497,12 +4497,6 @@ abstract class AppLocalizations {
   /// **'Situation — {nom}'**
   String tiersSituationDe(String nom);
 
-  /// No description provided for @tiersSolde.
-  ///
-  /// In fr, this message translates to:
-  /// **'Solde'**
-  String get tiersSolde;
-
   /// No description provided for @tiersSoldeDu.
   ///
   /// In fr, this message translates to:
@@ -13544,6 +13538,24 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Entrée normale'**
   String get entTypeNormale;
+
+  /// No description provided for @tiersSoldeAvant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Solde avant'**
+  String get tiersSoldeAvant;
+
+  /// No description provided for @tiersSoldeApres.
+  ///
+  /// In fr, this message translates to:
+  /// **'Solde après'**
+  String get tiersSoldeApres;
+
+  /// No description provided for @stkErreurSortieRetour.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sortie liée à un retour : modifiez ou annulez le retour.'**
+  String get stkErreurSortieRetour;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

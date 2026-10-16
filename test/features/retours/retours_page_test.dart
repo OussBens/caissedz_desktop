@@ -69,7 +69,7 @@ Future<ProviderContainer> _ouvrir(WidgetTester tester) async {
 
 void main() {
   group('Retours', () {
-    testWidgets('nouveau retour client depuis le ticket : stock réintégré, remboursement verrouillé', (tester) async {
+    testWidgets('nouveau retour client depuis le ticket : stock réintégré, avoir verrouillé au solde', (tester) async {
       final c = await _ouvrir(tester);
       expect(find.text('Retours clients'), findsOneWidget);
       await clic(tester, find.byKey(const ValueKey('retour_nouveau')));
@@ -87,7 +87,8 @@ void main() {
       expect(find.textContaining('Maximum 2'), findsOneWidget);
       await tester.enterText(find.byKey(const ValueKey('retour_quantite')), '1');
       await tester.pump();
-      expect(find.text('À rembourser au client'), findsOneWidget);
+      expect(find.text('Avoir au compte du client'), findsOneWidget);
+      expect(find.byKey(const ValueKey('retour_remise_stock')), findsOneWidget);
       await clic(tester, find.byKey(const ValueKey('retour_enregistrer')));
       expect(find.text('Retour enregistré'), findsOneWidget);
       await tester.pump(const Duration(seconds: 5));
@@ -97,6 +98,7 @@ void main() {
       final v = (await TiersRepository(db).versement('VER0001'))!;
       expect(v.verrouille, isTrue);
       expect(v.montant, 100);
+      expect(v.mode, ReglementsRetour.avoir);
     });
 
     testWidgets('onglet fournisseurs, détail et annulation avec motif', (tester) async {
@@ -114,7 +116,6 @@ void main() {
       await tester.pumpAndSettle();
       await clic(tester, find.text('Retours fournisseurs'));
       expect(find.text('Djurdjura'), findsOneWidget);
-      expect(find.text('Déduit du crédit'), findsWidgets);
       await doubleClic(tester, find.text('RET0001'));
       expect(find.text('Retour RET0001'), findsOneWidget);
       expect(find.text('Bouteilles percées'), findsOneWidget);

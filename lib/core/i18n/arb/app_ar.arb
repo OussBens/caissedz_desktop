@@ -922,7 +922,6 @@
   "tiersReste": "الباقي",
   "tiersSituation": "الوضعية",
   "tiersSituationDe": "الوضعية — {nom}",
-  "tiersSolde": "الرصيد",
   "tiersSoldeDu": "الرصيد المستحق",
   "tiersStatut": "الحالة",
   "tiersTotalAchats": "مجموع المشتريات",
@@ -2429,5 +2428,8 @@
   "stkAucunProduitAjoute": "لا توجد منتجات جديدة للإضافة.",
   "stkProduitsAjoutes": "تمت إضافة {n} منتج",
   "entFiltreType": "نوع الإدخال",
-  "entTypeNormale": "إدخال عادي"
+  "entTypeNormale": "إدخال عادي",
+  "tiersSoldeAvant": "الرصيد قبل",
+  "tiersSoldeApres": "الرصيد بعد",
+  "stkErreurSortieRetour": "إخراج مرتبط بإرجاع: عدّل الإرجاع أو ألغه."
 }

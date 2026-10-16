@@ -29,6 +29,7 @@ enum ErreurStock {
   besoinRecu,
   aucunChangement,
   nombreObligatoire,
+  sortieRetour,
 }
 
 class StockException implements Exception {
@@ -648,36 +649,83 @@ class StockService {
     String? commentaire,
     DateTime? date,
   }) async {
-    _validerSortie(motif, lignes);
-    return db.transaction((txn) async {
-      final repo = StockRepository(txn);
-      final code = await repo.prochainCode('sortie_stock', CodeGenerator.sortie);
-      final s = SortieStock(
-        code: code,
-        date: date ?? DateTime.now(),
+    return db.transaction(
+      (txn) => creerSortieDansTransaction(
+        txn,
         magasinCode: magasinCode,
         motif: motif,
-        utilisateurCode: utilisateurCode,
+        lignes: lignes,
         commentaire: commentaire,
-        lignes: await _valoriser(txn, lignes),
-      );
-      await repo.insererSortie(s);
-      await _mouvementsSortie(txn, s);
-      await HistoriqueRepository(txn).journaliser(
-        utilisateurCode: utilisateurCode,
-        action: 'Création',
-        entite: 'sortie_stock',
-        entiteCode: code,
-        detail: motif,
-      );
-      return s;
-    });
+        date: date,
+      ),
+    );
   }
 
+  /// Sortie SRT dans une transaction existante (document, mouvements, journal) ; [retourCode] lie la sortie
+  /// « Casse » d'un retour client non remis en stock.
+  Future<SortieStock> creerSortieDansTransaction(
+    Transaction txn, {
+    required String magasinCode,
+    required String motif,
+    required List<LigneStock> lignes,
+    String? commentaire,
+    DateTime? date,
+    String? retourCode,
+  }) async {
+    _validerSortie(motif, lignes);
+    final repo = StockRepository(txn);
+    final code = await repo.prochainCode('sortie_stock', CodeGenerator.sortie);
+    final s = SortieStock(
+      code: code,
+      date: date ?? DateTime.now(),
+      magasinCode: magasinCode,
+      motif: motif,
+      utilisateurCode: utilisateurCode,
+      commentaire: commentaire,
+      retourCode: retourCode,
+      lignes: await _valoriser(txn, lignes),
+    );
+    await repo.insererSortie(s);
+    await _mouvementsSortie(txn, s);
+    await HistoriqueRepository(txn).journaliser(
+      utilisateurCode: utilisateurCode,
+      action: 'Création',
+      entite: 'sortie_stock',
+      entiteCode: code,
+      detail: retourCode == null ? motif : '$motif · $retourCode',
+    );
+    return s;
+  }
+
+  /// Annule dans une transaction existante les sorties liées au retour [retourCode] (stock réintégré).
+  Future<void> annulerSortiesRetourDansTransaction(Transaction txn, String retourCode, {required String motif}) async {
+    final repo = StockRepository(txn);
+    final codes = await txn.query(
+      'sortie_stock',
+      columns: ['code'],
+      where: 'retour_code = ? AND actif = 1',
+      whereArgs: [retourCode],
+    );
+    for (final r in codes) {
+      final code = r['code']! as String;
+      await defaireDansTransaction(txn, 'sortie', code, TypesMouvement.sortie, motif: motif);
+      await repo.annulerDocument('sortie_stock', code, par: utilisateurCode, motif: motif);
+      await HistoriqueRepository(txn).journaliser(
+        utilisateurCode: utilisateurCode,
+        action: 'Annulation',
+        entite: 'sortie_stock',
+        entiteCode: code,
+        detail: '$motif · $retourCode',
+      );
+    }
+  }
+
+  /// Sortie active et indépendante : une sortie liée à un retour se modifie / s'annule avec le retour.
   Future<SortieStock> _sortieActive(StockRepository repo, String code) async {
     final s = await repo.sortie(code);
     if (s == null) throw StockException(ErreurStock.documentInconnu, code);
     if (!s.actif) throw const StockException(ErreurStock.dejaAnnule);
+    if (s.retourCode != null) throw StockException(ErreurStock.sortieRetour, s.retourCode);
     return s;
   }
 

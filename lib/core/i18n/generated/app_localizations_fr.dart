@@ -2325,9 +2325,6 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get tiersSolde => 'Solde';
-
-  @override
   String get tiersSoldeDu => 'Solde dû';
 
   @override
@@ -7137,4 +7134,13 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get entTypeNormale => 'Entrée normale';
+
+  @override
+  String get tiersSoldeAvant => 'Solde avant';
+
+  @override
+  String get tiersSoldeApres => 'Solde après';
+
+  @override
+  String get stkErreurSortieRetour => 'Sortie liée à un retour : modifiez ou annulez le retour.';
 }

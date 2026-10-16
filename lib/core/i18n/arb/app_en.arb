@@ -922,7 +922,6 @@
   "tiersReste": "Remaining",
   "tiersSituation": "Statement",
   "tiersSituationDe": "Statement — {nom}",
-  "tiersSolde": "Balance",
   "tiersSoldeDu": "Balance due",
   "tiersStatut": "Status",
   "tiersTotalAchats": "Total purchases",
@@ -2429,5 +2428,8 @@
   "stkAucunProduitAjoute": "No new product to add.",
   "stkProduitsAjoutes": "{n} product(s) added",
   "entFiltreType": "Entry type",
-  "entTypeNormale": "Standard entry"
+  "entTypeNormale": "Standard entry",
+  "tiersSoldeAvant": "Balance before",
+  "tiersSoldeApres": "Balance after",
+  "stkErreurSortieRetour": "Exit linked to a return: edit or cancel the return instead."
 }

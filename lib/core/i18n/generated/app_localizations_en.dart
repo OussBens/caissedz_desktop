@@ -2319,9 +2319,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get tiersSolde => 'Balance';
-
-  @override
   String get tiersSoldeDu => 'Balance due';
 
   @override
@@ -7123,4 +7120,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get entTypeNormale => 'Standard entry';
+
+  @override
+  String get tiersSoldeAvant => 'Balance before';
+
+  @override
+  String get tiersSoldeApres => 'Balance after';
+
+  @override
+  String get stkErreurSortieRetour => 'Exit linked to a return: edit or cancel the return instead.';
 }

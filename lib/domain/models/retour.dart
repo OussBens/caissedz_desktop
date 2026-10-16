@@ -44,6 +44,10 @@ class ReglementsRetour {
   static const String avoir = 'Avoir';
   static const List<String> client = [especes, avoir, carte];
   static const List<String> fournisseur = [avoir, especes];
+
+  /// Règlement d'un retour : imputé directement au solde du tiers (avoir) ; client de passage (sans solde) :
+  /// remboursé en espèces.
+  static String parDefaut(String tiersCode) => tiersCode == 'CLN0000' ? especes : avoir;
 }
 
 /// Retour (RET, §7 `retours`, §9.3) : client (depuis un panier, remet en stock et rembourse ou crée un

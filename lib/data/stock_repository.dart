@@ -399,6 +399,7 @@ class StockRepository {
       'motif': s.motif,
       'utilisateur_code': s.utilisateurCode,
       'commentaire': s.commentaire,
+      'retour_code': s.retourCode,
     });
     await _lignesSortie(s);
   }
@@ -457,6 +458,7 @@ class StockRepository {
         utilisateurCode: r['utilisateur_code'] as String,
         commentaire: r['commentaire'] as String?,
         annulation: Annulation.depuisLigne(r),
+        retourCode: r['retour_code'] as String?,
         lignes: lignes
             .where((l) => l['sortie_code'] == code)
             .map(
