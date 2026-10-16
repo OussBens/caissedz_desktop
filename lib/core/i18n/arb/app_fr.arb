@@ -3701,5 +3701,24 @@
   "remiseSectionType": "Type de remise",
   "remiseSectionInfos": "Informations générales",
   "remiseSectionCalcul": "Valeur de la remise",
-  "remiseSectionPeriode": "Période de validité"
+  "remiseSectionPeriode": "Période de validité",
+  "stkQteDansMagasin": "Qté dans {magasin}",
+  "@stkQteDansMagasin": {
+    "placeholders": {
+      "magasin": {
+        "type": "String"
+      }
+    }
+  },
+  "stkStockMagasinN": "{magasin} : {quantite}",
+  "@stkStockMagasinN": {
+    "placeholders": {
+      "magasin": {
+        "type": "String"
+      },
+      "quantite": {
+        "type": "String"
+      }
+    }
+  }
 }

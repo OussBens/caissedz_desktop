@@ -7096,4 +7096,14 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get remiseSectionPeriode => 'فترة الصلاحية';
+
+  @override
+  String stkQteDansMagasin(String magasin) {
+    return 'الكمية في $magasin';
+  }
+
+  @override
+  String stkStockMagasinN(String magasin, String quantite) {
+    return '$magasin: $quantite';
+  }
 }

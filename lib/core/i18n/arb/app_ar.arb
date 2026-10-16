@@ -2424,5 +2424,7 @@
   "remiseSectionType": "نوع التخفيض",
   "remiseSectionInfos": "معلومات عامة",
   "remiseSectionCalcul": "قيمة التخفيض",
-  "remiseSectionPeriode": "فترة الصلاحية"
+  "remiseSectionPeriode": "فترة الصلاحية",
+  "stkQteDansMagasin": "الكمية في {magasin}",
+  "stkStockMagasinN": "{magasin}: {quantite}"
 }

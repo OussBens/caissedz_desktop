@@ -7,6 +7,7 @@ import '../../core/i18n/generated/app_localizations.dart';
 import '../../domain/models/produit.dart';
 import '../produits/produits_donnees.dart';
 import '../produits/produits_providers.dart';
+import '../stock/stock_providers.dart';
 import 'carte_entite.dart';
 import 'statuts.dart';
 
@@ -93,18 +94,25 @@ Map<Object, Map<String, String>> erreursNombre(
   };
 }
 
-/// Sélection multiple de produits (`PickerDialog` : code, produit, catégorie, stock, prix d'achat).
+/// Sélection multiple de produits (`PickerDialog` : code, produit, catégorie, stock, prix d'achat). Avec
+/// [magasin] (transfert : magasin de départ), la quantité dans ce magasin s'affiche à côté du stock total.
 Future<List<Produit>> choisirProduits(
   BuildContext context,
   WidgetRef ref, {
   String? titre,
   Set<String> exclus = const {},
   bool prixVente = false,
+  String? magasin,
 }) async {
   final l10n = AppLocalizations.of(context);
   final produits = (await ref.read(produitsProvider.future)).where((p) => p.actif && !exclus.contains(p.code)).toList();
   final categories = {for (final c in await ref.read(categoriesProvider.future)) c.code: c.nom};
   final stocks = await ref.read(stocksProduitsProvider.future);
+  final parMagasin = magasin == null ? null : await ref.read(stocksParMagasinProvider.future);
+  final nomMagasin = magasin == null
+      ? ''
+      : (await ref.read(magasinsProvider.future)).where((m) => m.code == magasin).firstOrNull?.nom ?? magasin;
+  double dansMagasin(Produit p) => parMagasin?[p.code]?[magasin] ?? 0;
   final devise = ref.read(deviseProvider);
   if (!context.mounted) return const [];
   final choix = await afficherDialog<List<Produit>>(
@@ -132,7 +140,11 @@ Future<List<Produit>> choisirProduits(
           statut: p.service ? null : (stock <= 0 ? 'rupture' : 'disponible'),
           montant: formaterMontant(prixVente ? p.prixVente : p.prixAchat, devise),
           libelleMontant: prixVente ? l10n.produitsColPrixVente : l10n.produitsColPrixAchat,
-          lignes: [(LucideIcons.boxes, p.service ? l10n.prdService : l10n.prdStockN(formaterNombre(stock)))],
+          lignes: [
+            (LucideIcons.boxes, p.service ? l10n.prdService : l10n.prdStockN(formaterNombre(stock))),
+            if (magasin != null && !p.service)
+              (LucideIcons.warehouse, l10n.stkStockMagasinN(nomMagasin, formaterNombre(dansMagasin(p)))),
+          ],
         );
       },
       colonnes: [
@@ -140,10 +152,16 @@ Future<List<Produit>> choisirProduits(
         DsColonnePicker(libelle: l10n.dsPosProduit, valeur: (p) => p.designation, fort: true),
         DsColonnePicker(libelle: l10n.produitsColCategorie, valeur: (p) => categories[p.categorieCode] ?? ''),
         DsColonnePicker(
-          libelle: l10n.produitsColStock,
+          libelle: magasin == null ? l10n.produitsColStock : l10n.stkStockTotal,
           valeur: (p) => formaterNombre(stocks[p.code] ?? 0),
-          largeur: 90,
+          largeur: magasin == null ? 90 : 110,
         ),
+        if (magasin != null)
+          DsColonnePicker(
+            libelle: l10n.stkQteDansMagasin(nomMagasin),
+            valeur: (p) => formaterNombre(dansMagasin(p)),
+            largeur: 150,
+          ),
         DsColonnePicker(
           libelle: prixVente ? l10n.produitsColPrixVente : l10n.produitsColPrixAchat,
           valeur: (p) => formaterMontant(prixVente ? p.prixVente : p.prixAchat, devise),
@@ -164,6 +182,8 @@ class DocFormDialog extends ConsumerStatefulWidget {
     required this.icone,
     required this.entete,
     this.titreLignes,
+    this.magasinSelecteur,
+    this.reserveLignesFixe,
     this.iconeLignes,
     required this.lignes,
     required this.onLignes,
@@ -193,6 +213,12 @@ class DocFormDialog extends ConsumerStatefulWidget {
 
   /// Titre de section (`DsSubHead`) au-dessus des lignes, quand l'en-tête est découpé en sections.
   final String? titreLignes;
+
+  /// Magasin dont la quantité s'affiche dans le sélecteur de produits (à côté du stock total).
+  final String? magasinSelecteur;
+
+  /// Lignes à hauteur fixe suivant l'écran, moins cette réserve (dialog haut et stable) ; `null` : hauteur libre.
+  final double? reserveLignesFixe;
   final IconData? iconeLignes;
   final List<LigneDoc> lignes;
   final ValueChanged<List<LigneDoc>> onLignes;
@@ -238,6 +264,7 @@ class _DocFormDialogState extends ConsumerState<DocFormDialog> {
       titre: widget.titreSelecteur,
       exclus: {for (final l in widget.lignes) l.produit.code},
       prixVente: widget.prixVenteSelecteur,
+      magasin: widget.magasinSelecteur,
     );
     if (choix.isEmpty) return;
     final nouvelles = [for (final p in choix) LigneDoc(produit: p)];
@@ -309,6 +336,10 @@ class _DocFormDialogState extends ConsumerState<DocFormDialog> {
               cle: (l) => l.produit.code,
               devise: devise,
               erreurs: erreurs,
+              hauteurFixe: widget.reserveLignesFixe != null,
+              hauteurMax: widget.reserveLignesFixe == null
+                  ? null
+                  : hauteurListeDialog(context, reserve: widget.reserveLignesFixe!, min: 220),
               libelleTotal: widget.libelleTotal,
               libelleAjouter: l10n.dsPosLigneAjouter,
               onAjouter: _ajouter,

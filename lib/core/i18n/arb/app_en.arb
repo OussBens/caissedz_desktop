@@ -2424,5 +2424,7 @@
   "remiseSectionType": "Discount type",
   "remiseSectionInfos": "General information",
   "remiseSectionCalcul": "Discount value",
-  "remiseSectionPeriode": "Validity period"
+  "remiseSectionPeriode": "Validity period",
+  "stkQteDansMagasin": "Qty in {magasin}",
+  "stkStockMagasinN": "{magasin}: {quantite}"
 }

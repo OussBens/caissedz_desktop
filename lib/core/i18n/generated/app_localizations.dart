@@ -13514,6 +13514,18 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Période de validité'**
   String get remiseSectionPeriode;
+
+  /// No description provided for @stkQteDansMagasin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Qté dans {magasin}'**
+  String stkQteDansMagasin(String magasin);
+
+  /// No description provided for @stkStockMagasinN.
+  ///
+  /// In fr, this message translates to:
+  /// **'{magasin} : {quantite}'**
+  String stkStockMagasinN(String magasin, String quantite);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

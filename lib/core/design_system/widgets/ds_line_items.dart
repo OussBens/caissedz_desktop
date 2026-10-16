@@ -54,6 +54,7 @@ class DsLineItemsEditor<T> extends StatelessWidget {
     this.texteVide,
     this.lectureSeule = false,
     this.hauteurMax,
+    this.hauteurFixe = false,
     this.afficherTotaux = true,
     this.erreurs = const {},
     this.libelleTotal,
@@ -73,6 +74,9 @@ class DsLineItemsEditor<T> extends StatelessWidget {
 
   /// Hauteur maximale des lignes ; par défaut, elle suit l'écran ([hauteurListeDialog], réserve 460).
   final double? hauteurMax;
+
+  /// Les lignes occupent toujours toute la hauteur (dialog haut et stable, même avec peu de lignes).
+  final bool hauteurFixe;
   final bool afficherTotaux;
 
   /// Erreurs par clé de ligne puis par identifiant de colonne.
@@ -137,11 +141,12 @@ class DsLineItemsEditor<T> extends StatelessWidget {
               ],
             ),
           ),
-          ConstrainedBox(
+          Container(
+            height: hauteurFixe ? hauteurMax ?? hauteurListeDialog(context, reserve: 460) : null,
             constraints: BoxConstraints(maxHeight: hauteurMax ?? hauteurListeDialog(context, reserve: 460)),
             child: lignes.isEmpty
                 ? SizedBox(
-                    height: 72,
+                    height: hauteurFixe ? null : 72,
                     child: Center(
                       child: Text(texteVide ?? l10n.dsPosLigneVide, style: t.bodySm.copyWith(color: c.textMuted)),
                     ),

@@ -215,7 +215,11 @@ void main() {
       await _donnees(c);
       await _rafraichir(tester, c);
       await clic(tester, _cle('transfert_nouveau'));
-      await _ajouterProduit(tester, 'Lait 1 L');
+      // Sélecteur de produits : quantité dans le magasin de départ à côté du stock total.
+      await clic(tester, find.text('Ajouter des produits').last);
+      expect(find.text('QTÉ DANS MAGASIN PRINCIPAL'), findsOneWidget);
+      await clic(tester, find.text('Lait 1 L').last);
+      await clic(tester, find.text('Ajouter').last);
       await tester.enterText(
         find.descendant(of: find.byKey(const ValueKey<Object>('PRD0001')), matching: find.byType(TextField)).first,
         '5',

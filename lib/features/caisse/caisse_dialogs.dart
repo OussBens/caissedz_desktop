@@ -25,6 +25,7 @@ import '../commun/referentiel_ui.dart';
 import '../commun/selecteurs.dart';
 import '../commun/statuts.dart';
 import '../gestion_caisse/gestion_caisse_providers.dart';
+import '../produits/produits_donnees.dart';
 import '../produits/produits_providers.dart';
 import '../stock/stock_providers.dart';
 import '../tiers/tiers_providers.dart';
@@ -226,6 +227,9 @@ class _SelectionProduitDialogState extends ConsumerState<_SelectionProduitDialog
     final unite = _colis == _nombre ? l10n.posVendreNombre : (_colisChoisi?.designation ?? l10n.posSelUnite);
     final auto = widget.auto > Duration.zero;
     final montant = _da(ref, _quantite * _prix);
+    // Même vignette que la carte de la grille (déjà décodée) : la photo s'affiche dès l'ouverture.
+    final photo = imageProduit(p.image);
+    const icone = DsIconBox(LucideIcons.package, taille: 96, tailleIcone: 40);
     Widget puce(IconData icone, String texte, {Color? couleur}) => Row(
       mainAxisSize: MainAxisSize.min,
       spacing: 6,
@@ -309,7 +313,21 @@ class _SelectionProduitDialogState extends ConsumerState<_SelectionProduitDialog
                       crossAxisAlignment: CrossAxisAlignment.start,
                       spacing: 10,
                       children: [
-                        const DsIconBox(LucideIcons.package, taille: 96, tailleIcone: 40),
+                        if (photo == null)
+                          icone
+                        else
+                          ClipRRect(
+                            key: const ValueKey('selection_photo'),
+                            borderRadius: DsRadius.borderLg,
+                            child: Image(
+                              image: photo,
+                              width: 160,
+                              height: 160,
+                              fit: BoxFit.cover,
+                              gaplessPlayback: true,
+                              errorBuilder: (_, _, _) => icone,
+                            ),
+                          ),
                         Text(p.designation, style: t.bodyStrong.copyWith(fontSize: 15, height: 1.3)),
                         puce(LucideIcons.tag, l10n.posSelParPiece(_da(ref, p.prixVente))),
                         puce(
