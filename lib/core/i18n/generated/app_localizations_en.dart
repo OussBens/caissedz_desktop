@@ -7238,4 +7238,52 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get situationGroupeFiscalite => 'Tax';
+
+  @override
+  String get ventesOngletPaniers => 'Baskets';
+
+  @override
+  String get ventesOngletFactures => 'Invoices & credit notes';
+
+  @override
+  String get factureNumero => 'Invoice no.';
+
+  @override
+  String get factureTypeFacture => 'Invoice';
+
+  @override
+  String get factureTypeAvoir => 'Credit note';
+
+  @override
+  String get factureVente => 'Receipt';
+
+  @override
+  String get factureOrigine => 'Original invoice';
+
+  @override
+  String get factureTimbre => 'Stamp duty';
+
+  @override
+  String get factureNet => 'Net payable';
+
+  @override
+  String get factureEntites => 'Invoices and credit notes';
+
+  @override
+  String get factureAucune => 'No invoice for this period';
+
+  @override
+  String get factureKpiFactures => 'Invoices issued';
+
+  @override
+  String get factureKpiFacture => 'Total invoiced';
+
+  @override
+  String get factureKpiAvoirs => 'Total credit notes';
+
+  @override
+  String get factureImprimer => 'Print (duplicate)';
+
+  @override
+  String get factureChaineOk => 'Invoice chain intact';
 }

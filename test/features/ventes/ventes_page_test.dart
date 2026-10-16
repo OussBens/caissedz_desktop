@@ -1,5 +1,6 @@
 import 'package:caissedz_desktop/app/providers.dart';
 import 'package:caissedz_desktop/application/catalogue_service.dart';
+import 'package:caissedz_desktop/application/facture_service.dart';
 import 'package:caissedz_desktop/application/session_caisse_service.dart';
 import 'package:caissedz_desktop/application/stock_service.dart';
 import 'package:caissedz_desktop/application/tiers_service.dart';
@@ -138,8 +139,9 @@ void main() {
       await _donnees(c);
       await tester.pumpAndSettle();
       // Navigateur imbriqué du shell : la liste s'ouvre juste sous le champ, pas décalée de la barre latérale.
-      final champ = tester.getRect(find.byKey(const ValueKey('filtre_statut_panier')));
       await clic(tester, find.byKey(const ValueKey('filtre_statut_panier')));
+      // Mesuré après le clic : le champ a pu défiler pour être visible.
+      final champ = tester.getRect(find.byKey(const ValueKey('filtre_statut_panier')));
       final option = tester.getRect(find.text('Tous').last); // 1re option
       expect((option.top - champ.bottom).abs(), lessThan(24));
       expect((option.left - champ.left).abs(), lessThan(24));
@@ -187,6 +189,27 @@ void main() {
       await clic(tester, find.widgetWithText(DsButton, 'Choisir'));
       expect(find.text('Choisir un client'), findsNothing);
       expect(find.descendant(of: filtreClient, matching: find.text('Amina')), findsOneWidget);
+    });
+
+    testWidgets('onglet Factures & avoirs : facture émise, avoir à l\'annulation, chaîne vérifiée', (tester) async {
+      final c = await pumpApp(tester, routeInitiale: '/ventes', taille: const Size(1500, 1000));
+      await _donnees(c);
+      final db = c.read(appDatabaseProvider).db;
+      final factures = FactureService(db, utilisateurCode: 'USR0000');
+      await factures.emettre('VTE0002');
+      await VenteService(
+        db,
+        utilisateurCode: 'USR0000',
+        parametres: const ParametresVente(),
+      ).annuler('VTE0002', motif: 'Erreur');
+      c.read(commerceVersionProvider.notifier).incrementer();
+      await tester.pumpAndSettle();
+      await clic(tester, find.text('Factures & avoirs'));
+      expect(find.byKey(const ValueKey('ventes_factures')), findsOneWidget);
+      expect(find.text('FAC0001'), findsNWidgets(2), reason: 'la facture et l\'origine de son avoir');
+      expect(find.text('AVO0001'), findsOneWidget);
+      await clic(tester, find.byKey(const ValueKey('factures_verifier_chaine')));
+      expect(find.text('Chaîne des factures intacte'), findsWidgets);
     });
 
     testWidgets('« Nouvelle vente » ouvre la caisse', (tester) async {

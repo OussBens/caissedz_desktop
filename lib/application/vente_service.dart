@@ -71,6 +71,7 @@ class VenteService {
   VenteRepository get _repo => VenteRepository(db);
 
   /// Encaisse le panier. [creditAutorise] permet un reste dû (vente à crédit, client identifié).
+  /// [txn] : dans la transaction d'un autre service (livraison d'une commande client).
   Future<Vente> encaisser(
     Panier panier, {
     required SessionCaisse session,
@@ -78,6 +79,7 @@ class VenteService {
     bool creditAutorise = false,
     bool depassementPlafond = false,
     DateTime? date,
+    Transaction? txn,
   }) async {
     if (!session.estOuverte) throw const VenteException(ErreurVente.sessionRequise);
     if (panier.estVide) throw const VenteException(ErreurVente.panierVide);
@@ -116,7 +118,7 @@ class VenteService {
     );
     final d = date ?? DateTime.now();
 
-    return db.transaction((txn) async {
+    Future<Vente> corps(Transaction txn) async {
       final repo = VenteRepository(txn);
       final sessionDb = await repo.session(session.code);
       if (sessionDb == null || !sessionDb.estOuverte) throw const VenteException(ErreurVente.sessionRequise);
@@ -293,7 +295,9 @@ class VenteService {
         detail: 'net ${panier.totalNet}',
       );
       return vente;
-    });
+    }
+
+    return txn != null ? corps(txn) : db.transaction(corps);
   }
 
   static VenteLigne _avecTva(VenteLigne l, double taux) {

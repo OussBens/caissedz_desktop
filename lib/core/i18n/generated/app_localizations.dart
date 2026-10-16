@@ -13754,6 +13754,102 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Fiscalité'**
   String get situationGroupeFiscalite;
+
+  /// No description provided for @ventesOngletPaniers.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paniers'**
+  String get ventesOngletPaniers;
+
+  /// No description provided for @ventesOngletFactures.
+  ///
+  /// In fr, this message translates to:
+  /// **'Factures & avoirs'**
+  String get ventesOngletFactures;
+
+  /// No description provided for @factureNumero.
+  ///
+  /// In fr, this message translates to:
+  /// **'N° facture'**
+  String get factureNumero;
+
+  /// No description provided for @factureTypeFacture.
+  ///
+  /// In fr, this message translates to:
+  /// **'Facture'**
+  String get factureTypeFacture;
+
+  /// No description provided for @factureTypeAvoir.
+  ///
+  /// In fr, this message translates to:
+  /// **'Avoir'**
+  String get factureTypeAvoir;
+
+  /// No description provided for @factureVente.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ticket'**
+  String get factureVente;
+
+  /// No description provided for @factureOrigine.
+  ///
+  /// In fr, this message translates to:
+  /// **'Facture d\'origine'**
+  String get factureOrigine;
+
+  /// No description provided for @factureTimbre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Timbre'**
+  String get factureTimbre;
+
+  /// No description provided for @factureNet.
+  ///
+  /// In fr, this message translates to:
+  /// **'Net à payer'**
+  String get factureNet;
+
+  /// No description provided for @factureEntites.
+  ///
+  /// In fr, this message translates to:
+  /// **'Factures et avoirs'**
+  String get factureEntites;
+
+  /// No description provided for @factureAucune.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune facture sur la période'**
+  String get factureAucune;
+
+  /// No description provided for @factureKpiFactures.
+  ///
+  /// In fr, this message translates to:
+  /// **'Factures émises'**
+  String get factureKpiFactures;
+
+  /// No description provided for @factureKpiFacture.
+  ///
+  /// In fr, this message translates to:
+  /// **'Total facturé'**
+  String get factureKpiFacture;
+
+  /// No description provided for @factureKpiAvoirs.
+  ///
+  /// In fr, this message translates to:
+  /// **'Total des avoirs'**
+  String get factureKpiAvoirs;
+
+  /// No description provided for @factureImprimer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Imprimer (duplicata)'**
+  String get factureImprimer;
+
+  /// No description provided for @factureChaineOk.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chaîne des factures intacte'**
+  String get factureChaineOk;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

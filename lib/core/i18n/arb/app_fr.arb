@@ -3768,5 +3768,21 @@
   "tvaNette": "TVA à payer",
   "tvaHt": "HT",
   "situationTva": "TVA par taux",
-  "situationGroupeFiscalite": "Fiscalité"
+  "situationGroupeFiscalite": "Fiscalité",
+  "ventesOngletPaniers": "Paniers",
+  "ventesOngletFactures": "Factures & avoirs",
+  "factureNumero": "N° facture",
+  "factureTypeFacture": "Facture",
+  "factureTypeAvoir": "Avoir",
+  "factureVente": "Ticket",
+  "factureOrigine": "Facture d'origine",
+  "factureTimbre": "Timbre",
+  "factureNet": "Net à payer",
+  "factureEntites": "Factures et avoirs",
+  "factureAucune": "Aucune facture sur la période",
+  "factureKpiFactures": "Factures émises",
+  "factureKpiFacture": "Total facturé",
+  "factureKpiAvoirs": "Total des avoirs",
+  "factureImprimer": "Imprimer (duplicata)",
+  "factureChaineOk": "Chaîne des factures intacte"
 }

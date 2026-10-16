@@ -2464,5 +2464,21 @@
   "tvaNette": "VAT payable",
   "tvaHt": "Excl. VAT",
   "situationTva": "VAT by rate",
-  "situationGroupeFiscalite": "Tax"
+  "situationGroupeFiscalite": "Tax",
+  "ventesOngletPaniers": "Baskets",
+  "ventesOngletFactures": "Invoices & credit notes",
+  "factureNumero": "Invoice no.",
+  "factureTypeFacture": "Invoice",
+  "factureTypeAvoir": "Credit note",
+  "factureVente": "Receipt",
+  "factureOrigine": "Original invoice",
+  "factureTimbre": "Stamp duty",
+  "factureNet": "Net payable",
+  "factureEntites": "Invoices and credit notes",
+  "factureAucune": "No invoice for this period",
+  "factureKpiFactures": "Invoices issued",
+  "factureKpiFacture": "Total invoiced",
+  "factureKpiAvoirs": "Total credit notes",
+  "factureImprimer": "Print (duplicate)",
+  "factureChaineOk": "Invoice chain intact"
 }

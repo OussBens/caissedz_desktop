@@ -2464,5 +2464,21 @@
   "tvaNette": "الرسم الواجب دفعه",
   "tvaHt": "خارج الرسم",
   "situationTva": "الرسم حسب النسبة",
-  "situationGroupeFiscalite": "الجباية"
+  "situationGroupeFiscalite": "الجباية",
+  "ventesOngletPaniers": "السلات",
+  "ventesOngletFactures": "الفواتير والفواتير العكسية",
+  "factureNumero": "رقم الفاتورة",
+  "factureTypeFacture": "فاتورة",
+  "factureTypeAvoir": "فاتورة عكسية",
+  "factureVente": "التذكرة",
+  "factureOrigine": "الفاتورة الأصلية",
+  "factureTimbre": "الطابع",
+  "factureNet": "الصافي للدفع",
+  "factureEntites": "الفواتير والفواتير العكسية",
+  "factureAucune": "لا توجد فواتير في هذه الفترة",
+  "factureKpiFactures": "الفواتير الصادرة",
+  "factureKpiFacture": "إجمالي المفوتر",
+  "factureKpiAvoirs": "إجمالي الفواتير العكسية",
+  "factureImprimer": "طباعة (نسخة)",
+  "factureChaineOk": "سلسلة الفواتير سليمة"
 }

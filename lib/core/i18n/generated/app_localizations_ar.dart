@@ -7223,4 +7223,52 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get situationGroupeFiscalite => 'الجباية';
+
+  @override
+  String get ventesOngletPaniers => 'السلات';
+
+  @override
+  String get ventesOngletFactures => 'الفواتير والفواتير العكسية';
+
+  @override
+  String get factureNumero => 'رقم الفاتورة';
+
+  @override
+  String get factureTypeFacture => 'فاتورة';
+
+  @override
+  String get factureTypeAvoir => 'فاتورة عكسية';
+
+  @override
+  String get factureVente => 'التذكرة';
+
+  @override
+  String get factureOrigine => 'الفاتورة الأصلية';
+
+  @override
+  String get factureTimbre => 'الطابع';
+
+  @override
+  String get factureNet => 'الصافي للدفع';
+
+  @override
+  String get factureEntites => 'الفواتير والفواتير العكسية';
+
+  @override
+  String get factureAucune => 'لا توجد فواتير في هذه الفترة';
+
+  @override
+  String get factureKpiFactures => 'الفواتير الصادرة';
+
+  @override
+  String get factureKpiFacture => 'إجمالي المفوتر';
+
+  @override
+  String get factureKpiAvoirs => 'إجمالي الفواتير العكسية';
+
+  @override
+  String get factureImprimer => 'طباعة (نسخة)';
+
+  @override
+  String get factureChaineOk => 'سلسلة الفواتير سليمة';
 }

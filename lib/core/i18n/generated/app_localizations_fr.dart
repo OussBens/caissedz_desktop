@@ -7253,4 +7253,52 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get situationGroupeFiscalite => 'Fiscalité';
+
+  @override
+  String get ventesOngletPaniers => 'Paniers';
+
+  @override
+  String get ventesOngletFactures => 'Factures & avoirs';
+
+  @override
+  String get factureNumero => 'N° facture';
+
+  @override
+  String get factureTypeFacture => 'Facture';
+
+  @override
+  String get factureTypeAvoir => 'Avoir';
+
+  @override
+  String get factureVente => 'Ticket';
+
+  @override
+  String get factureOrigine => 'Facture d\'origine';
+
+  @override
+  String get factureTimbre => 'Timbre';
+
+  @override
+  String get factureNet => 'Net à payer';
+
+  @override
+  String get factureEntites => 'Factures et avoirs';
+
+  @override
+  String get factureAucune => 'Aucune facture sur la période';
+
+  @override
+  String get factureKpiFactures => 'Factures émises';
+
+  @override
+  String get factureKpiFacture => 'Total facturé';
+
+  @override
+  String get factureKpiAvoirs => 'Total des avoirs';
+
+  @override
+  String get factureImprimer => 'Imprimer (duplicata)';
+
+  @override
+  String get factureChaineOk => 'Chaîne des factures intacte';
 }

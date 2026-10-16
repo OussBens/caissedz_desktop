@@ -24,19 +24,22 @@ import '../gestion_caisse/gestion_caisse_providers.dart';
 import '../produits/produits_providers.dart';
 import '../retours/retours_dialogs.dart';
 import '../tiers/tiers_providers.dart';
+import 'factures_onglet.dart';
 import 'ventes_dialogs.dart';
 import 'ventes_providers.dart';
 
 /// Écran Ventes (`PaniersScreen` du DS v2.2) : KPIs, filtres (période, type, statut, caissier, client,
 /// caisse, session, montant), tableau des paniers et actions Détail / Modifier / Annuler.
 class VentesPage extends ConsumerStatefulWidget {
-  const VentesPage({super.key});
+  const VentesPage({super.key, this.ongletInitial = 0});
+  final int ongletInitial;
 
   @override
   ConsumerState<VentesPage> createState() => _VentesPageState();
 }
 
 class _VentesPageState extends ConsumerState<VentesPage> {
+  late int _onglet = widget.ongletInitial;
   DsPeriode _periode = DsPeriode.calculer('today');
   String? _statut;
   String? _caissier;
@@ -219,6 +222,9 @@ class _VentesPageState extends ConsumerState<VentesPage> {
     return PageModule(
       moduleId: 'ventes',
       sousTitre: l10n.ventesDescription,
+      onglets: [l10n.ventesOngletPaniers, l10n.ventesOngletFactures],
+      ongletCourant: _onglet,
+      onOnglet: (i) => setState(() => _onglet = i),
       actions: [
         DsButton(
           key: const ValueKey('ventes_verifier_chaine'),
@@ -228,182 +234,185 @@ class _VentesPageState extends ConsumerState<VentesPage> {
           onPressed: _verifierChaine,
         ),
       ],
-      child: DsModuleTable<PanierResume>(
-        entite: l10n.ventesEntitePluriel,
-        lignes: lignes,
-        colonnes: colonnes,
-        cle: (p) => p.code,
-        afficherTotaux: true,
-        filtresOuverts: true,
-        colonnesFiltres: 4,
-        permissions: permissionsSession(ref),
-        messageVide: l10n.ventesAucune,
-        kpis: [
-          DsStatCard(libelle: l10n.ventesKpiNombre, valeur: '${actifs.length}', icone: LucideIcons.receipt),
-          DsStatCard(
-            libelle: l10n.ventesKpiCa,
-            valeur: f2(somme(actifs, (p) => p.vente.totalNet)),
-            suffixe: devise,
-            icone: LucideIcons.banknote,
-          ),
-          if (voirMarge)
-            DsStatCard(
-              libelle: l10n.ventesKpiMarge,
-              valeur: f2(somme(actifs, (p) => p.marge)),
-              suffixe: devise,
-              icone: LucideIcons.trendingUp,
+      child: _onglet == 1
+          ? const FacturesOnglet()
+          : DsModuleTable<PanierResume>(
+              entite: l10n.ventesEntitePluriel,
+              lignes: lignes,
+              colonnes: colonnes,
+              cle: (p) => p.code,
+              afficherTotaux: true,
+              filtresOuverts: true,
+              colonnesFiltres: 4,
+              permissions: permissionsSession(ref),
+              messageVide: l10n.ventesAucune,
+              kpis: [
+                DsStatCard(libelle: l10n.ventesKpiNombre, valeur: '${actifs.length}', icone: LucideIcons.receipt),
+                DsStatCard(
+                  libelle: l10n.ventesKpiCa,
+                  valeur: f2(somme(actifs, (p) => p.vente.totalNet)),
+                  suffixe: devise,
+                  icone: LucideIcons.banknote,
+                ),
+                if (voirMarge)
+                  DsStatCard(
+                    libelle: l10n.ventesKpiMarge,
+                    valeur: f2(somme(actifs, (p) => p.marge)),
+                    suffixe: devise,
+                    icone: LucideIcons.trendingUp,
+                  ),
+                DsStatCard(
+                  libelle: l10n.ventesKpiEncaisse,
+                  valeur: f2(somme(actifs, (p) => p.paye)),
+                  suffixe: devise,
+                  icone: LucideIcons.wallet,
+                ),
+                DsStatCard(
+                  libelle: l10n.ventesKpiCredit,
+                  valeur: f2(somme(actifs, (p) => p.resteActuel)),
+                  suffixe: devise,
+                  icone: LucideIcons.handCoins,
+                ),
+              ],
+              periode: _periode,
+              onPeriode: (p) => setState(() => _periode = p),
+              indiceRecherche: l10n.ventesRechercheIndice,
+              texteRecherche: (p) => '${p.code} ${client(p)}',
+              nbFiltresActifs:
+                  [_statut, _caissier, _client, _caisse, _session].where((f) => f != null).length +
+                  (_montant.estVide ? 0 : 1),
+              onReinitialiser: _reinitialiser,
+              filtres: [
+                _filtre<String?>(
+                  l10n.ventesStatut,
+                  cle: 'filtre_statut_panier',
+                  valeur: _statut,
+                  options: const [null, 'paye', 'credit', 'retourne', 'annule'],
+                  libelle: (v) => v == null ? l10n.ventesTous : libelleStatut(l10n, v),
+                  onChanged: (v) => setState(() => _statut = v),
+                ),
+                _filtre<String?>(
+                  l10n.ventesCaissier,
+                  valeur: _caissier,
+                  options: [null, ...distincts((p) => p.caissier)],
+                  libelle: (v) => v ?? l10n.ventesTous,
+                  onChanged: (v) => setState(() => _caissier = v),
+                ),
+                _filtre<String?>(
+                  l10n.ventesClient,
+                  valeur: _client,
+                  options: [null, ...distincts((p) => p.vente.clientCode)],
+                  libelle: (v) => v == null ? l10n.ventesTous : nomClientPanier(l10n, v, nomsClients),
+                  liste: ListeMetier.client,
+                  onChanged: (v) => setState(() => _client = v),
+                ),
+                _filtre<String?>(
+                  l10n.ventesCaisse,
+                  valeur: _caisse,
+                  options: [null, ...caisses.map((c) => c.code)],
+                  libelle: (v) => v == null ? l10n.ventesToutes : nomCaisse(v),
+                  liste: ListeMetier.caisse,
+                  onChanged: (v) => setState(() => _caisse = v),
+                ),
+                _filtre<String?>(
+                  l10n.ventesSession,
+                  valeur: _session,
+                  options: [null, ...distincts((p) => p.vente.sessionCode).reversed],
+                  libelle: (v) => v ?? l10n.ventesToutes,
+                  liste: ListeMetier.session,
+                  onChanged: (v) => setState(() => _session = v),
+                ),
+                DsFormRow(
+                  libelle: l10n.ventesMontant,
+                  largeurLibelle: 64,
+                  child: DsRangeFilter(
+                    valeur: _montant,
+                    unite: devise,
+                    libelleEffacer: l10n.dsEffacer,
+                    libelleValider: l10n.dsValider,
+                    onChanged: (v) => setState(() => _montant = v),
+                  ),
+                ),
+              ],
+              onExport: peutExporter(ref)
+                  ? (format, ps) => exporterTableau(
+                      context,
+                      ref,
+                      id: 'ventes',
+                      titre: l10n.moduleVentes,
+                      colonnes: colonnes,
+                      lignes: ps,
+                      format: format,
+                    )
+                  : null,
+              carte: (context, p, etatCarte) => CarteEntite(
+                etat: etatCarte,
+                titre: p.code,
+                sousTitre: formatDateHeure.format(p.vente.date),
+                icone: LucideIcons.receipt,
+                initiales: false,
+                statut: p.statut,
+                montant: da(p.vente.totalNet),
+                libelleMontant: p.resteActuel > 0.004 ? '${l10n.ventesReste} ${da(p.resteActuel)}' : null,
+                lignes: [(LucideIcons.user, client(p)), (LucideIcons.userCog, p.caissier)],
+              ),
+              largeurMinCarte: 240,
+              onOuvrir: detail,
+              actions: [
+                DsActionModule(
+                  libelle: l10n.tiersDetail,
+                  icone: LucideIcons.eye,
+                  regle: DsRegleSelection.une,
+                  detail: true,
+                  onPressed: (choix, _) => detail(choix.first),
+                ),
+                DsActionModule(
+                  cle: const ValueKey('ventes_action_produits'),
+                  libelle: l10n.ventesListeProduits,
+                  icone: LucideIcons.listOrdered,
+                  regle: DsRegleSelection.une,
+                  onPressed: (choix, _) => afficherProduitsPanier(context, ref, choix.first, nomsClients: nomsClients),
+                ),
+                DsActionModule(
+                  cle: const ValueKey('ventes_action_facture'),
+                  libelle: l10n.posImprimerFacture,
+                  icone: LucideIcons.fileText,
+                  regle: DsRegleSelection.une,
+                  desactive: (choix) => choix.isNotEmpty && choix.first.annule,
+                  onPressed: (choix, _) => imprimerFactureVente(context, ref, choix.first.vente),
+                ),
+                DsActionModule(
+                  libelle: l10n.communModifier,
+                  icone: LucideIcons.pencil,
+                  regle: DsRegleSelection.une,
+                  desactive: (choix) => choix.isNotEmpty && choix.first.annule,
+                  onPressed: (choix, _) => modifier(choix.first),
+                ),
+                if (peutAnnuler)
+                  DsActionModule(
+                    libelle: l10n.dsAnnuler,
+                    icone: LucideIcons.ban,
+                    danger: true,
+                    onPressed: (choix, effacer) =>
+                        annulerPaniers(context, ref, choix, effacer, nomsClients: nomsClients),
+                  ),
+              ],
+              actionsContextuelles: [
+                DsActionContextuelle(
+                  libelle: l10n.ventesCreerRetour,
+                  icone: LucideIcons.undo2,
+                  onSelected: (p) {
+                    if (!p.annule) afficherFormulaireRetour(context, ref, documentCode: p.code);
+                  },
+                ),
+              ],
+              primaire: DsButton(
+                key: const ValueKey('ventes_nouvelle'),
+                libelle: l10n.ventesNouvelle,
+                icone: LucideIcons.monitorSmartphone,
+                onPressed: () => context.go('/caisse'),
+              ),
             ),
-          DsStatCard(
-            libelle: l10n.ventesKpiEncaisse,
-            valeur: f2(somme(actifs, (p) => p.paye)),
-            suffixe: devise,
-            icone: LucideIcons.wallet,
-          ),
-          DsStatCard(
-            libelle: l10n.ventesKpiCredit,
-            valeur: f2(somme(actifs, (p) => p.resteActuel)),
-            suffixe: devise,
-            icone: LucideIcons.handCoins,
-          ),
-        ],
-        periode: _periode,
-        onPeriode: (p) => setState(() => _periode = p),
-        indiceRecherche: l10n.ventesRechercheIndice,
-        texteRecherche: (p) => '${p.code} ${client(p)}',
-        nbFiltresActifs:
-            [_statut, _caissier, _client, _caisse, _session].where((f) => f != null).length +
-            (_montant.estVide ? 0 : 1),
-        onReinitialiser: _reinitialiser,
-        filtres: [
-          _filtre<String?>(
-            l10n.ventesStatut,
-            cle: 'filtre_statut_panier',
-            valeur: _statut,
-            options: const [null, 'paye', 'credit', 'retourne', 'annule'],
-            libelle: (v) => v == null ? l10n.ventesTous : libelleStatut(l10n, v),
-            onChanged: (v) => setState(() => _statut = v),
-          ),
-          _filtre<String?>(
-            l10n.ventesCaissier,
-            valeur: _caissier,
-            options: [null, ...distincts((p) => p.caissier)],
-            libelle: (v) => v ?? l10n.ventesTous,
-            onChanged: (v) => setState(() => _caissier = v),
-          ),
-          _filtre<String?>(
-            l10n.ventesClient,
-            valeur: _client,
-            options: [null, ...distincts((p) => p.vente.clientCode)],
-            libelle: (v) => v == null ? l10n.ventesTous : nomClientPanier(l10n, v, nomsClients),
-            liste: ListeMetier.client,
-            onChanged: (v) => setState(() => _client = v),
-          ),
-          _filtre<String?>(
-            l10n.ventesCaisse,
-            valeur: _caisse,
-            options: [null, ...caisses.map((c) => c.code)],
-            libelle: (v) => v == null ? l10n.ventesToutes : nomCaisse(v),
-            liste: ListeMetier.caisse,
-            onChanged: (v) => setState(() => _caisse = v),
-          ),
-          _filtre<String?>(
-            l10n.ventesSession,
-            valeur: _session,
-            options: [null, ...distincts((p) => p.vente.sessionCode).reversed],
-            libelle: (v) => v ?? l10n.ventesToutes,
-            liste: ListeMetier.session,
-            onChanged: (v) => setState(() => _session = v),
-          ),
-          DsFormRow(
-            libelle: l10n.ventesMontant,
-            largeurLibelle: 64,
-            child: DsRangeFilter(
-              valeur: _montant,
-              unite: devise,
-              libelleEffacer: l10n.dsEffacer,
-              libelleValider: l10n.dsValider,
-              onChanged: (v) => setState(() => _montant = v),
-            ),
-          ),
-        ],
-        onExport: peutExporter(ref)
-            ? (format, ps) => exporterTableau(
-                context,
-                ref,
-                id: 'ventes',
-                titre: l10n.moduleVentes,
-                colonnes: colonnes,
-                lignes: ps,
-                format: format,
-              )
-            : null,
-        carte: (context, p, etatCarte) => CarteEntite(
-          etat: etatCarte,
-          titre: p.code,
-          sousTitre: formatDateHeure.format(p.vente.date),
-          icone: LucideIcons.receipt,
-          initiales: false,
-          statut: p.statut,
-          montant: da(p.vente.totalNet),
-          libelleMontant: p.resteActuel > 0.004 ? '${l10n.ventesReste} ${da(p.resteActuel)}' : null,
-          lignes: [(LucideIcons.user, client(p)), (LucideIcons.userCog, p.caissier)],
-        ),
-        largeurMinCarte: 240,
-        onOuvrir: detail,
-        actions: [
-          DsActionModule(
-            libelle: l10n.tiersDetail,
-            icone: LucideIcons.eye,
-            regle: DsRegleSelection.une,
-            detail: true,
-            onPressed: (choix, _) => detail(choix.first),
-          ),
-          DsActionModule(
-            cle: const ValueKey('ventes_action_produits'),
-            libelle: l10n.ventesListeProduits,
-            icone: LucideIcons.listOrdered,
-            regle: DsRegleSelection.une,
-            onPressed: (choix, _) => afficherProduitsPanier(context, ref, choix.first, nomsClients: nomsClients),
-          ),
-          DsActionModule(
-            cle: const ValueKey('ventes_action_facture'),
-            libelle: l10n.posImprimerFacture,
-            icone: LucideIcons.fileText,
-            regle: DsRegleSelection.une,
-            desactive: (choix) => choix.isNotEmpty && choix.first.annule,
-            onPressed: (choix, _) => imprimerFactureVente(context, ref, choix.first.vente),
-          ),
-          DsActionModule(
-            libelle: l10n.communModifier,
-            icone: LucideIcons.pencil,
-            regle: DsRegleSelection.une,
-            desactive: (choix) => choix.isNotEmpty && choix.first.annule,
-            onPressed: (choix, _) => modifier(choix.first),
-          ),
-          if (peutAnnuler)
-            DsActionModule(
-              libelle: l10n.dsAnnuler,
-              icone: LucideIcons.ban,
-              danger: true,
-              onPressed: (choix, effacer) => annulerPaniers(context, ref, choix, effacer, nomsClients: nomsClients),
-            ),
-        ],
-        actionsContextuelles: [
-          DsActionContextuelle(
-            libelle: l10n.ventesCreerRetour,
-            icone: LucideIcons.undo2,
-            onSelected: (p) {
-              if (!p.annule) afficherFormulaireRetour(context, ref, documentCode: p.code);
-            },
-          ),
-        ],
-        primaire: DsButton(
-          key: const ValueKey('ventes_nouvelle'),
-          libelle: l10n.ventesNouvelle,
-          icone: LucideIcons.monitorSmartphone,
-          onPressed: () => context.go('/caisse'),
-        ),
-      ),
     );
   }
 
