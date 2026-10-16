@@ -48,7 +48,7 @@ void main() {
         s.modifier(principale.copyWith(actif: false)),
         throwsA(isA<CaisseException>().having((e) => e.erreur, 'e', ErreurCaisse.caisseSysteme)),
       );
-      expect((await s.caisses(actives: true)).map((c) => c.code), ['CIS0000', 'CS0001']);
+      expect((await s.caisses(actives: true)).map((c) => c.code), ['CIS0000', 'CIS0001', 'CS0001']);
     });
 
     test('journal : apport, dépense, transfert TRF = 2 mouvements, solde insuffisant, même caisse', () async {

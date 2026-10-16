@@ -28,6 +28,7 @@ import 'v026_journal_caisse_immuable.dart';
 import 'v027_solde_tiers.dart';
 import 'v028_retours_lignes.dart';
 import 'v029_prix_entree.dart';
+import 'v030_integrite_fiscale.dart';
 
 export 'migration.dart';
 
@@ -62,4 +63,5 @@ const List<Migration> toutesLesMigrations = [
   MigrationV027SoldeTiers(),
   MigrationV028RetoursLignes(),
   MigrationV029PrixEntree(),
+  MigrationV030IntegriteFiscale(),
 ];

@@ -3,6 +3,7 @@ import 'package:sqflite_common/sqlite_api.dart';
 import '../data/caisse_repository.dart';
 import '../data/historique_repository.dart';
 import '../data/vente_repository.dart';
+import '../domain/calculs_prix.dart';
 import '../domain/code_generator.dart';
 import '../domain/models/caisse.dart';
 import '../domain/models/vente.dart';
@@ -42,7 +43,7 @@ class SessionCaisseService {
       if (await repo.sessionOuverte(caisseCode: caisseCode) != null) {
         throw const SessionException(ErreurSession.dejaOuverte);
       }
-      final caisse = await txn.query('caisse', where: 'code = ? AND actif = 1', whereArgs: [caisseCode]);
+      final caisse = await txn.query('caisse', where: 'code = ? AND actif = 1 AND coffre = 0', whereArgs: [caisseCode]);
       if (caisse.isEmpty) throw const SessionException(ErreurSession.caisseInconnue);
       final code = await repo.prochainCode('session_caisse', CodeGenerator.sessionCaisse);
       final s = SessionCaisse(
@@ -64,6 +65,27 @@ class SessionCaisseService {
         utilisateurCode: utilisateurCode,
         date: s.ouverteLe,
       );
+      // Le fond de caisse est pris au coffre, dans la limite de ses espèces (le surplus est un apport externe).
+      final caisses = CaisseRepository(txn);
+      final coffre = await caisses.coffre();
+      if (coffre != null && fondInitial > 0) {
+        final dispo = (await caisses.solde(coffre)).parMode['Espèces'] ?? 0;
+        final pris = CalculsPrix.arrondir(fondInitial < dispo ? fondInitial : (dispo > 0 ? dispo : 0));
+        if (pris > 0) {
+          await CaisseService.journaliser(
+            txn,
+            caisseCode: coffre,
+            type: TypesMouvementCaisse.coffre,
+            sens: SensMouvementCaisse.sortie,
+            montant: pris,
+            referenceType: 'session_caisse',
+            referenceCode: code,
+            utilisateurCode: utilisateurCode,
+            date: s.ouverteLe,
+            commentaire: 'Fond de caisse $caisseCode',
+          );
+        }
+      }
       await HistoriqueRepository(txn).journaliser(
         utilisateurCode: utilisateurCode,
         action: 'Ouverture',
@@ -117,6 +139,22 @@ class SessionCaisseService {
         utilisateurCode: utilisateurCode,
         date: fermeeLe,
       );
+      // Les espèces retirées vont au coffre (remise en banque ensuite par transfert vers une caisse Compte).
+      final coffre = await CaisseRepository(txn).coffre();
+      if (coffre != null && coffre != s.caisseCode && montantCompte > 0) {
+        await CaisseService.journaliser(
+          txn,
+          caisseCode: coffre,
+          type: TypesMouvementCaisse.coffre,
+          sens: SensMouvementCaisse.entree,
+          montant: montantCompte,
+          referenceType: 'session_caisse',
+          referenceCode: s.code,
+          utilisateurCode: utilisateurCode,
+          date: fermeeLe,
+          commentaire: 'Fermeture ${s.caisseCode}',
+        );
+      }
       await HistoriqueRepository(txn).journaliser(
         utilisateurCode: utilisateurCode,
         action: 'Fermeture',

@@ -114,7 +114,7 @@ void main() {
       final c = await pumpApp(tester, routeInitiale: '/gestion-caisse', taille: _taille);
       final db = c.read(appDatabaseProvider).db;
       final service = CaisseService(db, utilisateurCode: 'USR0000');
-      await service.creer(nom: 'Coffre');
+      // Destination par défaut : le coffre système (CIS0001).
       await service.mouvementManuel(caisseCode: 'CIS0000', apport: true, montant: 5000);
       await _rafraichir(tester, c);
       await clic(tester, find.text('Transferts'));
@@ -128,14 +128,14 @@ void main() {
       await tester.pump();
       await clic(tester, _cle('trf_valider'));
       expect(find.text('TRF0001'), findsWidgets);
-      expect((await CaisseRepository(db).solde('CS0001')).especes, 2000);
+      expect((await CaisseRepository(db).solde('CIS0001')).especes, 2000);
       await clic(tester, find.text('TRF0001').first);
       await clic(tester, _cle('transferts_annuler'));
       await tester.enterText(find.byType(TextField).last, 'Erreur de caisse');
       await tester.pump();
       await clic(tester, find.text('Annuler (1)'));
       expect(find.text('Transferts annulés'), findsOneWidget);
-      expect((await CaisseRepository(db).solde('CS0001')).especes, 0);
+      expect((await CaisseRepository(db).solde('CIS0001')).especes, 0);
       expect((await CaisseRepository(db).solde('CIS0000')).especes, 5000);
       expect(find.text('Annulé'), findsWidgets);
       await tester.pump(const Duration(seconds: 5));

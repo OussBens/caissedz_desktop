@@ -7135,4 +7135,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get tiersPlafondCreditAide => 'فارغ أو 0: بدون سقف.';
+
+  @override
+  String get mvtCoffre => 'الخزنة';
 }

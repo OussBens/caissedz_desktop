@@ -30,9 +30,13 @@ class Scellement {
       sha256.convert(utf8.encode('$hashPrecedent|${canonique(doc)}')).toString();
 
   /// Vérifie une chaîne de documents `(doc, hashPrecedent, hash)` dans l'ordre.
-  /// Retourne l'index du premier document invalide, ou `null` si tout est valide.
-  static int? verifier(List<({Map<String, Object?> doc, String hashPrecedent, String hash})> chaine) {
-    var attendu = genese;
+  /// Retourne l'index du premier document invalide, ou `null` si tout est valide. La chaîne part de la
+  /// [genese], ou du hash précédent du premier document si [depuisPremier] (extrait d'une période).
+  static int? verifier(
+    List<({Map<String, Object?> doc, String hashPrecedent, String hash})> chaine, {
+    bool depuisPremier = false,
+  }) {
+    var attendu = depuisPremier && chaine.isNotEmpty ? chaine.first.hashPrecedent : genese;
     for (var i = 0; i < chaine.length; i++) {
       final e = chaine[i];
       if (e.hashPrecedent != attendu) return i;

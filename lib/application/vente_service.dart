@@ -2,12 +2,14 @@ import 'package:sqflite_common/sqlite_api.dart';
 
 import '../data/caisse_repository.dart';
 import '../data/historique_repository.dart';
+import '../data/journal_fiscal_repository.dart';
 import '../data/stock_repository.dart';
 import '../data/tiers_repository.dart';
 import '../data/vente_repository.dart';
 import '../domain/calculs_prix.dart';
 import '../domain/code_generator.dart';
 import '../domain/models/caisse.dart';
+import '../domain/models/journal_fiscal.dart';
 import '../domain/models/panier.dart';
 import '../domain/models/parametres_vente.dart';
 import '../domain/models/retour.dart';
@@ -207,6 +209,15 @@ class VenteService {
       final hash = Scellement.hacher(vente.versCanonique(), hashPrecedent);
       vente = Vente.depuisLigne({...vente.versLigne(), 'hash': hash}, lignes: lignes, paiements: panier.paiements);
       await repo.insererVente(vente);
+      await JournalFiscalRepository(txn).ajouter(
+        type: TypesEvenementFiscal.vente,
+        referenceCode: code,
+        caisseCode: session.caisseCode,
+        utilisateurCode: utilisateurCode,
+        montant: vente.totalNet,
+        details: {'hash': hash, 'client': vente.clientCode},
+        date: d,
+      );
       // Journal de caisse : une entrée par paiement (hors points), espèces nettes de la monnaie rendue.
       var monnaie = vente.monnaie;
       for (final p in panier.paiements) {
@@ -408,6 +419,15 @@ class VenteService {
           );
         }
       }
+      // Événement fiscal chaîné AVANT le changement de statut (le déclencheur v30 l'exige).
+      await JournalFiscalRepository(txn).ajouter(
+        type: TypesEvenementFiscal.annulationVente,
+        referenceCode: code,
+        caisseCode: v.caisseCode,
+        utilisateurCode: utilisateurCode,
+        montant: -v.totalNet,
+        details: {'hash': v.hash, 'motif': motif.trim()},
+      );
       await repo.annulerVente(code, par: utilisateurCode, le: DateTime.now());
       await HistoriqueRepository(txn).journaliser(
         utilisateurCode: utilisateurCode,

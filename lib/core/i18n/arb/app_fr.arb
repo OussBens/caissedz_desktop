@@ -3739,5 +3739,6 @@
     }
   },
   "tiersPlafondCredit": "Plafond de crédit",
-  "tiersPlafondCreditAide": "Vide ou 0 : sans plafond."
+  "tiersPlafondCreditAide": "Vide ou 0 : sans plafond.",
+  "mvtCoffre": "Coffre"
 }

@@ -96,7 +96,7 @@ void main() {
       expect(z1.hashPrecedent, Scellement.genese);
       expect(z1.nbVentes, 3);
       expect(z1.totalEncaissements, 300);
-      expect(z1.totalDecaissements, 300); // retrait de fermeture
+      expect(z1.totalDecaissements, 0); // retrait de fermeture : mouvement technique, hors Z
       expect(z1.encaissementsParMode, {'Espèces': 300});
       expect(z1.derniereVente, 'VTE0003');
       expect(z1.hashDerniereVente, ctx.tickets.last.hash);

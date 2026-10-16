@@ -7,9 +7,11 @@ import 'package:sqflite_common/sqlite_api.dart';
 
 import '../../data/boutique_repository.dart';
 import '../../data/caisse_repository.dart';
+import '../../data/journal_fiscal_repository.dart';
 import '../../data/vente_repository.dart';
 import '../../domain/code_generator.dart';
 import '../../domain/models/caisse.dart';
+import '../../domain/models/journal_fiscal.dart';
 import '../../domain/models/panier.dart';
 import '../../domain/models/vente.dart';
 import '../../domain/scellement.dart';
@@ -22,6 +24,8 @@ class VerificationExport {
     required this.chaineCloturesOk,
     required this.nbVentes,
     required this.nbClotures,
+    this.chaineJournalOk = true,
+    this.nbEvenements = 0,
     this.erreurs = const [],
   });
   final bool empreinteOk;
@@ -29,12 +33,16 @@ class VerificationExport {
   final bool chaineCloturesOk;
   final int nbVentes;
   final int nbClotures;
+
+  /// Journal fiscal chaîné (exports v2 ; absent des exports antérieurs).
+  final bool chaineJournalOk;
+  final int nbEvenements;
   final List<String> erreurs;
-  bool get valide => empreinteOk && chaineVentesOk && chaineCloturesOk && erreurs.isEmpty;
+  bool get valide => empreinteOk && chaineVentesOk && chaineCloturesOk && chaineJournalOk && erreurs.isEmpty;
 }
 
-/// Export fiscal (§12) : archive ZIP contenant `export.json` (ventes scellées, clôtures Z chaînées,
-/// empreinte SHA-256 globale), `ventes.csv`, `clotures.csv` et `LISEZMOI.txt`.
+/// Export fiscal (§12) : archive ZIP contenant `export.json` (ventes scellées, clôtures Z chaînées, journal
+/// fiscal chaîné, empreinte SHA-256 globale), `ventes.csv`, `clotures.csv` et `LISEZMOI.txt`.
 ///
 /// ⚠️ PROVISOIRE : format JSON déduit de la commande, à aligner sur §12 dès que la spec est disponible.
 class ExportFiscal {
@@ -43,7 +51,7 @@ class ExportFiscal {
   final String versionLogiciel;
 
   static const String nomLogiciel = 'CaisseDZ Desktop';
-  static const String formatVersion = '1';
+  static const String formatVersion = '2';
 
   /// Construit le document JSON de la période (bornes incluses).
   Future<Map<String, Object?>> document({
@@ -56,9 +64,11 @@ class ExportFiscal {
     final ventes = (await VenteRepository(db).ventes(depuis: debut, jusqua: fin, limite: 1 << 30, avecLignes: true))
       ..sort((a, b) => CodeGenerator.comparer(a.code, b.code));
     final clotures = await CaisseRepository(db).clotures(debut: debut, fin: fin, croissant: true);
+    final journal = await JournalFiscalRepository(db).evenements(debut: debut, fin: fin);
     final donnees = <String, Object?>{
       'ventes': [for (final v in ventes) _vente(v)],
       'clotures': [for (final c in clotures) c.versLigne()],
+      'journal_fiscal': [for (final e in journal) e.versLigne()],
     };
     return {
       'format': formatVersion,
@@ -173,17 +183,26 @@ class ExportFiscal {
       );
       chaineVentes.add((doc: v.versCanonique(), hashPrecedent: v.hashPrecedent, hash: v.hash));
     }
-    final iv = Scellement.verifier(chaineVentes);
+    // Un export couvre une période : la chaîne part du hash précédent du premier élément exporté.
+    final iv = Scellement.verifier(chaineVentes, depuisPremier: true);
     if (iv != null) erreurs.add('vente ${ventes[iv]['code']}');
     final clotures = (donnees['clotures'] as List).cast<Map>().map((m) => Cloture.depuisLigne(m.cast())).toList();
-    final ic = Cloture.verifierChaines(clotures);
+    final ic = Cloture.verifierChaines(clotures, depuisPremier: true);
     if (ic != null) erreurs.add('clôture $ic');
+    final journal = ((donnees['journal_fiscal'] as List?) ?? const [])
+        .cast<Map>()
+        .map((m) => EvenementFiscal.depuisLigne(m.cast()))
+        .toList();
+    final ij = JournalFiscalRepository.verifierSuite(journal, depuisPremier: true);
+    if (ij != null) erreurs.add('journal fiscal ${journal[ij].type} ${journal[ij].referenceCode}');
     return VerificationExport(
       empreinteOk: empreinteOk,
       chaineVentesOk: iv == null,
       chaineCloturesOk: ic == null,
+      chaineJournalOk: ij == null,
       nbVentes: ventes.length,
       nbClotures: clotures.length,
+      nbEvenements: journal.length,
       erreurs: erreurs,
     );
   }
@@ -204,6 +223,9 @@ class ExportFiscal {
           'prix_unitaire': l.prixUnitaire,
           'remise': l.remise,
           'total': l.total,
+          'prix_achat': l.prixAchat,
+          'total_achat': l.totalAchat,
+          'unites': l.unites,
         },
     ],
     'paiements': [
@@ -273,7 +295,8 @@ Période : ${p['debut']} → ${p['fin']}
 Généré le : ${doc['genere_le']} par ${doc['genere_par']}
 Empreinte SHA-256 des données : ${doc['empreinte']}
 
-export.json : ventes scellées (hash chaîné SHA-256) et clôtures Z chaînées par caisse, vérifiables hors ligne.
+export.json : ventes scellées (hash chaîné SHA-256), clôtures Z chaînées par caisse et journal fiscal chaîné
+(ventes, annulations, retours, clôtures, factures, avoirs), vérifiables hors ligne.
 ventes.csv / clotures.csv : extraits lisibles des mêmes données.
 ''';
   }

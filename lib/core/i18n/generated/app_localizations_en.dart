@@ -7148,4 +7148,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tiersPlafondCreditAide => 'Empty or 0: no limit.';
+
+  @override
+  String get mvtCoffre => 'Safe';
 }

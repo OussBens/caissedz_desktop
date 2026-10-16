@@ -240,6 +240,12 @@ void main() {
           .ajouterPaiement(const Paiement(mode: 'Espèces', montant: 100));
       await c.ventes.encaisser(panier, session: c.session, magasinCode: 'MAG0000');
       await c.ventes.encaisser(panier.copyWith(id: 2), session: c.session, magasinCode: 'MAG0000');
+      // La base refuse l'altération ; hors application (déclencheur retiré), la chaîne la détecte.
+      await expectLater(
+        base.db.update('vente', {'total_net': 1}, where: 'code = ?', whereArgs: ['VTE0001']),
+        throwsA(anything),
+      );
+      await base.db.execute('DROP TRIGGER vente_scellee');
       await base.db.update('vente', {'total_net': 1}, where: 'code = ?', whereArgs: ['VTE0001']);
       expect(await c.ventes.verifierChaine(), 'VTE0001');
     });

@@ -142,15 +142,23 @@ class VenteLigne {
     totalAchat: ((r['total_achat'] as num?) ?? 0).toDouble(),
     unites: ((r['unites'] as num?) ?? 0).toDouble(),
   );
-  Map<String, Object?> versCanonique() => {
-    'o': ordre,
-    'p': produitCode,
-    'q': quantite,
-    'n': nombre,
-    'pu': prixUnitaire,
-    'r': remise,
-    't': total,
-  };
+
+  /// Forme canonique scellée. Version 1 : contenu d'origine ; version 2 : quantités à 3 décimales, coût
+  /// d'achat figé et unités de stock scellés.
+  Map<String, Object?> versCanonique([int version = 1]) => version < 2
+      ? {'o': ordre, 'p': produitCode, 'q': quantite, 'n': nombre, 'pu': prixUnitaire, 'r': remise, 't': total}
+      : {
+          'o': ordre,
+          'p': produitCode,
+          'q': quantite.toStringAsFixed(3),
+          'n': nombre.toStringAsFixed(3),
+          'u': unites.toStringAsFixed(3),
+          'pu': prixUnitaire,
+          'r': remise,
+          't': total,
+          'pa': prixAchat,
+          'ta': totalAchat,
+        };
 }
 
 /// Vente enregistrée (ticket scellé).
@@ -178,7 +186,11 @@ class Vente {
     this.lignes = const [],
     this.paiements = const [],
     this.commentaire,
+    this.versionScellement = versionScellementCourante,
   });
+
+  /// Version de la forme canonique des nouveaux tickets (voir [versCanonique]).
+  static const int versionScellementCourante = 2;
 
   /// Colonnes d'audit (créé / modifié le / par), en lecture seule.
   final Audit audit;
@@ -205,6 +217,9 @@ class Vente {
   final List<Paiement> paiements;
   final String? commentaire;
 
+  /// Version de la forme canonique avec laquelle le ticket a été scellé (1 avant la v30).
+  final int versionScellement;
+
   double get monnaie => (verse - totalNet) > 0 ? verse - totalNet : 0;
 
   Map<String, Object?> versLigne() => {
@@ -226,6 +241,7 @@ class Vente {
     'hash': hash,
     'hash_precedent': hashPrecedent,
     'commentaire': commentaire,
+    'version_scellement': versionScellement,
   };
 
   factory Vente.depuisLigne(
@@ -254,6 +270,7 @@ class Vente {
     commentaire: r['commentaire'] as String?,
     lignes: lignes,
     paiements: paiements,
+    versionScellement: (r['version_scellement'] as int?) ?? 1,
   );
 
   /// Document canonique scellé (contenu immuable du ticket).
@@ -272,8 +289,9 @@ class Vente {
     'reste': reste,
     'points_gagnes': pointsGagnes,
     'points_utilises': pointsUtilises,
-    'lignes': lignes.map((l) => l.versCanonique()).toList(),
+    'lignes': lignes.map((l) => l.versCanonique(versionScellement)).toList(),
     'paiements': paiements.map((p) => {'m': p.mode, 'v': p.montant}).toList(),
+    if (versionScellement >= 2) 'v': versionScellement,
   };
 }
 

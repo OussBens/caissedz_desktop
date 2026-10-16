@@ -170,7 +170,15 @@ class CaisseRepository {
     );
   }
 
-  /// Totaux entrées / sorties de la période (transferts internes exclus), toutes caisses ou une seule.
+  /// Caisse « Coffre » active (la première), ou `null`.
+  Future<String?> coffre() async {
+    final r = await db.query('caisse', columns: ['code'], where: 'coffre = 1 AND actif = 1', orderBy: 'code', limit: 1);
+    return r.isEmpty ? null : r.first['code']! as String;
+  }
+
+  /// Totaux entrées / sorties de la période, toutes caisses ou une seule. Les mouvements techniques (fond
+  /// initial, retrait de fermeture, écart, coffre, transferts internes) sont exclus : la Z ne compte que
+  /// les opérations commerciales et les entrées / sorties réelles.
   Future<({double entrees, double sorties, Map<String, double> parMode})> totauxPeriode(
     DateTime debut,
     DateTime fin, {
@@ -179,10 +187,11 @@ class CaisseRepository {
     final rows = await db.rawQuery(
       '''
       SELECT sens, mode, COALESCE(SUM(montant), 0) m FROM mouvement_caisse
-      WHERE date > ? AND date <= ? AND type <> 'Transfert' ${caisseCode == null ? '' : 'AND caisse_code = ?'}
+      WHERE date > ? AND date <= ? AND type NOT IN (${List.filled(TypesMouvementCaisse.techniques.length, '?').join(',')})
+        ${caisseCode == null ? '' : 'AND caisse_code = ?'}
       GROUP BY sens, mode
       ''',
-      [debut.toUtc().toIso8601String(), fin.toUtc().toIso8601String(), ?caisseCode],
+      [debut.toUtc().toIso8601String(), fin.toUtc().toIso8601String(), ...TypesMouvementCaisse.techniques, ?caisseCode],
     );
     var entrees = 0.0;
     var sorties = 0.0;

@@ -2,12 +2,14 @@ import 'package:sqflite_common/sqlite_api.dart';
 
 import '../data/caisse_repository.dart';
 import '../data/historique_repository.dart';
+import '../data/journal_fiscal_repository.dart';
 import '../data/tiers_repository.dart';
 import '../data/vente_repository.dart';
 import '../domain/calculs_prix.dart';
 import '../domain/code_generator.dart';
 import '../domain/models/achat.dart';
 import '../domain/models/caisse.dart';
+import '../domain/models/journal_fiscal.dart';
 import '../domain/models/retour.dart';
 import '../domain/models/stock.dart';
 import '../domain/models/vente.dart';
@@ -94,6 +96,7 @@ class RetourService {
       date: date ?? DateTime.now(),
       nouveau: true,
     );
+    await _journalFiscal(txn, TypesEvenementFiscal.retour, r);
     await HistoriqueRepository(txn).journaliser(
       utilisateurCode: utilisateurCode,
       action: 'Retour',
@@ -116,6 +119,9 @@ class RetourService {
     String? caisseCode,
     DateTime? date,
   }) => db.transaction((txn) async {
+    if (!await SessionCaisseService.sessionOuverte(txn, utilisateurCode)) {
+      throw const RetourException(ErreurRetour.sessionRequise);
+    }
     final ancien = await _charger(txn, code);
     await _defaire(txn, ancien, motif: 'Modification du retour');
     final r = await _appliquer(
@@ -134,6 +140,7 @@ class RetourService {
       date: date ?? ancien.date,
       nouveau: false,
     );
+    await _journalFiscal(txn, TypesEvenementFiscal.modificationRetour, r, detail: {'avant': ancien.total});
     await HistoriqueRepository(txn).journaliser(
       utilisateurCode: utilisateurCode,
       action: 'Modification',
@@ -148,9 +155,13 @@ class RetourService {
   Future<Retour> annuler(String code, {required String motif}) async {
     if (motif.trim().isEmpty) throw const RetourException(ErreurRetour.motifObligatoire);
     return db.transaction((txn) async {
+      if (!await SessionCaisseService.sessionOuverte(txn, utilisateurCode)) {
+        throw const RetourException(ErreurRetour.sessionRequise);
+      }
       final r = await _charger(txn, code);
       await _defaire(txn, r, motif: motif.trim());
       await TiersRepository(txn).annulerRetour(code, par: utilisateurCode, motif: motif.trim());
+      await _journalFiscal(txn, TypesEvenementFiscal.annulationRetour, r, detail: {'motif': motif.trim()});
       await HistoriqueRepository(txn).journaliser(
         utilisateurCode: utilisateurCode,
         action: 'Annulation',
@@ -161,6 +172,23 @@ class RetourService {
       return (await TiersRepository(txn).retour(code))!;
     });
   }
+
+  /// Événement du journal fiscal chaîné (§12.3) : montant positif pour un retour client (sortie de CA).
+  Future<void> _journalFiscal(Transaction txn, String type, Retour r, {Map<String, Object?> detail = const {}}) =>
+      JournalFiscalRepository(txn).ajouter(
+        type: type,
+        referenceCode: r.code,
+        caisseCode: r.caisseCode,
+        utilisateurCode: utilisateurCode,
+        montant: type == TypesEvenementFiscal.annulationRetour ? -r.total : r.total,
+        details: {
+          'tiers': r.type,
+          'document': r.documentCode,
+          'produit': r.ligne?.produitCode,
+          'quantite': r.ligne?.quantite,
+          ...detail,
+        },
+      );
 
   Future<Retour> _charger(Transaction txn, String code) async {
     final r = await TiersRepository(txn).retour(code);

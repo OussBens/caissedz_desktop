@@ -458,7 +458,7 @@ final produitsPosProvider = FutureProvider<List<Produit>>((ref) {
   return ref.watch(catalogueRepositoryProvider).produits(actifsSeulement: true);
 });
 
-/// Caisses actives (ouverture de session).
+/// Caisses actives (ouverture de session), hors coffre.
 final caissesProvider = FutureProvider<List<Map<String, Object?>>>(
-  (ref) => ref.watch(appDatabaseProvider).db.query('caisse', where: 'actif = 1', orderBy: 'code'),
+  (ref) => ref.watch(appDatabaseProvider).db.query('caisse', where: 'actif = 1 AND coffre = 0', orderBy: 'code'),
 );

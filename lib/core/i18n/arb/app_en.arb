@@ -2435,5 +2435,6 @@
   "permDepasserPlafondCredit": "Exceed the credit limit",
   "posErreurPlafondCredit": "Customer credit limit exceeded ({plafond}, current credit {solde}).",
   "tiersPlafondCredit": "Credit limit",
-  "tiersPlafondCreditAide": "Empty or 0: no limit."
+  "tiersPlafondCreditAide": "Empty or 0: no limit.",
+  "mvtCoffre": "Safe"
 }

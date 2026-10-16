@@ -31,6 +31,12 @@ class TypesMouvementCaisse {
   static const String fondInitial = 'Fond initial';
   static const String retrait = 'Retrait';
   static const String ecart = 'Écart';
+
+  /// Dépôt au coffre des espèces retirées à la fermeture, ou fond de caisse pris au coffre à l'ouverture.
+  static const String coffre = 'Coffre';
+
+  /// Mouvements techniques (tiroir, coffre, transferts internes) : hors encaissements / décaissements de la Z.
+  static const List<String> techniques = [fondInitial, retrait, ecart, transfert, coffre];
   static const List<String> tous = [
     vente,
     annulation,
@@ -43,6 +49,7 @@ class TypesMouvementCaisse {
     fondInitial,
     retrait,
     ecart,
+    coffre,
   ];
 }
 
@@ -59,6 +66,7 @@ class Caisse {
     this.systeme = false,
     this.soldeInitial = 0,
     this.observation,
+    this.coffre = false,
   });
 
   /// Colonnes d'audit (créé / modifié le / par), en lecture seule.
@@ -76,6 +84,9 @@ class Caisse {
   final bool actif;
   final bool systeme;
 
+  /// Caisse « Coffre » : hors POS, reçoit les espèces des fermetures et fournit les fonds de caisse.
+  final bool coffre;
+
   factory Caisse.depuisLigne(Map<String, Object?> r) => Caisse(
     audit: Audit.depuisLigne(r),
     code: r['code'] as String,
@@ -86,6 +97,7 @@ class Caisse {
     systeme: (r['systeme'] as int) == 1,
     soldeInitial: ((r['solde_initial'] as num?) ?? 0).toDouble(),
     observation: r['observation'] as String?,
+    coffre: ((r['coffre'] as int?) ?? 0) == 1,
   );
 
   Map<String, Object?> versLigne() => {
@@ -97,6 +109,7 @@ class Caisse {
     'systeme': systeme ? 1 : 0,
     'solde_initial': soldeInitial,
     'observation': observation,
+    'coffre': coffre ? 1 : 0,
   };
 
   Caisse copyWith({
@@ -117,6 +130,7 @@ class Caisse {
     systeme: systeme,
     soldeInitial: soldeInitial ?? this.soldeInitial,
     observation: observation != null ? observation() : this.observation,
+    coffre: coffre,
   );
 }
 
@@ -312,7 +326,7 @@ class Cloture {
 
   /// Vérifie des clôtures données dans l'ordre de chaînage, une chaîne par caisse (les clôtures globales
   /// antérieures à la v16 forment la leur) ; `null` = intactes, sinon code de la première clôture altérée.
-  static String? verifierChaines(Iterable<Cloture> croissantes) {
+  static String? verifierChaines(Iterable<Cloture> croissantes, {bool depuisPremier = false}) {
     final parCaisse = <String?, List<Cloture>>{};
     for (final c in croissantes) {
       (parCaisse[c.caisseCode] ??= []).add(c);
@@ -320,7 +334,7 @@ class Cloture {
     for (final cs in parCaisse.values) {
       final i = Scellement.verifier([
         for (final c in cs) (doc: c.versCanonique(), hashPrecedent: c.hashPrecedent, hash: c.hash),
-      ]);
+      ], depuisPremier: depuisPremier);
       if (i != null) return cs[i].code;
     }
     return null;

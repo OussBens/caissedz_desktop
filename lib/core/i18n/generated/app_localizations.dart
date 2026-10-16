@@ -13580,6 +13580,12 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Vide ou 0 : sans plafond.'**
   String get tiersPlafondCreditAide;
+
+  /// No description provided for @mvtCoffre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Coffre'**
+  String get mvtCoffre;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

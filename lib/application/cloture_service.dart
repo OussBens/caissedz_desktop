@@ -2,9 +2,11 @@ import 'package:sqflite_common/sqlite_api.dart';
 
 import '../data/caisse_repository.dart';
 import '../data/historique_repository.dart';
+import '../data/journal_fiscal_repository.dart';
 import '../domain/calculs_prix.dart';
 import '../domain/code_generator.dart';
 import '../domain/models/caisse.dart';
+import '../domain/models/journal_fiscal.dart';
 import '../domain/scellement.dart';
 
 enum ErreurCloture { caisseInconnue, rienACloturer }
@@ -57,6 +59,14 @@ class ClotureService {
         throw const ClotureException(ErreurCloture.rienACloturer);
       }
       await CaisseRepository(txn).insererCloture(c);
+      await JournalFiscalRepository(txn).ajouter(
+        type: TypesEvenementFiscal.cloture,
+        referenceCode: c.code,
+        caisseCode: caisseCode,
+        utilisateurCode: utilisateurCode,
+        montant: c.totalVentes,
+        details: {'hash': c.hash, 'debut': c.debut, 'fin': c.fin, 'tickets': c.nbVentes},
+      );
       await HistoriqueRepository(txn).journaliser(
         utilisateurCode: utilisateurCode,
         action: 'Clôture Z',

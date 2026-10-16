@@ -2435,5 +2435,6 @@
   "permDepasserPlafondCredit": "تجاوز سقف الائتمان",
   "posErreurPlafondCredit": "تم تجاوز سقف ائتمان الزبون ({plafond}، الائتمان الحالي {solde}).",
   "tiersPlafondCredit": "سقف الائتمان",
-  "tiersPlafondCreditAide": "فارغ أو 0: بدون سقف."
+  "tiersPlafondCreditAide": "فارغ أو 0: بدون سقف.",
+  "mvtCoffre": "الخزنة"
 }
