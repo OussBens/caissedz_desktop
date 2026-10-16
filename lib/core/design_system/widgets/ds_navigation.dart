@@ -141,8 +141,22 @@ class _DsNavItemState extends State<DsNavItem> {
       ),
     );
     if (!widget.replie) return bouton;
-    return Tooltip(message: it.libelle, child: bouton);
+    return Tooltip(message: it.libelle, positionDelegate: positionLaterale(context), child: bouton);
   }
+}
+
+/// Position d'infobulle à côté de la cible (à droite, à gauche en RTL), centrée verticalement, pour ne pas
+/// masquer l'élément suivant de la barre latérale ; reste dans la fenêtre.
+TooltipPositionDelegate positionLaterale(BuildContext context, {double ecart = 8}) {
+  final rtl = Directionality.of(context) == TextDirection.rtl;
+  return (p) {
+    final demi = p.targetSize.width / 2 + ecart;
+    final x = rtl ? p.target.dx - demi - p.tooltipSize.width : p.target.dx + demi;
+    final y = p.target.dy - p.tooltipSize.height / 2;
+    final maxX = p.overlaySize.width.isFinite ? p.overlaySize.width - p.tooltipSize.width : x;
+    final maxY = p.overlaySize.height.isFinite ? p.overlaySize.height - p.tooltipSize.height : y;
+    return Offset(x.clamp(0, maxX < 0 ? 0 : maxX).toDouble(), y.clamp(0, maxY < 0 ? 0 : maxY).toDouble());
+  };
 }
 
 /// Barre latérale (`Sidebar`) : 248 px (72 repliée), logo, groupes repliables séparés, pied, copyright.
@@ -328,6 +342,7 @@ class _EnteteCategorieState extends State<_EnteteCategorie> {
       child: Tooltip(
         message: widget.ouverte ? l10n.dsReplier : l10n.dsDeplier,
         waitDuration: const Duration(milliseconds: 600),
+        positionDelegate: positionLaterale(context),
         child: MouseRegion(
           cursor: SystemMouseCursors.click,
           onEnter: (_) => setState(() => _survol = true),

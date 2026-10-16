@@ -699,3 +699,10 @@ Référence : `docs/design/CaisseDZ-DS-v2.2/CaisseDZ-DS-v2.2.html`, `bundle-v2.2
   et la quantité restante peut sortir jusqu'à 0 ; nombre proposé plafonné aux pièces disponibles (erreur sinon).
 - ✅ Nouveau transfert : colonnes Stock total et Qté (Depuis).
 - ✅ Nouvelle liste de besoins : boutons « Produits sous le seuil » et « Produits en rupture » (quantité suggérée).
+
+## Retours utilisateur — Infobulles et pied des dialogs ✅ (2026-10-16)
+
+- ✅ Barre latérale repliée : infobulle des modules (et « Replier / Déplier » des catégories) à droite de l'icône
+  (à gauche en RTL), centrée verticalement (`positionLaterale`) ; elle ne masque plus le module suivant.
+- ✅ `DsDialog` avec contenu de début de pied (« * obligatoire », « Précédent »…) : boutons au centre exact du pied
+  (deux zones égales de part et d'autre) dans tous les dialogs d'insertion.

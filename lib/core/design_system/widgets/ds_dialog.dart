@@ -132,23 +132,26 @@ class DsDialog extends StatelessWidget {
                           children: actions,
                         ),
                       )
-                    : Row(
-                        spacing: DsSpacing.s2,
-                        children: [
-                          Expanded(
-                            child: Align(alignment: AlignmentDirectional.centerStart, child: piedDebut),
-                          ),
-                          Flexible(
-                            flex: 2,
-                            child: Wrap(
-                              alignment: WrapAlignment.center,
-                              spacing: DsSpacing.s2,
-                              runSpacing: DsSpacing.s2,
-                              children: actions,
+                    // Deux zones égales de part et d'autre : les boutons restent au centre exact du pied.
+                    : LayoutBuilder(
+                        builder: (context, contraintes) => Row(
+                          spacing: DsSpacing.s2,
+                          children: [
+                            Expanded(
+                              child: Align(alignment: AlignmentDirectional.centerStart, child: piedDebut),
                             ),
-                          ),
-                          const Spacer(),
-                        ],
+                            ConstrainedBox(
+                              constraints: BoxConstraints(maxWidth: contraintes.maxWidth * .6),
+                              child: Wrap(
+                                alignment: WrapAlignment.center,
+                                spacing: DsSpacing.s2,
+                                runSpacing: DsSpacing.s2,
+                                children: actions,
+                              ),
+                            ),
+                            const Expanded(child: SizedBox.shrink()),
+                          ],
+                        ),
                       ),
               )
             else
