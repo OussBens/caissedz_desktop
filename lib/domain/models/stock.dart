@@ -12,6 +12,9 @@ class TypesMouvement {
   static const String transfert = 'Transfert';
   static const String inventaire = 'Inventaire';
   static const String initial = 'Stock initial';
+
+  /// Annulation d'une vente : le stock revient sans être compté comme un retour client.
+  static const String annulation = 'Annulation';
 }
 
 /// Ligne du journal des mouvements (table `mouvement_stock`).

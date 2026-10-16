@@ -4,6 +4,7 @@ import '../data/caisse_repository.dart';
 import '../data/facture_repository.dart';
 import '../data/historique_repository.dart';
 import '../data/journal_fiscal_repository.dart';
+import '../data/stock_repository.dart';
 import '../data/tiers_repository.dart';
 import '../data/vente_repository.dart';
 import '../domain/calculs_prix.dart';
@@ -333,10 +334,14 @@ class RetourService {
           )
           .firstOrNull;
       if (vl == null) throw RetourException(ErreurRetour.produitAbsent, produitCode);
-      final deja = (await repo.quantitesRetourneesParLigne(documentCode, sauf: code))[vl.ordre] ?? 0;
+      final dejaLigne = (await repo.retoursParLigne(documentCode, sauf: code))[vl.ordre];
+      final deja = dejaLigne?.quantite ?? 0;
       _verifierPlafond(vl.quantite, deja, quantite);
       final prixNet = vl.quantite == 0 ? 0.0 : CalculsPrix.arrondir(vl.total / vl.quantite);
-      final total = CalculsPrix.arrondir(prixNet * quantite);
+      // Montant au prorata du total net de la ligne ; le retour qui solde la ligne prend le reste exact (m6).
+      final total = (deja + quantite - vl.quantite).abs() < 1e-9
+          ? CalculsPrix.arrondir(vl.total - (dejaLigne?.montant ?? 0))
+          : CalculsPrix.arrondir(vl.total * quantite / vl.quantite);
       final parNombre = vl.uniteVente == 'Nombre';
       // Unités et pièces réellement sorties par la ligne, au prorata (colis figé à la vente) ; anciennes lignes
       // sans unités figées : colis actuel.
@@ -378,7 +383,10 @@ class RetourService {
         );
       }
       // Fidélité : points gagnés sur la vente repris au prorata du montant retourné.
-      final points = v.totalNet <= 0 || v.pointsGagnes <= 0 ? 0 : (v.pointsGagnes * total / v.totalNet).floor();
+      // Jamais au-delà du solde de points du client (pas de solde négatif, m12).
+      final calcules = v.totalNet <= 0 || v.pointsGagnes <= 0 ? 0 : (v.pointsGagnes * total / v.totalNet).floor();
+      final solde = calcules <= 0 ? 0 : await VenteRepository(txn).pointsClient(v.clientCode);
+      final points = calcules < solde ? calcules : (solde > 0 ? solde : 0);
       if (points > 0) await VenteRepository(txn).ajusterPoints(v.clientCode, -points);
       retour = Retour(
         code: code,
@@ -423,18 +431,37 @@ class RetourService {
       final prix = recue == 0 ? 0.0 : CalculsPrix.arrondir(montantRecu / recue);
       final total = CalculsPrix.arrondir(prix * quantite);
       final nombre = recue == 0 ? 0.0 : nombreRecu / recue * quantite;
+      // Sortie selon la répartition d'origine de l'entrée (audit m3) : magasin d'en-tête d'abord, puis les
+      // autres magasins servis, chacun dans la limite de ce qu'il a reçu moins ses retours déjà faits.
+      final stockRepo = StockRepository(txn);
+      final recu = await stockRepo.netParMagasin('achat', documentCode, produitCode);
+      final dejaParMagasin = await stockRepo.retourneParMagasin(documentCode, produitCode, sauf: code);
+      final ordre = [a.magasinCode, ...recu.keys.where((m) => m != a.magasinCode)];
+      final parts = <String, double>{};
+      var reste = quantite;
+      for (final m in ordre) {
+        if (reste <= 1e-9) break;
+        final capacite = (recu[m]?.quantite ?? 0) - (dejaParMagasin[m] ?? 0);
+        if (capacite <= 1e-9) continue;
+        final q = capacite < reste ? capacite : reste;
+        parts[m] = q;
+        reste -= q;
+      }
+      if (reste > 1e-9) parts[a.magasinCode] = (parts[a.magasinCode] ?? 0) + reste;
       try {
-        await stock.sortirDansTransaction(
-          txn,
-          produitCode: produitCode,
-          magasinCode: a.magasinCode,
-          quantite: quantite,
-          nombre: nombre,
-          type: TypesMouvement.retour,
-          referenceType: 'retour',
-          referenceCode: code,
-          date: date,
-        );
+        for (final MapEntry(key: m, value: q) in parts.entries) {
+          await stock.sortirDansTransaction(
+            txn,
+            produitCode: produitCode,
+            magasinCode: m,
+            quantite: q,
+            nombre: quantite == 0 ? nombre : nombre * q / quantite,
+            type: TypesMouvement.retour,
+            referenceType: 'retour',
+            referenceCode: code,
+            date: date,
+          );
+        }
       } on StockException catch (e) {
         throw RetourException(ErreurRetour.stockInsuffisant, e.detail);
       }

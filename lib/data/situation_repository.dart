@@ -160,15 +160,22 @@ class SituationRepository {
 
   // ---------------------------------------------------------------- Stock
 
-  /// 4 · Mouvement produit : stock initial, entrées, sorties, retours, stock final sur la période.
+  /// 4 · Mouvement produit : stock initial, entrées, sorties, retours, stock final sur la période (audit m14).
+  /// Les annulations de vente diminuent les sorties (elles ne sont pas des retours) ; tous magasins confondus,
+  /// les transferts internes (entrée et sortie) sont ignorés.
   Future<List<LigneSituation>> mouvementProduit(DateTime debut, DateTime fin, FiltresSituation f) async {
     final b = _bornes(debut, fin);
+    final tous = f.magasin == null;
+    final exclus =
+        "m.type NOT IN ('${TypesMouvement.retour}', '${TypesMouvement.annulation}'"
+        "${tous ? ", '${TypesMouvement.transfert}'" : ''})";
     final rows = await db.rawQuery(
       '''
       SELECT p.code, p.designation nom,
         COALESCE(SUM(CASE WHEN m.date < ? THEN m.quantite END), 0) ini,
-        COALESCE(SUM(CASE WHEN m.date >= ? AND m.date < ? AND m.type != ? AND m.quantite > 0 THEN m.quantite END), 0) ent,
-        COALESCE(SUM(CASE WHEN m.date >= ? AND m.date < ? AND m.type != ? AND m.quantite < 0 THEN -m.quantite END), 0) sor,
+        COALESCE(SUM(CASE WHEN m.date >= ? AND m.date < ? AND $exclus AND m.quantite > 0 THEN m.quantite END), 0) ent,
+        COALESCE(SUM(CASE WHEN m.date >= ? AND m.date < ? AND $exclus AND m.quantite < 0 THEN -m.quantite END), 0)
+          - COALESCE(SUM(CASE WHEN m.date >= ? AND m.date < ? AND m.type = ? THEN m.quantite END), 0) sor,
         COALESCE(SUM(CASE WHEN m.date >= ? AND m.date < ? AND m.type = ? THEN m.quantite END), 0) ret,
         COALESCE(SUM(CASE WHEN m.date < ? THEN m.quantite END), 0) fin
       FROM produit p JOIN mouvement_stock m ON m.produit_code = p.code
@@ -179,9 +186,9 @@ class SituationRepository {
       [
         b[0],
         ...b,
-        TypesMouvement.retour,
         ...b,
-        TypesMouvement.retour,
+        ...b,
+        TypesMouvement.annulation,
         ...b,
         TypesMouvement.retour,
         b[1],
@@ -405,14 +412,16 @@ class SituationRepository {
   }
 
   /// Produits actifs en rupture (stock ≤ 0), magasin optionnel.
-  Future<List<({String code, String nom, double stock})>> ruptures({String? magasin, int limite = 50}) async {
+  /// Ruptures (stock ≤ 0) sur les magasins [magasins] (tous si `null`) : même périmètre que les alertes (m5).
+  Future<List<({String code, String nom, double stock})>> ruptures({List<String>? magasins, int limite = 50}) async {
+    final filtre = magasins == null ? '' : 'AND m.magasin_code IN (${List.filled(magasins.length, '?').join(',')})';
     final rows = await db.rawQuery(
       '''
       SELECT p.code, p.designation d, COALESCE((SELECT SUM(m.quantite) FROM mouvement_stock m
-        WHERE m.produit_code = p.code AND (? IS NULL OR m.magasin_code = ?)), 0) q
+        WHERE m.produit_code = p.code $filtre), 0) q
       FROM produit p WHERE p.actif = 1 AND p.service = 0 AND q <= 0 ORDER BY p.designation LIMIT ?
       ''',
-      [magasin, magasin, limite],
+      [...?magasins, limite],
     );
     return [for (final r in rows) (code: r['code'] as String, nom: r['d'] as String, stock: _d(r['q']))];
   }

@@ -13658,6 +13658,18 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'TVA collectée et déductible par taux, timbre, TVA à payer'**
   String get exportFiscalG50Desc;
+
+  /// No description provided for @typeMouvementAnnulation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annulation de vente'**
+  String get typeMouvementAnnulation;
+
+  /// No description provided for @posErreurMonnaieSansEspeces.
+  ///
+  /// In fr, this message translates to:
+  /// **'La monnaie rendue dépasse les espèces reçues : une carte, un chèque ou des points ne rendent pas de monnaie.'**
+  String get posErreurMonnaieSansEspeces;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

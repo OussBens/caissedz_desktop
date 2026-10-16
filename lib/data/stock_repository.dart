@@ -25,6 +25,65 @@ class StockRepository {
   // ---- Journal ----
   Future<int> insererMouvement(MouvementStock m) => db.insert('mouvement_stock', m.versLigne());
 
+  // ---- Inventaires (INV) ----
+  Future<void> insererInventaire(Map<String, Object?> entete, List<Map<String, Object?>> lignes) async {
+    await db.insert('inventaire', entete);
+    for (final l in lignes) {
+      await db.insert('inventaire_ligne', {...l, 'inventaire_code': entete['code']});
+    }
+  }
+
+  Future<Map<String, Object?>?> inventaire(String code) async {
+    final r = await db.query('inventaire', where: 'code = ?', whereArgs: [code]);
+    return r.isEmpty ? null : r.first;
+  }
+
+  Future<List<Map<String, Object?>>> inventaires({int limite = 200}) =>
+      db.query('inventaire', orderBy: 'date DESC, code DESC', limit: limite);
+
+  Future<List<Map<String, Object?>>> lignesInventaire(String code) =>
+      db.query('inventaire_ligne', where: 'inventaire_code = ?', whereArgs: [code], orderBy: 'produit_code');
+
+  Future<void> annulerInventaire(String code, {required String par, required String motif, required DateTime le}) =>
+      db.update(
+        'inventaire',
+        {'statut': 'Annulé', 'annule_le': le.toUtc().toIso8601String(), 'annule_par': par, 'motif_annulation': motif},
+        where: 'code = ?',
+        whereArgs: [code],
+      );
+
+  /// Quantités et pièces nettes d'un produit par magasin pour une référence (répartition d'une entrée…).
+  Future<Map<String, ({double quantite, double nombre})>> netParMagasin(
+    String referenceType,
+    String referenceCode,
+    String produitCode,
+  ) async {
+    final r = await db.rawQuery(
+      '''
+      SELECT magasin_code m, SUM(quantite) q, SUM(nombre) n FROM mouvement_stock
+      WHERE reference_type = ? AND reference_code = ? AND produit_code = ? GROUP BY magasin_code ORDER BY magasin_code
+      ''',
+      [referenceType, referenceCode, produitCode],
+    );
+    return {
+      for (final x in r)
+        x['m']! as String: (quantite: (x['q']! as num).toDouble(), nombre: (x['n']! as num).toDouble()),
+    };
+  }
+
+  /// Quantités nettes d'un produit déjà sorties par magasin par les retours fournisseur d'une entrée (sauf [sauf]).
+  Future<Map<String, double>> retourneParMagasin(String achatCode, String produitCode, {String? sauf}) async {
+    final r = await db.rawQuery(
+      '''
+      SELECT m.magasin_code mg, -SUM(m.quantite) q FROM mouvement_stock m JOIN retour r ON r.code = m.reference_code
+      WHERE m.reference_type = 'retour' AND r.type = 'Fournisseur' AND r.document_code = ? AND m.produit_code = ?
+        AND r.code <> ? GROUP BY m.magasin_code
+      ''',
+      [achatCode, produitCode, sauf ?? ''],
+    );
+    return {for (final x in r) x['mg']! as String: (x['q']! as num).toDouble()};
+  }
+
   Future<List<MouvementStock>> mouvements({
     String? produitCode,
     String? magasinCode,

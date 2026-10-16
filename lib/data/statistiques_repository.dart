@@ -45,14 +45,18 @@ class StatistiquesRepository {
     const [],
   );
 
-  Future<int> produitsSousSeuil(int seuilGlobal) async {
+  /// Produits sous le seuil : même règle que les alertes et l'écran Stock (stock ≤ seuil, m5), sur les
+  /// magasins [magasins] (tous si `null`).
+  Future<int> produitsSousSeuil(int seuilGlobal, {List<String>? magasins}) async {
+    final filtre = magasins == null ? '' : 'WHERE magasin_code IN (${List.filled(magasins.length, '?').join(',')})';
     final rows = await db.rawQuery(
       '''
       SELECT COUNT(*) n FROM produit p
-      LEFT JOIN (SELECT produit_code, SUM(quantite) q FROM mouvement_stock GROUP BY produit_code) s ON s.produit_code = p.code
-      WHERE p.actif = 1 AND p.service = 0 AND COALESCE(s.q, 0) < COALESCE(p.seuil_stock, ?)
+      LEFT JOIN (SELECT produit_code, SUM(quantite) q FROM mouvement_stock $filtre GROUP BY produit_code) s
+        ON s.produit_code = p.code
+      WHERE p.actif = 1 AND p.service = 0 AND COALESCE(s.q, 0) <= COALESCE(p.seuil_stock, ?)
       ''',
-      [seuilGlobal],
+      [...?magasins, seuilGlobal],
     );
     return rows.first['n'] as int;
   }

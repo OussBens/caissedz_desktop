@@ -41,6 +41,9 @@ enum ErreurVente {
   retourLie,
   nombreObligatoire,
   plafondCredit,
+
+  /// Monnaie rendue supérieure aux espèces reçues (une carte ou des points ne rendent pas de monnaie).
+  monnaieSansEspeces,
 }
 
 class VenteException implements Exception {
@@ -98,8 +101,15 @@ class VenteService {
     final pointsUtilises = panier.paiements
         .where((p) => p.mode == 'Points')
         .fold(0, (s, p) => s + Fidelite.pointsPourMontant(p.montant));
+    // Monnaie rendue : seulement sur les espèces reçues (m9).
+    final especes = panier.paiements.where((p) => p.mode == 'Espèces').fold(0.0, (s, p) => s + p.montant);
+    final monnaie = panier.verse - panier.totalNet;
+    if (monnaie > especes + 0.004) throw VenteException(ErreurVente.monnaieSansEspeces, '$monnaie');
+    // Points gagnés sur le montant réellement encaissé, hors points et hors crédit (m12).
+    final horsPoints = panier.paiements.where((p) => p.mode != 'Points').fold(0.0, (s, p) => s + p.montant);
+    final encaisse = (horsPoints - (monnaie > 0 ? monnaie : 0)).clamp(0.0, panier.totalNet);
     final pointsGagnes = Fidelite.pointsGagnes(
-      panier.totalNet,
+      encaisse,
       active: parametres.fideliteActive,
       pointsParDinar: parametres.pointsParDinar,
       clientCode: panier.clientCode,
@@ -110,6 +120,14 @@ class VenteService {
       final repo = VenteRepository(txn);
       final sessionDb = await repo.session(session.code);
       if (sessionDb == null || !sessionDb.estOuverte) throw const VenteException(ErreurVente.sessionRequise);
+      // Magasin de la vente : celui de la caisse ouverte, sinon celui proposé par l'écran (m11).
+      final caisseMagasin = await txn.query(
+        'caisse',
+        columns: ['magasin_code'],
+        where: 'code = ?',
+        whereArgs: [session.caisseCode],
+      );
+      final magasin = (caisseMagasin.firstOrNull?['magasin_code'] as String?) ?? magasinCode;
       if (pointsUtilises > 0) {
         if (panier.clientCode == CodeGenerator.systeme(CodeGenerator.client)) {
           throw const VenteException(ErreurVente.pointsInsuffisants);
@@ -129,7 +147,7 @@ class VenteService {
           await stock.sortirDansTransaction(
             txn,
             produitCode: l.produit.code,
-            magasinCode: magasinCode,
+            magasinCode: magasin,
             quantite: l.unitesStock,
             nombre: l.nombreStock,
             type: TypesMouvement.vente,
@@ -167,7 +185,7 @@ class VenteService {
 
       // TVA figée par ligne (prix TTC) selon le régime fiscal (IFU : sans TVA).
       final regime = await ParametreRepository(txn).lire(Fiscalite.cleRegime) ?? RegimesFiscaux.reel;
-      final lignes = [
+      final brutes = [
         for (final (i, l) in panier.lignes.indexed)
           _avecTva(
             VenteLigne(
@@ -192,13 +210,28 @@ class VenteService {
             Fiscalite.taux(l.produit.tvaPct, regime),
           ),
       ];
+      // Remise globale : l'écart d'arrondi entre Σ lignes et le net du ticket va sur la dernière ligne (m6).
+      final ecartArrondi = CalculsPrix.arrondir(panier.totalNet - brutes.fold(0.0, (t, l) => t + l.total));
+      final lignes = ecartArrondi.abs() < 0.005 || brutes.isEmpty
+          ? brutes
+          : [
+              ...brutes.take(brutes.length - 1),
+              _avecTva(
+                VenteLigne.depuisLigne({
+                  ...brutes.last.versLigne(''),
+                  'total': CalculsPrix.arrondir(brutes.last.total + ecartArrondi),
+                  'remise': CalculsPrix.arrondir(brutes.last.remise - ecartArrondi),
+                }),
+                brutes.last.tauxTva,
+              ),
+            ];
       final hashPrecedent = await repo.dernierHash() ?? Scellement.genese;
       var vente = Vente(
         code: code,
         date: d,
         sessionCode: session.code,
         caisseCode: session.caisseCode,
-        magasinCode: magasinCode,
+        magasinCode: magasin,
         clientCode: panier.clientCode,
         utilisateurCode: utilisateurCode,
         totalBrut: panier.totalBrut,
@@ -307,6 +340,10 @@ class VenteService {
         if (v.clientCode == CodeGenerator.systeme(CodeGenerator.client)) {
           throw const VenteException(ErreurVente.creditNonAutorise);
         }
+        // Le complément encaissé est un versement : session de caisse ouverte exigée (§8.4, m10).
+        if (await repo.sessionOuverte(utilisateurCode: utilisateurCode) == null) {
+          throw const VenteException(ErreurVente.sessionRequise);
+        }
         try {
           await VersementService(txn.database, utilisateurCode: utilisateurCode).imputerDansTransaction(
             txn,
@@ -379,7 +416,7 @@ class VenteService {
           magasinCode: m['m']! as String,
           quantite: q,
           nombre: n,
-          type: TypesMouvement.retour,
+          type: TypesMouvement.annulation,
           referenceType: 'annulation',
           referenceCode: code,
         );

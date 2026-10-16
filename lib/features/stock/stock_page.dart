@@ -512,6 +512,7 @@ class _StockPageState extends ConsumerState<StockPage> {
               TypesMouvement.retour,
               TypesMouvement.inventaire,
               TypesMouvement.initial,
+              TypesMouvement.annulation,
             ],
             libelle: (t) => t == null ? l10n.retoursTous : libelleTypeMouvement(l10n, t),
             onChanged: (v) => setState(() => _type = v),

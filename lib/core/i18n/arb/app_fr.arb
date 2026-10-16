@@ -3752,5 +3752,7 @@
   "pmTimbreDesc": "Ajouté aux factures sur la part payée en espèces (1 % à 2 %, minimum 5 DA).",
   "factureVenteAnnulee": "Vente annulée : aucune facture ne peut être émise.",
   "exportFiscalG50": "Déclaration G50 (Excel)",
-  "exportFiscalG50Desc": "TVA collectée et déductible par taux, timbre, TVA à payer"
+  "exportFiscalG50Desc": "TVA collectée et déductible par taux, timbre, TVA à payer",
+  "typeMouvementAnnulation": "Annulation de vente",
+  "posErreurMonnaieSansEspeces": "La monnaie rendue dépasse les espèces reçues : une carte, un chèque ou des points ne rendent pas de monnaie."
 }

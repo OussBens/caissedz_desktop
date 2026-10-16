@@ -150,14 +150,21 @@ class TiersRepository {
   }
 
   /// Quantités déjà retournées (retours clients actifs) par ligne de la vente (`ordre`), hors [sauf].
-  Future<Map<int, double>> quantitesRetourneesParLigne(String venteCode, {String? sauf}) async {
+  Future<Map<int, double>> quantitesRetourneesParLigne(String venteCode, {String? sauf}) async =>
+      (await retoursParLigne(venteCode, sauf: sauf)).map((k, v) => MapEntry(k, v.quantite));
+
+  /// Quantités et montants déjà retournés (retours clients actifs) par ligne de la vente, hors [sauf].
+  Future<Map<int, ({double quantite, double montant})>> retoursParLigne(String venteCode, {String? sauf}) async {
     final rows = await db.rawQuery(
-      'SELECT l.ordre_origine o, SUM(l.quantite) q FROM retour_ligne l JOIN retour r ON r.code = l.retour_code '
+      'SELECT l.ordre_origine o, SUM(l.quantite) q, SUM(l.total) t FROM retour_ligne l '
+      'JOIN retour r ON r.code = l.retour_code '
       "WHERE r.type = 'Client' AND r.document_code = ? AND r.etat = 1 AND r.code != ? AND l.ordre_origine IS NOT NULL "
       'GROUP BY l.ordre_origine',
       [venteCode, sauf ?? ''],
     );
-    return {for (final r in rows) r['o'] as int: (r['q'] as num).toDouble()};
+    return {
+      for (final r in rows) r['o'] as int: (quantite: (r['q'] as num).toDouble(), montant: (r['t'] as num).toDouble()),
+    };
   }
 
   // ---- Versements ----

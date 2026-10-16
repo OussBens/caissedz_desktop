@@ -94,7 +94,7 @@ final tableauBordProvider = FutureProvider.family<DonneesTableauBord, (DateTime,
     caissiers: await s.ventesParCaissier(du, au),
     topProduits: await s.topProduits(du, au),
     dernieresVentes: await s.dernieresVentes(),
-    ruptures: await s.ruptures(limite: 10),
+    ruptures: await s.ruptures(limite: 10, magasins: await magasinsDeLaSession(ref)),
   );
 });
 

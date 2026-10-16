@@ -557,13 +557,24 @@ class _VueAnalyseState extends ConsumerState<_VueAnalyse> {
       message: l10n.situationConfirmerInventaire(produits.length),
     );
     if (ok != true || !mounted) return;
-    final n = await ref
+    // Écarts calculés sur le théorique figé au chargement de l'écran (document INV).
+    final r = await ref
         .read(stockServiceProvider)
-        .inventorierLot(magasinCode: magasin, quantitesConstatees: comptes, nombresConstates: pieces);
+        .inventorierLot(
+          magasinCode: magasin,
+          quantitesConstatees: comptes,
+          nombresConstates: pieces,
+          theoriques: {for (final l in _lignes) l['code']! as String: l['theorique']! as double},
+          theoriquesNombre: {for (final l in _lignes) l['code']! as String: l['theoriqueNombre']! as double},
+        );
     ref.read(stockVersionProvider.notifier).incrementer();
     rafraichirRapports(ref);
     if (!mounted) return;
-    afficherToast(context, titre: l10n.situationInventaireValide, description: l10n.situationProduitsAjustes(n));
+    afficherToast(
+      context,
+      titre: '${l10n.situationInventaireValide} · ${r.code ?? ''}',
+      description: l10n.situationProduitsAjustes(r.ajustes),
+    );
   }
 
   // ------------------------------------------------------------ Colonnes et stats

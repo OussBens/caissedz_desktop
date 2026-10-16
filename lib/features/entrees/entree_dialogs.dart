@@ -40,6 +40,9 @@ class LigneEntree extends LigneDoc {
   LigneEntree({required super.produit, super.quantite, super.prix, super.nombre, double? prixVente})
     : prixVente = prixVente ?? produit.prixVente;
   double prixVente;
+
+  /// Total de la ligne ; « pièces seules » (quantité 0) : prix à la pièce × pièces (m13).
+  double get total => (quantite > 0 ? quantite : nombre) * prix;
 }
 
 /// Exécute une écriture d'entrée ; affiche l'erreur métier et renvoie `false` en cas d'échec.
@@ -252,7 +255,7 @@ class _EntreeFormState extends ConsumerState<_EntreeForm> {
   bool _occupe = false;
 
   bool get _edition => widget.achat != null;
-  double get _total => _lignes.fold(0.0, (a, l) => a + l.quantite * l.prix);
+  double get _total => _lignes.fold(0.0, (a, l) => a + l.total);
 
   @override
   void dispose() {
@@ -575,7 +578,7 @@ class _EntreeFormState extends ConsumerState<_EntreeForm> {
               cle: (l) => l.produit.code,
               devise: devise,
               erreurs: erreurs,
-              totalLigne: (l) => l.quantite * l.prix,
+              totalLigne: (l) => (l.quantite > 0 ? l.quantite : l.nombre) * l.prix,
               quantite: (l) => l.quantite,
               texteVide: l10n.entAucunProduit,
               onSupprimer: (l) => setState(() => _lignes = _lignes.where((x) => x != l).toList()),

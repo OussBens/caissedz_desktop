@@ -256,40 +256,115 @@ class StockService {
     });
   }
 
-  /// Inventaire d'un magasin : un mouvement d'écart par produit compté (unités et pièces du 2ᵉ stock), dans
-  /// UNE transaction. Un produit absent d'une des deux listes garde son théorique pour cette grandeur.
-  /// Retourne le nombre de produits ajustés.
-  Future<int> inventorierLot({
+  /// Inventaire d'un magasin (document INV, audit m8) : un mouvement d'écart par produit compté (unités et
+  /// pièces du 2ᵉ stock), dans UNE transaction. L'écart se calcule sur le théorique figé au début du comptage
+  /// ([theoriques] / [theoriquesNombre], lus à l'ouverture de l'écran) : une vente faite pendant le comptage
+  /// n'est pas effacée. Sans théorique figé, le stock actuel sert de théorique. Un produit absent d'une des
+  /// deux listes garde son théorique pour cette grandeur. Retourne le code INV (null sans écart) et le nombre
+  /// de produits ajustés.
+  Future<({String? code, int ajustes})> inventorierLot({
     required String magasinCode,
     required Map<String, double> quantitesConstatees,
     Map<String, double> nombresConstates = const {},
+    Map<String, double> theoriques = const {},
+    Map<String, double> theoriquesNombre = const {},
+    DateTime? debutComptage,
     String? commentaire,
   }) => db.transaction((txn) async {
     final repo = StockRepository(txn);
-    var n = 0;
     final maintenant = DateTime.now();
+    final lignes = <Map<String, Object?>>[];
     for (final produitCode in {...quantitesConstatees.keys, ...nombresConstates.keys}) {
       await _verifierProduit(txn, produitCode);
       final niveau = await repo.niveau(produitCode, magasinCode);
-      final ecart = (quantitesConstatees[produitCode] ?? niveau.quantite) - niveau.quantite;
-      final ecartNombre = (nombresConstates[produitCode] ?? niveau.nombre) - niveau.nombre;
+      final theoQ = theoriques[produitCode] ?? niveau.quantite;
+      final theoN = theoriquesNombre[produitCode] ?? niveau.nombre;
+      final constQ = quantitesConstatees[produitCode] ?? theoQ;
+      final constN = nombresConstates[produitCode] ?? theoN;
+      final ecart = constQ - theoQ;
+      final ecartNombre = constN - theoN;
       if (ecart.abs() < 1e-9 && ecartNombre.abs() < 1e-9) continue;
+      lignes.add({
+        'produit_code': produitCode,
+        'theorique': theoQ,
+        'constate': constQ,
+        'ecart': ecart,
+        'theorique_nombre': theoN,
+        'constate_nombre': constN,
+        'ecart_nombre': ecartNombre,
+      });
+    }
+    if (lignes.isEmpty) return (code: null, ajustes: 0);
+    final code = await repo.prochainCode('inventaire', CodeGenerator.inventaire);
+    await repo.insererInventaire({
+      'code': code,
+      'date': maintenant.toUtc().toIso8601String(),
+      'debut_comptage': (debutComptage ?? maintenant).toUtc().toIso8601String(),
+      'magasin_code': magasinCode,
+      'utilisateur_code': utilisateurCode,
+      'commentaire': commentaire,
+    }, lignes);
+    for (final l in lignes) {
       await repo.insererMouvement(
         MouvementStock(
           date: maintenant,
-          produitCode: produitCode,
+          produitCode: l['produit_code']! as String,
           magasinCode: magasinCode,
           type: TypesMouvement.inventaire,
-          quantite: ecart,
-          nombre: ecartNombre,
+          quantite: l['ecart']! as double,
+          nombre: l['ecart_nombre']! as double,
+          referenceType: 'inventaire',
+          referenceCode: code,
           utilisateurCode: utilisateurCode,
           commentaire: commentaire,
         ),
       );
-      n++;
     }
-    return n;
+    await HistoriqueRepository(txn).journaliser(
+      utilisateurCode: utilisateurCode,
+      action: 'Inventaire',
+      entite: 'inventaire',
+      entiteCode: code,
+      detail: '$magasinCode · ${lignes.length} produits ajustés',
+    );
+    return (code: code, ajustes: lignes.length);
   });
+
+  /// Annule un inventaire (motif obligatoire) : contre-mouvements des écarts, document marqué « Annulé ».
+  Future<void> annulerInventaire(String code, {required String motif}) async {
+    if (motif.trim().isEmpty) throw const StockException(ErreurStock.motifObligatoire);
+    await db.transaction((txn) async {
+      final repo = StockRepository(txn);
+      final inv = await repo.inventaire(code);
+      if (inv == null) throw const StockException(ErreurStock.documentInconnu);
+      if (inv['statut'] == 'Annulé') throw const StockException(ErreurStock.dejaAnnule);
+      final maintenant = DateTime.now();
+      for (final l in await repo.lignesInventaire(code)) {
+        await repo.insererMouvement(
+          MouvementStock(
+            date: maintenant,
+            produitCode: l['produit_code']! as String,
+            magasinCode: inv['magasin_code']! as String,
+            type: TypesMouvement.inventaire,
+            quantite: -(l['ecart']! as num).toDouble(),
+            nombre: -(l['ecart_nombre']! as num).toDouble(),
+            referenceType: 'inventaire',
+            referenceCode: code,
+            utilisateurCode: utilisateurCode,
+            commentaire: 'Annulation $code : ${motif.trim()}',
+          ),
+        );
+      }
+      await repo.annulerInventaire(code, par: utilisateurCode, motif: motif.trim(), le: maintenant);
+      await HistoriqueRepository(txn).journaliser(
+        utilisateurCode: utilisateurCode,
+        action: 'Annulation',
+        entite: 'inventaire',
+        entiteCode: code,
+        detail: motif.trim(),
+      );
+    });
+  }
 
   /// Un service (dont le produit système « Vente au montant ») ne passe jamais par le journal de stock.
   static Future<bool> _estService(DatabaseExecutor db, String produitCode) async {

@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../app/demarrage_providers.dart';
 import '../../app/providers.dart';
 import '../../application/stock_service.dart';
 import '../../core/i18n/generated/app_localizations.dart';
@@ -31,6 +32,14 @@ final mesMagasinsProvider = FutureProvider<List<String>>((ref) {
   ref.watch(stockVersionProvider);
   return ref.watch(stockRepositoryProvider).magasinsUtilisateur(ref.watch(utilisateurCourantCodeProvider));
 });
+
+/// Périmètre « magasins » des alertes et indicateurs de stock : tous pour un administrateur, sinon ceux de
+/// l'utilisateur connecté (même règle que les alertes, m5).
+Future<List<String>?> magasinsDeLaSession(Ref ref) async {
+  final session = ref.read(sessionProvider);
+  if (session == null || session.estAdmin) return null;
+  return ref.read(mesMagasinsProvider.future);
+}
 
 final magasinPrincipalProvider = FutureProvider<String>((ref) {
   ref.watch(stockVersionProvider);
@@ -91,6 +100,7 @@ String libelleTypeMouvement(AppLocalizations l10n, String type) => switch (type)
   TypesMouvement.transfert => l10n.typeMouvementTransfert,
   TypesMouvement.inventaire => l10n.typeMouvementInventaire,
   TypesMouvement.initial => l10n.typeMouvementInitial,
+  TypesMouvement.annulation => l10n.typeMouvementAnnulation,
   _ => type,
 };
 

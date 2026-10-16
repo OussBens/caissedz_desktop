@@ -183,9 +183,11 @@ void main() {
           .ajouterPaiement(const Paiement(mode: 'Espèces', montant: 80));
       final v2 = await c.ventes.encaisser(points, session: c.session, magasinCode: 'MAG0000');
       expect(v2.pointsUtilises, 20);
-      expect(v2.pointsGagnes, 10);
-      // 20 + 20 (vente 1) - 20 + 10 = 30
-      expect(await VenteRepository(base.db).pointsClient('CLN0001'), 30);
+      // Points gagnés sur l'encaissé hors points et hors crédit (m12) : 50 → 5 (vente 1), 80 → 8 (vente 2).
+      expect(v.pointsGagnes, 5);
+      expect(v2.pointsGagnes, 8);
+      // 20 + 5 (vente 1) - 20 + 8 = 13
+      expect(await VenteRepository(base.db).pointsClient('CLN0001'), 13);
       final trop = const Panier(id: 3, clientCode: 'CLN0001')
           .ajouter(PanierLigne(produit: c.lait, quantite: 1, prixUnitaire: 100))
           .ajouterPaiement(const Paiement(mode: 'Points', montant: 100));

@@ -7188,4 +7188,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get exportFiscalG50Desc => 'VAT collected and deductible by rate, stamp duty, VAT due';
+
+  @override
+  String get typeMouvementAnnulation => 'Sale cancellation';
+
+  @override
+  String get posErreurMonnaieSansEspeces => 'Change exceeds the cash received: card, cheque or points give no change.';
 }

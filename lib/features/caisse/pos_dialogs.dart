@@ -55,6 +55,7 @@ String messageErreurVente(AppLocalizations l10n, VenteException e, String devise
     return l10n.posErreurPlafondCredit(formaterMontant(plafond, devise), formaterMontant(solde, devise));
   }(),
   ErreurVente.nombreObligatoire => l10n.communNombreObligatoire,
+  ErreurVente.monnaieSansEspeces => l10n.posErreurMonnaieSansEspeces,
 };
 
 String libelleModePaiement(AppLocalizations l10n, String mode) => switch (mode) {

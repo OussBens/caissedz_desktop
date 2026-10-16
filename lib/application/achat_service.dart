@@ -469,7 +469,8 @@ class AchatService {
           quantite: l.quantite,
           nombre: l.nombre,
           prixAchat: l.prixAchat,
-          total: CalculsPrix.arrondir(l.prixAchat * (l.quantite > 0 ? l.quantite : 1)),
+          // Ligne « pièces seules » (quantité 0) : le prix saisi est un prix à la pièce (m13).
+          total: CalculsPrix.arrondir(l.prixAchat * (l.quantite > 0 ? l.quantite : l.nombre)),
         ),
       );
       final repartition = l.repartition ?? {magasinCode: l.quantite};
@@ -490,11 +491,17 @@ class AchatService {
       final achatPondere = stockAvant <= 0 || l.quantite <= 0
           ? l.prixAchat
           : CalculsPrix.arrondir((stockAvant * p.prixAchat + l.quantite * l.prixAchat) / (stockAvant + l.quantite));
-      final nouvelAchat = switch (majPrix) {
-        MajPrixAchat.garder => p.prixAchat,
-        MajPrixAchat.moyenPondere => achatPondere,
-        MajPrixAchat.dernier => l.prixAchat,
-      };
+      // Pièces seules : le prix à la pièce n'écrase pas le prix d'achat unitaire de la fiche ; « dernier prix »
+      // le convertit en prix par unité (pièce × pièces par unité).
+      final nouvelAchat = l.quantite <= 0
+          ? (majPrix == MajPrixAchat.dernier && p.nombreParUnite > 1
+                ? CalculsPrix.arrondir(l.prixAchat * p.nombreParUnite)
+                : p.prixAchat)
+          : switch (majPrix) {
+              MajPrixAchat.garder => p.prixAchat,
+              MajPrixAchat.moyenPondere => achatPondere,
+              MajPrixAchat.dernier => l.prixAchat,
+            };
       final vente = l.nouveauPrixVente ?? p.prixVente;
       prix.add((achatAvant: p.prixAchat, achatApres: nouvelAchat, venteAvant: p.prixVente, venteApres: vente));
       if (nouvelAchat != p.prixAchat || vente != p.prixVente) {

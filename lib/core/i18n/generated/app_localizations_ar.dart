@@ -7175,4 +7175,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get exportFiscalG50Desc => 'الرسم المحصل والقابل للخصم حسب النسبة، الطابع، الرسم المستحق';
+
+  @override
+  String get typeMouvementAnnulation => 'إلغاء بيع';
+
+  @override
+  String get posErreurMonnaieSansEspeces => 'الباقي يتجاوز النقود المستلمة: البطاقة أو الصك أو النقاط لا تُرجع الباقي.';
 }

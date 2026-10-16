@@ -311,7 +311,7 @@ class CatalogueService {
             date: DateTime.now(),
             produitCode: code,
             magasinCode: magasinCode,
-            type: TypesMouvement.entree,
+            type: TypesMouvement.initial,
             quantite: stockInitial,
             utilisateurCode: utilisateurCode,
             commentaire: 'Stock initial',

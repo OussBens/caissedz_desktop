@@ -7203,4 +7203,11 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get exportFiscalG50Desc => 'TVA collectée et déductible par taux, timbre, TVA à payer';
+
+  @override
+  String get typeMouvementAnnulation => 'Annulation de vente';
+
+  @override
+  String get posErreurMonnaieSansEspeces =>
+      'La monnaie rendue dépasse les espèces reçues : une carte, un chèque ou des points ne rendent pas de monnaie.';
 }

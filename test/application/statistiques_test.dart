@@ -171,7 +171,7 @@ void main() {
           inv.last['code']! as String: inv.last['theorique']! as double,
         },
       );
-      expect(n, 1);
+      expect((n.code, n.ajustes), ('INV0001', 1));
       final apres = await s.inventaire(const FiltresSituation(magasin: 'MAG0000'));
       expect(apres.first['theorique'], 3.0);
     });
