@@ -1,5 +1,6 @@
 import 'package:sqflite_common/sqlite_api.dart';
 
+import '../domain/calculs_prix.dart';
 import '../domain/code_generator.dart';
 import '../domain/models/caisse.dart';
 
@@ -14,7 +15,7 @@ class CaisseRepository {
       columns: ['code'],
       where: 'code LIKE ?',
       whereArgs: ['$prefixe%'],
-      orderBy: 'code DESC',
+      orderBy: CodeGenerator.ordreDecroissant,
       limit: 1,
     );
     return CodeGenerator.suivant(prefixe, rows.isEmpty ? null : rows.first['code'] as String);
@@ -96,6 +97,24 @@ class CaisseRepository {
     where: 'reference_type = ? AND reference_code = ?',
     whereArgs: [referenceType, referenceCode],
   );
+
+  /// Espèces attendues dans le tiroir pour la session [sessionCode] : solde Espèces du grand-livre de la caisse
+  /// depuis la fermeture précédente (fond initial, ventes nettes de la monnaie, versements, paiements d'entrées,
+  /// remboursements, dépenses, transferts…). Une seule source : le journal de caisse.
+  Future<double> especesSession(String caisseCode, String sessionCode) async {
+    final r = await db.rawQuery(
+      '''
+      SELECT COALESCE(SUM(CASE WHEN sens = 'Entrée' THEN montant ELSE -montant END), 0) s
+      FROM mouvement_caisse
+      WHERE caisse_code = ?1 AND mode = 'Espèces' AND id > COALESCE((
+        SELECT MAX(id) FROM mouvement_caisse
+        WHERE caisse_code = ?1 AND reference_type = 'session_caisse' AND type = ?2 AND reference_code <> ?3
+      ), 0)
+      ''',
+      [caisseCode, TypesMouvementCaisse.retrait, sessionCode],
+    );
+    return CalculsPrix.arrondir((r.first['s'] as num).toDouble());
+  }
 
   /// Solde d'une caisse par mode (Σ entrées − Σ sorties) jusqu'à [fin] inclus.
   Future<SoldeCaisse> solde(String caisseCode, {DateTime? fin}) async {

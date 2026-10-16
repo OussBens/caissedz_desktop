@@ -215,7 +215,8 @@ void main() {
       await clic(tester, find.text('Fermer').last);
       await clic(tester, find.text('SES0001'));
       await clic(tester, _cle('sessions_cloturer'));
-      await tester.enterText(_champ('cloture_reel'), '1000');
+      // Attendu = fond 1 000 + appoint 200 en espèces (tout le tiroir, pas seulement les ventes).
+      await tester.enterText(_champ('cloture_reel'), '1200');
       await tester.pump();
       await clic(tester, _cle('cloture_valider'));
       final s = (await VenteRepository(db).session('SES0001'))!;

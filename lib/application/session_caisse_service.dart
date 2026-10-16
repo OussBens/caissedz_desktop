@@ -1,5 +1,6 @@
 import 'package:sqflite_common/sqlite_api.dart';
 
+import '../data/caisse_repository.dart';
 import '../data/historique_repository.dart';
 import '../data/vente_repository.dart';
 import '../domain/code_generator.dart';
@@ -78,7 +79,8 @@ class SessionCaisseService {
   Future<List<SessionCaisse>> sessions() => _repo.sessions();
 
   /// Ferme la session ouverte de l'utilisateur, ou la session [sessionCode] (Gestion caisse).
-  /// Écart = compté − (fond + espèces encaissées − monnaie rendue).
+  /// Écart = compté − espèces attendues ([especesAttendues] : grand-livre Espèces de la caisse depuis la
+  /// fermeture précédente).
   Future<SessionCaisse> fermer({required double montantCompte, String? sessionCode}) async {
     if (montantCompte < 0) throw const SessionException(ErreurSession.montantInvalide);
     return db.transaction((txn) async {
@@ -88,8 +90,7 @@ class SessionCaisseService {
           : await repo.session(sessionCode);
       final s = trouvee != null && trouvee.statut == StatutsSession.ouverte ? trouvee : null;
       if (s == null) throw const SessionException(ErreurSession.aucuneOuverte);
-      final especes = (await repo.encaissementsSession(s.code))['Espèces'] ?? 0;
-      final attendu = s.fondInitial + especes - await repo.monnaieRendueSession(s.code);
+      final attendu = await CaisseRepository(txn).especesSession(s.caisseCode, s.code);
       final ecart = montantCompte - attendu;
       final fermeeLe = DateTime.now();
       await repo.fermerSession(s.code, fermeeLe: fermeeLe, montant: montantCompte, ecart: ecart);
@@ -127,12 +128,11 @@ class SessionCaisseService {
     });
   }
 
-  /// Montant d'espèces attendu en caisse (fond + espèces encaissées).
+  /// Montant d'espèces attendu en caisse : fond initial et tous les mouvements d'espèces du tiroir depuis la
+  /// fermeture précédente (ventes nettes de la monnaie, versements, paiements, remboursements, dépenses…).
   Future<double> especesAttendues(String sessionCode) async {
     final s = await _repo.session(sessionCode);
     if (s == null) return 0;
-    return s.fondInitial +
-        ((await _repo.encaissementsSession(sessionCode))['Espèces'] ?? 0) -
-        await _repo.monnaieRendueSession(sessionCode);
+    return CaisseRepository(db).especesSession(s.caisseCode, s.code);
   }
 }

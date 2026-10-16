@@ -164,6 +164,19 @@ void main() {
           TypesMouvementCaisse.retrait,
         ]),
       );
+      // Session suivante : l'attendu suit tout le tiroir (versement encaissé, dépense, carte exclue), pas
+      // seulement les ventes ; la session précédente n'est pas recomptée.
+      final s2 = await sessions.ouvrir(caisseCode: 'CIS0000', fondInitial: 500);
+      await VersementService(
+        db,
+        utilisateurCode: 'USR0000',
+      ).imputer(tiersType: TypesTiers.client, tiersCode: client.code, montant: 100, mode: 'Espèces');
+      await caisse.mouvementManuel(caisseCode: 'CIS0000', apport: false, montant: 250, commentaire: 'Fournitures');
+      await caisse.mouvementManuel(caisseCode: 'CIS0000', apport: true, montant: 70, mode: 'Carte');
+      expect(await sessions.especesAttendues(s2.code), 500 + 100 - 250);
+      final f2 = await sessions.fermer(montantCompte: 350);
+      expect(f2.ecart, 0);
+      expect((await caisse.solde('CIS0000')).especes, 0);
     });
 
     test('DS v2.2 : solde initial, observation, désactivation en lot bloquée, annulation de transferts', () async {
