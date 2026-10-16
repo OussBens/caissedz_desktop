@@ -97,6 +97,13 @@ class DsActionContextuelle<T> {
   final bool separateurAvant;
 }
 
+/// Hauteur d'une liste de produits dans un dialog (panier, entrée, sortie, recherche…) : hauteur de l'écran moins
+/// [reserve] (en-tête, champs et pied du dialog), au moins [min].
+double hauteurListeDialog(BuildContext context, {double reserve = 260, double min = 300}) {
+  final h = MediaQuery.sizeOf(context).height - reserve;
+  return h < min ? min : h;
+}
+
 /// Tableau de données unique du design system (`DataTable`).
 ///
 /// Fonctions : tri par colonne, sélection multiple (case à cocher), colonnes masquables
@@ -129,6 +136,7 @@ class DsDataTable<T> extends StatefulWidget {
     this.encadre = true,
     this.hauteurMax,
     this.hauteurFixe = false,
+    this.reserveEcran,
   });
 
   final List<DsColonne<T>> colonnes;
@@ -171,6 +179,10 @@ class DsDataTable<T> extends StatefulWidget {
 
   /// Le tableau occupe toujours [hauteurMax] (dialogs : la hauteur ne varie pas avec le nombre de lignes).
   final bool hauteurFixe;
+
+  /// Listes de produits des dialogs : la hauteur maximale suit l'écran, moins cette réserve (en-tête, champs,
+  /// pied) — voir [hauteurListeDialog]. Prioritaire sur [hauteurMax].
+  final double? reserveEcran;
 
   /// Colonnes que l'utilisateur a le droit de voir.
   List<DsColonne<T>> get colonnesAutorisees =>
@@ -636,8 +648,11 @@ class DsDataTableState<T> extends State<DsDataTable<T>> {
 
     return LayoutBuilder(
       builder: (context, contraintes) {
-        final borne = contraintes.hasBoundedHeight || widget.hauteurMax != null;
-        final etire = widget.hauteurFixe && widget.hauteurMax != null;
+        final hauteurMax = widget.reserveEcran != null
+            ? hauteurListeDialog(context, reserve: widget.reserveEcran!)
+            : widget.hauteurMax;
+        final borne = contraintes.hasBoundedHeight || hauteurMax != null;
+        final etire = widget.hauteurFixe && hauteurMax != null;
         final defilement = contraintes.hasBoundedWidth && contraintes.maxWidth < largeurMin;
         Widget grille = Column(
           mainAxisSize: etire ? MainAxisSize.max : MainAxisSize.min,
@@ -663,8 +678,8 @@ class DsDataTableState<T> extends State<DsDataTable<T>> {
         // Encadré (`ModuleTable`) : la pagination est dans la carte, sous un filet.
         final paginationInterne = widget.pagine && widget.encadre;
         final tableau = Container(
-          height: widget.hauteurFixe ? widget.hauteurMax : null,
-          constraints: widget.hauteurMax != null ? BoxConstraints(maxHeight: widget.hauteurMax!) : null,
+          height: widget.hauteurFixe ? hauteurMax : null,
+          constraints: hauteurMax != null ? BoxConstraints(maxHeight: hauteurMax) : null,
           decoration: BoxDecoration(
             color: c.surfaceCard,
             borderRadius: widget.encadre ? DsRadius.borderLg : null,

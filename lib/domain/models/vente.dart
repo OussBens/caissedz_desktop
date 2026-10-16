@@ -166,7 +166,6 @@ class Vente {
     this.lignes = const [],
     this.paiements = const [],
     this.commentaire,
-    this.typePanier = 'Ticket',
   });
 
   /// Colonnes d'audit (créé / modifié le / par), en lecture seule.
@@ -194,9 +193,6 @@ class Vente {
   final List<Paiement> paiements;
   final String? commentaire;
 
-  /// Type de panier (référentiel `typePannier`) ; hors document scellé.
-  final String typePanier;
-
   double get monnaie => (verse - totalNet) > 0 ? verse - totalNet : 0;
 
   Map<String, Object?> versLigne() => {
@@ -218,7 +214,6 @@ class Vente {
     'hash': hash,
     'hash_precedent': hashPrecedent,
     'commentaire': commentaire,
-    'type_panier': typePanier,
   };
 
   factory Vente.depuisLigne(
@@ -245,7 +240,6 @@ class Vente {
     hash: r['hash'] as String,
     hashPrecedent: r['hash_precedent'] as String,
     commentaire: r['commentaire'] as String?,
-    typePanier: r['type_panier'] as String? ?? 'Ticket',
     lignes: lignes,
     paiements: paiements,
   );
@@ -335,7 +329,4 @@ class PanierResume {
       : resteActuel > 0
       ? 'credit'
       : 'paye';
-
-  /// `ticket` ou `facture` (BL / BL_SC).
-  String get type => vente.typePanier == 'Ticket' ? 'ticket' : 'facture';
 }

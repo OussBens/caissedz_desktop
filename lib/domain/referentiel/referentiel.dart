@@ -18,18 +18,6 @@ class Referentiel {
     ValeurReferentiel(stocke: 'Points', fr: 'Points fidélité', ar: 'نقاط الوفاء', en: 'Loyalty points'),
   ]);
 
-  /// Types de panier. BL et BL_SC s’affichent « Facture ».
-  static const ListeReferentiel typesPanier = ListeReferentiel('typePannier', [
-    ValeurReferentiel(stocke: 'Ticket', fr: 'Ticket', ar: 'تذكرة', en: 'Receipt'),
-    ValeurReferentiel(stocke: 'BL', fr: 'Facture (BL)', ar: 'فاتورة (وصل تسليم)', en: 'Invoice (DN)'),
-    ValeurReferentiel(
-      stocke: 'BL_SC',
-      fr: 'Facture (BL sans cachet)',
-      ar: 'فاتورة (بدون ختم)',
-      en: 'Invoice (no stamp)',
-    ),
-  ]);
-
   /// Types de versement.
   static const ListeReferentiel typesVersement = ListeReferentiel('typeVersement', [
     ValeurReferentiel(stocke: 'Avancement', fr: 'Avancement', ar: 'تسبيق', en: 'Advance'),
@@ -208,7 +196,6 @@ class Referentiel {
 
   static const List<ListeReferentiel> toutes = [
     modesPaiement,
-    typesPanier,
     typesVersement,
     motifsSortie,
     typesMouvement,

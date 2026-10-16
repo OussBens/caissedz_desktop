@@ -32,8 +32,6 @@ String libelleStatut(AppLocalizations l10n, String statut) => switch (statut) {
   'recu' => l10n.statutRecu,
   'traite' => l10n.statutTraite,
   'erreur' => l10n.statutErreur,
-  'ticket' => l10n.statutTicket,
-  'facture' => l10n.statutFacture,
   _ => DsStatut.presets[statut]?.$2 ?? statut,
 };
 

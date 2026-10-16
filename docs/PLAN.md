@@ -724,3 +724,21 @@ Référence : `docs/design/CaisseDZ-DS-v2.2/CaisseDZ-DS-v2.2.html`, `bundle-v2.2
 - ✅ Cartes clients / fournisseurs redessinées : initiales, téléphone et code, statut, bandeau Total achats / Crédit ;
   adresse et étoiles retirées.
 - ✅ Caisse : carte produit moins haute (172 au lieu de 196) et photo deux fois plus haute (104 au lieu de 52).
+
+## Retours utilisateur — Listes, codes ENT, type de panier, packs, remises, filtres ✅ (2026-10-16)
+
+- ✅ Dialogs de listes de produits plus hauts : la hauteur suit l'écran (`hauteurListeDialog`, `DsDataTable.reserveEcran`,
+  `DsLineItemsEditor` par défaut) — liste des produits d'un document ou d'un panier, détail d'entrée / sortie /
+  transfert / besoin, lignes des formulaires, sélecteur de produits, recherche caisse, ventes du jour.
+- ✅ Entrées (normales et rapides) codées `ENT` au lieu de `SS` ; migration v24 : les entrées existantes sont renommées
+  partout où leur code est repris (lignes, bons reçus, imputations, retours fournisseurs, mouvements, historique).
+- ✅ Type de panier (Ticket / BL / BL SC) supprimé : bouton BL / SC et raccourci F5 de la caisse, filtre et colonne
+  Type des Ventes et des ventes du jour, badge et ligne du détail, référentiel `typePannier`. La colonne
+  `vente.type_panier` reste en base (valeur par défaut), hors scellement.
+- ✅ Recherche produit (caisse) : « Réinitialiser » en bouton icône seule (infobulle).
+- ✅ Caisse : les lignes d'un pack vont ensemble — supprimer un produit retire tout le pack ; changer la quantité
+  d'une ligne ramène tout le pack à un nombre entier de packs (contrôle de stock sur chaque produit).
+- ✅ Nouvelle / modifier remise : sections Type de remise, Informations générales, Valeur de la remise, Période de
+  validité, Produits concernés.
+- ✅ Filtres Produits : 1ʳᵉ ligne Catégorie, Stock, Marque ; 2ᵉ ligne Quantité, Prix de vente, Prix d'achat.
+- ✅ Mouvements : Produit sur la 1ʳᵉ ligne avec Du / Au / Période ; Type, Magasin, Utilisateur sur la 2ᵉ.

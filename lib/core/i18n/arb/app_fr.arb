@@ -351,7 +351,6 @@
   "posRaccourciF2": "Rechercher / scanner",
   "posRaccourciF3": "Recherche avancée",
   "posRaccourciF4": "Encaisser le ticket",
-  "posRaccourciF5": "Encaisser BL / SC",
   "posRaccourciF6": "Enregistrer le ticket (crédit)",
   "posRaccourciF7": "Choisir le client",
   "posRaccourciF8": "Choisir une remise",
@@ -1437,8 +1436,6 @@
       }
     }
   },
-  "statutTicket": "Ticket",
-  "statutFacture": "BL / SC",
   "posErreurMotif": "Le motif est obligatoire.",
   "posErreurMontantPaye": "Le montant payé ne peut pas baisser (déjà payé : {montant}). Utilisez un retour.",
   "@posErreurMontantPaye": {
@@ -1623,26 +1620,18 @@
   "posPanierVideDesc": "Scannez un code-barres ou touchez un produit.",
   "posLigneAide": "Double-clic : modifier le prix · clic sur le colis : changer le colis",
   "posEnregistrer": "Enregistrer",
-  "posBlSc": "BL / SC",
   "posEncaisserBouton": "Encaisser",
   "posEncTicketTitre": "Encaisser le ticket",
-  "posEncBlscTitre": "Encaisser BL / SC",
   "posEncSaveTitre": "Enregistrer le ticket",
   "posEncTicketDesc": "Vérifiez le montant reçu puis validez : le ticket est imprimé.",
-  "posEncBlscDesc": "Bon de livraison sans cachet, avec mentions légales.",
   "posEncSaveDesc": "Le ticket est enregistré : le reste est porté au crédit du client.",
   "posEncTicketOk": "Encaisser et imprimer",
-  "posEncBlscOk": "Encaisser le BL / SC",
   "posInfoVente": "Vente",
   "posInfoDate": "Date",
   "posInfoProduits": "Produits",
   "posInfoPieces": "Pièces",
   "posInfoPaiement": "Paiement",
   "posInfoCaissier": "Caissier",
-  "posSortieImprimer": "Imprimer",
-  "posSortieImprimerDesc": "Imprimante A4 par défaut",
-  "posSortiePdf": "Enregistrer en PDF",
-  "posSortiePdfDesc": "Enregistrer ou partager le document",
   "posToastEncaisse": "{type} {code} encaissé",
   "@posToastEncaisse": {
     "placeholders": {
@@ -3708,5 +3697,9 @@
   "entTypeNormale": "Entrée normale",
   "tiersSoldeAvant": "Solde avant",
   "tiersSoldeApres": "Solde après",
-  "stkErreurSortieRetour": "Sortie liée à un retour : modifiez ou annulez le retour."
+  "stkErreurSortieRetour": "Sortie liée à un retour : modifiez ou annulez le retour.",
+  "remiseSectionType": "Type de remise",
+  "remiseSectionInfos": "Informations générales",
+  "remiseSectionCalcul": "Valeur de la remise",
+  "remiseSectionPeriode": "Période de validité"
 }

@@ -138,15 +138,15 @@ void main() {
       await _donnees(c);
       await tester.pumpAndSettle();
       // Navigateur imbriqué du shell : la liste s'ouvre juste sous le champ, pas décalée de la barre latérale.
-      final champ = tester.getRect(find.byKey(const ValueKey('filtre_type_panier')));
-      await clic(tester, find.byKey(const ValueKey('filtre_type_panier')));
+      final champ = tester.getRect(find.byKey(const ValueKey('filtre_statut_panier')));
+      await clic(tester, find.byKey(const ValueKey('filtre_statut_panier')));
       final option = tester.getRect(find.text('Tous').last); // 1re option
       expect((option.top - champ.bottom).abs(), lessThan(24));
       expect((option.left - champ.left).abs(), lessThan(24));
       await tester.sendKeyEvent(LogicalKeyboardKey.escape);
       await tester.pumpAndSettle();
       // Filtres de date alignés : Du, Au et Période rapide dans la grille des filtres.
-      expect(tester.getTopLeft(find.text('Du')).dy, tester.getTopLeft(find.text('Type')).dy);
+      expect(tester.getTopLeft(find.text('Du')).dy, tester.getTopLeft(find.text('Statut')).dy);
 
       await clic(tester, find.text('PDF'));
       expect(rendus.single, startsWith('ventes_'));

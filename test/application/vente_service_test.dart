@@ -257,9 +257,7 @@ void main() {
         session: c.session,
         magasinCode: 'MAG0000',
         creditAutorise: true,
-        typePanier: 'BL_SC',
       );
-      expect(credit.typePanier, 'BL_SC');
       expect(credit.reste, 200);
       await expectLater(
         c.ventes.modifier(credit.code, montantPaye: 50, mode: 'Espèces'),
@@ -280,7 +278,6 @@ void main() {
       expect(panier.resteActuel, 50);
       expect(panier.nbVersements, 1);
       expect(panier.statut, 'credit');
-      expect(panier.type, 'facture');
       expect(panier.totalAchat, 240);
       expect(panier.marge, 60);
 

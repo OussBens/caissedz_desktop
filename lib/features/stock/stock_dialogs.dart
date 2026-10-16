@@ -544,7 +544,7 @@ Widget _tableLignes(
   dense: true,
   encadre: false,
   pagine: false,
-  hauteurMax: 320,
+  reserveEcran: 360,
   cle: (l) => l.produitCode,
   lignes: lignes,
   colonnes: [
@@ -1196,7 +1196,7 @@ Future<void> afficherDetailMagasin(BuildContext context, WidgetRef ref, Magasin 
             dense: true,
             encadre: false,
             pagine: false,
-            hauteurMax: 240,
+            reserveEcran: 360,
             cle: (l) => l.$1.code,
             lignes: enStock,
             messageVide: l10n.dsAucunElement,

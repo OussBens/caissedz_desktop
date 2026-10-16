@@ -1521,12 +1521,6 @@ abstract class AppLocalizations {
   /// **'Encaisser le ticket'**
   String get posRaccourciF4;
 
-  /// No description provided for @posRaccourciF5.
-  ///
-  /// In fr, this message translates to:
-  /// **'Encaisser BL / SC'**
-  String get posRaccourciF5;
-
   /// No description provided for @posRaccourciF6.
   ///
   /// In fr, this message translates to:
@@ -5745,18 +5739,6 @@ abstract class AppLocalizations {
   /// **'{ok} panier(s) annulé(s). Échec : {detail}'**
   String ventesAnnulesPartiel(String detail, int ok);
 
-  /// No description provided for @statutTicket.
-  ///
-  /// In fr, this message translates to:
-  /// **'Ticket'**
-  String get statutTicket;
-
-  /// No description provided for @statutFacture.
-  ///
-  /// In fr, this message translates to:
-  /// **'BL / SC'**
-  String get statutFacture;
-
   /// No description provided for @posErreurMotif.
   ///
   /// In fr, this message translates to:
@@ -6393,12 +6375,6 @@ abstract class AppLocalizations {
   /// **'Enregistrer'**
   String get posEnregistrer;
 
-  /// No description provided for @posBlSc.
-  ///
-  /// In fr, this message translates to:
-  /// **'BL / SC'**
-  String get posBlSc;
-
   /// No description provided for @posEncaisserBouton.
   ///
   /// In fr, this message translates to:
@@ -6410,12 +6386,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Encaisser le ticket'**
   String get posEncTicketTitre;
-
-  /// No description provided for @posEncBlscTitre.
-  ///
-  /// In fr, this message translates to:
-  /// **'Encaisser BL / SC'**
-  String get posEncBlscTitre;
 
   /// No description provided for @posEncSaveTitre.
   ///
@@ -6429,12 +6399,6 @@ abstract class AppLocalizations {
   /// **'Vérifiez le montant reçu puis validez : le ticket est imprimé.'**
   String get posEncTicketDesc;
 
-  /// No description provided for @posEncBlscDesc.
-  ///
-  /// In fr, this message translates to:
-  /// **'Bon de livraison sans cachet, avec mentions légales.'**
-  String get posEncBlscDesc;
-
   /// No description provided for @posEncSaveDesc.
   ///
   /// In fr, this message translates to:
@@ -6446,12 +6410,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Encaisser et imprimer'**
   String get posEncTicketOk;
-
-  /// No description provided for @posEncBlscOk.
-  ///
-  /// In fr, this message translates to:
-  /// **'Encaisser le BL / SC'**
-  String get posEncBlscOk;
 
   /// No description provided for @posInfoVente.
   ///
@@ -6488,30 +6446,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Caissier'**
   String get posInfoCaissier;
-
-  /// No description provided for @posSortieImprimer.
-  ///
-  /// In fr, this message translates to:
-  /// **'Imprimer'**
-  String get posSortieImprimer;
-
-  /// No description provided for @posSortieImprimerDesc.
-  ///
-  /// In fr, this message translates to:
-  /// **'Imprimante A4 par défaut'**
-  String get posSortieImprimerDesc;
-
-  /// No description provided for @posSortiePdf.
-  ///
-  /// In fr, this message translates to:
-  /// **'Enregistrer en PDF'**
-  String get posSortiePdf;
-
-  /// No description provided for @posSortiePdfDesc.
-  ///
-  /// In fr, this message translates to:
-  /// **'Enregistrer ou partager le document'**
-  String get posSortiePdfDesc;
 
   /// No description provided for @posToastEncaisse.
   ///
@@ -13556,6 +13490,30 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Sortie liée à un retour : modifiez ou annulez le retour.'**
   String get stkErreurSortieRetour;
+
+  /// No description provided for @remiseSectionType.
+  ///
+  /// In fr, this message translates to:
+  /// **'Type de remise'**
+  String get remiseSectionType;
+
+  /// No description provided for @remiseSectionInfos.
+  ///
+  /// In fr, this message translates to:
+  /// **'Informations générales'**
+  String get remiseSectionInfos;
+
+  /// No description provided for @remiseSectionCalcul.
+  ///
+  /// In fr, this message translates to:
+  /// **'Valeur de la remise'**
+  String get remiseSectionCalcul;
+
+  /// No description provided for @remiseSectionPeriode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Période de validité'**
+  String get remiseSectionPeriode;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

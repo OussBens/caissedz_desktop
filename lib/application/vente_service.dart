@@ -68,7 +68,6 @@ class VenteService {
     required String magasinCode,
     bool creditAutorise = false,
     DateTime? date,
-    String typePanier = 'Ticket',
   }) async {
     if (!session.estOuverte) throw const VenteException(ErreurVente.sessionRequise);
     if (panier.estVide) throw const VenteException(ErreurVente.panierVide);
@@ -185,7 +184,6 @@ class VenteService {
         lignes: lignes,
         paiements: panier.paiements,
         commentaire: panier.commentaire,
-        typePanier: Referentiel.typesPanier.contient(typePanier) ? typePanier : 'Ticket',
       );
       final hash = Scellement.hacher(vente.versCanonique(), hashPrecedent);
       vente = Vente.depuisLigne({...vente.versLigne(), 'hash': hash}, lignes: lignes, paiements: panier.paiements);

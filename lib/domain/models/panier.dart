@@ -169,7 +169,36 @@ class Panier {
     return copyWith(lignes: copie);
   }
 
-  Panier retirer(int index) => copyWith(lignes: [...lignes]..removeAt(index));
+  /// Retire la ligne ; une ligne issue d'un pack emporte tout le pack (ses produits vont ensemble).
+  Panier retirer(int index) {
+    final pack = lignes[index].pack;
+    if (pack == null) return copyWith(lignes: [...lignes]..removeAt(index));
+    return copyWith(
+      lignes: [
+        for (final l in lignes)
+          if (l.pack?.code != pack.code) l,
+      ],
+    );
+  }
+
+  /// Quantité d'un produit dans une unité de [pack].
+  static double quantiteDansPack(Pack pack, String produitCode) =>
+      pack.lignes.where((c) => c.produitCode == produitCode).fold(0.0, (s, c) => s + c.quantite);
+
+  /// Nombre de [pack] dans le panier : toutes ses lignes passent à `quantité dans le pack × nombre`
+  /// (≤ 0 : le pack est retiré).
+  Panier quantitePack(Pack pack, double nombre) {
+    if (nombre <= 0) {
+      final i = lignes.indexWhere((l) => l.pack?.code == pack.code);
+      return i < 0 ? this : retirer(i);
+    }
+    return copyWith(
+      lignes: [
+        for (final l in lignes)
+          l.pack?.code == pack.code ? l.copyWith(quantite: quantiteDansPack(pack, l.produit.code) * nombre) : l,
+      ],
+    );
+  }
 
   /// Retire les lignes et les paiements ; client, remise et mode sont conservés.
   Panier vider() => Panier(

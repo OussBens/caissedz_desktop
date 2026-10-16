@@ -117,6 +117,8 @@ Future<List<Produit>> choisirProduits(
       libelle: (p) => p.designation,
       indiceRecherche: l10n.prdRechercheProduits,
       largeur: 960,
+      hauteurMax: hauteurListeDialog(context, reserve: 320),
+      hauteurFixe: true,
       hauteurCarte: 172,
       carte: (context, p, etat) {
         final stock = stocks[p.code] ?? 0;
@@ -161,6 +163,8 @@ class DocFormDialog extends ConsumerStatefulWidget {
     required this.titre,
     required this.icone,
     required this.entete,
+    this.titreLignes,
+    this.iconeLignes,
     required this.lignes,
     required this.onLignes,
     required this.colonnes,
@@ -186,6 +190,10 @@ class DocFormDialog extends ConsumerStatefulWidget {
   final String? description;
   final double largeur;
   final List<Widget> entete;
+
+  /// Titre de section (`DsSubHead`) au-dessus des lignes, quand l'en-tête est découpé en sections.
+  final String? titreLignes;
+  final IconData? iconeLignes;
   final List<LigneDoc> lignes;
   final ValueChanged<List<LigneDoc>> onLignes;
   final List<DsColonneLigne<LigneDoc>> colonnes;
@@ -290,6 +298,8 @@ class _DocFormDialogState extends ConsumerState<DocFormDialog> {
         spacing: 16,
         children: [
           DsGrilleFormulaire(children: widget.entete),
+          if (!widget.sansLignes && widget.titreLignes != null)
+            DsSubHead(widget.titreLignes!, icone: widget.iconeLignes),
           if (!widget.sansLignes)
             DsLineItemsEditor<LigneDoc>(
               lignes: widget.lignes,

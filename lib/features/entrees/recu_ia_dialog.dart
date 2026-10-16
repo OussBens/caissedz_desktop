@@ -515,7 +515,6 @@ class _RecuIADialogState extends ConsumerState<RecuIADialog> {
       cle: (l) => l.id,
       devise: devise,
       erreurs: erreurs,
-      hauteurMax: 320,
       totalLigne: (l) => l.quantite * l.prix,
       quantite: (l) => l.quantite,
       libelleAjouter: l10n.dsPosLigneAjouter,
@@ -793,7 +792,7 @@ Future<void> afficherBon(BuildContext context, WidgetRef ref, BonReception b) as
               dense: true,
               encadre: false,
               pagine: false,
-              hauteurMax: 280,
+              reserveEcran: 360,
               cle: (l) => '${b.lignes.indexOf(l)}',
               lignes: b.lignes,
               colonnes: [

@@ -753,9 +753,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get posRaccourciF4 => 'تحصيل التذكرة';
 
   @override
-  String get posRaccourciF5 => 'تحصيل وصل التسليم';
-
-  @override
   String get posRaccourciF6 => 'حفظ التذكرة (دين)';
 
   @override
@@ -2958,12 +2955,6 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get statutTicket => 'تذكرة';
-
-  @override
-  String get statutFacture => 'BL / SC';
-
-  @override
   String get posErreurMotif => 'السبب إلزامي.';
 
   @override
@@ -3300,16 +3291,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get posEnregistrer => 'حفظ';
 
   @override
-  String get posBlSc => 'وصل / بدون ختم';
-
-  @override
   String get posEncaisserBouton => 'تحصيل';
 
   @override
   String get posEncTicketTitre => 'تحصيل التذكرة';
-
-  @override
-  String get posEncBlscTitre => 'تحصيل وصل التسليم';
 
   @override
   String get posEncSaveTitre => 'حفظ التذكرة';
@@ -3318,16 +3303,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get posEncTicketDesc => 'تحقق من المبلغ المستلم ثم أكّد: تُطبع التذكرة.';
 
   @override
-  String get posEncBlscDesc => 'وصل تسليم بدون ختم، مع البيانات القانونية.';
-
-  @override
   String get posEncSaveDesc => 'تُحفظ التذكرة: يُسجَّل الباقي دينًا على الزبون.';
 
   @override
   String get posEncTicketOk => 'تحصيل وطباعة';
-
-  @override
-  String get posEncBlscOk => 'تحصيل الوصل';
 
   @override
   String get posInfoVente => 'البيع';
@@ -3346,18 +3325,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get posInfoCaissier => 'أمين الصندوق';
-
-  @override
-  String get posSortieImprimer => 'طباعة';
-
-  @override
-  String get posSortieImprimerDesc => 'طابعة A4 الافتراضية';
-
-  @override
-  String get posSortiePdf => 'حفظ بصيغة PDF';
-
-  @override
-  String get posSortiePdfDesc => 'حفظ المستند أو مشاركته';
 
   @override
   String posToastEncaisse(String code, String type) {
@@ -7117,4 +7084,16 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get stkErreurSortieRetour => 'إخراج مرتبط بإرجاع: عدّل الإرجاع أو ألغه.';
+
+  @override
+  String get remiseSectionType => 'نوع التخفيض';
+
+  @override
+  String get remiseSectionInfos => 'معلومات عامة';
+
+  @override
+  String get remiseSectionCalcul => 'قيمة التخفيض';
+
+  @override
+  String get remiseSectionPeriode => 'فترة الصلاحية';
 }

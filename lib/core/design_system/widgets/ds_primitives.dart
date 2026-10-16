@@ -229,8 +229,6 @@ class DsStatut {
     'entree': (DsBadgeTon.succes, 'Entrée'),
     'sortie': (DsBadgeTon.danger, 'Sortie'),
     'retourne': (DsBadgeTon.avertissement, 'Avec retour'),
-    'ticket': (DsBadgeTon.neutre, 'Ticket'),
-    'facture': (DsBadgeTon.primaire, 'BL / SC'),
     'client': (DsBadgeTon.info, 'Client'),
     'fournisseur': (DsBadgeTon.primaire, 'Fournisseur'),
   };

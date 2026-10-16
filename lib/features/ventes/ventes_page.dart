@@ -37,7 +37,6 @@ class VentesPage extends ConsumerStatefulWidget {
 
 class _VentesPageState extends ConsumerState<VentesPage> {
   DsPeriode _periode = DsPeriode.calculer('today');
-  String? _type;
   String? _statut;
   String? _caissier;
   String? _client;
@@ -47,7 +46,6 @@ class _VentesPageState extends ConsumerState<VentesPage> {
 
   void _reinitialiser() => setState(() {
     _periode = DsPeriode.calculer('today');
-    _type = null;
     _statut = null;
     _caissier = null;
     _client = null;
@@ -70,7 +68,6 @@ class _VentesPageState extends ConsumerState<VentesPage> {
     final lignes = tous
         .where(
           (p) =>
-              (_type == null || p.type == _type) &&
               (_statut == null || p.statut == _statut) &&
               (_caissier == null || p.caissier == _caissier) &&
               (_client == null || p.vente.clientCode == _client) &&
@@ -95,12 +92,6 @@ class _VentesPageState extends ConsumerState<VentesPage> {
         cellule: (_, p) => Text(formatDateHeure.format(p.vente.date)),
       ),
       DsColonne(id: 'client', libelle: l10n.ventesClient, valeur: client, fort: true, flex: 2),
-      DsColonne(
-        id: 'type',
-        libelle: l10n.ventesType,
-        valeur: (p) => p.type,
-        cellule: (_, p) => DsStatusBadge(statut: p.type, libelle: libelleStatut(l10n, p.type), point: false),
-      ),
       DsColonne(
         id: 'montant',
         libelle: l10n.ventesMontant,
@@ -279,18 +270,10 @@ class _VentesPageState extends ConsumerState<VentesPage> {
         indiceRecherche: l10n.ventesRechercheIndice,
         texteRecherche: (p) => '${p.code} ${client(p)}',
         nbFiltresActifs:
-            [_type, _statut, _caissier, _client, _caisse, _session].where((f) => f != null).length +
+            [_statut, _caissier, _client, _caisse, _session].where((f) => f != null).length +
             (_montant.estVide ? 0 : 1),
         onReinitialiser: _reinitialiser,
         filtres: [
-          _filtre<String?>(
-            l10n.ventesType,
-            cle: 'filtre_type_panier',
-            valeur: _type,
-            options: const [null, 'ticket', 'facture'],
-            libelle: (v) => v == null ? l10n.ventesTous : libelleStatut(l10n, v),
-            onChanged: (v) => setState(() => _type = v),
-          ),
           _filtre<String?>(
             l10n.ventesStatut,
             cle: 'filtre_statut_panier',

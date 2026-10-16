@@ -170,15 +170,14 @@ void main() {
     expect(p.lignes.single.quantite, 1);
   });
 
-  test('encaisser depuis le dialog : paiement unique dans le mode du panier, BL / SC, crédit client', () async {
+  test('encaisser depuis le dialog : paiement unique dans le mode du panier, crédit client', () async {
     final ctrl = c.read(posControllerProvider.notifier);
     await ctrl.ouvrirSession(caisseCode: 'CIS0000', fondInitial: 0);
     await ctrl.ajouter(lait, quantite: 2);
     ctrl.choisirModePaiement('Carte');
-    final v = await ctrl.encaisser(montantPaye: 500, typePanier: 'BL_SC');
+    final v = await ctrl.encaisser(montantPaye: 500);
     expect(v.verse, 200);
     expect(v.monnaie, 0);
-    expect(v.typePanier, 'BL_SC');
     final p = c.read(posControllerProvider).panier;
     expect(p.estVide, isTrue);
     expect(p.modePaiement, 'Espèces');
@@ -190,65 +189,78 @@ void main() {
     );
   });
 
-  test('pack éclaté : une ligne par produit, tout ou rien, distinct du produit seul, vente et annulation', () async {
-    final db = c.read(appDatabaseProvider).db;
-    final ctrl = c.read(posControllerProvider.notifier);
-    final pack = await CatalogueService(db, utilisateurCode: 'USR0000').creerPack(
-      Pack(
-        code: '',
-        designation: 'Petit-déj',
-        prixVente: 120,
-        lignes: [
-          PackLigne(produitCode: lait.code, quantite: 1),
-          PackLigne(produitCode: eau.code, quantite: 2),
-        ],
-      ),
-    );
-    // Eau sans stock : le pack entier est refusé, aucune ligne ajoutée.
-    await expectLater(
-      ctrl.ajouterPack(pack),
-      throwsA(isA<PosException>().having((e) => e.erreur, 'e', ErreurPos.stockInsuffisant)),
-    );
-    expect(c.read(posControllerProvider).panier.estVide, isTrue);
-    await StockService(
-      db,
-      utilisateurCode: 'USR0000',
-    ).entrerStock(produitCode: eau.code, magasinCode: 'MAG0000', quantite: 5);
-    await ctrl.ajouter(lait);
-    await ctrl.ajouterPack(pack, quantite: 2);
-    var p = c.read(posControllerProvider).panier;
-    expect(p.lignes.length, 3);
-    final lPack = p.lignes[1];
-    expect(
-      (lPack.produit.code, lPack.pack?.code, lPack.quantite, lPack.prixUnitaire),
-      (lait.code, pack.code, 2.0, 75.0),
-    );
-    expect((p.lignes[2].produit.code, p.lignes[2].quantite, p.lignes[2].prixUnitaire), (eau.code, 4.0, 22.5));
-    expect(p.totalNet, 100 + 240);
-    // Quantité modifiable sur une ligne de pack ; la ligne du produit seul reste à part.
-    await ctrl.modifierQuantite(1, 3);
-    await expectLater(ctrl.modifierQuantite(2, 6), throwsA(isA<PosException>()), reason: 'eau : 5 en stock');
-    await ctrl.ajouter(lait);
-    p = c.read(posControllerProvider).panier;
-    expect(p.lignes.map((l) => l.quantite), [2, 3, 4]);
-    // Un 3ᵉ pack manque d'eau (4 + 2 > 5) : refusé en bloc.
-    await expectLater(ctrl.ajouterPack(pack), throwsA(isA<PosException>()));
-    expect(c.read(posControllerProvider).panier.lignes.map((l) => l.quantite), [2, 3, 4]);
+  test(
+    'pack éclaté : une ligne par produit, tout ou rien, lignes liées, distinct du produit seul, vente et annulation',
+    () async {
+      final db = c.read(appDatabaseProvider).db;
+      final ctrl = c.read(posControllerProvider.notifier);
+      final pack = await CatalogueService(db, utilisateurCode: 'USR0000').creerPack(
+        Pack(
+          code: '',
+          designation: 'Petit-déj',
+          prixVente: 120,
+          lignes: [
+            PackLigne(produitCode: lait.code, quantite: 1),
+            PackLigne(produitCode: eau.code, quantite: 2),
+          ],
+        ),
+      );
+      // Eau sans stock : le pack entier est refusé, aucune ligne ajoutée.
+      await expectLater(
+        ctrl.ajouterPack(pack),
+        throwsA(isA<PosException>().having((e) => e.erreur, 'e', ErreurPos.stockInsuffisant)),
+      );
+      expect(c.read(posControllerProvider).panier.estVide, isTrue);
+      await StockService(
+        db,
+        utilisateurCode: 'USR0000',
+      ).entrerStock(produitCode: eau.code, magasinCode: 'MAG0000', quantite: 5);
+      await ctrl.ajouter(lait);
+      await ctrl.ajouterPack(pack, quantite: 2);
+      var p = c.read(posControllerProvider).panier;
+      expect(p.lignes.length, 3);
+      final lPack = p.lignes[1];
+      expect(
+        (lPack.produit.code, lPack.pack?.code, lPack.quantite, lPack.prixUnitaire),
+        (lait.code, pack.code, 2.0, 75.0),
+      );
+      expect((p.lignes[2].produit.code, p.lignes[2].quantite, p.lignes[2].prixUnitaire), (eau.code, 4.0, 22.5));
+      expect(p.totalNet, 100 + 240);
+      // Les lignes d'un pack vont ensemble : la quantité suit un nombre entier de packs sur toutes ses lignes.
+      await expectLater(
+        ctrl.modifierQuantite(1, 3),
+        throwsA(isA<PosException>()),
+        reason: '3 packs : 6 eaux, 5 en stock',
+      );
+      await ctrl.modifierQuantite(2, 3); // baisse : 1,5 pack ⇒ 1 pack
+      expect(c.read(posControllerProvider).panier.lignes.map((l) => l.quantite), [1, 1, 2]);
+      await ctrl.modifierQuantite(2, 3); // hausse : 1,5 pack ⇒ 2 packs
+      await ctrl.ajouter(lait);
+      p = c.read(posControllerProvider).panier;
+      expect(p.lignes.map((l) => l.quantite), [2, 2, 4]);
+      // Un 3ᵉ pack manque d'eau (4 + 2 > 5) : refusé en bloc.
+      await expectLater(ctrl.ajouterPack(pack), throwsA(isA<PosException>()));
+      expect(c.read(posControllerProvider).panier.lignes.map((l) => l.quantite), [2, 2, 4]);
+      // Supprimer un produit du pack retire tout le pack ; le produit seul reste.
+      ctrl.retirerLigne(2);
+      expect(c.read(posControllerProvider).panier.lignes.map((l) => (l.quantite, l.pack)), [(2.0, null)]);
+      await ctrl.ajouterPack(pack, quantite: 2);
 
-    await ctrl.ouvrirSession(caisseCode: 'CIS0000', fondInitial: 0);
-    final v = await ctrl.encaisser(montantPaye: 10000);
-    expect(v.lignes.map((l) => (l.produitCode, l.packCode, l.composantPack, l.quantite)), [
-      (lait.code, null, false, 2.0),
-      (lait.code, pack.code, true, 3.0),
-      (eau.code, pack.code, true, 4.0),
-    ]);
-    final stock = StockRepository(db);
-    expect((await stock.niveau(lait.code, 'MAG0000')).quantite, 5);
-    expect((await stock.niveau(eau.code, 'MAG0000')).quantite, 1);
-    await c.read(venteServiceProvider).annuler(v.code, motif: 'Test');
-    expect((await stock.niveau(lait.code, 'MAG0000')).quantite, 10);
-    expect((await stock.niveau(eau.code, 'MAG0000')).quantite, 5);
-  });
+      await ctrl.ouvrirSession(caisseCode: 'CIS0000', fondInitial: 0);
+      final v = await ctrl.encaisser(montantPaye: 10000);
+      expect(v.lignes.map((l) => (l.produitCode, l.packCode, l.composantPack, l.quantite)), [
+        (lait.code, null, false, 2.0),
+        (lait.code, pack.code, true, 2.0),
+        (eau.code, pack.code, true, 4.0),
+      ]);
+      final stock = StockRepository(db);
+      expect((await stock.niveau(lait.code, 'MAG0000')).quantite, 6);
+      expect((await stock.niveau(eau.code, 'MAG0000')).quantite, 1);
+      await c.read(venteServiceProvider).annuler(v.code, motif: 'Test');
+      expect((await stock.niveau(lait.code, 'MAG0000')).quantite, 10);
+      expect((await stock.niveau(eau.code, 'MAG0000')).quantite, 5);
+    },
+  );
 
   test('vente au montant : une seule ligne cumulée, sans stock, modifiable', () async {
     final db = c.read(appDatabaseProvider).db;

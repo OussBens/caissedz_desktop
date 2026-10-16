@@ -43,7 +43,7 @@ String formatHeure(DateTime d) => '${d.hour.toString().padLeft(2, '0')}:${d.minu
 String _da(WidgetRef ref, double v) => formaterMontant(v, ref.read(deviseProvider));
 
 /// Hauteur stable des tableaux des dialogs de caisse (ventes du jour, recette) : suit la fenêtre.
-double _hauteurTable(BuildContext context) => (MediaQuery.sizeOf(context).height - 440).clamp(280.0, 600.0);
+double _hauteurTable(BuildContext context) => hauteurListeDialog(context, reserve: 380, min: 280);
 
 String _qte(double v) => v == v.roundToDouble() ? v.toInt().toString() : formaterNombre(v, decimales: 2);
 
@@ -418,17 +418,14 @@ class _SelectionProduitDialogState extends ConsumerState<_SelectionProduitDialog
 }
 
 // ---------------------------------------------------------------------------------------------------------------
-// 2 · Encaisser ticket / BL-SC / Enregistrer (EncaisserDialog, 860 px).
+// 2 · Encaisser / Enregistrer (EncaisserDialog, 860 px).
 // ---------------------------------------------------------------------------------------------------------------
 
-/// Nature de l'encaissement : ticket (F4), BL / SC (F5), enregistrement à crédit (F6).
-enum NatureEncaissement { ticket, blsc, enregistrer }
+/// Nature de l'encaissement : ticket (F4) ou enregistrement à crédit (F6).
+enum NatureEncaissement { ticket, enregistrer }
 
-/// Sortie d'un BL / SC.
-enum SortieDocument { imprimer, pdf }
-
-/// Montant payé, moyen de paiement et sortie choisis ; `null` si annulé.
-typedef ResultatEncaissement = ({double paye, String mode, SortieDocument sortie});
+/// Montant payé et moyen de paiement choisis ; `null` si annulé.
+typedef ResultatEncaissement = ({double paye, String mode});
 
 /// Moyens de paiement proposés à l'encaissement (§9.16) : ceux rendus visibles dans Paramètres ; « Points »
 /// seulement si le bonus fidélité est actif et le client identifié.
@@ -489,7 +486,6 @@ class _EncaisserDialogState extends ConsumerState<_EncaisserDialog> {
   bool get _enregistrer => widget.nature == NatureEncaissement.enregistrer;
   late String _paye = _enregistrer ? '0' : formaterNombre(widget.panier.totalNet, decimales: 2);
   late bool _complet = !_enregistrer;
-  SortieDocument _sortie = SortieDocument.imprimer;
   late String _mode = widget.panier.modePaiement;
 
   bool get _comptoir => widget.panier.clientCode == 'CLN0000';
@@ -500,7 +496,7 @@ class _EncaisserDialogState extends ConsumerState<_EncaisserDialog> {
 
   void _valider() {
     if (_bloque) return;
-    Navigator.of(context).pop((paye: _payeN, mode: _mode, sortie: _sortie));
+    Navigator.of(context).pop((paye: _payeN, mode: _mode));
   }
 
   @override
@@ -511,7 +507,6 @@ class _EncaisserDialogState extends ConsumerState<_EncaisserDialog> {
     if (!modes.contains(_mode)) _mode = modes.first;
     final (titre, icone, ok) = switch (widget.nature) {
       NatureEncaissement.ticket => (l10n.posEncTicketTitre, LucideIcons.receipt, l10n.posEncTicketOk),
-      NatureEncaissement.blsc => (l10n.posEncBlscTitre, LucideIcons.fileText, l10n.posEncBlscOk),
       NatureEncaissement.enregistrer => (l10n.posEncSaveTitre, LucideIcons.save, l10n.posEnregistrer),
     };
     return CallbackShortcuts(
@@ -525,7 +520,6 @@ class _EncaisserDialogState extends ConsumerState<_EncaisserDialog> {
         largeur: 860,
         description: switch (widget.nature) {
           NatureEncaissement.ticket => l10n.posEncTicketDesc,
-          NatureEncaissement.blsc => l10n.posEncBlscDesc,
           NatureEncaissement.enregistrer => l10n.posEncSaveDesc,
         },
         actions: [
@@ -588,26 +582,6 @@ class _EncaisserDialogState extends ConsumerState<_EncaisserDialog> {
                 DsInfoPaiement(l10n.posInfoCaissier, widget.caissier),
               ],
             ),
-            if (widget.nature == NatureEncaissement.blsc)
-              DsChoiceCards<SortieDocument>(
-                petit: true,
-                valeur: _sortie,
-                onChanged: (v) => setState(() => _sortie = v),
-                options: [
-                  DsOption(
-                    SortieDocument.imprimer,
-                    libelle: l10n.posSortieImprimer,
-                    icone: LucideIcons.printer,
-                    description: l10n.posSortieImprimerDesc,
-                  ),
-                  DsOption(
-                    SortieDocument.pdf,
-                    libelle: l10n.posSortiePdf,
-                    icone: LucideIcons.fileDown,
-                    description: l10n.posSortiePdfDesc,
-                  ),
-                ],
-              ),
           ],
         ),
       ),
@@ -929,7 +903,7 @@ class _RechercheProduitDialogState extends ConsumerState<_RechercheProduitDialog
     final c = context.ds.colors;
     final listeCategories = ref.watch(categoriesProvider).value ?? const <Categorie>[];
     final categories = {for (final c in listeCategories) c.code: c.nom};
-    final hauteur = (MediaQuery.sizeOf(context).height - 420).clamp(260.0, 560.0);
+    final hauteur = hauteurListeDialog(context, reserve: 380, min: 260);
     Widget fourchette(
       String libelle,
       String cle,
@@ -996,11 +970,11 @@ class _RechercheProduitDialogState extends ConsumerState<_RechercheProduitDialog
           ),
           fourchette(l10n.produitsColStock, 'recherche_qte', _qteMin, _qteMax, null),
           fourchette(l10n.dsPosPrix, 'recherche_prix', _prixMin, _prixMax, ref.read(deviseProvider)),
-          DsButton(
-            libelle: l10n.dsReinitialiser,
+          DsIconButton(
+            key: const ValueKey('recherche_reinitialiser'),
             icone: LucideIcons.rotateCcw,
-            variante: DsButtonVariante.fantome,
-            taille: DsButtonTaille.sm,
+            tooltip: l10n.dsReinitialiser,
+            contour: true,
             onPressed: _actifs ? _reinitialiser : null,
           ),
         ],
@@ -1510,7 +1484,6 @@ class _VentesDuJourDialog extends ConsumerStatefulWidget {
 
 class _VentesDuJourDialogState extends ConsumerState<_VentesDuJourDialog> {
   String _q = '';
-  String? _type;
   String? _mode;
 
   @override
@@ -1527,7 +1500,6 @@ class _VentesDuJourDialogState extends ConsumerState<_VentesDuJourDialog> {
     final lignes = duPoste
         .where(
           (p) =>
-              (_type == null || p.type == _type) &&
               (_mode == null || p.modes.contains(_mode)) &&
               (q.isEmpty ||
                   '${p.vente.code} ${nomClientPanier(l10n, p.vente.clientCode, noms)}'.toLowerCase().contains(q)),
@@ -1550,7 +1522,6 @@ class _VentesDuJourDialogState extends ConsumerState<_VentesDuJourDialog> {
         fort: true,
         flex: 2,
       ),
-      DsColonne(id: 'type', libelle: l10n.posMvtType, valeur: (p) => p.type, cellule: (_, p) => BadgeStatut(p.type)),
       DsColonne(
         id: 'montant',
         libelle: l10n.dsPosMontant,
@@ -1589,15 +1560,6 @@ class _VentesDuJourDialogState extends ConsumerState<_VentesDuJourDialog> {
             children: [
               Expanded(
                 child: DsSearchField(indice: l10n.posVdjIndice, onChanged: (v) => setState(() => _q = v)),
-              ),
-              SizedBox(
-                width: 170,
-                child: DsSelect<String?>(
-                  valeur: _type,
-                  options: const [null, 'ticket', 'facture'],
-                  libelle: (v) => v == null ? l10n.retoursTous : libelleStatut(l10n, v),
-                  onChanged: (v) => setState(() => _type = v),
-                ),
               ),
               SizedBox(
                 width: 190,

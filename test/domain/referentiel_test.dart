@@ -5,8 +5,8 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('Referentiel (§13, donnees/ref.js)', () {
-    test('les 14 listes du DS et les listes système sont présentes', () {
-      expect(Referentiel.toutes.length, 16);
+    test('les listes du DS (sans le type de panier, retiré) et les listes système sont présentes', () {
+      expect(Referentiel.toutes.length, 15);
     });
 
     test('aucune valeur stockée en double dans une liste', () {
@@ -45,7 +45,6 @@ void main() {
       expect(Referentiel.typesCaisse.valeurs.map((v) => v.stocke), ['Physique', 'Compte']);
       expect(Referentiel.typesClient.valeurs.first.stocke, 'Consommateur');
       expect(Referentiel.typesFournisseur.valeurs.length, 7);
-      expect(Referentiel.typesPanier.valeurs.map((v) => v.stocke), ['Ticket', 'BL', 'BL_SC']);
     });
   });
 }

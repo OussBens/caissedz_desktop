@@ -304,6 +304,7 @@ class PosController extends Notifier<PosEtat> {
 
   Future<void> modifierQuantite(int index, double quantite) async {
     final l = state.panier.lignes[index];
+    if (l.pack != null) return _modifierPack(l, quantite);
     if (quantite > l.quantite) {
       final delta = quantite - l.quantite;
       if (l.uniteVente == UniteVente.nombre) {
@@ -318,6 +319,27 @@ class PosController extends Notifier<PosEtat> {
       }
     }
     _poser(state.panier.modifierQuantite(index, quantite));
+  }
+
+  /// Les lignes d'un pack vont ensemble : la quantité saisie sur l'une est ramenée à un nombre entier de packs
+  /// (arrondi vers le haut en hausse, vers le bas en baisse) appliqué à toutes ; 0 retire le pack.
+  Future<void> _modifierPack(PanierLigne l, double quantite) async {
+    final pack = l.pack!;
+    final parPack = Panier.quantiteDansPack(pack, l.produit.code);
+    if (parPack <= 0) return _poser(state.panier.modifierQuantite(state.panier.lignes.indexOf(l), quantite));
+    final brut = quantite / parPack;
+    final nombre = quantite > l.quantite ? brut.ceilToDouble() : brut.floorToDouble();
+    for (final x in state.panier.lignes.where((x) => x.pack?.code == pack.code)) {
+      final delta = Panier.quantiteDansPack(pack, x.produit.code) * nombre - x.quantite;
+      if (delta > 0) {
+        await _verifierDisponibilite(
+          x.produit,
+          unites: delta,
+          nombre: x.nombreExige ? delta * x.produit.nombreParUnite : 0,
+        );
+      }
+    }
+    _poser(state.panier.quantitePack(pack, nombre));
   }
 
   void retirerLigne(int index) => _poser(state.panier.retirer(index));
@@ -398,13 +420,8 @@ class PosController extends Notifier<PosEtat> {
   /// Encaisse le panier courant ; le panier est vidé et la vente mémorisée pour l'impression.
   ///
   /// [montantPaye] (dialog Encaisser du DS) remplace les paiements saisis par un paiement unique dans le mode
-  /// du panier ; un trop-perçu en espèces devient la monnaie rendue. [typePanier] : `Ticket` ou `BL_SC`.
-  Future<Vente> encaisser({
-    bool creditAutorise = false,
-    double? montantPaye,
-    String? mode,
-    String typePanier = 'Ticket',
-  }) async {
+  /// du panier ; un trop-perçu en espèces devient la monnaie rendue.
+  Future<Vente> encaisser({bool creditAutorise = false, double? montantPaye, String? mode}) async {
     final session = state.session;
     if (session == null) throw const PosException(ErreurPos.sessionRequise);
     var panier = mode == null ? state.panier : state.panier.copyWith(modePaiement: mode);
@@ -417,13 +434,7 @@ class PosController extends Notifier<PosEtat> {
     }
     final v = await ref
         .read(venteServiceProvider)
-        .encaisser(
-          panier,
-          session: session,
-          magasinCode: state.magasinCode,
-          creditAutorise: creditAutorise,
-          typePanier: typePanier,
-        );
+        .encaisser(panier, session: session, magasinCode: state.magasinCode, creditAutorise: creditAutorise);
     _remises.remove(panier.id);
     state = state.remplacerPanier(panier.reinitialiser()).copyWith(derniereVente: v);
     ref.read(stockVersionProvider.notifier).incrementer();

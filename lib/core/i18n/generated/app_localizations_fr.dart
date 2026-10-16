@@ -756,9 +756,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get posRaccourciF4 => 'Encaisser le ticket';
 
   @override
-  String get posRaccourciF5 => 'Encaisser BL / SC';
-
-  @override
   String get posRaccourciF6 => 'Enregistrer le ticket (crédit)';
 
   @override
@@ -2970,12 +2967,6 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get statutTicket => 'Ticket';
-
-  @override
-  String get statutFacture => 'BL / SC';
-
-  @override
   String get posErreurMotif => 'Le motif est obligatoire.';
 
   @override
@@ -3312,16 +3303,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get posEnregistrer => 'Enregistrer';
 
   @override
-  String get posBlSc => 'BL / SC';
-
-  @override
   String get posEncaisserBouton => 'Encaisser';
 
   @override
   String get posEncTicketTitre => 'Encaisser le ticket';
-
-  @override
-  String get posEncBlscTitre => 'Encaisser BL / SC';
 
   @override
   String get posEncSaveTitre => 'Enregistrer le ticket';
@@ -3330,16 +3315,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get posEncTicketDesc => 'Vérifiez le montant reçu puis validez : le ticket est imprimé.';
 
   @override
-  String get posEncBlscDesc => 'Bon de livraison sans cachet, avec mentions légales.';
-
-  @override
   String get posEncSaveDesc => 'Le ticket est enregistré : le reste est porté au crédit du client.';
 
   @override
   String get posEncTicketOk => 'Encaisser et imprimer';
-
-  @override
-  String get posEncBlscOk => 'Encaisser le BL / SC';
 
   @override
   String get posInfoVente => 'Vente';
@@ -3358,18 +3337,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get posInfoCaissier => 'Caissier';
-
-  @override
-  String get posSortieImprimer => 'Imprimer';
-
-  @override
-  String get posSortieImprimerDesc => 'Imprimante A4 par défaut';
-
-  @override
-  String get posSortiePdf => 'Enregistrer en PDF';
-
-  @override
-  String get posSortiePdfDesc => 'Enregistrer ou partager le document';
 
   @override
   String posToastEncaisse(String code, String type) {
@@ -7143,4 +7110,16 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get stkErreurSortieRetour => 'Sortie liée à un retour : modifiez ou annulez le retour.';
+
+  @override
+  String get remiseSectionType => 'Type de remise';
+
+  @override
+  String get remiseSectionInfos => 'Informations générales';
+
+  @override
+  String get remiseSectionCalcul => 'Valeur de la remise';
+
+  @override
+  String get remiseSectionPeriode => 'Période de validité';
 }

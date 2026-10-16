@@ -15,7 +15,6 @@ Future<void> afficherListeProduits<T>(
   required Object Function(T) cle,
 }) async {
   final l10n = AppLocalizations.of(context);
-  final hauteur = (MediaQuery.sizeOf(context).height - 320).clamp(240.0, 560.0);
   await afficherDialog<void>(
     context,
     builder: (dialogue) => DsDialog(
@@ -35,7 +34,8 @@ Future<void> afficherListeProduits<T>(
         dense: true,
         encadre: false,
         pagine: false,
-        hauteurMax: hauteur,
+        reserveEcran: description != null ? 290 : 260,
+        hauteurFixe: true,
         afficherTotaux: true,
         cle: cle,
         lignes: lignes,

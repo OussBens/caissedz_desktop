@@ -100,7 +100,6 @@ Future<void> afficherAideRaccourcis(BuildContext context) {
     ('F2', l10n.posRaccourciF2),
     ('F3', l10n.posRaccourciF3),
     ('F4', l10n.posRaccourciF4),
-    ('F5', l10n.posRaccourciF5),
     ('F6', l10n.posRaccourciF6),
     ('F7', l10n.posRaccourciF7),
     ('F8', l10n.posRaccourciF8),

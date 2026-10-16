@@ -105,7 +105,6 @@ void main() {
       final v = (await VenteRepository(c.read(appDatabaseProvider).db).vente('VTE0001'))!;
       expect(v.totalNet, 550);
       expect(v.verse, 550);
-      expect(v.typePanier, 'Ticket');
       expect(v.hash.length, 64);
       expect(find.textContaining('Ouverte'), findsOneWidget);
       expect(find.text('Panier vide'), findsOneWidget);
@@ -162,7 +161,7 @@ void main() {
       );
       await tester.pump();
       expect(dans('Lait 1 L'), findsNothing);
-      await clic(tester, find.descendant(of: dialog, matching: find.text('Réinitialiser')));
+      await clic(tester, find.byKey(const ValueKey('recherche_reinitialiser')));
       expect(dans('Eau 1,5 L'), findsOneWidget);
       expect(dans('Lait 1 L'), findsOneWidget);
     });

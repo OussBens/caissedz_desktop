@@ -323,12 +323,7 @@ class _PosPageState extends ConsumerState<PosPage> {
     if (r == null || !mounted) return;
     Vente? vente;
     await _executer(() async {
-      vente = await ctrl.encaisser(
-        creditAutorise: panier.clientCode != 'CLN0000',
-        montantPaye: r.paye,
-        mode: r.mode,
-        typePanier: nature == NatureEncaissement.blsc ? 'BL_SC' : 'Ticket',
-      );
+      vente = await ctrl.encaisser(creditAutorise: panier.clientCode != 'CLN0000', montantPaye: r.paye, mode: r.mode);
     });
     final v = vente;
     if (v == null || !mounted) return;
@@ -339,7 +334,7 @@ class _PosPageState extends ConsumerState<PosPage> {
       context,
       titre: nature == NatureEncaissement.enregistrer
           ? l10n.posToastEnregistre(v.code)
-          : l10n.posToastEncaisse(nature == NatureEncaissement.blsc ? l10n.posBlSc : l10n.posTicket, v.code),
+          : l10n.posToastEncaisse(l10n.posTicket, v.code),
       description: nature == NatureEncaissement.enregistrer || v.reste > 0
           ? l10n.posToastResteCredit(_da(v.reste))
           : l10n.posToastRendu(_da(v.totalNet), _da(v.monnaie)),
@@ -350,8 +345,6 @@ class _PosPageState extends ConsumerState<PosPage> {
     switch (nature) {
       case NatureEncaissement.ticket:
         if (!await imprimerTicketDirect(context, ref, v) && mounted) await afficherResultatVente(context, ref, v);
-      case NatureEncaissement.blsc:
-        await imprimerFactureVente(context, ref, v, partager: r.sortie == SortieDocument.pdf);
       case NatureEncaissement.enregistrer:
         break;
     }
@@ -392,8 +385,6 @@ class _PosPageState extends ConsumerState<PosPage> {
       unawaited(_rechercheAvancee());
     } else if (k == LogicalKeyboardKey.f4) {
       unawaited(_encaisser(NatureEncaissement.ticket));
-    } else if (k == LogicalKeyboardKey.f5) {
-      unawaited(_encaisser(NatureEncaissement.blsc));
     } else if (k == LogicalKeyboardKey.f6) {
       unawaited(_encaisser(NatureEncaissement.enregistrer));
     } else if (k == LogicalKeyboardKey.f7) {
@@ -949,16 +940,6 @@ class _PosPageState extends ConsumerState<PosPage> {
               variante: DsButtonVariante.secondaire,
               onPressed: panier.estVide ? null : () => _encaisser(NatureEncaissement.enregistrer),
             );
-            final blsc = DsButton(
-              key: const ValueKey('caisse_blsc'),
-              libelle: l10n.posBlSc,
-              icone: LucideIcons.fileText,
-              kbd: compact ? null : 'F5',
-              taille: DsButtonTaille.lg,
-              pleineLargeur: compact,
-              variante: DsButtonVariante.secondaire,
-              onPressed: panier.estVide ? null : () => _encaisser(NatureEncaissement.blsc),
-            );
             final encaisser = DsButton(
               key: const ValueKey('caisse_encaisser'),
               libelle: l10n.posEncaisserBouton,
@@ -973,23 +954,13 @@ class _PosPageState extends ConsumerState<PosPage> {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 spacing: DsSpacing.s2,
-                children: [
-                  Row(
-                    spacing: DsSpacing.s2,
-                    children: [
-                      Expanded(child: enregistrer),
-                      Expanded(child: blsc),
-                    ],
-                  ),
-                  encaisser,
-                ],
+                children: [enregistrer, encaisser],
               );
             }
             return Row(
               spacing: DsSpacing.s2,
               children: [
                 enregistrer,
-                blsc,
                 Expanded(child: encaisser),
               ],
             );

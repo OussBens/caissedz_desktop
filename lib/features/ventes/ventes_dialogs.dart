@@ -33,7 +33,7 @@ Widget _tableauLignes(
   String devise,
   List<VenteLigne> lignes, {
   required bool detail,
-  double? hauteurMax,
+  double? reserveEcran,
 }) {
   String da(double v) => formaterMontant(v, devise);
   String colis(VenteLigne l) => l.produitCode == PanierLigne.codeMontant
@@ -45,7 +45,8 @@ Widget _tableauLignes(
     dense: true,
     encadre: false,
     pagine: false,
-    hauteurMax: hauteurMax,
+    reserveEcran: reserveEcran,
+    hauteurFixe: reserveEcran != null,
     afficherTotaux: detail,
     cle: (l) => l.ordre,
     lignes: lignes,
@@ -93,7 +94,6 @@ Future<void> afficherProduitsPanier(
   final devise = ref.read(deviseProvider);
   final vente = await ref.read(venteRepositoryProvider).vente(p.code);
   if (vente == null || !context.mounted) return;
-  final hauteur = (MediaQuery.sizeOf(context).height - 320).clamp(240.0, 560.0);
   await afficherDialog<void>(
     context,
     builder: (dialogue) => DsDialog(
@@ -111,7 +111,7 @@ Future<void> afficherProduitsPanier(
           onPressed: () => Navigator.of(dialogue).pop(),
         ),
       ],
-      contenu: _tableauLignes(l10n, devise, vente.lignes, detail: true, hauteurMax: hauteur),
+      contenu: _tableauLignes(l10n, devise, vente.lignes, detail: true, reserveEcran: 290),
     ),
   );
 }
@@ -144,7 +144,7 @@ Future<void> afficherDetailPanier(
       description: '$date · $client · ${p.caissier}',
       onModifier: onModifier,
       modifierDesactive: p.annule,
-      badges: [BadgeStatut(p.type), BadgeStatut(p.statut)],
+      badges: [BadgeStatut(p.statut)],
       piedSupplementaire: [
         Builder(
           builder: (dialogue) => DsButton(
@@ -185,7 +185,6 @@ Future<void> afficherDetailPanier(
             DsKeyValue(l10n.communDate, date),
             DsKeyValue(l10n.ventesClient, client),
             DsKeyValue(l10n.ventesCaissier, p.caissier),
-            DsKeyValue(l10n.ventesType, libelleStatut(l10n, p.type)),
             DsKeyValue(l10n.ventesModePaiement, libelleModes(context, p.modes)),
             DsKeyValue(l10n.ventesCaisse, vente.caisseCode, mono: true),
             DsKeyValue(l10n.ventesSession, vente.sessionCode, mono: true),
@@ -218,7 +217,7 @@ Future<void> afficherDetailPanier(
           titre: l10n.ventesProduitsPanier,
           icone: LucideIcons.package,
           nbLignes: vente.lignes.length,
-          tableau: _tableauLignes(l10n, devise, vente.lignes, detail: true),
+          tableau: _tableauLignes(l10n, devise, vente.lignes, detail: true, reserveEcran: 360),
         ),
         DsSectionDetail(
           titre: l10n.ventesAudit,

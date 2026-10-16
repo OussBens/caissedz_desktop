@@ -251,7 +251,7 @@ Widget _tableProduits(AppLocalizations l10n, List<Produit> produits, Map<String,
       dense: true,
       encadre: false,
       pagine: false,
-      hauteurMax: 320,
+      reserveEcran: 360,
       cle: (p) => p.code,
       lignes: produits,
       messageVide: l10n.dsAucunElement,
@@ -505,6 +505,8 @@ class _RemiseFormState extends ConsumerState<_RemiseForm> {
       onLignes: (l) => setState(() => _lignes = l),
       peutEnregistrer: _v > 0 && _nom.text.trim().isNotEmpty && _du != null && _au != null,
       titreSelecteur: l10n.prdProduitsConcernes,
+      titreLignes: l10n.prdProduitsConcernes,
+      iconeLignes: LucideIcons.package,
       prixVenteSelecteur: true,
       libelleTotal: l10n.prdRemiseAccordee,
       onEnregistrer: _enregistrer,
@@ -537,6 +539,7 @@ class _RemiseFormState extends ConsumerState<_RemiseForm> {
       ],
       entete: [
         // Type de remise en premier : il décide de la suite du formulaire (produits ou seuil du panier).
+        DsSpan(child: DsSubHead(l10n.remiseSectionType, icone: LucideIcons.layers)),
         DsSpan(
           child: DsChoiceCards<String>(
             key: const ValueKey('remise_portee'),
@@ -559,6 +562,7 @@ class _RemiseFormState extends ConsumerState<_RemiseForm> {
             ],
           ),
         ),
+        DsSpan(child: DsSubHead(l10n.remiseSectionInfos, icone: LucideIcons.info)),
         DsFormRow(
           libelle: l10n.produitsColCode,
           largeurLibelle: lw,
@@ -577,6 +581,14 @@ class _RemiseFormState extends ConsumerState<_RemiseForm> {
             onChanged: (_) => setState(() => _erreur = null),
           ),
         ),
+        DsSpan(
+          child: DsFormRow(
+            libelle: l10n.retoursObservation,
+            largeurLibelle: lw,
+            child: DsTextField(key: const ValueKey('remise_observation'), controller: _observation),
+          ),
+        ),
+        DsSpan(child: DsSubHead(l10n.remiseSectionCalcul, icone: LucideIcons.calculator)),
         DsSpan(
           child: DsChoiceCards<String>(
             key: const ValueKey('remise_type_taux'),
@@ -625,6 +637,7 @@ class _RemiseFormState extends ConsumerState<_RemiseForm> {
           )
         else
           const SizedBox.shrink(),
+        DsSpan(child: DsSubHead(l10n.remiseSectionPeriode, icone: LucideIcons.calendarRange)),
         DsFormRow(
           libelle: l10n.dsDu,
           obligatoire: true,
@@ -636,13 +649,6 @@ class _RemiseFormState extends ConsumerState<_RemiseForm> {
           obligatoire: true,
           largeurLibelle: lw,
           child: DsDateField(valeur: _au, min: _du, onChanged: (d) => setState(() => _au = d)),
-        ),
-        DsSpan(
-          child: DsFormRow(
-            libelle: l10n.retoursObservation,
-            largeurLibelle: lw,
-            child: DsTextField(key: const ValueKey('remise_observation'), controller: _observation),
-          ),
         ),
       ],
     );
@@ -693,7 +699,7 @@ Future<void> afficherDetailRemise(BuildContext context, WidgetRef ref, Remise r,
               dense: true,
               encadre: false,
               pagine: false,
-              hauteurMax: 320,
+              reserveEcran: 360,
               cle: (p) => p.code,
               lignes: produits,
               messageVide: l10n.dsAucunElement,

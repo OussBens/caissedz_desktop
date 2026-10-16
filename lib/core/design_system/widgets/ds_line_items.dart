@@ -4,6 +4,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../i18n/generated/app_localizations.dart';
 import '../tokens/ds_theme.dart';
 import 'ds_button.dart';
+import 'ds_data_table.dart';
 import 'ds_page.dart';
 
 /// Colonne d'un [DsLineItemsEditor].
@@ -52,7 +53,7 @@ class DsLineItemsEditor<T> extends StatelessWidget {
     this.libelleAjouter,
     this.texteVide,
     this.lectureSeule = false,
-    this.hauteurMax = 300,
+    this.hauteurMax,
     this.afficherTotaux = true,
     this.erreurs = const {},
     this.libelleTotal,
@@ -69,7 +70,9 @@ class DsLineItemsEditor<T> extends StatelessWidget {
   final String? libelleAjouter;
   final String? texteVide;
   final bool lectureSeule;
-  final double hauteurMax;
+
+  /// Hauteur maximale des lignes ; par défaut, elle suit l'écran ([hauteurListeDialog], réserve 460).
+  final double? hauteurMax;
   final bool afficherTotaux;
 
   /// Erreurs par clé de ligne puis par identifiant de colonne.
@@ -135,7 +138,7 @@ class DsLineItemsEditor<T> extends StatelessWidget {
             ),
           ),
           ConstrainedBox(
-            constraints: BoxConstraints(maxHeight: hauteurMax),
+            constraints: BoxConstraints(maxHeight: hauteurMax ?? hauteurListeDialog(context, reserve: 460)),
             child: lignes.isEmpty
                 ? SizedBox(
                     height: 72,

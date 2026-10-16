@@ -755,9 +755,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get posRaccourciF4 => 'Check out the receipt';
 
   @override
-  String get posRaccourciF5 => 'Check out DN / NS';
-
-  @override
   String get posRaccourciF6 => 'Save the receipt (credit)';
 
   @override
@@ -2961,12 +2958,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get statutTicket => 'Receipt';
-
-  @override
-  String get statutFacture => 'DN / SC';
-
-  @override
   String get posErreurMotif => 'A reason is required.';
 
   @override
@@ -3303,16 +3294,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get posEnregistrer => 'Save';
 
   @override
-  String get posBlSc => 'DN / NS';
-
-  @override
   String get posEncaisserBouton => 'Check out';
 
   @override
   String get posEncTicketTitre => 'Check out the receipt';
-
-  @override
-  String get posEncBlscTitre => 'Check out DN / NS';
 
   @override
   String get posEncSaveTitre => 'Save the receipt';
@@ -3321,16 +3306,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get posEncTicketDesc => 'Check the amount received, then confirm: the receipt is printed.';
 
   @override
-  String get posEncBlscDesc => 'Delivery note without stamp, with legal notices.';
-
-  @override
   String get posEncSaveDesc => 'The receipt is saved: the balance goes to the customer\'s credit.';
 
   @override
   String get posEncTicketOk => 'Check out and print';
-
-  @override
-  String get posEncBlscOk => 'Check out the DN / NS';
 
   @override
   String get posInfoVente => 'Sale';
@@ -3349,18 +3328,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get posInfoCaissier => 'Cashier';
-
-  @override
-  String get posSortieImprimer => 'Print';
-
-  @override
-  String get posSortieImprimerDesc => 'Default A4 printer';
-
-  @override
-  String get posSortiePdf => 'Save as PDF';
-
-  @override
-  String get posSortiePdfDesc => 'Save or share the document';
 
   @override
   String posToastEncaisse(String code, String type) {
@@ -7129,4 +7096,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get stkErreurSortieRetour => 'Exit linked to a return: edit or cancel the return instead.';
+
+  @override
+  String get remiseSectionType => 'Discount type';
+
+  @override
+  String get remiseSectionInfos => 'General information';
+
+  @override
+  String get remiseSectionCalcul => 'Discount value';
+
+  @override
+  String get remiseSectionPeriode => 'Validity period';
 }

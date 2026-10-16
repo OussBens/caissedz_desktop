@@ -513,7 +513,7 @@ class _SelecteurListeState extends State<_SelecteurListe> {
       for (final f in cfg.filtres)
         if (widget.elements.map((e) => e.attributs[f.cle]).whereType<String>().toSet().length > 1) f,
     ];
-    final hauteur = (MediaQuery.sizeOf(context).height - 380).clamp(220.0, 520.0);
+    final hauteur = hauteurListeDialog(context, reserve: 340, min: 220);
     return DsPickerDialog<_Element>(
       cle: (e) => e.code,
       titre: widget.titre ?? cfg.titre,
