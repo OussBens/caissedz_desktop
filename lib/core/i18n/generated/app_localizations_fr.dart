@@ -7210,4 +7210,47 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get posErreurMonnaieSansEspeces =>
       'La monnaie rendue dépasse les espèces reçues : une carte, un chèque ou des points ne rendent pas de monnaie.';
+
+  @override
+  String get tiersSoldeInitial => 'Solde initial';
+
+  @override
+  String get tiersSoldeInitialAideClient => 'Reprise : montant dû par le client avant le logiciel (négatif = avance).';
+
+  @override
+  String get tiersSoldeInitialAideFournisseur =>
+      'Reprise : montant dû au fournisseur avant le logiciel (négatif = avance).';
+
+  @override
+  String get tvaRecapitulatif => 'Récapitulatif TVA';
+
+  @override
+  String get tvaTaux => 'Taux TVA';
+
+  @override
+  String get tvaBaseHt => 'Base HT';
+
+  @override
+  String get tvaMontant => 'TVA';
+
+  @override
+  String get tvaTtc => 'TTC';
+
+  @override
+  String get tvaCollectee => 'TVA collectée';
+
+  @override
+  String get tvaDeductible => 'TVA déductible';
+
+  @override
+  String get tvaNette => 'TVA à payer';
+
+  @override
+  String get tvaHt => 'HT';
+
+  @override
+  String get situationTva => 'TVA par taux';
+
+  @override
+  String get situationGroupeFiscalite => 'Fiscalité';
 }

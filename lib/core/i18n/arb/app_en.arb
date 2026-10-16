@@ -2450,5 +2450,19 @@
   "exportFiscalG50": "G50 return (Excel)",
   "exportFiscalG50Desc": "VAT collected and deductible by rate, stamp duty, VAT due",
   "typeMouvementAnnulation": "Sale cancellation",
-  "posErreurMonnaieSansEspeces": "Change exceeds the cash received: card, cheque or points give no change."
+  "posErreurMonnaieSansEspeces": "Change exceeds the cash received: card, cheque or points give no change.",
+  "tiersSoldeInitial": "Opening balance",
+  "tiersSoldeInitialAideClient": "Carried over: amount the customer owed before the software (negative = advance).",
+  "tiersSoldeInitialAideFournisseur": "Carried over: amount owed to the supplier before the software (negative = advance).",
+  "tvaRecapitulatif": "VAT summary",
+  "tvaTaux": "VAT rate",
+  "tvaBaseHt": "Net base",
+  "tvaMontant": "VAT",
+  "tvaTtc": "Incl. VAT",
+  "tvaCollectee": "Output VAT",
+  "tvaDeductible": "Input VAT",
+  "tvaNette": "VAT payable",
+  "tvaHt": "Excl. VAT",
+  "situationTva": "VAT by rate",
+  "situationGroupeFiscalite": "Tax"
 }

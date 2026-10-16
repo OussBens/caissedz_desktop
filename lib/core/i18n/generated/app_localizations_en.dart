@@ -7194,4 +7194,48 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get posErreurMonnaieSansEspeces => 'Change exceeds the cash received: card, cheque or points give no change.';
+
+  @override
+  String get tiersSoldeInitial => 'Opening balance';
+
+  @override
+  String get tiersSoldeInitialAideClient =>
+      'Carried over: amount the customer owed before the software (negative = advance).';
+
+  @override
+  String get tiersSoldeInitialAideFournisseur =>
+      'Carried over: amount owed to the supplier before the software (negative = advance).';
+
+  @override
+  String get tvaRecapitulatif => 'VAT summary';
+
+  @override
+  String get tvaTaux => 'VAT rate';
+
+  @override
+  String get tvaBaseHt => 'Net base';
+
+  @override
+  String get tvaMontant => 'VAT';
+
+  @override
+  String get tvaTtc => 'Incl. VAT';
+
+  @override
+  String get tvaCollectee => 'Output VAT';
+
+  @override
+  String get tvaDeductible => 'Input VAT';
+
+  @override
+  String get tvaNette => 'VAT payable';
+
+  @override
+  String get tvaHt => 'Excl. VAT';
+
+  @override
+  String get situationTva => 'VAT by rate';
+
+  @override
+  String get situationGroupeFiscalite => 'Tax';
 }

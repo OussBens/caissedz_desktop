@@ -7181,4 +7181,46 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get posErreurMonnaieSansEspeces => 'الباقي يتجاوز النقود المستلمة: البطاقة أو الصك أو النقاط لا تُرجع الباقي.';
+
+  @override
+  String get tiersSoldeInitial => 'الرصيد الافتتاحي';
+
+  @override
+  String get tiersSoldeInitialAideClient => 'رصيد سابق: المبلغ المستحق على الزبون قبل البرنامج (سالب = تسبيق).';
+
+  @override
+  String get tiersSoldeInitialAideFournisseur => 'رصيد سابق: المبلغ المستحق للمورد قبل البرنامج (سالب = تسبيق).';
+
+  @override
+  String get tvaRecapitulatif => 'ملخص الرسم على القيمة المضافة';
+
+  @override
+  String get tvaTaux => 'نسبة الرسم';
+
+  @override
+  String get tvaBaseHt => 'الأساس خارج الرسم';
+
+  @override
+  String get tvaMontant => 'الرسم';
+
+  @override
+  String get tvaTtc => 'مع الرسم';
+
+  @override
+  String get tvaCollectee => 'الرسم المحصل';
+
+  @override
+  String get tvaDeductible => 'الرسم القابل للخصم';
+
+  @override
+  String get tvaNette => 'الرسم الواجب دفعه';
+
+  @override
+  String get tvaHt => 'خارج الرسم';
+
+  @override
+  String get situationTva => 'الرسم حسب النسبة';
+
+  @override
+  String get situationGroupeFiscalite => 'الجباية';
 }

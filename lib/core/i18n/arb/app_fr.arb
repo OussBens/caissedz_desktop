@@ -3754,5 +3754,19 @@
   "exportFiscalG50": "Déclaration G50 (Excel)",
   "exportFiscalG50Desc": "TVA collectée et déductible par taux, timbre, TVA à payer",
   "typeMouvementAnnulation": "Annulation de vente",
-  "posErreurMonnaieSansEspeces": "La monnaie rendue dépasse les espèces reçues : une carte, un chèque ou des points ne rendent pas de monnaie."
+  "posErreurMonnaieSansEspeces": "La monnaie rendue dépasse les espèces reçues : une carte, un chèque ou des points ne rendent pas de monnaie.",
+  "tiersSoldeInitial": "Solde initial",
+  "tiersSoldeInitialAideClient": "Reprise : montant dû par le client avant le logiciel (négatif = avance).",
+  "tiersSoldeInitialAideFournisseur": "Reprise : montant dû au fournisseur avant le logiciel (négatif = avance).",
+  "tvaRecapitulatif": "Récapitulatif TVA",
+  "tvaTaux": "Taux TVA",
+  "tvaBaseHt": "Base HT",
+  "tvaMontant": "TVA",
+  "tvaTtc": "TTC",
+  "tvaCollectee": "TVA collectée",
+  "tvaDeductible": "TVA déductible",
+  "tvaNette": "TVA à payer",
+  "tvaHt": "HT",
+  "situationTva": "TVA par taux",
+  "situationGroupeFiscalite": "Fiscalité"
 }

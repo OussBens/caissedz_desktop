@@ -77,6 +77,7 @@ class Client {
     this.email = '',
     this.points = 0,
     this.plafondCredit = 0,
+    this.soldeInitial = 0,
     this.actif = true,
     this.systeme = false,
     this.fiche = const FicheTiers(type: 'Consommateur'),
@@ -93,6 +94,9 @@ class Client {
 
   /// Plafond de crédit autorisé (0 = pas de vente à crédit).
   final double plafondCredit;
+
+  /// Solde de reprise (dette ou avance d'avant le logiciel) : positif = dû, négatif = avance.
+  final double soldeInitial;
   final bool actif;
   final bool systeme;
   final FicheTiers fiche;
@@ -106,6 +110,7 @@ class Client {
     String? email,
     int? points,
     double? plafondCredit,
+    double? soldeInitial,
     bool? actif,
     FicheTiers? fiche,
   }) => Client(
@@ -117,6 +122,7 @@ class Client {
     email: email ?? this.email,
     points: points ?? this.points,
     plafondCredit: plafondCredit ?? this.plafondCredit,
+    soldeInitial: soldeInitial ?? this.soldeInitial,
     actif: actif ?? this.actif,
     systeme: systeme,
     fiche: fiche ?? this.fiche,
@@ -130,6 +136,7 @@ class Client {
     'email': email,
     'points': points,
     'plafond_credit': plafondCredit,
+    'solde_initial': soldeInitial,
     'actif': actif ? 1 : 0,
     'systeme': systeme ? 1 : 0,
     ...fiche.versLigne(),
@@ -144,6 +151,7 @@ class Client {
     email: (r['email'] as String?) ?? '',
     points: (r['points'] as int?) ?? 0,
     plafondCredit: ((r['plafond_credit'] as num?) ?? 0).toDouble(),
+    soldeInitial: ((r['solde_initial'] as num?) ?? 0).toDouble(),
     actif: (r['actif'] as int) == 1,
     systeme: (r['systeme'] as int) == 1,
     fiche: FicheTiers.depuisLigne(r),
@@ -166,6 +174,7 @@ class Fournisseur {
     this.telephone = '',
     this.adresse = '',
     this.email = '',
+    this.soldeInitial = 0,
     this.actif = true,
     this.systeme = false,
     this.fiche = const FicheTiers(type: 'Grossiste'),
@@ -178,6 +187,9 @@ class Fournisseur {
   final String telephone;
   final String adresse;
   final String email;
+
+  /// Solde de reprise (dette ou avance d'avant le logiciel) : positif = dû au fournisseur, négatif = avance.
+  final double soldeInitial;
   final bool actif;
   final bool systeme;
   final FicheTiers fiche;
@@ -187,6 +199,7 @@ class Fournisseur {
     String? telephone,
     String? adresse,
     String? email,
+    double? soldeInitial,
     bool? actif,
     FicheTiers? fiche,
   }) => Fournisseur(
@@ -196,6 +209,7 @@ class Fournisseur {
     telephone: telephone ?? this.telephone,
     adresse: adresse ?? this.adresse,
     email: email ?? this.email,
+    soldeInitial: soldeInitial ?? this.soldeInitial,
     actif: actif ?? this.actif,
     systeme: systeme,
     fiche: fiche ?? this.fiche,
@@ -207,6 +221,7 @@ class Fournisseur {
     'telephone': telephone,
     'adresse': adresse,
     'email': email,
+    'solde_initial': soldeInitial,
     'actif': actif ? 1 : 0,
     'systeme': systeme ? 1 : 0,
     ...fiche.versLigne(),
@@ -218,6 +233,7 @@ class Fournisseur {
     telephone: (r['telephone'] as String?) ?? '',
     adresse: (r['adresse'] as String?) ?? '',
     email: (r['email'] as String?) ?? '',
+    soldeInitial: ((r['solde_initial'] as num?) ?? 0).toDouble(),
     actif: (r['actif'] as int) == 1,
     systeme: (r['systeme'] as int) == 1,
     fiche: FicheTiers.depuisLigne(r),
@@ -260,7 +276,7 @@ class StatsTiers {
 }
 
 /// Nature d'une ligne de relevé (Situation d'un tiers).
-enum NatureReleve { achat, versement, retour, versementRetour }
+enum NatureReleve { soldeInitial, achat, versement, retour, versementRetour }
 
 /// Ligne du relevé d'un tiers : le débit réduit le solde (paiement, retour), le crédit l'augmente (achat).
 @immutable

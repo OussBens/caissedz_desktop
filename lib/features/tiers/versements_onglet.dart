@@ -37,6 +37,7 @@ class _VersementsOngletState extends ConsumerState<VersementsOnglet> {
   DsPeriode _periode = DsPeriode.calculer('month');
   String? _mode;
   String? _caisse;
+  String? _tiers;
 
   bool get _client => widget.tiersType == TypesTiers.client;
 
@@ -56,7 +57,8 @@ class _VersementsOngletState extends ConsumerState<VersementsOnglet> {
           (v) =>
               dansPeriode(v.date, _periode) &&
               (_mode == null || v.mode == _mode) &&
-              (_caisse == null || v.caisseCode == _caisse),
+              (_caisse == null || v.caisseCode == _caisse) &&
+              (_tiers == null || v.tiersCode == _tiers),
         )
         .toList();
     final actifs = lignes.where((v) => v.actif);
@@ -130,10 +132,11 @@ class _VersementsOngletState extends ConsumerState<VersementsOnglet> {
       afficherTotaux: true,
       periode: _periode,
       onPeriode: (p) => setState(() => _periode = p),
-      nbFiltresActifs: (_mode != null ? 1 : 0) + (_caisse != null ? 1 : 0),
+      nbFiltresActifs: [_mode, _caisse, _tiers].where((f) => f != null).length,
       onReinitialiser: () => setState(() {
         _mode = null;
         _caisse = null;
+        _tiers = null;
         _periode = DsPeriode.calculer('month');
       }),
       kpis: [
@@ -152,6 +155,22 @@ class _VersementsOngletState extends ConsumerState<VersementsOnglet> {
         ),
       ],
       filtres: [
+        DsFormRow(
+          libelle: _client ? l10n.retoursClient : l10n.retoursFournisseur,
+          largeurLibelle: 60,
+          child: DsSelect<String?>(
+            cle: const ValueKey('versement_filtre_tiers'),
+            valeur: _tiers,
+            options: [
+              null,
+              ...{for (final v in tous) v.tiersCode}.toList()
+                ..sort((a, b) => (noms[a] ?? a).toLowerCase().compareTo((noms[b] ?? b).toLowerCase())),
+            ],
+            libelle: (c) => c == null ? l10n.tiersTous : (noms[c] ?? c),
+            recherche: rechercheListe(context, ref, _client ? ListeMetier.client : ListeMetier.fournisseur),
+            onChanged: (c) => setState(() => _tiers = c),
+          ),
+        ),
         DsFormRow(
           libelle: l10n.versementMode,
           largeurLibelle: 60,

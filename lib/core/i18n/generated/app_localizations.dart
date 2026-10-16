@@ -13670,6 +13670,90 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'La monnaie rendue dépasse les espèces reçues : une carte, un chèque ou des points ne rendent pas de monnaie.'**
   String get posErreurMonnaieSansEspeces;
+
+  /// No description provided for @tiersSoldeInitial.
+  ///
+  /// In fr, this message translates to:
+  /// **'Solde initial'**
+  String get tiersSoldeInitial;
+
+  /// No description provided for @tiersSoldeInitialAideClient.
+  ///
+  /// In fr, this message translates to:
+  /// **'Reprise : montant dû par le client avant le logiciel (négatif = avance).'**
+  String get tiersSoldeInitialAideClient;
+
+  /// No description provided for @tiersSoldeInitialAideFournisseur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Reprise : montant dû au fournisseur avant le logiciel (négatif = avance).'**
+  String get tiersSoldeInitialAideFournisseur;
+
+  /// No description provided for @tvaRecapitulatif.
+  ///
+  /// In fr, this message translates to:
+  /// **'Récapitulatif TVA'**
+  String get tvaRecapitulatif;
+
+  /// No description provided for @tvaTaux.
+  ///
+  /// In fr, this message translates to:
+  /// **'Taux TVA'**
+  String get tvaTaux;
+
+  /// No description provided for @tvaBaseHt.
+  ///
+  /// In fr, this message translates to:
+  /// **'Base HT'**
+  String get tvaBaseHt;
+
+  /// No description provided for @tvaMontant.
+  ///
+  /// In fr, this message translates to:
+  /// **'TVA'**
+  String get tvaMontant;
+
+  /// No description provided for @tvaTtc.
+  ///
+  /// In fr, this message translates to:
+  /// **'TTC'**
+  String get tvaTtc;
+
+  /// No description provided for @tvaCollectee.
+  ///
+  /// In fr, this message translates to:
+  /// **'TVA collectée'**
+  String get tvaCollectee;
+
+  /// No description provided for @tvaDeductible.
+  ///
+  /// In fr, this message translates to:
+  /// **'TVA déductible'**
+  String get tvaDeductible;
+
+  /// No description provided for @tvaNette.
+  ///
+  /// In fr, this message translates to:
+  /// **'TVA à payer'**
+  String get tvaNette;
+
+  /// No description provided for @tvaHt.
+  ///
+  /// In fr, this message translates to:
+  /// **'HT'**
+  String get tvaHt;
+
+  /// No description provided for @situationTva.
+  ///
+  /// In fr, this message translates to:
+  /// **'TVA par taux'**
+  String get situationTva;
+
+  /// No description provided for @situationGroupeFiscalite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fiscalité'**
+  String get situationGroupeFiscalite;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

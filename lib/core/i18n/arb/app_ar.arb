@@ -2450,5 +2450,19 @@
   "exportFiscalG50": "تصريح G50 (Excel)",
   "exportFiscalG50Desc": "الرسم المحصل والقابل للخصم حسب النسبة، الطابع، الرسم المستحق",
   "typeMouvementAnnulation": "إلغاء بيع",
-  "posErreurMonnaieSansEspeces": "الباقي يتجاوز النقود المستلمة: البطاقة أو الصك أو النقاط لا تُرجع الباقي."
+  "posErreurMonnaieSansEspeces": "الباقي يتجاوز النقود المستلمة: البطاقة أو الصك أو النقاط لا تُرجع الباقي.",
+  "tiersSoldeInitial": "الرصيد الافتتاحي",
+  "tiersSoldeInitialAideClient": "رصيد سابق: المبلغ المستحق على الزبون قبل البرنامج (سالب = تسبيق).",
+  "tiersSoldeInitialAideFournisseur": "رصيد سابق: المبلغ المستحق للمورد قبل البرنامج (سالب = تسبيق).",
+  "tvaRecapitulatif": "ملخص الرسم على القيمة المضافة",
+  "tvaTaux": "نسبة الرسم",
+  "tvaBaseHt": "الأساس خارج الرسم",
+  "tvaMontant": "الرسم",
+  "tvaTtc": "مع الرسم",
+  "tvaCollectee": "الرسم المحصل",
+  "tvaDeductible": "الرسم القابل للخصم",
+  "tvaNette": "الرسم الواجب دفعه",
+  "tvaHt": "خارج الرسم",
+  "situationTva": "الرسم حسب النسبة",
+  "situationGroupeFiscalite": "الجباية"
 }
