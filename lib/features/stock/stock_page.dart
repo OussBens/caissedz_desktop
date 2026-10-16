@@ -476,7 +476,6 @@ class _StockPageState extends ConsumerState<StockPage> {
       filtresOuverts: true,
       periode: _periode,
       onPeriode: (p) => setState(() => _periode = p),
-      periodeSeule: true,
       colonnesFiltres: 4,
       indiceRecherche: l10n.stkRechercheMouvement,
       texteRecherche: (m) => '${m.referenceCode ?? ''} ${nomProduit(m)}',
@@ -488,7 +487,16 @@ class _StockPageState extends ConsumerState<StockPage> {
         _produitMvt = null;
         _periode = DsPeriode.calculer('month');
       }),
+      // 1re ligne : Du, Au, Période rapide et Produit ; 2e ligne : type, magasin, utilisateur.
       filtres: [
+        filtreProduit(
+          context,
+          ref,
+          cle: const ValueKey('mouvement_filtre_produit'),
+          valeur: _produitMvt,
+          onChanged: (v) => setState(() => _produitMvt = v),
+        ),
+        const DsFinLigne(),
         DsFormRow(
           libelle: l10n.stockColType,
           largeurLibelle: 90,
@@ -530,13 +538,6 @@ class _StockPageState extends ConsumerState<StockPage> {
             recherche: rechercheListe(context, ref, ListeMetier.utilisateur),
             onChanged: (v) => setState(() => _utilisateur = v),
           ),
-        ),
-        filtreProduit(
-          context,
-          ref,
-          cle: const ValueKey('mouvement_filtre_produit'),
-          valeur: _produitMvt,
-          onChanged: (v) => setState(() => _produitMvt = v),
         ),
       ],
       onExport: peutExporter(ref)

@@ -305,7 +305,8 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
       permissions: permissionsSession(ref),
       messageVide: l10n.produitsAucun,
       filtresOuverts: true,
-      colonnesFiltres: 4,
+      // 1re ligne : catégorie, stock, marque ; 2e ligne : quantité, prix de vente, prix d'achat.
+      colonnesFiltres: 3,
       nbFiltresActifs:
           [_categorie, _etat, _marque].where((f) => f != null).length +
           [_prix, _prixAchat, _quantite].where((i) => !i.estVide).length,
@@ -357,6 +358,27 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
           ),
         ),
         DsFormRow(
+          libelle: l10n.prdMarque,
+          largeurLibelle: 90,
+          child: DsSelect<String?>(
+            valeur: _marque,
+            options: [null, ...marques],
+            libelle: (m) => m ?? l10n.prdToutes,
+            onChanged: (v) => setState(() => _marque = v),
+          ),
+        ),
+        DsFormRow(
+          libelle: l10n.prdFiltreQuantite,
+          largeurLibelle: 90,
+          child: DsRangeFilter(
+            key: const ValueKey('filtre_quantite'),
+            valeur: _quantite,
+            libelleEffacer: l10n.dsEffacer,
+            libelleValider: l10n.communValider,
+            onChanged: (v) => setState(() => _quantite = v),
+          ),
+        ),
+        DsFormRow(
           libelle: l10n.produitsColPrixVente,
           largeurLibelle: 90,
           child: DsRangeFilter(
@@ -380,27 +402,6 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
               onChanged: (v) => setState(() => _prixAchat = v),
             ),
           ),
-        DsFormRow(
-          libelle: l10n.prdFiltreQuantite,
-          largeurLibelle: 90,
-          child: DsRangeFilter(
-            key: const ValueKey('filtre_quantite'),
-            valeur: _quantite,
-            libelleEffacer: l10n.dsEffacer,
-            libelleValider: l10n.communValider,
-            onChanged: (v) => setState(() => _quantite = v),
-          ),
-        ),
-        DsFormRow(
-          libelle: l10n.prdMarque,
-          largeurLibelle: 90,
-          child: DsSelect<String?>(
-            valeur: _marque,
-            options: [null, ...marques],
-            libelle: (m) => m ?? l10n.prdToutes,
-            onChanged: (v) => setState(() => _marque = v),
-          ),
-        ),
       ],
       indiceRecherche: l10n.prdRechercheProduits,
       texteRecherche: (p) => '${p.code} ${p.designation} ${p.codeBarres ?? ''} ${p.marque ?? ''}',
