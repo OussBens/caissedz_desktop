@@ -75,6 +75,7 @@ String libellePermission(AppLocalizations l10n, Permission p) => switch (p) {
   Permission.changerCaisseMagasin => l10n.permChangerCaisseMagasin,
   Permission.gererTransfertsCaisse => l10n.permGererTransfertsCaisse,
   Permission.voirStockTousMagasins => l10n.permVoirStockTousMagasins,
+  Permission.depasserPlafondCredit => l10n.permDepasserPlafondCredit,
 };
 
 IconData _iconePermission(Permission p) => switch (p) {
@@ -85,6 +86,7 @@ IconData _iconePermission(Permission p) => switch (p) {
   Permission.changerCaisseMagasin => LucideIcons.repeat,
   Permission.gererTransfertsCaisse => LucideIcons.arrowLeftRight,
   Permission.voirStockTousMagasins => LucideIcons.store,
+  Permission.depasserPlafondCredit => LucideIcons.creditCard,
 };
 
 /// Modules attribuables à un rôle (`PermissionGrid.MODULES`) : les modules de premier niveau.

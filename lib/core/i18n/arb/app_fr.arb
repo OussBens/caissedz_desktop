@@ -3725,5 +3725,19 @@
   "retoursDateDuJour": "Daté du jour, même après la clôture Z du jour de la vente.",
   "situationCasse": "Casse (perte)",
   "situationPiecesTheoriques": "Pièces théoriques",
-  "situationPiecesComptees": "Pièces comptées"
+  "situationPiecesComptees": "Pièces comptées",
+  "permDepasserPlafondCredit": "Dépasser le plafond de crédit",
+  "posErreurPlafondCredit": "Plafond de crédit du client dépassé ({plafond}, crédit actuel {solde}).",
+  "@posErreurPlafondCredit": {
+    "placeholders": {
+      "plafond": {
+        "type": "String"
+      },
+      "solde": {
+        "type": "String"
+      }
+    }
+  },
+  "tiersPlafondCredit": "Plafond de crédit",
+  "tiersPlafondCreditAide": "Vide ou 0 : sans plafond."
 }

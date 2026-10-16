@@ -13556,6 +13556,30 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Pièces comptées'**
   String get situationPiecesComptees;
+
+  /// No description provided for @permDepasserPlafondCredit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dépasser le plafond de crédit'**
+  String get permDepasserPlafondCredit;
+
+  /// No description provided for @posErreurPlafondCredit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plafond de crédit du client dépassé ({plafond}, crédit actuel {solde}).'**
+  String posErreurPlafondCredit(String plafond, String solde);
+
+  /// No description provided for @tiersPlafondCredit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plafond de crédit'**
+  String get tiersPlafondCredit;
+
+  /// No description provided for @tiersPlafondCreditAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vide ou 0 : sans plafond.'**
+  String get tiersPlafondCreditAide;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -2431,5 +2431,9 @@
   "retoursDateDuJour": "Dated today, even after the Z closing of the sale day.",
   "situationCasse": "Breakage (loss)",
   "situationPiecesTheoriques": "Theoretical pieces",
-  "situationPiecesComptees": "Counted pieces"
+  "situationPiecesComptees": "Counted pieces",
+  "permDepasserPlafondCredit": "Exceed the credit limit",
+  "posErreurPlafondCredit": "Customer credit limit exceeded ({plafond}, current credit {solde}).",
+  "tiersPlafondCredit": "Credit limit",
+  "tiersPlafondCreditAide": "Empty or 0: no limit."
 }

@@ -48,6 +48,10 @@ String messageErreurVente(AppLocalizations l10n, VenteException e, String devise
     formaterMontant(double.tryParse(e.detail ?? '') ?? 0, devise),
   ),
   ErreurVente.retourLie => l10n.posErreurRetourLie,
+  ErreurVente.plafondCredit => () {
+    final [plafond, solde] = [for (final x in (e.detail ?? '0|0').split('|')) double.tryParse(x) ?? 0];
+    return l10n.posErreurPlafondCredit(formaterMontant(plafond, devise), formaterMontant(solde, devise));
+  }(),
   ErreurVente.nombreObligatoire => l10n.communNombreObligatoire,
 };
 

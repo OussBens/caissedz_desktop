@@ -7134,4 +7134,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get situationPiecesComptees => 'Counted pieces';
+
+  @override
+  String get permDepasserPlafondCredit => 'Exceed the credit limit';
+
+  @override
+  String posErreurPlafondCredit(String plafond, String solde) {
+    return 'Customer credit limit exceeded ($plafond, current credit $solde).';
+  }
+
+  @override
+  String get tiersPlafondCredit => 'Credit limit';
+
+  @override
+  String get tiersPlafondCreditAide => 'Empty or 0: no limit.';
 }

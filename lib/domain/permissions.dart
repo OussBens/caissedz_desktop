@@ -1,4 +1,4 @@
-/// Les 7 permissions d'action du rôle (§6.2, `roledetail`), vérifiées dans tous les modules.
+/// Les permissions d'action du rôle (§6.2, `roledetail`), vérifiées dans tous les modules.
 /// L'identifiant [code] est la valeur stockée en base (jamais le libellé). L'Admin les a toutes.
 enum Permission {
   voirPrixAchat('voirPrixAchat'),
@@ -7,7 +7,10 @@ enum Permission {
   annulerOperations('annulerOperations'),
   changerCaisseMagasin('changerCaisseMagasin'),
   gererTransfertsCaisse('gererTransfertsCaisse'),
-  voirStockTousMagasins('voirStockTousMagasins');
+  voirStockTousMagasins('voirStockTousMagasins'),
+
+  /// Vendre à crédit au-delà du plafond de crédit du client (audit M7).
+  depasserPlafondCredit('depasserPlafondCredit');
 
   const Permission(this.code);
   final String code;

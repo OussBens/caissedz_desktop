@@ -7121,4 +7121,18 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get situationPiecesComptees => 'القطع المحسوبة';
+
+  @override
+  String get permDepasserPlafondCredit => 'تجاوز سقف الائتمان';
+
+  @override
+  String posErreurPlafondCredit(String plafond, String solde) {
+    return 'تم تجاوز سقف ائتمان الزبون ($plafond، الائتمان الحالي $solde).';
+  }
+
+  @override
+  String get tiersPlafondCredit => 'سقف الائتمان';
+
+  @override
+  String get tiersPlafondCreditAide => 'فارغ أو 0: بدون سقف.';
 }

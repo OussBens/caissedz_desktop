@@ -157,6 +157,7 @@ class AchatService {
         throw const AchatException(ErreurAchat.fournisseurInconnu);
       }
       await _defaire(txn, code, 'Modification');
+      await _restaurerPrix(txn, code);
       await txn.delete('achat_ligne', where: 'achat_code = ?', whereArgs: [code]);
       final d = date ?? avant.date;
       await _ecrire(
@@ -211,6 +212,7 @@ class AchatService {
       for (final code in codes) {
         final a = await _modifiable(txn, code);
         await _defaire(txn, code, 'Annulation');
+        await _restaurerPrix(txn, code);
         final paiement = await _paiementImmediat(txn, code);
         if (paiement != null) {
           await TiersRepository(txn).annulerVersement(paiement, par: utilisateurCode, motif: motif.trim());
@@ -444,6 +446,8 @@ class AchatService {
     final stockRepo = StockRepository(txn);
     final stock = StockService(txn.database, utilisateurCode: utilisateurCode);
     final lignesAchat = <AchatLigne>[];
+    // Prix de la fiche avant / après chaque ligne : restaurés si l'entrée est annulée ou modifiée (audit M8).
+    final prix = <({double achatAvant, double achatApres, double venteAvant, double venteApres})>[];
     final nombreGlobal = await StockService.nombreGlobalActif(txn);
     for (final l in lignes) {
       final p = await catalogue.produitParCode(l.produitCode);
@@ -486,6 +490,7 @@ class AchatService {
         MajPrixAchat.dernier => l.prixAchat,
       };
       final vente = l.nouveauPrixVente ?? p.prixVente;
+      prix.add((achatAvant: p.prixAchat, achatApres: nouvelAchat, venteAvant: p.prixVente, venteApres: vente));
       if (nouvelAchat != p.prixAchat || vente != p.prixVente) {
         await catalogue.mettreAJourProduit(
           p.copyWith(
@@ -529,7 +534,42 @@ class AchatService {
         'nombre': l.nombre,
         'prix_achat': l.prixAchat,
         'total': l.total,
+        'prix_achat_avant': prix[i].achatAvant,
+        'prix_achat_apres': prix[i].achatApres,
+        'prix_vente_avant': prix[i].venteAvant,
+        'prix_vente_apres': prix[i].venteApres,
       });
+    }
+  }
+
+  /// Rend aux produits de l'entrée [code] les prix d'achat et de vente qu'ils avaient avant elle, si la fiche
+  /// porte encore les prix posés par cette entrée (aucune entrée ni saisie ne les a changés depuis).
+  Future<void> _restaurerPrix(Transaction txn, String code) async {
+    final rows = await txn.query(
+      'achat_ligne',
+      where: 'achat_code = ? AND prix_achat_avant IS NOT NULL',
+      whereArgs: [code],
+      orderBy: 'ordre',
+    );
+    final parProduit = <String, (Map<String, Object?>, Map<String, Object?>)>{};
+    for (final r in rows) {
+      final p = r['produit_code']! as String;
+      parProduit[p] = (parProduit[p]?.$1 ?? r, r);
+    }
+    final catalogue = CatalogueRepository(txn);
+    double d(Object? v) => (v as num).toDouble();
+    for (final MapEntry(key: produitCode, value: (premiere, derniere)) in parProduit.entries) {
+      final p = await catalogue.produitParCode(produitCode);
+      if (p == null) continue;
+      final inchange =
+          (p.prixAchat - d(derniere['prix_achat_apres'])).abs() < 0.005 &&
+          (p.prixVente - d(derniere['prix_vente_apres'])).abs() < 0.005;
+      final achat = d(premiere['prix_achat_avant']);
+      final vente = d(premiere['prix_vente_avant']);
+      if (!inchange || (achat == p.prixAchat && vente == p.prixVente)) continue;
+      await catalogue.mettreAJourProduit(
+        p.copyWith(prixAchat: achat, prixVente: vente, margePct: CalculsPrix.margeDepuisPrix(achat, vente)),
+      );
     }
   }
 

@@ -35,6 +35,7 @@ enum ErreurVente {
   montantPayeInferieur,
   retourLie,
   nombreObligatoire,
+  plafondCredit,
 }
 
 class VenteException implements Exception {
@@ -67,6 +68,7 @@ class VenteService {
     required SessionCaisse session,
     required String magasinCode,
     bool creditAutorise = false,
+    bool depassementPlafond = false,
     DateTime? date,
   }) async {
     if (!session.estOuverte) throw const VenteException(ErreurVente.sessionRequise);
@@ -110,6 +112,10 @@ class VenteService {
         final solde = await repo.pointsClient(panier.clientCode);
         if (solde < pointsUtilises) throw VenteException(ErreurVente.pointsInsuffisants, '$solde < $pointsUtilises');
       }
+      // Plafond de crédit (> 0) : solde actuel + reste de cette vente, sauf permission de dépassement.
+      if (reste > 0.004 && !depassementPlafond) {
+        await _controlerPlafond(txn, panier.clientCode, reste);
+      }
       final code = await repo.prochainCode('vente', CodeGenerator.vente);
       final stock = StockService(txn.database, utilisateurCode: utilisateurCode);
       // Mouvements de stock (garde de stock) — un pack est déjà éclaté en lignes produit ; services exclus.
@@ -130,18 +136,30 @@ class VenteService {
       } on StockException catch (e) {
         throw VenteException(ErreurVente.stockInsuffisant, e.detail);
       }
-      // Coût d'achat figé (§7.4) : unités de stock × prix d'achat du produit.
+      // Coût d'achat figé (§7.4) : unités de stock × prix d'achat du produit ; vente au nombre (pièces) :
+      // pièces × prix d'achat / pièces par unité.
       final codesCout = {for (final l in panier.lignes) l.produit.code};
-      final prixAchat = {
+      final fiches = {
         for (final r in await txn.query(
           'produit',
-          columns: ['code', 'prix_achat'],
+          columns: ['code', 'prix_achat', 'nombre_par_unite'],
           where: 'code IN (${List.filled(codesCout.length, '?').join(',')})',
           whereArgs: codesCout.toList(),
         ))
-          r['code'] as String: ((r['prix_achat'] as num?) ?? 0).toDouble(),
+          r['code'] as String: (
+            pa: ((r['prix_achat'] as num?) ?? 0).toDouble(),
+            npu: ((r['nombre_par_unite'] as num?) ?? 0).toDouble(),
+          ),
       };
-      double coutLigne(PanierLigne l) => CalculsPrix.arrondir((prixAchat[l.produit.code] ?? 0) * l.unitesStock);
+      double coutLigne(PanierLigne l) {
+        final f = fiches[l.produit.code];
+        if (f == null) return 0;
+        if (l.uniteVente == UniteVente.nombre) {
+          return f.npu <= 0 ? 0 : CalculsPrix.arrondir(f.pa / f.npu * l.quantite);
+        }
+        return CalculsPrix.arrondir(f.pa * l.unitesStock);
+      }
+
       final lignes = [
         for (final (i, l) in panier.lignes.indexed)
           VenteLigne(
@@ -224,6 +242,19 @@ class VenteService {
       );
       return vente;
     });
+  }
+
+  static Future<void> _controlerPlafond(Transaction txn, String clientCode, double reste) async {
+    final r = await txn.query('client', columns: ['plafond_credit'], where: 'code = ?', whereArgs: [clientCode]);
+    final plafond = r.isEmpty ? 0.0 : ((r.first['plafond_credit'] as num?) ?? 0).toDouble();
+    if (plafond <= 0) return;
+    final solde = await TiersRepository(txn).soldeClient(clientCode);
+    if (solde + reste > plafond + 0.004) {
+      throw VenteException(
+        ErreurVente.plafondCredit,
+        '${CalculsPrix.arrondir(plafond)}|${CalculsPrix.arrondir(solde > 0 ? solde : 0)}',
+      );
+    }
   }
 
   /// Modifie un panier (§9.2) sans toucher au ticket scellé : le complément payé devient un versement

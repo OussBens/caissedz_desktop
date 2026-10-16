@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../app/demarrage_providers.dart';
 import '../../app/providers.dart';
 import '../../application/cloture_service.dart';
 import '../../application/session_caisse_service.dart';
@@ -14,6 +15,7 @@ import '../../domain/models/panier.dart';
 import '../../domain/models/parametres_vente.dart';
 import '../../domain/models/produit.dart';
 import '../../domain/models/vente.dart';
+import '../../domain/permissions.dart';
 import '../produits/produits_providers.dart';
 import '../stock/stock_providers.dart';
 
@@ -434,7 +436,13 @@ class PosController extends Notifier<PosEtat> {
     }
     final v = await ref
         .read(venteServiceProvider)
-        .encaisser(panier, session: session, magasinCode: state.magasinCode, creditAutorise: creditAutorise);
+        .encaisser(
+          panier,
+          session: session,
+          magasinCode: state.magasinCode,
+          creditAutorise: creditAutorise,
+          depassementPlafond: ref.read(permissionProvider(Permission.depasserPlafondCredit)),
+        );
     _remises.remove(panier.id);
     state = state.remplacerPanier(panier.reinitialiser()).copyWith(derniereVente: v);
     ref.read(stockVersionProvider.notifier).incrementer();

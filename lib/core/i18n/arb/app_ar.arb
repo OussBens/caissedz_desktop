@@ -2431,5 +2431,9 @@
   "retoursDateDuJour": "مؤرخ بتاريخ اليوم، حتى بعد إقفال Z ليوم البيع.",
   "situationCasse": "تالف (خسارة)",
   "situationPiecesTheoriques": "القطع النظرية",
-  "situationPiecesComptees": "القطع المحسوبة"
+  "situationPiecesComptees": "القطع المحسوبة",
+  "permDepasserPlafondCredit": "تجاوز سقف الائتمان",
+  "posErreurPlafondCredit": "تم تجاوز سقف ائتمان الزبون ({plafond}، الائتمان الحالي {solde}).",
+  "tiersPlafondCredit": "سقف الائتمان",
+  "tiersPlafondCreditAide": "فارغ أو 0: بدون سقف."
 }

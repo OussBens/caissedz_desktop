@@ -34,6 +34,7 @@ class LigneTiers {
     required this.fiche,
     required this.stats,
     this.points = 0,
+    this.plafondCredit = 0,
     this.audit = Audit.vide,
   });
 
@@ -49,6 +50,7 @@ class LigneTiers {
     fiche: c.fiche,
     stats: s,
     points: c.points,
+    plafondCredit: c.plafondCredit,
     audit: c.audit,
   );
 
@@ -80,6 +82,9 @@ class LigneTiers {
   final Audit audit;
   final StatsTiers stats;
   final int points;
+
+  /// Plafond de crédit du client (0 = sans plafond).
+  final double plafondCredit;
 
   bool get estClient => type == TypesTiers.client;
   ListeReferentiel get listeTypes => estClient ? Referentiel.typesClient : Referentiel.typesFournisseur;
@@ -123,6 +128,9 @@ class _FormulaireTiersState extends ConsumerState<_FormulaireTiers> {
   late final _nrc = TextEditingController(text: t?.fiche.nrc);
   late final _rib = TextEditingController(text: t?.fiche.rib);
   late final _obs = TextEditingController(text: t?.fiche.observation);
+  late final _plafond = TextEditingController(
+    text: (t?.plafondCredit ?? 0) > 0 ? formaterNombre(t!.plafondCredit, decimales: 2, grouper: false) : '',
+  );
   late String _wilaya = (t?.fiche.wilaya.isNotEmpty ?? false) ? t!.fiche.wilaya : 'Alger';
   late String _typeTiers = (t?.fiche.type.isNotEmpty ?? false)
       ? t!.fiche.type
@@ -136,7 +144,7 @@ class _FormulaireTiersState extends ConsumerState<_FormulaireTiers> {
 
   @override
   void dispose() {
-    for (final c in [_nom, _tel, _activite, _adresse, _email, _fax, _nif, _nis, _nrc, _rib, _obs]) {
+    for (final c in [_nom, _tel, _activite, _adresse, _email, _fax, _nif, _nis, _nrc, _rib, _obs, _plafond]) {
       c.dispose();
     }
     super.dispose();
@@ -167,6 +175,7 @@ class _FormulaireTiersState extends ConsumerState<_FormulaireTiers> {
           email: _email.text.trim(),
           actif: _actif,
           points: t?.points ?? 0,
+          plafondCredit: lireNombre(_plafond.text) ?? 0,
           fiche: fiche,
         );
         _edition ? await s.modifierClient(c) : await s.creerClient(c);
@@ -296,6 +305,19 @@ class _FormulaireTiersState extends ConsumerState<_FormulaireTiers> {
               child: DsTextField(controller: _activite, indice: l10n.tiersActiviteIndice),
             ),
           ),
+          if (_client)
+            DsFormRow(
+              libelle: l10n.tiersPlafondCredit,
+              largeurLibelle: lw,
+              aide: l10n.tiersPlafondCreditAide,
+              child: DsTextField(
+                key: const ValueKey('tiers_plafond'),
+                controller: _plafond,
+                numerique: true,
+                suffixeTexte: ref.watch(deviseProvider),
+              ),
+            ),
+          if (_client) const SizedBox(),
           DsSpan(child: DsSubHead(l10n.tiersContact, icone: LucideIcons.phone)),
           DsSpan(
             child: DsFormRow(
