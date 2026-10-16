@@ -610,6 +610,13 @@ class _SituationTiersState extends ConsumerState<_SituationTiers> {
       ),
       DsColonne(id: 'ref', libelle: l10n.tiersReference, valeur: (x) => x.ligne.reference),
       DsColonne(
+        id: 'avant',
+        libelle: l10n.tiersSoldeAvant,
+        numerique: true,
+        valeur: (x) => x.solde - (x.ligne.credit - x.ligne.debit),
+        cellule: (_, x) => Text(da(x.solde - (x.ligne.credit - x.ligne.debit))),
+      ),
+      DsColonne(
         id: 'deb',
         libelle: l10n.tiersDebit,
         numerique: true,
@@ -627,7 +634,7 @@ class _SituationTiersState extends ConsumerState<_SituationTiers> {
       ),
       DsColonne(
         id: 'solde',
-        libelle: l10n.tiersSolde,
+        libelle: l10n.tiersSoldeApres,
         numerique: true,
         fort: true,
         valeur: (x) => x.solde,
@@ -660,26 +667,31 @@ class _SituationTiersState extends ConsumerState<_SituationTiers> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         spacing: 14,
         children: [
-          DsPeriodeLocalisee(periode: _periode, onChanged: (p) => setState(() => _periode = p)),
-          Row(
-            children: [
-              Expanded(
-                child: DsFormRow(
-                  libelle: l10n.tiersType,
-                  largeurLibelle: 48,
-                  child: DsSelect<NatureReleve?>(
-                    valeur: _nature,
-                    options: [
-                      null,
-                      ...NatureReleve.values.where((n) => widget.tiers.estClient || n != NatureReleve.retour),
-                    ],
-                    libelle: (n) => n == null ? l10n.tiersTous : _libelleNature(l10n, n),
-                    onChanged: (n) => setState(() => _nature = n),
+          // Filtres alignés : Du, Au, Période rapide et Type dans quatre colonnes égales, même largeur de libellé.
+          DsLargeurLibelle(
+            largeur: 80,
+            child: Row(
+              spacing: DsSpacing.s4,
+              children: [
+                for (final champ in DsPeriodeLocalisee.champs(context, _periode, (p) => setState(() => _periode = p)))
+                  Expanded(child: champ),
+                Expanded(
+                  child: DsFormRow(
+                    libelle: l10n.tiersType,
+                    child: DsSelect<NatureReleve?>(
+                      cle: const ValueKey('situation_type'),
+                      valeur: _nature,
+                      options: [
+                        null,
+                        ...NatureReleve.values.where((n) => widget.tiers.estClient || n != NatureReleve.retour),
+                      ],
+                      libelle: (n) => n == null ? l10n.tiersTous : _libelleNature(l10n, n),
+                      onChanged: (n) => setState(() => _nature = n),
+                    ),
                   ),
                 ),
-              ),
-              const Spacer(flex: 2),
-            ],
+              ],
+            ),
           ),
           DsStatsStrip(
             compact: true,
@@ -708,15 +720,19 @@ class _SituationTiersState extends ConsumerState<_SituationTiers> {
               ),
             ],
           ),
-          DsDataTable(
-            dense: true,
-            pagine: false,
-            hauteurMax: 320,
-            afficherTotaux: true,
-            cle: (x) => '${x.ligne.reference}_${x.ligne.nature.name}_${x.ligne.date.microsecondsSinceEpoch}',
-            lignes: lignes,
-            colonnes: colonnes,
-            messageVide: l10n.dsAucunElement,
+          // Dialog haut : le tableau occupe la hauteur disponible de l'écran, même avec peu de lignes.
+          SizedBox(
+            height: (MediaQuery.sizeOf(context).height - 400).clamp(300.0, 900.0),
+            child: DsDataTable(
+              dense: true,
+              pagine: false,
+              hauteurMax: (MediaQuery.sizeOf(context).height - 400).clamp(300.0, 900.0),
+              afficherTotaux: true,
+              cle: (x) => '${x.ligne.reference}_${x.ligne.nature.name}_${x.ligne.date.microsecondsSinceEpoch}',
+              lignes: lignes,
+              colonnes: colonnes,
+              messageVide: l10n.dsAucunElement,
+            ),
           ),
         ],
       ),

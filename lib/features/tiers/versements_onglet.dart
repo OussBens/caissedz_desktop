@@ -214,13 +214,16 @@ class _VersementsOngletState extends ConsumerState<VersementsOnglet> {
           onPressed: (choix, effacer) => _annuler(choix, effacer, noms),
         ),
       ],
-      secondaire: DsButton(
-        libelle: l10n.versementRetourNouveau,
-        icone: LucideIcons.undo2,
-        variante: DsButtonVariante.secondaire,
-        onPressed: () =>
-            afficherVersementTiers(context, ref, tiersType: widget.tiersType, tiers: widget.tiers, retour: true),
-      ),
+      // Client : l'argent rendu passe uniquement par un retour (module Retours), pas de versement retour direct.
+      secondaire: _client
+          ? null
+          : DsButton(
+              libelle: l10n.versementRetourNouveau,
+              icone: LucideIcons.undo2,
+              variante: DsButtonVariante.secondaire,
+              onPressed: () =>
+                  afficherVersementTiers(context, ref, tiersType: widget.tiersType, tiers: widget.tiers, retour: true),
+            ),
       primaire: DsButton(
         key: const ValueKey('versement_nouveau'),
         libelle: l10n.versementNouveau,

@@ -9,7 +9,6 @@ import 'package:caissedz_desktop/domain/models/panier.dart';
 import 'package:caissedz_desktop/domain/models/parametres_vente.dart';
 import 'package:caissedz_desktop/domain/models/produit.dart';
 import 'package:caissedz_desktop/domain/models/tiers.dart';
-import 'package:caissedz_desktop/features/commun/carte_entite.dart';
 import 'package:caissedz_desktop/features/tiers/tiers_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -88,14 +87,14 @@ void main() {
       await tester.pumpAndSettle();
       final vue = find.byKey(const ValueKey('module_vue'));
       await clic(tester, find.descendant(of: vue, matching: find.byTooltip('Affichage grille')));
-      final carte = find.widgetWithText(CarteEntite, 'Amina');
+      final carte = find.byKey(const ValueKey('carte_tiers_CLN0001'));
       expect(carte, findsOneWidget);
       expect(find.descendant(of: carte, matching: find.text('300,00 DA')), findsOneWidget);
       await doubleClic(tester, carte);
       expect(find.text('Informations générales'), findsOneWidget);
       await clic(tester, find.text('Fermer').last);
       await clic(tester, find.descendant(of: vue, matching: find.byTooltip('Affichage liste')));
-      expect(find.byType(CarteEntite), findsNothing);
+      expect(carte, findsNothing);
       expect(find.text('Amina'), findsOneWidget);
     });
 
@@ -119,7 +118,8 @@ void main() {
     testWidgets('route Versements : onglet Versements des clients', (tester) async {
       await pumpApp(tester, routeInitiale: '/versements', taille: const Size(1600, 1000));
       expect(find.byKey(const ValueKey('versement_nouveau')), findsOneWidget);
-      expect(find.text('Versement retour'), findsOneWidget);
+      // Côté clients, un remboursement passe uniquement par un retour.
+      expect(find.text('Versement retour'), findsNothing);
     });
 
     testWidgets('fournisseurs : création', (tester) async {

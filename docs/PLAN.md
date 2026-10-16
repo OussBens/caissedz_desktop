@@ -706,3 +706,21 @@ Référence : `docs/design/CaisseDZ-DS-v2.2/CaisseDZ-DS-v2.2.html`, `bundle-v2.2
   (à gauche en RTL), centrée verticalement (`positionLaterale`) ; elle ne masque plus le module suivant.
 - ✅ `DsDialog` avec contenu de début de pied (« * obligatoire », « Précédent »…) : boutons au centre exact du pied
   (deux zones égales de part et d'autre) dans tous les dialogs d'insertion.
+
+## Retours utilisateur — Tiers, retours, situations, caisse ✅ (2026-10-16)
+
+- ✅ Versements clients : plus de bouton « Versement retour » (un remboursement client passe uniquement par un
+  retour) ; il reste côté fournisseurs.
+- ✅ Retour client non remis en stock (produit cassé) : l'entrée Retour est compensée par une sortie « Casse »
+  équivalente (SRT…, migration v23 `sortie_stock.retour_code`), valorisée au prix d'achat de la vente, dans la même
+  transaction. La sortie est verrouillée (ni modification ni annulation seule) ; modifier ou annuler le retour la
+  remplace ou l'annule.
+- ✅ Retour fournisseur : champ « Remise en stock » supprimé (le produit repart chez le fournisseur).
+- ✅ Champs Remboursement (retour client) et Règlement (retour fournisseur) supprimés : le montant va directement au
+  solde (avoir client, déduction du crédit fournisseur) ; le client de passage, sans solde, est remboursé en
+  espèces. Colonne et filtre Règlement retirés de l'écran Retours (colonne masquable conservée).
+- ✅ Situation client / fournisseur : dialog plus haut, filtres alignés sur une ligne (Du, Au, Période, Type),
+  colonnes « Solde avant » et « Solde après » pour chaque opération.
+- ✅ Cartes clients / fournisseurs redessinées : initiales, téléphone et code, statut, bandeau Total achats / Crédit ;
+  adresse et étoiles retirées.
+- ✅ Caisse : carte produit moins haute (172 au lieu de 196) et photo deux fois plus haute (104 au lieu de 52).

@@ -8,7 +8,6 @@ import '../../domain/models/retour.dart';
 import '../../domain/models/tiers.dart';
 import '../../domain/referentiel/referentiel.dart';
 import '../../domain/referentiel/wilayas.dart';
-import '../commun/carte_entite.dart';
 import '../commun/colonnes_audit.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
@@ -300,19 +299,14 @@ class _TiersPageState extends ConsumerState<TiersPage> {
               format: format,
             )
           : null,
-      carte: (context, t, etatCarte) => CarteEntite(
+      largeurMinCarte: 260,
+      carte: (context, t, etatCarte) => _CarteTiers(
+        key: ValueKey('carte_tiers_${t.code}'),
         etat: etatCarte,
-        titre: t.nom,
-        sousTitre: '${t.code} · ${t.telephone}',
+        tiers: t,
         icone: _client ? LucideIcons.user : LucideIcons.truck,
-        statut: !t.actif ? 'inactif' : (t.stats.credit > 0.004 ? 'credit' : 'actif'),
-        montant: da(t.stats.credit),
-        libelleMontant: l10n.tiersCredit,
-        couleurMontant: t.stats.credit > 0.004 ? context.ds.colors.dangerFg : null,
-        lignes: [
-          (LucideIcons.mapPin, t.adresse),
-          _client ? (LucideIcons.star, l10n.selPoints(t.points)) : (LucideIcons.mail, t.email),
-        ],
+        montantAchats: da(t.stats.achats),
+        montantCredit: da(t.stats.credit),
       ),
       actions: [
         DsActionModule(
@@ -385,4 +379,129 @@ class FournisseursPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => TiersPage(type: TypesTiers.fournisseur, ongletInitial: ongletInitial);
+}
+
+/// Carte d'un client ou d'un fournisseur (vue grille) : avatar à initiales, nom, téléphone, état, puis un bandeau
+/// « Total achats » / « Crédit ».
+class _CarteTiers extends StatelessWidget {
+  const _CarteTiers({
+    super.key,
+    required this.etat,
+    required this.tiers,
+    required this.icone,
+    required this.montantAchats,
+    required this.montantCredit,
+  });
+  final DsEtatCarte etat;
+  final LigneTiers tiers;
+  final IconData icone;
+  final String montantAchats;
+  final String montantCredit;
+
+  static String _initiales(String texte) {
+    final mots = texte.trim().split(RegExp(r'\s+')).where((m) => m.isNotEmpty).toList();
+    if (mots.isEmpty) return '?';
+    return mots.take(2).map((m) => m.characters.first.toUpperCase()).join();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.ds.colors;
+    final t = context.ds.typo;
+    final l10n = AppLocalizations.of(context);
+    final teinte = teintePour(tiers.nom);
+    final enCredit = tiers.stats.credit > 0.004;
+    Widget stat(String libelle, String valeur, {Color? couleur}) => Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 2,
+      children: [
+        Text(
+          libelle,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: t.caption.copyWith(color: c.textMuted),
+        ),
+        Text(
+          valeur,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: t.bodySm.copyWith(fontWeight: FontWeight.w700, color: couleur ?? c.textPrimary),
+        ),
+      ],
+    );
+    return DsGridCard(
+      etat: etat,
+      child: Padding(
+        padding: const EdgeInsets.all(DsSpacing.s3),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          spacing: DsSpacing.s3,
+          children: [
+            Row(
+              spacing: DsSpacing.s3,
+              children: [
+                Container(
+                  width: 44,
+                  height: 44,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: Color.alphaBlend(teinte.withValues(alpha: .16), c.surfaceCard),
+                    shape: BoxShape.circle,
+                  ),
+                  child: tiers.systeme
+                      ? Icon(icone, size: DsTailles.icone, color: teinte)
+                      : Text(
+                          _initiales(tiers.nom),
+                          style: t.bodySm.copyWith(fontWeight: FontWeight.w700, color: teinte),
+                        ),
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 2,
+                    children: [
+                      Text(
+                        tiers.nom,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: t.bodySm.copyWith(fontWeight: FontWeight.w700, color: c.textPrimary),
+                      ),
+                      Row(
+                        spacing: 4,
+                        children: [
+                          Icon(LucideIcons.phone, size: 12, color: c.iconMuted),
+                          Expanded(
+                            child: Text(
+                              tiers.telephone.isEmpty ? tiers.code : '${tiers.telephone} · ${tiers.code}',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: t.caption.copyWith(color: c.textMuted),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                BadgeStatut(!tiers.actif ? 'inactif' : (enCredit ? 'credit' : 'actif'), petit: true),
+              ],
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: DsSpacing.s3, vertical: DsSpacing.s2),
+              decoration: BoxDecoration(color: c.surfaceSunken, borderRadius: DsRadius.borderMd),
+              child: Row(
+                spacing: DsSpacing.s3,
+                children: [
+                  Expanded(child: stat(l10n.tiersTotalAchats, montantAchats)),
+                  Container(width: 1, height: 28, color: c.borderSubtle),
+                  Expanded(child: stat(l10n.tiersCredit, montantCredit, couleur: enCredit ? c.dangerFg : c.successFg)),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
