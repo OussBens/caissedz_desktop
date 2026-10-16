@@ -177,6 +177,27 @@ void main() {
       expect(find.textContaining('Produit scanné'), findsOneWidget);
       await tester.pumpAndSettle();
       expect(find.byKey(const ValueKey('ligne_0')), findsOneWidget);
+      expect(_total(tester), contains('100,00'));
+      // Produit déjà au panier : le scan augmente sa quantité, sans dialog.
+      await tester.enterText(champ, '6130000000015');
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('ligne_1')), findsNothing);
+      expect(_total(tester), contains('200,00'));
+      // Dialog ouvert : une rafale du lecteur (chiffres rapides + Entrée) ajoute 1 au lieu d'être saisie.
+      await tester.tap(find.byKey(const ValueKey('tuile_PRD0001')));
+      await tester.pump(const Duration(milliseconds: 300));
+      for (final ch in '6130000000015'.split('')) {
+        final touche = LogicalKeyboardKey(LogicalKeyboardKey.digit0.keyId + int.parse(ch));
+        await tester.sendKeyDownEvent(touche, character: ch);
+        await tester.sendKeyUpEvent(touche);
+      }
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pump();
+      expect(tester.widget<Text>(find.byKey(const ValueKey('selection_quantite'))).data, '2');
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('ligne_1')), findsNothing);
+      expect(_total(tester), contains('400,00'));
       await tester.enterText(champ, '9999999999999');
       await tester.testTextInput.receiveAction(TextInputAction.done);
       await tester.pumpAndSettle();

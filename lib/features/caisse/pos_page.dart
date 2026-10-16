@@ -120,16 +120,29 @@ class _PosPageState extends ConsumerState<PosPage> {
   // ------------------------------------------------------------------ Produits
 
   Future<void> _choisirProduit(Produit p, {bool scanne = false}) async {
+    String? scanSuivant;
     final choix = await afficherSelectionProduit(
       context,
       produit: p,
       colis: _colisDe(p),
       stock: _disponible(p),
       scanne: scanne,
+      // Scan pendant que le dialog est ouvert : même produit → + 1, autre code → traité après validation.
+      estMemeProduit: (code) async {
+        final r = await ctrl.resoudre(code);
+        return r != null && r.produit.code == p.code && r.colis == null && r.pack == null;
+      },
+      autreScan: (code) => scanSuivant = code,
     );
-    if (choix == null || !mounted) return;
-    await _executer(() => ctrl.ajouter(p, colis: choix.colis, nombre: choix.nombre, quantite: choix.quantite));
+    if (choix != null && mounted) {
+      await _executer(() => ctrl.ajouter(p, colis: choix.colis, nombre: choix.nombre, quantite: choix.quantite));
+    }
+    if (!mounted) return;
     _scanFocus.requestFocus();
+    if (scanSuivant != null) {
+      _scan.text = scanSuivant!;
+      await _scanner();
+    }
   }
 
   Future<void> _modifierColis(int index) async {
@@ -182,7 +195,22 @@ class _PosPageState extends ConsumerState<PosPage> {
     }
     _scan.clear();
     setState(() => _recherche = '');
-    if (r.colis != null || r.pack != null) {
+    // Produit déjà au panier (à l'unité, hors pack) : le scan augmente sa quantité sans rouvrir le dialog.
+    final lignes = ref.read(posControllerProvider).panier.lignes;
+    final deja = r.colis == null && r.pack == null
+        ? lignes.indexWhere(
+            (l) =>
+                l.produit.code == r.produit.code &&
+                l.colis == null &&
+                l.pack == null &&
+                !l.estMontant &&
+                l.uniteVente != UniteVente.nombre,
+          )
+        : -1;
+    if (deja >= 0) {
+      await _executer(() => ctrl.modifierQuantite(deja, lignes[deja].quantite + 1));
+      if (mounted) setState(() => _ligneSelectionnee = deja);
+    } else if (r.colis != null || r.pack != null) {
       await _executer(() => ctrl.ajouter(r.produit, colis: r.colis, pack: r.pack));
     } else {
       await _choisirProduit(r.produit, scanne: true);

@@ -66,6 +66,8 @@ Future<SelectionProduit?> afficherSelectionProduit(
   double quantiteInitiale = 1,
   bool modification = false,
   Duration auto = const Duration(seconds: 3),
+  Future<bool> Function(String code)? estMemeProduit,
+  void Function(String code)? autreScan,
 }) => afficherDialog<SelectionProduit>(
   context,
   builder: (_) => _SelectionProduitDialog(
@@ -78,6 +80,8 @@ Future<SelectionProduit?> afficherSelectionProduit(
     quantiteInitiale: quantiteInitiale,
     modification: modification,
     auto: modification ? Duration.zero : auto,
+    estMemeProduit: estMemeProduit,
+    autreScan: autreScan,
   ),
 );
 
@@ -92,6 +96,8 @@ class _SelectionProduitDialog extends ConsumerStatefulWidget {
     required this.quantiteInitiale,
     required this.modification,
     required this.auto,
+    this.estMemeProduit,
+    this.autreScan,
   });
   final Produit produit;
   final List<Colis> colis;
@@ -103,6 +109,11 @@ class _SelectionProduitDialog extends ConsumerStatefulWidget {
   final bool modification;
   final Duration auto;
 
+  /// Scan reçu pendant que le dialog est ouvert : même produit → quantité + 1 ; autre code → la sélection en
+  /// cours est validée puis le code est rendu à la caisse ([autreScan]).
+  final Future<bool> Function(String code)? estMemeProduit;
+  final void Function(String code)? autreScan;
+
   @override
   ConsumerState<_SelectionProduitDialog> createState() => _SelectionProduitDialogState();
 }
@@ -113,8 +124,15 @@ class _SelectionProduitDialogState extends ConsumerState<_SelectionProduitDialog
   late String _q = _q0(widget.quantiteInitiale);
   late bool _touche = widget.auto == Duration.zero;
   Timer? _minuteur;
-  final _debut = DateTime.now();
+  DateTime _debut = DateTime.now();
   Duration _reste = Duration.zero;
+
+  /// Rafale de frappes rapides (lecteur de codes-barres) : caractères, heure de la dernière frappe et état de la
+  /// quantité avant la rafale (rétabli si la rafale se révèle être un scan).
+  final StringBuffer _rafale = StringBuffer();
+  DateTime? _derniereFrappe;
+  ({String q, bool remplacer, bool touche})? _avantRafale;
+  static const Duration _ecartScan = Duration(milliseconds: 60);
 
   static String _q0(double v) => v == v.roundToDouble() ? v.toInt().toString() : v.toString();
 
@@ -122,23 +140,74 @@ class _SelectionProduitDialogState extends ConsumerState<_SelectionProduitDialog
   void initState() {
     super.initState();
     _reste = widget.auto;
-    if (!_touche) {
-      _minuteur = Timer.periodic(const Duration(milliseconds: 100), (_) {
-        final r = widget.auto - DateTime.now().difference(_debut);
-        if (r <= Duration.zero) {
-          _minuteur?.cancel();
-          _valider(auto: true);
-        } else {
-          setState(() => _reste = r);
-        }
-      });
-    }
+    if (!_touche) _demarrerMinuteur();
+  }
+
+  void _demarrerMinuteur() {
+    _minuteur?.cancel();
+    _debut = DateTime.now();
+    _minuteur = Timer.periodic(const Duration(milliseconds: 100), (_) {
+      final r = widget.auto - DateTime.now().difference(_debut);
+      if (r <= Duration.zero) {
+        _minuteur?.cancel();
+        _valider(auto: true);
+      } else {
+        setState(() => _reste = r);
+      }
+    });
   }
 
   @override
   void dispose() {
     _minuteur?.cancel();
     super.dispose();
+  }
+
+  /// Mémorise la frappe dans la rafale en cours (une pause de plus de [_ecartScan] en commence une nouvelle).
+  void _noterFrappe(KeyEvent e) {
+    final maintenant = DateTime.now();
+    final car = e.character;
+    if (car == null || car.isEmpty || car.codeUnitAt(0) < 0x20) return;
+    if (_derniereFrappe == null || maintenant.difference(_derniereFrappe!) > _ecartScan) {
+      _rafale.clear();
+      _avantRafale = (q: _q, remplacer: _remplacer, touche: _touche);
+    }
+    _rafale.write(car);
+    _derniereFrappe = maintenant;
+  }
+
+  /// Entrée qui termine une rafale rapide d'au moins 4 caractères : c'est un scan, pas une saisie de quantité.
+  bool _finDeScan() {
+    final fin = _derniereFrappe != null && DateTime.now().difference(_derniereFrappe!) <= _ecartScan * 2;
+    final code = _rafale.toString().trim();
+    _rafale.clear();
+    _derniereFrappe = null;
+    if (!fin || code.length < 4 || widget.estMemeProduit == null) return false;
+    final avant = _avantRafale;
+    if (avant != null) {
+      setState(() {
+        _q = avant.q;
+        _remplacer = avant.remplacer;
+        _touche = avant.touche;
+      });
+    }
+    unawaited(_traiterScan(code, relancer: avant != null && !avant.touche));
+    return true;
+  }
+
+  Future<void> _traiterScan(String code, {required bool relancer}) async {
+    if (await widget.estMemeProduit!(code)) {
+      if (!mounted) return;
+      setState(() {
+        _q = _q0(_quantite + 1);
+        _remplacer = false;
+      });
+      if (relancer) _demarrerMinuteur();
+      return;
+    }
+    if (!mounted) return;
+    _minuteur?.cancel();
+    if (_valider(auto: true)) widget.autreScan?.call(code);
   }
 
   void _toucher() {
@@ -209,13 +278,15 @@ class _SelectionProduitDialogState extends ConsumerState<_SelectionProduitDialog
   /// Le stock au nombre est contrôlé à l'ajout (réservations comprises) ; ici, seules les unités.
   bool get _depasse => _colis != _nombre && _quantite * _parColis > widget.stock + 1e-9;
 
-  void _valider({bool auto = false}) {
+  /// Valide la sélection ; `false` si la quantité est invalide ou dépasse le stock (le dialog reste ouvert).
+  bool _valider({bool auto = false}) {
     final q = auto && _quantite <= 0 ? 1.0 : _quantite;
     if (q <= 0 || (_colis != _nombre && q * _parColis > widget.stock + 1e-9)) {
       if (auto) setState(() => _touche = true);
-      return;
+      return false;
     }
     Navigator.of(context).pop((colis: _colisChoisi, nombre: _colis == _nombre, quantite: q));
+    return true;
   }
 
   @override
@@ -250,7 +321,10 @@ class _SelectionProduitDialogState extends ConsumerState<_SelectionProduitDialog
         onKeyEvent: (_, e) {
           if (e is! KeyDownEvent && e is! KeyRepeatEvent) return KeyEventResult.ignored;
           final k = e.logicalKey;
-          if (k == LogicalKeyboardKey.enter || k == LogicalKeyboardKey.numpadEnter) return KeyEventResult.ignored;
+          if (k == LogicalKeyboardKey.enter || k == LogicalKeyboardKey.numpadEnter) {
+            return _finDeScan() ? KeyEventResult.handled : KeyEventResult.ignored;
+          }
+          _noterFrappe(e);
           _toucher();
           return _saisirClavier(e) ? KeyEventResult.handled : KeyEventResult.ignored;
         },
