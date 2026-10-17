@@ -203,6 +203,8 @@ Recopie de la checklist de la spec 06. `[x]` = fait et testé ; `[ ]` = manquant
 - [x] Retours client/fournisseur depuis le document d'origine, plafond de quantité, versement et mouvements liés
 - [x] Retour client par ligne de vente, daté du jour (possible après la Z), unités figées à la vente, pièces et
       points de fidélité repris au prorata ; CA et marges nets des retours, casse en perte
+- [x] Prix de vente saisi HT, TTC = HT + TVA du produit à la caisse (régime IFU : TTC = HT) ; admin : transfert
+      proposé depuis un autre magasin quand le magasin de la caisse manque de stock
 
 ### Achats
 - [x] Smart Scan multi-produits → magasin principal, mise à jour des prix, paiement partiel
@@ -229,8 +231,9 @@ Recopie de la checklist de la spec 06. `[x]` = fait et testé ; `[ ]` = manquant
 
 ### Paramètres, sorties
 - [x] Paramètres Système / Boutique / Avancé (§ 9.16) — écarts listés dans `docs/PLAN.md` (Paramètres)
-- [ ] Impression thermique 4 types + facture A4 FR/AR + aperçus — aperçu du ticket fait (caisse, Paramètres) ;
-      reste : Bluetooth via la file d'impression Windows
+- [ ] Impression thermique 4 types + facture A4 FR/AR + aperçus — aperçu du ticket et de tous les documents A4
+      (facture, avoir, devis, proforma, commande, BL), arabe lié dans les PDF ; reste : Bluetooth via la file
+      d'impression Windows
 - [x] Exports Excel de tous les modules + PDF dérivé de l'Excel
 - [x] Sauvegarde zip, auto-backup (au démarrage, quotidienne ou à chaque démarrage), restauration
 - [x] Catalogue partagé + cascade de recherche code-barres

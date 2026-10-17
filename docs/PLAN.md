@@ -832,3 +832,25 @@ workflows et calculs » du projet.
 - ✅ Workflow HTML de l'application (`docs/workflow/workflow.html`, généré par `tool/workflow_html.py`) sur le
   modèle de l'ancienne version, avec captures régénérées par `CAPTURES=1 flutter test test/outils/captures_workflow_test.dart`.
 
+
+## Retours interface, prix HT, documents et caisse ✅ (2026-10-17)
+
+- ✅ Boutons Modifier / Annuler des barres d'outils en icône seule (crayon, X) avec infobulle ; dialog de période
+  du tableau de bord élargi ; date et heure (24 h) dans les tableaux et détails.
+- ✅ Aperçu avant impression (Enregistrer en PDF, Imprimer, Fermer) pour les factures, avoirs, devis, proformas,
+  commandes et bons de livraison ; nouvelle mise en page A4 (en-tête émetteur, cartes référence / client, tableau
+  zébré, totaux encadrés, montant en lettres, filigrane DUPLICATA / Annulé, pied numéroté avec empreinte).
+- ✅ Arabe dans les PDF (factures, devis, proformas, BL, rapports, étiquettes) : un texte arabe s'écrit de droite à
+  gauche, lettres liées, même dans un document en français (`core/print/texte_pdf.dart`).
+- ✅ Recherche globale (barre du haut, Ctrl+K) : produits, tiers, ventes, factures, documents, entrées, commandes,
+  retours, versements, sorties, transferts, besoins ; ouvre le module sur le bon onglet avec la recherche remplie.
+- ✅ Prix de vente du produit saisi HT : TTC = HT + TVA du produit en caisse, devis / commandes, sélecteurs et
+  étiquettes (TTC = HT au régime IFU) ; prix des packs inchangés (prix final) ; prix d'achat inchangés (TTC).
+- ✅ Points rouges de nouvelle activité sur les modules (barre latérale) et leurs onglets, par utilisateur, éteints
+  à la consultation (`domain/pastilles.dart`).
+- ✅ Clôture de session : solde théorique ventilé par type de mouvement, avertissement si négatif (comptage ≥ 0) ;
+  le coffre ne s'ouvre plus comme une caisse.
+- ✅ Téléphone contrôlé dans le formulaire utilisateur (même règle que les tiers) ; « Accès non autorisé » court dans
+  le menu des modules ; sélecteur de magasin retiré de la barre latérale.
+- ✅ Caisse, admin : produit en rupture ou quantité au-delà du stock du magasin de la caisse → si un autre magasin a
+  assez de stock, proposition d'un transfert TRF du manque (le mieux pourvu) puis ajout au panier.
