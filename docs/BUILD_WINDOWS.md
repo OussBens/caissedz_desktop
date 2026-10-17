@@ -45,7 +45,7 @@ d'environnement) et publier `build\windows\x64\runner\Release\CaisseDZ-Desktop.m
 
 | Point | Attendu |
 |---|---|
-| Fenêtre | minimum 1000×700, barre de titre personnalisée (réduire / agrandir / fermer), redimensionnement |
+| Fenêtre | minimum 1400×700, barre de titre personnalisée (réduire / agrandir / fermer), redimensionnement |
 | Base | `%APPDATA%\caissedz_desktop\data\caissedz.db` chiffré ; clé dérivée de la machine (§4.2) |
 | Activation | clé liée à l'identifiant machine, Basic / Avancé, mode démo |
 | Langues | FR / AR (RTL, Cairo) / EN ; thème clair / sombre persistés |

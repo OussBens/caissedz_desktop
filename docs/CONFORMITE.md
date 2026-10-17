@@ -15,7 +15,7 @@
 > des tokens sont supprimés.
 
 ## Socle (lot 0)
-- [x] Fenêtre Windows minimale 1000×700, barre de titre personnalisée
+- [x] Fenêtre Windows minimale 1400×700 (1000 × 1,4, demande du 2026-10-17), barre de titre personnalisée
 - [x] Tokens du DS v2.2 (clair + sombre) traduits en ThemeExtension, sans alias historiques
 - [x] Widgets du DS (bundle v2.2 + nouveaux composants) disponibles dans la galerie (clair / sombre / RTL)
 - [x] Base SQLite chiffrée SQLCipher, `foreign_keys ON`, migrations versionnées

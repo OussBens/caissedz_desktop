@@ -22,7 +22,7 @@ Future<void> main() async {
     await windowManager.ensureInitialized();
     const options = WindowOptions(
       minimumSize: Size(DsTailles.fenetreMinLargeur, DsTailles.fenetreMinHauteur),
-      size: Size(1280, 800),
+      size: Size(1440, 860),
       center: true,
       title: 'CaisseDZ',
       titleBarStyle: TitleBarStyle.hidden,
