@@ -812,3 +812,23 @@ workflows et calculs » du projet.
   espèces de session) et soldes tiers cohérents à chaque étape (`test/application/workflows_coherence_test.dart`).
   Corrigé : modifier / annuler un versement exige une session ouverte (comme la saisie) ; l'annulation d'une vente n'annule un versement que s'il est
   entièrement imputé sur ce panier (sinon l'imputation est libérée et le versement reste en avance).
+
+## Fonctionnalités commerciales et fiscales manquantes ✅ (2026-10-17)
+
+- ✅ Téléphone client / fournisseur 10 chiffres maximum (mobile 05/06/07 + 8 chiffres, fixe 02/03/04 + 7) ; solde
+  initial saisi sur la fiche du client et du fournisseur (compté dans le solde unique) ; filtre client / fournisseur
+  dans Versements.
+- ✅ TVA HT / TVA / TTC par taux (19 %, 9 %, exonéré) sur le ticket, la clôture Z, la liste des ventes, les entrées
+  (TVA déductible) et l'analyse TVA de Situation ; régime IFU ou Réel ; aide G50 (export Excel existant).
+- ✅ Onglet Factures & avoirs dans Ventes : numérotation FAC / AVO propre et continue, NIF / NIS / RC / AI du vendeur
+  et du client, montant en lettres, avoir automatique sur retour ou annulation d'une vente facturée.
+- ✅ Module « Devis & commandes » (migration v34) : devis DEV et proformas PRO (statuts En cours, Accepté, Refusé,
+  Transformé, Expiré calculé, Annulé ; aucun effet sur stock ni solde), commandes clients BCC livrées en une ou
+  plusieurs fois (chaque livraison crée la vente et le bon LIV dans une transaction, session ouverte exigée, reste
+  au crédit du client), BL imprimable pour une vente de caisse depuis Ventes.
+- ✅ Module « Commandes fournisseurs » BCF : réception partielle par les entrées (formulaire pré-rempli du reste),
+  statut calculé, « Solder » pour clore le reliquat, modification / annulation bloquées après une réception ;
+  création depuis une liste de besoins.
+- ✅ Workflow HTML de l'application (`docs/workflow/workflow.html`, généré par `tool/workflow_html.py`) sur le
+  modèle de l'ancienne version, avec captures régénérées par `CAPTURES=1 flutter test test/outils/captures_workflow_test.dart`.
+

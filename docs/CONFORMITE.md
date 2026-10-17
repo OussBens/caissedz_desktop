@@ -121,6 +121,12 @@
 - [x] Période clôturée évaluée par caisse (ventes, retours, versements ; les entrées, sans caisse, restent bloquées
       par toute clôture couvrant la date)
 - [x] Journal de caisse en ajout seul : contre-passations au lieu de suppressions, déclencheurs (migration v26)
+- [x] TVA HT / TVA / TTC affichée sur ticket, clôture Z, ventes, entrées (TVA déductible) et analyse TVA par taux ;
+      onglet Factures & avoirs (FAC / AVO, duplicata, vérification de la chaîne)
+- [x] Documents commerciaux (migration v34) : devis DEV, proforma PRO, commande client BCC livrée en une ou plusieurs
+      fois par bons de livraison LIV (vente + BL dans une transaction), commande fournisseur BCF réceptionnée en
+      partie par les entrées, soldable ; impressions A4 avec montant en lettres
+- [x] Téléphone client / fournisseur limité à 10 chiffres, solde initial des tiers, filtre par tiers des versements
 
 ## Rapports et paramètres (lot 8)
 - [x] Tableau de bord §9.14 (phase D) : période Jour / Semaine / Mois / Période, 6 KPI (ventes, période précédente,
