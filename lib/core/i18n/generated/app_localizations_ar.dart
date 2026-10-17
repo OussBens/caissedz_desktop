@@ -342,7 +342,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get shellVerrouille => 'مخصص للرخصة المتقدمة';
 
   @override
-  String get shellAccesRestreint => 'وصول غير مسموح لدورك';
+  String get shellAccesRestreint => 'وصول غير مسموح';
 
   @override
   String get produitsOngletProduits => 'المنتجات';

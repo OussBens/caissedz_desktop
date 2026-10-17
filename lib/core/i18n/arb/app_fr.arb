@@ -142,7 +142,7 @@
   "permVoirPrixAchat": "Voir le prix d'achat",
   "shellBandeauDemo": "Mode démo — les données ne sont pas destinées à la production",
   "shellVerrouille": "Réservé à la licence Avancé",
-  "shellAccesRestreint": "Accès non autorisé pour votre rôle",
+  "shellAccesRestreint": "Accès non autorisé",
   "produitsOngletProduits": "Produits",
   "produitsOngletCategories": "Catégories",
   "produitsOngletPacks": "Packs",

@@ -142,7 +142,7 @@
   "permVoirPrixAchat": "View purchase price",
   "shellBandeauDemo": "Demo mode — data is not meant for production",
   "shellVerrouille": "Advanced licence only",
-  "shellAccesRestreint": "Not allowed for your role",
+  "shellAccesRestreint": "Access denied",
   "produitsOngletProduits": "Products",
   "produitsOngletCategories": "Categories",
   "produitsOngletPacks": "Bundles",

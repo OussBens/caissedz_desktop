@@ -344,7 +344,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shellVerrouille => 'Advanced licence only';
 
   @override
-  String get shellAccesRestreint => 'Not allowed for your role';
+  String get shellAccesRestreint => 'Access denied';
 
   @override
   String get produitsOngletProduits => 'Products';

@@ -345,7 +345,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get shellVerrouille => 'Réservé à la licence Avancé';
 
   @override
-  String get shellAccesRestreint => 'Accès non autorisé pour votre rôle';
+  String get shellAccesRestreint => 'Accès non autorisé';
 
   @override
   String get produitsOngletProduits => 'Produits';

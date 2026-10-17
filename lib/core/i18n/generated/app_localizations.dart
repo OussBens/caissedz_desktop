@@ -744,7 +744,7 @@ abstract class AppLocalizations {
   /// No description provided for @shellAccesRestreint.
   ///
   /// In fr, this message translates to:
-  /// **'Accès non autorisé pour votre rôle'**
+  /// **'Accès non autorisé'**
   String get shellAccesRestreint;
 
   /// No description provided for @produitsOngletProduits.

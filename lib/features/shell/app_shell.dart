@@ -11,7 +11,6 @@ import '../../core/i18n/generated/app_localizations.dart';
 import '../../domain/models/session.dart';
 import '../../domain/modules.dart';
 import '../../domain/pastilles.dart';
-import '../../domain/permissions.dart';
 import '../../domain/referentiel/referentiel.dart';
 import '../activation/activation_page.dart';
 import '../commun/pastilles_providers.dart';
@@ -41,7 +40,7 @@ String? verrouModule(AppLocalizations l10n, ModuleApp m, {required bool licenceC
   return null;
 }
 
-/// Coque de l'application (DS v2.2 `AppShell`) : barre latérale (groupes, magasin, déconnexion) + barre
+/// Coque de l'application (DS v2.2 `AppShell`) : barre latérale (groupes, déconnexion) + barre
 /// supérieure (menu des modules, favoris, témoin réseau, alertes, thème, compte, fenêtre) + module.
 ///
 /// Contrôle d'accès : module interdit au rôle → « Accès refusé » ; module réservé au palier Avancé →
@@ -110,7 +109,6 @@ class _AppShellState extends ConsumerState<AppShell> {
     final locale = ref.watch(localeProvider);
     final favoris = ref.watch(favorisModulesProvider);
     final alertes = ref.watch(alertesProvider);
-    final magasins = ref.watch(magasinCourantProvider);
     final routeActive = module == null ? route : (Modules.parId(module.idAcces) ?? module).route;
     final pastilles = ref.watch(pastillesProvider);
     bool point(ModuleApp m) => m.route != routeActive && pastilles.any((c) => PastillesModules.module(c) == m.id);
@@ -186,16 +184,6 @@ class _AppShellState extends ConsumerState<AppShell> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     spacing: DsSpacing.s2,
                     children: [
-                      if (licence.couvre(NiveauLicence.avance) && magasins.magasinCourant != null)
-                        DsStoreSwitcher(
-                          key: const ValueKey('selecteur_magasin'),
-                          nom: magasins.magasinCourant!.nom,
-                          magasins: [for (final m in magasins.magasins) m.nom],
-                          onChanged: (nom) {
-                            final m = magasins.magasins.where((m) => m.nom == nom).firstOrNull;
-                            if (m != null) ref.read(magasinCourantProvider.notifier).changer(m.code);
-                          },
-                        ),
                       DsButton(
                         key: const ValueKey('bouton_deconnexion'),
                         libelle: l10n.connexionDeconnecter,
