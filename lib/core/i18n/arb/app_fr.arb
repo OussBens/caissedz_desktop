@@ -1868,7 +1868,6 @@
     }
   },
   "posClotureFond": "Fond de départ",
-  "posClotureVentesEspeces": "Ventes en espèces (monnaie déduite)",
   "posClotureTheorique": "Solde théorique",
   "posClotureReel": "Solde réel compté",
   "posClotureEcart": "Écart de caisse · {etat}",
@@ -3048,7 +3047,6 @@
   "usrForce4": "Fort",
   "usrPrenom": "Prénom",
   "usrNom": "Nom",
-  "usrTelephoneIndice": "05xx xx xx xx",
   "usrAdminRole": "Accès complet, ne peut pas être restreint",
   "usrNbPermissions": "{n} permissions",
   "@usrNbPermissions": {
@@ -3860,7 +3858,6 @@
   "docMontantPaye": "Montant payé",
   "docMontantPayeAide": "Laisser vide : livraison à crédit",
   "docValiderLivraison": "Valider la livraison",
-  "docVendeur": "Vendeur",
   "docPdfDevis": "DEVIS",
   "docPdfProforma": "FACTURE PROFORMA",
   "docPdfCommande": "BON DE COMMANDE",
@@ -3919,7 +3916,6 @@
   "cmdfStatutRecue": "Reçue",
   "cmdfStatutSoldee": "Soldée",
   "cmdfPdfTitre": "BON DE COMMANDE FOURNISSEUR",
-  "cmdfAcheteur": "Acheteur",
   "cmdfDepuisBesoin": "Créer une commande fournisseur",
   "cmdfErreurReceptionLiee": "Commande déjà réceptionnée : annulez d'abord les entrées liées",
   "cmdfErreurDejaSoldee": "Commande déjà soldée",
@@ -3945,5 +3941,35 @@
   },
   "prdPrixTtc": "Prix de vente TTC",
   "prdVenteTtc": "Vente TTC",
-  "posClotureNegatif": "Solde théorique négatif : il est sorti de cette caisse plus d'espèces qu'il n'en est entré depuis l'ouverture (voir le détail ci-dessus). Une caisse ne peut pas contenir moins de 0 : comptez les espèces réellement présentes (0 si le tiroir est vide), l'écart sera enregistré comme manquant."
+  "posClotureNegatif": "Solde théorique négatif : il est sorti de cette caisse plus d'espèces qu'il n'en est entré depuis l'ouverture (voir le détail ci-dessus). Une caisse ne peut pas contenir moins de 0 : comptez les espèces réellement présentes (0 si le tiroir est vide), l'écart sera enregistré comme manquant.",
+  "posTransfertTitre": "Stock insuffisant dans ce magasin",
+  "posTransfertMessage": "{destination} n'a pas assez de « {produit} ». {source} en a {stock}. Créer un transfert de {quantite} depuis {source} vers {destination}, puis ajouter le produit au panier ?",
+  "@posTransfertMessage": {
+    "placeholders": {
+      "destination": {
+        "type": "String"
+      },
+      "produit": {
+        "type": "String"
+      },
+      "quantite": {
+        "type": "String"
+      },
+      "source": {
+        "type": "String"
+      },
+      "stock": {
+        "type": "String"
+      }
+    }
+  },
+  "posTransfertConfirmer": "Transférer et ajouter",
+  "posTransfertFait": "Transfert {code} créé",
+  "@posTransfertFait": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  }
 }

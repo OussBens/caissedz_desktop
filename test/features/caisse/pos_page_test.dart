@@ -3,6 +3,7 @@ import 'package:caissedz_desktop/application/catalogue_service.dart';
 import 'package:caissedz_desktop/application/stock_service.dart';
 import 'package:caissedz_desktop/core/design_system/design_system.dart';
 import 'package:caissedz_desktop/data/parametre_repository.dart';
+import 'package:caissedz_desktop/data/stock_repository.dart';
 import 'package:caissedz_desktop/data/vente_repository.dart';
 import 'package:caissedz_desktop/domain/models/parametres_paiement.dart';
 import 'package:caissedz_desktop/domain/models/parametres_vente.dart';
@@ -244,6 +245,42 @@ void main() {
       expect(find.text('Calculatrice'), findsOneWidget);
       await tester.sendKeyEvent(LogicalKeyboardKey.escape);
       await tester.pumpAndSettle();
+    });
+
+    testWidgets('admin : stock insuffisant ici mais disponible ailleurs → transfert proposé puis ajout', (
+      tester,
+    ) async {
+      final c = await pumpApp(tester, routeInitiale: '/caisse', taille: const Size(1600, 1000));
+      await _donnees(c);
+      final db = c.read(appDatabaseProvider).db;
+      final stock = StockService(db, utilisateurCode: 'USR0000');
+      final depot = await stock.creerMagasin('Dépôt');
+      // Eau : rien dans le magasin de la caisse, 20 au dépôt.
+      await stock.entrerStock(produitCode: 'PRD0002', magasinCode: depot.code, quantite: 20);
+      c.read(stockVersionProvider.notifier).incrementer();
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const ValueKey('tuile_PRD0002')));
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.tap(find.descendant(of: find.byType(DsNumpad), matching: find.text('3')));
+      await tester.pumpAndSettle();
+      // L'admin peut valider au-delà du stock : la caisse propose le transfert du manque.
+      await clic(tester, find.byKey(const ValueKey('selection_valider')));
+      expect(find.text('Stock insuffisant dans ce magasin'), findsOneWidget);
+      expect(find.textContaining('Dépôt en a 20'), findsOneWidget);
+      await clic(tester, find.text('Transférer et ajouter'));
+      await tester.pump(const Duration(seconds: 5));
+      expect(find.byKey(const ValueKey('ligne_0')), findsOneWidget);
+
+      final repo = StockRepository(db);
+      final transferts = await repo.transferts();
+      expect(transferts, hasLength(1));
+      expect(transferts.single.magasinSource, depot.code);
+      expect(transferts.single.magasinDestination, 'MAG0000');
+      // Quantité saisie : 1 puis « 3 » → 13, transférée en entier (rien dans le magasin de la caisse).
+      expect(transferts.single.lignes.single.quantite, 13);
+      expect((await repo.niveau('PRD0002', 'MAG0000')).quantite, 13);
+      expect((await repo.niveau('PRD0002', depot.code)).quantite, 7);
     });
 
     testWidgets('Paramètres appliqués : moyens de paiement visibles, vente sous achat interdite', (tester) async {

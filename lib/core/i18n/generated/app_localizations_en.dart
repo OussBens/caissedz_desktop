@@ -3566,9 +3566,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get posClotureFond => 'Opening float';
 
   @override
-  String get posClotureVentesEspeces => 'Cash sales (change deducted)';
-
-  @override
   String get posClotureTheorique => 'Expected balance';
 
   @override
@@ -5729,9 +5726,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get usrNom => 'Last name';
 
   @override
-  String get usrTelephoneIndice => '05xx xx xx xx';
-
-  @override
   String get usrAdminRole => 'Full access, cannot be restricted';
 
   @override
@@ -7457,9 +7451,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get docValiderLivraison => 'Confirm delivery';
 
   @override
-  String get docVendeur => 'Seller';
-
-  @override
   String get docPdfDevis => 'QUOTE';
 
   @override
@@ -7578,9 +7569,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cmdfPdfTitre => 'SUPPLIER PURCHASE ORDER';
 
   @override
-  String get cmdfAcheteur => 'Buyer';
-
-  @override
   String get cmdfDepuisBesoin => 'Create supplier order';
 
   @override
@@ -7621,4 +7609,20 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get posClotureNegatif =>
       'Negative expected balance: more cash left this till than came in since it was opened (see the breakdown above). A till cannot hold less than 0: count the cash actually there (0 if the drawer is empty); the difference is recorded as a shortage.';
+
+  @override
+  String get posTransfertTitre => 'Not enough stock in this store';
+
+  @override
+  String posTransfertMessage(String destination, String produit, String quantite, String source, String stock) {
+    return '$destination does not have enough \"$produit\". $source has $stock. Create a transfer of $quantite from $source to $destination, then add the product to the cart?';
+  }
+
+  @override
+  String get posTransfertConfirmer => 'Transfer and add';
+
+  @override
+  String posTransfertFait(String code) {
+    return 'Transfer $code created';
+  }
 }

@@ -1311,7 +1311,6 @@
   "posClotureTitre": "إقفال {caisse}",
   "posClotureDesc": "الجلسة {code} · فُتحت على {heure}",
   "posClotureFond": "الرصيد الافتتاحي",
-  "posClotureVentesEspeces": "المبيعات نقدًا (بعد خصم الباقي)",
   "posClotureTheorique": "الرصيد النظري",
   "posClotureReel": "الرصيد الفعلي المعدود",
   "posClotureEcart": "فارق الصندوق · {etat}",
@@ -1986,7 +1985,6 @@
   "usrForce4": "قوية",
   "usrPrenom": "الاسم",
   "usrNom": "اللقب",
-  "usrTelephoneIndice": "05xx xx xx xx",
   "usrAdminRole": "صلاحيات كاملة، لا يمكن تقييدها",
   "usrNbPermissions": "{n} صلاحيات",
   "usrCaisseAttachee": "الصندوق المرتبط",
@@ -2535,7 +2533,6 @@
   "docMontantPaye": "المبلغ المدفوع",
   "docMontantPayeAide": "اتركه فارغا: تسليم بالدين",
   "docValiderLivraison": "تأكيد التسليم",
-  "docVendeur": "البائع",
   "docPdfDevis": "عرض سعر",
   "docPdfProforma": "فاتورة شكلية",
   "docPdfCommande": "وصل طلبية",
@@ -2573,7 +2570,6 @@
   "cmdfStatutRecue": "مستلمة",
   "cmdfStatutSoldee": "مُسوّاة",
   "cmdfPdfTitre": "وصل طلبية المورد",
-  "cmdfAcheteur": "المشتري",
   "cmdfDepuisBesoin": "إنشاء طلبية مورد",
   "cmdfErreurReceptionLiee": "طلبية مستلمة: ألغ أولا الإدخالات المرتبطة",
   "cmdfErreurDejaSoldee": "الطلبية مسواة مسبقا",
@@ -2585,5 +2581,9 @@
   "rechercheGlobaleAucun": "لا توجد نتائج لـ « {texte} »",
   "prdPrixTtc": "سعر البيع بالرسوم",
   "prdVenteTtc": "البيع بالرسوم",
-  "posClotureNegatif": "الرصيد النظري سالب: خرج من هذا الصندوق نقد أكثر مما دخل منذ الفتح (انظر التفاصيل أعلاه). لا يمكن أن يحتوي الصندوق على أقل من 0: عدّ النقد الموجود فعلاً (0 إذا كان الدرج فارغاً)، وسيُسجل الفرق كعجز."
+  "posClotureNegatif": "الرصيد النظري سالب: خرج من هذا الصندوق نقد أكثر مما دخل منذ الفتح (انظر التفاصيل أعلاه). لا يمكن أن يحتوي الصندوق على أقل من 0: عدّ النقد الموجود فعلاً (0 إذا كان الدرج فارغاً)، وسيُسجل الفرق كعجز.",
+  "posTransfertTitre": "مخزون غير كاف في هذا المخزن",
+  "posTransfertMessage": "{destination} لا يحتوي على كمية كافية من « {produit} ». {source} يحتوي على {stock}. إنشاء تحويل {quantite} من {source} إلى {destination} ثم إضافة المنتج إلى السلة؟",
+  "posTransfertConfirmer": "تحويل وإضافة",
+  "posTransfertFait": "تم إنشاء التحويل {code}"
 }

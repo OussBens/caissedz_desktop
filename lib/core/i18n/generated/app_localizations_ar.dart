@@ -3563,9 +3563,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get posClotureFond => 'الرصيد الافتتاحي';
 
   @override
-  String get posClotureVentesEspeces => 'المبيعات نقدًا (بعد خصم الباقي)';
-
-  @override
   String get posClotureTheorique => 'الرصيد النظري';
 
   @override
@@ -5722,9 +5719,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get usrNom => 'اللقب';
 
   @override
-  String get usrTelephoneIndice => '05xx xx xx xx';
-
-  @override
   String get usrAdminRole => 'صلاحيات كاملة، لا يمكن تقييدها';
 
   @override
@@ -7441,9 +7435,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get docValiderLivraison => 'تأكيد التسليم';
 
   @override
-  String get docVendeur => 'البائع';
-
-  @override
   String get docPdfDevis => 'عرض سعر';
 
   @override
@@ -7561,9 +7552,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get cmdfPdfTitre => 'وصل طلبية المورد';
 
   @override
-  String get cmdfAcheteur => 'المشتري';
-
-  @override
   String get cmdfDepuisBesoin => 'إنشاء طلبية مورد';
 
   @override
@@ -7604,4 +7592,20 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get posClotureNegatif =>
       'الرصيد النظري سالب: خرج من هذا الصندوق نقد أكثر مما دخل منذ الفتح (انظر التفاصيل أعلاه). لا يمكن أن يحتوي الصندوق على أقل من 0: عدّ النقد الموجود فعلاً (0 إذا كان الدرج فارغاً)، وسيُسجل الفرق كعجز.';
+
+  @override
+  String get posTransfertTitre => 'مخزون غير كاف في هذا المخزن';
+
+  @override
+  String posTransfertMessage(String destination, String produit, String quantite, String source, String stock) {
+    return '$destination لا يحتوي على كمية كافية من « $produit ». $source يحتوي على $stock. إنشاء تحويل $quantite من $source إلى $destination ثم إضافة المنتج إلى السلة؟';
+  }
+
+  @override
+  String get posTransfertConfirmer => 'تحويل وإضافة';
+
+  @override
+  String posTransfertFait(String code) {
+    return 'تم إنشاء التحويل $code';
+  }
 }

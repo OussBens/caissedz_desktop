@@ -3575,9 +3575,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get posClotureFond => 'Fond de départ';
 
   @override
-  String get posClotureVentesEspeces => 'Ventes en espèces (monnaie déduite)';
-
-  @override
   String get posClotureTheorique => 'Solde théorique';
 
   @override
@@ -5738,9 +5735,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get usrNom => 'Nom';
 
   @override
-  String get usrTelephoneIndice => '05xx xx xx xx';
-
-  @override
   String get usrAdminRole => 'Accès complet, ne peut pas être restreint';
 
   @override
@@ -7472,9 +7466,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get docValiderLivraison => 'Valider la livraison';
 
   @override
-  String get docVendeur => 'Vendeur';
-
-  @override
   String get docPdfDevis => 'DEVIS';
 
   @override
@@ -7593,9 +7584,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get cmdfPdfTitre => 'BON DE COMMANDE FOURNISSEUR';
 
   @override
-  String get cmdfAcheteur => 'Acheteur';
-
-  @override
   String get cmdfDepuisBesoin => 'Créer une commande fournisseur';
 
   @override
@@ -7636,4 +7624,20 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get posClotureNegatif =>
       'Solde théorique négatif : il est sorti de cette caisse plus d\'espèces qu\'il n\'en est entré depuis l\'ouverture (voir le détail ci-dessus). Une caisse ne peut pas contenir moins de 0 : comptez les espèces réellement présentes (0 si le tiroir est vide), l\'écart sera enregistré comme manquant.';
+
+  @override
+  String get posTransfertTitre => 'Stock insuffisant dans ce magasin';
+
+  @override
+  String posTransfertMessage(String destination, String produit, String quantite, String source, String stock) {
+    return '$destination n\'a pas assez de « $produit ». $source en a $stock. Créer un transfert de $quantite depuis $source vers $destination, puis ajouter le produit au panier ?';
+  }
+
+  @override
+  String get posTransfertConfirmer => 'Transférer et ajouter';
+
+  @override
+  String posTransfertFait(String code) {
+    return 'Transfert $code créé';
+  }
 }

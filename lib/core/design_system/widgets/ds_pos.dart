@@ -15,7 +15,7 @@ import 'ds_primitives.dart';
 class DsCartColonnes {
   const DsCartColonnes._();
   static const double colis = 72;
-  static const double qte = 80;
+  static const double qte = 92; // − n + : jusqu'à 4 chiffres sans débordement
   static const double pieces = 44;
   static const double montant = 88;
   static const double action = 18;
@@ -1130,6 +1130,7 @@ class DsProductTile extends StatefulWidget {
     this.onEntree,
     this.seuilBas = 5,
     this.enLigne = false,
+    this.ruptureCliquable = false,
   });
   final String nom;
   final String? code;
@@ -1142,6 +1143,9 @@ class DsProductTile extends StatefulWidget {
   final VoidCallback? onEntree;
   final double seuilBas;
   final bool enLigne;
+
+  /// En rupture, la tuile reste cliquable (admin : la caisse propose un transfert depuis un autre magasin).
+  final bool ruptureCliquable;
 
   @override
   State<DsProductTile> createState() => _DsProductTileState();
@@ -1250,11 +1254,11 @@ class _DsProductTileState extends State<DsProductTile> {
 
     if (w.enLigne) {
       return MouseRegion(
-        cursor: rupture ? SystemMouseCursors.forbidden : SystemMouseCursors.click,
+        cursor: rupture && !w.ruptureCliquable ? SystemMouseCursors.forbidden : SystemMouseCursors.click,
         onEnter: (_) => setState(() => _survol = true),
         onExit: (_) => setState(() => _survol = false),
         child: GestureDetector(
-          onTap: rupture ? null : w.onAjouter,
+          onTap: rupture && !w.ruptureCliquable ? null : w.onAjouter,
           child: Opacity(
             opacity: rupture ? .55 : 1,
             child: AnimatedContainer(
@@ -1315,14 +1319,14 @@ class _DsProductTileState extends State<DsProductTile> {
     final rtl = Directionality.of(context) == TextDirection.rtl;
     final actif = _survol && !rupture;
     final carte = MouseRegion(
-      cursor: rupture ? SystemMouseCursors.forbidden : SystemMouseCursors.click,
+      cursor: rupture && !w.ruptureCliquable ? SystemMouseCursors.forbidden : SystemMouseCursors.click,
       onEnter: (_) => _entrerCarte(),
       onExit: (_) => _quitterCarte(),
       child: GestureDetector(
         onTapDown: (_) => setState(() => _presse = true),
         onTapUp: (_) => setState(() => _presse = false),
         onTapCancel: () => setState(() => _presse = false),
-        onTap: rupture ? null : w.onAjouter,
+        onTap: rupture && !w.ruptureCliquable ? null : w.onAjouter,
         child: AnimatedScale(
           scale: _presse ? .98 : 1,
           duration: DsMotion.fast,

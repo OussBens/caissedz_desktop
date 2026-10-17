@@ -65,6 +65,7 @@ Future<SelectionProduit?> afficherSelectionProduit(
   bool nombreInitial = false,
   double quantiteInitiale = 1,
   bool modification = false,
+  bool depassementPermis = false,
   Duration auto = const Duration(seconds: 3),
   Future<bool> Function(String code)? estMemeProduit,
   void Function(String code)? autreScan,
@@ -79,6 +80,7 @@ Future<SelectionProduit?> afficherSelectionProduit(
     nombreInitial: nombreInitial,
     quantiteInitiale: quantiteInitiale,
     modification: modification,
+    depassementPermis: depassementPermis,
     auto: modification ? Duration.zero : auto,
     estMemeProduit: estMemeProduit,
     autreScan: autreScan,
@@ -95,6 +97,7 @@ class _SelectionProduitDialog extends ConsumerStatefulWidget {
     required this.nombreInitial,
     required this.quantiteInitiale,
     required this.modification,
+    required this.depassementPermis,
     required this.auto,
     this.estMemeProduit,
     this.autreScan,
@@ -107,6 +110,9 @@ class _SelectionProduitDialog extends ConsumerStatefulWidget {
   final bool nombreInitial;
   final double quantiteInitiale;
   final bool modification;
+
+  /// Admin : une quantité au-delà du stock reste validable (la caisse propose alors un transfert).
+  final bool depassementPermis;
   final Duration auto;
 
   /// Scan reçu pendant que le dialog est ouvert : même produit → quantité + 1 ; autre code → la sélection en
@@ -282,11 +288,12 @@ class _SelectionProduitDialogState extends ConsumerState<_SelectionProduitDialog
 
   /// Le stock au nombre est contrôlé à l'ajout (réservations comprises) ; ici, seules les unités.
   bool get _depasse => _colis != _nombre && _quantite * _parColis > widget.stock + 1e-9;
+  bool get _bloque => _depasse && !widget.depassementPermis;
 
   /// Valide la sélection ; `false` si la quantité est invalide ou dépasse le stock (le dialog reste ouvert).
   bool _valider({bool auto = false}) {
     final q = auto && _quantite <= 0 ? 1.0 : _quantite;
-    if (q <= 0 || (_colis != _nombre && q * _parColis > widget.stock + 1e-9)) {
+    if (q <= 0 || (!widget.depassementPermis && _colis != _nombre && q * _parColis > widget.stock + 1e-9)) {
       if (auto) setState(() => _touche = true);
       return false;
     }
@@ -349,7 +356,7 @@ class _SelectionProduitDialogState extends ConsumerState<_SelectionProduitDialog
               libelle: widget.modification ? l10n.posSelModifier(montant) : l10n.posSelAjouter(montant),
               icone: widget.modification ? LucideIcons.check : LucideIcons.plus,
               kbd: '↵',
-              onPressed: _quantite <= 0 || _depasse ? null : _valider,
+              onPressed: _quantite <= 0 || _bloque ? null : _valider,
             ),
           ],
           contenu: Listener(

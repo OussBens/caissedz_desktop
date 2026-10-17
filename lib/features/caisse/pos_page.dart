@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../app/demarrage_providers.dart';
+import '../../application/stock_service.dart';
 import '../../application/vente_service.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
@@ -21,6 +22,7 @@ import '../gestion_caisse/gestion_caisse_providers.dart';
 import '../produits/produit_form_dialog.dart';
 import '../produits/produits_donnees.dart';
 import '../produits/produits_providers.dart';
+import '../stock/stock_providers.dart';
 import '../tiers/tiers_dialogs.dart';
 import '../tiers/tiers_providers.dart';
 import 'caisse_dialogs.dart';
@@ -72,10 +74,14 @@ class _PosPageState extends ConsumerState<PosPage> {
   void _erreur(String message) =>
       unawaited(afficherResultat(context, type: DsResultatType.erreur, titre: l10n.posTitre, message: message));
 
-  Future<void> _executer(Future<void> Function() action) async {
+  Future<void> _executer(Future<void> Function() action, {bool transfertPropose = true}) async {
     try {
       await action();
     } on PosException catch (e) {
+      if (transfertPropose && e.manque != null && await _proposerTransfert(e.manque!)) {
+        return _executer(action, transfertPropose: false);
+      }
+      if (!mounted) return;
       _erreur(switch (e.erreur) {
         ErreurPos.stockInsuffisant => l10n.posErreurStock(e.detail ?? ''),
         ErreurPos.produitInconnu => l10n.posErreurProduitInconnu(e.detail ?? ''),
@@ -84,6 +90,45 @@ class _PosPageState extends ConsumerState<PosPage> {
       });
     } on VenteException catch (e) {
       _erreur(messageErreurVente(l10n, e, ref.read(deviseProvider)));
+    }
+  }
+
+  /// Admin seulement : le magasin de la caisse manque de stock mais un autre magasin en a assez → propose un
+  /// transfert du manque (document TRF) ; `true` si le transfert est fait (l'ajout est alors rejoué).
+  Future<bool> _proposerTransfert(ManqueStock manque) async {
+    if (!(ref.read(sessionProvider)?.estAdmin ?? false)) return false;
+    final source = await ctrl.sourceTransfert(manque);
+    if (source == null || !mounted) return false;
+    final magasins = await ref.read(stockRepositoryProvider).magasins();
+    final code = ref.read(posControllerProvider).magasinCode;
+    final destination = magasins.where((m) => m.code == code).firstOrNull?.nom ?? code;
+    String q(double v) => v == v.roundToDouble() ? v.toStringAsFixed(0) : v.toStringAsFixed(2);
+    if (!mounted) return false;
+    final ok = await afficherConfirmation(
+      context,
+      titre: l10n.posTransfertTitre,
+      message: l10n.posTransfertMessage(
+        destination,
+        manque.produit.designation,
+        q(manque.unites > 0 ? manque.unites : manque.nombre),
+        source.magasin.nom,
+        q(source.quantite),
+      ),
+      libelleConfirmer: l10n.posTransfertConfirmer,
+      icone: LucideIcons.arrowLeftRight,
+    );
+    if (!ok || !mounted) return false;
+    try {
+      final transfert = await ctrl.transfererManque(manque, source.magasin.code);
+      rafraichirStock(ref);
+      ref.invalidate(stocksCaisseProvider);
+      if (mounted) {
+        afficherToast(context, titre: l10n.posTransfertFait(transfert), ton: DsToastTon.succes);
+      }
+      return true;
+    } on StockException catch (e) {
+      _erreur(messageErreurStock(l10n, e.erreur));
+      return false;
     }
   }
 
@@ -126,6 +171,7 @@ class _PosPageState extends ConsumerState<PosPage> {
       produit: p,
       colis: _colisDe(p),
       stock: _disponible(p),
+      depassementPermis: ref.read(sessionProvider)?.estAdmin ?? false,
       scanne: scanne,
       // Scan pendant que le dialog est ouvert : même produit → + 1, autre code → traité après validation.
       estMemeProduit: (code) async {
@@ -153,6 +199,7 @@ class _PosPageState extends ConsumerState<PosPage> {
       produit: l.produit,
       colis: _colisDe(l.produit),
       stock: _disponible(l.produit, sauf: l),
+      depassementPermis: ref.read(sessionProvider)?.estAdmin ?? false,
       colisInitial: l.colis,
       nombreInitial: l.uniteVente == UniteVente.nombre,
       quantiteInitiale: l.quantite,
@@ -644,6 +691,7 @@ class _PosPageState extends ConsumerState<PosPage> {
     final nomsCategories = {for (final c in categories) c.code: c.nom};
     final stocks = ref.watch(stocksCaisseProvider).value ?? const <String, double>{};
     final devise = ref.watch(deviseProvider);
+    final admin = ref.watch(sessionProvider)?.estAdmin ?? false;
     final r = _recherche.trim().toLowerCase();
     final liste = _disposition == DsVueModule.liste;
     final List<Widget> tuiles;
@@ -681,6 +729,7 @@ class _PosPageState extends ConsumerState<PosPage> {
               seuilBas: (p.seuilStock ?? 5).toDouble(),
               devise: devise,
               enLigne: liste,
+              ruptureCliquable: admin,
               onAjouter: () => unawaited(_choisirProduit(p)),
               onEntree: () => unawaited(_entreeRapide(p)),
             ),

@@ -6831,12 +6831,6 @@ abstract class AppLocalizations {
   /// **'Fond de départ'**
   String get posClotureFond;
 
-  /// No description provided for @posClotureVentesEspeces.
-  ///
-  /// In fr, this message translates to:
-  /// **'Ventes en espèces (monnaie déduite)'**
-  String get posClotureVentesEspeces;
-
   /// No description provided for @posClotureTheorique.
   ///
   /// In fr, this message translates to:
@@ -10881,12 +10875,6 @@ abstract class AppLocalizations {
   /// **'Nom'**
   String get usrNom;
 
-  /// No description provided for @usrTelephoneIndice.
-  ///
-  /// In fr, this message translates to:
-  /// **'05xx xx xx xx'**
-  String get usrTelephoneIndice;
-
   /// No description provided for @usrAdminRole.
   ///
   /// In fr, this message translates to:
@@ -14175,12 +14163,6 @@ abstract class AppLocalizations {
   /// **'Valider la livraison'**
   String get docValiderLivraison;
 
-  /// No description provided for @docVendeur.
-  ///
-  /// In fr, this message translates to:
-  /// **'Vendeur'**
-  String get docVendeur;
-
   /// No description provided for @docPdfDevis.
   ///
   /// In fr, this message translates to:
@@ -14403,12 +14385,6 @@ abstract class AppLocalizations {
   /// **'BON DE COMMANDE FOURNISSEUR'**
   String get cmdfPdfTitre;
 
-  /// No description provided for @cmdfAcheteur.
-  ///
-  /// In fr, this message translates to:
-  /// **'Acheteur'**
-  String get cmdfAcheteur;
-
   /// No description provided for @cmdfDepuisBesoin.
   ///
   /// In fr, this message translates to:
@@ -14480,6 +14456,30 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Solde théorique négatif : il est sorti de cette caisse plus d\'espèces qu\'il n\'en est entré depuis l\'ouverture (voir le détail ci-dessus). Une caisse ne peut pas contenir moins de 0 : comptez les espèces réellement présentes (0 si le tiroir est vide), l\'écart sera enregistré comme manquant.'**
   String get posClotureNegatif;
+
+  /// No description provided for @posTransfertTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock insuffisant dans ce magasin'**
+  String get posTransfertTitre;
+
+  /// No description provided for @posTransfertMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'{destination} n\'a pas assez de « {produit} ». {source} en a {stock}. Créer un transfert de {quantite} depuis {source} vers {destination}, puis ajouter le produit au panier ?'**
+  String posTransfertMessage(String destination, String produit, String quantite, String source, String stock);
+
+  /// No description provided for @posTransfertConfirmer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Transférer et ajouter'**
+  String get posTransfertConfirmer;
+
+  /// No description provided for @posTransfertFait.
+  ///
+  /// In fr, this message translates to:
+  /// **'Transfert {code} créé'**
+  String posTransfertFait(String code);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

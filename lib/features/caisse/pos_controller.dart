@@ -15,6 +15,7 @@ import '../../domain/codes_barres.dart';
 import '../../domain/models/panier.dart';
 import '../../domain/models/parametres_vente.dart';
 import '../../domain/models/produit.dart';
+import '../../domain/models/stock.dart';
 import '../../domain/models/vente.dart';
 import '../../domain/permissions.dart';
 import '../produits/produits_providers.dart';
@@ -26,10 +27,19 @@ const int maxPaniers = 5;
 enum ErreurPos { stockInsuffisant, produitInconnu, maxPaniers, sessionRequise }
 
 class PosException implements Exception {
-  const PosException(this.erreur, [this.detail]);
+  const PosException(this.erreur, [this.detail, this.manque]);
   final ErreurPos erreur;
   final String? detail;
+
+  /// Stock insuffisant : produit et quantités manquantes dans le magasin de la caisse (unités, pièces).
+  final ManqueStock? manque;
 }
+
+/// Quantités qui manquent dans le magasin de la caisse pour ajouter un produit au panier.
+typedef ManqueStock = ({Produit produit, double unites, double nombre});
+
+/// Magasin pouvant fournir le manque par un transfert, avec son stock du produit.
+typedef SourceTransfert = ({Magasin magasin, double quantite});
 
 /// État du point de vente : jusqu'à 5 paniers, panier courant, session.
 @immutable
@@ -167,8 +177,38 @@ class PosController extends Notifier<PosEtat> {
     final dispoUnites = niveau.quantite - state.unitesReservees(produit.code);
     final dispoNombre = niveau.nombre - state.nombreReserve(produit.code);
     if (unites > dispoUnites + 1e-9 || nombre > dispoNombre + 1e-9) {
-      throw PosException(ErreurPos.stockInsuffisant, '${produit.designation} : ${dispoUnites.toStringAsFixed(0)}');
+      throw PosException(ErreurPos.stockInsuffisant, '${produit.designation} : ${dispoUnites.toStringAsFixed(0)}', (
+        produit: produit,
+        unites: unites > dispoUnites ? unites - (dispoUnites < 0 ? 0 : dispoUnites) : 0,
+        nombre: nombre > dispoNombre ? nombre - (dispoNombre < 0 ? 0 : dispoNombre) : 0,
+      ));
     }
+  }
+
+  /// Autre magasin actif pouvant couvrir [manque] (le mieux pourvu), ou `null`.
+  Future<SourceTransfert?> sourceTransfert(ManqueStock manque) async {
+    final repo = StockRepository(ref.read(appDatabaseProvider).db);
+    SourceTransfert? meilleure;
+    for (final m in await repo.magasins(actifsSeulement: true)) {
+      if (m.code == state.magasinCode) continue;
+      final n = await repo.niveau(manque.produit.code, m.code);
+      if (n.quantite + 1e-9 < manque.unites || n.nombre + 1e-9 < manque.nombre) continue;
+      if (meilleure == null || n.quantite > meilleure.quantite) meilleure = (magasin: m, quantite: n.quantite);
+    }
+    return meilleure;
+  }
+
+  /// Transfère [manque] de [source] vers le magasin de la caisse (document TRF, en UNE transaction).
+  Future<String> transfererManque(ManqueStock manque, String source) async {
+    final t = await ref
+        .read(stockServiceProvider)
+        .transferer(
+          magasinSource: source,
+          magasinDestination: state.magasinCode,
+          lignes: [LigneStock(produitCode: manque.produit.code, quantite: manque.unites, nombre: manque.nombre)],
+          commentaire: 'Caisse : stock insuffisant',
+        );
+    return t.code;
   }
 
   /// Ajoute un produit (ou un colis / pack) au panier courant, après contrôle du stock réservé.

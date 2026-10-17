@@ -1311,7 +1311,6 @@
   "posClotureTitre": "Close {caisse}",
   "posClotureDesc": "Session {code} · opened at {heure}",
   "posClotureFond": "Opening float",
-  "posClotureVentesEspeces": "Cash sales (change deducted)",
   "posClotureTheorique": "Expected balance",
   "posClotureReel": "Counted balance",
   "posClotureEcart": "Till difference · {etat}",
@@ -1986,7 +1985,6 @@
   "usrForce4": "Strong",
   "usrPrenom": "First name",
   "usrNom": "Last name",
-  "usrTelephoneIndice": "05xx xx xx xx",
   "usrAdminRole": "Full access, cannot be restricted",
   "usrNbPermissions": "{n} permissions",
   "usrCaisseAttachee": "Attached till",
@@ -2535,7 +2533,6 @@
   "docMontantPaye": "Amount paid",
   "docMontantPayeAide": "Leave empty: delivery on credit",
   "docValiderLivraison": "Confirm delivery",
-  "docVendeur": "Seller",
   "docPdfDevis": "QUOTE",
   "docPdfProforma": "PROFORMA INVOICE",
   "docPdfCommande": "PURCHASE ORDER",
@@ -2573,7 +2570,6 @@
   "cmdfStatutRecue": "Received",
   "cmdfStatutSoldee": "Closed",
   "cmdfPdfTitre": "SUPPLIER PURCHASE ORDER",
-  "cmdfAcheteur": "Buyer",
   "cmdfDepuisBesoin": "Create supplier order",
   "cmdfErreurReceptionLiee": "Order already received: cancel the linked entries first",
   "cmdfErreurDejaSoldee": "Order already closed",
@@ -2585,5 +2581,9 @@
   "rechercheGlobaleAucun": "No results for “{texte}”",
   "prdPrixTtc": "Selling price incl. VAT",
   "prdVenteTtc": "Price incl. VAT",
-  "posClotureNegatif": "Negative expected balance: more cash left this till than came in since it was opened (see the breakdown above). A till cannot hold less than 0: count the cash actually there (0 if the drawer is empty); the difference is recorded as a shortage."
+  "posClotureNegatif": "Negative expected balance: more cash left this till than came in since it was opened (see the breakdown above). A till cannot hold less than 0: count the cash actually there (0 if the drawer is empty); the difference is recorded as a shortage.",
+  "posTransfertTitre": "Not enough stock in this store",
+  "posTransfertMessage": "{destination} does not have enough \"{produit}\". {source} has {stock}. Create a transfer of {quantite} from {source} to {destination}, then add the product to the cart?",
+  "posTransfertConfirmer": "Transfer and add",
+  "posTransfertFait": "Transfer {code} created"
 }
