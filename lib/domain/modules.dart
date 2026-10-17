@@ -79,6 +79,13 @@ class Modules {
       libelle: (l) => l.moduleVentes,
     ),
     ModuleApp(
+      id: 'documents',
+      groupe: GroupeModule.general,
+      icone: LucideIcons.fileText,
+      route: '/documents',
+      libelle: (l) => l.moduleDocuments,
+    ),
+    ModuleApp(
       id: 'retours',
       groupe: GroupeModule.general,
       icone: LucideIcons.undo2,
@@ -107,6 +114,13 @@ class Modules {
       route: '/entrees',
       libelle: (l) => l.moduleEntrees,
       badgeTexte: 'IA',
+    ),
+    ModuleApp(
+      id: 'commandes_fournisseurs',
+      groupe: GroupeModule.stock,
+      icone: LucideIcons.clipboardList,
+      route: '/commandes-fournisseurs',
+      libelle: (l) => l.moduleCommandesFournisseurs,
     ),
     ModuleApp(
       id: 'sorties',

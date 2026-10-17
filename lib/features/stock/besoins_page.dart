@@ -10,6 +10,7 @@ import '../../domain/models/retour.dart';
 import '../../domain/models/stock.dart';
 import '../../domain/models/tiers.dart';
 import '../../domain/permissions.dart';
+import '../commercial/commandes_fournisseurs_page.dart';
 import '../commun/colonnes_audit.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
@@ -233,6 +234,18 @@ class _BesoinsPageState extends ConsumerState<BesoinsPage> {
               choix.isNotEmpty && (!choix.first.actif || choix.first.statut == StatutsBesoin.disponible),
           onPressed: (choix, effacer) async {
             await afficherFormulaireEntree(context, ref, besoin: choix.first);
+            effacer();
+          },
+        ),
+        DsActionModule(
+          cle: const ValueKey('besoins_creer_commande'),
+          libelle: l10n.cmdfDepuisBesoin,
+          icone: LucideIcons.clipboardList,
+          regle: DsRegleSelection.une,
+          desactive: (choix) =>
+              choix.isNotEmpty && (!choix.first.actif || choix.first.statut == StatutsBesoin.disponible),
+          onPressed: (choix, effacer) async {
+            await afficherFormulaireCommandeFournisseur(context, ref, besoin: choix.first);
             effacer();
           },
         ),

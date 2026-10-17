@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import '../domain/modules.dart';
 import '../features/activation/activation_page.dart';
 import '../features/caisse/pos_page.dart';
+import '../features/commercial/commandes_fournisseurs_page.dart';
+import '../features/commercial/documents_page.dart';
 import '../features/connexion/connexion_page.dart';
 import '../features/entrees/entrees_page.dart';
 import '../features/galerie/galerie_page.dart';
@@ -99,6 +101,8 @@ Widget pageModule(ModuleApp module) => switch (module.id) {
   'gestion_caisse' => const GestionCaissePage(),
   'clotures' => const GestionCaissePage(ongletInitial: 2),
   'ventes' => const VentesPage(),
+  'documents' => const DocumentsPage(),
+  'commandes_fournisseurs' => const CommandesFournisseursPage(),
   'retours' => const RetoursPage(),
   'clients' => const ClientsPage(),
   'fournisseurs' => const FournisseursPage(),

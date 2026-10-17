@@ -7292,4 +7292,305 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get achatErreurCommandeCloturee => 'Supplier order cancelled or closed: cannot receive';
+
+  @override
+  String get moduleDocuments => 'Quotes & orders';
+
+  @override
+  String get moduleCommandesFournisseurs => 'Supplier orders';
+
+  @override
+  String get docDescriptionModule => 'Quotes, proforma invoices, customer orders and delivery notes';
+
+  @override
+  String get docOngletDevis => 'Quotes';
+
+  @override
+  String get docOngletProformas => 'Proformas';
+
+  @override
+  String get docOngletCommandes => 'Customer orders';
+
+  @override
+  String get docOngletLivraisons => 'Delivery notes';
+
+  @override
+  String get docTypeDevis => 'Quote';
+
+  @override
+  String get docTypeProforma => 'Proforma';
+
+  @override
+  String get docTypeCommande => 'Order';
+
+  @override
+  String get docBonLivraison => 'Delivery note';
+
+  @override
+  String get docStatutEnCours => 'Open';
+
+  @override
+  String get docStatutAccepte => 'Accepted';
+
+  @override
+  String get docStatutRefuse => 'Refused';
+
+  @override
+  String get docStatutTransforme => 'Converted to order';
+
+  @override
+  String get docStatutExpire => 'Expired';
+
+  @override
+  String get docStatutPartielle => 'Partially delivered';
+
+  @override
+  String get docStatutLivree => 'Delivered';
+
+  @override
+  String get docStatutAnnule => 'Cancelled';
+
+  @override
+  String get docValidite => 'Valid until';
+
+  @override
+  String get docOrigine => 'Origin';
+
+  @override
+  String get docLivre => 'Delivered';
+
+  @override
+  String get docResteALivrer => 'Left to deliver';
+
+  @override
+  String get docALivrer => 'To deliver';
+
+  @override
+  String get docQuantiteLivree => 'Delivered quantity';
+
+  @override
+  String get docPuTtc => 'Unit price incl. VAT';
+
+  @override
+  String get docTotalTtc => 'Total incl. VAT';
+
+  @override
+  String get docAucun => 'No document in this period';
+
+  @override
+  String get docKpiNombre => 'Documents';
+
+  @override
+  String get docKpiMontant => 'Total amount';
+
+  @override
+  String get docKpiALivrer => 'To deliver';
+
+  @override
+  String get docKpiTransformes => 'Converted to orders';
+
+  @override
+  String get docImprimer => 'Print (A4)';
+
+  @override
+  String get docAccepter => 'Accept';
+
+  @override
+  String get docRefuser => 'Refuse';
+
+  @override
+  String get docTransformer => 'Convert to order';
+
+  @override
+  String get docLivrer => 'Deliver';
+
+  @override
+  String get docNouveauDevis => 'New quote';
+
+  @override
+  String get docNouvelleProforma => 'New proforma';
+
+  @override
+  String get docNouvelleCommande => 'New order';
+
+  @override
+  String docNouveauTitre(String type) {
+    return 'New document: $type';
+  }
+
+  @override
+  String docModifierTitre(String type) {
+    return 'Edit: $type';
+  }
+
+  @override
+  String get docFormDescription => 'Customer, validity and products at selling price incl. VAT (product VAT frozen)';
+
+  @override
+  String get docChoisirClient => 'Choose a customer';
+
+  @override
+  String get docToastEnregistre => 'Document saved';
+
+  @override
+  String get docToastTransforme => 'Order created';
+
+  @override
+  String get docToastLivre => 'Delivery saved';
+
+  @override
+  String docLivrerTitre(String code) {
+    return 'Deliver order $code';
+  }
+
+  @override
+  String get docLivrerDescription =>
+      'Enter delivered quantities: the sale and delivery note are created together; the rest is owed by the customer.';
+
+  @override
+  String get docMontantPaye => 'Amount paid';
+
+  @override
+  String get docMontantPayeAide => 'Leave empty: delivery on credit';
+
+  @override
+  String get docValiderLivraison => 'Confirm delivery';
+
+  @override
+  String get docVendeur => 'Seller';
+
+  @override
+  String get docPdfDevis => 'QUOTE';
+
+  @override
+  String get docPdfProforma => 'PROFORMA INVOICE';
+
+  @override
+  String get docPdfCommande => 'PURCHASE ORDER';
+
+  @override
+  String get docPdfLivraison => 'DELIVERY NOTE';
+
+  @override
+  String docArretee(String type) {
+    return 'This document ($type) is set at the sum of';
+  }
+
+  @override
+  String get docMentionProforma => 'Document with no accounting value: not an invoice.';
+
+  @override
+  String get docSignatureClient => 'Approved (customer)';
+
+  @override
+  String get docSignatureVendeur => 'Stamp and signature';
+
+  @override
+  String get docSignatureLivreur => 'Delivered by';
+
+  @override
+  String get docSignatureReception => 'Received by (name, signature)';
+
+  @override
+  String get docErreurClient => 'Unknown customer';
+
+  @override
+  String get docErreurInconnu => 'Document not found';
+
+  @override
+  String get docErreurNonModifiable =>
+      'This document can no longer be changed (converted, refused, cancelled or delivered)';
+
+  @override
+  String get docErreurDejaAnnule => 'Document already cancelled';
+
+  @override
+  String get docErreurLivraisonLiee => 'Order already delivered: cancel the delivery note\'s sale first';
+
+  @override
+  String get docErreurRienALivrer => 'Nothing to deliver';
+
+  @override
+  String get docErreurQuantiteExcessive => 'Quantity above what is left to deliver';
+
+  @override
+  String get docErreurLivraisonExistante => 'This sale already has a delivery note';
+
+  @override
+  String get docErreurVenteInconnue => 'Sale not found';
+
+  @override
+  String get cmdfDescriptionModule => 'Supplier orders received in one or more stock entries';
+
+  @override
+  String get cmdfNouvelle => 'New supplier order';
+
+  @override
+  String get cmdfModifier => 'Edit supplier order';
+
+  @override
+  String get cmdfFormDescription => 'Supplier, receiving store, expected delivery and products at purchase price';
+
+  @override
+  String cmdfTitre(String code) {
+    return 'Supplier order $code';
+  }
+
+  @override
+  String get cmdfCommande => 'Supplier order';
+
+  @override
+  String get cmdfPrix => 'Purchase price';
+
+  @override
+  String get cmdfRecu => 'Received';
+
+  @override
+  String get cmdfReste => 'Left to receive';
+
+  @override
+  String get cmdfReceptions => 'Receiving entries';
+
+  @override
+  String get cmdfReceptionner => 'Receive';
+
+  @override
+  String get cmdfSolder => 'Close';
+
+  @override
+  String cmdfSolderMessage(String code) {
+    return 'Close order $code? The remaining quantity will no longer be expected.';
+  }
+
+  @override
+  String get cmdfKpiAttendues => 'Awaiting receipt';
+
+  @override
+  String get cmdfStatutPartielle => 'Partially received';
+
+  @override
+  String get cmdfStatutRecue => 'Received';
+
+  @override
+  String get cmdfStatutSoldee => 'Closed';
+
+  @override
+  String get cmdfPdfTitre => 'SUPPLIER PURCHASE ORDER';
+
+  @override
+  String get cmdfAcheteur => 'Buyer';
+
+  @override
+  String get cmdfDepuisBesoin => 'Create supplier order';
+
+  @override
+  String get cmdfErreurReceptionLiee => 'Order already received: cancel the linked entries first';
+
+  @override
+  String get cmdfErreurDejaSoldee => 'Order already closed';
+
+  @override
+  String entDepuisCommande(String code) {
+    return 'Receiving order $code';
+  }
 }

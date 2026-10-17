@@ -461,6 +461,128 @@ class DocumentsPdf {
     );
   }
 
+  /// Document commercial A4 (devis, proforma, bon de commande, bon de livraison, commande fournisseur) : titre
+  /// et numéro, identités fiscales des deux parties, tableau des lignes, totaux, montant en lettres, signatures.
+  Future<Uint8List> documentCommercial({
+    required String titre,
+    required String numero,
+    required DateTime date,
+    List<String> references = const [],
+    required String libelleEmetteur,
+    required IdentiteFiscale emetteur,
+    required String libelleTiers,
+    required IdentiteFiscale tiers,
+    required List<String> entetes,
+    required List<List<String>> lignes,
+    List<(String, String)> totaux = const [],
+    String? arretee,
+    String? montantLettres,
+    String? observation,
+    List<String> signatures = const [],
+    String? mention,
+  }) async {
+    final doc = pw.Document();
+    doc.addPage(
+      pw.MultiPage(
+        pageFormat: PdfPageFormat.a4,
+        margin: const pw.EdgeInsets.all(15 * PdfPageFormat.mm),
+        build: (ctx) => [
+          pw.Directionality(
+            textDirection: _dir,
+            child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+              children: [
+                pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                  children: [
+                    pw.Text(titre, style: _s(18, gras: true)),
+                    pw.Column(
+                      crossAxisAlignment: pw.CrossAxisAlignment.end,
+                      children: [
+                        pw.Text('N° $numero', style: _s(11, gras: true)),
+                        pw.Text(_date(date), style: _s(9)),
+                        for (final r in references) pw.Text(r, style: _s(8)),
+                      ],
+                    ),
+                  ],
+                ),
+                pw.SizedBox(height: 12),
+                pw.Row(
+                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  children: [
+                    _identite(libelleEmetteur, emetteur),
+                    pw.SizedBox(width: 12),
+                    _identite(libelleTiers, tiers),
+                  ],
+                ),
+                pw.SizedBox(height: 14),
+                pw.TableHelper.fromTextArray(
+                  headerStyle: _s(8, gras: true),
+                  cellStyle: _s(8),
+                  headerDecoration: const pw.BoxDecoration(color: PdfColors.grey200),
+                  cellAlignments: {
+                    0: pw.Alignment.centerLeft,
+                    1: pw.Alignment.centerLeft,
+                    for (var i = 2; i < entetes.length; i++) i: pw.Alignment.centerRight,
+                  },
+                  headers: entetes,
+                  data: lignes,
+                ),
+                if (totaux.isNotEmpty) ...[
+                  pw.SizedBox(height: 10),
+                  pw.Align(
+                    alignment: pw.Alignment.centerRight,
+                    child: pw.SizedBox(
+                      width: 230,
+                      child: pw.Column(
+                        children: [
+                          for (final (i, (cle, valeur)) in totaux.indexed)
+                            _ligneCle(
+                              cle,
+                              valeur,
+                              taille: i == totaux.length - 1 ? 11 : 9,
+                              gras: i == totaux.length - 1,
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+                if (montantLettres != null) ...[
+                  pw.SizedBox(height: 14),
+                  if (arretee != null) pw.Text('$arretee :', style: _s(9)),
+                  pw.Text(montantLettres, style: _s(10, gras: true)),
+                ],
+                if (observation != null && observation.isNotEmpty) ...[
+                  pw.SizedBox(height: 8),
+                  pw.Text(observation, style: _s(8)),
+                ],
+                if (mention != null) ...[pw.SizedBox(height: 8), pw.Text(mention, style: _s(8, gras: true))],
+                if (signatures.isNotEmpty) ...[
+                  pw.SizedBox(height: 28),
+                  pw.Row(
+                    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                    children: [
+                      for (final sig in signatures)
+                        pw.Container(
+                          width: 160,
+                          height: 60,
+                          padding: const pw.EdgeInsets.all(6),
+                          decoration: pw.BoxDecoration(border: pw.Border.all(color: PdfColors.grey500, width: 0.5)),
+                          child: pw.Text(sig, style: _s(8)),
+                        ),
+                    ],
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+    return doc.save();
+  }
+
   static String _q(double q) => q == q.roundToDouble() ? q.toInt().toString() : q.toStringAsFixed(2);
   static String _date(DateTime d) =>
       '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year} ${d.hour.toString().padLeft(2, '0')}:${d.minute.toString().padLeft(2, '0')}';

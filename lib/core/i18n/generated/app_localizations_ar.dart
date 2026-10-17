@@ -7277,4 +7277,303 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get achatErreurCommandeCloturee => 'طلبية المورد ملغاة أو مُسوّاة: الاستلام غير ممكن';
+
+  @override
+  String get moduleDocuments => 'العروض والطلبيات';
+
+  @override
+  String get moduleCommandesFournisseurs => 'طلبيات الموردين';
+
+  @override
+  String get docDescriptionModule => 'عروض الأسعار، الفواتير الشكلية، طلبيات الزبائن ووصولات التسليم';
+
+  @override
+  String get docOngletDevis => 'عروض الأسعار';
+
+  @override
+  String get docOngletProformas => 'الفواتير الشكلية';
+
+  @override
+  String get docOngletCommandes => 'طلبيات الزبائن';
+
+  @override
+  String get docOngletLivraisons => 'وصولات التسليم';
+
+  @override
+  String get docTypeDevis => 'عرض سعر';
+
+  @override
+  String get docTypeProforma => 'فاتورة شكلية';
+
+  @override
+  String get docTypeCommande => 'طلبية';
+
+  @override
+  String get docBonLivraison => 'وصل التسليم';
+
+  @override
+  String get docStatutEnCours => 'قيد الإنجاز';
+
+  @override
+  String get docStatutAccepte => 'مقبول';
+
+  @override
+  String get docStatutRefuse => 'مرفوض';
+
+  @override
+  String get docStatutTransforme => 'حُوّل إلى طلبية';
+
+  @override
+  String get docStatutExpire => 'منتهي الصلاحية';
+
+  @override
+  String get docStatutPartielle => 'مسلمة جزئيا';
+
+  @override
+  String get docStatutLivree => 'مسلمة';
+
+  @override
+  String get docStatutAnnule => 'ملغى';
+
+  @override
+  String get docValidite => 'صالح إلى';
+
+  @override
+  String get docOrigine => 'الأصل';
+
+  @override
+  String get docLivre => 'المسلّم';
+
+  @override
+  String get docResteALivrer => 'المتبقي للتسليم';
+
+  @override
+  String get docALivrer => 'للتسليم';
+
+  @override
+  String get docQuantiteLivree => 'الكمية المسلمة';
+
+  @override
+  String get docPuTtc => 'سعر الوحدة بالرسوم';
+
+  @override
+  String get docTotalTtc => 'المجموع بالرسوم';
+
+  @override
+  String get docAucun => 'لا توجد وثائق في هذه الفترة';
+
+  @override
+  String get docKpiNombre => 'الوثائق';
+
+  @override
+  String get docKpiMontant => 'المبلغ الإجمالي';
+
+  @override
+  String get docKpiALivrer => 'للتسليم';
+
+  @override
+  String get docKpiTransformes => 'حُوّلت إلى طلبيات';
+
+  @override
+  String get docImprimer => 'طباعة (A4)';
+
+  @override
+  String get docAccepter => 'قبول';
+
+  @override
+  String get docRefuser => 'رفض';
+
+  @override
+  String get docTransformer => 'تحويل إلى طلبية';
+
+  @override
+  String get docLivrer => 'تسليم';
+
+  @override
+  String get docNouveauDevis => 'عرض سعر جديد';
+
+  @override
+  String get docNouvelleProforma => 'فاتورة شكلية جديدة';
+
+  @override
+  String get docNouvelleCommande => 'طلبية جديدة';
+
+  @override
+  String docNouveauTitre(String type) {
+    return 'وثيقة جديدة: $type';
+  }
+
+  @override
+  String docModifierTitre(String type) {
+    return 'تعديل: $type';
+  }
+
+  @override
+  String get docFormDescription => 'الزبون، الصلاحية والمنتجات بسعر البيع بالرسوم (ر.ق.م مثبتة)';
+
+  @override
+  String get docChoisirClient => 'اختر زبونا';
+
+  @override
+  String get docToastEnregistre => 'تم حفظ الوثيقة';
+
+  @override
+  String get docToastTransforme => 'تم إنشاء الطلبية';
+
+  @override
+  String get docToastLivre => 'تم تسجيل التسليم';
+
+  @override
+  String docLivrerTitre(String code) {
+    return 'تسليم الطلبية $code';
+  }
+
+  @override
+  String get docLivrerDescription => 'أدخل الكميات المسلمة: يتم إنشاء البيع ووصل التسليم معا؛ والباقي دين على الزبون.';
+
+  @override
+  String get docMontantPaye => 'المبلغ المدفوع';
+
+  @override
+  String get docMontantPayeAide => 'اتركه فارغا: تسليم بالدين';
+
+  @override
+  String get docValiderLivraison => 'تأكيد التسليم';
+
+  @override
+  String get docVendeur => 'البائع';
+
+  @override
+  String get docPdfDevis => 'عرض سعر';
+
+  @override
+  String get docPdfProforma => 'فاتورة شكلية';
+
+  @override
+  String get docPdfCommande => 'وصل طلبية';
+
+  @override
+  String get docPdfLivraison => 'وصل التسليم';
+
+  @override
+  String docArretee(String type) {
+    return 'أوقفت هذه الوثيقة ($type) بمبلغ';
+  }
+
+  @override
+  String get docMentionProforma => 'وثيقة دون قيمة محاسبية: لا تعتبر فاتورة.';
+
+  @override
+  String get docSignatureClient => 'موافقة الزبون';
+
+  @override
+  String get docSignatureVendeur => 'الختم والإمضاء';
+
+  @override
+  String get docSignatureLivreur => 'سلّمه';
+
+  @override
+  String get docSignatureReception => 'استلمه (الاسم، الإمضاء)';
+
+  @override
+  String get docErreurClient => 'زبون غير معروف';
+
+  @override
+  String get docErreurInconnu => 'الوثيقة غير موجودة';
+
+  @override
+  String get docErreurNonModifiable => 'لا يمكن تعديل هذه الوثيقة (محولة، مرفوضة، ملغاة أو مسلمة)';
+
+  @override
+  String get docErreurDejaAnnule => 'الوثيقة ملغاة مسبقا';
+
+  @override
+  String get docErreurLivraisonLiee => 'طلبية مسلمة: ألغ أولا بيع وصل التسليم';
+
+  @override
+  String get docErreurRienALivrer => 'لا توجد كمية للتسليم';
+
+  @override
+  String get docErreurQuantiteExcessive => 'كمية تفوق المتبقي للتسليم';
+
+  @override
+  String get docErreurLivraisonExistante => 'لهذا البيع وصل تسليم مسبقا';
+
+  @override
+  String get docErreurVenteInconnue => 'البيع غير موجود';
+
+  @override
+  String get cmdfDescriptionModule => 'طلبيات الموردين المستلمة في دخول واحد أو أكثر';
+
+  @override
+  String get cmdfNouvelle => 'طلبية مورد جديدة';
+
+  @override
+  String get cmdfModifier => 'تعديل طلبية المورد';
+
+  @override
+  String get cmdfFormDescription => 'المورد، مخزن الاستلام، التسليم المتوقع والمنتجات بسعر الشراء';
+
+  @override
+  String cmdfTitre(String code) {
+    return 'طلبية المورد $code';
+  }
+
+  @override
+  String get cmdfCommande => 'طلبية المورد';
+
+  @override
+  String get cmdfPrix => 'سعر الشراء';
+
+  @override
+  String get cmdfRecu => 'المستلم';
+
+  @override
+  String get cmdfReste => 'المتبقي للاستلام';
+
+  @override
+  String get cmdfReceptions => 'إدخالات الاستلام';
+
+  @override
+  String get cmdfReceptionner => 'استلام';
+
+  @override
+  String get cmdfSolder => 'تسوية';
+
+  @override
+  String cmdfSolderMessage(String code) {
+    return 'تسوية الطلبية $code؟ لن يُنتظر الباقي.';
+  }
+
+  @override
+  String get cmdfKpiAttendues => 'في انتظار الاستلام';
+
+  @override
+  String get cmdfStatutPartielle => 'مستلمة جزئيا';
+
+  @override
+  String get cmdfStatutRecue => 'مستلمة';
+
+  @override
+  String get cmdfStatutSoldee => 'مُسوّاة';
+
+  @override
+  String get cmdfPdfTitre => 'وصل طلبية المورد';
+
+  @override
+  String get cmdfAcheteur => 'المشتري';
+
+  @override
+  String get cmdfDepuisBesoin => 'إنشاء طلبية مورد';
+
+  @override
+  String get cmdfErreurReceptionLiee => 'طلبية مستلمة: ألغ أولا الإدخالات المرتبطة';
+
+  @override
+  String get cmdfErreurDejaSoldee => 'الطلبية مسواة مسبقا';
+
+  @override
+  String entDepuisCommande(String code) {
+    return 'استلام الطلبية $code';
+  }
 }

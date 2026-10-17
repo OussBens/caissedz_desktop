@@ -7307,4 +7307,305 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get achatErreurCommandeCloturee => 'Commande fournisseur annulée ou soldée : réception impossible';
+
+  @override
+  String get moduleDocuments => 'Devis & commandes';
+
+  @override
+  String get moduleCommandesFournisseurs => 'Commandes fournisseurs';
+
+  @override
+  String get docDescriptionModule => 'Devis, factures proforma, bons de commande clients et bons de livraison';
+
+  @override
+  String get docOngletDevis => 'Devis';
+
+  @override
+  String get docOngletProformas => 'Proformas';
+
+  @override
+  String get docOngletCommandes => 'Commandes clients';
+
+  @override
+  String get docOngletLivraisons => 'Bons de livraison';
+
+  @override
+  String get docTypeDevis => 'Devis';
+
+  @override
+  String get docTypeProforma => 'Proforma';
+
+  @override
+  String get docTypeCommande => 'Commande';
+
+  @override
+  String get docBonLivraison => 'Bon de livraison';
+
+  @override
+  String get docStatutEnCours => 'En cours';
+
+  @override
+  String get docStatutAccepte => 'Accepté';
+
+  @override
+  String get docStatutRefuse => 'Refusé';
+
+  @override
+  String get docStatutTransforme => 'Transformé en commande';
+
+  @override
+  String get docStatutExpire => 'Expiré';
+
+  @override
+  String get docStatutPartielle => 'Partiellement livrée';
+
+  @override
+  String get docStatutLivree => 'Livrée';
+
+  @override
+  String get docStatutAnnule => 'Annulé';
+
+  @override
+  String get docValidite => 'Validité';
+
+  @override
+  String get docOrigine => 'Origine';
+
+  @override
+  String get docLivre => 'Livré';
+
+  @override
+  String get docResteALivrer => 'Reste à livrer';
+
+  @override
+  String get docALivrer => 'À livrer';
+
+  @override
+  String get docQuantiteLivree => 'Quantité livrée';
+
+  @override
+  String get docPuTtc => 'P.U. TTC';
+
+  @override
+  String get docTotalTtc => 'Total TTC';
+
+  @override
+  String get docAucun => 'Aucun document sur la période';
+
+  @override
+  String get docKpiNombre => 'Documents';
+
+  @override
+  String get docKpiMontant => 'Montant total';
+
+  @override
+  String get docKpiALivrer => 'À livrer';
+
+  @override
+  String get docKpiTransformes => 'Transformés en commande';
+
+  @override
+  String get docImprimer => 'Imprimer (A4)';
+
+  @override
+  String get docAccepter => 'Accepter';
+
+  @override
+  String get docRefuser => 'Refuser';
+
+  @override
+  String get docTransformer => 'Transformer en commande';
+
+  @override
+  String get docLivrer => 'Livrer';
+
+  @override
+  String get docNouveauDevis => 'Nouveau devis';
+
+  @override
+  String get docNouvelleProforma => 'Nouvelle proforma';
+
+  @override
+  String get docNouvelleCommande => 'Nouvelle commande';
+
+  @override
+  String docNouveauTitre(String type) {
+    return 'Nouveau document : $type';
+  }
+
+  @override
+  String docModifierTitre(String type) {
+    return 'Modifier : $type';
+  }
+
+  @override
+  String get docFormDescription => 'Client, validité et produits au prix de vente TTC (TVA du produit figée)';
+
+  @override
+  String get docChoisirClient => 'Choisir un client';
+
+  @override
+  String get docToastEnregistre => 'Document enregistré';
+
+  @override
+  String get docToastTransforme => 'Commande créée';
+
+  @override
+  String get docToastLivre => 'Livraison enregistrée';
+
+  @override
+  String docLivrerTitre(String code) {
+    return 'Livrer la commande $code';
+  }
+
+  @override
+  String get docLivrerDescription =>
+      'Saisissez les quantités livrées : la vente et le bon de livraison sont créés ensemble ; le reste est dû par le client.';
+
+  @override
+  String get docMontantPaye => 'Montant payé';
+
+  @override
+  String get docMontantPayeAide => 'Laisser vide : livraison à crédit';
+
+  @override
+  String get docValiderLivraison => 'Valider la livraison';
+
+  @override
+  String get docVendeur => 'Vendeur';
+
+  @override
+  String get docPdfDevis => 'DEVIS';
+
+  @override
+  String get docPdfProforma => 'FACTURE PROFORMA';
+
+  @override
+  String get docPdfCommande => 'BON DE COMMANDE';
+
+  @override
+  String get docPdfLivraison => 'BON DE LIVRAISON';
+
+  @override
+  String docArretee(String type) {
+    return 'Arrêté(e) le présent document ($type) à la somme de';
+  }
+
+  @override
+  String get docMentionProforma => 'Document sans valeur comptable : ne vaut pas facture.';
+
+  @override
+  String get docSignatureClient => 'Bon pour accord (client)';
+
+  @override
+  String get docSignatureVendeur => 'Cachet et signature';
+
+  @override
+  String get docSignatureLivreur => 'Livré par';
+
+  @override
+  String get docSignatureReception => 'Reçu par (nom, signature)';
+
+  @override
+  String get docErreurClient => 'Client inconnu';
+
+  @override
+  String get docErreurInconnu => 'Document introuvable';
+
+  @override
+  String get docErreurNonModifiable =>
+      'Ce document ne peut plus être modifié (transformé, refusé, annulé ou déjà livré)';
+
+  @override
+  String get docErreurDejaAnnule => 'Document déjà annulé';
+
+  @override
+  String get docErreurLivraisonLiee => 'Commande déjà livrée : annulez d\'abord la vente du bon de livraison';
+
+  @override
+  String get docErreurRienALivrer => 'Aucune quantité à livrer';
+
+  @override
+  String get docErreurQuantiteExcessive => 'Quantité supérieure au reste à livrer';
+
+  @override
+  String get docErreurLivraisonExistante => 'Cette vente a déjà un bon de livraison';
+
+  @override
+  String get docErreurVenteInconnue => 'Vente introuvable';
+
+  @override
+  String get cmdfDescriptionModule => 'Bons de commande fournisseurs réceptionnés en une ou plusieurs entrées';
+
+  @override
+  String get cmdfNouvelle => 'Nouvelle commande fournisseur';
+
+  @override
+  String get cmdfModifier => 'Modifier la commande fournisseur';
+
+  @override
+  String get cmdfFormDescription => 'Fournisseur, magasin de réception, livraison prévue et produits au prix d\'achat';
+
+  @override
+  String cmdfTitre(String code) {
+    return 'Commande fournisseur $code';
+  }
+
+  @override
+  String get cmdfCommande => 'Commande fournisseur';
+
+  @override
+  String get cmdfPrix => 'Prix d\'achat';
+
+  @override
+  String get cmdfRecu => 'Reçu';
+
+  @override
+  String get cmdfReste => 'Reste à recevoir';
+
+  @override
+  String get cmdfReceptions => 'Entrées de réception';
+
+  @override
+  String get cmdfReceptionner => 'Réceptionner';
+
+  @override
+  String get cmdfSolder => 'Solder';
+
+  @override
+  String cmdfSolderMessage(String code) {
+    return 'Solder la commande $code ? Le reliquat ne sera plus attendu.';
+  }
+
+  @override
+  String get cmdfKpiAttendues => 'En attente de réception';
+
+  @override
+  String get cmdfStatutPartielle => 'Partiellement reçue';
+
+  @override
+  String get cmdfStatutRecue => 'Reçue';
+
+  @override
+  String get cmdfStatutSoldee => 'Soldée';
+
+  @override
+  String get cmdfPdfTitre => 'BON DE COMMANDE FOURNISSEUR';
+
+  @override
+  String get cmdfAcheteur => 'Acheteur';
+
+  @override
+  String get cmdfDepuisBesoin => 'Créer une commande fournisseur';
+
+  @override
+  String get cmdfErreurReceptionLiee => 'Commande déjà réceptionnée : annulez d\'abord les entrées liées';
+
+  @override
+  String get cmdfErreurDejaSoldee => 'Commande déjà soldée';
+
+  @override
+  String entDepuisCommande(String code) {
+    return 'Réception de la commande $code';
+  }
 }

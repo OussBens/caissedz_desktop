@@ -14,6 +14,7 @@ import '../../domain/models/vente.dart';
 import '../../domain/permissions.dart';
 import '../caisse/pos_controller.dart';
 import '../caisse/pos_dialogs.dart';
+import '../commercial/commercial_providers.dart';
 import '../commun/carte_entite.dart';
 import '../commun/colonnes_audit.dart';
 import '../commun/export_module.dart';
@@ -380,6 +381,14 @@ class _VentesPageState extends ConsumerState<VentesPage> {
                   regle: DsRegleSelection.une,
                   desactive: (choix) => choix.isNotEmpty && choix.first.annule,
                   onPressed: (choix, _) => imprimerFactureVente(context, ref, choix.first.vente),
+                ),
+                DsActionModule(
+                  cle: const ValueKey('ventes_action_bl'),
+                  libelle: l10n.docBonLivraison,
+                  icone: LucideIcons.truck,
+                  regle: DsRegleSelection.une,
+                  desactive: (choix) => choix.isNotEmpty && choix.first.annule,
+                  onPressed: (choix, _) => imprimerBonLivraisonVente(context, ref, choix.first.vente.code),
                 ),
                 DsActionModule(
                   libelle: l10n.communModifier,

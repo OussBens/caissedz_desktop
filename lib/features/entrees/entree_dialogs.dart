@@ -10,6 +10,7 @@ import '../../core/i18n/generated/app_localizations.dart';
 import '../../domain/code_generator.dart';
 import '../../domain/models/achat.dart';
 import '../../domain/models/caisse.dart';
+import '../../domain/models/document_commercial.dart';
 import '../../domain/models/produit.dart';
 import '../../domain/models/stock.dart';
 import '../../domain/models/tiers.dart';
@@ -197,7 +198,14 @@ Future<void> modifierEntree(BuildContext context, WidgetRef ref, Achat a) =>
 
 /// `SmartScanDialog` (1040 px, 2 étapes) : bon & fournisseur (en-tête, paiement) puis produits reçus (scan continu,
 /// « Liste »). Sert aussi à la modification (ouverte à l'étape 2) et à la réception d'une liste de besoins.
-Future<void> afficherFormulaireEntree(BuildContext context, WidgetRef ref, {Achat? achat, Besoin? besoin}) async {
+/// [commande] : réception d'une commande fournisseur, pré-remplie avec les quantités restant à recevoir.
+Future<void> afficherFormulaireEntree(
+  BuildContext context,
+  WidgetRef ref, {
+  Achat? achat,
+  Besoin? besoin,
+  CommandeFournisseur? commande,
+}) async {
   if (achat == null && !await exigerSessionCaisse(context, ref)) return;
   final catalogue = {for (final p in await ref.read(produitsProvider.future)) p.code: p};
   final principal = await ref.read(magasinPrincipalProvider.future);
@@ -214,19 +222,36 @@ Future<void> afficherFormulaireEntree(BuildContext context, WidgetRef ref, {Acha
       for (final l in besoin.lignes)
         if (catalogue[l.produitCode] != null)
           LigneEntree(produit: catalogue[l.produitCode]!, quantite: l.quantite, prix: l.prix, nombre: l.nombre),
+    if (commande != null)
+      for (final l in commande.lignes)
+        if (catalogue[l.produitCode] != null && l.reste > 0)
+          LigneEntree(produit: catalogue[l.produitCode]!, quantite: l.reste, prix: l.prix),
   ];
   proposerNombres(lignes, global: nombreGlobal);
   await afficherDialog<bool>(
     context,
     fermableParVoile: false,
-    builder: (_) => _EntreeForm(achat: achat, besoin: besoin, lignes: lignes, principal: principal),
+    builder: (_) => _EntreeForm(
+      achat: achat,
+      besoin: besoin,
+      commande: commande,
+      lignes: lignes,
+      principal: commande?.magasinCode ?? principal,
+    ),
   );
 }
 
 class _EntreeForm extends ConsumerStatefulWidget {
-  const _EntreeForm({required this.achat, required this.besoin, required this.lignes, required this.principal});
+  const _EntreeForm({
+    required this.achat,
+    required this.besoin,
+    this.commande,
+    required this.lignes,
+    required this.principal,
+  });
   final Achat? achat;
   final Besoin? besoin;
+  final CommandeFournisseur? commande;
   final List<LigneEntree> lignes;
   final String principal;
 
@@ -238,7 +263,8 @@ class _EntreeFormState extends ConsumerState<_EntreeForm> {
   late int _etape = widget.achat != null ? 1 : 0;
   late List<LigneEntree> _lignes = widget.lignes;
   late DateTime? _date = widget.achat?.date ?? DateTime.now();
-  late String? _fournisseur = widget.achat?.fournisseurCode ?? widget.besoin?.fournisseurCode;
+  late String? _fournisseur =
+      widget.achat?.fournisseurCode ?? widget.besoin?.fournisseurCode ?? widget.commande?.fournisseurCode;
   late String _magasin = widget.achat?.magasinCode ?? widget.principal;
   late final _reference = TextEditingController(text: widget.achat?.reference ?? '');
   MajPrixAchat _majPrix = MajPrixAchat.moyenPondere;
@@ -363,6 +389,7 @@ class _EntreeFormState extends ConsumerState<_EntreeForm> {
               date: _date,
               majPrix: _majPrix,
               besoinCode: widget.besoin?.code,
+              commandeCode: widget.commande?.code,
             );
     });
     if (!mounted) return;
@@ -412,6 +439,8 @@ class _EntreeFormState extends ConsumerState<_EntreeForm> {
           ? '${widget.achat!.code} · ${nomFrn ?? ''}'
           : widget.besoin != null
           ? l10n.entDepuisListe(widget.besoin!.code)
+          : widget.commande != null
+          ? l10n.entDepuisCommande(widget.commande!.code)
           : l10n.entNouvelleDescription,
       largeur: 1040,
       fermable: !_occupe,
@@ -1031,6 +1060,7 @@ Future<void> afficherDetailEntree(BuildContext context, WidgetRef ref, Achat a) 
               bon != null ? '${libelleSourceAchat(l10n, a)} (${bon.code})' : libelleSourceAchat(l10n, a),
             ),
             if (a.besoinCode != null) DsKeyValue(l10n.entListeBesoins, a.besoinCode),
+            if (a.commandeCode != null) DsKeyValue(l10n.cmdfCommande, a.commandeCode),
           ],
         ),
         DsSectionDetail(

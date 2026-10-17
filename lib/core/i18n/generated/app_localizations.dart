@@ -13862,6 +13862,576 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Commande fournisseur annulée ou soldée : réception impossible'**
   String get achatErreurCommandeCloturee;
+
+  /// No description provided for @moduleDocuments.
+  ///
+  /// In fr, this message translates to:
+  /// **'Devis & commandes'**
+  String get moduleDocuments;
+
+  /// No description provided for @moduleCommandesFournisseurs.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commandes fournisseurs'**
+  String get moduleCommandesFournisseurs;
+
+  /// No description provided for @docDescriptionModule.
+  ///
+  /// In fr, this message translates to:
+  /// **'Devis, factures proforma, bons de commande clients et bons de livraison'**
+  String get docDescriptionModule;
+
+  /// No description provided for @docOngletDevis.
+  ///
+  /// In fr, this message translates to:
+  /// **'Devis'**
+  String get docOngletDevis;
+
+  /// No description provided for @docOngletProformas.
+  ///
+  /// In fr, this message translates to:
+  /// **'Proformas'**
+  String get docOngletProformas;
+
+  /// No description provided for @docOngletCommandes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commandes clients'**
+  String get docOngletCommandes;
+
+  /// No description provided for @docOngletLivraisons.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bons de livraison'**
+  String get docOngletLivraisons;
+
+  /// No description provided for @docTypeDevis.
+  ///
+  /// In fr, this message translates to:
+  /// **'Devis'**
+  String get docTypeDevis;
+
+  /// No description provided for @docTypeProforma.
+  ///
+  /// In fr, this message translates to:
+  /// **'Proforma'**
+  String get docTypeProforma;
+
+  /// No description provided for @docTypeCommande.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commande'**
+  String get docTypeCommande;
+
+  /// No description provided for @docBonLivraison.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bon de livraison'**
+  String get docBonLivraison;
+
+  /// No description provided for @docStatutEnCours.
+  ///
+  /// In fr, this message translates to:
+  /// **'En cours'**
+  String get docStatutEnCours;
+
+  /// No description provided for @docStatutAccepte.
+  ///
+  /// In fr, this message translates to:
+  /// **'Accepté'**
+  String get docStatutAccepte;
+
+  /// No description provided for @docStatutRefuse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Refusé'**
+  String get docStatutRefuse;
+
+  /// No description provided for @docStatutTransforme.
+  ///
+  /// In fr, this message translates to:
+  /// **'Transformé en commande'**
+  String get docStatutTransforme;
+
+  /// No description provided for @docStatutExpire.
+  ///
+  /// In fr, this message translates to:
+  /// **'Expiré'**
+  String get docStatutExpire;
+
+  /// No description provided for @docStatutPartielle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Partiellement livrée'**
+  String get docStatutPartielle;
+
+  /// No description provided for @docStatutLivree.
+  ///
+  /// In fr, this message translates to:
+  /// **'Livrée'**
+  String get docStatutLivree;
+
+  /// No description provided for @docStatutAnnule.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annulé'**
+  String get docStatutAnnule;
+
+  /// No description provided for @docValidite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Validité'**
+  String get docValidite;
+
+  /// No description provided for @docOrigine.
+  ///
+  /// In fr, this message translates to:
+  /// **'Origine'**
+  String get docOrigine;
+
+  /// No description provided for @docLivre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Livré'**
+  String get docLivre;
+
+  /// No description provided for @docResteALivrer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Reste à livrer'**
+  String get docResteALivrer;
+
+  /// No description provided for @docALivrer.
+  ///
+  /// In fr, this message translates to:
+  /// **'À livrer'**
+  String get docALivrer;
+
+  /// No description provided for @docQuantiteLivree.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quantité livrée'**
+  String get docQuantiteLivree;
+
+  /// No description provided for @docPuTtc.
+  ///
+  /// In fr, this message translates to:
+  /// **'P.U. TTC'**
+  String get docPuTtc;
+
+  /// No description provided for @docTotalTtc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Total TTC'**
+  String get docTotalTtc;
+
+  /// No description provided for @docAucun.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun document sur la période'**
+  String get docAucun;
+
+  /// No description provided for @docKpiNombre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Documents'**
+  String get docKpiNombre;
+
+  /// No description provided for @docKpiMontant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montant total'**
+  String get docKpiMontant;
+
+  /// No description provided for @docKpiALivrer.
+  ///
+  /// In fr, this message translates to:
+  /// **'À livrer'**
+  String get docKpiALivrer;
+
+  /// No description provided for @docKpiTransformes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Transformés en commande'**
+  String get docKpiTransformes;
+
+  /// No description provided for @docImprimer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Imprimer (A4)'**
+  String get docImprimer;
+
+  /// No description provided for @docAccepter.
+  ///
+  /// In fr, this message translates to:
+  /// **'Accepter'**
+  String get docAccepter;
+
+  /// No description provided for @docRefuser.
+  ///
+  /// In fr, this message translates to:
+  /// **'Refuser'**
+  String get docRefuser;
+
+  /// No description provided for @docTransformer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Transformer en commande'**
+  String get docTransformer;
+
+  /// No description provided for @docLivrer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Livrer'**
+  String get docLivrer;
+
+  /// No description provided for @docNouveauDevis.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau devis'**
+  String get docNouveauDevis;
+
+  /// No description provided for @docNouvelleProforma.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouvelle proforma'**
+  String get docNouvelleProforma;
+
+  /// No description provided for @docNouvelleCommande.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouvelle commande'**
+  String get docNouvelleCommande;
+
+  /// No description provided for @docNouveauTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau document : {type}'**
+  String docNouveauTitre(String type);
+
+  /// No description provided for @docModifierTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier : {type}'**
+  String docModifierTitre(String type);
+
+  /// No description provided for @docFormDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Client, validité et produits au prix de vente TTC (TVA du produit figée)'**
+  String get docFormDescription;
+
+  /// No description provided for @docChoisirClient.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir un client'**
+  String get docChoisirClient;
+
+  /// No description provided for @docToastEnregistre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Document enregistré'**
+  String get docToastEnregistre;
+
+  /// No description provided for @docToastTransforme.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commande créée'**
+  String get docToastTransforme;
+
+  /// No description provided for @docToastLivre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Livraison enregistrée'**
+  String get docToastLivre;
+
+  /// No description provided for @docLivrerTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Livrer la commande {code}'**
+  String docLivrerTitre(String code);
+
+  /// No description provided for @docLivrerDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Saisissez les quantités livrées : la vente et le bon de livraison sont créés ensemble ; le reste est dû par le client.'**
+  String get docLivrerDescription;
+
+  /// No description provided for @docMontantPaye.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montant payé'**
+  String get docMontantPaye;
+
+  /// No description provided for @docMontantPayeAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Laisser vide : livraison à crédit'**
+  String get docMontantPayeAide;
+
+  /// No description provided for @docValiderLivraison.
+  ///
+  /// In fr, this message translates to:
+  /// **'Valider la livraison'**
+  String get docValiderLivraison;
+
+  /// No description provided for @docVendeur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vendeur'**
+  String get docVendeur;
+
+  /// No description provided for @docPdfDevis.
+  ///
+  /// In fr, this message translates to:
+  /// **'DEVIS'**
+  String get docPdfDevis;
+
+  /// No description provided for @docPdfProforma.
+  ///
+  /// In fr, this message translates to:
+  /// **'FACTURE PROFORMA'**
+  String get docPdfProforma;
+
+  /// No description provided for @docPdfCommande.
+  ///
+  /// In fr, this message translates to:
+  /// **'BON DE COMMANDE'**
+  String get docPdfCommande;
+
+  /// No description provided for @docPdfLivraison.
+  ///
+  /// In fr, this message translates to:
+  /// **'BON DE LIVRAISON'**
+  String get docPdfLivraison;
+
+  /// No description provided for @docArretee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Arrêté(e) le présent document ({type}) à la somme de'**
+  String docArretee(String type);
+
+  /// No description provided for @docMentionProforma.
+  ///
+  /// In fr, this message translates to:
+  /// **'Document sans valeur comptable : ne vaut pas facture.'**
+  String get docMentionProforma;
+
+  /// No description provided for @docSignatureClient.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bon pour accord (client)'**
+  String get docSignatureClient;
+
+  /// No description provided for @docSignatureVendeur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cachet et signature'**
+  String get docSignatureVendeur;
+
+  /// No description provided for @docSignatureLivreur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Livré par'**
+  String get docSignatureLivreur;
+
+  /// No description provided for @docSignatureReception.
+  ///
+  /// In fr, this message translates to:
+  /// **'Reçu par (nom, signature)'**
+  String get docSignatureReception;
+
+  /// No description provided for @docErreurClient.
+  ///
+  /// In fr, this message translates to:
+  /// **'Client inconnu'**
+  String get docErreurClient;
+
+  /// No description provided for @docErreurInconnu.
+  ///
+  /// In fr, this message translates to:
+  /// **'Document introuvable'**
+  String get docErreurInconnu;
+
+  /// No description provided for @docErreurNonModifiable.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce document ne peut plus être modifié (transformé, refusé, annulé ou déjà livré)'**
+  String get docErreurNonModifiable;
+
+  /// No description provided for @docErreurDejaAnnule.
+  ///
+  /// In fr, this message translates to:
+  /// **'Document déjà annulé'**
+  String get docErreurDejaAnnule;
+
+  /// No description provided for @docErreurLivraisonLiee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commande déjà livrée : annulez d\'abord la vente du bon de livraison'**
+  String get docErreurLivraisonLiee;
+
+  /// No description provided for @docErreurRienALivrer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune quantité à livrer'**
+  String get docErreurRienALivrer;
+
+  /// No description provided for @docErreurQuantiteExcessive.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quantité supérieure au reste à livrer'**
+  String get docErreurQuantiteExcessive;
+
+  /// No description provided for @docErreurLivraisonExistante.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette vente a déjà un bon de livraison'**
+  String get docErreurLivraisonExistante;
+
+  /// No description provided for @docErreurVenteInconnue.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vente introuvable'**
+  String get docErreurVenteInconnue;
+
+  /// No description provided for @cmdfDescriptionModule.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bons de commande fournisseurs réceptionnés en une ou plusieurs entrées'**
+  String get cmdfDescriptionModule;
+
+  /// No description provided for @cmdfNouvelle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouvelle commande fournisseur'**
+  String get cmdfNouvelle;
+
+  /// No description provided for @cmdfModifier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier la commande fournisseur'**
+  String get cmdfModifier;
+
+  /// No description provided for @cmdfFormDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fournisseur, magasin de réception, livraison prévue et produits au prix d\'achat'**
+  String get cmdfFormDescription;
+
+  /// No description provided for @cmdfTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commande fournisseur {code}'**
+  String cmdfTitre(String code);
+
+  /// No description provided for @cmdfCommande.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commande fournisseur'**
+  String get cmdfCommande;
+
+  /// No description provided for @cmdfPrix.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix d\'achat'**
+  String get cmdfPrix;
+
+  /// No description provided for @cmdfRecu.
+  ///
+  /// In fr, this message translates to:
+  /// **'Reçu'**
+  String get cmdfRecu;
+
+  /// No description provided for @cmdfReste.
+  ///
+  /// In fr, this message translates to:
+  /// **'Reste à recevoir'**
+  String get cmdfReste;
+
+  /// No description provided for @cmdfReceptions.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrées de réception'**
+  String get cmdfReceptions;
+
+  /// No description provided for @cmdfReceptionner.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réceptionner'**
+  String get cmdfReceptionner;
+
+  /// No description provided for @cmdfSolder.
+  ///
+  /// In fr, this message translates to:
+  /// **'Solder'**
+  String get cmdfSolder;
+
+  /// No description provided for @cmdfSolderMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Solder la commande {code} ? Le reliquat ne sera plus attendu.'**
+  String cmdfSolderMessage(String code);
+
+  /// No description provided for @cmdfKpiAttendues.
+  ///
+  /// In fr, this message translates to:
+  /// **'En attente de réception'**
+  String get cmdfKpiAttendues;
+
+  /// No description provided for @cmdfStatutPartielle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Partiellement reçue'**
+  String get cmdfStatutPartielle;
+
+  /// No description provided for @cmdfStatutRecue.
+  ///
+  /// In fr, this message translates to:
+  /// **'Reçue'**
+  String get cmdfStatutRecue;
+
+  /// No description provided for @cmdfStatutSoldee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Soldée'**
+  String get cmdfStatutSoldee;
+
+  /// No description provided for @cmdfPdfTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'BON DE COMMANDE FOURNISSEUR'**
+  String get cmdfPdfTitre;
+
+  /// No description provided for @cmdfAcheteur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Acheteur'**
+  String get cmdfAcheteur;
+
+  /// No description provided for @cmdfDepuisBesoin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créer une commande fournisseur'**
+  String get cmdfDepuisBesoin;
+
+  /// No description provided for @cmdfErreurReceptionLiee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commande déjà réceptionnée : annulez d\'abord les entrées liées'**
+  String get cmdfErreurReceptionLiee;
+
+  /// No description provided for @cmdfErreurDejaSoldee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commande déjà soldée'**
+  String get cmdfErreurDejaSoldee;
+
+  /// No description provided for @entDepuisCommande.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réception de la commande {code}'**
+  String entDepuisCommande(String code);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -3786,5 +3786,149 @@
   "factureImprimer": "Imprimer (duplicata)",
   "factureChaineOk": "Chaîne des factures intacte",
   "achatErreurCommandeInconnue": "Commande fournisseur introuvable pour ce fournisseur",
-  "achatErreurCommandeCloturee": "Commande fournisseur annulée ou soldée : réception impossible"
+  "achatErreurCommandeCloturee": "Commande fournisseur annulée ou soldée : réception impossible",
+  "moduleDocuments": "Devis & commandes",
+  "moduleCommandesFournisseurs": "Commandes fournisseurs",
+  "docDescriptionModule": "Devis, factures proforma, bons de commande clients et bons de livraison",
+  "docOngletDevis": "Devis",
+  "docOngletProformas": "Proformas",
+  "docOngletCommandes": "Commandes clients",
+  "docOngletLivraisons": "Bons de livraison",
+  "docTypeDevis": "Devis",
+  "docTypeProforma": "Proforma",
+  "docTypeCommande": "Commande",
+  "docBonLivraison": "Bon de livraison",
+  "docStatutEnCours": "En cours",
+  "docStatutAccepte": "Accepté",
+  "docStatutRefuse": "Refusé",
+  "docStatutTransforme": "Transformé en commande",
+  "docStatutExpire": "Expiré",
+  "docStatutPartielle": "Partiellement livrée",
+  "docStatutLivree": "Livrée",
+  "docStatutAnnule": "Annulé",
+  "docValidite": "Validité",
+  "docOrigine": "Origine",
+  "docLivre": "Livré",
+  "docResteALivrer": "Reste à livrer",
+  "docALivrer": "À livrer",
+  "docQuantiteLivree": "Quantité livrée",
+  "docPuTtc": "P.U. TTC",
+  "docTotalTtc": "Total TTC",
+  "docAucun": "Aucun document sur la période",
+  "docKpiNombre": "Documents",
+  "docKpiMontant": "Montant total",
+  "docKpiALivrer": "À livrer",
+  "docKpiTransformes": "Transformés en commande",
+  "docImprimer": "Imprimer (A4)",
+  "docAccepter": "Accepter",
+  "docRefuser": "Refuser",
+  "docTransformer": "Transformer en commande",
+  "docLivrer": "Livrer",
+  "docNouveauDevis": "Nouveau devis",
+  "docNouvelleProforma": "Nouvelle proforma",
+  "docNouvelleCommande": "Nouvelle commande",
+  "docNouveauTitre": "Nouveau document : {type}",
+  "@docNouveauTitre": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "docModifierTitre": "Modifier : {type}",
+  "@docModifierTitre": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "docFormDescription": "Client, validité et produits au prix de vente TTC (TVA du produit figée)",
+  "docChoisirClient": "Choisir un client",
+  "docToastEnregistre": "Document enregistré",
+  "docToastTransforme": "Commande créée",
+  "docToastLivre": "Livraison enregistrée",
+  "docLivrerTitre": "Livrer la commande {code}",
+  "@docLivrerTitre": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "docLivrerDescription": "Saisissez les quantités livrées : la vente et le bon de livraison sont créés ensemble ; le reste est dû par le client.",
+  "docMontantPaye": "Montant payé",
+  "docMontantPayeAide": "Laisser vide : livraison à crédit",
+  "docValiderLivraison": "Valider la livraison",
+  "docVendeur": "Vendeur",
+  "docPdfDevis": "DEVIS",
+  "docPdfProforma": "FACTURE PROFORMA",
+  "docPdfCommande": "BON DE COMMANDE",
+  "docPdfLivraison": "BON DE LIVRAISON",
+  "docArretee": "Arrêté(e) le présent document ({type}) à la somme de",
+  "@docArretee": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "docMentionProforma": "Document sans valeur comptable : ne vaut pas facture.",
+  "docSignatureClient": "Bon pour accord (client)",
+  "docSignatureVendeur": "Cachet et signature",
+  "docSignatureLivreur": "Livré par",
+  "docSignatureReception": "Reçu par (nom, signature)",
+  "docErreurClient": "Client inconnu",
+  "docErreurInconnu": "Document introuvable",
+  "docErreurNonModifiable": "Ce document ne peut plus être modifié (transformé, refusé, annulé ou déjà livré)",
+  "docErreurDejaAnnule": "Document déjà annulé",
+  "docErreurLivraisonLiee": "Commande déjà livrée : annulez d'abord la vente du bon de livraison",
+  "docErreurRienALivrer": "Aucune quantité à livrer",
+  "docErreurQuantiteExcessive": "Quantité supérieure au reste à livrer",
+  "docErreurLivraisonExistante": "Cette vente a déjà un bon de livraison",
+  "docErreurVenteInconnue": "Vente introuvable",
+  "cmdfDescriptionModule": "Bons de commande fournisseurs réceptionnés en une ou plusieurs entrées",
+  "cmdfNouvelle": "Nouvelle commande fournisseur",
+  "cmdfModifier": "Modifier la commande fournisseur",
+  "cmdfFormDescription": "Fournisseur, magasin de réception, livraison prévue et produits au prix d'achat",
+  "cmdfTitre": "Commande fournisseur {code}",
+  "@cmdfTitre": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "cmdfCommande": "Commande fournisseur",
+  "cmdfPrix": "Prix d'achat",
+  "cmdfRecu": "Reçu",
+  "cmdfReste": "Reste à recevoir",
+  "cmdfReceptions": "Entrées de réception",
+  "cmdfReceptionner": "Réceptionner",
+  "cmdfSolder": "Solder",
+  "cmdfSolderMessage": "Solder la commande {code} ? Le reliquat ne sera plus attendu.",
+  "@cmdfSolderMessage": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "cmdfKpiAttendues": "En attente de réception",
+  "cmdfStatutPartielle": "Partiellement reçue",
+  "cmdfStatutRecue": "Reçue",
+  "cmdfStatutSoldee": "Soldée",
+  "cmdfPdfTitre": "BON DE COMMANDE FOURNISSEUR",
+  "cmdfAcheteur": "Acheteur",
+  "cmdfDepuisBesoin": "Créer une commande fournisseur",
+  "cmdfErreurReceptionLiee": "Commande déjà réceptionnée : annulez d'abord les entrées liées",
+  "cmdfErreurDejaSoldee": "Commande déjà soldée",
+  "entDepuisCommande": "Réception de la commande {code}",
+  "@entDepuisCommande": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  }
 }
