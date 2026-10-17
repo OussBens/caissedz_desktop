@@ -8,6 +8,7 @@ import '../../application/import_produits_service.dart';
 import '../../application/synchro_catalogue_service.dart';
 import '../../data/catalogue_repository.dart';
 import '../../data/parametre_repository.dart';
+import '../../domain/fiscalite.dart';
 import '../../domain/models/parametres_paiement.dart';
 import '../../domain/models/parametres_vente.dart';
 import '../../domain/models/produit.dart';
@@ -37,6 +38,19 @@ final parametresVenteProvider = FutureProvider<ParametresVente>((ref) async {
 final parametresPaiementProvider = FutureProvider<ParametresPaiement>((ref) async {
   final repo = ParametreRepository(ref.watch(appDatabaseProvider).db);
   return ParametresPaiement.depuisCles(await repo.lirePlusieurs(ParametresPaiement.cles));
+});
+
+/// Prix de vente TTC d'un produit : son prix de vente HT (ou [prixHt] : colis, pièce) + la TVA de son taux selon le
+/// régime fiscal (IFU : sans TVA). Prix appliqué en caisse et sur les devis, proformas et commandes.
+final prixTtcProvider = Provider<double Function(Produit p, [double? prixHt])>((ref) {
+  final regime = ref.watch(parametresVenteProvider).value?.regimeFiscal ?? RegimesFiscaux.reel;
+  return (p, [prixHt]) => Fiscalite.ttc(prixHt ?? p.prixVente, Fiscalite.taux(p.tvaPct, regime));
+});
+
+/// Prix de vente HT correspondant à un prix TTC saisi pour [p] (modification du prix depuis la caisse).
+final prixHtProvider = Provider<double Function(Produit p, double prixTtc)>((ref) {
+  final regime = ref.watch(parametresVenteProvider).value?.regimeFiscal ?? RegimesFiscaux.reel;
+  return (p, ttc) => Fiscalite.ht(ttc, Fiscalite.taux(p.tvaPct, regime));
 });
 
 final deviseProvider = Provider<String>((ref) => ref.watch(parametresVenteProvider).value?.devise ?? 'DA');

@@ -95,6 +95,7 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
   ) {
     final devise = ref.watch(deviseProvider);
     String da(double v) => formaterMontant(v, devise);
+    final ttc = ref.watch(prixTtcProvider);
     final stocks = ref.watch(stocksProduitsProvider).value ?? const <String, double>{};
     final seuilGlobal = ref.watch(parametresVenteProvider).value?.seuilStockGlobal ?? 5;
     final colis = ref.watch(colisProvider).value ?? const <Colis>[];
@@ -181,6 +182,13 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
         numerique: true,
         valeur: (p) => p.prixVente,
         cellule: (_, p) => Text(da(p.prixVente)),
+      ),
+      DsColonne(
+        id: 'vente_ttc',
+        libelle: l10n.prdVenteTtc,
+        numerique: true,
+        valeur: (p) => ttc(p),
+        cellule: (_, p) => Text(da(ttc(p))),
       ),
       DsColonne(
         id: 'marge',
@@ -759,7 +767,7 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
     String da(double v) => formaterMontant(v, devise);
     final stocks = ref.watch(stocksProduitsProvider).value ?? const <String, double>{};
     final parCode = {for (final p in produits) p.code: p};
-    double valeur(Pack k) => valeurSeparee(k, parCode);
+    double valeur(Pack k) => valeurSeparee(k, parCode, ref.watch(prixTtcProvider));
     int possibles(Pack k) => packsPossibles(k, stocks);
     final colonnes = <DsColonne<Pack>>[
       DsColonne(id: 'code', libelle: l10n.produitsColCode, valeur: (k) => k.code, attenue: true),

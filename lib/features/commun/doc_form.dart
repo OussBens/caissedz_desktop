@@ -114,6 +114,10 @@ Future<List<Produit>> choisirProduits(
       : (await ref.read(magasinsProvider.future)).where((m) => m.code == magasin).firstOrNull?.nom ?? magasin;
   double dansMagasin(Produit p) => parMagasin?[p.code]?[magasin] ?? 0;
   final devise = ref.read(deviseProvider);
+  // Documents de vente : prix TTC (prix de vente HT + TVA) ; achats : prix d'achat.
+  final ttc = ref.read(prixTtcProvider);
+  double prix(Produit p) => prixVente ? ttc(p) : p.prixAchat;
+  final libellePrix = prixVente ? l10n.docPuTtc : l10n.produitsColPrixAchat;
   if (!context.mounted) return const [];
   final choix = await afficherDialog<List<Produit>>(
     context,
@@ -138,8 +142,8 @@ Future<List<Produit>> choisirProduits(
           initiales: false,
           image: imageProduit(p.image),
           statut: p.service ? null : (stock <= 0 ? 'rupture' : 'disponible'),
-          montant: formaterMontant(prixVente ? p.prixVente : p.prixAchat, devise),
-          libelleMontant: prixVente ? l10n.produitsColPrixVente : l10n.produitsColPrixAchat,
+          montant: formaterMontant(prix(p), devise),
+          libelleMontant: libellePrix,
           lignes: [
             (LucideIcons.boxes, p.service ? l10n.prdService : l10n.prdStockN(formaterNombre(stock))),
             if (magasin != null && !p.service)
@@ -162,11 +166,7 @@ Future<List<Produit>> choisirProduits(
             valeur: (p) => formaterNombre(dansMagasin(p)),
             largeur: 150,
           ),
-        DsColonnePicker(
-          libelle: prixVente ? l10n.produitsColPrixVente : l10n.produitsColPrixAchat,
-          valeur: (p) => formaterMontant(prixVente ? p.prixVente : p.prixAchat, devise),
-          largeur: 130,
-        ),
+        DsColonnePicker(libelle: libellePrix, valeur: (p) => formaterMontant(prix(p), devise), largeur: 130),
       ],
     ),
   );

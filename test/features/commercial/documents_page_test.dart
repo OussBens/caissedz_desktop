@@ -68,7 +68,7 @@ void main() {
         .first;
     await tester.enterText(qte, '5');
     await tester.pump();
-    expect(find.text('500,00 DA'), findsWidgets, reason: '5 × prix de vente 100');
+    expect(find.text('595,00 DA'), findsWidgets, reason: '5 × (prix de vente HT 100 + TVA 19 %)');
     await clic(tester, _cle('doc_enregistrer'));
     await tester.pump(const Duration(seconds: 5)); // toast refermé
     await tester.pumpAndSettle();

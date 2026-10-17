@@ -155,6 +155,23 @@ class CaisseRepository {
     return CalculsPrix.arrondir((r.first['s'] as num).toDouble());
   }
 
+  /// Détail de [especesSession] par type de mouvement (montants signés : entrées +, sorties −).
+  Future<Map<String, double>> especesSessionParType(String caisseCode, String sessionCode) async {
+    final rows = await db.rawQuery(
+      '''
+      SELECT type, COALESCE(SUM(CASE WHEN sens = 'Entrée' THEN montant ELSE -montant END), 0) s
+      FROM mouvement_caisse
+      WHERE caisse_code = ?1 AND mode = 'Espèces' AND id > COALESCE((
+        SELECT MAX(id) FROM mouvement_caisse
+        WHERE caisse_code = ?1 AND reference_type = 'session_caisse' AND type = ?2 AND reference_code <> ?3
+      ), 0)
+      GROUP BY type ORDER BY type
+      ''',
+      [caisseCode, TypesMouvementCaisse.retrait, sessionCode],
+    );
+    return {for (final r in rows) r['type']! as String: CalculsPrix.arrondir((r['s']! as num).toDouble())};
+  }
+
   /// Solde d'une caisse par mode (Σ entrées − Σ sorties) jusqu'à [fin] inclus.
   Future<SoldeCaisse> solde(String caisseCode, {DateTime? fin}) async {
     final rows = await db.rawQuery(

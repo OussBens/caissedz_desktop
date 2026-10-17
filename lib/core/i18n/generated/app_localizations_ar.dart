@@ -375,7 +375,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get produitsColPrixAchat => 'سعر الشراء';
 
   @override
-  String get produitsColPrixVente => 'سعر البيع';
+  String get produitsColPrixVente => 'سعر البيع دون رسوم';
 
   @override
   String get produitsColStock => 'المخزون';
@@ -393,7 +393,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get produitChampPrixAchat => 'سعر الشراء';
 
   @override
-  String get produitChampPrixVente => 'سعر البيع';
+  String get produitChampPrixVente => 'سعر البيع دون رسوم';
 
   @override
   String get produitChampUnite => 'الوحدة';
@@ -3713,7 +3713,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get prdAchat => 'الشراء';
 
   @override
-  String get prdVente => 'البيع';
+  String get prdVente => 'البيع دون رسوم';
 
   @override
   String get prdMarge => 'الهامش';
@@ -7594,4 +7594,14 @@ class AppLocalizationsAr extends AppLocalizations {
   String rechercheGlobaleAucun(String texte) {
     return 'لا توجد نتائج لـ « $texte »';
   }
+
+  @override
+  String get prdPrixTtc => 'سعر البيع بالرسوم';
+
+  @override
+  String get prdVenteTtc => 'البيع بالرسوم';
+
+  @override
+  String get posClotureNegatif =>
+      'الرصيد النظري سالب: خرج من هذا الصندوق نقد أكثر مما دخل منذ الفتح (انظر التفاصيل أعلاه). لا يمكن أن يحتوي الصندوق على أقل من 0: عدّ النقد الموجود فعلاً (0 إذا كان الدرج فارغاً)، وسيُسجل الفرق كعجز.';
 }

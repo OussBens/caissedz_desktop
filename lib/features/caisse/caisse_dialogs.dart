@@ -268,12 +268,17 @@ class _SelectionProduitDialogState extends ConsumerState<_SelectionProduitDialog
   Colis? get _colisChoisi => widget.colis.where((c) => c.code == _colis).firstOrNull;
   double get _quantite => double.tryParse(_q) ?? 0;
   double get _parColis => (_colisChoisi?.quantite ?? 1).toDouble();
+
+  /// Prix TTC (prix de vente HT + TVA) de l'unité, d'une pièce et du colis choisi.
+  double get _prixUnite => ref.read(prixTtcProvider)(widget.produit);
   double get _prixPiece {
     final p = widget.produit;
-    return p.nombreParUnite > 0 ? double.parse((p.prixVente / p.nombreParUnite).toStringAsFixed(2)) : p.prixVente;
+    return p.nombreParUnite > 0 ? double.parse((_prixUnite / p.nombreParUnite).toStringAsFixed(2)) : _prixUnite;
   }
 
-  double get _prix => _colis == _nombre ? _prixPiece : (_colisChoisi?.prixVente ?? widget.produit.prixVente);
+  double get _prix => _colis == _nombre
+      ? _prixPiece
+      : (_colisChoisi == null ? _prixUnite : ref.read(prixTtcProvider)(widget.produit, _colisChoisi!.prixVente));
 
   /// Le stock au nombre est contrôlé à l'ajout (réservations comprises) ; ici, seules les unités.
   bool get _depasse => _colis != _nombre && _quantite * _parColis > widget.stock + 1e-9;
@@ -403,7 +408,7 @@ class _SelectionProduitDialogState extends ConsumerState<_SelectionProduitDialog
                             ),
                           ),
                         Text(p.designation, style: t.bodyStrong.copyWith(fontSize: 15, height: 1.3)),
-                        puce(LucideIcons.tag, l10n.posSelParPiece(_da(ref, p.prixVente))),
+                        puce(LucideIcons.tag, l10n.posSelParPiece(_da(ref, _prixUnite))),
                         puce(
                           _depasse ? LucideIcons.circleAlert : LucideIcons.boxes,
                           l10n.posSelStock(_qte(widget.stock)),
@@ -426,14 +431,14 @@ class _SelectionProduitDialogState extends ConsumerState<_SelectionProduitDialog
                             _remplacer = true;
                           }),
                           options: [
-                            DsOption('', libelle: l10n.posSelUnite, meta: '${_da(ref, p.prixVente)} / ${p.unite}'),
+                            DsOption('', libelle: l10n.posSelUnite, meta: '${_da(ref, _prixUnite)} / ${p.unite}'),
                             if (p.suiviNombre)
                               DsOption(_nombre, libelle: l10n.posVendreNombre, meta: _da(ref, _prixPiece)),
                             for (final k in widget.colis)
                               DsOption(
                                 k.code,
                                 libelle: l10n.posSelParColis(k.designation, '${k.quantite}'),
-                                meta: _da(ref, k.prixVente),
+                                meta: _da(ref, ref.read(prixTtcProvider)(p, k.prixVente)),
                               ),
                           ],
                         ),
@@ -976,8 +981,9 @@ class _RechercheProduitDialogState extends ConsumerState<_RechercheProduitDialog
     final q = widget.stocks[p.code] ?? 0;
     if (_lire(_qteMin) case final m? when q < m) return false;
     if (_lire(_qteMax) case final m? when q > m) return false;
-    if (_lire(_prixMin) case final m? when p.prixVente < m) return false;
-    if (_lire(_prixMax) case final m? when p.prixVente > m) return false;
+    final prix = ref.read(prixTtcProvider)(p);
+    if (_lire(_prixMin) case final m? when prix < m) return false;
+    if (_lire(_prixMax) case final m? when prix > m) return false;
     return true;
   }
 
@@ -1082,7 +1088,7 @@ class _RechercheProduitDialogState extends ConsumerState<_RechercheProduitDialog
           valeur: (p) => categories[p.categorieCode] ?? p.categorieCode,
         ),
         DsColonnePicker(libelle: l10n.produitsColStock, valeur: (p) => _qte(widget.stocks[p.code] ?? 0), largeur: 80),
-        DsColonnePicker(libelle: l10n.dsPosPrix, valeur: (p) => _da(ref, p.prixVente), largeur: 110),
+        DsColonnePicker(libelle: l10n.dsPosPrix, valeur: (p) => _da(ref, ref.read(prixTtcProvider)(p)), largeur: 110),
       ],
     );
   }
@@ -1300,9 +1306,12 @@ Future<void> afficherClotureSession(
   final duPoste = ref.read(posControllerProvider).session;
   final session = sessionCible ?? duPoste;
   if (session == null) return;
-  final attendu = await ref.read(sessionCaisseServiceProvider).especesAttendues(session.code);
+  final service = ref.read(sessionCaisseServiceProvider);
+  final attendu = await service.especesAttendues(session.code);
+  final parType = await service.especesAttenduesParType(session.code);
   if (!context.mounted) return;
-  final reel = TextEditingController(text: formaterNombre(attendu, decimales: 2));
+  // Un tiroir ne contient jamais moins de 0 : le compté proposé est plafonné à 0 (l'écart devient un manquant).
+  final reel = TextEditingController(text: formaterNombre(attendu < 0 ? 0 : attendu, decimales: 2));
   final ok = await afficherDialog<bool>(
     context,
     builder: (ctx) => StatefulBuilder(
@@ -1366,14 +1375,25 @@ Future<void> afficherClotureSession(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    ligne(l10n.posClotureFond, session.fondInitial),
-                    Divider(height: 1, color: c.borderSubtle),
-                    ligne(l10n.posClotureVentesEspeces, attendu - session.fondInitial),
+                    ligne(l10n.posClotureFond, parType[TypesMouvementCaisse.fondInitial] ?? 0),
+                    // Toutes les espèces entrées et sorties du tiroir depuis l'ouverture, par type.
+                    for (final MapEntry(key: type, value: v) in parType.entries)
+                      if (type != TypesMouvementCaisse.fondInitial && v.abs() >= 0.005) ...[
+                        Divider(height: 1, color: c.borderSubtle),
+                        ligne(libelleTypeMouvementCaisse(l10n, type), v),
+                      ],
                     Divider(height: 1, color: c.borderDefault),
                     ligne(l10n.posClotureTheorique, attendu, total: true),
                   ],
                 ),
               ),
+              if (attendu < -0.005)
+                DsNote(
+                  key: const ValueKey('cloture_negatif'),
+                  ton: DsBadgeTon.avertissement,
+                  icone: LucideIcons.triangleAlert,
+                  texte: l10n.posClotureNegatif,
+                ),
               DsFormRow(
                 libelle: l10n.posClotureReel,
                 obligatoire: true,

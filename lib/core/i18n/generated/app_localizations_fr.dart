@@ -378,7 +378,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get produitsColPrixAchat => 'Prix d\'achat';
 
   @override
-  String get produitsColPrixVente => 'Prix de vente';
+  String get produitsColPrixVente => 'Prix de vente HT';
 
   @override
   String get produitsColStock => 'Stock';
@@ -396,7 +396,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get produitChampPrixAchat => 'Prix d\'achat';
 
   @override
-  String get produitChampPrixVente => 'Prix de vente';
+  String get produitChampPrixVente => 'Prix de vente HT';
 
   @override
   String get produitChampUnite => 'Unité';
@@ -3725,7 +3725,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get prdAchat => 'Achat';
 
   @override
-  String get prdVente => 'Vente';
+  String get prdVente => 'Vente HT';
 
   @override
   String get prdMarge => 'Marge';
@@ -7626,4 +7626,14 @@ class AppLocalizationsFr extends AppLocalizations {
   String rechercheGlobaleAucun(String texte) {
     return 'Aucun résultat pour « $texte »';
   }
+
+  @override
+  String get prdPrixTtc => 'Prix de vente TTC';
+
+  @override
+  String get prdVenteTtc => 'Vente TTC';
+
+  @override
+  String get posClotureNegatif =>
+      'Solde théorique négatif : il est sorti de cette caisse plus d\'espèces qu\'il n\'en est entré depuis l\'ouverture (voir le détail ci-dessus). Une caisse ne peut pas contenir moins de 0 : comptez les espèces réellement présentes (0 si le tiroir est vide), l\'écart sera enregistré comme manquant.';
 }

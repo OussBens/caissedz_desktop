@@ -810,7 +810,7 @@ abstract class AppLocalizations {
   /// No description provided for @produitsColPrixVente.
   ///
   /// In fr, this message translates to:
-  /// **'Prix de vente'**
+  /// **'Prix de vente HT'**
   String get produitsColPrixVente;
 
   /// No description provided for @produitsColStock.
@@ -846,7 +846,7 @@ abstract class AppLocalizations {
   /// No description provided for @produitChampPrixVente.
   ///
   /// In fr, this message translates to:
-  /// **'Prix de vente'**
+  /// **'Prix de vente HT'**
   String get produitChampPrixVente;
 
   /// No description provided for @produitChampUnite.
@@ -7098,7 +7098,7 @@ abstract class AppLocalizations {
   /// No description provided for @prdVente.
   ///
   /// In fr, this message translates to:
-  /// **'Vente'**
+  /// **'Vente HT'**
   String get prdVente;
 
   /// No description provided for @prdMarge.
@@ -14462,6 +14462,24 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Aucun résultat pour « {texte} »'**
   String rechercheGlobaleAucun(String texte);
+
+  /// No description provided for @prdPrixTtc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix de vente TTC'**
+  String get prdPrixTtc;
+
+  /// No description provided for @prdVenteTtc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vente TTC'**
+  String get prdVenteTtc;
+
+  /// No description provided for @posClotureNegatif.
+  ///
+  /// In fr, this message translates to:
+  /// **'Solde théorique négatif : il est sorti de cette caisse plus d\'espèces qu\'il n\'en est entré depuis l\'ouverture (voir le détail ci-dessus). Une caisse ne peut pas contenir moins de 0 : comptez les espèces réellement présentes (0 si le tiroir est vide), l\'écart sera enregistré comme manquant.'**
+  String get posClotureNegatif;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

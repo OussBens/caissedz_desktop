@@ -4,7 +4,9 @@ import 'package:caissedz_desktop/application/catalogue_service.dart';
 import 'package:caissedz_desktop/application/stock_service.dart';
 import 'package:caissedz_desktop/application/vente_service.dart';
 import 'package:caissedz_desktop/core/design_system/design_system.dart';
+import 'package:caissedz_desktop/data/parametre_repository.dart';
 import 'package:caissedz_desktop/data/stock_repository.dart';
+import 'package:caissedz_desktop/domain/fiscalite.dart';
 import 'package:caissedz_desktop/domain/models/produit.dart';
 import 'package:caissedz_desktop/features/caisse/pos_controller.dart';
 import 'package:caissedz_desktop/features/produits/produits_providers.dart';
@@ -43,6 +45,7 @@ void main() {
         sousCategorieCode: 'SC0000',
         prixAchat: 80,
         prixVente: 100,
+        tvaPct: 0, // exonéré : prix TTC = prix HT
       ),
     );
     eau = await cat.creerProduit(
@@ -53,6 +56,7 @@ void main() {
         sousCategorieCode: 'SC0000',
         prixAchat: 20,
         prixVente: 30,
+        tvaPct: 0, // exonéré : prix TTC = prix HT
       ),
     );
     await cat.creerColis(
@@ -96,6 +100,31 @@ void main() {
     ctrl.fermerPanier(4);
     expect(c.read(posControllerProvider).paniers.length, 4);
     await expectLater(ctrl.ajouter(eau), throwsA(isA<PosException>()), reason: 'eau : stock 0');
+  });
+
+  test('prix de vente HT : la caisse applique le TTC (HT + TVA), sans TVA au régime IFU', () async {
+    final db = c.read(appDatabaseProvider).db;
+    final cafe = await CatalogueService(db, utilisateurCode: 'USR0000').creerProduit(
+      const Produit(
+        code: '',
+        designation: 'Café',
+        categorieCode: 'CATE0000',
+        sousCategorieCode: 'SC0000',
+        prixVente: 100,
+        tvaPct: 19,
+        service: true,
+      ),
+    );
+    await c.read(parametresVenteProvider.future);
+    final ctrl = c.read(posControllerProvider.notifier);
+    await ctrl.ajouter(cafe);
+    expect(c.read(posControllerProvider).panier.lignes.single.prixUnitaire, 119);
+    ctrl.retirerLigne(0);
+    await ParametreRepository(db).ecrire(Fiscalite.cleRegime, RegimesFiscaux.ifu);
+    c.invalidate(parametresVenteProvider);
+    await c.read(parametresVenteProvider.future);
+    await ctrl.ajouter(cafe);
+    expect(c.read(posControllerProvider).panier.lignes.single.prixUnitaire, 100);
   });
 
   test('scan : code-barres produit, colis, code produit, QR, inconnu', () async {

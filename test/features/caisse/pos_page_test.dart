@@ -28,6 +28,7 @@ Future<void> _donnees(ProviderContainer c) async {
       sousCategorieCode: 'SC0000',
       prixAchat: 80,
       prixVente: 100,
+      tvaPct: 0, // exonéré : prix TTC = prix HT
     ),
   );
   await cat.creerProduit(
@@ -38,6 +39,7 @@ Future<void> _donnees(ProviderContainer c) async {
       sousCategorieCode: 'SC0000',
       prixAchat: 20,
       prixVente: 30,
+      tvaPct: 0, // exonéré : prix TTC = prix HT
     ),
   );
   await cat.creerColis(Colis(code: '', produitCode: lait.code, designation: 'Pack 6', quantite: 6, prixVente: 550));

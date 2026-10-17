@@ -8,8 +8,11 @@ import '../../domain/models/produit.dart';
 
 /// Une étiquette à imprimer.
 class Etiquette {
-  const Etiquette({required this.produit, required this.quantite, this.prixAffiche = true, this.qr = false});
+  const Etiquette({required this.produit, required this.quantite, this.prixAffiche = true, this.qr = false, this.prix});
   final Produit produit;
+
+  /// Prix affiché (TTC) ; à défaut, le prix de vente du produit.
+  final double? prix;
   final int quantite;
   final bool prixAffiche;
   final bool qr;
@@ -53,7 +56,7 @@ class EtiquettesPdf {
           ),
           if (e.prixAffiche)
             pw.Text(
-              formaterPrix(p.prixVente, devise),
+              formaterPrix(e.prix ?? p.prixVente, devise),
               style: pw.TextStyle(fontSize: 9, fontWeight: pw.FontWeight.bold),
             ),
         ],

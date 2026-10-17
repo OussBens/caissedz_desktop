@@ -129,7 +129,8 @@ class _GestionCaissePageState extends ConsumerState<GestionCaissePage> {
                             : (utilisateurs[ouvertes[c.code]!.utilisateurCode] ?? ouvertes[c.code]!.utilisateurCode),
                         solde: solde(c),
                         devise: devise,
-                        onOuvrir: () => afficherOuvertureCaisse(context, ref, caisseCode: c.code),
+                        // Le coffre ne s'ouvre pas : il reçoit les espèces à chaque clôture.
+                        onOuvrir: c.coffre ? null : () => afficherOuvertureCaisse(context, ref, caisseCode: c.code),
                         onCloturer: () =>
                             afficherClotureSession(context, ref, nomCaisse: c.nom, sessionCible: ouvertes[c.code]),
                         onMouvement: () => afficherMouvementManuel(context, ref, caisseCode: c.code),

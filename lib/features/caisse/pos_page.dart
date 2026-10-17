@@ -293,7 +293,12 @@ class _PosPageState extends ConsumerState<PosPage> {
     if (r == null || !mounted) return;
     ctrl.prixLigne(index, r.prix);
     if (r.catalogue) {
-      await ref.read(catalogueServiceProvider).modifierProduit(l.produit.copyWith(prixVente: r.prix));
+      await ref
+          .read(catalogueServiceProvider)
+          .modifierProduit(
+            // Prix saisi TTC ; le prix de vente du produit est HT.
+            l.produit.copyWith(prixVente: ref.read(prixHtProvider)(l.produit, r.prix)),
+          );
       ref.read(catalogueVersionProvider.notifier).incrementer();
     }
     if (!mounted) return;
@@ -669,7 +674,7 @@ class _PosPageState extends ConsumerState<PosPage> {
               key: ValueKey('tuile_${p.code}'),
               nom: p.designation,
               code: p.code,
-              prix: p.prixVente,
+              prix: ref.read(prixTtcProvider)(p),
               stock: stocks[p.code] ?? 0,
               categorie: nomsCategories[p.categorieCode],
               image: imageProduit(p.image),

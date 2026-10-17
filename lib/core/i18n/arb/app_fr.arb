@@ -153,13 +153,13 @@
   "produitsColCodeBarres": "Code-barres",
   "produitsColCategorie": "Catégorie",
   "produitsColPrixAchat": "Prix d'achat",
-  "produitsColPrixVente": "Prix de vente",
+  "produitsColPrixVente": "Prix de vente HT",
   "produitsColStock": "Stock",
   "produitsAucun": "Aucun produit. Créez-en un ou importez un fichier Excel.",
   "produitModifier": "Modifier le produit",
   "produitChampSousCategorie": "Sous-catégorie",
   "produitChampPrixAchat": "Prix d'achat",
-  "produitChampPrixVente": "Prix de vente",
+  "produitChampPrixVente": "Prix de vente HT",
   "produitChampUnite": "Unité",
   "produitErreurDesignation": "La désignation est obligatoire.",
   "produitErreurCodeBarres": "Code-barres invalide.",
@@ -1978,7 +1978,7 @@
   "prdDescription": "Catalogue, catégories, remises et packs",
   "prdOngletSousCategories": "Sous-catégories",
   "prdAchat": "Achat",
-  "prdVente": "Vente",
+  "prdVente": "Vente HT",
   "prdMarge": "Marge",
   "prdMarque": "Marque",
   "prdMarqueIndice": "Ex. Elio",
@@ -3942,5 +3942,8 @@
         "type": "String"
       }
     }
-  }
+  },
+  "prdPrixTtc": "Prix de vente TTC",
+  "prdVenteTtc": "Vente TTC",
+  "posClotureNegatif": "Solde théorique négatif : il est sorti de cette caisse plus d'espèces qu'il n'en est entré depuis l'ouverture (voir le détail ci-dessus). Une caisse ne peut pas contenir moins de 0 : comptez les espèces réellement présentes (0 si le tiroir est vide), l'écart sera enregistré comme manquant."
 }

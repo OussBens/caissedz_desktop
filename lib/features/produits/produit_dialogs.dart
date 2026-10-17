@@ -180,6 +180,12 @@ class _DetailProduit extends ConsumerWidget {
                 suffixe: devise,
                 icone: LucideIcons.tag,
               ),
+              DsStatItem(
+                libelle: l10n.prdPrixTtc,
+                valeur: f2(ref.read(prixTtcProvider)(p)),
+                suffixe: devise,
+                icone: LucideIcons.receipt,
+              ),
               if (voirAchat)
                 DsStatItem(
                   libelle: l10n.prdMarge,
@@ -257,7 +263,7 @@ class _DetailProduit extends ConsumerWidget {
               final carte = DsBarcodeCard(
                 valeur: p.codeBarres,
                 nom: p.designation,
-                prix: p.prixVente,
+                prix: ref.read(prixTtcProvider)(p),
                 devise: devise,
                 compact: true,
                 onImprimer: onEtiquette == null ? null : () => fermerPuis(onEtiquette),
@@ -385,7 +391,7 @@ class _CodeBarreDialogState extends ConsumerState<_CodeBarreDialog> {
     final p = await _produitAJour();
     if (p == null) return null;
     final devise = ref.read(deviseProvider);
-    final etiquettes = [Etiquette(produit: p, quantite: _n)];
+    final etiquettes = [Etiquette(produit: p, quantite: _n, prix: ref.read(prixTtcProvider)(p))];
     return switch (_format) {
       FormatEtiquette.a4 => EtiquettesPdf(largeurMm: 38, hauteurMm: 21, devise: devise).plancheA4(etiquettes),
       FormatEtiquette.rouleau40 => EtiquettesPdf(largeurMm: 40, hauteurMm: 30, devise: devise).rouleau(etiquettes),
@@ -467,7 +473,7 @@ class _CodeBarreDialogState extends ConsumerState<_CodeBarreDialog> {
     final apercu = DsBarcodeCard(
       valeur: v.isEmpty ? null : v,
       nom: widget.produit.designation,
-      prix: widget.produit.prixVente,
+      prix: ref.read(prixTtcProvider)(widget.produit),
       devise: devise,
       onGenerer: _generer,
     );

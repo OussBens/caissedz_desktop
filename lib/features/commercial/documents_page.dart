@@ -490,7 +490,7 @@ class _DocumentFormState extends ConsumerState<_DocumentForm> {
       // Produit ajouté : proposé au prix de vente TTC (le sélecteur part du prix d'achat).
       onLignes: (ls) => setState(() {
         for (final l in ls) {
-          if (!_lignes.contains(l)) l.prix = l.produit.prixVente;
+          if (!_lignes.contains(l)) l.prix = ref.read(prixTtcProvider)(l.produit);
         }
         _lignes = ls;
       }),

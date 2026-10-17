@@ -10,6 +10,7 @@ import '../../core/i18n/generated/app_localizations.dart';
 import '../../domain/calculs_prix.dart';
 import '../../domain/code_generator.dart';
 import '../../domain/codes_barres.dart';
+import '../../domain/fiscalite.dart';
 import '../../domain/models/produit.dart';
 import '../../domain/models/stock.dart';
 import '../../domain/models/tiers.dart';
@@ -260,6 +261,11 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
 
   double get _a => _d(_achat.text);
   double get _m => _d(_marge.text);
+
+  /// Taux de TVA appliqué au prix de vente HT (IFU : sans TVA).
+  double get _tauxTva =>
+      Fiscalite.taux(_tva, ref.watch(parametresVenteProvider).value?.regimeFiscal ?? RegimesFiscaux.reel);
+
   double get _vente =>
       _modeMarge == '%' ? CalculsPrix.prixVenteDepuisMarge(_a, _m) : CalculsPrix.prixVenteDepuisMontant(_a, _m);
   bool get _sousAchat => _a > 0 && _vente < _a;
@@ -796,6 +802,17 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
         child: DsTextField(
           key: ValueKey('produit_vente_${f2(_vente)}'),
           valeurInitiale: f2(_vente),
+          suffixeTexte: devise,
+          actif: false,
+        ),
+      ),
+      DsFormRow(
+        libelle: l10n.prdPrixTtc,
+        largeurLibelle: _lw,
+        aide: '${l10n.prdTva} ${_nb(_tauxTva)} %',
+        child: DsTextField(
+          key: ValueKey('produit_ttc_${f2(Fiscalite.ttc(_vente, _tauxTva))}'),
+          valeurInitiale: f2(Fiscalite.ttc(_vente, _tauxTva)),
           suffixeTexte: devise,
           actif: false,
         ),

@@ -377,7 +377,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get produitsColPrixAchat => 'Purchase price';
 
   @override
-  String get produitsColPrixVente => 'Selling price';
+  String get produitsColPrixVente => 'Selling price excl. VAT';
 
   @override
   String get produitsColStock => 'Stock';
@@ -395,7 +395,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get produitChampPrixAchat => 'Purchase price';
 
   @override
-  String get produitChampPrixVente => 'Selling price';
+  String get produitChampPrixVente => 'Selling price excl. VAT';
 
   @override
   String get produitChampUnite => 'Unit';
@@ -3716,7 +3716,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get prdAchat => 'Cost';
 
   @override
-  String get prdVente => 'Price';
+  String get prdVente => 'Price excl. VAT';
 
   @override
   String get prdMarge => 'Margin';
@@ -7611,4 +7611,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String rechercheGlobaleAucun(String texte) {
     return 'No results for “$texte”';
   }
+
+  @override
+  String get prdPrixTtc => 'Selling price incl. VAT';
+
+  @override
+  String get prdVenteTtc => 'Price incl. VAT';
+
+  @override
+  String get posClotureNegatif =>
+      'Negative expected balance: more cash left this till than came in since it was opened (see the breakdown above). A till cannot hold less than 0: count the cash actually there (0 if the drawer is empty); the difference is recorded as a shortage.';
 }

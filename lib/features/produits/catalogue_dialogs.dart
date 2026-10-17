@@ -446,7 +446,10 @@ class _RemiseFormState extends ConsumerState<_RemiseForm> {
 
   double get _v => nombreSaisi(_valeur.text);
   bool get _pct => _type == 'Pourcentage';
-  double _remise(Produit p) => _pct ? p.prixVente * (1 - _v / 100) : (p.prixVente - _v).clamp(0, double.infinity);
+  double _remise(Produit p) {
+    final prix = ref.read(prixTtcProvider)(p);
+    return _pct ? prix * (1 - _v / 100) : (prix - _v).clamp(0, double.infinity);
+  }
 
   Future<bool> _enregistrer() async {
     final l10n = AppLocalizations.of(context);
@@ -510,7 +513,7 @@ class _RemiseFormState extends ConsumerState<_RemiseForm> {
       prixVenteSelecteur: true,
       libelleTotal: l10n.prdRemiseAccordee,
       onEnregistrer: _enregistrer,
-      totalLigne: (l) => l.produit.prixVente - _remise(l.produit),
+      totalLigne: (l) => ref.read(prixTtcProvider)(l.produit) - _remise(l.produit),
       colonnes: [
         DsColonneLigne(
           id: 'code',
@@ -524,7 +527,7 @@ class _RemiseFormState extends ConsumerState<_RemiseForm> {
           id: 'vente',
           libelle: l10n.prdPrixNormal,
           numerique: true,
-          valeur: (l) => formaterMontant(l.produit.prixVente, devise),
+          valeur: (l) => formaterMontant(ref.read(prixTtcProvider)(l.produit), devise),
         ),
         DsColonneLigne(
           id: 'pr',
@@ -710,15 +713,15 @@ Future<void> afficherDetailRemise(BuildContext context, WidgetRef ref, Remise r,
                   id: 'vente',
                   libelle: l10n.prdPrixNormal,
                   numerique: true,
-                  valeur: (p) => p.prixVente,
-                  cellule: (_, p) => Text(formaterMontant(p.prixVente, devise)),
+                  valeur: (p) => ref.read(prixTtcProvider)(p),
+                  cellule: (_, p) => Text(formaterMontant(ref.read(prixTtcProvider)(p), devise)),
                 ),
                 DsColonne(
                   id: 'r',
                   libelle: l10n.prdPrixRemise,
                   numerique: true,
-                  valeur: (p) => r.appliquer(p.prixVente),
-                  cellule: (_, p) => Text(formaterMontant(r.appliquer(p.prixVente), devise)),
+                  valeur: (p) => r.appliquer(ref.read(prixTtcProvider)(p)),
+                  cellule: (_, p) => Text(formaterMontant(r.appliquer(ref.read(prixTtcProvider)(p)), devise)),
                 ),
               ],
             ),
@@ -766,9 +769,11 @@ Future<void> supprimerRemises(
 
 // ============================================================ Packs
 
-/// Valeur des composants vendus séparément.
-double valeurSeparee(Pack k, Map<String, Produit> produits) =>
-    k.lignes.fold(0.0, (s, l) => s + (produits[l.produitCode]?.prixVente ?? 0) * l.quantite);
+/// Valeur des composants vendus séparément, au [prix] TTC de chacun.
+double valeurSeparee(Pack k, Map<String, Produit> produits, double Function(Produit) prix) => k.lignes.fold(
+  0.0,
+  (s, l) => s + (produits[l.produitCode] == null ? 0 : prix(produits[l.produitCode]!)) * l.quantite,
+);
 
 /// Packs possibles selon le stock du composant le plus limitant.
 int packsPossibles(Pack k, Map<String, double> stocks) {
@@ -851,7 +856,7 @@ class _PackFormState extends ConsumerState<_PackForm> {
     final t = context.ds.typo;
     final devise = ref.watch(deviseProvider);
     final stocks = ref.watch(stocksProduitsProvider).value ?? const <String, double>{};
-    final valeur = _lignes.fold(0.0, (s, l) => s + l.quantite * l.produit.prixVente);
+    final valeur = _lignes.fold(0.0, (s, l) => s + l.quantite * ref.read(prixTtcProvider)(l.produit));
     final prix = nombreSaisi(_prix.text);
     final eco = valeur - prix;
     final dispo = _lignes.isEmpty
@@ -879,7 +884,7 @@ class _PackFormState extends ConsumerState<_PackForm> {
       titreSelecteur: l10n.prdComposantsPack,
       prixVenteSelecteur: true,
       onEnregistrer: _enregistrer,
-      totalLigne: (l) => l.quantite * l.produit.prixVente,
+      totalLigne: (l) => l.quantite * ref.read(prixTtcProvider)(l.produit),
       colonnes: [
         DsColonneLigne(
           id: 'code',
@@ -909,7 +914,7 @@ class _PackFormState extends ConsumerState<_PackForm> {
           id: 'vente',
           libelle: l10n.prdPrixUnitaire,
           numerique: true,
-          valeur: (l) => formaterMontant(l.produit.prixVente, devise),
+          valeur: (l) => formaterMontant(ref.read(prixTtcProvider)(l.produit), devise),
         ),
       ],
       entete: [
@@ -1011,7 +1016,7 @@ Future<void> afficherDetailPack(BuildContext context, WidgetRef ref, Pack k, {Vo
   final produits = {for (final p in await ref.read(produitsProvider.future)) p.code: p};
   final stocks = await ref.read(stocksProduitsProvider.future);
   if (!context.mounted) return;
-  final valeur = valeurSeparee(k, produits);
+  final valeur = valeurSeparee(k, produits, ref.read(prixTtcProvider));
   return afficherDetailEntite(
     context,
     DsEntityDetailDialog(
@@ -1073,7 +1078,9 @@ Future<void> afficherDetailPack(BuildContext context, WidgetRef ref, Pack k, {Vo
                 id: 'v',
                 libelle: l10n.prdValeur,
                 numerique: true,
-                valeur: (l) => (produits[l.produitCode]?.prixVente ?? 0) * l.quantite,
+                valeur: (l) =>
+                    (produits[l.produitCode] == null ? 0 : ref.read(prixTtcProvider)(produits[l.produitCode]!)) *
+                    l.quantite,
                 cellule: (_, l) =>
                     Text(formaterMontant((produits[l.produitCode]?.prixVente ?? 0) * l.quantite, devise)),
               ),

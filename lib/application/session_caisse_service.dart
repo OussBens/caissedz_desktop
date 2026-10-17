@@ -173,4 +173,11 @@ class SessionCaisseService {
     if (s == null) return 0;
     return CaisseRepository(db).especesSession(s.caisseCode, s.code);
   }
+
+  /// [especesAttendues] détaillées par type de mouvement (fond initial, ventes, versements, dépenses…).
+  Future<Map<String, double>> especesAttenduesParType(String sessionCode) async {
+    final s = await _repo.session(sessionCode);
+    if (s == null) return const {};
+    return CaisseRepository(db).especesSessionParType(s.caisseCode, s.code);
+  }
 }
