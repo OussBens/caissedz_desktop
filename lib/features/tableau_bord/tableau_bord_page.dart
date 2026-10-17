@@ -180,7 +180,7 @@ class _TableauBordPageState extends ConsumerState<TableauBordPage> {
     return PageModule(
       moduleId: 'tableau_bord',
       sousTitre: _onglet == 0
-          ? l10n.tableauBordDescription(formatDate.format(du), formatDate.format(au), jours)
+          ? l10n.tableauBordDescription(formatDate.format(au), formatDate.format(du), jours) // paramètres (au, du)
           : l10n.situationDescription,
       onglets: [l10n.tableauBordOnglet, l10n.situationOnglet],
       comptes: [null, SituationRepository.analyses.length],

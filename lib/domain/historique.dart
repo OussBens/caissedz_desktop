@@ -61,8 +61,12 @@ abstract final class ModulesHistorique {
     'remise': 'produits',
     'pack': 'produits',
     'vente': 'ventes',
+    'facture': 'ventes',
+    'document_client': 'documents',
+    'bon_livraison': 'documents',
     'retour': 'retours',
     'achat': 'entrees',
+    'commande_fournisseur': 'commandes_fournisseurs',
     'sortie_stock': 'sorties',
     'magasin': 'magasins',
     'transfert_stock': 'magasins',
@@ -93,6 +97,12 @@ abstract final class ModulesHistorique {
     'sous_categories': 'produits',
     'remises': 'produits',
     'packs': 'produits',
+    'factures': 'ventes',
+    'livraisons': 'documents',
+    'documents_Devis': 'documents',
+    'documents_Proforma': 'documents',
+    'documents_Commande': 'documents',
+    'commandes_fournisseurs': 'commandes_fournisseurs',
   };
 
   /// Identifiant du module (§5) auquel rattacher une ligne ; l'entité brute si elle est inconnue.
