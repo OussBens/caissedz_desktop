@@ -854,3 +854,6 @@ workflows et calculs » du projet.
   le menu des modules ; sélecteur de magasin retiré de la barre latérale.
 - ✅ Caisse, admin : produit en rupture ou quantité au-delà du stock du magasin de la caisse → si un autre magasin a
   assez de stock, proposition d'un transfert TRF du manque (le mieux pourvu) puis ajout au panier.
+- ✅ Logo de la boutique (Paramètres › Boutique) en tête des factures, avoirs, devis, proformas, commandes, BL et
+  tickets PDF ; la couleur des documents (bandeaux, en-têtes de tableau, traits) est la couleur la plus utilisée du
+  logo (`core/print/couleur_logo.dart`, assombrie si trop claire), violet du DS sans logo.

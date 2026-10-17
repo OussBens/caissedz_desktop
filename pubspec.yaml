@@ -39,6 +39,7 @@ dependencies:
   intl: ^0.20.3
 
   # Impression et exports
+  image: ^4.3.0
   pdf: ^3.11.0
   barcode: ^2.2.9
   printing: ^5.14.2

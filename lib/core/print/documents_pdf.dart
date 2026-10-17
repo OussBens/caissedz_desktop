@@ -123,9 +123,17 @@ class DocumentsPdf {
     this.police,
     this.policeGras,
     this.secours = const [],
+    this.logo,
+    this.couleur,
   });
 
   final LibellesTicket libelles;
+
+  /// Logo de la boutique (PNG / JPEG), en tête des documents ; `null` si aucun.
+  final Uint8List? logo;
+
+  /// Couleur des documents (ARGB, voir `couleurDominante`) ; `null` : violet du DS.
+  final int? couleur;
   final String devise;
   final pw.Font? police;
   final pw.Font? policeGras;
@@ -176,6 +184,14 @@ class DocumentsPdf {
           child: pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.stretch,
             children: [
+              if (_image() case final image?)
+                pw.Center(
+                  child: pw.Container(
+                    height: 36,
+                    margin: const pw.EdgeInsets.only(bottom: 4),
+                    child: pw.Image(image, fit: pw.BoxFit.contain),
+                  ),
+                ),
               pw.Center(child: textePdf(boutique.nom, style: _s(11, gras: true))),
               if (boutique.adresse.isNotEmpty) pw.Center(child: textePdf(boutique.adresse, style: _s(7))),
               if (boutique.telephone.isNotEmpty) pw.Center(child: textePdf(boutique.telephone, style: _s(7))),
@@ -436,12 +452,33 @@ class DocumentsPdf {
   }
 
   // Palette des documents A4, alignée sur les tokens du DS (primary violet700, encre ink900).
-  static const _accent = PdfColor.fromInt(0xFF7543DB);
-  static const _accentClair = PdfColor.fromInt(0xFFF4EFFF);
+  /// Violet du DS, quand la boutique n'a pas de logo (ou un logo sans couleur franche).
+  static const _violet = PdfColor.fromInt(0xFF7543DB);
+
+  /// Couleur des documents : la plus utilisée du logo, sinon le violet ; ses teintes claires pour les fonds.
+  PdfColor get _accent => couleur == null ? _violet : PdfColor.fromInt(couleur!);
+  PdfColor get _accentClair => _teinte(.08);
   static const _encre = PdfColor.fromInt(0xFF150A35);
   static const _attenue = PdfColor.fromInt(0xFF6B6385);
-  static const _trait = PdfColor.fromInt(0xFFE2DCF0);
-  static const _zebre = PdfColor.fromInt(0xFFFAF8FD);
+  PdfColor get _trait => _teinte(.18);
+  PdfColor get _zebre => _teinte(.03);
+
+  /// Logo décodé, `null` si absent ou illisible (le document s'imprime alors sans logo).
+  pw.ImageProvider? _image() {
+    if (logo == null || logo!.isEmpty) return null;
+    try {
+      return pw.MemoryImage(logo!);
+    } on Object {
+      return null;
+    }
+  }
+
+  /// [part] de la couleur des documents mêlée au blanc.
+  PdfColor _teinte(double part) {
+    final a = _accent;
+    return PdfColor(1 - (1 - a.red) * part, 1 - (1 - a.green) * part, 1 - (1 - a.blue) * part);
+  }
+
   static const _alerte = PdfColor.fromInt(0xFFFFF4E0);
   static const _alerteTrait = PdfColor.fromInt(0xFFE6A23C);
 
@@ -510,7 +547,7 @@ class DocumentsPdf {
     footer: (ctx) => pw.Container(
       margin: const pw.EdgeInsets.only(top: 10),
       padding: const pw.EdgeInsets.only(top: 6),
-      decoration: const pw.BoxDecoration(
+      decoration: pw.BoxDecoration(
         border: pw.Border(top: pw.BorderSide(color: _trait, width: 0.8)),
       ),
       child: pw.Row(
@@ -542,9 +579,9 @@ class DocumentsPdf {
                 ? pw.SizedBox()
                 : pw.Container(
                     padding: const pw.EdgeInsets.all(10),
-                    decoration: const pw.BoxDecoration(
+                    decoration: pw.BoxDecoration(
                       color: _accentClair,
-                      borderRadius: pw.BorderRadius.all(pw.Radius.circular(6)),
+                      borderRadius: const pw.BorderRadius.all(pw.Radius.circular(6)),
                     ),
                     child: pw.Column(
                       crossAxisAlignment: pw.CrossAxisAlignment.stretch,
@@ -598,6 +635,15 @@ class DocumentsPdf {
       pw.Row(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
+          if (_image() case final image?) ...[
+            pw.Container(
+              width: 64,
+              height: 64,
+              alignment: pw.Alignment.center,
+              child: pw.Image(image, fit: pw.BoxFit.contain),
+            ),
+            pw.SizedBox(width: 12),
+          ],
           pw.Expanded(
             child: pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -614,9 +660,9 @@ class DocumentsPdf {
             children: [
               pw.Container(
                 padding: const pw.EdgeInsets.symmetric(horizontal: 14, vertical: 7),
-                decoration: const pw.BoxDecoration(
+                decoration: pw.BoxDecoration(
                   color: _accent,
-                  borderRadius: pw.BorderRadius.all(pw.Radius.circular(6)),
+                  borderRadius: const pw.BorderRadius.all(pw.Radius.circular(6)),
                 ),
                 child: textePdf(titre.toUpperCase(), style: _c(13, gras: true, couleur: PdfColors.white)),
               ),
@@ -653,10 +699,10 @@ class DocumentsPdf {
               ? const pw.FlexColumnWidth(0.5)
               : const pw.IntrinsicColumnWidth(),
       },
-      border: const pw.TableBorder(bottom: pw.BorderSide(color: _trait, width: 0.8)),
+      border: pw.TableBorder(bottom: pw.BorderSide(color: _trait, width: 0.8)),
       children: [
         pw.TableRow(
-          decoration: const pw.BoxDecoration(color: _accent),
+          decoration: pw.BoxDecoration(color: _accent),
           children: [
             for (final (i, e) in entetes.indexed)
               pw.Container(
@@ -734,7 +780,7 @@ class DocumentsPdf {
 
   pw.Widget _enLettres(String libelle, String lettres) => pw.Container(
     padding: const pw.EdgeInsets.all(10),
-    decoration: const pw.BoxDecoration(color: _accentClair, borderRadius: pw.BorderRadius.all(pw.Radius.circular(6))),
+    decoration: pw.BoxDecoration(color: _accentClair, borderRadius: const pw.BorderRadius.all(pw.Radius.circular(6))),
     child: pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [

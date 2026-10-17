@@ -10,7 +10,6 @@ import '../../application/vente_service.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
 import '../../core/print/documents_pdf.dart';
-import '../../core/print/ticket_escpos.dart';
 import '../../data/boutique_repository.dart';
 import '../../data/client_repository.dart';
 import '../../data/documents_commerciaux_repository.dart';
@@ -191,13 +190,7 @@ Future<void> _imprimer(
   Future<Uint8List> Function(DocumentsPdf) faire,
 ) async {
   final arabe = Localizations.localeOf(context).languageCode == 'ar';
-  final pdf = DocumentsPdf(
-    libelles: arabe ? LibellesTicket.ar : LibellesTicket.fr,
-    devise: ref.read(deviseProvider),
-    police: await policePdf(arabe),
-    policeGras: await policePdf(arabe, gras: true),
-    secours: await policesSecoursPdf(arabe),
-  );
+  final pdf = await documentsPdf(ref, arabe: arabe);
   if (!context.mounted) return;
   await afficherApercuDocument(context, ref, titre: '$titre $nom', nom: nom, pdf: () => faire(pdf));
 }
