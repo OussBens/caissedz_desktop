@@ -196,6 +196,7 @@ Future<void> _imprimer(
     devise: ref.read(deviseProvider),
     police: await policePdf(arabe),
     policeGras: await policePdf(arabe, gras: true),
+    secours: await policesSecoursPdf(arabe),
   );
   if (!context.mounted) return;
   await afficherApercuDocument(context, ref, titre: '$titre $nom', nom: nom, pdf: () => faire(pdf));

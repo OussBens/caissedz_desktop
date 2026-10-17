@@ -195,6 +195,12 @@ Future<pw.Font?> policePdf(bool arabe, {bool gras = false}) async {
   }
 }
 
+/// Polices de secours de l'autre écriture (régulière et grasse) : Cairo sous une interface latine, Plus Jakarta
+/// Sans sous l'arabe, pour les noms et désignations saisis dans l'autre langue.
+Future<List<pw.Font>> policesSecoursPdf(bool arabe) async => [
+  for (final gras in [false, true]) ?await policePdf(!arabe, gras: gras),
+];
+
 /// Résultat de vente : monnaie, impression ticket (ESC/POS ou PDF), facture A4.
 Future<void> afficherResultatVente(BuildContext context, WidgetRef ref, Vente vente) async {
   final l10n = AppLocalizations.of(context);
@@ -221,11 +227,12 @@ Future<void> afficherResultatVente(BuildContext context, WidgetRef ref, Vente ve
         if (!context.mounted) return;
         afficherToast(context, titre: l10n.posImpressionOk);
       } else {
-        final police = await policePdf(arabe);
         final octets = await DocumentsPdf(
           libelles: libelles,
           devise: devise,
-          police: police,
+          police: await policePdf(arabe),
+          policeGras: await policePdf(arabe, gras: true),
+          secours: await policesSecoursPdf(arabe),
         ).ticket(vente, boutique: boutique, largeur: largeur, nomClient: nomClient);
         await Printing.layoutPdf(onLayout: (_) async => octets, name: 'ticket_${vente.code}.pdf');
       }
@@ -332,6 +339,7 @@ Future<void> imprimerFactureVente(BuildContext context, WidgetRef ref, Vente ven
       devise: devise,
       police: await policePdf(arabe),
       policeGras: await policePdf(arabe, gras: true),
+      secours: await policesSecoursPdf(arabe),
     );
     Future<Uint8List> octets() => pdf.facturesFiscales(
       [facture, ...avoirs],
@@ -447,6 +455,8 @@ class _ApercuTicketState extends ConsumerState<_ApercuTicket> {
     libelles: _libelles,
     devise: ref.read(deviseProvider),
     police: await policePdf(_arabe),
+    policeGras: await policePdf(_arabe, gras: true),
+    secours: await policesSecoursPdf(_arabe),
   ).ticket(widget.vente, boutique: widget.boutique, largeur: _largeur, nomClient: widget.nomClient);
 
   Future<void> _imprimer() async {

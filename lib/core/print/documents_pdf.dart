@@ -6,6 +6,7 @@ import 'package:pdf/widgets.dart' as pw;
 import '../../domain/models/boutique.dart';
 import '../../domain/models/facture.dart';
 import '../../domain/models/vente.dart';
+import 'texte_pdf.dart';
 import 'ticket_escpos.dart';
 
 /// Mentions de la facture fiscale et de l'avoir (FR / AR).
@@ -116,15 +117,26 @@ class LibellesFacture {
 /// [police] : police TTF embarquée (Cairo pour l'arabe, Plus Jakarta Sans sinon) ;
 /// sans police fournie, la police par défaut du PDF est utilisée (latin seulement).
 class DocumentsPdf {
-  const DocumentsPdf({required this.libelles, this.devise = 'DA', this.police, this.policeGras});
+  const DocumentsPdf({
+    required this.libelles,
+    this.devise = 'DA',
+    this.police,
+    this.policeGras,
+    this.secours = const [],
+  });
 
   final LibellesTicket libelles;
   final String devise;
   final pw.Font? police;
   final pw.Font? policeGras;
 
+  /// Polices de secours (Cairo sous une interface latine, latine sous l'arabe) : un nom de client en arabe
+  /// s'affiche dans un document en français, et inversement.
+  final List<pw.Font> secours;
+
   pw.TextStyle _s(double taille, {bool gras = false}) => pw.TextStyle(
     font: gras ? (policeGras ?? police) : police,
+    fontFallback: secours,
     fontSize: taille,
     fontWeight: gras ? pw.FontWeight.bold : pw.FontWeight.normal,
   );
@@ -136,8 +148,8 @@ class DocumentsPdf {
   pw.Widget _ligneCle(String cle, String valeur, {double taille = 8, bool gras = false}) => pw.Row(
     mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
     children: [
-      pw.Text(cle, style: _s(taille, gras: gras)),
-      pw.Text(valeur, style: _s(taille, gras: gras)),
+      textePdf(cle, style: _s(taille, gras: gras)),
+      textePdf(valeur, style: _s(taille, gras: gras)),
     ],
   );
 
@@ -164,17 +176,17 @@ class DocumentsPdf {
           child: pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.stretch,
             children: [
-              pw.Center(child: pw.Text(boutique.nom, style: _s(11, gras: true))),
-              if (boutique.adresse.isNotEmpty) pw.Center(child: pw.Text(boutique.adresse, style: _s(7))),
-              if (boutique.telephone.isNotEmpty) pw.Center(child: pw.Text(boutique.telephone, style: _s(7))),
+              pw.Center(child: textePdf(boutique.nom, style: _s(11, gras: true))),
+              if (boutique.adresse.isNotEmpty) pw.Center(child: textePdf(boutique.adresse, style: _s(7))),
+              if (boutique.telephone.isNotEmpty) pw.Center(child: textePdf(boutique.telephone, style: _s(7))),
               pw.Divider(thickness: 0.5),
-              if (v.statut == 'Annulée') pw.Center(child: pw.Text(libelles.annule, style: _s(9, gras: true))),
-              pw.Text('${libelles.ticket} ${v.code}', style: _s(8)),
-              pw.Text('${libelles.date} ${_date(v.date)}', style: _s(8)),
-              if (nomClient != null) pw.Text('${libelles.client} $nomClient', style: _s(8)),
+              if (v.statut == 'Annulée') pw.Center(child: textePdf(libelles.annule, style: _s(9, gras: true))),
+              textePdf('${libelles.ticket} ${v.code}', style: _s(8)),
+              textePdf('${libelles.date} ${_date(v.date)}', style: _s(8)),
+              if (nomClient != null) textePdf('${libelles.client} $nomClient', style: _s(8)),
               pw.Divider(thickness: 0.5),
               for (final l in v.lignes) ...[
-                pw.Text(l.designation, style: _s(8)),
+                textePdf(l.designation, style: _s(8)),
                 _ligneCle('  ${_q(l.quantite)} x ${l.prixUnitaire.toStringAsFixed(2)}', l.total.toStringAsFixed(2)),
               ],
               pw.Divider(thickness: 0.5),
@@ -198,7 +210,7 @@ class DocumentsPdf {
               if (v.pointsGagnes > 0 || v.pointsUtilises > 0)
                 _ligneCle(libelles.points, '+${v.pointsGagnes} / -${v.pointsUtilises}'),
               pw.Divider(thickness: 0.5),
-              pw.Center(child: pw.Text(libelles.merci, style: _s(8))),
+              pw.Center(child: textePdf(libelles.merci, style: _s(8))),
               pw.SizedBox(height: 4),
               pw.Center(
                 child: pw.BarcodeWidget(
@@ -209,7 +221,7 @@ class DocumentsPdf {
                   textStyle: _s(6),
                 ),
               ),
-              pw.Center(child: pw.Text(v.hash.substring(0, 16), style: _s(6))),
+              pw.Center(child: textePdf(v.hash.substring(0, 16), style: _s(6))),
             ],
           ),
         ),
@@ -244,19 +256,19 @@ class DocumentsPdf {
                     pw.Column(
                       crossAxisAlignment: pw.CrossAxisAlignment.start,
                       children: [
-                        pw.Text(boutique.nom, style: _s(16, gras: true)),
-                        if (boutique.adresse.isNotEmpty) pw.Text(boutique.adresse, style: _s(9)),
-                        if (boutique.telephone.isNotEmpty) pw.Text('Tél. ${boutique.telephone}', style: _s(9)),
-                        if (boutique.rc.isNotEmpty) pw.Text('RC ${boutique.rc}', style: _s(9)),
-                        if (boutique.nif.isNotEmpty) pw.Text('NIF ${boutique.nif}', style: _s(9)),
+                        textePdf(boutique.nom, style: _s(16, gras: true)),
+                        if (boutique.adresse.isNotEmpty) textePdf(boutique.adresse, style: _s(9)),
+                        if (boutique.telephone.isNotEmpty) textePdf('Tél. ${boutique.telephone}', style: _s(9)),
+                        if (boutique.rc.isNotEmpty) textePdf('RC ${boutique.rc}', style: _s(9)),
+                        if (boutique.nif.isNotEmpty) textePdf('NIF ${boutique.nif}', style: _s(9)),
                       ],
                     ),
                     pw.Column(
                       crossAxisAlignment: pw.CrossAxisAlignment.end,
                       children: [
-                        pw.Text(titre, style: _s(18, gras: true)),
-                        pw.Text('N° ${v.code}', style: _s(10)),
-                        pw.Text(_date(v.date), style: _s(10)),
+                        textePdf(titre, style: _s(18, gras: true)),
+                        textePdf('N° ${v.code}', style: _s(10)),
+                        textePdf(_date(v.date), style: _s(10)),
                       ],
                     ),
                   ],
@@ -268,8 +280,8 @@ class DocumentsPdf {
                   child: pw.Column(
                     crossAxisAlignment: pw.CrossAxisAlignment.start,
                     children: [
-                      pw.Text('${libelles.client} : $nomClient', style: _s(10, gras: true)),
-                      if (adresseClient != null && adresseClient.isNotEmpty) pw.Text(adresseClient, style: _s(9)),
+                      textePdf('${libelles.client} : $nomClient', style: _s(10, gras: true)),
+                      if (adresseClient != null && adresseClient.isNotEmpty) textePdf(adresseClient, style: _s(9)),
                     ],
                   ),
                 ),
@@ -317,7 +329,7 @@ class DocumentsPdf {
                   ],
                 ),
                 pw.SizedBox(height: 24),
-                pw.Text('${libelles.ticket} ${v.code} · SHA-256 ${v.hash}', style: _s(7)),
+                textePdf('${libelles.ticket} ${v.code} · SHA-256 ${v.hash}', style: _s(7)),
               ],
             ),
           ),
@@ -477,7 +489,7 @@ class DocumentsPdf {
                   angle: 0.6,
                   child: pw.Opacity(
                     opacity: 0.08,
-                    child: pw.Text(filigrane.toUpperCase(), style: _c(72, gras: true, couleur: _accent)),
+                    child: textePdf(filigrane.toUpperCase(), style: _c(72, gras: true, couleur: _accent)),
                   ),
                 ),
               ),
@@ -490,8 +502,8 @@ class DocumentsPdf {
             child: pw.Row(
               mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
               children: [
-                pw.Text(emetteur.nom, style: _c(9, gras: true, couleur: _accent)),
-                pw.Text('$titre  N° $numero', style: _c(9, gras: true)),
+                textePdf(emetteur.nom, style: _c(9, gras: true, couleur: _accent)),
+                textePdf('$titre  N° $numero', style: _c(9, gras: true)),
               ],
             ),
           ),
@@ -508,16 +520,16 @@ class DocumentsPdf {
             child: pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
-                pw.Text(
+                textePdf(
                   [emetteur.nom, ..._lignesIdentite(emetteur).skip(emetteur.adresse.isEmpty ? 0 : 1)].join('  ·  '),
                   style: _c(6.5, couleur: _attenue),
                 ),
-                if (pied != null) pw.Text(pied, style: _c(5.5, couleur: _attenue)),
+                if (pied != null) textePdf(pied, style: _c(5.5, couleur: _attenue)),
               ],
             ),
           ),
           pw.SizedBox(width: 12),
-          pw.Text('$numero  ·  ${ctx.pageNumber} / ${ctx.pagesCount}', style: _c(7, gras: true, couleur: _attenue)),
+          textePdf('$numero  ·  ${ctx.pageNumber} / ${ctx.pagesCount}', style: _c(7, gras: true, couleur: _attenue)),
         ],
       ),
     ),
@@ -544,9 +556,9 @@ class DocumentsPdf {
                               children: [
                                 pw.SizedBox(
                                   width: 95,
-                                  child: pw.Text(cle, style: _c(8, couleur: _attenue)),
+                                  child: textePdf(cle, style: _c(8, couleur: _attenue)),
                                 ),
-                                pw.Expanded(child: pw.Text(valeur, style: _c(8.5, gras: true))),
+                                pw.Expanded(child: textePdf(valeur, style: _c(8.5, gras: true))),
                               ],
                             ),
                           ),
@@ -565,10 +577,10 @@ class DocumentsPdf {
               child: pw.Column(
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: [
-                  pw.Text(libelleTiers.toUpperCase(), style: _c(7, gras: true, couleur: _accent)),
+                  textePdf(libelleTiers.toUpperCase(), style: _c(7, gras: true, couleur: _accent)),
                   pw.SizedBox(height: 3),
-                  pw.Text(tiers.nom, style: _c(11.5, gras: true)),
-                  for (final l in _lignesIdentite(tiers)) pw.Text(l, style: _c(8, couleur: _attenue)),
+                  textePdf(tiers.nom, style: _c(11.5, gras: true)),
+                  for (final l in _lignesIdentite(tiers)) textePdf(l, style: _c(8, couleur: _attenue)),
                 ],
               ),
             ),
@@ -590,9 +602,9 @@ class DocumentsPdf {
             child: pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
-                pw.Text(emetteur.nom, style: _c(17, gras: true, couleur: _accent)),
+                textePdf(emetteur.nom, style: _c(17, gras: true, couleur: _accent)),
                 pw.SizedBox(height: 3),
-                for (final l in _lignesIdentite(emetteur)) pw.Text(l, style: _c(8, couleur: _attenue)),
+                for (final l in _lignesIdentite(emetteur)) textePdf(l, style: _c(8, couleur: _attenue)),
               ],
             ),
           ),
@@ -606,11 +618,11 @@ class DocumentsPdf {
                   color: _accent,
                   borderRadius: pw.BorderRadius.all(pw.Radius.circular(6)),
                 ),
-                child: pw.Text(titre.toUpperCase(), style: _c(13, gras: true, couleur: PdfColors.white)),
+                child: textePdf(titre.toUpperCase(), style: _c(13, gras: true, couleur: PdfColors.white)),
               ),
               pw.SizedBox(height: 6),
-              pw.Text('N° $numero', style: _c(11, gras: true)),
-              pw.Text(_date(date), style: _c(8.5, couleur: _attenue)),
+              textePdf('N° $numero', style: _c(11, gras: true)),
+              textePdf(_date(date), style: _c(8.5, couleur: _attenue)),
             ],
           ),
         ],
@@ -650,7 +662,7 @@ class DocumentsPdf {
               pw.Container(
                 padding: pad,
                 alignment: align(i),
-                child: pw.Text(e, style: _c(compact ? 7 : 7.5, gras: true, couleur: PdfColors.white)),
+                child: textePdf(e, style: _c(compact ? 7 : 7.5, gras: true, couleur: PdfColors.white)),
               ),
           ],
         ),
@@ -662,7 +674,7 @@ class DocumentsPdf {
                 pw.Container(
                   padding: pad,
                   alignment: align(i),
-                  child: pw.Text(v, style: _c(compact ? 7.5 : 8.5, gras: i == colonneLarge)),
+                  child: textePdf(v, style: _c(compact ? 7.5 : 8.5, gras: i == colonneLarge)),
                 ),
             ],
           ),
@@ -689,8 +701,8 @@ class DocumentsPdf {
                     child: pw.Row(
                       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                       children: [
-                        pw.Text(cle, style: _c(10, gras: true, couleur: PdfColors.white)),
-                        pw.Text(valeur, style: _c(11, gras: true, couleur: PdfColors.white)),
+                        textePdf(cle, style: _c(10, gras: true, couleur: PdfColors.white)),
+                        textePdf(valeur, style: _c(11, gras: true, couleur: PdfColors.white)),
                       ],
                     ),
                   )
@@ -699,8 +711,8 @@ class DocumentsPdf {
                     child: pw.Row(
                       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                       children: [
-                        pw.Text(cle, style: _c(8.5, couleur: _attenue)),
-                        pw.Text(valeur, style: _c(9, gras: true)),
+                        textePdf(cle, style: _c(8.5, couleur: _attenue)),
+                        textePdf(valeur, style: _c(9, gras: true)),
                       ],
                     ),
                   ),
@@ -710,8 +722,8 @@ class DocumentsPdf {
               child: pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
-                  pw.Text(cle, style: _c(8.5, gras: true)),
-                  pw.Text(valeur, style: _c(9, gras: true, couleur: _accent)),
+                  textePdf(cle, style: _c(8.5, gras: true)),
+                  textePdf(valeur, style: _c(9, gras: true, couleur: _accent)),
                 ],
               ),
             ),
@@ -726,9 +738,9 @@ class DocumentsPdf {
     child: pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        pw.Text(libelle, style: _c(7.5, couleur: _attenue)),
+        textePdf(libelle, style: _c(7.5, couleur: _attenue)),
         pw.SizedBox(height: 2),
-        pw.Text(lettres, style: _c(9.5, gras: true)),
+        textePdf(lettres, style: _c(9.5, gras: true)),
       ],
     ),
   );
@@ -740,7 +752,7 @@ class DocumentsPdf {
       border: pw.Border.all(color: alerte ? _alerteTrait : _trait, width: 0.8),
       borderRadius: const pw.BorderRadius.all(pw.Radius.circular(6)),
     ),
-    child: pw.Text(texte, style: _c(8.5, gras: alerte)),
+    child: textePdf(texte, style: _c(8.5, gras: alerte)),
   );
 
   /// Document commercial A4 (devis, proforma, bon de commande, bon de livraison, commande fournisseur) : en-tête
@@ -803,7 +815,7 @@ class DocumentsPdf {
                       border: pw.Border.all(color: _trait, width: 0.8),
                       borderRadius: const pw.BorderRadius.all(pw.Radius.circular(6)),
                     ),
-                    child: pw.Text(sig, style: _c(8, gras: true, couleur: _attenue)),
+                    child: textePdf(sig, style: _c(8, gras: true, couleur: _attenue)),
                   ),
               ],
             ),

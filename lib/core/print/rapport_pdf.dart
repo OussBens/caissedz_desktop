@@ -4,12 +4,16 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
 import '../../domain/models/rapport.dart';
+import 'texte_pdf.dart';
 
 /// Rapport tabulaire en PDF A4 paysage (aperçu et impression « normale »).
 class RapportPdf {
-  const RapportPdf({this.police, this.policeGras, this.rtl = false, this.devise = 'DA'});
+  const RapportPdf({this.police, this.policeGras, this.rtl = false, this.devise = 'DA', this.secours = const []});
   final pw.Font? police;
   final pw.Font? policeGras;
+
+  /// Polices de secours pour l'autre écriture (arabe / latin) dans les cellules.
+  final List<pw.Font> secours;
   final bool rtl;
   final String devise;
 
@@ -37,11 +41,18 @@ class RapportPdf {
 
   Future<Uint8List> generer(Rapport r, {required String boutique, String? periode, DateTime? genereLe}) async {
     final doc = pw.Document();
-    final style = pw.TextStyle(font: police, fontSize: 8);
-    final gras = pw.TextStyle(font: policeGras ?? police, fontSize: 8, fontWeight: pw.FontWeight.bold);
+    final style = pw.TextStyle(fontFallback: secours, font: police, fontSize: 8);
+    final gras = pw.TextStyle(
+      fontFallback: secours,
+      font: policeGras ?? police,
+      fontSize: 8,
+      fontWeight: pw.FontWeight.bold,
+    );
+    // Une cellule en arabe devient un texte de droite à gauche, lettres liées.
+    Object cellule(String v) => contientArabe(v) ? textePdf(v, style: style) : v;
     final donnees = [
-      for (final l in r.lignes) [for (final (i, v) in l.indexed) _format(v, r.colonnes[i])],
-      if (r.totaux != null) [for (final (i, v) in r.totaux!.indexed) _format(v, r.colonnes[i])],
+      for (final l in r.lignes) [for (final (i, v) in l.indexed) cellule(_format(v, r.colonnes[i]))],
+      if (r.totaux != null) [for (final (i, v) in r.totaux!.indexed) cellule(_format(v, r.colonnes[i]))],
     ];
     doc.addPage(
       pw.MultiPage(
@@ -51,28 +62,36 @@ class RapportPdf {
         header: (ctx) => pw.Column(
           crossAxisAlignment: pw.CrossAxisAlignment.start,
           children: [
-            pw.Text(
+            textePdf(
               boutique,
-              style: pw.TextStyle(font: policeGras ?? police, fontSize: 12, fontWeight: pw.FontWeight.bold),
+              style: pw.TextStyle(
+                fontFallback: secours,
+                font: policeGras ?? police,
+                fontSize: 12,
+                fontWeight: pw.FontWeight.bold,
+              ),
             ),
-            pw.Text(r.titre, style: pw.TextStyle(font: police, fontSize: 11)),
-            if (periode != null) pw.Text(periode, style: style),
+            textePdf(
+              r.titre,
+              style: pw.TextStyle(fontFallback: secours, font: police, fontSize: 11),
+            ),
+            if (periode != null) textePdf(periode, style: style),
             pw.SizedBox(height: 8),
           ],
         ),
         footer: (ctx) => pw.Row(
           mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
           children: [
-            pw.Text(
+            textePdf(
               'CaisseDZ Desktop — ${(genereLe ?? DateTime.now()).toLocal().toString().substring(0, 16)}',
               style: style,
             ),
-            pw.Text('${ctx.pageNumber} / ${ctx.pagesCount}', style: style),
+            textePdf('${ctx.pageNumber} / ${ctx.pagesCount}', style: style),
           ],
         ),
         build: (ctx) => [
           if (donnees.isEmpty)
-            pw.Text('—', style: style)
+            textePdf('—', style: style)
           else
             pw.TableHelper.fromTextArray(
               headers: [for (final c in r.colonnes) c.libelle],

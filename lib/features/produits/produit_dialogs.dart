@@ -17,6 +17,7 @@ import '../../domain/models/produit.dart';
 import '../../domain/models/stock.dart';
 import '../../domain/permissions.dart';
 import '../../domain/referentiel/referentiel.dart';
+import '../caisse/pos_dialogs.dart';
 import '../commun/export_module.dart';
 import '../commun/referentiel_ui.dart';
 import '../commun/selecteurs.dart';
@@ -392,10 +393,15 @@ class _CodeBarreDialogState extends ConsumerState<_CodeBarreDialog> {
     if (p == null) return null;
     final devise = ref.read(deviseProvider);
     final etiquettes = [Etiquette(produit: p, quantite: _n, prix: ref.read(prixTtcProvider)(p))];
+    final police = await policePdf(false);
+    final gras = await policePdf(false, gras: true);
+    final secours = await policesSecoursPdf(false);
+    EtiquettesPdf pdf(double l, double h) =>
+        EtiquettesPdf(largeurMm: l, hauteurMm: h, devise: devise, police: police, policeGras: gras, secours: secours);
     return switch (_format) {
-      FormatEtiquette.a4 => EtiquettesPdf(largeurMm: 38, hauteurMm: 21, devise: devise).plancheA4(etiquettes),
-      FormatEtiquette.rouleau40 => EtiquettesPdf(largeurMm: 40, hauteurMm: 30, devise: devise).rouleau(etiquettes),
-      FormatEtiquette.rouleau58 => EtiquettesPdf(largeurMm: 58, hauteurMm: 40, devise: devise).rouleau(etiquettes),
+      FormatEtiquette.a4 => pdf(38, 21).plancheA4(etiquettes),
+      FormatEtiquette.rouleau40 => pdf(40, 30).rouleau(etiquettes),
+      FormatEtiquette.rouleau58 => pdf(58, 40).rouleau(etiquettes),
     };
   }
 
