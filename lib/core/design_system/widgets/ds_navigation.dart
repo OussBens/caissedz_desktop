@@ -5,11 +5,19 @@ import '../../i18n/generated/app_localizations.dart';
 import '../tokens/ds_theme.dart';
 import 'ds_button.dart';
 import 'ds_forms.dart';
+import 'ds_page.dart';
 import 'ds_primitives.dart';
 
 /// Entrée de navigation (module).
 class DsNavEntree {
-  const DsNavEntree({required this.route, required this.libelle, required this.icone, this.badge, this.badgeTexte});
+  const DsNavEntree({
+    required this.route,
+    required this.libelle,
+    required this.icone,
+    this.badge,
+    this.badgeTexte,
+    this.point = false,
+  });
   final String route;
   final String libelle;
   final IconData icone;
@@ -19,6 +27,9 @@ class DsNavEntree {
 
   /// Étiquette texte (pastille teintée, ex. « IA »).
   final String? badgeTexte;
+
+  /// Point rouge : nouvelle activité non consultée dans le module.
+  final bool point;
 }
 
 /// Groupe de la barre latérale.
@@ -71,7 +82,14 @@ class _DsNavItemState extends State<DsNavItem> {
                 mainAxisAlignment: widget.replie ? MainAxisAlignment.center : MainAxisAlignment.start,
                 spacing: 10,
                 children: [
-                  Icon(it.icone, size: DsTailles.icone, color: on ? c.iconActive : couleurTexte),
+                  Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Icon(it.icone, size: DsTailles.icone, color: on ? c.iconActive : couleurTexte),
+                      if (it.point && widget.replie)
+                        PositionedDirectional(top: -3, end: -3, child: DsPoint(key: ValueKey('point_${it.route}'))),
+                    ],
+                  ),
                   if (!widget.replie) ...[
                     Expanded(
                       child: Text(
@@ -84,6 +102,7 @@ class _DsNavItemState extends State<DsNavItem> {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
+                    if (it.point) DsPoint(key: ValueKey('point_${it.route}')),
                     if (it.badge != null)
                       Container(
                         constraints: const BoxConstraints(minWidth: 20),

@@ -6,7 +6,9 @@ import '../../app/providers.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
 import '../../domain/modules.dart';
+import '../../domain/pastilles.dart';
 import '../shell/app_shell.dart';
+import 'pastilles_providers.dart';
 
 /// Gabarit des 17 écrans de module : `PageHeader` (fil d'Ariane groupe › module, description,
 /// étoile des favoris) puis onglets éventuels et contenu défilant (`ModuleTable`…).
@@ -45,6 +47,13 @@ class PageModule extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final module = Modules.tous.where((m) => m.id == moduleId).firstOrNull;
     final favori = ref.watch(favorisProvider).contains(moduleId);
+    // Points rouges : l'onglet affiché est consulté (son point s'éteint), les autres gardent le leur.
+    final pastilles = ref.watch(pastillesProvider);
+    if (pastilles.contains(PastillesModules.cible(moduleId, ongletCourant))) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => ref.read(pastillesProvider.notifier).marquerVu(moduleId, ongletCourant),
+      );
+    }
     final nom = titre ?? module?.libelle(l10n) ?? moduleId;
     return DsPage(
       titre: nom,
@@ -70,7 +79,16 @@ class PageModule extends ConsumerWidget {
       ],
       barre: onglets == null
           ? null
-          : DsOnglets(onglets: onglets!, courant: ongletCourant, comptes: comptes, onChanged: onOnglet ?? (_) {}),
+          : DsOnglets(
+              onglets: onglets!,
+              courant: ongletCourant,
+              comptes: comptes,
+              points: [
+                for (var i = 0; i < onglets!.length; i++)
+                  i != ongletCourant && pastilles.contains(PastillesModules.cible(moduleId, i)),
+              ],
+              onChanged: onOnglet ?? (_) {},
+            ),
       child: child,
     );
   }

@@ -149,15 +149,44 @@ class DsPage extends StatelessWidget {
   }
 }
 
+/// Point rouge 8 px (nouvelle activité non consultée) : barre latérale, onglets.
+class DsPoint extends StatelessWidget {
+  const DsPoint({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.ds.colors;
+    return Container(
+      width: 8,
+      height: 8,
+      decoration: BoxDecoration(
+        color: c.danger,
+        shape: BoxShape.circle,
+        border: Border.all(color: c.surfaceCard, width: 1.5),
+      ),
+    );
+  }
+}
+
 /// Onglets (`Tabs`) : hauteur 40, espacement 24, soulignement primaire 2 px, compteur facultatif.
 class DsOnglets extends StatelessWidget {
-  const DsOnglets({super.key, required this.onglets, required this.courant, required this.onChanged, this.comptes});
+  const DsOnglets({
+    super.key,
+    required this.onglets,
+    required this.courant,
+    required this.onChanged,
+    this.comptes,
+    this.points,
+  });
   final List<String> onglets;
   final int courant;
   final ValueChanged<int> onChanged;
 
   /// Compteur par onglet (`null` pour aucun).
   final List<int?>? comptes;
+
+  /// Point rouge par onglet : nouvelle activité non consultée.
+  final List<bool>? points;
 
   @override
   Widget build(BuildContext context) {
@@ -177,6 +206,7 @@ class DsOnglets extends StatelessWidget {
                 builder: (context) {
                   final actif = i == courant;
                   final compte = comptes != null && i < comptes!.length ? comptes![i] : null;
+                  final point = points != null && i < points!.length && points![i];
                   return MouseRegion(
                     cursor: SystemMouseCursors.click,
                     child: GestureDetector(
@@ -218,6 +248,7 @@ class DsOnglets extends StatelessWidget {
                                   ),
                                 ),
                               ),
+                            if (point) DsPoint(key: ValueKey('point_onglet_$i')),
                           ],
                         ),
                       ),

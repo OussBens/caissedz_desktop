@@ -10,9 +10,11 @@ import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
 import '../../domain/models/session.dart';
 import '../../domain/modules.dart';
+import '../../domain/pastilles.dart';
 import '../../domain/permissions.dart';
 import '../../domain/referentiel/referentiel.dart';
 import '../activation/activation_page.dart';
+import '../commun/pastilles_providers.dart';
 import '../compte/mon_compte_dialog.dart';
 import '../configuration/configuration_dialog.dart';
 import 'alertes_dialog.dart';
@@ -110,6 +112,8 @@ class _AppShellState extends ConsumerState<AppShell> {
     final alertes = ref.watch(alertesProvider);
     final magasins = ref.watch(magasinCourantProvider);
     final routeActive = module == null ? route : (Modules.parId(module.idAcces) ?? module).route;
+    final pastilles = ref.watch(pastillesProvider);
+    bool point(ModuleApp m) => m.route != routeActive && pastilles.any((c) => PastillesModules.module(c) == m.id);
 
     bool visible(ModuleApp m) =>
         verrouModule(l10n, m, licenceCouvre: licence.couvre(m.niveauRequis), session: session) == null;
@@ -120,7 +124,13 @@ class _AppShellState extends ConsumerState<AppShell> {
             libelle: libelleGroupe(l10n, g),
             items: [
               for (final m in Modules.parGroupe(g).where(visible))
-                DsNavEntree(route: m.route, libelle: m.libelle(l10n), icone: m.icone, badgeTexte: m.badgeTexte),
+                DsNavEntree(
+                  route: m.route,
+                  libelle: m.libelle(l10n),
+                  icone: m.icone,
+                  badgeTexte: m.badgeTexte,
+                  point: point(m),
+                ),
             ],
           ),
     ];
