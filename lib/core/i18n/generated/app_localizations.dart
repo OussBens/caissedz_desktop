@@ -14463,12 +14463,6 @@ abstract class AppLocalizations {
   /// **'Stock insuffisant dans ce magasin'**
   String get posTransfertTitre;
 
-  /// No description provided for @posTransfertMessage.
-  ///
-  /// In fr, this message translates to:
-  /// **'{destination} n\'a pas assez de « {produit} ». {source} en a {stock}. Créer un transfert de {quantite} depuis {source} vers {destination}, puis ajouter le produit au panier ?'**
-  String posTransfertMessage(String destination, String produit, String quantite, String source, String stock);
-
   /// No description provided for @posTransfertConfirmer.
   ///
   /// In fr, this message translates to:
@@ -14480,6 +14474,36 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Transfert {code} créé'**
   String posTransfertFait(String code);
+
+  /// No description provided for @posTransfertQuestion.
+  ///
+  /// In fr, this message translates to:
+  /// **'Transférer le manque pour compléter le panier ?'**
+  String get posTransfertQuestion;
+
+  /// No description provided for @posTransfertDepuis.
+  ///
+  /// In fr, this message translates to:
+  /// **'Depuis'**
+  String get posTransfertDepuis;
+
+  /// No description provided for @posTransfertVers.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vers la caisse'**
+  String get posTransfertVers;
+
+  /// No description provided for @posTransfertStock.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock : {stock}'**
+  String posTransfertStock(String stock);
+
+  /// No description provided for @posTransfertManque.
+  ///
+  /// In fr, this message translates to:
+  /// **'Manque {quantite}'**
+  String posTransfertManque(String quantite);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

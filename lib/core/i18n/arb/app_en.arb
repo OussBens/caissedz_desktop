@@ -2583,7 +2583,11 @@
   "prdVenteTtc": "Price incl. VAT",
   "posClotureNegatif": "Negative expected balance: more cash left this till than came in since it was opened (see the breakdown above). A till cannot hold less than 0: count the cash actually there (0 if the drawer is empty); the difference is recorded as a shortage.",
   "posTransfertTitre": "Not enough stock in this store",
-  "posTransfertMessage": "{destination} does not have enough \"{produit}\". {source} has {stock}. Create a transfer of {quantite} from {source} to {destination}, then add the product to the cart?",
   "posTransfertConfirmer": "Transfer and add",
-  "posTransfertFait": "Transfer {code} created"
+  "posTransfertFait": "Transfer {code} created",
+  "posTransfertQuestion": "Transfer the missing quantity to complete the cart?",
+  "posTransfertDepuis": "From",
+  "posTransfertVers": "To the till",
+  "posTransfertStock": "Stock: {stock}",
+  "posTransfertManque": "Missing {quantite}"
 }

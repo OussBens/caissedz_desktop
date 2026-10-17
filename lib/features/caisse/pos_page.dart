@@ -107,15 +107,17 @@ class _PosPageState extends ConsumerState<PosPage> {
     final ok = await afficherConfirmation(
       context,
       titre: l10n.posTransfertTitre,
-      message: l10n.posTransfertMessage(
-        destination,
-        manque.produit.designation,
-        q(manque.unites > 0 ? manque.unites : manque.nombre),
-        source.magasin.nom,
-        q(source.quantite),
-      ),
+      message: l10n.posTransfertQuestion,
       libelleConfirmer: l10n.posTransfertConfirmer,
       icone: LucideIcons.arrowLeftRight,
+      contenu: _SchemaTransfert(
+        produit: manque.produit.designation,
+        source: source.magasin.nom,
+        stockSource: q(source.quantite),
+        destination: destination,
+        stockDestination: q(_disponible(manque.produit).clamp(0, double.infinity)),
+        quantite: q(manque.unites > 0 ? manque.unites : manque.nombre),
+      ),
     );
     if (!ok || !mounted) return false;
     try {
@@ -692,6 +694,8 @@ class _PosPageState extends ConsumerState<PosPage> {
     final stocks = ref.watch(stocksCaisseProvider).value ?? const <String, double>{};
     final devise = ref.watch(deviseProvider);
     final admin = ref.watch(sessionProvider)?.estAdmin ?? false;
+    // Stock affiché = stock du magasin − quantités déjà mises dans les paniers ouverts (avant l'encaissement).
+    final etat = ref.watch(posControllerProvider);
     final r = _recherche.trim().toLowerCase();
     final liste = _disposition == DsVueModule.liste;
     final List<Widget> tuiles;
@@ -723,7 +727,7 @@ class _PosPageState extends ConsumerState<PosPage> {
               nom: p.designation,
               code: p.code,
               prix: ref.read(prixTtcProvider)(p),
-              stock: stocks[p.code] ?? 0,
+              stock: (stocks[p.code] ?? 0) - etat.unitesReservees(p.code),
               categorie: nomsCategories[p.categorieCode],
               image: imageProduit(p.image),
               seuilBas: (p.seuilStock ?? 5).toDouble(),
@@ -1095,6 +1099,92 @@ class _PosPageState extends ConsumerState<PosPage> {
                 bas,
               ],
             ),
+    );
+  }
+}
+
+/// Schéma du transfert proposé : magasin source (stock) → quantité → magasin de la caisse (stock, manque).
+class _SchemaTransfert extends StatelessWidget {
+  const _SchemaTransfert({
+    required this.produit,
+    required this.source,
+    required this.stockSource,
+    required this.destination,
+    required this.stockDestination,
+    required this.quantite,
+  });
+
+  final String produit;
+  final String source;
+  final String stockSource;
+  final String destination;
+  final String stockDestination;
+  final String quantite;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.ds.colors;
+    final t = context.ds.typo;
+    final l10n = AppLocalizations.of(context);
+    Widget magasin(String titre, String nom, String stock, {String? manque}) => Expanded(
+      child: Container(
+        padding: const EdgeInsets.all(DsSpacing.s3),
+        decoration: BoxDecoration(
+          color: manque == null ? c.surfaceSunken : c.dangerTint,
+          borderRadius: DsRadius.borderLg,
+          border: Border.all(color: manque == null ? c.borderDefault : c.danger),
+        ),
+        child: Column(
+          spacing: DsSpacing.s1,
+          children: [
+            Text(titre.toUpperCase(), style: t.overline.copyWith(color: c.textMuted)),
+            Icon(LucideIcons.warehouse, size: DsTailles.iconeLg, color: manque == null ? c.primary : c.dangerFg),
+            Text(nom, style: t.bodySmStrong, textAlign: TextAlign.center, maxLines: 2),
+            Text(l10n.posTransfertStock(stock), style: t.caption.copyWith(color: c.textSecondary)),
+            if (manque != null) DsBadge(libelle: l10n.posTransfertManque(manque), ton: DsBadgeTon.danger, petit: true),
+          ],
+        ),
+      ),
+    );
+    return Column(
+      key: const ValueKey('schema_transfert'),
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      spacing: DsSpacing.s3,
+      children: [
+        Row(
+          spacing: DsSpacing.s2,
+          children: [
+            Icon(LucideIcons.package, size: DsTailles.iconeSm, color: c.textMuted),
+            Expanded(
+              child: Text(produit, style: t.bodyStrong, maxLines: 1, overflow: TextOverflow.ellipsis),
+            ),
+          ],
+        ),
+        IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              magasin(l10n.posTransfertDepuis, source, stockSource),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: DsSpacing.s2),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  spacing: DsSpacing.s1,
+                  children: [
+                    DsBadge(libelle: quantite, ton: DsBadgeTon.primaire),
+                    Icon(
+                      Directionality.of(context) == TextDirection.rtl ? LucideIcons.arrowLeft : LucideIcons.arrowRight,
+                      size: DsTailles.iconeLg,
+                      color: c.primary,
+                    ),
+                  ],
+                ),
+              ),
+              magasin(l10n.posTransfertVers, destination, stockDestination, manque: quantite),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

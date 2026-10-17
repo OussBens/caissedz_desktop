@@ -2583,7 +2583,11 @@
   "prdVenteTtc": "البيع بالرسوم",
   "posClotureNegatif": "الرصيد النظري سالب: خرج من هذا الصندوق نقد أكثر مما دخل منذ الفتح (انظر التفاصيل أعلاه). لا يمكن أن يحتوي الصندوق على أقل من 0: عدّ النقد الموجود فعلاً (0 إذا كان الدرج فارغاً)، وسيُسجل الفرق كعجز.",
   "posTransfertTitre": "مخزون غير كاف في هذا المخزن",
-  "posTransfertMessage": "{destination} لا يحتوي على كمية كافية من « {produit} ». {source} يحتوي على {stock}. إنشاء تحويل {quantite} من {source} إلى {destination} ثم إضافة المنتج إلى السلة؟",
   "posTransfertConfirmer": "تحويل وإضافة",
-  "posTransfertFait": "تم إنشاء التحويل {code}"
+  "posTransfertFait": "تم إنشاء التحويل {code}",
+  "posTransfertQuestion": "تحويل الكمية الناقصة لإكمال السلة؟",
+  "posTransfertDepuis": "من",
+  "posTransfertVers": "إلى الصندوق",
+  "posTransfertStock": "المخزون: {stock}",
+  "posTransfertManque": "ناقص {quantite}"
 }

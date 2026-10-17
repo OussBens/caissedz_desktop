@@ -85,6 +85,11 @@ void main() {
       expect(find.text('Quantité et colis'), findsNothing);
       expect(find.byKey(const ValueKey('ligne_0')), findsOneWidget);
       expect(_total(tester), contains('100,00'));
+      // Le stock de la tuile tient compte du panier dès l'ajout (avant l'encaissement) : 10 − 1.
+      expect(
+        find.descendant(of: find.byKey(const ValueKey('tuile_PRD0001')), matching: find.text('9 en stock')),
+        findsOneWidget,
+      );
 
       // Clic sur le colis de la ligne : passage au pack de 6 (modification, sans ajout automatique).
       await clic(tester, find.descendant(of: find.byKey(const ValueKey('ligne_0')), matching: find.text('À l\'unité')));
@@ -267,7 +272,11 @@ void main() {
       // L'admin peut valider au-delà du stock : la caisse propose le transfert du manque.
       await clic(tester, find.byKey(const ValueKey('selection_valider')));
       expect(find.text('Stock insuffisant dans ce magasin'), findsOneWidget);
-      expect(find.textContaining('Dépôt en a 20'), findsOneWidget);
+      // Schéma : Dépôt (stock 20) → 13 → magasin de la caisse (stock 0, manque 13).
+      final schema = find.byKey(const ValueKey('schema_transfert'));
+      expect(find.descendant(of: schema, matching: find.text('Dépôt')), findsOneWidget);
+      expect(find.descendant(of: schema, matching: find.text('Stock : 20')), findsOneWidget);
+      expect(find.descendant(of: schema, matching: find.text('Manque 13')), findsOneWidget);
       await clic(tester, find.text('Transférer et ajouter'));
       await tester.pump(const Duration(seconds: 5));
       expect(find.byKey(const ValueKey('ligne_0')), findsOneWidget);

@@ -7597,15 +7597,29 @@ class AppLocalizationsAr extends AppLocalizations {
   String get posTransfertTitre => 'مخزون غير كاف في هذا المخزن';
 
   @override
-  String posTransfertMessage(String destination, String produit, String quantite, String source, String stock) {
-    return '$destination لا يحتوي على كمية كافية من « $produit ». $source يحتوي على $stock. إنشاء تحويل $quantite من $source إلى $destination ثم إضافة المنتج إلى السلة؟';
-  }
-
-  @override
   String get posTransfertConfirmer => 'تحويل وإضافة';
 
   @override
   String posTransfertFait(String code) {
     return 'تم إنشاء التحويل $code';
+  }
+
+  @override
+  String get posTransfertQuestion => 'تحويل الكمية الناقصة لإكمال السلة؟';
+
+  @override
+  String get posTransfertDepuis => 'من';
+
+  @override
+  String get posTransfertVers => 'إلى الصندوق';
+
+  @override
+  String posTransfertStock(String stock) {
+    return 'المخزون: $stock';
+  }
+
+  @override
+  String posTransfertManque(String quantite) {
+    return 'ناقص $quantite';
   }
 }

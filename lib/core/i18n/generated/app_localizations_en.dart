@@ -7614,15 +7614,29 @@ class AppLocalizationsEn extends AppLocalizations {
   String get posTransfertTitre => 'Not enough stock in this store';
 
   @override
-  String posTransfertMessage(String destination, String produit, String quantite, String source, String stock) {
-    return '$destination does not have enough \"$produit\". $source has $stock. Create a transfer of $quantite from $source to $destination, then add the product to the cart?';
-  }
-
-  @override
   String get posTransfertConfirmer => 'Transfer and add';
 
   @override
   String posTransfertFait(String code) {
     return 'Transfer $code created';
+  }
+
+  @override
+  String get posTransfertQuestion => 'Transfer the missing quantity to complete the cart?';
+
+  @override
+  String get posTransfertDepuis => 'From';
+
+  @override
+  String get posTransfertVers => 'To the till';
+
+  @override
+  String posTransfertStock(String stock) {
+    return 'Stock: $stock';
+  }
+
+  @override
+  String posTransfertManque(String quantite) {
+    return 'Missing $quantite';
   }
 }

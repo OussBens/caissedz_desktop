@@ -3943,31 +3943,30 @@
   "prdVenteTtc": "Vente TTC",
   "posClotureNegatif": "Solde théorique négatif : il est sorti de cette caisse plus d'espèces qu'il n'en est entré depuis l'ouverture (voir le détail ci-dessus). Une caisse ne peut pas contenir moins de 0 : comptez les espèces réellement présentes (0 si le tiroir est vide), l'écart sera enregistré comme manquant.",
   "posTransfertTitre": "Stock insuffisant dans ce magasin",
-  "posTransfertMessage": "{destination} n'a pas assez de « {produit} ». {source} en a {stock}. Créer un transfert de {quantite} depuis {source} vers {destination}, puis ajouter le produit au panier ?",
-  "@posTransfertMessage": {
-    "placeholders": {
-      "destination": {
-        "type": "String"
-      },
-      "produit": {
-        "type": "String"
-      },
-      "quantite": {
-        "type": "String"
-      },
-      "source": {
-        "type": "String"
-      },
-      "stock": {
-        "type": "String"
-      }
-    }
-  },
   "posTransfertConfirmer": "Transférer et ajouter",
   "posTransfertFait": "Transfert {code} créé",
   "@posTransfertFait": {
     "placeholders": {
       "code": {
+        "type": "String"
+      }
+    }
+  },
+  "posTransfertQuestion": "Transférer le manque pour compléter le panier ?",
+  "posTransfertDepuis": "Depuis",
+  "posTransfertVers": "Vers la caisse",
+  "posTransfertStock": "Stock : {stock}",
+  "@posTransfertStock": {
+    "placeholders": {
+      "stock": {
+        "type": "String"
+      }
+    }
+  },
+  "posTransfertManque": "Manque {quantite}",
+  "@posTransfertManque": {
+    "placeholders": {
+      "quantite": {
         "type": "String"
       }
     }
