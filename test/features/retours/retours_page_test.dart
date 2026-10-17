@@ -138,7 +138,7 @@ void main() {
       expect(find.text('Bouteilles percées'), findsOneWidget);
       await clic(tester, find.text('Fermer').last);
       await clic(tester, find.text('RET0001'));
-      await clic(tester, find.text('Annuler').first);
+      await clic(tester, find.byTooltip('Annuler').first);
       await tester.enterText(find.byType(TextField).last, 'Doublon');
       await tester.pump();
       await clic(tester, find.text('Annuler (1)'));

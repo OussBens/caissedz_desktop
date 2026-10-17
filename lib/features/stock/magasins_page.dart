@@ -157,6 +157,7 @@ class _MagasinsPageState extends ConsumerState<MagasinsPage> {
         DsActionModule(
           libelle: l10n.communModifier,
           icone: LucideIcons.pencil,
+          iconeSeule: true,
           regle: DsRegleSelection.une,
           onPressed: (choix, _) => afficherFormulaireMagasin(context, ref, magasin: choix.first),
         ),
@@ -318,6 +319,7 @@ class _MagasinsPageState extends ConsumerState<MagasinsPage> {
         DsActionModule(
           libelle: l10n.communModifier,
           icone: LucideIcons.pencil,
+          iconeSeule: true,
           regle: DsRegleSelection.une,
           desactive: (choix) => choix.isNotEmpty && !choix.first.actif,
           onPressed: (choix, _) => afficherFormulaireTransfert(context, ref, transfert: choix.first),
@@ -325,7 +327,8 @@ class _MagasinsPageState extends ConsumerState<MagasinsPage> {
         DsActionModule(
           cle: const ValueKey('transferts_annuler'),
           libelle: l10n.dsAnnuler,
-          icone: LucideIcons.ban,
+          icone: LucideIcons.x,
+          iconeSeule: true,
           danger: true,
           onPressed: (choix, effacer) => annulerTransferts(context, ref, choix, effacer),
         ),

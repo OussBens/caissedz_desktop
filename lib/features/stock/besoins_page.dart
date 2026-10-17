@@ -221,6 +221,7 @@ class _BesoinsPageState extends ConsumerState<BesoinsPage> {
         DsActionModule(
           libelle: l10n.communModifier,
           icone: LucideIcons.pencil,
+          iconeSeule: true,
           regle: DsRegleSelection.une,
           desactive: (choix) => choix.isNotEmpty && fige(choix.first),
           onPressed: (choix, _) => afficherFormulaireBesoin(context, ref, besoin: choix.first),
@@ -252,7 +253,8 @@ class _BesoinsPageState extends ConsumerState<BesoinsPage> {
         DsActionModule(
           cle: const ValueKey('besoins_annuler'),
           libelle: l10n.dsAnnuler,
-          icone: LucideIcons.ban,
+          icone: LucideIcons.x,
+          iconeSeule: true,
           danger: true,
           onPressed: (choix, effacer) => annulerBesoins(context, ref, choix, effacer),
         ),

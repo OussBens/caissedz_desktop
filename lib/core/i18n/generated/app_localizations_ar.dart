@@ -7576,4 +7576,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String entDepuisCommande(String code) {
     return 'استلام الطلبية $code';
   }
+
+  @override
+  String get apercuEnregistrerPdf => 'حفظ بصيغة PDF';
 }

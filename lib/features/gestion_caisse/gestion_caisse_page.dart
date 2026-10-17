@@ -216,6 +216,7 @@ class _GestionCaissePageState extends ConsumerState<GestionCaissePage> {
               cle: const ValueKey('caisses_modifier'),
               libelle: l10n.communModifier,
               icone: LucideIcons.pencil,
+              iconeSeule: true,
               regle: DsRegleSelection.une,
               onPressed: (choix, _) => afficherFormulaireCaisse(context, ref, caisse: choix.first),
             ),
@@ -316,7 +317,8 @@ class _GestionCaissePageState extends ConsumerState<GestionCaissePage> {
         DsActionModule(
           cle: const ValueKey('transferts_annuler'),
           libelle: l10n.dsAnnuler,
-          icone: LucideIcons.ban,
+          icone: LucideIcons.x,
+          iconeSeule: true,
           danger: true,
           onPressed: (choix, effacer) => annulerTransfertsCaisse(context, ref, choix, effacer),
         ),

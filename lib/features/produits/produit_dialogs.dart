@@ -140,6 +140,7 @@ class _DetailProduit extends ConsumerWidget {
           DsButton(
             libelle: l10n.communModifier,
             icone: LucideIcons.pencil,
+            iconeSeule: true,
             variante: DsButtonVariante.secondaire,
             onPressed: () => fermerPuis(onModifier),
           ),

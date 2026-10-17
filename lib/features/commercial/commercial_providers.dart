@@ -3,7 +3,6 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:printing/printing.dart';
 
 import '../../app/providers.dart';
 import '../../application/document_commercial_service.dart';
@@ -21,6 +20,7 @@ import '../../domain/models/facture.dart';
 import '../../domain/models/parametres_vente.dart';
 import '../../domain/montant_en_lettres.dart';
 import '../caisse/pos_dialogs.dart';
+import '../commun/apercu_document.dart';
 import '../commun/statuts.dart';
 import '../produits/produits_providers.dart';
 import '../stock/stock_providers.dart';
@@ -186,28 +186,19 @@ Future<IdentiteFiscale> _client(WidgetRef ref, String code) async {
 Future<void> _imprimer(
   BuildContext context,
   WidgetRef ref,
+  String titre,
   String nom,
   Future<Uint8List> Function(DocumentsPdf) faire,
 ) async {
   final arabe = Localizations.localeOf(context).languageCode == 'ar';
-  final l10n = AppLocalizations.of(context);
-  try {
-    final pdf = DocumentsPdf(
-      libelles: arabe ? LibellesTicket.ar : LibellesTicket.fr,
-      devise: ref.read(deviseProvider),
-      police: await policePdf(arabe),
-    );
-    final octets = await faire(pdf);
-    await Printing.layoutPdf(onLayout: (_) async => octets, name: '$nom.pdf');
-  } on Object catch (e) {
-    if (!context.mounted) return;
-    await afficherResultat(
-      context,
-      type: DsResultatType.erreur,
-      titre: l10n.moduleDocuments,
-      message: l10n.posImpressionErreur('$e'),
-    );
-  }
+  final pdf = DocumentsPdf(
+    libelles: arabe ? LibellesTicket.ar : LibellesTicket.fr,
+    devise: ref.read(deviseProvider),
+    police: await policePdf(arabe),
+    policeGras: await policePdf(arabe, gras: true),
+  );
+  if (!context.mounted) return;
+  await afficherApercuDocument(context, ref, titre: '$titre $nom', nom: nom, pdf: () => faire(pdf));
 }
 
 /// Devis, proforma ou bon de commande client en A4 : identités, lignes HT / TVA / TTC, montant en lettres.
@@ -226,16 +217,16 @@ Future<void> imprimerDocumentClient(BuildContext context, WidgetRef ref, Documen
   await _imprimer(
     context,
     ref,
+    titre,
     d.code,
     (pdf) => pdf.documentCommercial(
       titre: titre,
       numero: d.code,
       date: d.date,
       references: [
-        if (d.validite != null) '${l10n.docValidite} : ${formatDate.format(d.validite!)}',
-        if (d.origineCode != null) '${l10n.docOrigine} : ${d.origineCode}',
+        if (d.validite != null) (l10n.docValidite, formatDate.format(d.validite!)),
+        if (d.origineCode != null) (l10n.docOrigine, d.origineCode!),
       ],
-      libelleEmetteur: l10n.docVendeur,
       emetteur: vendeur,
       libelleTiers: l10n.ventesClient,
       tiers: client,
@@ -281,16 +272,16 @@ Future<void> imprimerBonLivraison(BuildContext context, WidgetRef ref, BonLivrai
   await _imprimer(
     context,
     ref,
+    l10n.docPdfLivraison,
     b.code,
     (pdf) => pdf.documentCommercial(
       titre: l10n.docPdfLivraison,
       numero: b.code,
       date: b.date,
       references: [
-        '${l10n.factureVente} : ${b.venteCode}',
-        if (b.commandeCode != null) '${l10n.docTypeCommande} : ${b.commandeCode}',
+        (l10n.factureVente, b.venteCode),
+        if (b.commandeCode != null) (l10n.docTypeCommande, b.commandeCode!),
       ],
-      libelleEmetteur: l10n.docVendeur,
       emetteur: vendeur,
       libelleTiers: l10n.ventesClient,
       tiers: client,
@@ -299,7 +290,7 @@ Future<void> imprimerBonLivraison(BuildContext context, WidgetRef ref, BonLivrai
         for (final l in b.lignes) [l.produitCode, l.designation, formaterNombre(l.quantite)],
       ],
       observation: b.observation,
-      mention: b.actif ? null : l10n.docStatutAnnule.toUpperCase(),
+      filigrane: b.actif ? null : l10n.docStatutAnnule,
       signatures: [l10n.docSignatureLivreur, l10n.docSignatureReception],
     ),
   );
@@ -326,13 +317,13 @@ Future<void> imprimerCommandeFournisseur(BuildContext context, WidgetRef ref, Co
   await _imprimer(
     context,
     ref,
+    l10n.cmdfPdfTitre,
     c.code,
     (pdf) => pdf.documentCommercial(
       titre: l10n.cmdfPdfTitre,
       numero: c.code,
       date: c.date,
-      references: [if (c.dateLivraison != null) '${l10n.stkLivraison} : ${formatDate.format(c.dateLivraison!)}'],
-      libelleEmetteur: l10n.cmdfAcheteur,
+      references: [if (c.dateLivraison != null) (l10n.stkLivraison, formatDate.format(c.dateLivraison!))],
       emetteur: acheteur,
       libelleTiers: l10n.retoursFournisseur,
       tiers: fournisseur,

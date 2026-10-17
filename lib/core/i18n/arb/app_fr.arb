@@ -3930,5 +3930,6 @@
         "type": "String"
       }
     }
-  }
+  },
+  "apercuEnregistrerPdf": "Enregistrer en PDF"
 }

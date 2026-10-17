@@ -181,6 +181,7 @@ class ZakatPage extends ConsumerWidget {
             cle: const ValueKey('zakat_modifier'),
             libelle: l10n.communModifier,
             icone: LucideIcons.pencil,
+            iconeSeule: true,
             regle: DsRegleSelection.une,
             desactive: (choix) => choix.isNotEmpty && (choix.first.estPayee || !choix.first.actif),
             onPressed: (choix, _) => afficherFormulaireZakat(context, ref, zakat: choix.first),
@@ -196,7 +197,8 @@ class ZakatPage extends ConsumerWidget {
           DsActionModule(
             cle: const ValueKey('zakat_annuler'),
             libelle: l10n.zkAnnuler,
-            icone: LucideIcons.ban,
+            icone: LucideIcons.x,
+            iconeSeule: true,
             danger: true,
             onPressed: (choix, effacer) => annulerZakats(context, ref, choix, effacer),
           ),

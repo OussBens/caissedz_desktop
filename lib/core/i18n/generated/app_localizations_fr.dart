@@ -7608,4 +7608,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String entDepuisCommande(String code) {
     return 'Réception de la commande $code';
   }
+
+  @override
+  String get apercuEnregistrerPdf => 'Enregistrer en PDF';
 }

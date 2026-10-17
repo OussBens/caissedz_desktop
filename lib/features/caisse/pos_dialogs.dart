@@ -22,6 +22,7 @@ import '../../data/parametre_repository.dart';
 import '../../domain/models/boutique.dart';
 import '../../domain/models/tiers.dart';
 import '../../domain/models/vente.dart';
+import '../commun/apercu_document.dart';
 import '../commun/selecteurs.dart';
 import '../produits/produits_providers.dart';
 import 'pos_controller.dart';
@@ -182,9 +183,12 @@ ImprimanteEscPos? construireImprimante(String type, String adresse) {
 }
 
 /// Police PDF selon la langue (Cairo pour l'arabe).
-Future<pw.Font?> policePdf(bool arabe) async {
+Future<pw.Font?> policePdf(bool arabe, {bool gras = false}) async {
+  final graisse = gras ? 700 : 400;
   try {
-    final data = await rootBundle.load(arabe ? 'assets/fonts/Cairo-400.ttf' : 'assets/fonts/PlusJakartaSans-400.ttf');
+    final data = await rootBundle.load(
+      arabe ? 'assets/fonts/Cairo-$graisse.ttf' : 'assets/fonts/PlusJakartaSans-$graisse.ttf',
+    );
     return pw.Font.ttf(data);
   } on Object {
     return null;
@@ -323,22 +327,28 @@ Future<void> imprimerFactureVente(BuildContext context, WidgetRef ref, Vente ven
     final facture = existante ?? await service.emettre(vente.code);
     final avoirs = await service.avoirsDe(facture.code);
     final reste = await service.resteAujourdhui(vente);
-    final police = await policePdf(arabe);
-    final octets =
-        await DocumentsPdf(
-          libelles: arabe ? LibellesTicket.ar : LibellesTicket.fr,
-          devise: devise,
-          police: police,
-        ).facturesFiscales(
-          [facture, ...avoirs],
-          mentions: arabe ? LibellesFacture.ar : LibellesFacture.fr,
-          duplicata: existante != null,
-          resteDu: reste,
-        );
+    final pdf = DocumentsPdf(
+      libelles: arabe ? LibellesTicket.ar : LibellesTicket.fr,
+      devise: devise,
+      police: await policePdf(arabe),
+      policeGras: await policePdf(arabe, gras: true),
+    );
+    Future<Uint8List> octets() => pdf.facturesFiscales(
+      [facture, ...avoirs],
+      mentions: arabe ? LibellesFacture.ar : LibellesFacture.fr,
+      duplicata: existante != null,
+      resteDu: reste,
+    );
     if (partager) {
-      await Printing.sharePdf(bytes: octets, filename: 'facture_${facture.code}.pdf');
-    } else {
-      await Printing.layoutPdf(onLayout: (_) async => octets, name: 'facture_${facture.code}.pdf');
+      await Printing.sharePdf(bytes: await octets(), filename: 'facture_${facture.code}.pdf');
+    } else if (context.mounted) {
+      await afficherApercuDocument(
+        context,
+        ref,
+        titre: '${facture.estAvoir ? l10n.factureTypeAvoir : l10n.factureTypeFacture} ${facture.code}',
+        nom: 'facture_${facture.code}',
+        pdf: octets,
+      );
     }
   } on FactureException catch (e) {
     if (!context.mounted) return;

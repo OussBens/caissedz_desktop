@@ -27,6 +27,7 @@ class DsActionModule<T> {
     this.desactive,
     this.cle,
     this.detail = false,
+    this.iconeSeule = false,
   });
   final String libelle;
   final IconData? icone;
@@ -42,6 +43,9 @@ class DsActionModule<T> {
 
   /// Action « Détail » (œil) : déclenchée aussi par le double-clic sur une ligne.
   final bool detail;
+
+  /// Bouton réduit à l'icône (Modifier, Annuler), libellé en infobulle.
+  final bool iconeSeule;
 }
 
 /// Libellés FR / AR / EN des périodes rapides du [DsPeriodFilter].
@@ -291,6 +295,7 @@ class _DsModuleTableState<T> extends State<DsModuleTable<T>> {
               regle: a.regle,
               danger: a.danger,
               cle: a.cle,
+              iconeSeule: a.iconeSeule,
               desactive: a.desactive?.call(choisis) ?? false,
               onPressed: () => a.onPressed(choisis, _effacer),
             ),

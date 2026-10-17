@@ -114,7 +114,7 @@ void main() {
     testWidgets('annulation avec motif : stock réintégré, statut Annulé', (tester) async {
       final c = await _ouvrir(tester);
       await clic(tester, find.text('VTE0002'));
-      await clic(tester, find.text('Annuler').first);
+      await clic(tester, find.byTooltip('Annuler').first);
       await tester.enterText(find.byType(TextField).last, 'Erreur de saisie');
       await tester.pump();
       await clic(tester, find.text('Annuler (1)'));

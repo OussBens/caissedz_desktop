@@ -141,7 +141,7 @@ class _TableauBordPageState extends ConsumerState<TableauBordPage> {
         builder: (ctx, maj) => DsDialog(
           titre: l10n.tableauBordChoisirPeriode,
           iconeData: LucideIcons.calendar,
-          largeur: 560,
+          largeur: 880,
           actions: [
             DsButton(
               libelle: l10n.communAnnuler,

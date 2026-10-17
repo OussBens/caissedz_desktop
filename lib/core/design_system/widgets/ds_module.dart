@@ -402,6 +402,7 @@ class DsActionSelection {
     this.danger = false,
     this.desactive = false,
     this.cle,
+    this.iconeSeule = false,
   });
   final String libelle;
   final VoidCallback onPressed;
@@ -411,6 +412,9 @@ class DsActionSelection {
   final bool danger;
   final bool desactive;
   final Key? cle;
+
+  /// Bouton réduit à l'icône, libellé en infobulle (voir [DsButton.iconeSeule]).
+  final bool iconeSeule;
 }
 
 /// Barre d'actions sur la sélection (`SelectionBar`) : compteur teinté + boutons conditionnés.
@@ -497,6 +501,7 @@ class DsSelectionBar extends StatelessWidget {
                         child: DsButton(
                           libelle: a.libelle,
                           icone: a.icone,
+                          iconeSeule: a.iconeSeule,
                           taille: petit ? DsButtonTaille.sm : DsButtonTaille.md,
                           variante: a.danger && actif ? DsButtonVariante.danger : a.variante,
                           onPressed: actif ? a.onPressed : null,

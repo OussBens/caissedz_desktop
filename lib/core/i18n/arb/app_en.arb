@@ -2577,5 +2577,6 @@
   "cmdfDepuisBesoin": "Create supplier order",
   "cmdfErreurReceptionLiee": "Order already received: cancel the linked entries first",
   "cmdfErreurDejaSoldee": "Order already closed",
-  "entDepuisCommande": "Receiving order {code}"
+  "entDepuisCommande": "Receiving order {code}",
+  "apercuEnregistrerPdf": "Save as PDF"
 }

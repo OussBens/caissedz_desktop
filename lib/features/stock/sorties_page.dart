@@ -216,6 +216,7 @@ class _SortiesPageState extends ConsumerState<SortiesPage> {
           DsActionModule(
             libelle: l10n.communModifier,
             icone: LucideIcons.pencil,
+            iconeSeule: true,
             regle: DsRegleSelection.une,
             desactive: (choix) => choix.isNotEmpty && (!choix.first.actif || choix.first.retourCode != null),
             onPressed: (choix, _) => afficherFormulaireSortie(context, ref, sortie: choix.first),
@@ -223,7 +224,8 @@ class _SortiesPageState extends ConsumerState<SortiesPage> {
           DsActionModule(
             cle: const ValueKey('sorties_annuler'),
             libelle: l10n.dsAnnuler,
-            icone: LucideIcons.ban,
+            icone: LucideIcons.x,
+            iconeSeule: true,
             danger: true,
             onPressed: (choix, effacer) => annulerSorties(context, ref, choix, effacer),
           ),

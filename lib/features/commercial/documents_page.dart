@@ -260,6 +260,7 @@ class _OngletDocumentsState extends ConsumerState<_OngletDocuments> {
         DsActionModule(
           libelle: l10n.communModifier,
           icone: LucideIcons.pencil,
+          iconeSeule: true,
           regle: DsRegleSelection.une,
           desactive: (choix) => choix.isNotEmpty && !choix.first.modifiable,
           onPressed: (choix, _) => afficherFormulaireDocumentClient(context, ref, widget.type, document: choix.first),
@@ -312,7 +313,8 @@ class _OngletDocumentsState extends ConsumerState<_OngletDocuments> {
         DsActionModule(
           cle: const ValueKey('doc_annuler'),
           libelle: l10n.dsAnnuler,
-          icone: LucideIcons.ban,
+          icone: LucideIcons.x,
+          iconeSeule: true,
           danger: true,
           onPressed: (choix, effacer) => _annuler(choix, effacer, noms),
         ),

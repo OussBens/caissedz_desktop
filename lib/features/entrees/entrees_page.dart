@@ -321,6 +321,7 @@ class _EntreesPageState extends ConsumerState<EntreesPage> {
           cle: const ValueKey('entrees_modifier'),
           libelle: l10n.communModifier,
           icone: LucideIcons.pencil,
+          iconeSeule: true,
           regle: DsRegleSelection.une,
           desactive: (choix) => choix.isNotEmpty && !choix.first.actif,
           onPressed: (choix, _) => modifierEntree(context, ref, choix.first),
@@ -328,7 +329,8 @@ class _EntreesPageState extends ConsumerState<EntreesPage> {
         DsActionModule(
           cle: const ValueKey('entrees_annuler'),
           libelle: l10n.dsAnnuler,
-          icone: LucideIcons.ban,
+          icone: LucideIcons.x,
+          iconeSeule: true,
           danger: true,
           desactive: (_) => !peutAnnuler,
           onPressed: (choix, effacer) => annulerEntrees(context, ref, choix, effacer),

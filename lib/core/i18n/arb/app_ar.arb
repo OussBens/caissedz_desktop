@@ -2577,5 +2577,6 @@
   "cmdfDepuisBesoin": "إنشاء طلبية مورد",
   "cmdfErreurReceptionLiee": "طلبية مستلمة: ألغ أولا الإدخالات المرتبطة",
   "cmdfErreurDejaSoldee": "الطلبية مسواة مسبقا",
-  "entDepuisCommande": "استلام الطلبية {code}"
+  "entDepuisCommande": "استلام الطلبية {code}",
+  "apercuEnregistrerPdf": "حفظ بصيغة PDF"
 }

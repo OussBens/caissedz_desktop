@@ -211,6 +211,7 @@ class _CommandesFournisseursPageState extends ConsumerState<CommandesFournisseur
           DsActionModule(
             libelle: l10n.communModifier,
             icone: LucideIcons.pencil,
+            iconeSeule: true,
             regle: DsRegleSelection.une,
             desactive: (choix) =>
                 choix.isNotEmpty && (!choix.first.actif || choix.first.soldee || choix.first.receptions.isNotEmpty),
@@ -241,7 +242,8 @@ class _CommandesFournisseursPageState extends ConsumerState<CommandesFournisseur
           DsActionModule(
             cle: const ValueKey('cmdf_annuler'),
             libelle: l10n.dsAnnuler,
-            icone: LucideIcons.ban,
+            icone: LucideIcons.x,
+            iconeSeule: true,
             danger: true,
             onPressed: (choix, effacer) => _annuler(choix, effacer, noms),
           ),

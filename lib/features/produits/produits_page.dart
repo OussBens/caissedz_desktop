@@ -438,6 +438,7 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
         DsActionModule(
           libelle: l10n.communModifier,
           icone: LucideIcons.pencil,
+          iconeSeule: true,
           regle: DsRegleSelection.une,
           onPressed: (choix, _) => modifier(choix.first),
         ),
@@ -531,6 +532,7 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
         DsActionModule(
           libelle: l10n.communModifier,
           icone: LucideIcons.pencil,
+          iconeSeule: true,
           regle: DsRegleSelection.une,
           desactive: (choix) => choix.isNotEmpty && choix.first.systeme,
           onPressed: (choix, _) => modifier(choix.first),
@@ -626,6 +628,7 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
         DsActionModule(
           libelle: l10n.communModifier,
           icone: LucideIcons.pencil,
+          iconeSeule: true,
           regle: DsRegleSelection.une,
           desactive: (choix) => choix.isNotEmpty && choix.first.systeme,
           onPressed: (choix, _) => modifier(choix.first),
@@ -730,6 +733,7 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
         DsActionModule(
           libelle: l10n.communModifier,
           icone: LucideIcons.pencil,
+          iconeSeule: true,
           regle: DsRegleSelection.une,
           onPressed: (choix, _) => modifier(choix.first),
         ),
@@ -825,6 +829,7 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
         DsActionModule(
           libelle: l10n.communModifier,
           icone: LucideIcons.pencil,
+          iconeSeule: true,
           regle: DsRegleSelection.une,
           onPressed: (choix, _) => modifier(choix.first),
         ),

@@ -34,6 +34,7 @@ class DsButton extends StatefulWidget {
     this.delaiGarde = const Duration(milliseconds: 450),
     this.tooltip,
     this.autofocus = false,
+    this.iconeSeule = false,
   });
 
   final String libelle;
@@ -50,6 +51,9 @@ class DsButton extends StatefulWidget {
   final Duration delaiGarde;
   final String? tooltip;
   final bool autofocus;
+
+  /// Bouton carré réduit à son [icone] ; le [libelle] passe en infobulle (actions Modifier, Annuler).
+  final bool iconeSeule;
 
   @override
   State<DsButton> createState() => _DsButtonState();
@@ -112,6 +116,7 @@ class _DsButtonState extends State<DsButton> {
 
     final style = t.body.copyWith(fontSize: taillePolice, fontWeight: FontWeight.w600, height: 1, color: texte);
 
+    final seule = widget.iconeSeule && widget.icone != null;
     final contenu = Row(
       mainAxisSize: widget.pleineLargeur ? MainAxisSize.max : MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -127,10 +132,11 @@ class _DsButtonState extends State<DsButton> {
           Icon(LucideIcons.loaderCircle, size: tailleIcone, color: texte)
         else if (widget.icone != null)
           Icon(widget.icone, size: tailleIcone, color: texte),
-        Flexible(
-          child: Text(widget.libelle, style: style, maxLines: 1, overflow: TextOverflow.ellipsis),
-        ),
-        if (widget.kbd != null)
+        if (!seule)
+          Flexible(
+            child: Text(widget.libelle, style: style, maxLines: 1, overflow: TextOverflow.ellipsis),
+          ),
+        if (widget.kbd != null && !seule)
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
             decoration: BoxDecoration(color: kbdFond, borderRadius: DsRadius.borderXs),
@@ -175,7 +181,8 @@ class _DsButtonState extends State<DsButton> {
                 duration: DsMotion.fast,
                 curve: DsMotion.standard,
                 height: hauteur,
-                padding: EdgeInsets.symmetric(horizontal: paddingH),
+                width: seule ? hauteur : null,
+                padding: EdgeInsets.symmetric(horizontal: seule ? 0 : paddingH),
                 decoration: BoxDecoration(
                   color: fond,
                   borderRadius: DsRadius.borderMd,
@@ -189,8 +196,9 @@ class _DsButtonState extends State<DsButton> {
         ),
       ),
     );
-    if (widget.tooltip != null) {
-      bouton = Tooltip(message: widget.tooltip!, child: bouton);
+    final infobulle = widget.tooltip ?? (seule ? widget.libelle : null);
+    if (infobulle != null) {
+      bouton = Tooltip(message: infobulle, child: bouton);
     }
     return bouton;
   }

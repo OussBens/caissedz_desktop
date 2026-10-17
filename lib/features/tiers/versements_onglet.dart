@@ -216,6 +216,7 @@ class _VersementsOngletState extends ConsumerState<VersementsOnglet> {
         DsActionModule(
           libelle: l10n.communModifier,
           icone: LucideIcons.pencil,
+          iconeSeule: true,
           regle: DsRegleSelection.une,
           desactive: (choix) => choix.isNotEmpty && (!choix.first.actif || choix.first.verrouille),
           onPressed: (choix, _) => afficherVersementTiers(
@@ -228,7 +229,8 @@ class _VersementsOngletState extends ConsumerState<VersementsOnglet> {
         ),
         DsActionModule(
           libelle: l10n.dsAnnuler,
-          icone: LucideIcons.ban,
+          icone: LucideIcons.x,
+          iconeSeule: true,
           danger: true,
           onPressed: (choix, effacer) => _annuler(choix, effacer, noms),
         ),

@@ -393,6 +393,7 @@ class _VentesPageState extends ConsumerState<VentesPage> {
                 DsActionModule(
                   libelle: l10n.communModifier,
                   icone: LucideIcons.pencil,
+                  iconeSeule: true,
                   regle: DsRegleSelection.une,
                   desactive: (choix) => choix.isNotEmpty && choix.first.annule,
                   onPressed: (choix, _) => modifier(choix.first),
@@ -400,7 +401,8 @@ class _VentesPageState extends ConsumerState<VentesPage> {
                 if (peutAnnuler)
                   DsActionModule(
                     libelle: l10n.dsAnnuler,
-                    icone: LucideIcons.ban,
+                    icone: LucideIcons.x,
+                    iconeSeule: true,
                     danger: true,
                     onPressed: (choix, effacer) =>
                         annulerPaniers(context, ref, choix, effacer, nomsClients: nomsClients),

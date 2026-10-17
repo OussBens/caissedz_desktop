@@ -8,6 +8,7 @@ import 'package:caissedz_desktop/data/documents_commerciaux_repository.dart';
 import 'package:caissedz_desktop/data/stock_repository.dart';
 import 'package:caissedz_desktop/domain/models/produit.dart';
 import 'package:caissedz_desktop/domain/models/tiers.dart';
+import 'package:caissedz_desktop/features/caisse/pos_dialogs.dart';
 import 'package:caissedz_desktop/features/produits/produits_providers.dart';
 import 'package:caissedz_desktop/features/stock/stock_providers.dart';
 import 'package:caissedz_desktop/features/tiers/tiers_providers.dart';
@@ -49,7 +50,12 @@ Future<void> _donnees(WidgetTester tester, ProviderContainer c) async {
 
 void main() {
   testWidgets('devis saisi au prix de vente, transformé en commande, livré en partie (BL + vente)', (tester) async {
-    final c = await pumpApp(tester, routeInitiale: '/documents', taille: _taille);
+    final c = await pumpApp(
+      tester,
+      routeInitiale: '/documents',
+      taille: _taille,
+      overrides: [apercuPdfProvider.overrideWithValue((cle, pdf, nom) => Text(nom, key: cle))],
+    );
     await _donnees(tester, c);
     await clic(tester, _cle('doc_nouveau_Devis'));
     await clic(tester, _cle('doc_client'));
@@ -90,6 +96,14 @@ void main() {
     expect(find.text('LIV0001'), findsOneWidget);
     expect((await DocumentsCommerciauxRepository(db).livraison('LIV0001'))!.venteCode, 'VTE0001');
     await tester.pump(const Duration(seconds: 5));
+    // Aperçu A4 du bon de livraison avant impression.
+    await clic(tester, find.text('LIV0001'));
+    await clic(tester, _cle('livraison_imprimer'));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pumpAndSettle();
+    expect(_cle('apercu_document'), findsOneWidget);
+    expect(_cle('apercu_imprimer'), findsOneWidget);
+    await clic(tester, _cle('apercu_fermer'));
   });
 
   testWidgets('commande fournisseur : réception pré-remplie, solde du reliquat', (tester) async {

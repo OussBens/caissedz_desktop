@@ -255,13 +255,15 @@ class _RetoursPageState extends ConsumerState<RetoursPage> {
           DsActionModule(
             libelle: l10n.communModifier,
             icone: LucideIcons.pencil,
+            iconeSeule: true,
             regle: DsRegleSelection.une,
             desactive: (choix) => choix.isNotEmpty && !choix.first.actif,
             onPressed: (choix, _) => modifier(choix.first),
           ),
           DsActionModule(
             libelle: l10n.dsAnnuler,
-            icone: LucideIcons.ban,
+            icone: LucideIcons.x,
+            iconeSeule: true,
             danger: true,
             onPressed: (choix, effacer) => annulerRetours(context, ref, choix, effacer, nomsTiers: noms),
           ),

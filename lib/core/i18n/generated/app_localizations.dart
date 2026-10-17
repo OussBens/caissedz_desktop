@@ -14432,6 +14432,12 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Réception de la commande {code}'**
   String entDepuisCommande(String code);
+
+  /// No description provided for @apercuEnregistrerPdf.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrer en PDF'**
+  String get apercuEnregistrerPdf;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

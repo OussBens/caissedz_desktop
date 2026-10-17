@@ -329,6 +329,7 @@ class _TiersPageState extends ConsumerState<TiersPage> {
         DsActionModule(
           libelle: l10n.communModifier,
           icone: LucideIcons.pencil,
+          iconeSeule: true,
           regle: DsRegleSelection.une,
           desactive: (choix) => choix.isNotEmpty && choix.first.systeme,
           onPressed: (choix, _) => modifier(choix.first),
@@ -348,7 +349,8 @@ class _TiersPageState extends ConsumerState<TiersPage> {
         ),
         DsActionModule(
           libelle: l10n.dsAnnuler,
-          icone: LucideIcons.ban,
+          icone: LucideIcons.x,
+          iconeSeule: true,
           danger: true,
           onPressed: (choix, effacer) => annulerTiers(context, ref, choix, effacer),
         ),
