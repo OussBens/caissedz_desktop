@@ -115,6 +115,7 @@ String messageErreurUtilisateur(AppLocalizations l10n, ErreurUtilisateur e) => s
   ErreurUtilisateur.identifiantPris => l10n.usrIdentifiantPris,
   ErreurUtilisateur.motDePasseFaible => l10n.usrErrMotDePasse,
   ErreurUtilisateur.telephoneObligatoire => l10n.usrErrTelephone,
+  ErreurUtilisateur.telephoneInvalide => l10n.tiersFormatTelephone,
   ErreurUtilisateur.roleInvalide => l10n.usrErrRole,
   ErreurUtilisateur.magasinsObligatoires => l10n.usrErrMagasins,
   ErreurUtilisateur.compteAdministrateur => l10n.usrBloqueAdmin,

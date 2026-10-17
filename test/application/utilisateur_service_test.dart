@@ -64,6 +64,8 @@ void main() {
       await expectLater(creer(identifiant: 'ADMIN'), _erreurU(ErreurUtilisateur.identifiantPris));
       await expectLater(creer(motDePasse: 'abcd'), _erreurU(ErreurUtilisateur.motDePasseFaible));
       await expectLater(creer(telephone: ' '), _erreurU(ErreurUtilisateur.telephoneObligatoire));
+      await expectLater(creer(telephone: '0552'), _erreurU(ErreurUtilisateur.telephoneInvalide));
+      await expectLater(creer(telephone: '0852112233'), _erreurU(ErreurUtilisateur.telephoneInvalide));
       await expectLater(creer(role: Roles.admin), _erreurU(ErreurUtilisateur.roleInvalide), reason: 'admin unique');
       await expectLater(creer(magasins: []), _erreurU(ErreurUtilisateur.magasinsObligatoires));
       await creer();
@@ -93,7 +95,7 @@ void main() {
       final u = await s.creer(
         identifiant: 'karim',
         motDePasse: 'Karim2026',
-        telephone: '0552',
+        telephone: '0552112233',
         roleCode: Roles.magasinier,
         magasins: const ['MAG0000'],
       );
@@ -116,7 +118,7 @@ void main() {
         s.modifier(
           'USR0000',
           identifiant: 'admin',
-          telephone: '0550',
+          telephone: '0550112233',
           roleCode: Roles.caissier,
           magasins: const ['MAG0000'],
         ),
@@ -125,7 +127,7 @@ void main() {
       final admin = await s.modifier(
         'USR0000',
         identifiant: 'admin',
-        telephone: '0550',
+        telephone: '0550112233',
         roleCode: Roles.admin,
         caisseCode: 'CIS0000',
         magasins: const ['MAG0000'],
@@ -139,7 +141,7 @@ void main() {
       final u = await s.creer(
         identifiant: 'nadia',
         motDePasse: 'Nadia2026',
-        telephone: '0663',
+        telephone: '0663112233',
         roleCode: Roles.caissier,
         magasins: const ['MAG0000'],
       );
@@ -195,7 +197,7 @@ void main() {
       await UtilisateurService(base.db, utilisateurCode: 'USR0000', hachage: _hachage).creer(
         identifiant: 'amina',
         motDePasse: 'Amina2026',
-        telephone: '0661',
+        telephone: '0661112233',
         roleCode: Roles.caissier,
         magasins: const ['MAG0000'],
       );
@@ -211,7 +213,7 @@ void main() {
         UtilisateurService(base.db, utilisateurCode: 'USR0000', hachage: _hachage).creer(
           identifiant: 'karim',
           motDePasse: 'Karim2026',
-          telephone: '0552',
+          telephone: '0552112233',
           roleCode: Roles.magasinier,
           magasins: const ['MAG0000'],
         ),

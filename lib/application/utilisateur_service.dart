@@ -10,6 +10,7 @@ import '../data/utilisateur_repository.dart';
 import '../domain/models/utilisateur.dart';
 import '../domain/permissions.dart';
 import 'auth_service.dart';
+import 'tiers_service.dart';
 
 enum ErreurUtilisateur {
   utilisateurInconnu,
@@ -17,6 +18,7 @@ enum ErreurUtilisateur {
   identifiantPris,
   motDePasseFaible,
   telephoneObligatoire,
+  telephoneInvalide,
   roleInvalide,
   magasinsObligatoires,
   compteAdministrateur,
@@ -215,6 +217,9 @@ class UtilisateurService {
       throw const UtilisateurException(ErreurUtilisateur.identifiantPris);
     }
     if (telephone.trim().isEmpty) throw const UtilisateurException(ErreurUtilisateur.telephoneObligatoire);
+    if (!TiersService.telephoneValide(telephone.trim())) {
+      throw const UtilisateurException(ErreurUtilisateur.telephoneInvalide);
+    }
     if (magasins.isEmpty) throw const UtilisateurException(ErreurUtilisateur.magasinsObligatoires);
   }
 

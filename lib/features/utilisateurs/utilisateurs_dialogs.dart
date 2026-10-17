@@ -1,12 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../app/providers.dart';
 import '../../application/role_service.dart';
+import '../../application/tiers_service.dart';
 import '../../application/utilisateur_service.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
@@ -192,7 +194,7 @@ class _UtilisateurFormState extends ConsumerState<_UtilisateurForm> {
       final champ = switch (e.erreur) {
         ErreurUtilisateur.identifiantInvalide || ErreurUtilisateur.identifiantPris => 'identifiant',
         ErreurUtilisateur.motDePasseFaible => 'mdp',
-        ErreurUtilisateur.telephoneObligatoire => 'tel',
+        ErreurUtilisateur.telephoneObligatoire || ErreurUtilisateur.telephoneInvalide => 'tel',
         ErreurUtilisateur.roleInvalide => 'role',
         ErreurUtilisateur.magasinsObligatoires => 'magasins',
         _ => 'etat',
@@ -209,11 +211,14 @@ class _UtilisateurFormState extends ConsumerState<_UtilisateurForm> {
     final l10n = AppLocalizations.of(context);
     final force = UtilisateurService.force(_motDePasse.text);
     final role = widget.roles.where((r) => r.code == _role).firstOrNull;
+    final tel = _telephone.text.trim();
+    final telErr = tel.isNotEmpty && !TiersService.telephoneValide(tel) ? l10n.tiersFormatTelephone : null;
     final valide =
         _identifiant.text.trim().isNotEmpty &&
         !_identifiantPris &&
         (_edition || force >= UtilisateurService.forceMinimale) &&
-        _magasins.isNotEmpty;
+        _magasins.isNotEmpty &&
+        telErr == null;
     const lw = 128.0;
     final nomAffiche = _u == null ? '' : (_u!.nomComplet.isEmpty ? _u!.identifiant : _u!.nomComplet);
     return DsDialog(
@@ -308,11 +313,14 @@ class _UtilisateurFormState extends ConsumerState<_UtilisateurForm> {
             libelle: l10n.usrTelephone,
             obligatoire: true,
             largeurLibelle: lw,
-            erreur: _erreurs['tel'],
+            erreur: _erreurs['tel'] ?? telErr,
             child: DsTextField(
               key: const ValueKey('usr_telephone'),
               controller: _telephone,
-              indice: l10n.usrTelephoneIndice,
+              indice: '05xxxxxxxx',
+              typeClavier: TextInputType.phone,
+              // Mobile 05/06/07 : 10 chiffres ; fixe 02/03/04 : 9 chiffres.
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(10)],
               onChanged: (_) => setState(() => _erreurs.remove('tel')),
             ),
           ),
