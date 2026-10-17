@@ -3931,5 +3931,16 @@
       }
     }
   },
-  "apercuEnregistrerPdf": "Enregistrer en PDF"
+  "apercuEnregistrerPdf": "Enregistrer en PDF",
+  "rechercheGlobaleTitre": "Recherche globale",
+  "rechercheGlobaleIndice": "Rechercher dans tout le système…",
+  "rechercheGlobaleAide": "Code, nom, téléphone, code-barres, référence : produits, clients, fournisseurs, ventes, factures, devis, livraisons, entrées, retours, versements…",
+  "rechercheGlobaleAucun": "Aucun résultat pour « {texte} »",
+  "@rechercheGlobaleAucun": {
+    "placeholders": {
+      "texte": {
+        "type": "String"
+      }
+    }
+  }
 }

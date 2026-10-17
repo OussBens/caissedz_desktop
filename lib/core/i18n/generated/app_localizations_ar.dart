@@ -7579,4 +7579,19 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get apercuEnregistrerPdf => 'حفظ بصيغة PDF';
+
+  @override
+  String get rechercheGlobaleTitre => 'البحث الشامل';
+
+  @override
+  String get rechercheGlobaleIndice => 'ابحث في كامل النظام…';
+
+  @override
+  String get rechercheGlobaleAide =>
+      'رمز، اسم، هاتف، رمز شريطي، مرجع: المنتجات، الزبائن، الموردون، المبيعات، الفواتير، عروض الأسعار، التسليمات، المدخلات، المرتجعات، الدفعات…';
+
+  @override
+  String rechercheGlobaleAucun(String texte) {
+    return 'لا توجد نتائج لـ « $texte »';
+  }
 }

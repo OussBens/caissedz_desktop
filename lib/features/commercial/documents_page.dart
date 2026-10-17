@@ -104,7 +104,7 @@ class _OngletDocumentsState extends ConsumerState<_OngletDocuments> {
         libelle: l10n.communDate,
         attenue: true,
         valeur: (d) => d.date,
-        cellule: (_, d) => Text(formatDate.format(d.date)),
+        cellule: (_, d) => Text(formatDateHeure.format(d.date)),
       ),
       DsColonne(id: 'client', libelle: l10n.ventesClient, flex: 2, valeur: (d) => noms[d.clientCode] ?? d.clientCode),
       DsColonne(id: 'n', libelle: l10n.stkArticles, numerique: true, valeur: (d) => d.lignes.length),
@@ -589,7 +589,7 @@ Future<void> afficherDetailDocumentClient(BuildContext context, WidgetRef ref, D
       largeur: 980,
       icone: d.estCommande ? LucideIcons.clipboardList : LucideIcons.fileText,
       titre: '$type ${d.code}',
-      description: '${formatDate.format(d.date)} · ${noms[d.clientCode] ?? d.clientCode}',
+      description: '${formatDateHeure.format(d.date)} · ${noms[d.clientCode] ?? d.clientCode}',
       badges: [DsBadge(libelle: libelleStatutDocument(l10n, d.statut), ton: tonStatutDocument(d.statut))],
       onModifier: () => afficherFormulaireDocumentClient(context, ref, d.type, document: d),
       modifierDesactive: !d.modifiable,
@@ -694,7 +694,7 @@ Future<void> afficherDetailDocumentClient(BuildContext context, WidgetRef ref, D
             items: [
               for (final b in livraisons)
                 DsKeyValue(
-                  '${b.code} · ${formatDate.format(b.date)}',
+                  '${b.code} · ${formatDateHeure.format(b.date)}',
                   '${formaterNombre(b.quantite)} · ${b.venteCode}${b.actif ? '' : ' · ${l10n.docStatutAnnule}'}',
                 ),
             ],

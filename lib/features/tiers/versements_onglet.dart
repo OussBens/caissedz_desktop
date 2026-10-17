@@ -69,7 +69,7 @@ class _VersementsOngletState extends ConsumerState<VersementsOnglet> {
         libelle: l10n.communDate,
         valeur: (v) => v.date,
         attenue: true,
-        cellule: (_, v) => Text(formatDate.format(v.date)),
+        cellule: (_, v) => Text(formatDateHeure.format(v.date)),
       ),
       DsColonne(
         id: 'nom',
@@ -118,7 +118,7 @@ class _VersementsOngletState extends ConsumerState<VersementsOnglet> {
         id: 'annuleLe',
         libelle: l10n.auditAnnuleLe,
         visibleParDefaut: false,
-        valeur: (v) => v.annuleLe == null ? null : formatDate.format(v.annuleLe!),
+        valeur: (v) => v.annuleLe == null ? null : formatDateHeure.format(v.annuleLe!),
       ),
       DsColonne(id: 'annulePar', libelle: l10n.auditAnnulePar, visibleParDefaut: false, valeur: (v) => v.annulePar),
       DsColonne(id: 'motif', libelle: l10n.auditMotif, visibleParDefaut: false, valeur: (v) => v.motifAnnulation),
@@ -300,7 +300,7 @@ Future<void> afficherDetailVersement(BuildContext context, WidgetRef ref, Versem
       largeur: 860,
       icone: v.estRetour ? LucideIcons.undo2 : LucideIcons.handCoins,
       titre: '${v.estRetour ? l10n.versementRetourTitre : l10n.versementTitre} ${v.code}',
-      description: '${formatDate.format(v.date)} · ${nomTiers ?? v.tiersCode}',
+      description: '${formatDateHeure.format(v.date)} · ${nomTiers ?? v.tiersCode}',
       badges: [
         BadgeStatut(client ? 'client' : 'fournisseur'),
         BadgeStatut(v.actif ? 'actif' : 'annule'),
@@ -366,7 +366,7 @@ Future<void> afficherDetailVersement(BuildContext context, WidgetRef ref, Versem
           items: [
             DsKeyValue(l10n.auditCreePar, v.utilisateurCode),
             DsKeyValue(l10n.auditAnnulePar, v.annulePar),
-            DsKeyValue(l10n.auditAnnuleLe, v.annuleLe == null ? null : formatDate.format(v.annuleLe!)),
+            DsKeyValue(l10n.auditAnnuleLe, v.annuleLe == null ? null : formatDateHeure.format(v.annuleLe!)),
             DsKeyValue(l10n.auditMotif, v.motifAnnulation, span: 3),
           ],
         ),

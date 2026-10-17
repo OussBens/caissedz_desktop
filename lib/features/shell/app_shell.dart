@@ -17,6 +17,7 @@ import '../compte/mon_compte_dialog.dart';
 import '../configuration/configuration_dialog.dart';
 import 'alertes_dialog.dart';
 import 'controles_fenetre.dart';
+import 'recherche_globale.dart';
 
 /// Intention « ouvrir le menu des modules » (Ctrl+M).
 class OuvrirMenuModulesIntent extends Intent {
@@ -144,11 +145,17 @@ class _AppShellState extends ConsumerState<AppShell> {
     }
 
     return Shortcuts(
-      shortcuts: const {SingleActivator(LogicalKeyboardKey.keyM, control: true): OuvrirMenuModulesIntent()},
+      shortcuts: const {
+        SingleActivator(LogicalKeyboardKey.keyM, control: true): OuvrirMenuModulesIntent(),
+        SingleActivator(LogicalKeyboardKey.keyK, control: true): RechercheGlobaleIntent(),
+      },
       child: Actions(
         actions: {
           OuvrirMenuModulesIntent: CallbackAction<OuvrirMenuModulesIntent>(
             onInvoke: (_) => afficherMenuModules(context),
+          ),
+          RechercheGlobaleIntent: CallbackAction<RechercheGlobaleIntent>(
+            onInvoke: (_) => afficherRechercheGlobale(context),
           ),
         },
         child: Focus(
@@ -200,6 +207,7 @@ class _AppShellState extends ConsumerState<AppShell> {
                             ? ''
                             : Referentiel.roles.libelle(session.utilisateur.roleNom ?? '', locale),
                         enLigne: ref.watch(internetProvider),
+                        rechercheGlobale: const ChampRechercheGlobale(),
                         alertes: alertes.total,
                         onMenu: () => afficherMenuModules(context),
                         onAlertes: () async {

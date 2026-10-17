@@ -7611,4 +7611,19 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get apercuEnregistrerPdf => 'Enregistrer en PDF';
+
+  @override
+  String get rechercheGlobaleTitre => 'Recherche globale';
+
+  @override
+  String get rechercheGlobaleIndice => 'Rechercher dans tout le système…';
+
+  @override
+  String get rechercheGlobaleAide =>
+      'Code, nom, téléphone, code-barres, référence : produits, clients, fournisseurs, ventes, factures, devis, livraisons, entrées, retours, versements…';
+
+  @override
+  String rechercheGlobaleAucun(String texte) {
+    return 'Aucun résultat pour « $texte »';
+  }
 }

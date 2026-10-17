@@ -98,7 +98,7 @@ class _EntreesPageState extends ConsumerState<EntreesPage> {
         libelle: l10n.communDate,
         attenue: true,
         valeur: (a) => a.date,
-        cellule: (_, a) => Text(formatDate.format(a.date)),
+        cellule: (_, a) => Text(formatDateHeure.format(a.date)),
       ),
       DsColonne(
         id: 'frn',

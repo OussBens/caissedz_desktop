@@ -619,6 +619,7 @@ class DsTopBar extends StatelessWidget {
     this.themeSombre = false,
     this.onTheme,
     this.largeurRecherche = 340,
+    this.rechercheGlobale,
   });
   final String utilisateur;
   final String role;
@@ -635,6 +636,9 @@ class DsTopBar extends StatelessWidget {
   final bool themeSombre;
   final ValueChanged<bool>? onTheme;
   final double largeurRecherche;
+
+  /// Champ de recherche globale, placé à côté du témoin réseau et des alertes.
+  final Widget? rechercheGlobale;
 
   @override
   Widget build(BuildContext context) {
@@ -665,6 +669,7 @@ class DsTopBar extends StatelessWidget {
                 ? const SizedBox.shrink()
                 : Padding(padding: const EdgeInsets.symmetric(horizontal: 8), child: favoris),
           ),
+          ?rechercheGlobale,
           DsTemoinLigne(enLigne: enLigne),
           ...actions,
           DsIconButton(

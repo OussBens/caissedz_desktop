@@ -112,7 +112,7 @@ class _BesoinsPageState extends ConsumerState<BesoinsPage> {
         libelle: l10n.communDate,
         attenue: true,
         valeur: (b) => b.date,
-        cellule: (_, b) => Text(formatDate.format(b.date)),
+        cellule: (_, b) => Text(formatDateHeure.format(b.date)),
       ),
       DsColonne(
         id: 'frn',

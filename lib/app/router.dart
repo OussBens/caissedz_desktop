@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../core/design_system/design_system.dart';
 import '../domain/modules.dart';
 import '../features/activation/activation_page.dart';
 import '../features/caisse/pos_page.dart';
@@ -76,7 +77,14 @@ GoRouter construireRouter(Ref ref, {String routeInitiale = routeAccueil}) {
             GoRoute(
               path: module.route,
               name: module.id,
-              pageBuilder: (context, state) => NoTransitionPage(key: ValueKey(module.id), child: pageModule(module)),
+              // `?onglet=` et `?q=` (recherche globale) : onglet à ouvrir et recherche pré-remplie dans la liste.
+              pageBuilder: (context, state) => NoTransitionPage(
+                key: ValueKey('${module.id}?${state.uri.query}'),
+                child: DsRechercheInitiale(
+                  texte: state.uri.queryParameters['q'],
+                  child: pageModule(module, onglet: int.tryParse(state.uri.queryParameters['onglet'] ?? '')),
+                ),
+              ),
             ),
           GoRoute(
             path: GaleriePage.route,
@@ -90,7 +98,7 @@ GoRouter construireRouter(Ref ref, {String routeInitiale = routeAccueil}) {
 }
 
 /// Page d'un module (17 modules + pages rattachées ouvertes sur l'onglet de leur module parent).
-Widget pageModule(ModuleApp module) => switch (module.id) {
+Widget pageModule(ModuleApp module, {int? onglet}) => switch (module.id) {
   'parametres' => const ParametresPage(),
   'tableau_bord' => const TableauBordPage(),
   'situation' => const TableauBordPage(ongletInitial: 1),
@@ -100,10 +108,10 @@ Widget pageModule(ModuleApp module) => switch (module.id) {
   'entrees' => const EntreesPage(),
   'gestion_caisse' => const GestionCaissePage(),
   'clotures' => const GestionCaissePage(ongletInitial: 2),
-  'ventes' => const VentesPage(),
-  'documents' => const DocumentsPage(),
+  'ventes' => VentesPage(ongletInitial: onglet ?? 0),
+  'documents' => DocumentsPage(ongletInitial: onglet ?? 0),
   'commandes_fournisseurs' => const CommandesFournisseursPage(),
-  'retours' => const RetoursPage(),
+  'retours' => RetoursPage(ongletInitial: onglet ?? 0),
   'clients' => const ClientsPage(),
   'fournisseurs' => const FournisseursPage(),
   'versements' => const ClientsPage(ongletInitial: 1),

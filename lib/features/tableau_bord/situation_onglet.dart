@@ -816,7 +816,7 @@ class _VueAnalyseState extends ConsumerState<_VueAnalyse> {
         montant('achats', l10n.situationAchats),
         montant('paye', l10n.situationPaye),
         montant('credit', _id == 'scli' ? l10n.tiersCredit : l10n.situationDette, danger: true),
-        date('dernier', _id == 'scli' ? l10n.tiersDernierAchat : l10n.tiersDerniereEntree),
+        date('dernier', _id == 'scli' ? l10n.tiersDernierAchat : l10n.tiersDerniereEntree, heure: true),
       ],
     };
   }

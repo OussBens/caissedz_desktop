@@ -591,7 +591,7 @@ Future<void> afficherDetailSortie(BuildContext context, WidgetRef ref, SortieSto
       icone: LucideIcons.packageMinus,
       titre: l10n.stkSortieTitre(s.code),
       description:
-          '${formatDate.format(s.date)} · ${libelleMotif(l10n, s.motif)} · ${noms[s.magasinCode] ?? s.magasinCode}',
+          '${formatDateHeure.format(s.date)} · ${libelleMotif(l10n, s.motif)} · ${noms[s.magasinCode] ?? s.magasinCode}',
       badges: [BadgeStatut(s.actif ? 'actif' : 'annule')],
       onModifier: () => afficherFormulaireSortie(context, ref, sortie: s),
       modifierDesactive: !s.actif || s.retourCode != null,
@@ -922,7 +922,7 @@ Future<void> afficherDetailTransfert(BuildContext context, WidgetRef ref, Transf
       icone: LucideIcons.truck,
       titre: l10n.stkTransfertTitre(t.code),
       description:
-          '${formatDate.format(t.date)} · ${noms[t.magasinSource] ?? t.magasinSource} → '
+          '${formatDateHeure.format(t.date)} · ${noms[t.magasinSource] ?? t.magasinSource} → '
           '${noms[t.magasinDestination] ?? t.magasinDestination}',
       badges: [BadgeStatut(t.actif ? 'valide' : 'annule')],
       onModifier: () => afficherFormulaireTransfert(context, ref, transfert: t),
@@ -1587,7 +1587,7 @@ Future<void> afficherDetailBesoin(BuildContext context, WidgetRef ref, Besoin b)
       largeur: 960,
       icone: LucideIcons.clipboardList,
       titre: l10n.stkListeTitre(b.code),
-      description: '${formatDate.format(b.date)} · $nomFrn',
+      description: '${formatDateHeure.format(b.date)} · $nomFrn',
       badges: [BadgeStatut(statutBesoinDs(b))],
       onModifier: () => afficherFormulaireBesoin(context, ref, besoin: b),
       modifierDesactive: !b.actif || b.statut == StatutsBesoin.disponible,
@@ -1762,7 +1762,7 @@ Future<void> afficherProduitsSortie(BuildContext context, WidgetRef ref, SortieS
     ref,
     code: s.code,
     description:
-        '${formatDate.format(s.date)} · ${libelleMotif(l10n, s.motif)} · ${noms[s.magasinCode] ?? s.magasinCode}',
+        '${formatDateHeure.format(s.date)} · ${libelleMotif(l10n, s.motif)} · ${noms[s.magasinCode] ?? s.magasinCode}',
     lignes: s.lignes,
     prix: voitPrixAchat(ref),
   );
@@ -1778,7 +1778,7 @@ Future<void> afficherProduitsTransfert(BuildContext context, WidgetRef ref, Tran
     ref,
     code: t.code,
     description:
-        '${formatDate.format(t.date)} · ${noms[t.magasinSource] ?? t.magasinSource} → '
+        '${formatDateHeure.format(t.date)} · ${noms[t.magasinSource] ?? t.magasinSource} → '
         '${noms[t.magasinDestination] ?? t.magasinDestination}',
     lignes: [
       for (final l in t.lignes)
@@ -1802,7 +1802,7 @@ Future<void> afficherProduitsBesoin(BuildContext context, WidgetRef ref, Besoin 
     context,
     ref,
     code: b.code,
-    description: '${formatDate.format(b.date)} · ${fournisseurs[b.fournisseurCode] ?? b.fournisseurCode}',
+    description: '${formatDateHeure.format(b.date)} · ${fournisseurs[b.fournisseurCode] ?? b.fournisseurCode}',
     lignes: b.lignes,
     prix: true,
     libelleQte: l10n.stkACommander,

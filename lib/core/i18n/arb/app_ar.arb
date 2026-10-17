@@ -2578,5 +2578,9 @@
   "cmdfErreurReceptionLiee": "طلبية مستلمة: ألغ أولا الإدخالات المرتبطة",
   "cmdfErreurDejaSoldee": "الطلبية مسواة مسبقا",
   "entDepuisCommande": "استلام الطلبية {code}",
-  "apercuEnregistrerPdf": "حفظ بصيغة PDF"
+  "apercuEnregistrerPdf": "حفظ بصيغة PDF",
+  "rechercheGlobaleTitre": "البحث الشامل",
+  "rechercheGlobaleIndice": "ابحث في كامل النظام…",
+  "rechercheGlobaleAide": "رمز، اسم، هاتف، رمز شريطي، مرجع: المنتجات، الزبائن، الموردون، المبيعات، الفواتير، عروض الأسعار، التسليمات، المدخلات، المرتجعات، الدفعات…",
+  "rechercheGlobaleAucun": "لا توجد نتائج لـ « {texte} »"
 }

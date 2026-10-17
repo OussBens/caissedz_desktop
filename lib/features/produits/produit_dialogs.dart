@@ -293,7 +293,7 @@ class _DetailProduit extends ConsumerWidget {
                   libelle: l10n.communDate,
                   attenue: true,
                   valeur: (m) => m.date,
-                  cellule: (_, m) => Text(formatDate.format(m.date)),
+                  cellule: (_, m) => Text(formatDateHeure.format(m.date)),
                 ),
                 DsColonne(
                   id: 't',

@@ -196,7 +196,7 @@ class _MagasinsPageState extends ConsumerState<MagasinsPage> {
         libelle: l10n.communDate,
         attenue: true,
         valeur: (t) => t.date,
-        cellule: (_, t) => Text(formatDate.format(t.date)),
+        cellule: (_, t) => Text(formatDateHeure.format(t.date)),
       ),
       DsColonne(id: 'src', libelle: l10n.stkDepuis, flex: 2, valeur: (t) => noms[t.magasinSource] ?? t.magasinSource),
       DsColonne(

@@ -583,7 +583,7 @@ Future<void> afficherDetailTiers(
                 libelle: l10n.communDate,
                 valeur: (d) => d.date,
                 attenue: true,
-                cellule: (_, d) => Text(formatDate.format(d.date)),
+                cellule: (_, d) => Text(formatDateHeure.format(d.date)),
               ),
               DsColonne(
                 id: 'm',
@@ -666,7 +666,7 @@ class _SituationTiersState extends ConsumerState<_SituationTiers> {
         libelle: l10n.communDate,
         valeur: (x) => x.ligne.date,
         attenue: true,
-        cellule: (_, x) => Text(formatDate.format(x.ligne.date)),
+        cellule: (_, x) => Text(formatDateHeure.format(x.ligne.date)),
       ),
       DsColonne(
         id: 'type',

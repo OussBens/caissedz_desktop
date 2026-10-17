@@ -74,7 +74,7 @@ class _RetoursPageState extends ConsumerState<RetoursPage> {
         libelle: l10n.communDate,
         valeur: (r) => r.date,
         attenue: true,
-        cellule: (_, r) => Text(formatDate.format(r.date)),
+        cellule: (_, r) => Text(formatDateHeure.format(r.date)),
       ),
       DsColonne(
         id: 'tiers',

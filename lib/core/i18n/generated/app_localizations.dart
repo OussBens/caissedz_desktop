@@ -14438,6 +14438,30 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Enregistrer en PDF'**
   String get apercuEnregistrerPdf;
+
+  /// No description provided for @rechercheGlobaleTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Recherche globale'**
+  String get rechercheGlobaleTitre;
+
+  /// No description provided for @rechercheGlobaleIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher dans tout le système…'**
+  String get rechercheGlobaleIndice;
+
+  /// No description provided for @rechercheGlobaleAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code, nom, téléphone, code-barres, référence : produits, clients, fournisseurs, ventes, factures, devis, livraisons, entrées, retours, versements…'**
+  String get rechercheGlobaleAide;
+
+  /// No description provided for @rechercheGlobaleAucun.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun résultat pour « {texte} »'**
+  String rechercheGlobaleAucun(String texte);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

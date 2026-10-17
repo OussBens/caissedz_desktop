@@ -285,7 +285,7 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
         libelle: (a) => a.code,
         colonnes: [
           DsColonnePicker(libelle: l10n.produitsColCode, valeur: (a) => a.code, attenue: true, mono: true),
-          DsColonnePicker(libelle: l10n.communDate, valeur: (a) => formatDate.format(a.date), attenue: true),
+          DsColonnePicker(libelle: l10n.communDate, valeur: (a) => formatDateHeure.format(a.date), attenue: true),
           DsColonnePicker(
             libelle: l10n.retoursFournisseur,
             valeur: (a) => noms[a.fournisseurCode] ?? a.fournisseurCode,
@@ -602,7 +602,7 @@ Future<void> afficherDetailRetour(
       titre: l10n.retoursDetailTitre(r.code),
       icone: LucideIcons.undo2,
       largeur: 960,
-      description: '${formatDate.format(r.date)} · $tiers',
+      description: '${formatDateHeure.format(r.date)} · $tiers',
       onModifier: onModifier,
       modifierDesactive: !r.actif,
       badges: [
@@ -637,7 +637,7 @@ Future<void> afficherDetailRetour(
           icone: LucideIcons.info,
           items: [
             DsKeyValue(l10n.produitsColCode, r.code, mono: true),
-            DsKeyValue(l10n.communDate, formatDate.format(r.date)),
+            DsKeyValue(l10n.communDate, formatDateHeure.format(r.date)),
             DsKeyValue(l10n.ventesType, r.estClient ? l10n.retoursChoixClient : l10n.retoursChoixFournisseur),
             DsKeyValue(r.estClient ? l10n.retoursClient : l10n.retoursFournisseur, tiers),
             DsKeyValue(l10n.retoursPieceOrigine, r.documentCode, mono: true),

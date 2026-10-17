@@ -57,7 +57,7 @@ class _CommandesFournisseursPageState extends ConsumerState<CommandesFournisseur
         libelle: l10n.communDate,
         attenue: true,
         valeur: (c) => c.date,
-        cellule: (_, c) => Text(formatDate.format(c.date)),
+        cellule: (_, c) => Text(formatDateHeure.format(c.date)),
       ),
       DsColonne(
         id: 'frn',
@@ -495,7 +495,7 @@ Future<void> afficherDetailCommandeFournisseur(BuildContext context, WidgetRef r
       largeur: 960,
       icone: LucideIcons.clipboardList,
       titre: l10n.cmdfTitre(c.code),
-      description: '${formatDate.format(c.date)} · ${noms[c.fournisseurCode] ?? c.fournisseurCode}',
+      description: '${formatDateHeure.format(c.date)} · ${noms[c.fournisseurCode] ?? c.fournisseurCode}',
       badges: [
         DsBadge(libelle: libelleStatutCommandeFournisseur(l10n, c.statut), ton: tonStatutCommandeFournisseur(c.statut)),
       ],

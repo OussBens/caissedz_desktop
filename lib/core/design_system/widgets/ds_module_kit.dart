@@ -96,6 +96,15 @@ bool dansPeriode(DateTime date, DsPeriode periode) {
   return !j.isBefore(du) && !j.isAfter(au);
 }
 
+/// Recherche pré-remplie dans les [DsModuleTable] du sous-arbre (ouverture depuis la recherche globale).
+class DsRechercheInitiale extends InheritedWidget {
+  const DsRechercheInitiale({super.key, required this.texte, required super.child});
+  final String? texte;
+
+  @override
+  bool updateShouldNotify(DsRechercheInitiale oldWidget) => texte != oldWidget.texte;
+}
+
 /// Mode d'affichage d'un [DsModuleTable] à cartes.
 enum DsVueModule { grille, liste }
 
@@ -195,6 +204,20 @@ class _DsModuleTableState<T> extends State<DsModuleTable<T>> {
   Set<Object> _selection = {};
   String _recherche = '';
   final _controleur = TextEditingController();
+  bool _rechercheInitialeLue = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_rechercheInitialeLue) return;
+    _rechercheInitialeLue = true;
+    final texte = context.getInheritedWidgetOfExactType<DsRechercheInitiale>()?.texte;
+    if (texte != null && texte.isNotEmpty) {
+      _controleur.text = texte;
+      _recherche = texte;
+    }
+  }
+
   late DsVueModule _vue = widget.carte != null ? widget.vueParDefaut : DsVueModule.liste;
 
   @override

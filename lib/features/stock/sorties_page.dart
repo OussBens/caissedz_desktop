@@ -66,7 +66,7 @@ class _SortiesPageState extends ConsumerState<SortiesPage> {
         libelle: l10n.communDate,
         attenue: true,
         valeur: (s) => s.date,
-        cellule: (_, s) => Text(formatDate.format(s.date)),
+        cellule: (_, s) => Text(formatDateHeure.format(s.date)),
       ),
       DsColonne(id: 'type', libelle: l10n.stockColType, fort: true, valeur: (s) => libelleMotif(l10n, s.motif)),
       DsColonne(id: 'mag', libelle: l10n.stockColMagasin, flex: 2, valeur: (s) => noms[s.magasinCode] ?? s.magasinCode),

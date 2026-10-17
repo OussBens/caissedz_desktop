@@ -2578,5 +2578,9 @@
   "cmdfErreurReceptionLiee": "Order already received: cancel the linked entries first",
   "cmdfErreurDejaSoldee": "Order already closed",
   "entDepuisCommande": "Receiving order {code}",
-  "apercuEnregistrerPdf": "Save as PDF"
+  "apercuEnregistrerPdf": "Save as PDF",
+  "rechercheGlobaleTitre": "Global search",
+  "rechercheGlobaleIndice": "Search the whole system…",
+  "rechercheGlobaleAide": "Code, name, phone, barcode, reference: products, customers, suppliers, sales, invoices, quotes, deliveries, purchases, returns, payments…",
+  "rechercheGlobaleAucun": "No results for “{texte}”"
 }

@@ -458,7 +458,7 @@ class _VueEnsemble extends ConsumerWidget {
                         libelle: l10n.tableauBordHeure,
                         valeur: (r) => r['date'] as Comparable?,
                         attenue: true,
-                        cellule: (_, r) => Text(DateFormat('dd/MM HH:mm').format(r['date']! as DateTime)),
+                        cellule: (_, r) => Text(formatDateHeure.format(r['date']! as DateTime)),
                       ),
                       DsColonne(
                         id: 'client',

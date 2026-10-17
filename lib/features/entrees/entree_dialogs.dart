@@ -1013,7 +1013,7 @@ Future<void> afficherDetailEntree(BuildContext context, WidgetRef ref, Achat a) 
       largeur: 1060,
       icone: LucideIcons.packagePlus,
       titre: l10n.entDetailTitre(a.code),
-      description: '${formatDate.format(a.date)} · $frn · $mag',
+      description: '${formatDateHeure.format(a.date)} · $frn · $mag',
       badges: [BadgeStatut(a.statutPaiement)],
       onModifier: () => modifierEntree(context, ref, a),
       modifierDesactive: !a.actif,
@@ -1054,7 +1054,7 @@ Future<void> afficherDetailEntree(BuildContext context, WidgetRef ref, Achat a) 
             DsKeyValue(l10n.entNumFacture, a.reference ?? '—'),
             DsKeyValue(l10n.achatFournisseur, frn),
             DsKeyValue(l10n.stockColMagasin, mag),
-            DsKeyValue(l10n.communDate, formatDate.format(a.date)),
+            DsKeyValue(l10n.communDate, formatDateHeure.format(a.date)),
             DsKeyValue(
               l10n.achatColSource,
               bon != null ? '${libelleSourceAchat(l10n, a)} (${bon.code})' : libelleSourceAchat(l10n, a),
@@ -1153,7 +1153,7 @@ Future<void> afficherProduitsEntree(BuildContext context, WidgetRef ref, Achat a
   return afficherListeProduits<AchatLigne>(
     context,
     code: a.code,
-    description: '${formatDate.format(a.date)} · ${fournisseurs[a.fournisseurCode] ?? a.fournisseurCode}',
+    description: '${formatDateHeure.format(a.date)} · ${fournisseurs[a.fournisseurCode] ?? a.fournisseurCode}',
     lignes: a.lignes,
     cle: (l) => l.produitCode,
     colonnes: [
