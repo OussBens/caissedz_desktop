@@ -976,7 +976,6 @@
   "tableauBordPeriodePrecedente": "الفترة السابقة",
   "tableauBordVentes": "المبيعات",
   "tableauBordVentesInfo": "مجموع السلال المحصلة خلال الفترة",
-  "tableauBordVsPrecedente": "مقارنة بالفترة السابقة",
   "tableauBordPrecedenteInfo": "نفس عدد الأيام، قبل الفترة مباشرة",
   "tableauBordAchats": "المشتريات",
   "tableauBordAchatsInfo": "الإدخالات المصادق عليها (وصولات الشراء)",
@@ -2601,5 +2600,6 @@
   "retoursMontantRetourPassage": "زبون عابر: يسترجع كامل مبلغ الإرجاع.",
   "retoursMontantRetourMax": "بين 0 و {plafond}",
   "retoursErreurMontant": "مبلغ الإرجاع غير صالح: يجب أن يكون بين 0 ومبلغ الإرجاع.",
-  "retoursRepartition": "دفعة {versement} · رصيد دائن {avoir}"
+  "retoursRepartition": "دفعة {versement} · رصيد دائن {avoir}",
+  "retoursMontantComplet": "المبلغ كاملاً"
 }

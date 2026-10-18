@@ -2485,9 +2485,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tableauBordVentesInfo => 'Total of baskets cashed in over the period';
 
   @override
-  String get tableauBordVsPrecedente => 'vs previous period';
-
-  @override
   String get tableauBordPrecedenteInfo => 'Same number of days, just before the period';
 
   @override
@@ -7682,4 +7679,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String retoursRepartition(String avoir, String versement) {
     return 'Payment $versement · Credit $avoir';
   }
+
+  @override
+  String get retoursMontantComplet => 'Full amount';
 }

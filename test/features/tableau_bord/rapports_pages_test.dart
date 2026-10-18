@@ -67,6 +67,11 @@ void main() {
     await _jeu(c);
     await tester.pumpAndSettle();
     expect(find.byType(DsStatCard), findsNWidgets(6));
+    // Toutes les cartes sont cliquables et de même hauteur.
+    final cartes = tester.widgetList<DsStatCard>(find.byType(DsStatCard));
+    expect(cartes.every((k) => k.onTap != null && k.sousTexte == null), isTrue);
+    final hauteurs = {for (final e in find.byType(DsStatCard).evaluate()) e.size!.height};
+    expect(hauteurs, hasLength(1));
     expect(find.text('Dette fournisseurs'), findsOneWidget);
     expect(find.textContaining('500,00', findRichText: true), findsWidgets); // ventes = net (aucun achat)
     expect(find.byType(DsLineChart), findsOneWidget);

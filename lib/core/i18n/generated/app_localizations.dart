@@ -4821,12 +4821,6 @@ abstract class AppLocalizations {
   /// **'Total des paniers encaissés sur la période'**
   String get tableauBordVentesInfo;
 
-  /// No description provided for @tableauBordVsPrecedente.
-  ///
-  /// In fr, this message translates to:
-  /// **'vs période précédente'**
-  String get tableauBordVsPrecedente;
-
   /// No description provided for @tableauBordPrecedenteInfo.
   ///
   /// In fr, this message translates to:
@@ -14576,6 +14570,12 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Versement {versement} · Avoir {avoir}'**
   String retoursRepartition(String avoir, String versement);
+
+  /// No description provided for @retoursMontantComplet.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montant complet'**
+  String get retoursMontantComplet;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

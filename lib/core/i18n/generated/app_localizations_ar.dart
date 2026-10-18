@@ -2482,9 +2482,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tableauBordVentesInfo => 'مجموع السلال المحصلة خلال الفترة';
 
   @override
-  String get tableauBordVsPrecedente => 'مقارنة بالفترة السابقة';
-
-  @override
   String get tableauBordPrecedenteInfo => 'نفس عدد الأيام، قبل الفترة مباشرة';
 
   @override
@@ -7662,4 +7659,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String retoursRepartition(String avoir, String versement) {
     return 'دفعة $versement · رصيد دائن $avoir';
   }
+
+  @override
+  String get retoursMontantComplet => 'المبلغ كاملاً';
 }

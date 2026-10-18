@@ -257,16 +257,18 @@ class _VueEnsemble extends ConsumerWidget {
         suffixe: devise,
         icone: LucideIcons.banknote,
         tendance: tendance,
-        sousTexte: l10n.tableauBordVsPrecedente,
         info: l10n.tableauBordVentesInfo,
+        onTap: () => context.go('/ventes'),
       ),
       DsStatCard(
         libelle: l10n.tableauBordPeriodePrecedente,
         valeur: v(d?.ventesAvant),
         suffixe: devise,
         icone: LucideIcons.history,
-        info: l10n.tableauBordPrecedenteInfo,
-        sousTexte: duAvant == null ? null : '$duAvant – $auAvant',
+        info: duAvant == null
+            ? l10n.tableauBordPrecedenteInfo
+            : '${l10n.tableauBordPrecedenteInfo}\n$duAvant – $auAvant',
+        onTap: () => context.go('/ventes'),
       ),
       DsStatCard(
         libelle: l10n.tableauBordAchats,
@@ -274,6 +276,7 @@ class _VueEnsemble extends ConsumerWidget {
         suffixe: devise,
         icone: LucideIcons.shoppingCart,
         info: l10n.tableauBordAchatsInfo,
+        onTap: () => context.go('/entrees'),
       ),
       DsStatCard(
         libelle: l10n.tableauBordNet,
@@ -281,6 +284,7 @@ class _VueEnsemble extends ConsumerWidget {
         suffixe: devise,
         icone: LucideIcons.scale,
         info: l10n.tableauBordNetInfo,
+        onTap: () => context.go('/situation'),
       ),
       DsStatCard(
         key: const ValueKey('kpi_dette_fournisseurs'),
@@ -326,10 +330,13 @@ class _VueEnsemble extends ConsumerWidget {
           spacing: DsTailles.gridGap,
           children: [
             for (var i = 0; i < kpis.length; i += parLigne)
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: DsSpacing.s4,
-                children: [for (final kpi in kpis.skip(i).take(parLigne)) Expanded(child: kpi)],
+              // Toutes les cartes d'une rangée ont la hauteur de la plus haute.
+              IntrinsicHeight(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  spacing: DsSpacing.s4,
+                  children: [for (final kpi in kpis.skip(i).take(parLigne)) Expanded(child: kpi)],
+                ),
               ),
             grille(
               [

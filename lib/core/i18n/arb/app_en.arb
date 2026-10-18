@@ -976,7 +976,6 @@
   "tableauBordPeriodePrecedente": "Previous period",
   "tableauBordVentes": "Sales",
   "tableauBordVentesInfo": "Total of baskets cashed in over the period",
-  "tableauBordVsPrecedente": "vs previous period",
   "tableauBordPrecedenteInfo": "Same number of days, just before the period",
   "tableauBordAchats": "Purchases",
   "tableauBordAchatsInfo": "Validated receipts (purchase notes)",
@@ -2601,5 +2600,6 @@
   "retoursMontantRetourPassage": "Walk-in customer: they get the full return amount back.",
   "retoursMontantRetourMax": "Between 0 and {plafond}",
   "retoursErreurMontant": "Invalid return amount: it must be between 0 and the return value.",
-  "retoursRepartition": "Payment {versement} · Credit {avoir}"
+  "retoursRepartition": "Payment {versement} · Credit {avoir}",
+  "retoursMontantComplet": "Full amount"
 }
