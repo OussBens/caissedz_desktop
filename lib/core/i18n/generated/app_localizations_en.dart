@@ -7655,4 +7655,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get docPuHt => 'Unit price excl. VAT';
+
+  @override
+  String get retoursMontantRetour => 'Return amount';
+
+  @override
+  String get retoursMontantRetourAideClient =>
+      'Paid back to the customer in cash; the rest becomes a credit on their balance.';
+
+  @override
+  String get retoursMontantRetourAideFournisseur =>
+      'Paid by the supplier in cash; the rest is deducted from what you owe them.';
+
+  @override
+  String get retoursMontantRetourPassage => 'Walk-in customer: they get the full return amount back.';
+
+  @override
+  String retoursMontantRetourMax(String plafond) {
+    return 'Between 0 and $plafond';
+  }
+
+  @override
+  String get retoursErreurMontant => 'Invalid return amount: it must be between 0 and the return value.';
+
+  @override
+  String retoursRepartition(String avoir, String versement) {
+    return 'Payment $versement · Credit $avoir';
+  }
 }

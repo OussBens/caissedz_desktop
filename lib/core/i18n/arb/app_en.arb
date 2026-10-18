@@ -2594,5 +2594,12 @@
   "pmTvaCaisseDesc": "Yes: prices include VAT (net price + product VAT). No: net prices, receipt without VAT.",
   "pmTvaDocuments": "Quotes, proformas and orders with VAT",
   "pmTvaDocumentsDesc": "Same choice for quotes, proformas, customer orders and their deliveries.",
-  "docPuHt": "Unit price excl. VAT"
+  "docPuHt": "Unit price excl. VAT",
+  "retoursMontantRetour": "Return amount",
+  "retoursMontantRetourAideClient": "Paid back to the customer in cash; the rest becomes a credit on their balance.",
+  "retoursMontantRetourAideFournisseur": "Paid by the supplier in cash; the rest is deducted from what you owe them.",
+  "retoursMontantRetourPassage": "Walk-in customer: they get the full return amount back.",
+  "retoursMontantRetourMax": "Between 0 and {plafond}",
+  "retoursErreurMontant": "Invalid return amount: it must be between 0 and the return value.",
+  "retoursRepartition": "Payment {versement} · Credit {avoir}"
 }

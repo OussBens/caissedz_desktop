@@ -2188,8 +2188,14 @@ class _DsStockAnimeState extends State<DsStockAnime> with SingleTickerProviderSt
 
   // Rebond : grossit vite, redescend un peu sous la taille normale, puis se pose.
   static final _echelle = TweenSequence<double>([
-    TweenSequenceItem(tween: Tween<double>(begin: 1, end: 1.28).chain(CurveTween(curve: DsMotion.emphasized)), weight: 30),
-    TweenSequenceItem(tween: Tween<double>(begin: 1.28, end: .94).chain(CurveTween(curve: DsMotion.standard)), weight: 30),
+    TweenSequenceItem(
+      tween: Tween<double>(begin: 1, end: 1.28).chain(CurveTween(curve: DsMotion.emphasized)),
+      weight: 30,
+    ),
+    TweenSequenceItem(
+      tween: Tween<double>(begin: 1.28, end: .94).chain(CurveTween(curve: DsMotion.standard)),
+      weight: 30,
+    ),
     TweenSequenceItem(tween: Tween<double>(begin: .94, end: 1).chain(CurveTween(curve: DsMotion.standard)), weight: 40),
   ]);
 

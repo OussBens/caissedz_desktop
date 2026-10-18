@@ -38,6 +38,12 @@ enum ErreurRetour {
 
   /// Un avoir a été émis pour ce retour (vente facturée) : il ne peut plus être modifié ni annulé.
   avoirEmis,
+
+  /// Montant retour négatif ou supérieur au montant des articles retournés.
+  montantInvalide,
+
+  /// Client de passage (sans solde) : il récupère obligatoirement tout le montant du retour.
+  montantPassage,
 }
 
 class RetourException implements Exception {
@@ -76,6 +82,7 @@ class RetourService {
     required double quantite,
     int? ligneOrdre,
     String? reglement,
+    double? montantRetour,
     bool remiseEnStock = true,
     String? numeroSerie,
     String? observation,
@@ -95,6 +102,7 @@ class RetourService {
       ligneOrdre: ligneOrdre,
       quantite: quantite,
       reglement: reglement,
+      montantRetour: montantRetour,
       remiseEnStock: remiseEnStock,
       numeroSerie: numeroSerie,
       observation: observation,
@@ -121,6 +129,7 @@ class RetourService {
     String code, {
     required double quantite,
     String? reglement,
+    double? montantRetour,
     bool remiseEnStock = true,
     String? numeroSerie,
     String? observation,
@@ -142,6 +151,7 @@ class RetourService {
       ligneOrdre: ancien.ligne?.ordreOrigine,
       quantite: quantite,
       reglement: reglement,
+      montantRetour: montantRetour,
       remiseEnStock: remiseEnStock,
       numeroSerie: numeroSerie,
       observation: observation,
@@ -292,6 +302,7 @@ class RetourService {
     int? ligneOrdre,
     required double quantite,
     required String? reglement,
+    double? montantRetour,
     required bool remiseEnStock,
     required String? numeroSerie,
     required String? observation,
@@ -300,6 +311,12 @@ class RetourService {
     required bool nouveau,
   }) async {
     if (quantite <= 0) throw const RetourException(ErreurRetour.quantiteInvalide);
+    if (montantRetour != null) {
+      // Montant retour saisi : la part rendue en espèces décide du règlement (le reste va en avoir).
+      if (montantRetour < 0) throw const RetourException(ErreurRetour.montantInvalide);
+      montantRetour = CalculsPrix.arrondir(montantRetour);
+      reglement = montantRetour > 0 ? ReglementsRetour.especes : ReglementsRetour.avoir;
+    }
     final client = type == TypesTiers.client;
     if (reglement != null && !(client ? ReglementsRetour.client : ReglementsRetour.fournisseur).contains(reglement)) {
       throw const RetourException(ErreurRetour.reglementInvalide);
@@ -321,8 +338,9 @@ class RetourService {
       if (v.statut == StatutsVente.annulee) throw const RetourException(ErreurRetour.documentAnnule);
       // Sans règlement imposé : avoir sur le solde du client, espèces pour le client de passage.
       reglement ??= ReglementsRetour.parDefaut(v.clientCode);
-      if (reglement == ReglementsRetour.avoir && v.clientCode == CodeGenerator.systeme(CodeGenerator.client)) {
-        throw const RetourException(ErreurRetour.reglementInvalide);
+      final passage = v.clientCode == CodeGenerator.systeme(CodeGenerator.client);
+      if (reglement == ReglementsRetour.avoir && passage) {
+        throw RetourException(montantRetour != null ? ErreurRetour.montantPassage : ErreurRetour.reglementInvalide);
       }
       // La ligne retournée : celle désignée (`ordre`), sinon la 1ʳᵉ ligne du produit (anciens appels).
       final vl = v.lignes
@@ -396,7 +414,7 @@ class RetourService {
         magasinCode: v.magasinCode,
         utilisateurCode: utilisateurCode,
         total: total,
-        rembourse: reglement == ReglementsRetour.avoir ? 0 : total,
+        rembourse: montantRetour ?? (reglement == ReglementsRetour.avoir ? 0 : total),
         reglement: reglement,
         remiseEnStock: remiseEnStock,
         numeroSerie: serie,
@@ -474,7 +492,7 @@ class RetourService {
         magasinCode: a.magasinCode,
         utilisateurCode: utilisateurCode,
         total: total,
-        rembourse: reglement == ReglementsRetour.avoir ? 0 : total,
+        rembourse: montantRetour ?? (reglement == ReglementsRetour.avoir ? 0 : total),
         reglement: reglement,
         remiseEnStock: false,
         numeroSerie: serie,
@@ -494,12 +512,20 @@ class RetourService {
       );
     }
 
+    if (montantRetour != null) {
+      if (montantRetour > retour.total + 0.005) throw const RetourException(ErreurRetour.montantInvalide);
+      if (retour.estClient &&
+          retour.clientCode == CodeGenerator.systeme(CodeGenerator.client) &&
+          (retour.total - montantRetour).abs() > 0.005) {
+        throw const RetourException(ErreurRetour.montantPassage);
+      }
+    }
     if (nouveau) {
       await repo.insererRetour(retour);
     } else {
       await repo.remplacerRetour(retour);
     }
-    final versement = await _regler(txn, retour, caisseCode: caisse);
+    final versement = await _regler(txn, retour, caisseCode: caisse, montant: montantRetour);
     if (versement != null) await repo.lierVersementRetour(code, versement.code);
     return (await repo.retour(code))!;
   }
@@ -513,12 +539,24 @@ class RetourService {
 
   /// Règlement : remboursement (versement verrouillé, journal de caisse) ou avoir imputé sur les documents
   /// ouverts du tiers, la pièce d'origine d'abord (non imputé = avance).
-  Future<Versement?> _regler(Transaction txn, Retour r, {String? caisseCode}) async {
+  ///
+  /// Avec un [montant] retour saisi : ce montant est rendu en espèces (au client, ou par le fournisseur) par un
+  /// versement daté du retour, et le reste du retour devient un avoir sur le solde du tiers.
+  Future<Versement?> _regler(Transaction txn, Retour r, {String? caisseCode, double? montant}) async {
     if (r.total <= 0) return null;
+    if (montant == null) return _verser(txn, r, r.total, r.reglement, caisseCode: caisseCode);
+    final avoir = CalculsPrix.arrondir(r.total - montant);
+    final rendu = montant > 0 ? await _verser(txn, r, montant, ReglementsRetour.especes, caisseCode: caisseCode) : null;
+    final credit = avoir > 0.005 ? await _verser(txn, r, avoir, ReglementsRetour.avoir, caisseCode: caisseCode) : null;
+    return rendu ?? credit;
+  }
+
+  /// Un versement de règlement du retour [r] : [montant] en avoir ou remboursé selon [reglement].
+  Future<Versement> _verser(Transaction txn, Retour r, double montant, String reglement, {String? caisseCode}) async {
     final repo = TiersRepository(txn);
     final client = r.estClient;
     final code = await repo.prochainCode('versement', CodeGenerator.versement);
-    if (r.reglement == ReglementsRetour.avoir) {
+    if (reglement == ReglementsRetour.avoir) {
       final docs = client
           ? await repo.documentsOuvertsClient(r.tiersCode)
           : await repo.documentsOuvertsFournisseur(r.tiersCode);
@@ -529,13 +567,13 @@ class RetourService {
         tiersType: r.type,
         tiersCode: r.tiersCode,
         sens: client ? SensVersement.encaissement : SensVersement.decaissement,
-        montant: r.total,
+        montant: montant,
         mode: 'Avoir',
         utilisateurCode: utilisateurCode,
         commentaire: 'Avoir ${r.code}',
         retourCode: r.code,
         verrouille: true,
-        imputations: VersementService.repartir(code, r.total, docs),
+        imputations: VersementService.repartir(code, montant, docs),
       );
       await repo.insererVersement(v);
       return v;
@@ -546,8 +584,8 @@ class RetourService {
       tiersType: r.type,
       tiersCode: r.tiersCode,
       sens: client ? SensVersement.decaissement : SensVersement.encaissement,
-      montant: r.total,
-      mode: r.reglement,
+      montant: montant,
+      mode: reglement,
       utilisateurCode: utilisateurCode,
       caisseCode: caisseCode ?? await CaisseRepository(txn).caisseParDefaut(utilisateurCode),
       commentaire: 'Remboursement ${r.code}',

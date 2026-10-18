@@ -862,3 +862,8 @@ workflows et calculs » du projet.
 - ✅ Paramètres › Règles de vente : « Vente en caisse avec TVA » et « Devis, proformas et commandes avec TVA »
   (`tva_caisse`, `tva_documents`, Oui par défaut). Non : prix HT, lignes au taux 0 (ticket, facture, G50 sans TVA) ;
   la livraison d'une commande suit le paramètre des documents.
+- ✅ Retours clients et fournisseurs : « Montant retour » obligatoire (somme rendue au client ou remboursée par le
+  fournisseur). Enregistré dans la même transaction que le retour : un versement en espèces de ce montant, daté
+  comme le retour (décaissement pour un client, encaissement pour un fournisseur, journal de caisse), et un avoir
+  pour le reste (total − montant). Client de passage : montant = total, champ verrouillé. Annuler le retour annule
+  les deux versements. Montant visible dans le détail et en colonne de la liste.

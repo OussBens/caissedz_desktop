@@ -2594,5 +2594,12 @@
   "pmTvaCaisseDesc": "نعم: السعر بكل الرسوم (السعر دون رسوم + الرسم). لا: السعر دون رسوم، تذكرة بدون رسم.",
   "pmTvaDocuments": "عروض الأسعار والفواتير الأولية والطلبيات مع الرسم",
   "pmTvaDocumentsDesc": "نفس الخيار لعروض الأسعار والفواتير الأولية وطلبيات الزبائن وتسليماتها.",
-  "docPuHt": "س.و دون رسوم"
+  "docPuHt": "س.و دون رسوم",
+  "retoursMontantRetour": "مبلغ الإرجاع",
+  "retoursMontantRetourAideClient": "يُرد للزبون نقدًا؛ والباقي رصيد دائن في حسابه.",
+  "retoursMontantRetourAideFournisseur": "يدفعه المورد نقدًا؛ والباقي يُخصم مما تدينون له.",
+  "retoursMontantRetourPassage": "زبون عابر: يسترجع كامل مبلغ الإرجاع.",
+  "retoursMontantRetourMax": "بين 0 و {plafond}",
+  "retoursErreurMontant": "مبلغ الإرجاع غير صالح: يجب أن يكون بين 0 ومبلغ الإرجاع.",
+  "retoursRepartition": "دفعة {versement} · رصيد دائن {avoir}"
 }

@@ -7669,4 +7669,30 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get docPuHt => 'P.U. HT';
+
+  @override
+  String get retoursMontantRetour => 'Montant retour';
+
+  @override
+  String get retoursMontantRetourAideClient => 'Rendu au client en espèces ; le reste va en avoir sur son solde.';
+
+  @override
+  String get retoursMontantRetourAideFournisseur =>
+      'Versé par le fournisseur en espèces ; le reste est déduit de ce que vous lui devez.';
+
+  @override
+  String get retoursMontantRetourPassage => 'Client de passage : il récupère tout le montant du retour.';
+
+  @override
+  String retoursMontantRetourMax(String plafond) {
+    return 'Entre 0 et $plafond';
+  }
+
+  @override
+  String get retoursErreurMontant => 'Montant retour invalide : il doit être compris entre 0 et le montant du retour.';
+
+  @override
+  String retoursRepartition(String avoir, String versement) {
+    return 'Versement $versement · Avoir $avoir';
+  }
 }

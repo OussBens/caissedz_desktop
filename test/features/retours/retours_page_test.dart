@@ -6,6 +6,7 @@ import 'package:caissedz_desktop/application/session_caisse_service.dart';
 import 'package:caissedz_desktop/application/stock_service.dart';
 import 'package:caissedz_desktop/application/tiers_service.dart';
 import 'package:caissedz_desktop/application/vente_service.dart';
+import 'package:caissedz_desktop/core/design_system/design_system.dart';
 import 'package:caissedz_desktop/data/stock_repository.dart';
 import 'package:caissedz_desktop/data/tiers_repository.dart';
 import 'package:caissedz_desktop/domain/models/achat.dart';
@@ -88,18 +89,30 @@ void main() {
       expect(find.textContaining('Maximum 2'), findsOneWidget);
       await tester.enterText(find.byKey(const ValueKey('retour_quantite')), '1');
       await tester.pump();
-      expect(find.text('Avoir au compte du client'), findsOneWidget);
       expect(find.byKey(const ValueKey('retour_remise_stock')), findsOneWidget);
+      // Montant retour obligatoire : 40 rendus en espèces, le reste (60) en avoir.
+      expect(tester.widget<DsButton>(find.byKey(const ValueKey('retour_enregistrer'))).onPressed, isNull);
+      await tester.enterText(find.byKey(const ValueKey('retour_montant_retour')), '150');
+      await tester.pump();
+      expect(find.textContaining('Entre 0 et'), findsOneWidget);
+      await tester.enterText(find.byKey(const ValueKey('retour_montant_retour')), '40');
+      await tester.pump();
+      expect(find.byKey(const ValueKey('retour_repartition')), findsOneWidget);
+      expect(
+        tester.widget<Text>(find.byKey(const ValueKey('retour_repartition'))).data,
+        'Versement 40,00 DA · Avoir 60,00 DA',
+      );
       await clic(tester, find.byKey(const ValueKey('retour_enregistrer')));
       expect(find.text('Retour enregistré'), findsOneWidget);
       await tester.pump(const Duration(seconds: 5));
       expect(find.text('RET0001'), findsOneWidget);
       final db = c.read(appDatabaseProvider).db;
       expect((await StockRepository(db).niveau('PRD0001', 'MAG0000')).quantite, 20 - 2 + 10 + 1);
-      final v = (await TiersRepository(db).versement('VER0001'))!;
-      expect(v.verrouille, isTrue);
-      expect(v.montant, 100);
-      expect(v.mode, ReglementsRetour.avoir);
+      final rendu = (await TiersRepository(db).versement('VER0001'))!;
+      expect((rendu.verrouille, rendu.montant, rendu.mode), (true, 40.0, ReglementsRetour.especes));
+      expect(rendu.sens, SensVersement.decaissement);
+      final avoir = (await TiersRepository(db).versement('VER0002'))!;
+      expect((avoir.verrouille, avoir.montant, avoir.mode), (true, 60.0, ReglementsRetour.avoir));
     });
 
     testWidgets('client choisi : seules ses ventes sont proposées', (tester) async {

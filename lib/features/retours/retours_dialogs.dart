@@ -8,6 +8,7 @@ import '../../app/demarrage_providers.dart';
 import '../../application/retour_service.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
+import '../../domain/calculs_prix.dart';
 import '../../domain/models/achat.dart';
 import '../../domain/models/retour.dart';
 import '../../domain/models/tiers.dart';
@@ -99,6 +100,11 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
   late final _serie = TextEditingController(text: widget.retour?.numeroSerie);
   late final _obs = TextEditingController(text: widget.retour?.motif);
 
+  /// Montant retour (obligatoire) : rendu au client / versé par le fournisseur en espèces, le reste en avoir.
+  late final _montantRetour = TextEditingController(
+    text: widget.retour == null ? '' : formaterNombre(widget.retour!.rembourse, grouper: false),
+  );
+
   /// Un retour est daté du jour de sa saisie (possible après la clôture Z du jour de la vente) ; un retour
   /// modifié garde sa date.
   late final DateTime _date = widget.retour?.date ?? DateTime.now();
@@ -107,11 +113,6 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
 
   bool get _edition => widget.retour != null;
   bool get _client => _type == TypesTiers.client;
-
-  /// Règlement (plus de choix dans le formulaire) : imputé au solde du tiers, espèces pour le client de passage ;
-  /// un retour modifié garde son règlement d'origine.
-  String get _reglement =>
-      widget.retour?.reglement ?? (_client ? ReglementsRetour.parDefaut(_tiers ?? '') : ReglementsRetour.avoir);
 
   @override
   void initState() {
@@ -133,6 +134,7 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
     _qte.dispose();
     _serie.dispose();
     _obs.dispose();
+    _montantRetour.dispose();
     super.dispose();
   }
 
@@ -302,6 +304,17 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
       ? {for (final c in ref.read(clientsProvider).value ?? const <Client>[]) c.code: c.nom}
       : {for (final f in ref.read(fournisseursProvider).value ?? const <Fournisseur>[]) f.code: f.nom};
 
+  bool get _passage => _client && _tiers == 'CLN0000';
+
+  /// Montant retour saisi ; client de passage : tout le montant du retour (champ verrouillé).
+  double? _montantSaisi() => _passage ? _montantTotal() : lireNombre(_montantRetour.text);
+
+  double _montantTotal() {
+    final sel = _lignes.where((l) => l.cle == _produit).firstOrNull;
+    final qn = lireNombre(_qte.text) ?? 0;
+    return sel == null ? 0 : CalculsPrix.arrondir(qn * (_client ? sel.prix : sel.prixAchat));
+  }
+
   Future<void> _enregistrer() async {
     final l10n = AppLocalizations.of(context);
     final service = ref.read(retourServiceProvider);
@@ -311,7 +324,7 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
           ? await service.modifier(
               widget.retour!.code,
               quantite: quantite,
-              reglement: _reglement,
+              montantRetour: _montantSaisi(),
               remiseEnStock: _client && _remise,
               numeroSerie: _serie.text,
               observation: _obs.text,
@@ -322,6 +335,7 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
               produitCode: _lignes.firstWhere((l) => l.cle == _produit).produitCode,
               ligneOrdre: _lignes.firstWhere((l) => l.cle == _produit).ordre,
               quantite: quantite,
+              montantRetour: _montantSaisi(),
               remiseEnStock: _client && _remise,
               numeroSerie: _serie.text,
               observation: _obs.text,
@@ -354,14 +368,17 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
     final max = sel == null ? 0.0 : sel.quantite - (_deja[sel.cle] ?? 0);
     final qn = lireNombre(_qte.text) ?? 0;
     final depasse = sel != null && qn > max + 1e-9;
-    final montant = sel == null ? 0.0 : qn * (_client ? sel.prix : sel.prixAchat);
+    final montant = _montantTotal();
+    final saisi = _montantSaisi();
+    final montantErreur = saisi != null && (saisi < 0 || saisi > montant + 0.005)
+        ? l10n.retoursMontantRetourMax(da(montant))
+        : null;
+    final montantValide = saisi != null && montantErreur == null;
     final nomTiers = _tiers == null
         ? ''
         : (_client && _tiers == 'CLN0000' ? l10n.posClientPassage : (noms[_tiers] ?? _tiers!));
     const lw = 128.0;
-    final libelleMontant = _client
-        ? (_reglement == ReglementsRetour.avoir ? l10n.retoursAvoirClient : l10n.retoursARembourser)
-        : (_reglement == ReglementsRetour.avoir ? l10n.retoursADeduire : l10n.retoursRembourseFournisseur);
+    final libelleMontant = l10n.retoursMontant;
     return DsDialog(
       titre: _edition
           ? l10n.retoursModifierTitre
@@ -381,7 +398,7 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
           key: const ValueKey('retour_enregistrer'),
           libelle: _edition ? l10n.communModifier : l10n.communEnregistrer,
           icone: LucideIcons.check,
-          onPressed: sel == null || qn <= 0 || depasse ? null : _enregistrer,
+          onPressed: sel == null || qn <= 0 || depasse || !montantValide ? null : _enregistrer,
         ),
       ],
       contenu: Column(
@@ -542,6 +559,27 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
                     onChanged: (v) => setState(() => _remise = v ?? _remise),
                   ),
                 ),
+              DsFormRow(
+                libelle: l10n.retoursMontantRetour,
+                obligatoire: true,
+                largeurLibelle: lw,
+                erreur: montantErreur,
+                aide: montantErreur != null
+                    ? null
+                    : _passage
+                    ? l10n.retoursMontantRetourPassage
+                    : (_client ? l10n.retoursMontantRetourAideClient : l10n.retoursMontantRetourAideFournisseur),
+                child: DsTextField(
+                  key: ValueKey(_passage ? 'retour_montant_retour_$montant' : 'retour_montant_retour'),
+                  controller: _passage ? null : _montantRetour,
+                  valeurInitiale: _passage ? f2(montant) : null,
+                  numerique: true,
+                  actif: !_passage,
+                  indice: sel == null ? '' : f2(montant),
+                  suffixeTexte: devise,
+                  onChanged: (_) => setState(() => _erreur = null),
+                ),
+              ),
               DsSpan(
                 child: DsFormRow(
                   libelle: l10n.retoursObservation,
@@ -561,9 +599,20 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
                 children: [
                   Icon(LucideIcons.undo2, size: 18, color: c.primaryTintFg),
                   Expanded(
-                    child: Text(
-                      libelleMontant,
-                      style: t.body.copyWith(fontWeight: FontWeight.w600, color: c.primaryTintFg),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          libelleMontant,
+                          style: t.body.copyWith(fontWeight: FontWeight.w600, color: c.primaryTintFg),
+                        ),
+                        if (montantValide)
+                          Text(
+                            l10n.retoursRepartition(da(CalculsPrix.arrondir(montant - saisi)), da(saisi)),
+                            key: const ValueKey('retour_repartition'),
+                            style: t.bodySm.copyWith(color: c.primaryTintFg),
+                          ),
+                      ],
                     ),
                   ),
                   Text(
@@ -645,6 +694,7 @@ Future<void> afficherDetailRetour(
               r.estClient ? l10n.retoursRemboursement : l10n.retoursReglement,
               libelleReglementRetour(l10n, r.type, r.reglement),
             ),
+            DsKeyValue(l10n.retoursMontantRetour, formaterMontant(r.rembourse, devise)),
             if (r.estClient)
               DsKeyValue(l10n.retoursRemiseStock, r.remiseEnStock ? l10n.retoursRemiseOui : l10n.retoursRemiseNon),
           ],

@@ -7637,4 +7637,29 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get docPuHt => 'س.و دون رسوم';
+
+  @override
+  String get retoursMontantRetour => 'مبلغ الإرجاع';
+
+  @override
+  String get retoursMontantRetourAideClient => 'يُرد للزبون نقدًا؛ والباقي رصيد دائن في حسابه.';
+
+  @override
+  String get retoursMontantRetourAideFournisseur => 'يدفعه المورد نقدًا؛ والباقي يُخصم مما تدينون له.';
+
+  @override
+  String get retoursMontantRetourPassage => 'زبون عابر: يسترجع كامل مبلغ الإرجاع.';
+
+  @override
+  String retoursMontantRetourMax(String plafond) {
+    return 'بين 0 و $plafond';
+  }
+
+  @override
+  String get retoursErreurMontant => 'مبلغ الإرجاع غير صالح: يجب أن يكون بين 0 ومبلغ الإرجاع.';
+
+  @override
+  String retoursRepartition(String avoir, String versement) {
+    return 'دفعة $versement · رصيد دائن $avoir';
+  }
 }

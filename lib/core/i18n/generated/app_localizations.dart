@@ -14534,6 +14534,48 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'P.U. HT'**
   String get docPuHt;
+
+  /// No description provided for @retoursMontantRetour.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montant retour'**
+  String get retoursMontantRetour;
+
+  /// No description provided for @retoursMontantRetourAideClient.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rendu au client en espèces ; le reste va en avoir sur son solde.'**
+  String get retoursMontantRetourAideClient;
+
+  /// No description provided for @retoursMontantRetourAideFournisseur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Versé par le fournisseur en espèces ; le reste est déduit de ce que vous lui devez.'**
+  String get retoursMontantRetourAideFournisseur;
+
+  /// No description provided for @retoursMontantRetourPassage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Client de passage : il récupère tout le montant du retour.'**
+  String get retoursMontantRetourPassage;
+
+  /// No description provided for @retoursMontantRetourMax.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entre 0 et {plafond}'**
+  String retoursMontantRetourMax(String plafond);
+
+  /// No description provided for @retoursErreurMontant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montant retour invalide : il doit être compris entre 0 et le montant du retour.'**
+  String get retoursErreurMontant;
+
+  /// No description provided for @retoursRepartition.
+  ///
+  /// In fr, this message translates to:
+  /// **'Versement {versement} · Avoir {avoir}'**
+  String retoursRepartition(String avoir, String versement);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

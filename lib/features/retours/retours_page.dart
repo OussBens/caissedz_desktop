@@ -102,6 +102,14 @@ class _RetoursPageState extends ConsumerState<RetoursPage> {
         total: (rs) => da(rs.where((r) => r.actif).fold(0.0, (s, r) => s + r.total)),
       ),
       DsColonne(
+        id: 'montant_retour',
+        libelle: l10n.retoursMontantRetour,
+        numerique: true,
+        valeur: (r) => r.rembourse,
+        cellule: (_, r) => Text(da(r.rembourse)),
+        total: (rs) => da(rs.where((r) => r.actif).fold(0.0, (s, r) => s + r.rembourse)),
+      ),
+      DsColonne(
         id: 'reglement',
         libelle: client ? l10n.retoursRemboursement : l10n.retoursReglement,
         visibleParDefaut: false,
