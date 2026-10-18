@@ -569,15 +569,35 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
                     : _passage
                     ? l10n.retoursMontantRetourPassage
                     : (_client ? l10n.retoursMontantRetourAideClient : l10n.retoursMontantRetourAideFournisseur),
-                child: DsTextField(
-                  key: ValueKey(_passage ? 'retour_montant_retour_$montant' : 'retour_montant_retour'),
-                  controller: _passage ? null : _montantRetour,
-                  valeurInitiale: _passage ? f2(montant) : null,
-                  numerique: true,
-                  actif: !_passage,
-                  indice: sel == null ? '' : f2(montant),
-                  suffixeTexte: devise,
-                  onChanged: (_) => setState(() => _erreur = null),
+                child: Row(
+                  spacing: DsSpacing.s2,
+                  children: [
+                    Expanded(
+                      child: DsTextField(
+                        key: ValueKey(_passage ? 'retour_montant_retour_$montant' : 'retour_montant_retour'),
+                        controller: _passage ? null : _montantRetour,
+                        valeurInitiale: _passage ? f2(montant) : null,
+                        numerique: true,
+                        actif: !_passage,
+                        indice: sel == null ? '' : f2(montant),
+                        suffixeTexte: devise,
+                        onChanged: (_) => setState(() => _erreur = null),
+                      ),
+                    ),
+                    // Reporte le total du retour dans le champ (tout est rendu, aucun avoir).
+                    DsButton(
+                      key: const ValueKey('retour_montant_complet'),
+                      libelle: l10n.retoursMontantComplet,
+                      icone: LucideIcons.checkCheck,
+                      variante: DsButtonVariante.secondaire,
+                      onPressed: _passage || sel == null || montant <= 0
+                          ? null
+                          : () => setState(() {
+                              _montantRetour.text = f2(montant);
+                              _erreur = null;
+                            }),
+                    ),
+                  ],
                 ),
               ),
               DsSpan(

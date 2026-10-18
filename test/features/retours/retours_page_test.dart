@@ -92,6 +92,11 @@ void main() {
       expect(find.byKey(const ValueKey('retour_remise_stock')), findsOneWidget);
       // Montant retour obligatoire : 40 rendus en espèces, le reste (60) en avoir.
       expect(tester.widget<DsButton>(find.byKey(const ValueKey('retour_enregistrer'))).onPressed, isNull);
+      await clic(tester, find.byKey(const ValueKey('retour_montant_complet')));
+      expect(
+        tester.widget<Text>(find.byKey(const ValueKey('retour_repartition'))).data,
+        'Versement 100,00 DA · Avoir 0,00 DA',
+      );
       await tester.enterText(find.byKey(const ValueKey('retour_montant_retour')), '150');
       await tester.pump();
       expect(find.textContaining('Entre 0 et'), findsOneWidget);
