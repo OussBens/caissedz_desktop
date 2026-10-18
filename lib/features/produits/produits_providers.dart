@@ -47,10 +47,28 @@ final prixTtcProvider = Provider<double Function(Produit p, [double? prixHt])>((
   return (p, [prixHt]) => Fiscalite.ttc(prixHt ?? p.prixVente, Fiscalite.taux(p.tvaPct, regime));
 });
 
-/// Prix de vente HT correspondant à un prix TTC saisi pour [p] (modification du prix depuis la caisse).
-final prixHtProvider = Provider<double Function(Produit p, double prixTtc)>((ref) {
-  final regime = ref.watch(parametresVenteProvider).value?.regimeFiscal ?? RegimesFiscaux.reel;
-  return (p, ttc) => Fiscalite.ht(ttc, Fiscalite.taux(p.tvaPct, regime));
+/// Prix appliqué en caisse : TTC si la caisse vend avec TVA (Paramètres › Caisse), sinon prix HT.
+final prixCaisseProvider = Provider<double Function(Produit p, [double? prixHt])>((ref) {
+  final v = ref.watch(parametresVenteProvider).value;
+  final regime = v?.regimeFiscal ?? RegimesFiscaux.reel;
+  final tva = v?.tvaCaisse ?? true;
+  return (p, [prixHt]) => Fiscalite.ttc(prixHt ?? p.prixVente, Fiscalite.taux(p.tvaPct, regime, avecTva: tva));
+});
+
+/// Prix proposé dans les devis, proformas et commandes clients : TTC ou HT selon « documents avec TVA ».
+final prixDocumentsProvider = Provider<double Function(Produit p)>((ref) {
+  final v = ref.watch(parametresVenteProvider).value;
+  final regime = v?.regimeFiscal ?? RegimesFiscaux.reel;
+  final tva = v?.tvaDocuments ?? true;
+  return (p) => Fiscalite.ttc(p.prixVente, Fiscalite.taux(p.tvaPct, regime, avecTva: tva));
+});
+
+/// Prix de vente HT correspondant à un prix saisi en caisse pour [p] (modification du prix depuis la caisse).
+final prixHtProvider = Provider<double Function(Produit p, double prixCaisse)>((ref) {
+  final v = ref.watch(parametresVenteProvider).value;
+  final regime = v?.regimeFiscal ?? RegimesFiscaux.reel;
+  final tva = v?.tvaCaisse ?? true;
+  return (p, prix) => Fiscalite.ht(prix, Fiscalite.taux(p.tvaPct, regime, avecTva: tva));
 });
 
 final deviseProvider = Provider<String>((ref) => ref.watch(parametresVenteProvider).value?.devise ?? 'DA');

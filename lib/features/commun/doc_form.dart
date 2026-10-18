@@ -114,10 +114,12 @@ Future<List<Produit>> choisirProduits(
       : (await ref.read(magasinsProvider.future)).where((m) => m.code == magasin).firstOrNull?.nom ?? magasin;
   double dansMagasin(Produit p) => parMagasin?[p.code]?[magasin] ?? 0;
   final devise = ref.read(deviseProvider);
-  // Documents de vente : prix TTC (prix de vente HT + TVA) ; achats : prix d'achat.
-  final ttc = ref.read(prixTtcProvider);
-  double prix(Produit p) => prixVente ? ttc(p) : p.prixAchat;
-  final libellePrix = prixVente ? l10n.docPuTtc : l10n.produitsColPrixAchat;
+  // Documents de vente : prix TTC (prix de vente HT + TVA), ou HT si les documents sont sans TVA ; achats : prix
+  // d'achat.
+  final prixDocument = ref.read(prixDocumentsProvider);
+  final avecTva = ref.read(parametresVenteProvider).value?.tvaDocuments ?? true;
+  double prix(Produit p) => prixVente ? prixDocument(p) : p.prixAchat;
+  final libellePrix = prixVente ? (avecTva ? l10n.docPuTtc : l10n.docPuHt) : l10n.produitsColPrixAchat;
   if (!context.mounted) return const [];
   final choix = await afficherDialog<List<Produit>>(
     context,

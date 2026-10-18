@@ -80,6 +80,7 @@ class VenteService {
     bool depassementPlafond = false,
     DateTime? date,
     Transaction? txn,
+    bool? avecTva,
   }) async {
     if (!session.estOuverte) throw const VenteException(ErreurVente.sessionRequise);
     if (panier.estVide) throw const VenteException(ErreurVente.panierVide);
@@ -185,8 +186,10 @@ class VenteService {
         return CalculsPrix.arrondir(f.pa * l.unitesStock);
       }
 
-      // TVA figée par ligne (prix TTC) selon le régime fiscal (IFU : sans TVA).
+      // TVA figée par ligne (prix TTC) selon le régime fiscal (IFU : sans TVA) et le choix « vente avec TVA » de la
+      // caisse ([avecTva] : celui des documents pour une livraison) ; sans TVA, le prix HT est le prix de vente.
       final regime = await ParametreRepository(txn).lire(Fiscalite.cleRegime) ?? RegimesFiscaux.reel;
+      final tva = avecTva ?? await ParametreRepository(txn).lire(Fiscalite.cleTvaCaisse) != '0';
       final brutes = [
         for (final (i, l) in panier.lignes.indexed)
           _avecTva(
@@ -209,7 +212,7 @@ class VenteService {
               totalAchat: coutLigne(l),
               unites: l.unitesStock,
             ),
-            Fiscalite.taux(l.produit.tvaPct, regime),
+            Fiscalite.taux(l.produit.tvaPct, regime, avecTva: tva),
           ),
       ];
       // Remise globale : l'écart d'arrondi entre Σ lignes et le net du ticket va sur la dernière ligne (m6).

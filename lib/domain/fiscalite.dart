@@ -15,8 +15,13 @@ abstract final class Fiscalite {
   static const String cleRegime = 'regime_fiscal';
   static const String cleTimbre = 'timbre_actif';
 
+  /// Vente avec TVA (`1`, défaut) ou en HT (`0`) : en caisse, et pour les devis / proformas / commandes.
+  static const String cleTvaCaisse = 'tva_caisse';
+  static const String cleTvaDocuments = 'tva_documents';
+
   /// Taux de TVA d'une ligne selon le régime (IFU : 0).
-  static double taux(double tauxProduit, String regime) => regime == RegimesFiscaux.ifu ? 0 : tauxProduit;
+  static double taux(double tauxProduit, String regime, {bool avecTva = true}) =>
+      !avecTva || regime == RegimesFiscaux.ifu ? 0 : tauxProduit;
 
   /// Prix TTC d'un prix HT : HT + TVA au [tauxPct], arrondi au centime (le prix de vente des produits est HT).
   static double ttc(double ht, double tauxPct) => tauxPct <= 0 ? ht : CalculsPrix.arrondir(ht * (1 + tauxPct / 100));

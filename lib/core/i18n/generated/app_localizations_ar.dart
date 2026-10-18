@@ -7622,4 +7622,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String posTransfertManque(String quantite) {
     return 'ناقص $quantite';
   }
+
+  @override
+  String get pmTvaCaisse => 'البيع في الصندوق مع الرسم على القيمة المضافة';
+
+  @override
+  String get pmTvaCaisseDesc => 'نعم: السعر بكل الرسوم (السعر دون رسوم + الرسم). لا: السعر دون رسوم، تذكرة بدون رسم.';
+
+  @override
+  String get pmTvaDocuments => 'عروض الأسعار والفواتير الأولية والطلبيات مع الرسم';
+
+  @override
+  String get pmTvaDocumentsDesc => 'نفس الخيار لعروض الأسعار والفواتير الأولية وطلبيات الزبائن وتسليماتها.';
+
+  @override
+  String get docPuHt => 'س.و دون رسوم';
 }

@@ -726,7 +726,7 @@ class _PosPageState extends ConsumerState<PosPage> {
               key: ValueKey('tuile_${p.code}'),
               nom: p.designation,
               code: p.code,
-              prix: ref.read(prixTtcProvider)(p),
+              prix: ref.read(prixCaisseProvider)(p),
               stock: (stocks[p.code] ?? 0) - etat.unitesReservees(p.code),
               categorie: nomsCategories[p.categorieCode],
               image: imageProduit(p.image),

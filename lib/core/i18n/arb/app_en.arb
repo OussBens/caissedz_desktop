@@ -2589,5 +2589,10 @@
   "posTransfertDepuis": "From",
   "posTransfertVers": "To the till",
   "posTransfertStock": "Stock: {stock}",
-  "posTransfertManque": "Missing {quantite}"
+  "posTransfertManque": "Missing {quantite}",
+  "pmTvaCaisse": "Till sales with VAT",
+  "pmTvaCaisseDesc": "Yes: prices include VAT (net price + product VAT). No: net prices, receipt without VAT.",
+  "pmTvaDocuments": "Quotes, proformas and orders with VAT",
+  "pmTvaDocumentsDesc": "Same choice for quotes, proformas, customer orders and their deliveries.",
+  "docPuHt": "Unit price excl. VAT"
 }

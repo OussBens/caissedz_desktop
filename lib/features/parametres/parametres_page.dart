@@ -54,6 +54,8 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
   bool _nombreActif = false;
   String _regime = RegimesFiscaux.reel;
   bool _timbre = true;
+  bool _tvaCaisse = true;
+  bool _tvaDocuments = true;
   String _typeMarge = ParametresVente.typeMargePourcentage;
   final _margePct = TextEditingController();
   final _margeMontant = TextEditingController();
@@ -158,6 +160,8 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
       _nombreActif = v.nombreActif;
       _regime = v.regimeFiscal;
       _timbre = v.timbreActif;
+      _tvaCaisse = v.tvaCaisse;
+      _tvaDocuments = v.tvaDocuments;
       _typeMarge = v.typeMarge;
       _margePct.text = _entier(v.margeDefautPct);
       _margeMontant.text = _entier(v.margeMontant);
@@ -223,6 +227,8 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
         nombreActif: _nombreActif,
         regimeFiscal: _regime,
         timbreActif: _timbre,
+        tvaCaisse: _tvaCaisse,
+        tvaDocuments: _tvaDocuments,
         typeMarge: _typeMarge,
         margeDefautPct: _v(_margePct),
         margeMontant: _v(_margeMontant),
@@ -956,6 +962,20 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
                 ],
                 onChanged: (v) => _changer(() => _venteSousAchat = v),
               ),
+            ),
+            _interrupteur(
+              'param_tva_caisse',
+              l10n.pmTvaCaisse,
+              description: l10n.pmTvaCaisseDesc,
+              valeur: _tvaCaisse,
+              onChanged: (v) => _changer(() => _tvaCaisse = v),
+            ),
+            _interrupteur(
+              'param_tva_documents',
+              l10n.pmTvaDocuments,
+              description: l10n.pmTvaDocumentsDesc,
+              valeur: _tvaDocuments,
+              onChanged: (v) => _changer(() => _tvaDocuments = v),
             ),
             _interrupteur(
               'param_garde',

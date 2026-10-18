@@ -7639,4 +7639,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String posTransfertManque(String quantite) {
     return 'Missing $quantite';
   }
+
+  @override
+  String get pmTvaCaisse => 'Till sales with VAT';
+
+  @override
+  String get pmTvaCaisseDesc =>
+      'Yes: prices include VAT (net price + product VAT). No: net prices, receipt without VAT.';
+
+  @override
+  String get pmTvaDocuments => 'Quotes, proformas and orders with VAT';
+
+  @override
+  String get pmTvaDocumentsDesc => 'Same choice for quotes, proformas, customer orders and their deliveries.';
+
+  @override
+  String get docPuHt => 'Unit price excl. VAT';
 }

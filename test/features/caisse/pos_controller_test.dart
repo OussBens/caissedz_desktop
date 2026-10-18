@@ -125,6 +125,14 @@ void main() {
     await c.read(parametresVenteProvider.future);
     await ctrl.ajouter(cafe);
     expect(c.read(posControllerProvider).panier.lignes.single.prixUnitaire, 100);
+    // Régime réel mais « vente en caisse avec TVA » désactivée : prix HT.
+    ctrl.retirerLigne(0);
+    await ParametreRepository(db)
+        .ecrirePlusieurs({Fiscalite.cleRegime: RegimesFiscaux.reel, Fiscalite.cleTvaCaisse: '0'});
+    c.invalidate(parametresVenteProvider);
+    await c.read(parametresVenteProvider.future);
+    await ctrl.ajouter(cafe);
+    expect(c.read(posControllerProvider).panier.lignes.single.prixUnitaire, 100);
   });
 
   test('scan : code-barres produit, colis, code produit, QR, inconnu', () async {

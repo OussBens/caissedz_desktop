@@ -857,3 +857,8 @@ workflows et calculs » du projet.
 - ✅ Logo de la boutique (Paramètres › Boutique) en tête des factures, avoirs, devis, proformas, commandes, BL et
   tickets PDF ; la couleur des documents (bandeaux, en-têtes de tableau, traits) est la couleur la plus utilisée du
   logo (`core/print/couleur_logo.dart`, assombrie si trop claire), violet du DS sans logo.
+- ✅ Caisse : le stock d'une carte produit rebondit et passe à la couleur primaire quand il baisse (produit mis au
+  panier, `DsStockAnime`).
+- ✅ Paramètres › Règles de vente : « Vente en caisse avec TVA » et « Devis, proformas et commandes avec TVA »
+  (`tva_caisse`, `tva_documents`, Oui par défaut). Non : prix HT, lignes au taux 0 (ticket, facture, G50 sans TVA) ;
+  la livraison d'une commande suit le paramètre des documents.

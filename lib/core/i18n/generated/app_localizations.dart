@@ -14504,6 +14504,36 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Manque {quantite}'**
   String posTransfertManque(String quantite);
+
+  /// No description provided for @pmTvaCaisse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vente en caisse avec TVA'**
+  String get pmTvaCaisse;
+
+  /// No description provided for @pmTvaCaisseDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Oui : prix TTC (prix de vente HT + TVA du produit). Non : prix HT, ticket sans TVA.'**
+  String get pmTvaCaisseDesc;
+
+  /// No description provided for @pmTvaDocuments.
+  ///
+  /// In fr, this message translates to:
+  /// **'Devis, proformas et commandes avec TVA'**
+  String get pmTvaDocuments;
+
+  /// No description provided for @pmTvaDocumentsDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Même choix pour les devis, proformas, commandes clients et leurs livraisons.'**
+  String get pmTvaDocumentsDesc;
+
+  /// No description provided for @docPuHt.
+  ///
+  /// In fr, this message translates to:
+  /// **'P.U. HT'**
+  String get docPuHt;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

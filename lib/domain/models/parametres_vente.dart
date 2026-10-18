@@ -19,6 +19,8 @@ class ParametresVente {
     this.nombreActif = false,
     this.regimeFiscal = RegimesFiscaux.reel,
     this.timbreActif = true,
+    this.tvaCaisse = true,
+    this.tvaDocuments = true,
   });
 
   static const String cleMarge = 'marge_defaut_pct';
@@ -35,6 +37,8 @@ class ParametresVente {
   static const List<String> cles = [
     Fiscalite.cleRegime,
     Fiscalite.cleTimbre,
+    Fiscalite.cleTvaCaisse,
+    Fiscalite.cleTvaDocuments,
     cleMarge,
     cleSeuil,
     cleFidelite,
@@ -91,6 +95,12 @@ class ParametresVente {
   /// Droit de timbre sur la part payée en espèces des factures.
   final bool timbreActif;
 
+  /// Vente en caisse avec TVA : prix TTC (HT + TVA du produit) ; sinon prix HT, sans TVA.
+  final bool tvaCaisse;
+
+  /// Même choix pour les devis, proformas, commandes clients et leurs livraisons.
+  final bool tvaDocuments;
+
   bool get margeEnMontant => typeMarge == typeMargeMontant;
 
   ParametresVente copyWith({
@@ -107,6 +117,8 @@ class ParametresVente {
     bool? nombreActif,
     String? regimeFiscal,
     bool? timbreActif,
+    bool? tvaCaisse,
+    bool? tvaDocuments,
   }) => ParametresVente(
     margeDefautPct: margeDefautPct ?? this.margeDefautPct,
     seuilStockGlobal: seuilStockGlobal ?? this.seuilStockGlobal,
@@ -121,6 +133,8 @@ class ParametresVente {
     nombreActif: nombreActif ?? this.nombreActif,
     regimeFiscal: regimeFiscal ?? this.regimeFiscal,
     timbreActif: timbreActif ?? this.timbreActif,
+    tvaCaisse: tvaCaisse ?? this.tvaCaisse,
+    tvaDocuments: tvaDocuments ?? this.tvaDocuments,
   );
 
   Map<String, String> versCles() => {
@@ -137,6 +151,8 @@ class ParametresVente {
     cleNombre: nombreActif ? '1' : '0',
     Fiscalite.cleRegime: regimeFiscal,
     Fiscalite.cleTimbre: timbreActif ? '1' : '0',
+    Fiscalite.cleTvaCaisse: tvaCaisse ? '1' : '0',
+    Fiscalite.cleTvaDocuments: tvaDocuments ? '1' : '0',
   };
 
   factory ParametresVente.depuisCles(Map<String, String?> m) => ParametresVente(
@@ -157,6 +173,8 @@ class ParametresVente {
     nombreActif: m[cleNombre] == '1',
     regimeFiscal: m[Fiscalite.cleRegime] == RegimesFiscaux.ifu ? RegimesFiscaux.ifu : RegimesFiscaux.reel,
     timbreActif: m[Fiscalite.cleTimbre] != '0',
+    tvaCaisse: m[Fiscalite.cleTvaCaisse] != '0',
+    tvaDocuments: m[Fiscalite.cleTvaDocuments] != '0',
   );
 
   @override
@@ -174,7 +192,9 @@ class ParametresVente {
       other.venteSousAchat == venteSousAchat &&
       other.nombreActif == nombreActif &&
       other.regimeFiscal == regimeFiscal &&
-      other.timbreActif == timbreActif;
+      other.timbreActif == timbreActif &&
+      other.tvaCaisse == tvaCaisse &&
+      other.tvaDocuments == tvaDocuments;
   @override
   int get hashCode => Object.hash(
     margeDefautPct,
@@ -190,5 +210,7 @@ class ParametresVente {
     nombreActif,
     regimeFiscal,
     timbreActif,
+    tvaCaisse,
+    tvaDocuments,
   );
 }

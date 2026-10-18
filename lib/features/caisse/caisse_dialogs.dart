@@ -276,7 +276,7 @@ class _SelectionProduitDialogState extends ConsumerState<_SelectionProduitDialog
   double get _parColis => (_colisChoisi?.quantite ?? 1).toDouble();
 
   /// Prix TTC (prix de vente HT + TVA) de l'unité, d'une pièce et du colis choisi.
-  double get _prixUnite => ref.read(prixTtcProvider)(widget.produit);
+  double get _prixUnite => ref.read(prixCaisseProvider)(widget.produit);
   double get _prixPiece {
     final p = widget.produit;
     return p.nombreParUnite > 0 ? double.parse((_prixUnite / p.nombreParUnite).toStringAsFixed(2)) : _prixUnite;
@@ -284,7 +284,7 @@ class _SelectionProduitDialogState extends ConsumerState<_SelectionProduitDialog
 
   double get _prix => _colis == _nombre
       ? _prixPiece
-      : (_colisChoisi == null ? _prixUnite : ref.read(prixTtcProvider)(widget.produit, _colisChoisi!.prixVente));
+      : (_colisChoisi == null ? _prixUnite : ref.read(prixCaisseProvider)(widget.produit, _colisChoisi!.prixVente));
 
   /// Le stock au nombre est contrôlé à l'ajout (réservations comprises) ; ici, seules les unités.
   bool get _depasse => _colis != _nombre && _quantite * _parColis > widget.stock + 1e-9;
@@ -445,7 +445,7 @@ class _SelectionProduitDialogState extends ConsumerState<_SelectionProduitDialog
                               DsOption(
                                 k.code,
                                 libelle: l10n.posSelParColis(k.designation, '${k.quantite}'),
-                                meta: _da(ref, ref.read(prixTtcProvider)(p, k.prixVente)),
+                                meta: _da(ref, ref.read(prixCaisseProvider)(p, k.prixVente)),
                               ),
                           ],
                         ),
@@ -988,7 +988,7 @@ class _RechercheProduitDialogState extends ConsumerState<_RechercheProduitDialog
     final q = widget.stocks[p.code] ?? 0;
     if (_lire(_qteMin) case final m? when q < m) return false;
     if (_lire(_qteMax) case final m? when q > m) return false;
-    final prix = ref.read(prixTtcProvider)(p);
+    final prix = ref.read(prixCaisseProvider)(p);
     if (_lire(_prixMin) case final m? when prix < m) return false;
     if (_lire(_prixMax) case final m? when prix > m) return false;
     return true;
@@ -1095,7 +1095,11 @@ class _RechercheProduitDialogState extends ConsumerState<_RechercheProduitDialog
           valeur: (p) => categories[p.categorieCode] ?? p.categorieCode,
         ),
         DsColonnePicker(libelle: l10n.produitsColStock, valeur: (p) => _qte(widget.stocks[p.code] ?? 0), largeur: 80),
-        DsColonnePicker(libelle: l10n.dsPosPrix, valeur: (p) => _da(ref, ref.read(prixTtcProvider)(p)), largeur: 110),
+        DsColonnePicker(
+          libelle: l10n.dsPosPrix,
+          valeur: (p) => _da(ref, ref.read(prixCaisseProvider)(p)),
+          largeur: 110,
+        ),
       ],
     );
   }

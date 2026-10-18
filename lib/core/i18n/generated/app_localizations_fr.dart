@@ -7654,4 +7654,19 @@ class AppLocalizationsFr extends AppLocalizations {
   String posTransfertManque(String quantite) {
     return 'Manque $quantite';
   }
+
+  @override
+  String get pmTvaCaisse => 'Vente en caisse avec TVA';
+
+  @override
+  String get pmTvaCaisseDesc => 'Oui : prix TTC (prix de vente HT + TVA du produit). Non : prix HT, ticket sans TVA.';
+
+  @override
+  String get pmTvaDocuments => 'Devis, proformas et commandes avec TVA';
+
+  @override
+  String get pmTvaDocumentsDesc => 'Même choix pour les devis, proformas, commandes clients et leurs livraisons.';
+
+  @override
+  String get docPuHt => 'P.U. HT';
 }

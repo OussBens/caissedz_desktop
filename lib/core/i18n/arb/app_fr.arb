@@ -3970,5 +3970,10 @@
         "type": "String"
       }
     }
-  }
+  },
+  "pmTvaCaisse": "Vente en caisse avec TVA",
+  "pmTvaCaisseDesc": "Oui : prix TTC (prix de vente HT + TVA du produit). Non : prix HT, ticket sans TVA.",
+  "pmTvaDocuments": "Devis, proformas et commandes avec TVA",
+  "pmTvaDocumentsDesc": "Même choix pour les devis, proformas, commandes clients et leurs livraisons.",
+  "docPuHt": "P.U. HT"
 }

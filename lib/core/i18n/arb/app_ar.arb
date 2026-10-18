@@ -2589,5 +2589,10 @@
   "posTransfertDepuis": "من",
   "posTransfertVers": "إلى الصندوق",
   "posTransfertStock": "المخزون: {stock}",
-  "posTransfertManque": "ناقص {quantite}"
+  "posTransfertManque": "ناقص {quantite}",
+  "pmTvaCaisse": "البيع في الصندوق مع الرسم على القيمة المضافة",
+  "pmTvaCaisseDesc": "نعم: السعر بكل الرسوم (السعر دون رسوم + الرسم). لا: السعر دون رسوم، تذكرة بدون رسم.",
+  "pmTvaDocuments": "عروض الأسعار والفواتير الأولية والطلبيات مع الرسم",
+  "pmTvaDocumentsDesc": "نفس الخيار لعروض الأسعار والفواتير الأولية وطلبيات الزبائن وتسليماتها.",
+  "docPuHt": "س.و دون رسوم"
 }

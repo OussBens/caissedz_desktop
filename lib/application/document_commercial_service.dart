@@ -288,6 +288,7 @@ class DocumentClientService {
         creditAutorise: true,
         depassementPlafond: depassementPlafond,
         txn: txn,
+        avecTva: await ParametreRepository(txn).lire(Fiscalite.cleTvaDocuments) != '0',
       );
       await _ecrireLivraison(
         txn,
@@ -386,15 +387,17 @@ class DocumentClientService {
     }
   }
 
-  /// Lignes au prix TTC saisi, TVA du produit selon le régime, figée et ventilée HT + TVA.
+  /// Lignes au prix TTC saisi, TVA du produit selon le régime et le paramètre « documents avec TVA », figée et
+  /// ventilée HT + TVA.
   Future<void> _ecrireLignes(Transaction txn, String code, List<DemandeLigneDocument> lignes) async {
     final regime = await ParametreRepository(txn).lire(Fiscalite.cleRegime) ?? RegimesFiscaux.reel;
+    final avecTva = await ParametreRepository(txn).lire(Fiscalite.cleTvaDocuments) != '0';
     final catalogue = CatalogueRepository(txn);
     for (final (i, l) in lignes.indexed) {
       final p = await catalogue.produitParCode(l.produitCode);
       if (p == null) throw DocumentException(ErreurDocument.produitInconnu, l.produitCode);
       final total = CalculsPrix.arrondir(l.quantite * l.prix);
-      final taux = Fiscalite.taux(p.tvaPct, regime);
+      final taux = Fiscalite.taux(p.tvaPct, regime, avecTva: avecTva);
       final v = Fiscalite.ventiler(total, taux);
       await txn.insert('document_client_ligne', {
         'document_code': code,

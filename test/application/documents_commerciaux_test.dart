@@ -6,8 +6,11 @@ import 'package:caissedz_desktop/application/stock_service.dart';
 import 'package:caissedz_desktop/application/tiers_service.dart';
 import 'package:caissedz_desktop/application/vente_service.dart';
 import 'package:caissedz_desktop/data/documents_commerciaux_repository.dart';
+import 'package:caissedz_desktop/data/parametre_repository.dart';
 import 'package:caissedz_desktop/data/stock_repository.dart';
 import 'package:caissedz_desktop/data/tiers_repository.dart';
+import 'package:caissedz_desktop/data/vente_repository.dart';
+import 'package:caissedz_desktop/domain/fiscalite.dart';
 import 'package:caissedz_desktop/domain/models/achat.dart';
 import 'package:caissedz_desktop/domain/models/document_commercial.dart';
 import 'package:caissedz_desktop/domain/models/panier.dart';
@@ -130,6 +133,60 @@ void main() {
     await expectLater(docs.transformerEnCommande(proforma.code), throwsA(isA<DocumentException>()));
     await docs.annuler(proforma.code, motif: 'Client parti');
     expect((await repo.documentClient(proforma.code))!.statut, StatutsDocumentClient.annule);
+    await base.fermer();
+  });
+
+  test('vente avec ou sans TVA : paramètre de la caisse et paramètre des documents', () async {
+    final base = await ouvrirBaseDeTest();
+    final db = base.db;
+    const u = 'USR0000';
+    final cafe = await CatalogueService(db, utilisateurCode: u).creerProduit(
+      const Produit(
+        code: '',
+        designation: 'Café',
+        categorieCode: 'CATE0000',
+        sousCategorieCode: 'SC0000',
+        prixVente: 100,
+        tvaPct: 19,
+        service: true,
+      ),
+    );
+    final atlas = await TiersService(db, utilisateurCode: u).creerClient(const Client(code: '', nom: 'SARL Atlas'));
+    final session = await SessionCaisseService(db, utilisateurCode: u).ouvrir(caisseCode: 'CIS0000', fondInitial: 0);
+    final ventes = VenteService(db, utilisateurCode: u, parametres: const ParametresVente());
+    Future<double> tauxCaisse() async => (await ventes.encaisser(
+      const Panier(id: 1)
+          .ajouter(PanierLigne(produit: cafe, quantite: 1, prixUnitaire: 100))
+          .ajouterPaiement(const Paiement(mode: 'Espèces', montant: 100)),
+      session: session,
+      magasinCode: 'MAG0000',
+    )).lignes.single.tauxTva;
+
+    // Par défaut : avec TVA.
+    expect(await tauxCaisse(), 19);
+    // Caisse sans TVA, documents avec TVA.
+    await ParametreRepository(db).ecrire(Fiscalite.cleTvaCaisse, '0');
+    expect(await tauxCaisse(), 0);
+    final docs = DocumentClientService(db, utilisateurCode: u);
+    final avec = await docs.creer(
+      type: TypesDocumentClient.devis,
+      clientCode: atlas.code,
+      lignes: [DemandeLigneDocument(produitCode: cafe.code, quantite: 1, prix: 119)],
+    );
+    expect((avec.totalHt, avec.totalTva), (100.0, 19.0));
+
+    // Documents sans TVA : devis en HT, et la livraison d'une commande vend sans TVA, même si la caisse est avec TVA.
+    await ParametreRepository(db).ecrirePlusieurs({Fiscalite.cleTvaCaisse: '1', Fiscalite.cleTvaDocuments: '0'});
+    expect(await tauxCaisse(), 19);
+    final commande = await docs.creer(
+      type: TypesDocumentClient.commande,
+      clientCode: atlas.code,
+      lignes: [DemandeLigneDocument(produitCode: cafe.code, quantite: 2, prix: 100)],
+    );
+    expect((commande.totalHt, commande.totalTva, commande.lignes.single.tauxTva), (200.0, 0.0, 0.0));
+    final bl = await docs.livrer(commande.code, quantites: {0: 2}, session: session, magasinCode: 'MAG0000');
+    final vente = (await VenteRepository(db).vente(bl.venteCode))!;
+    expect(vente.lignes.single.tauxTva, 0);
     await base.fermer();
   });
 

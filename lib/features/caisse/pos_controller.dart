@@ -217,7 +217,7 @@ class PosController extends Notifier<PosEtat> {
     if (nombre) {
       await _verifierDisponibilite(produit, nombre: quantite);
       // Prix de vente HT du produit + TVA ; à la pièce : prix TTC de l'unité / pièces par unité.
-      final prixUnite = ref.read(prixTtcProvider)(produit);
+      final prixUnite = ref.read(prixCaisseProvider)(produit);
       final prixPiece = produit.nombreParUnite > 0 ? prixUnite / produit.nombreParUnite : prixUnite;
       _poser(
         state.panier.ajouter(
@@ -234,7 +234,7 @@ class PosController extends Notifier<PosEtat> {
     final unites = quantite * (colis?.quantite ?? 1);
     final nombreExige = produit.exigeNombre(global: ref.read(parametresVenteProvider).value?.nombreActif ?? false);
     await _verifierDisponibilite(produit, unites: unites, nombre: nombreExige ? unites * produit.nombreParUnite : 0);
-    final ttc = ref.read(prixTtcProvider);
+    final ttc = ref.read(prixCaisseProvider);
     final prixUnite = ttc(produit);
     final remise = await ref.read(catalogueServiceProvider).remiseApplicable(produit, prixUnite);
     final remisePct = colis == null && remise > 0 && prixUnite > 0
