@@ -750,7 +750,7 @@ class DsFavorisBar extends StatelessWidget {
     this.onOuvrir,
     this.onRetirer,
     this.onAjouter,
-    this.max = 7,
+    this.max = 5,
     this.libelleAjouter,
   });
   final List<DsFavori> items;

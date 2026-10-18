@@ -7,14 +7,14 @@ import '../helpers/bases.dart';
 
 void main() {
   group('FavorisService', () {
-    test('ajoute au plus 7 favoris', () {
+    test('ajoute au plus 5 favoris', () {
       var favoris = <String>[];
       final ids = Modules.tous.map((m) => m.id).toList();
-      for (var i = 0; i < 7; i++) {
+      for (var i = 0; i < 5; i++) {
         favoris = FavorisService.ajouter(favoris, ids[i])!;
       }
       expect(favoris.length, Modules.maxFavoris);
-      expect(FavorisService.ajouter(favoris, ids[7]), isNull);
+      expect(FavorisService.ajouter(favoris, ids[5]), isNull);
       // Ajouter un favori déjà présent ne change rien et ne compte pas.
       expect(FavorisService.ajouter(favoris, ids[0]), favoris);
     });

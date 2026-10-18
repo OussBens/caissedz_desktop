@@ -19,47 +19,18 @@ class RechercheGlobaleIntent extends Intent {
   const RechercheGlobaleIntent();
 }
 
-/// Champ de la barre supérieure (à côté du témoin réseau et des alertes) : ouvre la recherche globale.
+/// Icône de la barre supérieure (à côté du témoin réseau et des alertes) : ouvre la recherche globale.
 class ChampRechercheGlobale extends StatelessWidget {
   const ChampRechercheGlobale({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final c = context.ds.colors;
-    final t = context.ds.typo;
     final l10n = AppLocalizations.of(context);
-    return Tooltip(
-      message: l10n.rechercheGlobaleTitre,
-      child: InkWell(
-        key: const ValueKey('topbar_recherche'),
-        borderRadius: DsRadius.borderMd,
-        onTap: () => afficherRechercheGlobale(context),
-        child: Container(
-          width: 250,
-          height: DsTailles.controleSm,
-          padding: const EdgeInsets.symmetric(horizontal: DsSpacing.s3),
-          decoration: BoxDecoration(
-            color: c.surfaceCard,
-            borderRadius: DsRadius.borderMd,
-            border: Border.all(color: c.borderDefault),
-          ),
-          child: Row(
-            spacing: DsSpacing.s2,
-            children: [
-              Icon(LucideIcons.search, size: DsTailles.iconeSm, color: c.textMuted),
-              Expanded(
-                child: Text(
-                  l10n.rechercheGlobaleIndice,
-                  style: t.bodySm.copyWith(color: c.textMuted),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              const DsKbd('Ctrl K'),
-            ],
-          ),
-        ),
-      ),
+    return DsIconButton(
+      key: const ValueKey('topbar_recherche'),
+      icone: LucideIcons.search,
+      tooltip: '${l10n.rechercheGlobaleTitre} (Ctrl K)',
+      onPressed: () => afficherRechercheGlobale(context),
     );
   }
 }

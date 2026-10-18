@@ -115,15 +115,15 @@ void main() {
       expect(dansBarre('Ventes'), findsOneWidget);
     });
 
-    testWidgets('favoris : 7 maximum, persistés, affichés dans la barre supérieure', (tester) async {
+    testWidgets('favoris : 5 maximum, persistés, affichés dans la barre supérieure', (tester) async {
       final container = await pumpApp(tester);
       final notifier = container.read(favorisProvider.notifier);
-      final ids = ['caisse', 'ventes', 'retours', 'produits', 'stock', 'clients', 'fournisseurs'];
+      final ids = ['caisse', 'ventes', 'retours', 'produits', 'stock'];
       for (final id in ids) {
         expect(await notifier.ajouter(id), isTrue);
       }
       expect(await notifier.ajouter('zakat'), isFalse);
-      expect(container.read(favorisProvider).length, 7);
+      expect(container.read(favorisProvider).length, 5);
       await tester.pumpAndSettle();
       final barre = find.byKey(const ValueKey('barre_favoris'));
       expect(find.descendant(of: barre, matching: find.text('Caisse')), findsOneWidget);

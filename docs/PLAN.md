@@ -867,3 +867,8 @@ workflows et calculs » du projet.
   comme le retour (décaissement pour un client, encaissement pour un fournisseur, journal de caisse), et un avoir
   pour le reste (total − montant). Client de passage : montant = total, champ verrouillé. Annuler le retour annule
   les deux versements. Montant visible dans le détail et en colonne de la liste.
+- ✅ Retours : bouton « Montant complet » à côté du montant retour (reporte le total, aucun avoir).
+- ✅ Tableau de bord : les 6 cartes KPI sont cliquables (Ventes et Période précédente → Ventes, Achats → Entrées,
+  Net → Situation, Dette → Fournisseurs, Crédit → Clients) et de même hauteur ; les légendes sous les deux premiers
+  chiffres sont supprimées (l'intervalle précédent passe dans l'info-bulle).
+- ✅ Barre supérieure : la recherche globale devient une icône (Ctrl K), raccourcis (favoris) limités à 5.

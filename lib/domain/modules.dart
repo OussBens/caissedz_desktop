@@ -50,7 +50,7 @@ class ModuleApp {
 class Modules {
   const Modules._();
 
-  static const int maxFavoris = 7;
+  static const int maxFavoris = 5;
 
   /// Module ouvert après la connexion (§4.5).
   static const String accueil = 'caisse';

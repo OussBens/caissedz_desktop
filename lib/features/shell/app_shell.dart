@@ -281,7 +281,7 @@ class _AppShellState extends ConsumerState<AppShell> {
   }
 }
 
-/// Menu des modules (Ctrl+M, DS `ModuleMenuDialog`) : tuiles par groupe, favoris (7), verrous.
+/// Menu des modules (Ctrl+M, DS `ModuleMenuDialog`) : tuiles par groupe, favoris (5), verrous.
 /// [modeFavoris] (« + » de la barre de favoris) : un clic sur un module l'ajoute ou le retire des favoris.
 Future<void> afficherMenuModules(BuildContext context, {bool modeFavoris = false}) =>
     afficherDialog<void>(context, builder: (_) => MenuModulesDialog(modeFavoris: modeFavoris));
