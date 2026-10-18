@@ -1203,15 +1203,19 @@ class _DsProductTileState extends State<DsProductTile> {
     final rupture = w.stock != null && w.stock! <= 0;
     final stockTexte = w.stock == null
         ? null
-        : Text(
-            rupture ? l10n.dsPosRupture : l10n.dsPosEnStock(formaterNombre(w.stock!)),
-            style: t.caption.copyWith(
-              fontSize: 11,
-              fontWeight: FontWeight.w500,
-              color: rupture ? c.dangerFg : (w.stock! <= w.seuilBas ? c.warningFg : c.textMuted),
+        : DsStockAnime(
+            key: const ValueKey('tuile_stock'),
+            stock: w.stock!,
+            builder: (flash) => Text(
+              rupture ? l10n.dsPosRupture : l10n.dsPosEnStock(formaterNombre(w.stock!)),
+              style: t.caption.copyWith(
+                fontSize: 11,
+                fontWeight: flash == null ? FontWeight.w500 : FontWeight.w700,
+                color: flash ?? (rupture ? c.dangerFg : (w.stock! <= w.seuilBas ? c.warningFg : c.textMuted)),
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
           );
     final prixTexte = Text.rich(
       TextSpan(
@@ -2161,6 +2165,67 @@ class _DsCalculatorState extends State<DsCalculator> {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Stock d'une carte produit animé quand il baisse (produit mis au panier) : le texte rebondit et passe
+/// brièvement à la couleur primaire sur un fond teinté, puis revient à sa couleur d'état.
+class DsStockAnime extends StatefulWidget {
+  const DsStockAnime({super.key, required this.stock, required this.builder});
+
+  final double stock;
+
+  /// Construit le texte ; `flash` est la couleur de l'animation en cours, `null` au repos.
+  final Widget Function(Color? flash) builder;
+
+  @override
+  State<DsStockAnime> createState() => _DsStockAnimeState();
+}
+
+class _DsStockAnimeState extends State<DsStockAnime> with SingleTickerProviderStateMixin {
+  late final _anim = AnimationController(vsync: this, duration: DsMotion.slower + DsMotion.base);
+
+  // Rebond : grossit vite, redescend un peu sous la taille normale, puis se pose.
+  static final _echelle = TweenSequence<double>([
+    TweenSequenceItem(tween: Tween<double>(begin: 1, end: 1.28).chain(CurveTween(curve: DsMotion.emphasized)), weight: 30),
+    TweenSequenceItem(tween: Tween<double>(begin: 1.28, end: .94).chain(CurveTween(curve: DsMotion.standard)), weight: 30),
+    TweenSequenceItem(tween: Tween<double>(begin: .94, end: 1).chain(CurveTween(curve: DsMotion.standard)), weight: 40),
+  ]);
+
+  @override
+  void didUpdateWidget(DsStockAnime ancien) {
+    super.didUpdateWidget(ancien);
+    if (widget.stock < ancien.stock - 1e-9) _anim.forward(from: 0);
+  }
+
+  @override
+  void dispose() {
+    _anim.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.ds.colors;
+    return AnimatedBuilder(
+      animation: _anim,
+      builder: (context, _) {
+        final enCours = _anim.isAnimating;
+        // Intensité de la couleur : pleine au début, s'efface sur la fin.
+        final intensite = enCours ? (1 - Curves.easeIn.transform(_anim.value)).clamp(0.0, 1.0) : 0.0;
+        return Transform.scale(
+          scale: enCours ? _echelle.transform(_anim.value) : 1,
+          alignment: AlignmentDirectional.centerStart,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: Color.lerp(c.primaryTint.withValues(alpha: 0), c.primaryTint, intensite),
+              borderRadius: DsRadius.borderSm,
+            ),
+            child: widget.builder(enCours ? c.primary : null),
+          ),
+        );
+      },
     );
   }
 }
