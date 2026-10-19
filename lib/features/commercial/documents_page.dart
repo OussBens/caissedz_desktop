@@ -7,6 +7,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../application/document_commercial_service.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
+import '../../domain/calculs_prix.dart';
 import '../../domain/models/document_commercial.dart';
 import '../../domain/models/panier.dart';
 import '../../domain/models/stock.dart';
@@ -742,6 +743,9 @@ class _LivraisonDialogState extends ConsumerState<_LivraisonDialog> {
   };
   late String _magasin = widget.principal;
   final _paye = TextEditingController();
+
+  /// « Payé en totalité » coché : le montant payé suit le total livré (champ verrouillé, à vérifier).
+  bool _totalite = false;
   String _mode = 'Espèces';
   final _observation = TextEditingController();
   bool _occupe = false;
@@ -758,7 +762,9 @@ class _LivraisonDialogState extends ConsumerState<_LivraisonDialog> {
 
   double _q(int ordre) => nombreSaisi(_quantites[ordre]?.text ?? '');
 
-  double get _total => widget.commande.lignes.fold(0.0, (s, l) => s + _q(l.ordre) * l.prixUnitaire);
+  double get _total => CalculsPrix.arrondir(
+    widget.commande.lignes.fold(0.0, (s, l) => s + CalculsPrix.arrondir(_q(l.ordre) * l.prixUnitaire)),
+  );
 
   Future<void> _valider() async {
     final l10n = AppLocalizations.of(context);
@@ -768,7 +774,7 @@ class _LivraisonDialogState extends ConsumerState<_LivraisonDialog> {
       setState(() => _occupe = false);
       return;
     }
-    final paye = nombreSaisi(_paye.text);
+    final paye = _totalite ? _total : nombreSaisi(_paye.text);
     BonLivraison? bl;
     final ok = await executerDocument(context, ref, () async {
       bl = await ref
@@ -882,11 +888,33 @@ class _LivraisonDialogState extends ConsumerState<_LivraisonDialog> {
                 libelle: l10n.docMontantPaye,
                 largeurLibelle: _lw,
                 aide: l10n.docMontantPayeAide,
-                child: DsTextField(
-                  key: const ValueKey('livraison_paye'),
-                  controller: _paye,
-                  numerique: true,
-                  suffixeTexte: devise,
+                child: Row(
+                  spacing: DsSpacing.s2,
+                  children: [
+                    Expanded(
+                      child: DsTextField(
+                        key: ValueKey(_totalite ? 'livraison_paye_${f2(total)}' : 'livraison_paye'),
+                        controller: _totalite ? null : _paye,
+                        valeurInitiale: _totalite ? f2(total) : null,
+                        numerique: true,
+                        actif: !_totalite,
+                        suffixeTexte: devise,
+                      ),
+                    ),
+                    // Coché : le champ reprend le total livré et le suit quand les quantités changent ; décoché, il
+                    // redevient saisissable, prérempli du total.
+                    Flexible(
+                      child: DsCheckbox(
+                        cle: const ValueKey('livraison_paye_totalite'),
+                        valeur: _totalite,
+                        libelle: l10n.entPayeTotalite,
+                        onChanged: (v) => setState(() {
+                          _totalite = v;
+                          if (!v && _paye.text.trim().isEmpty && total > 0) _paye.text = f2(total);
+                        }),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               DsFormRow(

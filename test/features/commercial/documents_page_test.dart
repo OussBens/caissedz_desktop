@@ -6,6 +6,7 @@ import 'package:caissedz_desktop/application/stock_service.dart';
 import 'package:caissedz_desktop/application/tiers_service.dart';
 import 'package:caissedz_desktop/data/documents_commerciaux_repository.dart';
 import 'package:caissedz_desktop/data/stock_repository.dart';
+import 'package:caissedz_desktop/data/vente_repository.dart';
 import 'package:caissedz_desktop/domain/models/produit.dart';
 import 'package:caissedz_desktop/domain/models/tiers.dart';
 import 'package:caissedz_desktop/features/caisse/pos_dialogs.dart';
@@ -86,6 +87,10 @@ void main() {
     expect(find.text('Livrer la commande BCC0001'), findsOneWidget);
     await tester.enterText(find.descendant(of: _cle('livraison_qte_0'), matching: find.byType(TextField)), '2');
     await tester.pump();
+    // « Payé en totalité » : le montant payé reprend le total livré (2 × 119), champ verrouillé.
+    await clic(tester, _cle('livraison_paye_totalite'));
+    expect(_cle('livraison_paye'), findsNothing);
+    expect(_cle('livraison_paye_238,00'), findsOneWidget);
     await clic(tester, _cle('livraison_valider'));
     await tester.pump(const Duration(seconds: 5));
     await tester.pumpAndSettle();
@@ -95,6 +100,8 @@ void main() {
     await clic(tester, find.text('Bons de livraison'));
     expect(find.text('LIV0001'), findsOneWidget);
     expect((await DocumentsCommerciauxRepository(db).livraison('LIV0001'))!.venteCode, 'VTE0001');
+    final vente = (await VenteRepository(db).vente('VTE0001'))!;
+    expect((vente.totalNet, vente.reste), (238, 0), reason: 'payé en totalité');
     await tester.pump(const Duration(seconds: 5));
     // Aperçu A4 du bon de livraison avant impression.
     await clic(tester, find.text('LIV0001'));
