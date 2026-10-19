@@ -764,7 +764,7 @@ class _ModifPrixDialogState extends ConsumerState<_ModifPrixDialog> {
       final confirme = await afficherConfirmation(
         context,
         titre: l10n.posPrixSousAchatTitre,
-        message: l10n.posPrixSousAchatMsg(_da(ref, v), _da(ref, _achat)),
+        message: l10n.posPrixSousAchatMsg(_da(ref, _achat), _da(ref, v)),
         libelleConfirmer: l10n.posPrixSousAchatOk,
         genre: DsConfirmGenre.avertissement,
       );

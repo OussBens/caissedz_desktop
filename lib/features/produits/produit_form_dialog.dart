@@ -11,6 +11,7 @@ import '../../domain/calculs_prix.dart';
 import '../../domain/code_generator.dart';
 import '../../domain/codes_barres.dart';
 import '../../domain/fiscalite.dart';
+import '../../domain/models/parametres_vente.dart';
 import '../../domain/models/produit.dart';
 import '../../domain/models/stock.dart';
 import '../../domain/models/tiers.dart';
@@ -268,8 +269,32 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
 
   double get _vente =>
       _modeMarge == '%' ? CalculsPrix.prixVenteDepuisMarge(_a, _m) : CalculsPrix.prixVenteDepuisMontant(_a, _m);
-  bool get _sousAchat => _a > 0 && _vente < _a;
-  bool get _ok1 => _designation.text.trim().isNotEmpty && _a > 0 && !_sousAchat;
+
+  /// Règle « vente sous achat » des Paramètres : `Interdire`, `Avertir` ou `Autoriser`.
+  String get _regleSousAchat =>
+      ref.read(parametresVenteProvider).value?.venteSousAchat ?? ParametresVente.venteSousAchatAvertir;
+  bool get _interdit => _regleSousAchat == ParametresVente.venteSousAchatInterdire;
+
+  bool _estSousAchat(double prix) => _a > 0 && prix < _a - 0.004;
+  bool get _sousAchat => _estSousAchat(_vente);
+
+  /// Prix par pièce d'un emballage (prix du colis ÷ nombre de pièces), `null` tant qu'il n'est pas saisi.
+  double? _prixPiece(TextEditingController q, TextEditingController p) {
+    final n = int.tryParse(q.text.trim()) ?? 0;
+    final prix = _d(p.text);
+    return n > 1 && prix > 0 ? prix / n : null;
+  }
+
+  /// Prix par pièce des emballages (boîte, carton) inférieurs au prix d'achat ; contrôlés en mode détaillé, où ils
+  /// sont visibles.
+  List<double> get _piecesSousAchat => [
+    if (_detaille)
+      for (final (q, p) in [(_boiteQ, _boiteP), (_cartonQ, _cartonP)])
+        if (_prixPiece(q, p) case final piece? when _estSousAchat(piece)) piece,
+  ];
+
+  bool get _ok1 => _designation.text.trim().isNotEmpty && _a > 0 && !(_interdit && _sousAchat);
+  bool get _okEnregistrer => _ok1 && !(_interdit && _piecesSousAchat.isNotEmpty);
 
   void _changerModeMarge(String v) {
     if (v == _modeMarge) return;
@@ -335,7 +360,23 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
 
   Future<void> _enregistrer({bool nouveau = false}) async {
     final l10n = AppLocalizations.of(context);
-    if (!_ok1) return;
+    if (!_okEnregistrer) return;
+    // « Avertir » : un prix de vente ou un prix par pièce d'emballage sous le prix d'achat est confirmé avant
+    // l'enregistrement (« Interdire » bloque déjà le bouton, « Autoriser » passe sans question).
+    final sous = [if (_sousAchat) _vente, ..._piecesSousAchat];
+    if (sous.isNotEmpty && _regleSousAchat == ParametresVente.venteSousAchatAvertir) {
+      final devise = ref.read(deviseProvider);
+      final confirme = await afficherConfirmation(
+        context,
+        titre: l10n.posPrixSousAchatTitre,
+        message: [
+          for (final v in sous) l10n.posPrixSousAchatMsg(formaterMontant(_a, devise), formaterMontant(v, devise)),
+        ].join('\n'),
+        libelleConfirmer: l10n.communEnregistrer,
+        genre: DsConfirmGenre.avertissement,
+      );
+      if (!confirme || !mounted) return;
+    }
     setState(() {
       _occupe = true;
       _erreur = null;
@@ -435,6 +476,7 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
     final c = context.ds.colors;
     final t = context.ds.typo;
     final devise = ref.watch(deviseProvider);
+    ref.watch(parametresVenteProvider); // règle « vente sous achat » (_regleSousAchat)
     final det = _detaille;
     final s1 = !det || _etape == 1;
     final s2 = !det || _etape == 2;
@@ -463,14 +505,14 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
             key: const ValueKey('produit_enregistrer_nouveau'),
             libelle: l10n.prdEnregistrerNouveau,
             variante: DsButtonVariante.secondaire,
-            onPressed: _occupe || !_ok1 ? null : () => _enregistrer(nouveau: true),
+            onPressed: _occupe || !_okEnregistrer ? null : () => _enregistrer(nouveau: true),
           ),
         DsButton(
           key: const ValueKey('produit_enregistrer'),
           libelle: l10n.communEnregistrer,
           icone: LucideIcons.check,
           chargement: _occupe,
-          onPressed: !_ok1 ? null : _enregistrer,
+          onPressed: !_okEnregistrer ? null : _enregistrer,
         ),
       ] else ...[
         if (_edition)
@@ -478,7 +520,7 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
             libelle: l10n.communEnregistrer,
             variante: DsButtonVariante.secondaire,
             chargement: _occupe,
-            onPressed: !_ok1 ? null : _enregistrer,
+            onPressed: !_okEnregistrer ? null : _enregistrer,
           ),
         DsButton(
           key: const ValueKey('produit_suivant'),
@@ -797,8 +839,14 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
         libelle: l10n.produitChampPrixVente,
         obligatoire: true,
         largeurLibelle: _lw,
-        erreur: _sousAchat ? l10n.prdSousAchat : null,
-        aide: !_sousAchat && _a > 0 ? l10n.prdMargeUnitaire(formaterMontant(_vente - _a, devise)) : null,
+        // Sous le prix d'achat selon les Paramètres : erreur bloquante (Interdire), avertissement (Avertir) ou
+        // simple marge négative (Autoriser).
+        erreur: _sousAchat && _interdit ? l10n.posPrixSousAchatInterdit : null,
+        aide: _a <= 0 || (_sousAchat && _interdit)
+            ? null
+            : _sousAchat && _regleSousAchat == ParametresVente.venteSousAchatAvertir
+            ? l10n.prdSousAchat
+            : l10n.prdMargeUnitaire(formaterMontant(_vente - _a, devise)),
         child: DsTextField(
           key: ValueKey('produit_vente_${f2(_vente)}'),
           valeurInitiale: f2(_vente),
@@ -840,33 +888,46 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
     final magasins = (ref.watch(magasinsProvider).value ?? const <Magasin>[]).where((m) => m.actif).toList();
     _magasin ??= ref.watch(magasinPrincipalProvider).value;
     final stock = _edition ? (ref.watch(stocksProduitsProvider).value?[widget.produit!.code] ?? 0) : null;
-    Widget emballage(String libelle, TextEditingController q, TextEditingController p, String cle) => DsFormRow(
-      libelle: libelle,
-      largeurLibelle: _lw,
-      child: Row(
-        spacing: 6,
-        children: [
-          Expanded(
-            child: DsTextField(
-              key: ValueKey('${cle}_q'),
-              controller: q,
-              numerique: true,
-              indice: l10n.dsPosPieces,
-              suffixeTexte: l10n.prdPcs,
+    // Prix par pièce affiché sous l'emballage et contrôlé contre le prix d'achat selon la règle des Paramètres.
+    Widget emballage(String libelle, TextEditingController q, TextEditingController p, String cle) {
+      final piece = _prixPiece(q, p);
+      final sous = piece != null && _estSousAchat(piece);
+      final parPiece = piece == null ? null : l10n.posSelParPiece(formaterMontant(piece, devise));
+      return DsFormRow(
+        libelle: libelle,
+        largeurLibelle: _lw,
+        erreur: sous && _interdit ? '$parPiece · ${l10n.posPrixSousAchatInterdit}' : null,
+        aide: sous && _regleSousAchat == ParametresVente.venteSousAchatAvertir
+            ? '$parPiece · ${l10n.prdSousAchat}'
+            : parPiece,
+        child: Row(
+          spacing: 6,
+          children: [
+            Expanded(
+              child: DsTextField(
+                key: ValueKey('${cle}_q'),
+                controller: q,
+                numerique: true,
+                indice: l10n.dsPosPieces,
+                suffixeTexte: l10n.prdPcs,
+                onChanged: (_) => setState(() {}),
+              ),
             ),
-          ),
-          Expanded(
-            child: DsTextField(
-              key: ValueKey('${cle}_p'),
-              controller: p,
-              numerique: true,
-              indice: l10n.dsPosPrix,
-              suffixeTexte: devise,
+            Expanded(
+              child: DsTextField(
+                key: ValueKey('${cle}_p'),
+                controller: p,
+                numerique: true,
+                indice: l10n.dsPosPrix,
+                suffixeTexte: devise,
+                onChanged: (_) => setState(() {}),
+              ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
+    }
+
     return [
       DsSpan(child: DsSubHead(l10n.produitsColStock, icone: LucideIcons.boxes)),
       DsFormRow(
