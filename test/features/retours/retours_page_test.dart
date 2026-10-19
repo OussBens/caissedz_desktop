@@ -92,6 +92,16 @@ void main() {
       expect(find.byKey(const ValueKey('retour_remise_stock')), findsOneWidget);
       // Montant retour obligatoire : 40 rendus en espèces, le reste (60) en avoir.
       expect(tester.widget<DsButton>(find.byKey(const ValueKey('retour_enregistrer'))).onPressed, isNull);
+      // « Montant complet » coché : le champ verrouillé reprend le total du retour, à vérifier.
+      await clic(tester, find.byKey(const ValueKey('retour_montant_complet')));
+      expect(
+        tester.widget<Text>(find.byKey(const ValueKey('retour_repartition'))).data,
+        'Versement 100,00 DA · Avoir 0,00 DA',
+      );
+      expect(find.byKey(const ValueKey('retour_montant_retour')), findsNothing);
+      expect(tester.widget<DsTextField>(find.byKey(const ValueKey('retour_montant_retour_100.0'))).actif, isFalse);
+      expect(tester.widget<DsButton>(find.byKey(const ValueKey('retour_enregistrer'))).onPressed, isNotNull);
+      // Décoché : le champ redevient saisissable, prérempli du total.
       await clic(tester, find.byKey(const ValueKey('retour_montant_complet')));
       expect(
         tester.widget<Text>(find.byKey(const ValueKey('retour_repartition'))).data,

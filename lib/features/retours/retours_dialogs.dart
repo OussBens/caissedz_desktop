@@ -105,6 +105,9 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
     text: widget.retour == null ? '' : formaterNombre(widget.retour!.rembourse, grouper: false),
   );
 
+  /// « Montant complet » coché : le montant retour suit le total du retour (champ verrouillé, à vérifier).
+  late bool _complet = widget.retour != null && (widget.retour!.rembourse - widget.retour!.total).abs() < 0.005;
+
   /// Un retour est daté du jour de sa saisie (possible après la clôture Z du jour de la vente) ; un retour
   /// modifié garde sa date.
   late final DateTime _date = widget.retour?.date ?? DateTime.now();
@@ -306,8 +309,11 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
 
   bool get _passage => _client && _tiers == 'CLN0000';
 
-  /// Montant retour saisi ; client de passage : tout le montant du retour (champ verrouillé).
-  double? _montantSaisi() => _passage ? _montantTotal() : lireNombre(_montantRetour.text);
+  /// Le montant retour est le total du retour : client de passage ou « Montant complet » coché (champ verrouillé).
+  bool get _montantVerrouille => _passage || _complet;
+
+  /// Montant retour saisi, ou tout le montant du retour quand il est verrouillé.
+  double? _montantSaisi() => _montantVerrouille ? _montantTotal() : lireNombre(_montantRetour.text);
 
   double _montantTotal() {
     final sel = _lignes.where((l) => l.cle == _produit).firstOrNull;
@@ -574,28 +580,33 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
                   children: [
                     Expanded(
                       child: DsTextField(
-                        key: ValueKey(_passage ? 'retour_montant_retour_$montant' : 'retour_montant_retour'),
-                        controller: _passage ? null : _montantRetour,
-                        valeurInitiale: _passage ? f2(montant) : null,
+                        key: ValueKey(_montantVerrouille ? 'retour_montant_retour_$montant' : 'retour_montant_retour'),
+                        controller: _montantVerrouille ? null : _montantRetour,
+                        valeurInitiale: _montantVerrouille ? (sel == null ? '' : f2(montant)) : null,
                         numerique: true,
-                        actif: !_passage,
+                        actif: !_montantVerrouille,
                         indice: sel == null ? '' : f2(montant),
                         suffixeTexte: devise,
                         onChanged: (_) => setState(() => _erreur = null),
                       ),
                     ),
-                    // Reporte le total du retour dans le champ (tout est rendu, aucun avoir).
-                    DsButton(
-                      key: const ValueKey('retour_montant_complet'),
-                      libelle: l10n.retoursMontantComplet,
-                      icone: LucideIcons.checkCheck,
-                      variante: DsButtonVariante.secondaire,
-                      onPressed: _passage || sel == null || montant <= 0
-                          ? null
-                          : () => setState(() {
-                              _montantRetour.text = f2(montant);
-                              _erreur = null;
-                            }),
+                    // Coché : le champ reprend le total du retour (tout est rendu, aucun avoir) et le suit quand le
+                    // produit ou la quantité changent ; décoché, il redevient saisissable, prérempli du total.
+                    Flexible(
+                      child: DsCheckbox(
+                        cle: const ValueKey('retour_montant_complet'),
+                        valeur: _montantVerrouille,
+                        libelle: l10n.retoursMontantComplet,
+                        onChanged: _passage
+                            ? null
+                            : (v) => setState(() {
+                                _complet = v;
+                                if (!v && _montantRetour.text.trim().isEmpty && montant > 0) {
+                                  _montantRetour.text = f2(montant);
+                                }
+                                _erreur = null;
+                              }),
+                      ),
                     ),
                   ],
                 ),
