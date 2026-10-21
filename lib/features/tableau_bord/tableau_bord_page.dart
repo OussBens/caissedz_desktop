@@ -576,13 +576,14 @@ class _CarteAlertesProduits extends ConsumerWidget {
     final t = context.ds.typo;
     final alertes = ref.watch(alertesProduitsProvider);
     final nouvelles = ref.watch(alertesProduitsNouvellesProvider);
-    final types = [
-      for (final g in GroupeAlerteProduit.values)
-        for (final ty in alertes.parType.keys.where((x) => x.groupe == g))
-          if (alertes.de(ty).isNotEmpty) ty,
-    ];
+    // Toutes les alertes calculées (activées, visibles par l'utilisateur), même sans produit : celles qui ont des
+    // produits d'abord, puis les autres en grisé ; dans chaque partie, par famille puis par numéro.
+    int rang(TypeAlerteProduit x) => (alertes.de(x).isEmpty ? 1000 : 0) + x.groupe.index * 100 + x.numero;
+    final types = alertes.parType.keys.toList()..sort((a, b) => rang(a).compareTo(rang(b)));
+    final calcule = ref.read(alertesProduitsProvider.notifier).calcule;
     Widget tuile(TypeAlerteProduit ty) {
       final n = alertes.de(ty).length;
+      final vide = n == 0;
       final critiques = alertes.de(ty).where((a) => a.critique).length;
       return Tooltip(
         message: regleAlerte(l10n, ty),
@@ -606,7 +607,7 @@ class _CarteAlertesProduits extends ConsumerWidget {
                     libelleTypeAlerte(l10n, ty),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: t.bodySm.copyWith(color: c.textPrimary),
+                    style: t.bodySm.copyWith(color: vide ? c.textMuted : c.textPrimary),
                   ),
                 ),
                 if (nouvelles.contains(ty)) const DsPoint(),
@@ -623,7 +624,7 @@ class _CarteAlertesProduits extends ConsumerWidget {
     return DsCard(
       titre: l10n.alpCarteTitre,
       icone: LucideIcons.bellRing,
-      actions: types.isEmpty
+      actions: types.every((ty) => alertes.de(ty).isEmpty)
           ? null
           : DsButton(
               key: const ValueKey('carte_alertes_toutes'),
@@ -636,7 +637,10 @@ class _CarteAlertesProduits extends ConsumerWidget {
           ? Padding(
               padding: const EdgeInsets.symmetric(vertical: DsSpacing.s4),
               child: Center(
-                child: Text(l10n.alpCarteAucune, style: t.body.copyWith(color: c.textMuted)),
+                child: Text(
+                  calcule ? l10n.alpCarteAucune : l10n.dsChargement,
+                  style: t.body.copyWith(color: c.textMuted),
+                ),
               ),
             )
           : LayoutBuilder(

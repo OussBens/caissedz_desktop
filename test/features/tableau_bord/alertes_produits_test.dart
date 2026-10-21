@@ -51,6 +51,13 @@ void main() {
     final tuile = _cle('carte_alerte_ficheIncomplete');
     expect(tuile, findsOneWidget);
     expect(find.descendant(of: tuile, matching: find.text('Fiche produit incomplète')), findsOneWidget);
+    // Les 20 alertes sont toujours sur la carte, même sans produit (grisées, « 0 »).
+    expect(
+      find.byWidgetPredicate(
+        (w) => w.key is ValueKey<String> && (w.key! as ValueKey<String>).value.startsWith('carte_alerte_'),
+      ),
+      findsNWidgets(TypeAlerteProduit.values.length),
+    );
     expect(
       find.descendant(of: tuile, matching: find.byType(DsPoint)),
       findsOneWidget,
