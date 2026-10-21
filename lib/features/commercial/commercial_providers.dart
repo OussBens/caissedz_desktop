@@ -203,6 +203,7 @@ Future<void> imprimerDocumentClient(BuildContext context, WidgetRef ref, Documen
   final client = await _client(ref, d.clientCode);
   if (!context.mounted) return;
   final devise = ref.read(deviseProvider);
+  final affichage = ref.read(affichagePrixDocumentsProvider);
   String m(double v) => '${f2(v)} $devise';
   final titre = switch (d.type) {
     TypesDocumentClient.devis => l10n.docPdfDevis,
@@ -225,14 +226,15 @@ Future<void> imprimerDocumentClient(BuildContext context, WidgetRef ref, Documen
       emetteur: vendeur,
       libelleTiers: l10n.ventesClient,
       tiers: client,
+      // Colonnes TVA et TTC selon Paramètres › Affichage des prix (les totaux restent complets).
       entetes: [
         l10n.produitsColCode,
         l10n.dsPosProduit,
         l10n.stockColQuantite,
-        l10n.docPuTtc,
+        if (affichage.ttc) l10n.docPuTtc else l10n.docPuHt,
         l10n.tvaTaux,
         l10n.tvaHt,
-        l10n.tvaMontant,
+        if (affichage.tva) l10n.tvaMontant,
         l10n.tvaTtc,
       ],
       lignes: [
@@ -241,10 +243,10 @@ Future<void> imprimerDocumentClient(BuildContext context, WidgetRef ref, Documen
             l.produitCode,
             pdf.nomProduit(l.produitCode, l.designation),
             formaterNombre(l.quantite),
-            f2(l.prixUnitaire),
+            if (affichage.ttc) f2(l.prixUnitaire) else f2(l.quantite == 0 ? 0 : l.montantHt / l.quantite),
             '${formaterNombre(l.tauxTva)} %',
             f2(l.montantHt),
-            f2(l.montantTva),
+            if (affichage.tva) f2(l.montantTva),
             f2(l.total),
           ],
       ],
@@ -283,7 +285,8 @@ Future<void> imprimerBonLivraison(BuildContext context, WidgetRef ref, BonLivrai
       tiers: client,
       entetes: [l10n.produitsColCode, l10n.dsPosProduit, l10n.docQuantiteLivree],
       lignes: [
-        for (final l in b.lignes) [l.produitCode, pdf.nomProduit(l.produitCode, l.designation), formaterNombre(l.quantite)],
+        for (final l in b.lignes)
+          [l.produitCode, pdf.nomProduit(l.produitCode, l.designation), formaterNombre(l.quantite)],
       ],
       observation: b.observation,
       filigrane: b.actif ? null : l10n.docStatutAnnule,

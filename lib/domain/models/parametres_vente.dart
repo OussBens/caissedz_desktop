@@ -21,6 +21,7 @@ class ParametresVente {
     this.timbreActif = true,
     this.tvaCaisse = true,
     this.tvaDocuments = true,
+    this.affichagePrix = affichagePrixTous,
   });
 
   static const String cleMarge = 'marge_defaut_pct';
@@ -34,6 +35,7 @@ class ParametresVente {
   static const String cleSeuilMax = 'seuil_stock_max';
   static const String cleVenteSousAchat = 'vente_sous_achat';
   static const String cleNombre = 'nombre_actif';
+  static const String cleAffichagePrix = 'affichage_prix';
   static const List<String> cles = [
     Fiscalite.cleRegime,
     Fiscalite.cleTimbre,
@@ -50,6 +52,7 @@ class ParametresVente {
     cleSeuilMax,
     cleVenteSousAchat,
     cleNombre,
+    cleAffichagePrix,
   ];
 
   /// Valeurs stockées du référentiel `typeCalcul`.
@@ -60,6 +63,13 @@ class ParametresVente {
   static const String venteSousAchatInterdire = 'Interdire';
   static const String venteSousAchatAvertir = 'Avertir';
   static const String venteSousAchatAutoriser = 'Autoriser';
+
+  /// Détail du prix des lignes du panier et des devis / commandes quand la TVA s'applique : HT et TTC, HT et
+  /// TVA, ou les trois (valeurs stockées).
+  static const String affichagePrixTtc = 'TTC';
+  static const String affichagePrixTva = 'TVA';
+  static const String affichagePrixTous = 'TVA et TTC';
+  static const List<String> affichagesPrix = [affichagePrixTtc, affichagePrixTva, affichagePrixTous];
 
   /// Taux de marge en pourcentage (`taux_marge_percentage`).
   final double margeDefautPct;
@@ -101,6 +111,13 @@ class ParametresVente {
   /// Même choix pour les devis, proformas, commandes clients et leurs livraisons.
   final bool tvaDocuments;
 
+  /// [affichagePrixTtc], [affichagePrixTva] ou [affichagePrixTous] ; les tuiles de la caisse montrent le seul
+  /// prix de vente (HT), sans TVA.
+  final String affichagePrix;
+
+  bool get afficheTva => affichagePrix != affichagePrixTtc;
+  bool get afficheTtc => affichagePrix != affichagePrixTva;
+
   bool get margeEnMontant => typeMarge == typeMargeMontant;
 
   ParametresVente copyWith({
@@ -119,6 +136,7 @@ class ParametresVente {
     bool? timbreActif,
     bool? tvaCaisse,
     bool? tvaDocuments,
+    String? affichagePrix,
   }) => ParametresVente(
     margeDefautPct: margeDefautPct ?? this.margeDefautPct,
     seuilStockGlobal: seuilStockGlobal ?? this.seuilStockGlobal,
@@ -135,6 +153,7 @@ class ParametresVente {
     timbreActif: timbreActif ?? this.timbreActif,
     tvaCaisse: tvaCaisse ?? this.tvaCaisse,
     tvaDocuments: tvaDocuments ?? this.tvaDocuments,
+    affichagePrix: affichagePrix ?? this.affichagePrix,
   );
 
   Map<String, String> versCles() => {
@@ -153,6 +172,7 @@ class ParametresVente {
     Fiscalite.cleTimbre: timbreActif ? '1' : '0',
     Fiscalite.cleTvaCaisse: tvaCaisse ? '1' : '0',
     Fiscalite.cleTvaDocuments: tvaDocuments ? '1' : '0',
+    cleAffichagePrix: affichagePrix,
   };
 
   factory ParametresVente.depuisCles(Map<String, String?> m) => ParametresVente(
@@ -175,6 +195,7 @@ class ParametresVente {
     timbreActif: m[Fiscalite.cleTimbre] != '0',
     tvaCaisse: m[Fiscalite.cleTvaCaisse] != '0',
     tvaDocuments: m[Fiscalite.cleTvaDocuments] != '0',
+    affichagePrix: affichagesPrix.contains(m[cleAffichagePrix]) ? m[cleAffichagePrix]! : affichagePrixTous,
   );
 
   @override
@@ -194,7 +215,8 @@ class ParametresVente {
       other.regimeFiscal == regimeFiscal &&
       other.timbreActif == timbreActif &&
       other.tvaCaisse == tvaCaisse &&
-      other.tvaDocuments == tvaDocuments;
+      other.tvaDocuments == tvaDocuments &&
+      other.affichagePrix == affichagePrix;
   @override
   int get hashCode => Object.hash(
     margeDefautPct,
@@ -212,5 +234,6 @@ class ParametresVente {
     timbreActif,
     tvaCaisse,
     tvaDocuments,
+    affichagePrix,
   );
 }

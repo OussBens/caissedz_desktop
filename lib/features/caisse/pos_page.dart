@@ -13,11 +13,13 @@ import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
 import '../../domain/models/caisse.dart';
 import '../../domain/models/panier.dart';
+import '../../domain/models/parametres_vente.dart';
 import '../../domain/models/produit.dart';
 import '../../domain/models/retour.dart';
 import '../../domain/models/tiers.dart';
 import '../../domain/models/vente.dart';
 import '../../domain/permissions.dart';
+import '../commun/detail_prix.dart';
 import '../entrees/entree_dialogs.dart';
 import '../gestion_caisse/gestion_caisse_providers.dart';
 import '../produits/produit_form_dialog.dart';
@@ -239,10 +241,9 @@ class _PosPageState extends ConsumerState<PosPage> {
         // Le code est cherché dans le catalogue BENS pendant que le dialog est ouvert : trouvé, le formulaire
         // s'ouvre rempli (nom, nom arabe, marque, photo), sinon avec le seul code-barres.
         FicheProduitIa? fiche;
-        final catalogue = SourceBens(client: ref.read(httpClientProvider)).rechercher(code).then(
-          (f) => fiche = f,
-          onError: (Object _) => null,
-        );
+        final catalogue = SourceBens(client: ref.read(httpClientProvider))
+            .rechercher(code)
+            .then((f) => fiche = f, onError: (Object _) => null);
         final suite = await afficherProduitIntrouvable(context, code, catalogue: catalogue);
         if (!mounted) return;
         // Un vote sur un produit du catalogue à confirmer part tout de suite (gardé hors ligne).
@@ -759,7 +760,8 @@ class _PosPageState extends ConsumerState<PosPage> {
               key: ValueKey('tuile_${p.code}'),
               nom: p.nom(langue),
               code: p.code,
-              prix: ref.read(prixCaisseProvider)(p),
+              // Tuile : le prix de vente seul (HT), sans TVA ni TTC ; le panier détaille le prix appliqué.
+              prix: p.prixVente,
               stock: (stocks[p.code] ?? 0) - etat.unitesReservees(p.code),
               categorie: nomsCategories[p.categorieCode],
               image: imageProduit(p.image),
@@ -891,6 +893,8 @@ class _PosPageState extends ConsumerState<PosPage> {
     final panier = etat.panier;
     final devise = ref.watch(deviseProvider);
     final peutPrix = ref.watch(permissionProvider(Permission.modifierPrixVente));
+    final taux = ref.watch(tauxAppliqueProvider);
+    final affichage = ref.watch(parametresVenteProvider).value?.affichagePrix ?? ParametresVente.affichagePrixTous;
     final clients = ref.watch(clientsProvider).value ?? const <Client>[];
     final remises = _remisesGlobales();
 
@@ -1026,6 +1030,16 @@ class _PosPageState extends ConsumerState<PosPage> {
                           nom: montant ? l10n.posMontantTitre : l.designation,
                           code: l.pack != null ? '${l.produit.code} · ${l.pack!.designation}' : l.produit.code,
                           prix: l.quantite == 0 ? l.prixUnitaire : l.total / l.quantite,
+                          // Prix HT, TVA et / ou TTC selon Paramètres › Affichage des prix.
+                          detailPrix: montant
+                              ? null
+                              : texteDetailPrix(
+                                  l10n,
+                                  prix: l.quantite == 0 ? l.prixUnitaire : l.total / l.quantite,
+                                  tauxPct: taux(l.produit),
+                                  affichage: affichage,
+                                  devise: devise,
+                                ),
                           qte: l.quantite,
                           devise: devise,
                           colis: colis,

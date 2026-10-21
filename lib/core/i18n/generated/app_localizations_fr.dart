@@ -8079,4 +8079,41 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get posCatalogueNon => 'Ce n\'est pas ce produit';
+
+  @override
+  String prixDetailHt(String montant) {
+    return 'HT $montant';
+  }
+
+  @override
+  String prixDetailTva(String taux, String montant) {
+    return 'TVA $taux $montant';
+  }
+
+  @override
+  String prixDetailTtc(String montant) {
+    return 'TTC $montant';
+  }
+
+  @override
+  String get pmAffichagePrix => 'Affichage des prix';
+
+  @override
+  String get pmAffichagePrixDesc =>
+      'Lignes du panier, devis, proformas et commandes quand la TVA s\'applique. Les cartes produits de la caisse montrent le seul prix de vente, sans TVA.';
+
+  @override
+  String get pmAffichageTtc => 'HT et TTC';
+
+  @override
+  String get pmAffichageTva => 'HT et TVA';
+
+  @override
+  String get pmAffichageTous => 'HT, TVA et TTC';
+
+  @override
+  String get docTvaUnitaire => 'TVA unitaire';
+
+  @override
+  String get docTotalHt => 'Total HT';
 }

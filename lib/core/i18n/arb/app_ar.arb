@@ -2699,5 +2699,15 @@
   "posCatalogueAConfirmerTitre": "منتج اقترحه متجر",
   "posCatalogueAConfirmerQuestion": "هل هذا هو المنتج فعلاً؟ إجابتك تساعد على تأكيد الكتالوج ({score} من {seuil}).",
   "posCatalogueOui": "نعم، هذا هو المنتج",
-  "posCatalogueNon": "ليس هذا المنتج"
+  "posCatalogueNon": "ليس هذا المنتج",
+  "prixDetailHt": "دون رسوم {montant}",
+  "prixDetailTva": "ر.ق.م {taux} {montant}",
+  "prixDetailTtc": "بكل الرسوم {montant}",
+  "pmAffichagePrix": "عرض الأسعار",
+  "pmAffichagePrixDesc": "أسطر السلة وعروض الأسعار والفواتير الأولية والطلبيات عند تطبيق الرسم. بطاقات المنتجات في الصندوق تعرض سعر البيع فقط دون رسم.",
+  "pmAffichageTtc": "دون رسوم وبكل الرسوم",
+  "pmAffichageTva": "دون رسوم والرسم",
+  "pmAffichageTous": "دون رسوم، الرسم وبكل الرسوم",
+  "docTvaUnitaire": "الرسم للوحدة",
+  "docTotalHt": "المجموع دون رسوم"
 }

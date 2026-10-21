@@ -15164,6 +15164,66 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Ce n\'est pas ce produit'**
   String get posCatalogueNon;
+
+  /// No description provided for @prixDetailHt.
+  ///
+  /// In fr, this message translates to:
+  /// **'HT {montant}'**
+  String prixDetailHt(String montant);
+
+  /// No description provided for @prixDetailTva.
+  ///
+  /// In fr, this message translates to:
+  /// **'TVA {taux} {montant}'**
+  String prixDetailTva(String taux, String montant);
+
+  /// No description provided for @prixDetailTtc.
+  ///
+  /// In fr, this message translates to:
+  /// **'TTC {montant}'**
+  String prixDetailTtc(String montant);
+
+  /// No description provided for @pmAffichagePrix.
+  ///
+  /// In fr, this message translates to:
+  /// **'Affichage des prix'**
+  String get pmAffichagePrix;
+
+  /// No description provided for @pmAffichagePrixDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lignes du panier, devis, proformas et commandes quand la TVA s\'applique. Les cartes produits de la caisse montrent le seul prix de vente, sans TVA.'**
+  String get pmAffichagePrixDesc;
+
+  /// No description provided for @pmAffichageTtc.
+  ///
+  /// In fr, this message translates to:
+  /// **'HT et TTC'**
+  String get pmAffichageTtc;
+
+  /// No description provided for @pmAffichageTva.
+  ///
+  /// In fr, this message translates to:
+  /// **'HT et TVA'**
+  String get pmAffichageTva;
+
+  /// No description provided for @pmAffichageTous.
+  ///
+  /// In fr, this message translates to:
+  /// **'HT, TVA et TTC'**
+  String get pmAffichageTous;
+
+  /// No description provided for @docTvaUnitaire.
+  ///
+  /// In fr, this message translates to:
+  /// **'TVA unitaire'**
+  String get docTvaUnitaire;
+
+  /// No description provided for @docTotalHt.
+  ///
+  /// In fr, this message translates to:
+  /// **'Total HT'**
+  String get docTotalHt;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

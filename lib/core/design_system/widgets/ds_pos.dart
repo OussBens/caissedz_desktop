@@ -66,6 +66,7 @@ class DsCartLine extends StatefulWidget {
     required this.nom,
     required this.prix,
     this.code,
+    this.detailPrix,
     this.qte = 1,
     this.devise = 'DA',
     this.colis,
@@ -81,6 +82,9 @@ class DsCartLine extends StatefulWidget {
   final String nom;
   final String? code;
   final double prix;
+
+  /// Prix détaillé (HT, TVA, TTC) affiché à la place du prix, sur deux lignes au plus.
+  final String? detailPrix;
   final double qte;
   final String devise;
   final String? colis;
@@ -158,7 +162,8 @@ class _DsCartLineState extends State<DsCartLine> {
       ),
     );
     final sousTitre =
-        '${w.code != null ? '${w.code} · ' : ''}${formaterMontant(w.prix, w.devise)}${w.uniteLibelle != null ? ' / ${w.uniteLibelle}' : ''}';
+        '${w.code != null ? '${w.code} · ' : ''}${w.detailPrix ?? formaterMontant(w.prix, w.devise)}${w.uniteLibelle != null ? ' / ${w.uniteLibelle}' : ''}';
+    final lignesSousTitre = w.detailPrix == null ? 1 : 2;
 
     Widget contenu;
     if (tableau) {
@@ -180,7 +185,7 @@ class _DsCartLineState extends State<DsCartLine> {
                   Text(
                     sousTitre,
                     style: t.caption.copyWith(fontSize: 11.5, color: c.textMuted, fontFeatures: DsTypography.tabular),
-                    maxLines: 1,
+                    maxLines: lignesSousTitre,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],
@@ -256,7 +261,7 @@ class _DsCartLineState extends State<DsCartLine> {
                   Text(
                     sousTitre,
                     style: t.caption.copyWith(color: c.textMuted, fontFeatures: DsTypography.tabular),
-                    maxLines: 1,
+                    maxLines: lignesSousTitre,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],

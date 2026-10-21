@@ -8,6 +8,7 @@ import '../../application/document_commercial_service.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
 import '../../domain/calculs_prix.dart';
+import '../../domain/fiscalite.dart';
 import '../../domain/models/document_commercial.dart';
 import '../../domain/models/panier.dart';
 import '../../domain/models/stock.dart';
@@ -480,6 +481,8 @@ class _DocumentFormState extends ConsumerState<_DocumentForm> {
         .toList();
     final d = widget.document;
     final type = libelleTypeDocument(l10n, widget.type);
+    final taux = ref.watch(tauxAppliqueProvider);
+    final affichage = ref.watch(affichagePrixDocumentsProvider);
     return DocFormDialog(
       titre: d == null ? l10n.docNouveauTitre(type) : l10n.docModifierTitre(type),
       icone: widget.type == TypesDocumentClient.commande ? LucideIcons.clipboardList : LucideIcons.fileText,
@@ -496,7 +499,7 @@ class _DocumentFormState extends ConsumerState<_DocumentForm> {
       peutEnregistrer: _client != null && _lignes.every((l) => l.quantite > 0),
       onEnregistrer: _enregistrer,
       totalLigne: (l) => l.quantite * l.prix,
-      libelleTotal: l10n.docTotalTtc,
+      libelleTotal: affichage.avecTva ? l10n.docTotalTtc : l10n.docTotalHt,
       colonnes: [
         DsColonneLigne(
           id: 'code',
@@ -506,13 +509,14 @@ class _DocumentFormState extends ConsumerState<_DocumentForm> {
           largeur: 110,
         ),
         DsColonneLigne(id: 'nom', libelle: l10n.dsPosProduit, valeur: (l) => l.produit.designation, fort: true),
-        DsColonneLigne(
-          id: 'tva',
-          libelle: l10n.tvaTaux,
-          numerique: true,
-          largeur: 70,
-          valeur: (l) => '${formaterNombre(l.produit.tvaPct)} %',
-        ),
+        if (affichage.avecTva)
+          DsColonneLigne(
+            id: 'tva',
+            libelle: l10n.tvaTaux,
+            numerique: true,
+            largeur: 70,
+            valeur: (l) => '${formaterNombre(taux(l.produit, documents: true))} %',
+          ),
         DsColonneLigne(
           id: 'qte',
           libelle: l10n.stockColQuantite,
@@ -522,16 +526,40 @@ class _DocumentFormState extends ConsumerState<_DocumentForm> {
           valeur: (l) => texteQuantite(l.quantite),
           onEdition: (l, v) => setState(() => l.quantite = nombreSaisi(v)),
         ),
-        DsColonneLigne(
-          id: 'prix',
-          libelle: l10n.docPuTtc,
-          numerique: true,
-          editable: true,
-          largeur: 140,
-          suffixe: devise,
-          valeur: (l) => texteQuantite(l.prix),
-          onEdition: (l, v) => setState(() => l.prix = nombreSaisi(v)),
-        ),
+        // Avec TVA : P.U. HT, puis TVA et / ou P.U. TTC selon Paramètres › Affichage des prix ; le prix saisi est le
+        // TTC (le HT quand le TTC n'est pas affiché).
+        if (affichage.avecTva)
+          DsColonneLigne(
+            id: 'ht',
+            libelle: l10n.docPuHt,
+            numerique: true,
+            editable: !affichage.ttc,
+            largeur: 130,
+            suffixe: devise,
+            valeur: (l) => montantLigne(Fiscalite.ventiler(l.prix, taux(l.produit, documents: true)).ht),
+            onEdition: (l, v) =>
+                setState(() => l.prix = Fiscalite.ttc(nombreSaisi(v), taux(l.produit, documents: true))),
+          ),
+        if (affichage.avecTva && affichage.tva)
+          DsColonneLigne(
+            id: 'tva_montant',
+            libelle: l10n.docTvaUnitaire,
+            numerique: true,
+            largeur: 110,
+            suffixe: devise,
+            valeur: (l) => montantLigne(Fiscalite.ventiler(l.prix, taux(l.produit, documents: true)).tva),
+          ),
+        if (!affichage.avecTva || affichage.ttc)
+          DsColonneLigne(
+            id: 'prix',
+            libelle: affichage.avecTva ? l10n.docPuTtc : l10n.docPuHt,
+            numerique: true,
+            editable: true,
+            largeur: 140,
+            suffixe: devise,
+            valeur: (l) => texteQuantite(l.prix),
+            onEdition: (l, v) => setState(() => l.prix = nombreSaisi(v)),
+          ),
       ],
       entete: [
         if (d != null)
@@ -583,6 +611,9 @@ Future<void> afficherDetailDocumentClient(BuildContext context, WidgetRef ref, D
       : const <BonLivraison>[];
   if (!context.mounted) return;
   final type = libelleTypeDocument(l10n, d.type);
+  // Document avec TVA : P.U. HT, puis TVA et / ou P.U. TTC selon Paramètres › Affichage des prix.
+  final affichage = ref.read(affichagePrixDocumentsProvider);
+  final avecTva = d.lignes.any((l) => l.tauxTva > 0);
   return afficherDetailEntite(
     context,
     DsEntityDetailDialog(
@@ -656,13 +687,30 @@ Future<void> afficherDetailDocumentClient(BuildContext context, WidgetRef ref, D
                   cellule: (_, l) => Text(formaterNombre(l.reste)),
                 ),
               ],
-              DsColonne(
-                id: 'pu',
-                libelle: l10n.docPuTtc,
-                numerique: true,
-                valeur: (l) => l.prixUnitaire,
-                cellule: (_, l) => Text(formaterMontant(l.prixUnitaire, devise)),
-              ),
+              if (avecTva)
+                DsColonne(
+                  id: 'pu_ht',
+                  libelle: l10n.docPuHt,
+                  numerique: true,
+                  valeur: (l) => l.quantite == 0 ? 0 : l.montantHt / l.quantite,
+                  cellule: (_, l) => Text(f2(l.quantite == 0 ? 0 : l.montantHt / l.quantite)),
+                ),
+              if (avecTva && affichage.tva)
+                DsColonne(
+                  id: 'tva_unitaire',
+                  libelle: l10n.docTvaUnitaire,
+                  numerique: true,
+                  valeur: (l) => l.quantite == 0 ? 0 : l.montantTva / l.quantite,
+                  cellule: (_, l) => Text(f2(l.quantite == 0 ? 0 : l.montantTva / l.quantite)),
+                ),
+              if (!avecTva || affichage.ttc)
+                DsColonne(
+                  id: 'pu',
+                  libelle: avecTva ? l10n.docPuTtc : l10n.docPuHt,
+                  numerique: true,
+                  valeur: (l) => l.prixUnitaire,
+                  cellule: (_, l) => Text(formaterMontant(l.prixUnitaire, devise)),
+                ),
               DsColonne(
                 id: 'taux',
                 libelle: l10n.tvaTaux,

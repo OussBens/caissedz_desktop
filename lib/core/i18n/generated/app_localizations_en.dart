@@ -8060,4 +8060,41 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get posCatalogueNon => 'That\'s not it';
+
+  @override
+  String prixDetailHt(String montant) {
+    return 'Excl. VAT $montant';
+  }
+
+  @override
+  String prixDetailTva(String taux, String montant) {
+    return 'VAT $taux $montant';
+  }
+
+  @override
+  String prixDetailTtc(String montant) {
+    return 'Incl. VAT $montant';
+  }
+
+  @override
+  String get pmAffichagePrix => 'Price display';
+
+  @override
+  String get pmAffichagePrixDesc =>
+      'Cart lines, quotes, proformas and orders when VAT applies. The till\'s product cards show the sale price only, without VAT.';
+
+  @override
+  String get pmAffichageTtc => 'Excl. and incl. VAT';
+
+  @override
+  String get pmAffichageTva => 'Excl. VAT and VAT';
+
+  @override
+  String get pmAffichageTous => 'Excl. VAT, VAT and incl. VAT';
+
+  @override
+  String get docTvaUnitaire => 'Unit VAT';
+
+  @override
+  String get docTotalHt => 'Total excl. VAT';
 }

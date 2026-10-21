@@ -2699,5 +2699,15 @@
   "posCatalogueAConfirmerTitre": "Product suggested by a shop",
   "posCatalogueAConfirmerQuestion": "Is this the right product? Your answer helps confirm the catalogue ({score} of {seuil}).",
   "posCatalogueOui": "Yes, that's it",
-  "posCatalogueNon": "That's not it"
+  "posCatalogueNon": "That's not it",
+  "prixDetailHt": "Excl. VAT {montant}",
+  "prixDetailTva": "VAT {taux} {montant}",
+  "prixDetailTtc": "Incl. VAT {montant}",
+  "pmAffichagePrix": "Price display",
+  "pmAffichagePrixDesc": "Cart lines, quotes, proformas and orders when VAT applies. The till's product cards show the sale price only, without VAT.",
+  "pmAffichageTtc": "Excl. and incl. VAT",
+  "pmAffichageTva": "Excl. VAT and VAT",
+  "pmAffichageTous": "Excl. VAT, VAT and incl. VAT",
+  "docTvaUnitaire": "Unit VAT",
+  "docTotalHt": "Total excl. VAT"
 }

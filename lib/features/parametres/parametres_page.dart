@@ -58,6 +58,7 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
   bool _timbre = true;
   bool _tvaCaisse = true;
   bool _tvaDocuments = true;
+  String _affichagePrix = ParametresVente.affichagePrixTous;
   String _typeMarge = ParametresVente.typeMargePourcentage;
   final _margePct = TextEditingController();
   final _margeMontant = TextEditingController();
@@ -164,6 +165,7 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
       _timbre = v.timbreActif;
       _tvaCaisse = v.tvaCaisse;
       _tvaDocuments = v.tvaDocuments;
+      _affichagePrix = v.affichagePrix;
       _typeMarge = v.typeMarge;
       _margePct.text = _entier(v.margeDefautPct);
       _margeMontant.text = _entier(v.margeMontant);
@@ -231,6 +233,7 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
         timbreActif: _timbre,
         tvaCaisse: _tvaCaisse,
         tvaDocuments: _tvaDocuments,
+        affichagePrix: _affichagePrix,
         typeMarge: _typeMarge,
         margeDefautPct: _v(_margePct),
         margeMontant: _v(_margeMontant),
@@ -977,6 +980,20 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
               description: l10n.pmTvaDocumentsDesc,
               valeur: _tvaDocuments,
               onChanged: (v) => _changer(() => _tvaDocuments = v),
+            ),
+            _ligne(
+              l10n.pmAffichagePrix,
+              description: l10n.pmAffichagePrixDesc,
+              child: DsSegmentedControl<String>(
+                key: const ValueKey('param_affichage_prix'),
+                valeur: _affichagePrix,
+                options: [
+                  DsOption(ParametresVente.affichagePrixTtc, libelle: l10n.pmAffichageTtc),
+                  DsOption(ParametresVente.affichagePrixTva, libelle: l10n.pmAffichageTva),
+                  DsOption(ParametresVente.affichagePrixTous, libelle: l10n.pmAffichageTous),
+                ],
+                onChanged: (v) => _changer(() => _affichagePrix = v),
+              ),
             ),
             _interrupteur(
               'param_garde',

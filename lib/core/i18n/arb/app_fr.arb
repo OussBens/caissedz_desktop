@@ -4302,5 +4302,39 @@
     }
   },
   "posCatalogueOui": "Oui, c'est ce produit",
-  "posCatalogueNon": "Ce n'est pas ce produit"
+  "posCatalogueNon": "Ce n'est pas ce produit",
+  "prixDetailHt": "HT {montant}",
+  "@prixDetailHt": {
+    "placeholders": {
+      "montant": {
+        "type": "String"
+      }
+    }
+  },
+  "prixDetailTva": "TVA {taux} {montant}",
+  "@prixDetailTva": {
+    "placeholders": {
+      "taux": {
+        "type": "String"
+      },
+      "montant": {
+        "type": "String"
+      }
+    }
+  },
+  "prixDetailTtc": "TTC {montant}",
+  "@prixDetailTtc": {
+    "placeholders": {
+      "montant": {
+        "type": "String"
+      }
+    }
+  },
+  "pmAffichagePrix": "Affichage des prix",
+  "pmAffichagePrixDesc": "Lignes du panier, devis, proformas et commandes quand la TVA s'applique. Les cartes produits de la caisse montrent le seul prix de vente, sans TVA.",
+  "pmAffichageTtc": "HT et TTC",
+  "pmAffichageTva": "HT et TVA",
+  "pmAffichageTous": "HT, TVA et TTC",
+  "docTvaUnitaire": "TVA unitaire",
+  "docTotalHt": "Total HT"
 }

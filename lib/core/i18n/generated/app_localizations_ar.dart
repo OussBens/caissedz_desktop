@@ -8041,4 +8041,41 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get posCatalogueNon => 'ليس هذا المنتج';
+
+  @override
+  String prixDetailHt(String montant) {
+    return 'دون رسوم $montant';
+  }
+
+  @override
+  String prixDetailTva(String taux, String montant) {
+    return 'ر.ق.م $taux $montant';
+  }
+
+  @override
+  String prixDetailTtc(String montant) {
+    return 'بكل الرسوم $montant';
+  }
+
+  @override
+  String get pmAffichagePrix => 'عرض الأسعار';
+
+  @override
+  String get pmAffichagePrixDesc =>
+      'أسطر السلة وعروض الأسعار والفواتير الأولية والطلبيات عند تطبيق الرسم. بطاقات المنتجات في الصندوق تعرض سعر البيع فقط دون رسم.';
+
+  @override
+  String get pmAffichageTtc => 'دون رسوم وبكل الرسوم';
+
+  @override
+  String get pmAffichageTva => 'دون رسوم والرسم';
+
+  @override
+  String get pmAffichageTous => 'دون رسوم، الرسم وبكل الرسوم';
+
+  @override
+  String get docTvaUnitaire => 'الرسم للوحدة';
+
+  @override
+  String get docTotalHt => 'المجموع دون رسوم';
 }

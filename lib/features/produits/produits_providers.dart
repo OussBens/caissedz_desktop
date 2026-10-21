@@ -71,6 +71,23 @@ final prixHtProvider = Provider<double Function(Produit p, double prixCaisse)>((
   return (p, prix) => Fiscalite.ht(prix, Fiscalite.taux(p.tvaPct, regime, avecTva: tva));
 });
 
+/// Taux de TVA appliqué à [p] en caisse (`documents` : devis, proformas, commandes) : 0 sans TVA ou en IFU.
+final tauxAppliqueProvider = Provider<double Function(Produit p, {bool documents})>((ref) {
+  final v = ref.watch(parametresVenteProvider).value;
+  final regime = v?.regimeFiscal ?? RegimesFiscaux.reel;
+  return (p, {documents = false}) =>
+      Fiscalite.taux(p.tvaPct, regime, avecTva: documents ? (v?.tvaDocuments ?? true) : (v?.tvaCaisse ?? true));
+});
+
+/// Colonnes de prix des devis, proformas et commandes clients : avec TVA (« documents avec TVA », hors IFU), puis
+/// TVA et / ou TTC selon Paramètres › Affichage des prix.
+typedef AffichagePrixDocuments = ({bool avecTva, bool tva, bool ttc});
+
+final affichagePrixDocumentsProvider = Provider<AffichagePrixDocuments>((ref) {
+  final v = ref.watch(parametresVenteProvider).value ?? const ParametresVente();
+  return (avecTva: v.tvaDocuments && v.regimeFiscal != RegimesFiscaux.ifu, tva: v.afficheTva, ttc: v.afficheTtc);
+});
+
 final deviseProvider = Provider<String>((ref) => ref.watch(parametresVenteProvider).value?.devise ?? 'DA');
 
 /// Paramètres de connexion au serveur CaisseDZ (Paramètres, lot 8).
