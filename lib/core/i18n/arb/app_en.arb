@@ -2712,5 +2712,11 @@
   "docTotalHt": "Total excl. VAT",
   "entManuel": "Manual",
   "entManuelTitre": "Add a product",
-  "entManuelAjouter": "Add to the receipt"
+  "entManuelAjouter": "Add to the receipt",
+  "mobileChoixTitre": "New phone to connect",
+  "mobileChoixMessage": "This phone scanned your QR code. Choose the user who will open CaisseDZ Scan on this phone: it will sign in with their account and rights.",
+  "mobileChoixRefuser": "Refuse",
+  "mobileChoixConnecter": "Connect this phone",
+  "mobileChoixNonAutorise": "No mobile access (role or password)",
+  "mobileChoixVersion": "version {version}"
 }

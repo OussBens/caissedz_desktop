@@ -15242,6 +15242,42 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Ajouter à l\'entrée'**
   String get entManuelAjouter;
+
+  /// No description provided for @mobileChoixTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau téléphone à connecter'**
+  String get mobileChoixTitre;
+
+  /// No description provided for @mobileChoixMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce téléphone a scanné votre QR code. Choisissez l\'utilisateur qui ouvrira CaisseDZ Scan sur ce téléphone : il s\'y connectera avec son compte et ses droits.'**
+  String get mobileChoixMessage;
+
+  /// No description provided for @mobileChoixRefuser.
+  ///
+  /// In fr, this message translates to:
+  /// **'Refuser'**
+  String get mobileChoixRefuser;
+
+  /// No description provided for @mobileChoixConnecter.
+  ///
+  /// In fr, this message translates to:
+  /// **'Connecter ce téléphone'**
+  String get mobileChoixConnecter;
+
+  /// No description provided for @mobileChoixNonAutorise.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sans autorisation mobile (rôle ou mot de passe)'**
+  String get mobileChoixNonAutorise;
+
+  /// No description provided for @mobileChoixVersion.
+  ///
+  /// In fr, this message translates to:
+  /// **'version {version}'**
+  String mobileChoixVersion(String version);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -10,6 +10,7 @@ import '../data/boutique_repository.dart';
 import '../data/mobile_repository.dart';
 import '../data/utilisateur_repository.dart';
 import '../domain/models/appareil_mobile.dart';
+import '../domain/models/utilisateur.dart';
 import '../features/produits/produits_providers.dart';
 import '../features/stock/stock_providers.dart';
 import '../features/tiers/tiers_providers.dart';
@@ -32,6 +33,7 @@ final serveurMobileProvider = Provider<ServeurMobile>((ref) {
       if (domaines.contains(DomaineMobile.appareils)) ref.read(appareilsVersionProvider.notifier).incrementer();
     },
     surFacture: (f) => ref.read(factureMobileProvider.notifier).recue(f),
+    choisirUtilisateur: (d) => ref.read(demandeAppairageProvider.notifier).demander(d),
   );
   ref.onDispose(() => unawaited(serveur.arreter()));
   return serveur;
@@ -155,6 +157,52 @@ class FactureMobileNotifier extends Notifier<FactureMobile?> {
 }
 
 final factureMobileProvider = NotifierProvider<FactureMobileNotifier, FactureMobile?>(FactureMobileNotifier.new);
+
+/// Téléphone qui attend que l'Admin choisisse son utilisateur (QR de l'Admin scanné) ; le shell ouvre le choix.
+/// Une demande à la fois : une seconde, pendant que la première attend, est refusée (le téléphone réessaie).
+class DemandeAppairageNotifier extends Notifier<DemandeAppairage?> {
+  Completer<String?>? _reponse;
+
+  @override
+  DemandeAppairage? build() => null;
+
+  Future<String?> demander(DemandeAppairage d) {
+    if (_reponse != null) return Future.value();
+    final reponse = _reponse = Completer<String?>();
+    state = d;
+    // Sans réponse dans le délai, le téléphone a reçu « refusé » : le choix se ferme.
+    return reponse.future.timeout(
+      ServeurMobile.dureeChoixUtilisateur,
+      onTimeout: () {
+        repondre(null);
+        return null;
+      },
+    );
+  }
+
+  /// Utilisateur choisi par l'Admin (`null` : refusé).
+  void repondre(String? utilisateurCode) {
+    final r = _reponse;
+    _reponse = null;
+    state = null;
+    if (r != null && !r.isCompleted) r.complete(utilisateurCode);
+  }
+}
+
+final demandeAppairageProvider = NotifierProvider<DemandeAppairageNotifier, DemandeAppairage?>(
+  DemandeAppairageNotifier.new,
+);
+
+/// Utilisateurs proposés à l'Admin pour un téléphone : actifs, avec l'autorisation mobile de chacun.
+final utilisateursMobileProvider = FutureProvider<List<({Utilisateur utilisateur, bool autorise})>>((ref) async {
+  ref.watch(appareilsVersionProvider);
+  final db = ref.watch(appDatabaseProvider).db;
+  final autorises = await MobileRepository(db).utilisateursAutorises();
+  return [
+    for (final u in await UtilisateurRepository(db).tous())
+      if (u.actif && (!u.systeme || u.estAdmin)) (utilisateur: u, autorise: autorises.contains(u.code)),
+  ];
+});
 
 final appareilsVersionProvider = NotifierProvider<VersionNotifier, int>(VersionNotifier.new);
 

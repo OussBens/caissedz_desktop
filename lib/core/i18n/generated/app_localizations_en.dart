@@ -8106,4 +8106,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get entManuelAjouter => 'Add to the receipt';
+
+  @override
+  String get mobileChoixTitre => 'New phone to connect';
+
+  @override
+  String get mobileChoixMessage =>
+      'This phone scanned your QR code. Choose the user who will open CaisseDZ Scan on this phone: it will sign in with their account and rights.';
+
+  @override
+  String get mobileChoixRefuser => 'Refuse';
+
+  @override
+  String get mobileChoixConnecter => 'Connect this phone';
+
+  @override
+  String get mobileChoixNonAutorise => 'No mobile access (role or password)';
+
+  @override
+  String mobileChoixVersion(String version) {
+    return 'version $version';
+  }
 }

@@ -58,6 +58,32 @@ class ErreurApiMobile implements Exception {
   String toString() => 'ErreurApiMobile($statut, $code${detail == null ? '' : ', $detail'})';
 }
 
+/// Téléphone qui vient de scanner le QR de l'administrateur : le poste lui demande quel utilisateur ouvrira
+/// l'application sur ce téléphone ([ServeurMobile.choisirUtilisateur]).
+class DemandeAppairage {
+  const DemandeAppairage({
+    required this.nom,
+    required this.plateforme,
+    required this.administrateur,
+    this.modele = '',
+    this.systeme = '',
+    this.version = '',
+    this.adresse = '',
+  });
+
+  /// Nom du téléphone (« Samsung SM-A515F »), `android` ou `ios`, modèle, système (« Android 14 »), version de
+  /// l'application et adresse IP sur le réseau local (ce que le téléphone a envoyé).
+  final String nom;
+  final String plateforme;
+  final String modele;
+  final String systeme;
+  final String version;
+  final String adresse;
+
+  /// Code de l'administrateur dont le QR a été scanné.
+  final String administrateur;
+}
+
 /// Code d'appairage du QR personnel d'un utilisateur : valable [ServeurMobile.dureeCodeAppairage], une fois.
 class CodeAppairage {
   const CodeAppairage(this.code, this.expireLe, this.utilisateurCode);
@@ -83,7 +109,9 @@ class _SessionMobile {
 ///
 /// 1. Appairage : un utilisateur autorisé (Admin, ou rôle avec `utiliserMobile`) affiche sur le poste son QR
 ///    personnel (adresses, port, code d'appairage à usage unique). Le téléphone qui le scanne reçoit un jeton
-///    d'appareil (`X-CaisseDZ-Appareil: <code>.<jeton>`) lié à cet utilisateur, et sa première session.
+///    d'appareil (`X-CaisseDZ-Appareil: <code>.<jeton>`) lié à cet utilisateur, et sa première session. Le QR de
+///    l'Admin ouvre sur le poste le choix de l'utilisateur du téléphone ([choisirUtilisateur]) : la réponse
+///    attend ce choix ([dureeChoixUtilisateur] au plus).
 /// 2. Connexion : le téléphone rouvre une session (`Authorization: Bearer`, en mémoire) pour son utilisateur
 ///    avec le seul jeton d'appareil — aucun mot de passe ne passe sur le réseau. L'Admin, ou l'utilisateur
 ///    lui-même, révoque le téléphone ; un compte désactivé ou privé de la permission n'entre plus.
@@ -98,6 +126,7 @@ class ServeurMobile {
     this.utilisateurPoste,
     this.surModification,
     this.surFacture,
+    this.choisirUtilisateur,
     this.portPrefere = portParDefaut,
   });
 
@@ -116,11 +145,18 @@ class ServeurMobile {
 
   /// Une facture photographiée vient d'arriver du téléphone (le poste l'annonce).
   final void Function(FactureMobile facture)? surFacture;
+
+  /// QR de l'Admin scanné : l'utilisateur qui ouvrira l'application sur ce téléphone, choisi sur le poste (`null` :
+  /// refusé). Sans ce choix (tests, poste sans écran), le téléphone se connecte avec le compte de l'Admin.
+  final Future<String?> Function(DemandeAppairage demande)? choisirUtilisateur;
   final int portPrefere;
 
   static const int portParDefaut = 8787;
   static const int versionApi = 1;
   static const Duration dureeCodeAppairage = Duration(minutes: 10);
+
+  /// Le téléphone attend au plus ce délai que l'Admin choisisse son utilisateur sur le poste.
+  static const Duration dureeChoixUtilisateur = Duration(minutes: 2);
   static const Duration dureeSession = Duration(hours: 12);
   static const int tailleMaxFacture = 15 * 1024 * 1024;
   static const String enteteAppareil = 'x-caissedz-appareil';
@@ -287,7 +323,9 @@ class ServeurMobile {
     final route = chemin.isEmpty ? '' : chemin.first;
 
     if (m == 'GET' && route == 'info') return _info();
-    if (m == 'POST' && route == 'appairer') return _appairer(await _json(r));
+    if (m == 'POST' && route == 'appairer') {
+      return _appairer(await _json(r), adresse: r.connectionInfo?.remoteAddress.address ?? '');
+    }
 
     final appareil = await _appareil(r);
     if (m == 'POST' && route == 'connexion') return _connecter(appareil);
@@ -458,22 +496,47 @@ class ServeurMobile {
     'poste': Platform.localHostname,
   };
 
-  /// Le téléphone a scanné le QR personnel d'un utilisateur : il lui est lié et sa session est ouverte.
-  Future<Map<String, Object?>> _appairer(Map<String, Object?> corps) async {
+  /// Le téléphone a scanné le QR personnel d'un utilisateur : il lui est lié et sa session est ouverte. Le QR de
+  /// l'Admin : le téléphone est lié à l'utilisateur que l'Admin choisit sur le poste ; celui d'un autre
+  /// utilisateur : à ce seul utilisateur (celui dont la session est ouverte sur le poste).
+  Future<Map<String, Object?>> _appairer(Map<String, Object?> corps, {String adresse = ''}) async {
     _licenceValable();
     final code = _codes.values.where((c) => c.code == corps['code']).firstOrNull;
     if (code == null || !code.valide) throw const ErreurApiMobile(403, 'codeInvalide');
     // Usage unique : un QR photographié par un tiers ne relie pas un second téléphone.
     _codes.remove(code.utilisateurCode);
     await _exigerAutorise(code.utilisateurCode);
-    final nom = '${corps['nom'] ?? ''}'.trim();
+    String texte(String cle, [int max = 60]) {
+      final v = '${corps[cle] ?? ''}'.trim();
+      return v.length > max ? v.substring(0, max) : v;
+    }
+
+    final nom = texte('nom');
+    var utilisateur = code.utilisateurCode;
+    final choix = choisirUtilisateur;
+    if (choix != null && ((await UtilisateurRepository(db).parCode(utilisateur))?.estAdmin ?? false)) {
+      final choisi = await choix(
+        DemandeAppairage(
+          nom: nom.isEmpty ? 'Téléphone' : nom,
+          plateforme: texte('plateforme', 20),
+          modele: texte('modele'),
+          systeme: texte('systeme'),
+          version: texte('version', 20),
+          adresse: adresse,
+          administrateur: utilisateur,
+        ),
+      ).timeout(dureeChoixUtilisateur, onTimeout: () => null);
+      if (choisi == null) throw const ErreurApiMobile(403, 'appairageRefuse');
+      await _exigerAutorise(choisi);
+      utilisateur = choisi;
+    }
     final appareil = 'APP${_jeton(6).toUpperCase().replaceAll(RegExp('[^A-Z0-9]'), '')}';
     final jeton = _jeton(32);
     await _repo.insererAppareil(
       code: appareil,
-      utilisateurCode: code.utilisateurCode,
-      nom: nom.isEmpty ? 'Téléphone' : (nom.length > 60 ? nom.substring(0, 60) : nom),
-      plateforme: '${corps['plateforme'] ?? ''}',
+      utilisateurCode: utilisateur,
+      nom: nom.isEmpty ? 'Téléphone' : nom,
+      plateforme: texte('plateforme', 20),
       jetonHash: _empreinte(jeton),
       creePar: code.utilisateurCode,
     );
@@ -482,7 +545,7 @@ class ServeurMobile {
       'jeton': jeton,
       'boutique': await _nomBoutique(),
       'poste': Platform.localHostname,
-      'session': await _ouvrirSession(appareil, code.utilisateurCode),
+      'session': await _ouvrirSession(appareil, utilisateur),
     };
   }
 

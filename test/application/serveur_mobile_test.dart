@@ -150,6 +150,52 @@ void main() {
     expect((await t.post('appairer', {'code': admin2})).$2['erreur'], 'codeInvalide');
   });
 
+  test('QR de l’Admin : l’Admin choisit sur le poste l’utilisateur du téléphone ; refus et autres QR', () async {
+    final karim = await creerKarim(permissions: const {Permission.utiliserMobile});
+    final demandes = <DemandeAppairage>[];
+    String? reponse = karim;
+    final avecChoix = ServeurMobile(
+      base.db,
+      licence: () => licence,
+      dossierFactures: factures.path,
+      choisirUtilisateur: (d) async {
+        demandes.add(d);
+        return reponse;
+      },
+      portPrefere: 0,
+    );
+    await avecChoix.demarrer(adresse: InternetAddress.loopbackIPv4);
+    addTearDown(avecChoix.arreter);
+    final t = _Telephone(avecChoix.port!);
+    final (statut, r) = await t.post('appairer', {
+      'code': avecChoix.nouveauCodeAppairage('USR0000').code,
+      'nom': 'Samsung SM-A515F',
+      'plateforme': 'android',
+      'systeme': 'Android 14',
+      'version': '1.2.0',
+    });
+    expect(statut, 200, reason: '$r');
+    expect(r['session']['utilisateur']['code'], karim, reason: 'le téléphone s’ouvre avec le compte choisi');
+    final d = demandes.single;
+    expect((d.nom, d.systeme, d.version, d.administrateur), ('Samsung SM-A515F', 'Android 14', '1.2.0', 'USR0000'));
+    expect(d.adresse, '127.0.0.1');
+    final ligne = (await base.db.query('appareil_mobile')).single;
+    expect((ligne['utilisateur_code'], ligne['cree_par']), (karim, 'USR0000'));
+
+    // Refusé par l’Admin : aucun appareil de plus.
+    reponse = null;
+    final refus = await _Telephone(avecChoix.port!)
+        .post('appairer', {'code': avecChoix.nouveauCodeAppairage('USR0000').code, 'nom': 'Pixel'});
+    expect((refus.$1, refus.$2['erreur']), (403, 'appairageRefuse'));
+    expect(await base.db.query('appareil_mobile'), hasLength(1));
+
+    // Le QR d’un autre utilisateur : le téléphone s’ouvre avec ce compte, sans rien demander.
+    final (_, r2) = await _Telephone(avecChoix.port!)
+        .post('appairer', {'code': avecChoix.nouveauCodeAppairage(karim).code, 'nom': 'iPhone'});
+    expect(r2['session']['utilisateur']['code'], karim);
+    expect(demandes, hasLength(2));
+  });
+
   test('reconnexion sans mot de passe : le jeton d’appareil rouvre la session de son utilisateur', () async {
     final t = await appairer();
     final ancien = t.jeton;

@@ -8125,4 +8125,25 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get entManuelAjouter => 'Ajouter à l\'entrée';
+
+  @override
+  String get mobileChoixTitre => 'Nouveau téléphone à connecter';
+
+  @override
+  String get mobileChoixMessage =>
+      'Ce téléphone a scanné votre QR code. Choisissez l\'utilisateur qui ouvrira CaisseDZ Scan sur ce téléphone : il s\'y connectera avec son compte et ses droits.';
+
+  @override
+  String get mobileChoixRefuser => 'Refuser';
+
+  @override
+  String get mobileChoixConnecter => 'Connecter ce téléphone';
+
+  @override
+  String get mobileChoixNonAutorise => 'Sans autorisation mobile (rôle ou mot de passe)';
+
+  @override
+  String mobileChoixVersion(String version) {
+    return 'version $version';
+  }
 }

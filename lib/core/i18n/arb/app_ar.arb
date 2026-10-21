@@ -2712,5 +2712,11 @@
   "docTotalHt": "المجموع دون رسوم",
   "entManuel": "يدوي",
   "entManuelTitre": "إضافة منتج",
-  "entManuelAjouter": "إضافة إلى الإدخال"
+  "entManuelAjouter": "إضافة إلى الإدخال",
+  "mobileChoixTitre": "هاتف جديد للربط",
+  "mobileChoixMessage": "مسح هذا الهاتف رمز QR الخاص بك. اختر المستخدم الذي سيفتح CaisseDZ Scan على هذا الهاتف: سيتصل بحسابه وصلاحياته.",
+  "mobileChoixRefuser": "رفض",
+  "mobileChoixConnecter": "ربط هذا الهاتف",
+  "mobileChoixNonAutorise": "دون إذن الهاتف (الدور أو كلمة المرور)",
+  "mobileChoixVersion": "الإصدار {version}"
 }

@@ -8087,4 +8087,25 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get entManuelAjouter => 'إضافة إلى الإدخال';
+
+  @override
+  String get mobileChoixTitre => 'هاتف جديد للربط';
+
+  @override
+  String get mobileChoixMessage =>
+      'مسح هذا الهاتف رمز QR الخاص بك. اختر المستخدم الذي سيفتح CaisseDZ Scan على هذا الهاتف: سيتصل بحسابه وصلاحياته.';
+
+  @override
+  String get mobileChoixRefuser => 'رفض';
+
+  @override
+  String get mobileChoixConnecter => 'ربط هذا الهاتف';
+
+  @override
+  String get mobileChoixNonAutorise => 'دون إذن الهاتف (الدور أو كلمة المرور)';
+
+  @override
+  String mobileChoixVersion(String version) {
+    return 'الإصدار $version';
+  }
 }

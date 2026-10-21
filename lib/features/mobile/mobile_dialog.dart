@@ -7,6 +7,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../app/demarrage_providers.dart';
 import '../../app/mobile_providers.dart';
+import '../../application/serveur_mobile.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
 import '../../domain/models/appareil_mobile.dart';
@@ -325,6 +326,166 @@ class _LigneAppareil extends ConsumerWidget {
               );
               if (ok) await ref.read(mobileProvider.notifier).revoquer(appareil.code);
             },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Ouvre le choix de l'utilisateur d'un téléphone qui vient de scanner le QR de l'Admin ; la réponse part au
+/// téléphone (utilisateur choisi, ou refus). Se ferme seul quand la demande expire.
+Future<void> afficherChoixUtilisateurMobile(BuildContext context, DemandeAppairage demande) =>
+    afficherDialog<void>(context, fermableParVoile: false, builder: (_) => ChoixUtilisateurMobileDialog(demande));
+
+/// `ChoixUtilisateurMobileDialog` (640 px) : le téléphone (nom, système, modèle, version, adresse) et la liste des
+/// utilisateurs ; l'Admin choisit celui qui ouvrira l'application sur ce téléphone. Un compte sans l'autorisation
+/// mobile n'est pas sélectionnable.
+class ChoixUtilisateurMobileDialog extends ConsumerStatefulWidget {
+  const ChoixUtilisateurMobileDialog(this.demande, {super.key});
+  final DemandeAppairage demande;
+
+  @override
+  ConsumerState<ChoixUtilisateurMobileDialog> createState() => _ChoixUtilisateurMobileDialogState();
+}
+
+class _ChoixUtilisateurMobileDialogState extends ConsumerState<ChoixUtilisateurMobileDialog> {
+  String? _choisi;
+  bool _repondu = false;
+
+  void _repondre(String? code) {
+    _repondu = true;
+    ref.read(demandeAppairageProvider.notifier).repondre(code);
+    Navigator.of(context).pop();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final c = context.ds.colors;
+    final t = context.ds.typo;
+    final d = widget.demande;
+    // Demande expirée (ou traitée ailleurs) : le dialog se ferme.
+    ref.listen(demandeAppairageProvider, (_, actuelle) {
+      if (!_repondu && actuelle != d && mounted) Navigator.of(context).pop();
+    });
+    final utilisateurs = ref.watch(utilisateursMobileProvider).value ?? const [];
+    final details = [
+      if (d.systeme.isNotEmpty) d.systeme else if (d.plateforme.isNotEmpty) d.plateforme == 'ios' ? 'iOS' : 'Android',
+      if (d.modele.isNotEmpty && d.modele != d.nom) d.modele,
+      if (d.version.isNotEmpty) l10n.mobileChoixVersion(d.version),
+      if (d.adresse.isNotEmpty) d.adresse,
+    ].join('  ·  ');
+    return DsDialog(
+      titre: l10n.mobileChoixTitre,
+      iconeData: LucideIcons.smartphone,
+      largeur: 640,
+      actions: [
+        DsButton(
+          key: const ValueKey('mobile_choix_refuser'),
+          libelle: l10n.mobileChoixRefuser,
+          variante: DsButtonVariante.secondaire,
+          onPressed: () => _repondre(null),
+        ),
+        DsButton(
+          key: const ValueKey('mobile_choix_connecter'),
+          libelle: l10n.mobileChoixConnecter,
+          icone: LucideIcons.check,
+          onPressed: _choisi == null ? null : () => _repondre(_choisi),
+        ),
+      ],
+      contenu: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        spacing: DsSpacing.s4,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(DsSpacing.s4),
+            decoration: BoxDecoration(
+              color: c.surfaceSunken,
+              borderRadius: DsRadius.borderLg,
+              border: Border.all(color: c.borderSubtle),
+            ),
+            child: Row(
+              spacing: DsSpacing.s3,
+              children: [
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(color: c.primaryTint, borderRadius: DsRadius.borderMd),
+                  child: Icon(LucideIcons.smartphone, size: 22, color: c.primaryTintFg),
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 2,
+                    children: [
+                      Text(
+                        d.nom,
+                        key: const ValueKey('mobile_choix_appareil'),
+                        style: t.bodyStrong.copyWith(color: c.textPrimary),
+                      ),
+                      if (details.isNotEmpty) Text(details, style: t.caption.copyWith(color: c.textMuted)),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Text(l10n.mobileChoixMessage, style: t.body.copyWith(color: c.textBody)),
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxHeight: 320),
+            child: ListView.separated(
+              shrinkWrap: true,
+              itemCount: utilisateurs.length,
+              separatorBuilder: (_, _) => const DsDivider(),
+              itemBuilder: (_, i) {
+                final (:utilisateur, :autorise) = utilisateurs[i];
+                final u = utilisateur;
+                final nom = u.nomComplet.isEmpty ? u.identifiant : u.nomComplet;
+                final choisi = _choisi == u.code;
+                return InkWell(
+                  key: ValueKey('mobile_choix_${u.code}'),
+                  borderRadius: DsRadius.borderMd,
+                  onTap: autorise ? () => setState(() => _choisi = u.code) : null,
+                  child: Opacity(
+                    opacity: autorise ? 1 : .55,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: DsSpacing.s3, vertical: DsSpacing.s2),
+                      decoration: BoxDecoration(
+                        color: choisi ? c.surfaceActive : DsColors.transparent,
+                        borderRadius: DsRadius.borderMd,
+                      ),
+                      child: Row(
+                        spacing: DsSpacing.s3,
+                        children: [
+                          Icon(
+                            choisi ? LucideIcons.circleCheck : LucideIcons.circle,
+                            size: 18,
+                            color: choisi ? c.iconActive : c.iconMuted,
+                          ),
+                          DsAvatar(nom: nom),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(nom, style: t.bodyStrong.copyWith(color: c.textPrimary)),
+                                Text(
+                                  autorise ? u.identifiant : l10n.mobileChoixNonAutorise,
+                                  style: t.caption.copyWith(color: c.textMuted),
+                                ),
+                              ],
+                            ),
+                          ),
+                          if ((u.roleNom ?? '').isNotEmpty)
+                            DsBadge(libelle: u.roleNom!, ton: u.estAdmin ? DsBadgeTon.info : DsBadgeTon.neutre),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
           ),
         ],
       ),

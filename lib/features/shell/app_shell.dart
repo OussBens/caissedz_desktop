@@ -10,7 +10,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../app/demarrage_providers.dart';
 import '../../app/mobile_providers.dart';
 import '../../app/providers.dart';
-import '../../application/serveur_mobile.dart' show FactureMobile;
+import '../../application/serveur_mobile.dart' show DemandeAppairage, FactureMobile;
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
 import '../../domain/models/licence.dart';
@@ -148,6 +148,10 @@ class _AppShellState extends ConsumerState<AppShell> {
     });
     ref.listen<FactureMobile?>(factureMobileProvider, (_, f) {
       if (f != null) unawaited(_factureRecue(f));
+    });
+    // QR de l'Admin scanné par un téléphone : l'Admin choisit l'utilisateur qui ouvrira l'application.
+    ref.listen<DemandeAppairage?>(demandeAppairageProvider, (_, d) {
+      if (d != null) unawaited(afficherChoixUtilisateurMobile(context, d));
     });
     final c = context.ds.colors;
     final t = context.ds.typo;

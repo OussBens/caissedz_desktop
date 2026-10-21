@@ -4339,5 +4339,18 @@
   "docTotalHt": "Total HT",
   "entManuel": "Manuel",
   "entManuelTitre": "Ajouter un produit",
-  "entManuelAjouter": "Ajouter à l'entrée"
+  "entManuelAjouter": "Ajouter à l'entrée",
+  "mobileChoixTitre": "Nouveau téléphone à connecter",
+  "mobileChoixMessage": "Ce téléphone a scanné votre QR code. Choisissez l'utilisateur qui ouvrira CaisseDZ Scan sur ce téléphone : il s'y connectera avec son compte et ses droits.",
+  "mobileChoixRefuser": "Refuser",
+  "mobileChoixConnecter": "Connecter ce téléphone",
+  "mobileChoixNonAutorise": "Sans autorisation mobile (rôle ou mot de passe)",
+  "mobileChoixVersion": "version {version}",
+  "@mobileChoixVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  }
 }
