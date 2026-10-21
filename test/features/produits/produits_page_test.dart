@@ -156,7 +156,9 @@ void main() {
       );
       await tester.enterText(_champ('produit_ia_code'), '6130005000017');
       await clic(tester, _cle('produit_ia_rechercher'));
-      expect(appels.map((u) => u.host), ['catalog-api.bensds.com'], reason: 'trouvé : les autres sources ne sont pas appelées');
+      expect(appels.map((u) => u.host), [
+        'catalog-api.bensds.com',
+      ], reason: 'trouvé : les autres sources ne sont pas appelées');
       expect(tester.widget<TextField>(_champ('produit_designation')).controller!.text, 'Rouiba Orange 1L');
       expect(tester.widget<TextField>(_champ('produit_designation_ar')).controller!.text, 'رويبة برتقال');
       await tester.enterText(_champ('produit_achat'), '90');
@@ -221,10 +223,10 @@ void main() {
       await tester.enterText(_champ('produit_marge'), '25');
       await tester.pump();
       await clic(tester, _cle('produit_suivant'));
-      await tester.enterText(_champ('produit_boite_q'), '6');
-      await tester.enterText(_champ('produit_boite_p'), '420');
-      await tester.enterText(_champ('produit_carton_q'), '24');
-      await tester.enterText(_champ('produit_carton_p'), '2400');
+      await tester.enterText(_champ('produit_colis_0_q'), '6');
+      await tester.enterText(_champ('produit_colis_0_p'), '420');
+      await tester.enterText(_champ('produit_colis_1_q'), '24');
+      await tester.enterText(_champ('produit_colis_1_p'), '2400');
       await tester.pump();
     }
 
@@ -261,13 +263,44 @@ void main() {
       expect(tester.widget<DsButton>(_cle('produit_enregistrer')).onPressed, isNull);
       // Boîte remise au-dessus de l'achat (90 / pièce) : enregistrement possible, sans confirmation.
       await clic(tester, find.text('Retour'));
-      await tester.enterText(_champ('produit_boite_p'), '540');
+      await tester.enterText(_champ('produit_colis_0_p'), '540');
       await tester.pump();
       expect(find.text('90,00 DA / pièce'), findsOneWidget);
       await clic(tester, _cle('produit_suivant'));
       await clic(tester, _cle('produit_enregistrer'));
       expect(find.text('Vendre sous le prix d\'achat ?'), findsNothing);
       expect(await CatalogueRepository(c.read(appDatabaseProvider).db).produitParCode('PRD0001'), isNotNull);
+      await tester.pump(const Duration(seconds: 5)); // fin du toast
+    });
+
+    testWidgets('colis personnalisés : nom libre (palette), jusqu’à 5, retrait d’une rangée', (tester) async {
+      final c = await pumpApp(tester, routeInitiale: '/produits', taille: const Size(1600, 1000));
+      await saisirEmballages(tester);
+      await clic(tester, _cle('produit_colis_ajouter'));
+      await tester.enterText(_champ('produit_colis_2_nom'), 'Palette');
+      await tester.enterText(_champ('produit_colis_2_q'), '10');
+      await tester.enterText(_champ('produit_colis_2_p'), '10000');
+      await clic(tester, _cle('produit_colis_ajouter'));
+      await clic(tester, _cle('produit_colis_ajouter'));
+      expect(
+        tester.widget<DsButton>(_cle('produit_colis_ajouter')).onPressed,
+        isNull,
+        reason: '5 colis au plus par produit',
+      );
+      // La 1ʳᵉ rangée (boîte de 6) est retirée : boîte vide, carton et palette restent.
+      await clic(tester, _cle('produit_colis_0_retirer'));
+      expect(tester.widget<DsButton>(_cle('produit_colis_ajouter')).onPressed, isNotNull);
+      await tester.enterText(_champ('produit_colis_0_nom'), 'Grand carton');
+      await tester.pump();
+      await clic(tester, _cle('produit_suivant'));
+      await clic(tester, _cle('produit_enregistrer'));
+      final colis = (await CatalogueRepository(
+        c.read(appDatabaseProvider).db,
+      ).colis()).where((x) => x.produitCode == 'PRD0001' && x.actif).toList();
+      expect(
+        {for (final x in colis) x.designation: (x.quantite, x.prixVente)},
+        {'Grand carton': (24, 2400.0), 'Palette': (10, 10000.0)},
+      );
       await tester.pump(const Duration(seconds: 5)); // fin du toast
     });
 

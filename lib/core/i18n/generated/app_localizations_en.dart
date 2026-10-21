@@ -8127,4 +8127,35 @@ class AppLocalizationsEn extends AppLocalizations {
   String mobileChoixVersion(String version) {
     return 'version $version';
   }
+
+  @override
+  String get prdPalette => 'Pallet';
+
+  @override
+  String prdColisN(int n) {
+    return 'Package $n';
+  }
+
+  @override
+  String get prdColisNom => 'Package name';
+
+  @override
+  String get prdColisQuantite => 'Pieces per package';
+
+  @override
+  String get prdColisPrix => 'Package price';
+
+  @override
+  String get prdColisRetirer => 'Remove this package';
+
+  @override
+  String get prdColisAjouter => 'Add a package';
+
+  @override
+  String prdColisAide(int max) {
+    return 'Up to $max packages, each with its name (box, carton, pallet…), pieces and price; sold as is at the till.';
+  }
+
+  @override
+  String get produitErreurTropDeColis => '5 packages at most per product.';
 }

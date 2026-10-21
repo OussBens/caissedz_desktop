@@ -2718,5 +2718,14 @@
   "mobileChoixRefuser": "رفض",
   "mobileChoixConnecter": "ربط هذا الهاتف",
   "mobileChoixNonAutorise": "دون إذن الهاتف (الدور أو كلمة المرور)",
-  "mobileChoixVersion": "الإصدار {version}"
+  "mobileChoixVersion": "الإصدار {version}",
+  "prdPalette": "منصة نقالة",
+  "prdColisN": "الطرد {n}",
+  "prdColisNom": "اسم الطرد",
+  "prdColisQuantite": "القطع في الطرد",
+  "prdColisPrix": "سعر الطرد",
+  "prdColisRetirer": "حذف هذا الطرد",
+  "prdColisAjouter": "إضافة طرد",
+  "prdColisAide": "حتى {max} طرود، لكل منها اسمه (علبة، كرتون، منصة…) وعدد قطعه وسعره؛ تُباع كما هي في الصندوق.",
+  "produitErreurTropDeColis": "5 طرود كحد أقصى لكل منتج."
 }

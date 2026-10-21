@@ -20,6 +20,7 @@ enum ErreurCatalogue {
   lignesVides,
   produitUtilise,
   nomDejaUtilise,
+  tropDeColis,
 }
 
 class CatalogueException implements Exception {
@@ -252,8 +253,9 @@ class CatalogueService {
 
   /// Crée un produit ; `code` ignoré (généré). Code-barres interne généré si [genererCodeBarres].
   ///
-  /// [codesSecondaires] : autres codes-barres reconnus en caisse ; [emballages] : petit puis grand colis
-  /// (`null` = aucun) ; [stockInitial] : entrée en stock dans [magasinCode] (hors produit-service).
+  /// [codesSecondaires] : autres codes-barres reconnus en caisse ; [emballages] : colis de la fiche (nom, pièces,
+  /// prix ; [maxColis] au plus, `null` ignoré) ; [stockInitial] : entrée en stock dans [magasinCode] (hors
+  /// produit-service).
   Future<Produit> creerProduit(
     Produit p, {
     double? margeDefautPct,
@@ -375,52 +377,71 @@ class CatalogueService {
     return nets;
   }
 
+  /// Colis d'une fiche produit au plus (boîte, carton, palette… nommés librement).
+  static const int maxColis = 5;
+
+  /// Noms proposés aux colis sans nom, dans l'ordre de la fiche.
+  static const List<String> nomsColisParDefaut = ['Boîte', 'Carton', 'Palette'];
+
   Future<void> _verifierEmballages(List<EmballageProduit?> emballages, String? produitCode) async {
+    final saisis = emballages.nonNulls.toList();
+    if (saisis.length > maxColis) throw const CatalogueException(ErreurCatalogue.tropDeColis);
     final existants = produitCode == null ? const <Colis>[] : await _colisFiche(_repo, produitCode);
-    for (final (i, e) in emballages.indexed) {
-      if (e == null) continue;
+    final lies = _lier(saisis, existants);
+    final codesBarres = <String>{};
+    for (final (i, e) in saisis.indexed) {
       if (e.quantite <= 1 || e.prixVente < 0) throw const CatalogueException(ErreurCatalogue.quantiteInvalide);
       final cb = e.codeBarres?.trim();
-      final sauf = i < existants.length ? existants[i].code : null;
-      if (cb != null && cb.isNotEmpty && !await _repo.codeBarresDisponible(cb, saufColis: sauf)) {
+      if (cb == null || cb.isEmpty) continue;
+      if (!codesBarres.add(cb) || !await _repo.codeBarresDisponible(cb, saufColis: lies[i]?.code)) {
         throw const CatalogueException(ErreurCatalogue.codeBarresDejaUtilise);
       }
     }
   }
 
-  /// Colis actifs d'un produit, du plus petit au plus grand (petit colis puis grand colis).
+  /// Colis actifs d'un produit, du plus petit au plus grand.
   static Future<List<Colis>> _colisFiche(CatalogueRepository repo, String produitCode) async =>
       (await repo.colis(produitCode: produitCode)).where((c) => c.actif).toList()
         ..sort((a, b) => a.quantite.compareTo(b.quantite));
 
-  /// Petit / grand colis de la fiche : mis à jour, créés, ou désactivés quand l'emballage est vidé.
+  /// Colis existant de chaque emballage saisi : celui de son [EmballageProduit.code] (fiche produit) ; un appel
+  /// sans aucun code (import, anciens appels) reprend les colis existants dans l'ordre.
+  static List<Colis?> _lier(List<EmballageProduit> saisis, List<Colis> existants) {
+    if (saisis.every((e) => e.code == null)) {
+      return [for (final (i, _) in saisis.indexed) i < existants.length ? existants[i] : null];
+    }
+    return [for (final e in saisis) existants.where((c) => c.code == e.code).firstOrNull];
+  }
+
+  /// Colis de la fiche : mis à jour, créés, et désactivés quand ils ne sont plus dans la liste (une vente passée
+  /// garde son colis).
   Future<void> _enregistrerEmballages(CatalogueRepository repo, Produit p, List<EmballageProduit?> emballages) async {
+    final saisis = emballages.nonNulls.toList();
     final existants = await _colisFiche(repo, p.code);
-    for (var i = 0; i < 2; i++) {
-      final e = i < emballages.length ? emballages[i] : null;
-      final actuel = i < existants.length ? existants[i] : null;
-      final nom = i == 0 ? 'Boîte' : 'Carton';
-      final cb = e?.codeBarres?.trim();
-      if (e == null) {
-        if (actuel != null && i < emballages.length) {
-          await repo.mettreAJourColis(
-            Colis(
-              code: actuel.code,
-              produitCode: p.code,
-              designation: actuel.designation,
-              quantite: actuel.quantite,
-              codeBarres: actuel.codeBarres,
-              prixVente: actuel.prixVente,
-              actif: false,
-            ),
-          );
-        }
-        continue;
-      }
+    final lies = _lier(saisis, existants);
+    for (final c in existants.where((c) => !lies.contains(c))) {
+      await repo.mettreAJourColis(
+        Colis(
+          code: c.code,
+          produitCode: p.code,
+          designation: c.designation,
+          quantite: c.quantite,
+          codeBarres: c.codeBarres,
+          prixVente: c.prixVente,
+          actif: false,
+        ),
+      );
+    }
+    for (final (i, e) in saisis.indexed) {
+      final actuel = lies[i];
+      final cb = e.codeBarres?.trim();
+      final nom = e.designation.trim();
       final colis = Colis(
         code: actuel?.code ?? await repo.prochainCode('colis', CodeGenerator.colis),
         produitCode: p.code,
-        designation: actuel?.designation ?? nom,
+        designation: nom.isNotEmpty
+            ? nom
+            : actuel?.designation ?? nomsColisParDefaut[i < nomsColisParDefaut.length ? i : 0],
         quantite: e.quantite,
         codeBarres: cb == null || cb.isEmpty ? null : cb,
         prixVente: e.prixVente,

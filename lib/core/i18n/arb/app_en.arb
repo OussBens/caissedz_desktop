@@ -2718,5 +2718,14 @@
   "mobileChoixRefuser": "Refuse",
   "mobileChoixConnecter": "Connect this phone",
   "mobileChoixNonAutorise": "No mobile access (role or password)",
-  "mobileChoixVersion": "version {version}"
+  "mobileChoixVersion": "version {version}",
+  "prdPalette": "Pallet",
+  "prdColisN": "Package {n}",
+  "prdColisNom": "Package name",
+  "prdColisQuantite": "Pieces per package",
+  "prdColisPrix": "Package price",
+  "prdColisRetirer": "Remove this package",
+  "prdColisAjouter": "Add a package",
+  "prdColisAide": "Up to {max} packages, each with its name (box, carton, pallet…), pieces and price; sold as is at the till.",
+  "produitErreurTropDeColis": "5 packages at most per product."
 }

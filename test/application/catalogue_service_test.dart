@@ -224,6 +224,30 @@ void main() {
       );
       expect(await repo.codesSecondaires(p.code), isEmpty);
       expect((await s.emballages(p.code)).map((c) => c.quantite), [6, 24]);
+      expect((await s.emballages(p.code)).map((c) => c.designation), ['Boîte', 'Carton'], reason: 'noms par défaut');
+
+      // Colis nommés librement, liés par leur code : la boîte renommée, le carton retiré, une palette ajoutée.
+      final avant = await s.emballages(p.code);
+      await s.modifierProduit(
+        p,
+        emballages: [
+          EmballageProduit(code: avant.first.code, designation: 'Pack', quantite: 6, prixVente: 560),
+          const EmballageProduit(designation: 'Palette', quantite: 10, prixVente: 10000),
+        ],
+      );
+      final apres = await s.emballages(p.code);
+      expect({for (final c in apres) c.designation: c.quantite}, {'Pack': 6, 'Palette': 10});
+      expect(apres.first.code, avant.first.code, reason: 'même colis, renommé');
+      final carton = (await repo.colis(produitCode: p.code)).singleWhere((c) => c.code == avant.last.code);
+      expect(carton.actif, isFalse, reason: 'retiré : désactivé, les ventes passées le gardent');
+      // 5 colis au plus.
+      await expectLater(
+        s.modifierProduit(
+          p,
+          emballages: [for (var i = 2; i < 8; i++) EmballageProduit(quantite: i, prixVente: i * 100.0)],
+        ),
+        throwsA(isA<CatalogueException>().having((e) => e.erreur, 'e', ErreurCatalogue.tropDeColis)),
+      );
 
       final c = await s.creerCategorie('Laitiers', description: 'Lait et dérivés');
       final eau = await s.creerProduit(_p(designation: 'Eau'));

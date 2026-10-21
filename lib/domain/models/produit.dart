@@ -326,13 +326,25 @@ class SousCategorie {
 }
 
 /// Emballage saisi dans la fiche produit (§7.2 `emballage1/emballageP1` = petit colis, `emballage2` = grand
-/// colis) ; enregistré comme [Colis] du produit.
+/// colis, étendu à 5 colis nommés librement : boîte, carton, palette…) ; enregistré comme [Colis] du produit.
 @immutable
 class EmballageProduit {
-  const EmballageProduit({required this.quantite, required this.prixVente, this.codeBarres});
+  const EmballageProduit({
+    required this.quantite,
+    required this.prixVente,
+    this.codeBarres,
+    this.designation = '',
+    this.code,
+  });
   final int quantite;
   final double prixVente;
   final String? codeBarres;
+
+  /// Nom du colis (« Palette ») ; vide : son nom actuel, sinon Boîte, Carton, Palette selon le rang.
+  final String designation;
+
+  /// Colis existant modifié (`null` : nouveau colis).
+  final String? code;
 }
 
 /// Colis : conditionnement de N unités d'un produit, avec son propre code-barres et prix.

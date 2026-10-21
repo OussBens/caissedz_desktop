@@ -4352,5 +4352,28 @@
         "type": "String"
       }
     }
-  }
+  },
+  "prdPalette": "Palette",
+  "prdColisN": "Colis {n}",
+  "@prdColisN": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "prdColisNom": "Nom du colis",
+  "prdColisQuantite": "Pièces par colis",
+  "prdColisPrix": "Prix du colis",
+  "prdColisRetirer": "Retirer ce colis",
+  "prdColisAjouter": "Ajouter un colis",
+  "prdColisAide": "Jusqu'à {max} colis, chacun avec son nom (boîte, carton, palette…), ses pièces et son prix ; vendus tels quels en caisse.",
+  "@prdColisAide": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "produitErreurTropDeColis": "5 colis au plus par produit."
 }

@@ -8108,4 +8108,35 @@ class AppLocalizationsAr extends AppLocalizations {
   String mobileChoixVersion(String version) {
     return 'الإصدار $version';
   }
+
+  @override
+  String get prdPalette => 'منصة نقالة';
+
+  @override
+  String prdColisN(int n) {
+    return 'الطرد $n';
+  }
+
+  @override
+  String get prdColisNom => 'اسم الطرد';
+
+  @override
+  String get prdColisQuantite => 'القطع في الطرد';
+
+  @override
+  String get prdColisPrix => 'سعر الطرد';
+
+  @override
+  String get prdColisRetirer => 'حذف هذا الطرد';
+
+  @override
+  String get prdColisAjouter => 'إضافة طرد';
+
+  @override
+  String prdColisAide(int max) {
+    return 'حتى $max طرود، لكل منها اسمه (علبة، كرتون، منصة…) وعدد قطعه وسعره؛ تُباع كما هي في الصندوق.';
+  }
+
+  @override
+  String get produitErreurTropDeColis => '5 طرود كحد أقصى لكل منتج.';
 }

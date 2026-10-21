@@ -8146,4 +8146,35 @@ class AppLocalizationsFr extends AppLocalizations {
   String mobileChoixVersion(String version) {
     return 'version $version';
   }
+
+  @override
+  String get prdPalette => 'Palette';
+
+  @override
+  String prdColisN(int n) {
+    return 'Colis $n';
+  }
+
+  @override
+  String get prdColisNom => 'Nom du colis';
+
+  @override
+  String get prdColisQuantite => 'Pièces par colis';
+
+  @override
+  String get prdColisPrix => 'Prix du colis';
+
+  @override
+  String get prdColisRetirer => 'Retirer ce colis';
+
+  @override
+  String get prdColisAjouter => 'Ajouter un colis';
+
+  @override
+  String prdColisAide(int max) {
+    return 'Jusqu\'à $max colis, chacun avec son nom (boîte, carton, palette…), ses pièces et son prix ; vendus tels quels en caisse.';
+  }
+
+  @override
+  String get produitErreurTropDeColis => '5 colis au plus par produit.';
 }

@@ -37,6 +37,7 @@ String messageErreurCatalogue(AppLocalizations l10n, ErreurCatalogue e) => switc
   ErreurCatalogue.lignesVides => l10n.packErreurLignes,
   ErreurCatalogue.produitUtilise => l10n.produitErreurUtilise,
   ErreurCatalogue.nomDejaUtilise => l10n.catalogueErreurNomPris,
+  ErreurCatalogue.tropDeColis => l10n.produitErreurTropDeColis,
 };
 
 // ============================================================ Détail
@@ -215,8 +216,9 @@ class _DetailProduit extends ConsumerWidget {
                         DsKeyValue(l10n.produitChampUnite, libelleRef(context, Referentiel.unitesMesure, p.unite)),
                         DsKeyValue(l10n.prdTva, '${formaterNombre(p.tvaPct)} %'),
                         DsKeyValue(l10n.retoursEtat, null, widget: BadgeStatut(etat)),
-                        DsKeyValue(l10n.prdEmballageN(1), emb(0)),
-                        DsKeyValue(l10n.prdEmballageN(2), emb(1)),
+                        // Chaque colis sous son nom (boîte, carton, palette…) ; « — » sans colis.
+                        if (emballages.isEmpty) DsKeyValue(l10n.prdEmballages, '—'),
+                        for (final (i, e) in emballages.indexed) DsKeyValue(e.designation, emb(i)),
                         DsKeyValue(l10n.prdSeuilAlerte, '$seuil ${l10n.prdPcs}'),
                         if (p.dateExpiration != null) DsKeyValue(l10n.prdDateExpiration, dateOuTiret(p.dateExpiration)),
                         if ((p.taille ?? '').isNotEmpty) DsKeyValue(l10n.prdTaille, p.taille),

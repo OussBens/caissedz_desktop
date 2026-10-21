@@ -70,6 +70,29 @@ const Map<String, Color> pastillesCouleurs = {
 List<String> _liste(String? s) =>
     s == null ? const [] : s.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
 
+/// Colis saisi dans la fiche : nom libre (boîte, carton, palette…), pièces par colis et prix du colis ; [code] et
+/// [codeBarres] du colis existant, gardés à l'enregistrement.
+class _ColisSaisi {
+  _ColisSaisi({String nom = '', String quantite = '', String prix = '', this.code, this.codeBarres})
+    : nom = TextEditingController(text: nom),
+      quantite = TextEditingController(text: quantite),
+      prix = TextEditingController(text: prix);
+  final String? code;
+  final String? codeBarres;
+  final TextEditingController nom;
+  final TextEditingController quantite;
+  final TextEditingController prix;
+
+  /// Identifiant stable de la rangée (clés des champs).
+  final Key cle = UniqueKey();
+
+  void dispose() {
+    nom.dispose();
+    quantite.dispose();
+    prix.dispose();
+  }
+}
+
 /// Mode du formulaire : Rapide (une page), Détaillé (3 étapes) ou IA (recherche par code-barres, §10.1).
 enum ModeFormulaireProduit { rapide, detaille, ia }
 
@@ -144,10 +167,9 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
   final _marge = TextEditingController();
   final _stock = TextEditingController(text: '0');
   final _seuil = TextEditingController();
-  final _boiteQ = TextEditingController();
-  final _boiteP = TextEditingController();
-  final _cartonQ = TextEditingController();
-  final _cartonP = TextEditingController();
+
+  /// Colis de la fiche ([CatalogueService.maxColis] au plus) ; deux rangées vides (boîte, carton) au départ.
+  List<_ColisSaisi> _colis = [_ColisSaisi(), _ColisSaisi()];
   final _description = TextEditingController();
   final _observation = TextEditingController();
   final _codeIa = TextEditingController();
@@ -237,14 +259,20 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
     final photos = await service.photos(code);
     if (!mounted) return;
     setState(() {
-      if (emb.isNotEmpty) {
-        _boiteQ.text = '${emb[0].quantite}';
-        _boiteP.text = _nb(emb[0].prixVente);
+      for (final c in _colis) {
+        c.dispose();
       }
-      if (emb.length > 1) {
-        _cartonQ.text = '${emb[1].quantite}';
-        _cartonP.text = _nb(emb[1].prixVente);
-      }
+      _colis = [
+        for (final c in emb)
+          _ColisSaisi(
+            code: c.code,
+            codeBarres: c.codeBarres,
+            nom: c.designation,
+            quantite: '${c.quantite}',
+            prix: _nb(c.prixVente),
+          ),
+        for (var i = emb.length; i < 2; i++) _ColisSaisi(),
+      ];
       _codes = codes;
       _photos = [
         for (final (i, c) in photos.indexed) DsPhoto(id: '$i', nom: c.split(RegExp(r'[\\/]')).last, chemin: c),
@@ -281,14 +309,13 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
       _marge,
       _stock,
       _seuil,
-      _boiteQ,
-      _boiteP,
-      _cartonQ,
-      _cartonP,
       _description,
       _observation,
       _codeIa,
     ]) {
+      c.dispose();
+    }
+    for (final c in _colis) {
       c.dispose();
     }
     super.dispose();
@@ -322,12 +349,11 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
     return n > 1 && prix > 0 ? prix / n : null;
   }
 
-  /// Prix par pièce des emballages (boîte, carton) inférieurs au prix d'achat ; contrôlés en mode détaillé, où ils
-  /// sont visibles.
+  /// Prix par pièce des colis inférieurs au prix d'achat ; contrôlés en mode détaillé, où ils sont visibles.
   List<double> get _piecesSousAchat => [
     if (_detaille)
-      for (final (q, p) in [(_boiteQ, _boiteP), (_cartonQ, _cartonP)])
-        if (_prixPiece(q, p) case final piece? when _estSousAchat(piece)) piece,
+      for (final c in _colis)
+        if (_prixPiece(c.quantite, c.prix) case final piece? when _estSousAchat(piece)) piece,
   ];
 
   bool get _ok1 => _designation.text.trim().isNotEmpty && _a > 0 && !(_interdit && _sousAchat);
@@ -390,10 +416,18 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
     if (mounted) setState(() => _photos = [..._photos, ...ajouts]);
   }
 
-  EmballageProduit? _emballage(TextEditingController q, TextEditingController p) {
-    final n = int.tryParse(q.text.trim()) ?? 0;
-    return n > 1 ? EmballageProduit(quantite: n, prixVente: _d(p.text)) : null;
-  }
+  /// Colis enregistrés : les rangées d'au moins 2 pièces (une rangée vidée supprime son colis).
+  List<EmballageProduit> get _emballages => [
+    for (final c in _colis)
+      if ((int.tryParse(c.quantite.text.trim()) ?? 0) > 1)
+        EmballageProduit(
+          code: c.code,
+          designation: c.nom.text.trim(),
+          quantite: int.parse(c.quantite.text.trim()),
+          prixVente: _d(c.prix.text),
+          codeBarres: c.codeBarres,
+        ),
+  ];
 
   Future<void> _enregistrer({bool nouveau = false}) async {
     final l10n = AppLocalizations.of(context);
@@ -450,7 +484,7 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
       remiseCode: base?.remiseCode,
     );
     final service = ref.read(catalogueServiceProvider);
-    final emballages = [_emballage(_boiteQ, _boiteP), _emballage(_cartonQ, _cartonP)];
+    final emballages = _emballages;
     final photos = [
       for (final p in _photos)
         if (p.chemin != null) p.chemin!,
@@ -470,7 +504,7 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
         enregistre = await service.modifierProduit(
           produit,
           codesSecondaires: _codes,
-          emballages: _detaille || emballages.any((e) => e != null) ? emballages : null,
+          emballages: _detaille || emballages.isNotEmpty ? emballages : null,
           photos: photos,
         );
       }
@@ -970,39 +1004,61 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
     final magasins = (ref.watch(magasinsProvider).value ?? const <Magasin>[]).where((m) => m.actif).toList();
     _magasin ??= ref.watch(magasinPrincipalProvider).value;
     final stock = _edition ? (ref.watch(stocksProduitsProvider).value?[widget.produit!.code] ?? 0) : null;
-    // Prix par pièce affiché sous l'emballage et contrôlé contre le prix d'achat selon la règle des Paramètres.
-    Widget emballage(String libelle, TextEditingController q, TextEditingController p, String cle) {
-      final piece = _prixPiece(q, p);
+    // Un colis par rangée : nom libre, pièces par colis, prix du colis ; prix par pièce affiché dessous et contrôlé
+    // contre le prix d'achat selon la règle des Paramètres.
+    final nomsParDefaut = [l10n.prdBoite, l10n.prdCarton, l10n.prdPalette];
+    Widget colis(int i, _ColisSaisi s) {
+      final piece = _prixPiece(s.quantite, s.prix);
       final sous = piece != null && _estSousAchat(piece);
       final parPiece = piece == null ? null : l10n.posSelParPiece(formaterMontant(piece, devise));
       return _champ(
-        libelle,
+        l10n.prdColisN(i + 1),
         erreur: sous && _interdit ? '$parPiece · ${l10n.posPrixSousAchatInterdit}' : null,
         aide: sous && _regleSousAchat == ParametresVente.venteSousAchatAvertir
             ? '$parPiece · ${l10n.prdSousAchat}'
             : parPiece,
         Row(
+          key: s.cle,
           spacing: 6,
           children: [
             Expanded(
+              flex: 3,
               child: DsTextField(
-                key: ValueKey('${cle}_q'),
-                controller: q,
+                key: ValueKey('produit_colis_${i}_nom'),
+                controller: s.nom,
+                indice: i < nomsParDefaut.length ? nomsParDefaut[i] : l10n.prdColisNom,
+              ),
+            ),
+            Expanded(
+              flex: 2,
+              child: DsTextField(
+                key: ValueKey('produit_colis_${i}_q'),
+                controller: s.quantite,
                 numerique: true,
-                indice: l10n.dsPosPieces,
+                indice: l10n.prdColisQuantite,
                 suffixeTexte: l10n.prdPcs,
                 onChanged: (_) => setState(() {}),
               ),
             ),
             Expanded(
+              flex: 2,
               child: DsTextField(
-                key: ValueKey('${cle}_p'),
-                controller: p,
+                key: ValueKey('produit_colis_${i}_p'),
+                controller: s.prix,
                 numerique: true,
-                indice: l10n.dsPosPrix,
+                indice: l10n.prdColisPrix,
                 suffixeTexte: devise,
                 onChanged: (_) => setState(() {}),
               ),
+            ),
+            DsIconButton(
+              key: ValueKey('produit_colis_${i}_retirer'),
+              icone: LucideIcons.x,
+              tooltip: l10n.prdColisRetirer,
+              onPressed: () => setState(() {
+                _colis = [..._colis]..remove(s);
+                WidgetsBinding.instance.addPostFrameCallback((_) => s.dispose());
+              }),
             ),
           ],
         ),
@@ -1056,10 +1112,24 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
       ]),
       if (det)
         _bloc(l10n.prdEmballages, [
-          ..._grille([
-            emballage(l10n.prdBoite, _boiteQ, _boiteP, 'produit_boite'),
-            emballage(l10n.prdCarton, _cartonQ, _cartonP, 'produit_carton'),
-          ]),
+          Text(
+            l10n.prdColisAide(CatalogueService.maxColis),
+            style: context.ds.typo.caption.copyWith(color: context.ds.colors.textMuted),
+          ),
+          for (final (i, s) in _colis.indexed) colis(i, s),
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: DsButton(
+              key: const ValueKey('produit_colis_ajouter'),
+              libelle: l10n.prdColisAjouter,
+              icone: LucideIcons.plus,
+              variante: DsButtonVariante.secondaire,
+              taille: DsButtonTaille.sm,
+              onPressed: _colis.length >= CatalogueService.maxColis
+                  ? null
+                  : () => setState(() => _colis = [..._colis, _ColisSaisi()]),
+            ),
+          ),
         ]),
     ];
   }

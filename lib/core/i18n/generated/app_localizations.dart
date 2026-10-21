@@ -15278,6 +15278,60 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'version {version}'**
   String mobileChoixVersion(String version);
+
+  /// No description provided for @prdPalette.
+  ///
+  /// In fr, this message translates to:
+  /// **'Palette'**
+  String get prdPalette;
+
+  /// No description provided for @prdColisN.
+  ///
+  /// In fr, this message translates to:
+  /// **'Colis {n}'**
+  String prdColisN(int n);
+
+  /// No description provided for @prdColisNom.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom du colis'**
+  String get prdColisNom;
+
+  /// No description provided for @prdColisQuantite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pièces par colis'**
+  String get prdColisQuantite;
+
+  /// No description provided for @prdColisPrix.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix du colis'**
+  String get prdColisPrix;
+
+  /// No description provided for @prdColisRetirer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retirer ce colis'**
+  String get prdColisRetirer;
+
+  /// No description provided for @prdColisAjouter.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter un colis'**
+  String get prdColisAjouter;
+
+  /// No description provided for @prdColisAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Jusqu\'à {max} colis, chacun avec son nom (boîte, carton, palette…), ses pièces et son prix ; vendus tels quels en caisse.'**
+  String prdColisAide(int max);
+
+  /// No description provided for @produitErreurTropDeColis.
+  ///
+  /// In fr, this message translates to:
+  /// **'5 colis au plus par produit.'**
+  String get produitErreurTropDeColis;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
