@@ -15,14 +15,12 @@ void main() {
   const suivant = ValueKey('config_suivant');
 
   Future<void> connecterAdmin(WidgetTester tester) async {
-    final champs = find.byType(TextField);
-    await tester.enterText(champs.at(0), identifiantAdmin);
-    await tester.enterText(champs.at(1), motDePasseAdmin);
+    await choisirCompte(tester, motDePasseAdmin);
     await clic(tester, find.byKey(const ValueKey('bouton_connexion')));
   }
 
   group('Configuration initiale (4 étapes, après la 1ʳᵉ connexion admin)', () {
-    testWidgets('parcours complet puis menu des modules', (tester) async {
+    testWidgets('parcours complet puis la Caisse', (tester) async {
       final c = await pumpApp(tester, etat: EtatApp.activeeBasic, sequence: true);
       await connecterAdmin(tester);
       expect(find.byType(AppShell), findsOneWidget);
@@ -52,7 +50,9 @@ void main() {
 
       expect(find.byKey(dialog), findsNothing);
       expect(c.read(configurationTermineeProvider), isTrue);
-      expect(find.byKey(const ValueKey('menu_modules')), findsOneWidget);
+      // Plus de menu des modules par-dessus : on arrive sur la Caisse.
+      expect(find.byKey(const ValueKey('menu_modules')), findsNothing);
+      expect(routeCourante(c), '/caisse');
 
       final db = c.read(appDatabaseProvider).db;
       expect((await BoutiqueRepository(db).lire())!.nom, 'Superette El Baraka');
@@ -63,21 +63,25 @@ void main() {
       expect(paiements.carte, isTrue);
     });
 
-    testWidgets('« Plus tard » : rien n’est enregistré, le menu des modules s’ouvre', (tester) async {
+    testWidgets('« Plus tard » : rien n’est enregistré, la Caisse s’ouvre', (tester) async {
       final c = await pumpApp(tester, etat: EtatApp.activeeBasic, sequence: true);
       await connecterAdmin(tester);
       expect(find.byKey(dialog), findsOneWidget);
       await clic(tester, find.text('Plus tard'));
       expect(find.byKey(dialog), findsNothing);
       expect(c.read(configurationTermineeProvider), isFalse);
-      expect(find.byKey(const ValueKey('menu_modules')), findsOneWidget);
+      // Plus de menu des modules par-dessus : on arrive sur la Caisse.
+      expect(find.byKey(const ValueKey('menu_modules')), findsNothing);
+      expect(routeCourante(c), '/caisse');
     });
 
-    testWidgets('configuration déjà faite : pas de dialogue, menu des modules directement', (tester) async {
-      await pumpApp(tester, etat: EtatApp.configuree, sequence: true);
+    testWidgets('configuration déjà faite : pas de dialogue, la Caisse directement', (tester) async {
+      final c = await pumpApp(tester, etat: EtatApp.configuree, sequence: true);
       await connecterAdmin(tester);
       expect(find.byKey(dialog), findsNothing);
-      expect(find.byKey(const ValueKey('menu_modules')), findsOneWidget);
+      // Plus de menu des modules par-dessus : on arrive sur la Caisse.
+      expect(find.byKey(const ValueKey('menu_modules')), findsNothing);
+      expect(routeCourante(c), '/caisse');
     });
   });
 }

@@ -23,8 +23,16 @@ void main() {
       expect(find.byKey(accesRefuse), findsOneWidget);
     });
 
-    testWidgets('licence Basic : Magasins et Transferts verrouillés (palier Avancé)', (tester) async {
+    testWidgets('licence Basic : Magasins et Transferts verrouillés (palier Ultra), devis (palier Avancé)', (
+      tester,
+    ) async {
       await pumpApp(tester, etat: EtatApp.connecteeAdminBasic, routeInitiale: '/magasins');
+      expect(find.text('Disponible avec le palier Ultra'), findsOneWidget);
+      expect(find.byType(LicenceGate), findsWidgets);
+    });
+
+    testWidgets('licence Basic : Devis & commandes verrouillés (palier Avancé)', (tester) async {
+      await pumpApp(tester, etat: EtatApp.connecteeAdminBasic, routeInitiale: '/documents');
       expect(find.text('Disponible avec le palier Avancé'), findsOneWidget);
       expect(find.byType(LicenceGate), findsWidgets);
     });
@@ -36,7 +44,7 @@ void main() {
 
     testWidgets('admin Avancé : Zakat accessible', (tester) async {
       await pumpApp(tester, etat: EtatApp.connecteeAdmin, routeInitiale: '/zakat');
-      expect(find.textContaining('Calcul annuel sur le stock, les liquidités et les créances'), findsOneWidget);
+      expect(find.byKey(const ValueKey('zakat_nouveau')), findsOneWidget);
       expect(find.text('Disponible avec le palier Avancé'), findsNothing);
     });
   });

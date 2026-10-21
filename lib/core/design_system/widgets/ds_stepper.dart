@@ -6,20 +6,12 @@ import '../tokens/ds_theme.dart';
 /// Indicateur d'étapes horizontal (`Stepper`) : pastilles 28 px (sm 24), faites = primaire + coche,
 /// courante = primaire + anneau teinté, à venir = carte + bordure forte ; connecteurs 2 px.
 class DsStepper extends StatelessWidget {
-  const DsStepper({
-    super.key,
-    required this.etapes,
-    required this.courante,
-    this.descriptions,
-    this.onEtape,
-    this.petit = false,
-  });
+  const DsStepper({super.key, required this.etapes, required this.courante, this.onEtape, this.petit = false});
 
   final List<String> etapes;
 
   /// Index de l'étape courante (à partir de 0).
   final int courante;
-  final List<String?>? descriptions;
 
   /// Clic sur une étape déjà faite.
   final ValueChanged<int>? onEtape;
@@ -44,7 +36,6 @@ class DsStepper extends StatelessWidget {
                   child: _Etape(
                     numero: i + 1,
                     libelle: e,
-                    description: descriptions != null && i < descriptions!.length ? descriptions![i] : null,
                     faite: i < courante,
                     courante: i == courante,
                     diametre: d,
@@ -80,12 +71,10 @@ class _Etape extends StatelessWidget {
     required this.courante,
     required this.diametre,
     required this.petit,
-    this.description,
     this.onTap,
   });
   final int numero;
   final String libelle;
-  final String? description;
   final bool faite;
   final bool courante;
   final double diametre;
@@ -141,13 +130,6 @@ class _Etape extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-              if (description != null && !petit)
-                Text(
-                  description!,
-                  style: t.caption.copyWith(height: 1.3, color: c.textMuted),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
             ],
           ),
         ),

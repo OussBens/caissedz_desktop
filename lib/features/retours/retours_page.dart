@@ -74,7 +74,7 @@ class _RetoursPageState extends ConsumerState<RetoursPage> {
         libelle: l10n.communDate,
         valeur: (r) => r.date,
         attenue: true,
-        cellule: (_, r) => Text(formatDate.format(r.date)),
+        cellule: (_, r) => Text(formatDateHeure.format(r.date)),
       ),
       DsColonne(
         id: 'tiers',
@@ -100,6 +100,14 @@ class _RetoursPageState extends ConsumerState<RetoursPage> {
         valeur: (r) => r.total,
         cellule: (_, r) => Text(da(r.total)),
         total: (rs) => da(rs.where((r) => r.actif).fold(0.0, (s, r) => s + r.total)),
+      ),
+      DsColonne(
+        id: 'montant_retour',
+        libelle: l10n.retoursMontantRetour,
+        numerique: true,
+        valeur: (r) => r.rembourse,
+        cellule: (_, r) => Text(da(r.rembourse)),
+        total: (rs) => da(rs.where((r) => r.actif).fold(0.0, (s, r) => s + r.rembourse)),
       ),
       DsColonne(
         id: 'reglement',
@@ -166,7 +174,6 @@ class _RetoursPageState extends ConsumerState<RetoursPage> {
 
     return PageModule(
       moduleId: 'retours',
-      sousTitre: l10n.retoursDescription,
       onglets: [l10n.retoursOngletClients, l10n.retoursOngletFournisseurs],
       comptes: [
         tous.where((r) => r.type == TypesTiers.client).length,
@@ -255,13 +262,15 @@ class _RetoursPageState extends ConsumerState<RetoursPage> {
           DsActionModule(
             libelle: l10n.communModifier,
             icone: LucideIcons.pencil,
+            iconeSeule: true,
             regle: DsRegleSelection.une,
             desactive: (choix) => choix.isNotEmpty && !choix.first.actif,
             onPressed: (choix, _) => modifier(choix.first),
           ),
           DsActionModule(
             libelle: l10n.dsAnnuler,
-            icone: LucideIcons.ban,
+            icone: LucideIcons.x,
+            iconeSeule: true,
             danger: true,
             onPressed: (choix, effacer) => annulerRetours(context, ref, choix, effacer, nomsTiers: noms),
           ),

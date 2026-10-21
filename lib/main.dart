@@ -10,6 +10,7 @@ import 'package:window_manager/window_manager.dart';
 
 import 'app/app.dart';
 import 'app/demarrage_providers.dart';
+import 'app/mobile_providers.dart';
 import 'app/providers.dart';
 import 'application/sauvegarde_service.dart';
 import 'core/db/app_database.dart';
@@ -22,7 +23,7 @@ Future<void> main() async {
     await windowManager.ensureInitialized();
     const options = WindowOptions(
       minimumSize: Size(DsTailles.fenetreMinLargeur, DsTailles.fenetreMinHauteur),
-      size: Size(1280, 800),
+      size: Size(1440, 860),
       center: true,
       title: 'CaisseDZ',
       titleBarStyle: TitleBarStyle.hidden,
@@ -43,6 +44,8 @@ Future<void> main() async {
   await chargerEtatDemarrage(container);
   unawaited(sauvegardeAutomatique(base));
   container.read(internetProvider.notifier).demarrer();
+  // CaisseDZ Scan : le service des téléphones reprend s'il était activé.
+  unawaited(container.read(mobileProvider.notifier).demarrerSiActif());
 
   runApp(UncontrolledProviderScope(container: container, child: const CaisseDzApp()));
 }

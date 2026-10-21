@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
@@ -35,6 +36,7 @@ class LigneTiers {
     required this.stats,
     this.points = 0,
     this.plafondCredit = 0,
+    this.soldeInitial = 0,
     this.audit = Audit.vide,
   });
 
@@ -51,6 +53,7 @@ class LigneTiers {
     stats: s,
     points: c.points,
     plafondCredit: c.plafondCredit,
+    soldeInitial: c.soldeInitial,
     audit: c.audit,
   );
 
@@ -65,6 +68,7 @@ class LigneTiers {
     systeme: f.systeme,
     fiche: f.fiche,
     stats: s,
+    soldeInitial: f.soldeInitial,
     audit: f.audit,
   );
 
@@ -85,6 +89,9 @@ class LigneTiers {
 
   /// Plafond de crédit du client (0 = sans plafond).
   final double plafondCredit;
+
+  /// Solde de reprise : positif = dû (par le client / au fournisseur), négatif = avance.
+  final double soldeInitial;
 
   bool get estClient => type == TypesTiers.client;
   ListeReferentiel get listeTypes => estClient ? Referentiel.typesClient : Referentiel.typesFournisseur;
@@ -132,6 +139,9 @@ class _FormulaireTiersState extends ConsumerState<_FormulaireTiers> {
   late final _plafond = TextEditingController(
     text: (t?.plafondCredit ?? 0) > 0 ? formaterNombre(t!.plafondCredit, decimales: 2, grouper: false) : '',
   );
+  late final _soldeInitial = TextEditingController(
+    text: (t?.soldeInitial ?? 0) != 0 ? formaterNombre(t!.soldeInitial, decimales: 2, grouper: false) : '',
+  );
   late String _wilaya = (t?.fiche.wilaya.isNotEmpty ?? false) ? t!.fiche.wilaya : 'Alger';
   late String _typeTiers = (t?.fiche.type.isNotEmpty ?? false)
       ? t!.fiche.type
@@ -145,7 +155,22 @@ class _FormulaireTiersState extends ConsumerState<_FormulaireTiers> {
 
   @override
   void dispose() {
-    for (final c in [_nom, _tel, _activite, _adresse, _email, _fax, _nif, _nis, _nrc, _ai, _rib, _obs, _plafond]) {
+    for (final c in [
+      _nom,
+      _tel,
+      _activite,
+      _adresse,
+      _email,
+      _fax,
+      _nif,
+      _nis,
+      _nrc,
+      _ai,
+      _rib,
+      _obs,
+      _plafond,
+      _soldeInitial,
+    ]) {
       c.dispose();
     }
     super.dispose();
@@ -178,6 +203,7 @@ class _FormulaireTiersState extends ConsumerState<_FormulaireTiers> {
           actif: _actif,
           points: t?.points ?? 0,
           plafondCredit: lireNombre(_plafond.text) ?? 0,
+          soldeInitial: lireNombre(_soldeInitial.text) ?? 0,
           fiche: fiche,
         );
         _edition ? await s.modifierClient(c) : await s.creerClient(c);
@@ -188,6 +214,7 @@ class _FormulaireTiersState extends ConsumerState<_FormulaireTiers> {
           telephone: _tel.text.trim(),
           adresse: _adresse.text.trim(),
           email: _email.text.trim(),
+          soldeInitial: lireNombre(_soldeInitial.text) ?? 0,
           actif: _actif,
           fiche: fiche,
         );
@@ -217,7 +244,6 @@ class _FormulaireTiersState extends ConsumerState<_FormulaireTiers> {
     return DsDialog(
       titre: titre,
       iconeData: _edition ? LucideIcons.pencil : (_client ? LucideIcons.userPlus : LucideIcons.truck),
-      description: _edition ? '${t!.nom} · ${t!.code}' : l10n.tiersChampsObligatoires,
       largeur: 920,
       actions: [
         DsButton(
@@ -237,11 +263,12 @@ class _FormulaireTiersState extends ConsumerState<_FormulaireTiers> {
       contenu: DsGrilleFormulaire(
         children: [
           DsSpan(child: DsSubHead(l10n.tiersInfosGenerales, icone: LucideIcons.idCard)),
-          DsFormRow(
-            libelle: l10n.produitsColCode,
-            largeurLibelle: lw,
-            child: DsTextField(valeurInitiale: t?.code ?? l10n.tiersCodeAuto, actif: false),
-          ),
+          if (t != null)
+            DsFormRow(
+              libelle: l10n.produitsColCode,
+              largeurLibelle: lw,
+              child: DsTextField(valeurInitiale: t?.code ?? l10n.tiersCodeAuto, actif: false),
+            ),
           if (_edition)
             DsFormRow(
               libelle: l10n.tiersEtat,
@@ -276,7 +303,10 @@ class _FormulaireTiersState extends ConsumerState<_FormulaireTiers> {
             child: DsTextField(
               key: const ValueKey('tiers_tel'),
               controller: _tel,
-              indice: '05xx xx xx xx',
+              indice: '05xxxxxxxx',
+              typeClavier: TextInputType.phone,
+              // 10 chiffres au plus (mobile 05/06/07 : 10, fixe : 9).
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(10)],
               onChanged: maj,
             ),
           ),
@@ -319,7 +349,19 @@ class _FormulaireTiersState extends ConsumerState<_FormulaireTiers> {
                 suffixeTexte: ref.watch(deviseProvider),
               ),
             ),
-          if (_client) const SizedBox(),
+          DsFormRow(
+            libelle: l10n.tiersSoldeInitial,
+            largeurLibelle: lw,
+            aide: _client ? l10n.tiersSoldeInitialAideClient : l10n.tiersSoldeInitialAideFournisseur,
+            child: DsTextField(
+              key: const ValueKey('tiers_solde_initial'),
+              controller: _soldeInitial,
+              numerique: true,
+              inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[-0-9.,]'))],
+              suffixeTexte: ref.watch(deviseProvider),
+            ),
+          ),
+          if (!_client) const SizedBox(),
           DsSpan(child: DsSubHead(l10n.tiersContact, icone: LucideIcons.phone)),
           DsSpan(
             child: DsFormRow(
@@ -501,6 +543,7 @@ Future<void> afficherDetailTiers(
             DsKeyValue(l10n.clientEmail, t.email),
             DsKeyValue(l10n.clientAdresse, t.adresse, span: 2),
             DsKeyValue(l10n.tiersFax, f.fax),
+            DsKeyValue(l10n.tiersSoldeInitial, t.soldeInitial == 0 ? null : '${f2(t.soldeInitial)} $devise'),
           ],
         ),
         DsSectionDetail(
@@ -540,7 +583,7 @@ Future<void> afficherDetailTiers(
                 libelle: l10n.communDate,
                 valeur: (d) => d.date,
                 attenue: true,
-                cellule: (_, d) => Text(formatDate.format(d.date)),
+                cellule: (_, d) => Text(formatDateHeure.format(d.date)),
               ),
               DsColonne(
                 id: 'm',
@@ -597,6 +640,7 @@ class _SituationTiersState extends ConsumerState<_SituationTiers> {
   NatureReleve? _nature;
 
   String _libelleNature(AppLocalizations l10n, NatureReleve n) => switch (n) {
+    NatureReleve.soldeInitial => l10n.tiersSoldeInitial,
     NatureReleve.achat => widget.tiers.estClient ? l10n.tiersNatureVente : l10n.tiersNatureAchat,
     NatureReleve.versement => l10n.tiersNatureVersement,
     NatureReleve.retour => l10n.tiersNatureRetour,
@@ -622,7 +666,7 @@ class _SituationTiersState extends ConsumerState<_SituationTiers> {
         libelle: l10n.communDate,
         valeur: (x) => x.ligne.date,
         attenue: true,
-        cellule: (_, x) => Text(formatDate.format(x.ligne.date)),
+        cellule: (_, x) => Text(formatDateHeure.format(x.ligne.date)),
       ),
       DsColonne(
         id: 'type',
@@ -633,6 +677,7 @@ class _SituationTiersState extends ConsumerState<_SituationTiers> {
           ton: switch (x.ligne.nature) {
             NatureReleve.achat => DsBadgeTon.primaire,
             NatureReleve.versement => DsBadgeTon.succes,
+            NatureReleve.soldeInitial => DsBadgeTon.info,
             _ => DsBadgeTon.avertissement,
           },
         ),
@@ -674,7 +719,6 @@ class _SituationTiersState extends ConsumerState<_SituationTiers> {
     return DsDialog(
       titre: l10n.tiersSituationDe(widget.tiers.nom),
       iconeData: LucideIcons.scale,
-      description: widget.tiers.estClient ? l10n.tiersReleveClient : l10n.tiersReleveFournisseur,
       largeur: 1100,
       piedDebut: peutExporter(ref)
           ? DsExportMenu(

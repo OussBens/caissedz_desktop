@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,6 +14,7 @@ import '../../application/session_caisse_service.dart';
 import '../../application/vente_service.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
+import '../../core/print/couleur_logo.dart';
 import '../../core/print/documents_pdf.dart';
 import '../../core/print/imprimante.dart';
 import '../../core/print/ticket_escpos.dart';
@@ -22,6 +24,7 @@ import '../../data/parametre_repository.dart';
 import '../../domain/models/boutique.dart';
 import '../../domain/models/tiers.dart';
 import '../../domain/models/vente.dart';
+import '../commun/apercu_document.dart';
 import '../commun/selecteurs.dart';
 import '../produits/produits_providers.dart';
 import 'pos_controller.dart';
@@ -41,7 +44,7 @@ String messageErreurVente(AppLocalizations l10n, VenteException e, String devise
   ErreurVente.pointsInsuffisants => l10n.posErreurPoints,
   ErreurVente.stockInsuffisant => l10n.posErreurStock(e.detail ?? ''),
   ErreurVente.creditNonAutorise => l10n.posErreurCredit,
-  ErreurVente.venteInconnue => l10n.communAucunResultat,
+  ErreurVente.venteInconnue || ErreurVente.articleInconnu => l10n.communAucunResultat,
   ErreurVente.dejaAnnulee => l10n.ventesBloqueDejaAnnule,
   ErreurVente.periodeCloturee => l10n.posErreurPeriodeCloturee,
   ErreurVente.quantiteInvalide => l10n.posErreurQuantite,
@@ -182,14 +185,73 @@ ImprimanteEscPos? construireImprimante(String type, String adresse) {
 }
 
 /// Police PDF selon la langue (Cairo pour l'arabe).
-Future<pw.Font?> policePdf(bool arabe) async {
+Future<pw.Font?> policePdf(bool arabe, {bool gras = false}) async {
+  final graisse = gras ? 700 : 400;
   try {
-    final data = await rootBundle.load(arabe ? 'assets/fonts/Cairo-400.ttf' : 'assets/fonts/PlusJakartaSans-400.ttf');
+    final data = await rootBundle.load(
+      arabe ? 'assets/fonts/Cairo-$graisse.ttf' : 'assets/fonts/PlusJakartaSans-$graisse.ttf',
+    );
     return pw.Font.ttf(data);
   } on Object {
     return null;
   }
 }
+
+/// Polices de secours de l'autre écriture (régulière et grasse) : Cairo sous une interface latine, Plus Jakarta
+/// Sans sous l'arabe, pour les noms et désignations saisis dans l'autre langue.
+Future<List<pw.Font>> policesSecoursPdf(bool arabe) async => [
+  for (final gras in [false, true]) ?await policePdf(!arabe, gras: gras),
+];
+
+/// Logo de la boutique et sa couleur dominante, pour les documents PDF.
+typedef LogoDocuments = ({Uint8List octets, int? couleur});
+
+final _logos = <String, LogoDocuments>{};
+
+/// Logo enregistré dans Paramètres › Boutique (`null` si aucun ou introuvable) ; la couleur est calculée une fois
+/// par fichier (chemin + date de modification).
+Future<LogoDocuments?> logoDocuments(WidgetRef ref) async {
+  final chemin = (await BoutiqueRepository(ref.read(appDatabaseProvider).db).lire())?.logo ?? '';
+  if (chemin.isEmpty) return null;
+  try {
+    final f = File(chemin);
+    if (!await f.exists()) return null;
+    final cle = '$chemin@${(await f.lastModified()).millisecondsSinceEpoch}';
+    if (_logos[cle] case final l?) return l;
+    final octets = await f.readAsBytes();
+    return _logos[cle] = (octets: octets, couleur: couleurDominante(octets));
+  } on FileSystemException {
+    return null;
+  }
+}
+
+/// Générateur des documents PDF (tickets, factures, devis, BL…) : polices selon la langue, logo de la boutique
+/// et couleur des documents (la plus utilisée du logo, violet sinon).
+///
+/// En arabe, les produits [produits] (codes) sont imprimés sous leur nom arabe quand il est renseigné.
+Future<DocumentsPdf> documentsPdf(
+  WidgetRef ref, {
+  required bool arabe,
+  LibellesTicket? libelles,
+  Iterable<String> produits = const [],
+}) async {
+  final logo = await logoDocuments(ref);
+  final nomsAr = arabe ? await nomsArabes(ref, produits) : const <String, String>{};
+  return DocumentsPdf(
+    nomsAr: nomsAr,
+    libelles: libelles ?? (arabe ? LibellesTicket.ar : LibellesTicket.fr),
+    devise: ref.read(deviseProvider),
+    police: await policePdf(arabe),
+    policeGras: await policePdf(arabe, gras: true),
+    secours: await policesSecoursPdf(arabe),
+    logo: logo?.octets,
+    couleur: logo?.couleur,
+  );
+}
+
+/// Les noms arabes renseignés des produits [codes] (tickets et documents en arabe).
+Future<Map<String, String>> nomsArabes(WidgetRef ref, Iterable<String> codes) async =>
+    codes.isEmpty ? const {} : ref.read(catalogueRepositoryProvider).nomsArabes(codes);
 
 /// Résultat de vente : monnaie, impression ticket (ESC/POS ou PDF), facture A4.
 Future<void> afficherResultatVente(BuildContext context, WidgetRef ref, Vente vente) async {
@@ -202,6 +264,9 @@ Future<void> afficherResultatVente(BuildContext context, WidgetRef ref, Vente ve
   final arabe = Localizations.localeOf(context).languageCode == 'ar';
   final libelles = arabe ? LibellesTicket.ar : LibellesTicket.fr;
   final nomClient = client == null || client.estDePassage ? null : client.nom;
+  final codes = [for (final l in vente.lignes) l.produitCode];
+  final nomsAr = arabe ? await nomsArabes(ref, codes) : const <String, String>{};
+  if (!context.mounted) return;
 
   Future<void> imprimerTicket(LargeurTicket largeur) async {
     final transport = construireImprimante(imprimante.type, imprimante.adresse);
@@ -212,17 +277,18 @@ Future<void> afficherResultatVente(BuildContext context, WidgetRef ref, Vente ve
             largeur: largeur,
             libelles: libelles,
             devise: devise,
+            nomsAr: nomsAr,
           ).generer(vente, boutique: boutique, nomClient: nomClient, ouvrirTiroir: true),
         );
         if (!context.mounted) return;
         afficherToast(context, titre: l10n.posImpressionOk);
       } else {
-        final police = await policePdf(arabe);
-        final octets = await DocumentsPdf(
+        final octets = await (await documentsPdf(
+          ref,
+          arabe: arabe,
           libelles: libelles,
-          devise: devise,
-          police: police,
-        ).ticket(vente, boutique: boutique, largeur: largeur, nomClient: nomClient);
+          produits: codes,
+        )).ticket(vente, boutique: boutique, largeur: largeur, nomClient: nomClient);
         await Printing.layoutPdf(onLayout: (_) async => octets, name: 'ticket_${vente.code}.pdf');
       }
     } on ImpressionException catch (e) {
@@ -315,7 +381,6 @@ Future<void> afficherResultatVente(BuildContext context, WidgetRef ref, Vente ve
 /// duplicata avec ses avoirs ; le reste dû est celui du jour (versements imputés déduits).
 Future<void> imprimerFactureVente(BuildContext context, WidgetRef ref, Vente vente, {bool partager = false}) async {
   final l10n = AppLocalizations.of(context);
-  final devise = ref.read(deviseProvider);
   final arabe = Localizations.localeOf(context).languageCode == 'ar';
   final service = ref.read(factureServiceProvider);
   try {
@@ -323,22 +388,23 @@ Future<void> imprimerFactureVente(BuildContext context, WidgetRef ref, Vente ven
     final facture = existante ?? await service.emettre(vente.code);
     final avoirs = await service.avoirsDe(facture.code);
     final reste = await service.resteAujourdhui(vente);
-    final police = await policePdf(arabe);
-    final octets =
-        await DocumentsPdf(
-          libelles: arabe ? LibellesTicket.ar : LibellesTicket.fr,
-          devise: devise,
-          police: police,
-        ).facturesFiscales(
-          [facture, ...avoirs],
-          mentions: arabe ? LibellesFacture.ar : LibellesFacture.fr,
-          duplicata: existante != null,
-          resteDu: reste,
-        );
+    final pdf = await documentsPdf(ref, arabe: arabe);
+    Future<Uint8List> octets() => pdf.facturesFiscales(
+      [facture, ...avoirs],
+      mentions: arabe ? LibellesFacture.ar : LibellesFacture.fr,
+      duplicata: existante != null,
+      resteDu: reste,
+    );
     if (partager) {
-      await Printing.sharePdf(bytes: octets, filename: 'facture_${facture.code}.pdf');
-    } else {
-      await Printing.layoutPdf(onLayout: (_) async => octets, name: 'facture_${facture.code}.pdf');
+      await Printing.sharePdf(bytes: await octets(), filename: 'facture_${facture.code}.pdf');
+    } else if (context.mounted) {
+      await afficherApercuDocument(
+        context,
+        ref,
+        titre: '${facture.estAvoir ? l10n.factureTypeAvoir : l10n.factureTypeFacture} ${facture.code}',
+        nom: 'facture_${facture.code}',
+        pdf: octets,
+      );
     }
   } on FactureException catch (e) {
     if (!context.mounted) return;
@@ -371,11 +437,13 @@ Future<bool> imprimerTicketDirect(BuildContext context, WidgetRef ref, Vente ven
   final boutique = await BoutiqueRepository(db).lire() ?? const Boutique(nom: 'CaisseDZ');
   final client = await ClientRepository(db).parCode(vente.clientCode);
   try {
+    final nomsAr = arabe ? await nomsArabes(ref, [for (final l in vente.lignes) l.produitCode]) : const <String, String>{};
     await transport.envoyer(
       TicketEscPos(
         largeur: imprimante.largeur,
         libelles: arabe ? LibellesTicket.ar : LibellesTicket.fr,
         devise: ref.read(deviseProvider),
+        nomsAr: nomsAr,
       ).generer(
         vente,
         boutique: boutique,
@@ -433,22 +501,27 @@ class _ApercuTicketState extends ConsumerState<_ApercuTicket> {
 
   LibellesTicket get _libelles => _arabe ? LibellesTicket.ar : LibellesTicket.fr;
 
-  Future<Uint8List> _pdf() async => DocumentsPdf(
+  List<String> get _codes => [for (final l in widget.vente.lignes) l.produitCode];
+
+  Future<Uint8List> _pdf() async => (await documentsPdf(
+    ref,
+    arabe: _arabe,
     libelles: _libelles,
-    devise: ref.read(deviseProvider),
-    police: await policePdf(_arabe),
-  ).ticket(widget.vente, boutique: widget.boutique, largeur: _largeur, nomClient: widget.nomClient);
+    produits: _codes,
+  )).ticket(widget.vente, boutique: widget.boutique, largeur: _largeur, nomClient: widget.nomClient);
 
   Future<void> _imprimer() async {
     final l10n = AppLocalizations.of(context);
     final transport = construireImprimante(widget.imprimante.type, widget.imprimante.adresse);
     try {
       if (transport != null) {
+        final nomsAr = _arabe ? await nomsArabes(ref, _codes) : const <String, String>{};
         await transport.envoyer(
           TicketEscPos(
             largeur: _largeur,
             libelles: _libelles,
             devise: ref.read(deviseProvider),
+            nomsAr: nomsAr,
           ).generer(widget.vente, boutique: widget.boutique, nomClient: widget.nomClient),
         );
         if (mounted) afficherToast(context, titre: l10n.posImpressionOk);
@@ -474,7 +547,6 @@ class _ApercuTicketState extends ConsumerState<_ApercuTicket> {
     return DsDialog(
       key: const ValueKey('apercu_ticket'),
       titre: l10n.posApercuTicket,
-      description: l10n.posApercuTicketDesc,
       iconeData: LucideIcons.receipt,
       largeur: 860,
       actions: [

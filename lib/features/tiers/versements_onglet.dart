@@ -37,6 +37,7 @@ class _VersementsOngletState extends ConsumerState<VersementsOnglet> {
   DsPeriode _periode = DsPeriode.calculer('month');
   String? _mode;
   String? _caisse;
+  String? _tiers;
 
   bool get _client => widget.tiersType == TypesTiers.client;
 
@@ -56,7 +57,8 @@ class _VersementsOngletState extends ConsumerState<VersementsOnglet> {
           (v) =>
               dansPeriode(v.date, _periode) &&
               (_mode == null || v.mode == _mode) &&
-              (_caisse == null || v.caisseCode == _caisse),
+              (_caisse == null || v.caisseCode == _caisse) &&
+              (_tiers == null || v.tiersCode == _tiers),
         )
         .toList();
     final actifs = lignes.where((v) => v.actif);
@@ -67,7 +69,7 @@ class _VersementsOngletState extends ConsumerState<VersementsOnglet> {
         libelle: l10n.communDate,
         valeur: (v) => v.date,
         attenue: true,
-        cellule: (_, v) => Text(formatDate.format(v.date)),
+        cellule: (_, v) => Text(formatDateHeure.format(v.date)),
       ),
       DsColonne(
         id: 'nom',
@@ -116,7 +118,7 @@ class _VersementsOngletState extends ConsumerState<VersementsOnglet> {
         id: 'annuleLe',
         libelle: l10n.auditAnnuleLe,
         visibleParDefaut: false,
-        valeur: (v) => v.annuleLe == null ? null : formatDate.format(v.annuleLe!),
+        valeur: (v) => v.annuleLe == null ? null : formatDateHeure.format(v.annuleLe!),
       ),
       DsColonne(id: 'annulePar', libelle: l10n.auditAnnulePar, visibleParDefaut: false, valeur: (v) => v.annulePar),
       DsColonne(id: 'motif', libelle: l10n.auditMotif, visibleParDefaut: false, valeur: (v) => v.motifAnnulation),
@@ -130,10 +132,11 @@ class _VersementsOngletState extends ConsumerState<VersementsOnglet> {
       afficherTotaux: true,
       periode: _periode,
       onPeriode: (p) => setState(() => _periode = p),
-      nbFiltresActifs: (_mode != null ? 1 : 0) + (_caisse != null ? 1 : 0),
+      nbFiltresActifs: [_mode, _caisse, _tiers].where((f) => f != null).length,
       onReinitialiser: () => setState(() {
         _mode = null;
         _caisse = null;
+        _tiers = null;
         _periode = DsPeriode.calculer('month');
       }),
       kpis: [
@@ -153,6 +156,22 @@ class _VersementsOngletState extends ConsumerState<VersementsOnglet> {
       ],
       filtres: [
         DsFormRow(
+          libelle: _client ? l10n.retoursClient : l10n.retoursFournisseur,
+          largeurLibelle: 60,
+          child: DsSelect<String?>(
+            cle: const ValueKey('versement_filtre_tiers'),
+            valeur: _tiers,
+            options: [
+              null,
+              ...{for (final v in tous) v.tiersCode}.toList()
+                ..sort((a, b) => (noms[a] ?? a).toLowerCase().compareTo((noms[b] ?? b).toLowerCase())),
+            ],
+            libelle: (c) => c == null ? l10n.tiersTous : (noms[c] ?? c),
+            recherche: rechercheListe(context, ref, _client ? ListeMetier.client : ListeMetier.fournisseur),
+            onChanged: (c) => setState(() => _tiers = c),
+          ),
+        ),
+        DsFormRow(
           libelle: l10n.versementMode,
           largeurLibelle: 60,
           child: DsSelect<String?>(
@@ -162,17 +181,18 @@ class _VersementsOngletState extends ConsumerState<VersementsOnglet> {
             onChanged: (m) => setState(() => _mode = m),
           ),
         ),
-        DsFormRow(
-          libelle: l10n.versementCaisse,
-          largeurLibelle: 60,
-          child: DsSelect<String?>(
-            valeur: _caisse,
-            options: [null, ...caisses.map((c) => c.code)],
-            libelle: (c) => c == null ? l10n.tiersToutes : nomCaisse(c),
-            recherche: rechercheListe(context, ref, ListeMetier.caisse),
-            onChanged: (c) => setState(() => _caisse = c),
+        if (ref.watch(plusieursCaissesProvider))
+          DsFormRow(
+            libelle: l10n.versementCaisse,
+            largeurLibelle: 60,
+            child: DsSelect<String?>(
+              valeur: _caisse,
+              options: [null, ...caisses.map((c) => c.code)],
+              libelle: (c) => c == null ? l10n.tiersToutes : nomCaisse(c),
+              recherche: rechercheListe(context, ref, ListeMetier.caisse),
+              onChanged: (c) => setState(() => _caisse = c),
+            ),
           ),
-        ),
       ],
       onExport: peutExporter(ref)
           ? (format, ls) => exporterTableau(
@@ -197,6 +217,7 @@ class _VersementsOngletState extends ConsumerState<VersementsOnglet> {
         DsActionModule(
           libelle: l10n.communModifier,
           icone: LucideIcons.pencil,
+          iconeSeule: true,
           regle: DsRegleSelection.une,
           desactive: (choix) => choix.isNotEmpty && (!choix.first.actif || choix.first.verrouille),
           onPressed: (choix, _) => afficherVersementTiers(
@@ -209,7 +230,8 @@ class _VersementsOngletState extends ConsumerState<VersementsOnglet> {
         ),
         DsActionModule(
           libelle: l10n.dsAnnuler,
-          icone: LucideIcons.ban,
+          icone: LucideIcons.x,
+          iconeSeule: true,
           danger: true,
           onPressed: (choix, effacer) => _annuler(choix, effacer, noms),
         ),
@@ -279,7 +301,7 @@ Future<void> afficherDetailVersement(BuildContext context, WidgetRef ref, Versem
       largeur: 860,
       icone: v.estRetour ? LucideIcons.undo2 : LucideIcons.handCoins,
       titre: '${v.estRetour ? l10n.versementRetourTitre : l10n.versementTitre} ${v.code}',
-      description: '${formatDate.format(v.date)} · ${nomTiers ?? v.tiersCode}',
+      description: '${formatDateHeure.format(v.date)} · ${nomTiers ?? v.tiersCode}',
       badges: [
         BadgeStatut(client ? 'client' : 'fournisseur'),
         BadgeStatut(v.actif ? 'actif' : 'annule'),
@@ -345,7 +367,7 @@ Future<void> afficherDetailVersement(BuildContext context, WidgetRef ref, Versem
           items: [
             DsKeyValue(l10n.auditCreePar, v.utilisateurCode),
             DsKeyValue(l10n.auditAnnulePar, v.annulePar),
-            DsKeyValue(l10n.auditAnnuleLe, v.annuleLe == null ? null : formatDate.format(v.annuleLe!)),
+            DsKeyValue(l10n.auditAnnuleLe, v.annuleLe == null ? null : formatDateHeure.format(v.annuleLe!)),
             DsKeyValue(l10n.auditMotif, v.motifAnnulation, span: 3),
           ],
         ),
@@ -505,13 +527,9 @@ class _VersementTiersState extends ConsumerState<_VersementTiers> {
     final titre = _edition
         ? (widget.retour ? l10n.versementRetourModifier : l10n.versementModifier)
         : (widget.retour ? l10n.versementRetourNouveau : l10n.versementNouveau);
-    final description = widget.retour
-        ? (_client ? l10n.versementAideRetourClient : l10n.versementAideRetourFournisseur)
-        : (_client ? l10n.versementAideClient : l10n.versementAideFournisseur);
     return DsDialog(
       titre: titre,
       iconeData: widget.retour ? LucideIcons.undo2 : LucideIcons.handCoins,
-      description: description,
       largeur: 680,
       actions: [
         DsButton(
@@ -531,11 +549,12 @@ class _VersementTiersState extends ConsumerState<_VersementTiers> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         spacing: DsSpacing.s3,
         children: [
-          DsFormRow(
-            libelle: l10n.versementNumero,
-            largeurLibelle: lw,
-            child: DsTextField(valeurInitiale: widget.versement?.code ?? l10n.tiersCodeAuto, actif: false),
-          ),
+          if (widget.versement != null)
+            DsFormRow(
+              libelle: l10n.versementNumero,
+              largeurLibelle: lw,
+              child: DsTextField(valeurInitiale: widget.versement?.code ?? l10n.tiersCodeAuto, actif: false),
+            ),
           DsFormRow(
             libelle: l10n.communDate,
             obligatoire: true,
@@ -592,18 +611,19 @@ class _VersementTiersState extends ConsumerState<_VersementTiers> {
               onChanged: (v) => setState(() => _type = v ?? _type),
             ),
           ),
-          DsFormRow(
-            libelle: l10n.versementCaisse,
-            obligatoire: true,
-            largeurLibelle: lw,
-            child: DsSelect<String>(
-              valeur: _caisse,
-              options: caisses.map((c) => c.code).toList(),
-              libelle: (code) => caisses.where((c) => c.code == code).firstOrNull?.nom ?? code,
-              recherche: rechercheListe(context, ref, ListeMetier.caisse),
-              onChanged: (v) => setState(() => _caisse = v),
+          if (ref.watch(plusieursCaissesProvider))
+            DsFormRow(
+              libelle: l10n.versementCaisse,
+              obligatoire: true,
+              largeurLibelle: lw,
+              child: DsSelect<String>(
+                valeur: _caisse,
+                options: caisses.map((c) => c.code).toList(),
+                libelle: (code) => caisses.where((c) => c.code == code).firstOrNull?.nom ?? code,
+                recherche: rechercheListe(context, ref, ListeMetier.caisse),
+                onChanged: (v) => setState(() => _caisse = v),
+              ),
             ),
-          ),
           DsFormRow(
             libelle: l10n.tiersObservation,
             largeurLibelle: lw,

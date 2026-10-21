@@ -151,7 +151,6 @@ class _MonCompteDialogState extends ConsumerState<MonCompteDialog> {
     final locale = ref.watch(localeProvider);
     final mode = ref.watch(themeModeProvider);
     final magasin = ref.watch(magasinCourantProvider).magasinCourant;
-    final demo = session.demo && AuthService.estIdentifiantDemo(u.identifiant);
     final acces = u.dernierAcces == null
         ? l10n.compteJamaisConnecte
         : DateFormat('dd/MM/yyyy HH:mm', locale.languageCode).format(u.dernierAcces!);
@@ -180,13 +179,12 @@ class _MonCompteDialogState extends ConsumerState<MonCompteDialog> {
           variante: DsButtonVariante.secondaire,
           onPressed: () => Navigator.of(context).pop(),
         ),
-        if (!demo || _onglet == _Onglet.preferences)
-          DsButton(
-            key: const ValueKey('compte_enregistrer'),
-            libelle: l10n.communEnregistrer,
-            icone: LucideIcons.check,
-            onPressed: _peutEnregistrer(u.identifiant) ? _enregistrer : null,
-          ),
+        DsButton(
+          key: const ValueKey('compte_enregistrer'),
+          libelle: l10n.communEnregistrer,
+          icone: LucideIcons.check,
+          onPressed: _peutEnregistrer(u.identifiant) ? _enregistrer : null,
+        ),
       ],
       contenu: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -205,7 +203,6 @@ class _MonCompteDialogState extends ConsumerState<MonCompteDialog> {
                   ],
                 ),
               ),
-              if (session.demo) DsBadge(libelle: l10n.licenceDemo, ton: DsBadgeTon.avertissement),
               DsBadge(
                 libelle: Referentiel.roles.libelle(u.roleNom ?? '', locale),
                 ton: DsBadgeTon.primaire,
@@ -223,119 +220,116 @@ class _MonCompteDialogState extends ConsumerState<MonCompteDialog> {
             valeur: _onglet,
             onChanged: (v) => setState(() => _onglet = v),
           ),
-          if (demo && _onglet != _Onglet.preferences)
-            Text(l10n.compteDemoLectureSeule, style: t.body.copyWith(color: c.textSecondary))
-          else
-            switch (_onglet) {
-              _Onglet.profil => formulaire([
-                DsFormRow(
-                  libelle: l10n.compteIdentifiant,
-                  obligatoire: true,
-                  erreur: _erreurIdentifiant,
-                  child: DsTextField(
-                    key: const ValueKey('compte_identifiant'),
-                    controller: _identifiant,
-                    iconePrefixe: LucideIcons.user,
-                  ),
+          switch (_onglet) {
+            _Onglet.profil => formulaire([
+              DsFormRow(
+                libelle: l10n.compteIdentifiant,
+                obligatoire: true,
+                erreur: _erreurIdentifiant,
+                child: DsTextField(
+                  key: const ValueKey('compte_identifiant'),
+                  controller: _identifiant,
+                  iconePrefixe: LucideIcons.user,
                 ),
-                if (_identifiant.text.trim() != u.identifiant)
-                  DsFormRow(
-                    libelle: l10n.compteMotDePasseActuel,
-                    obligatoire: true,
-                    erreur: _erreurMdpIdentifiant,
-                    child: DsTextField(
-                      key: const ValueKey('compte_mdp_identifiant'),
-                      controller: _mdpIdentifiant,
-                      obscur: true,
-                      iconePrefixe: LucideIcons.lock,
-                    ),
-                  ),
-                DsFormRow(
-                  libelle: l10n.compteCode,
-                  child: DsTextField(valeurInitiale: u.code, actif: false),
-                ),
-                DsFormRow(
-                  libelle: l10n.compteMagasinDefaut,
-                  child: DsTextField(valeurInitiale: magasin?.nom ?? '—', actif: false),
-                ),
-              ]),
-              _Onglet.motDePasse => formulaire([
+              ),
+              if (_identifiant.text.trim() != u.identifiant)
                 DsFormRow(
                   libelle: l10n.compteMotDePasseActuel,
                   obligatoire: true,
-                  erreur: _erreurMdpActuel,
+                  erreur: _erreurMdpIdentifiant,
                   child: DsTextField(
-                    key: const ValueKey('compte_mdp_actuel'),
-                    controller: _mdpActuel,
+                    key: const ValueKey('compte_mdp_identifiant'),
+                    controller: _mdpIdentifiant,
                     obscur: true,
                     iconePrefixe: LucideIcons.lock,
                   ),
                 ),
-                DsFormRow(
-                  libelle: l10n.compteNouveauMotDePasse,
-                  obligatoire: true,
-                  aide: l10n.compteMotDePasseAide(AuthService.longueurMinMotDePasse),
-                  erreur: _erreurMdpNouveau,
-                  child: DsTextField(
-                    key: const ValueKey('compte_mdp_nouveau'),
-                    controller: _mdpNouveau,
-                    obscur: true,
-                    iconePrefixe: LucideIcons.keyRound,
+              DsFormRow(
+                libelle: l10n.compteCode,
+                child: DsTextField(valeurInitiale: u.code, actif: false),
+              ),
+              DsFormRow(
+                libelle: l10n.compteMagasinDefaut,
+                child: DsTextField(valeurInitiale: magasin?.nom ?? '—', actif: false),
+              ),
+            ]),
+            _Onglet.motDePasse => formulaire([
+              DsFormRow(
+                libelle: l10n.compteMotDePasseActuel,
+                obligatoire: true,
+                erreur: _erreurMdpActuel,
+                child: DsTextField(
+                  key: const ValueKey('compte_mdp_actuel'),
+                  controller: _mdpActuel,
+                  obscur: true,
+                  iconePrefixe: LucideIcons.lock,
+                ),
+              ),
+              DsFormRow(
+                libelle: l10n.compteNouveauMotDePasse,
+                obligatoire: true,
+                aide: l10n.compteMotDePasseAide(AuthService.longueurMinMotDePasse),
+                erreur: _erreurMdpNouveau,
+                child: DsTextField(
+                  key: const ValueKey('compte_mdp_nouveau'),
+                  controller: _mdpNouveau,
+                  obscur: true,
+                  iconePrefixe: LucideIcons.keyRound,
+                ),
+              ),
+              DsFormRow(
+                libelle: l10n.compteConfirmer,
+                obligatoire: true,
+                erreur: _discordance ? l10n.configErreurConfirmation : null,
+                child: DsTextField(
+                  key: const ValueKey('compte_mdp_confirmation'),
+                  controller: _mdpConfirmation,
+                  obscur: true,
+                  iconePrefixe: LucideIcons.keyRound,
+                ),
+              ),
+            ]),
+            _Onglet.preferences => formulaire([
+              DsFormRow(
+                libelle: l10n.configLangue,
+                child: Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: DsSegmentedControl<String>(
+                    options: const [
+                      DsOption('fr', libelle: 'Français'),
+                      DsOption('en', libelle: 'English'),
+                      DsOption('ar', libelle: 'العربية'),
+                    ],
+                    valeur: locale.languageCode,
+                    onChanged: (v) => ref.read(localeProvider.notifier).changer(Locale(v)),
                   ),
                 ),
-                DsFormRow(
-                  libelle: l10n.compteConfirmer,
-                  obligatoire: true,
-                  erreur: _discordance ? l10n.configErreurConfirmation : null,
-                  child: DsTextField(
-                    key: const ValueKey('compte_mdp_confirmation'),
-                    controller: _mdpConfirmation,
-                    obscur: true,
-                    iconePrefixe: LucideIcons.keyRound,
+              ),
+              DsFormRow(
+                libelle: l10n.galerieTheme,
+                child: Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: DsSegmentedControl<ThemeMode>(
+                    options: [
+                      DsOption(ThemeMode.light, libelle: l10n.galerieClair, icone: LucideIcons.sun),
+                      DsOption(ThemeMode.dark, libelle: l10n.galerieSombre, icone: LucideIcons.moon),
+                    ],
+                    valeur: mode == ThemeMode.dark ? ThemeMode.dark : ThemeMode.light,
+                    onChanged: (v) => ref.read(themeModeProvider.notifier).changer(v),
                   ),
                 ),
-              ]),
-              _Onglet.preferences => formulaire([
-                DsFormRow(
-                  libelle: l10n.configLangue,
-                  child: Align(
-                    alignment: AlignmentDirectional.centerStart,
-                    child: DsSegmentedControl<String>(
-                      options: const [
-                        DsOption('fr', libelle: 'Français'),
-                        DsOption('en', libelle: 'English'),
-                        DsOption('ar', libelle: 'العربية'),
-                      ],
-                      valeur: locale.languageCode,
-                      onChanged: (v) => ref.read(localeProvider.notifier).changer(Locale(v)),
-                    ),
+              ),
+              Row(
+                spacing: 8,
+                children: [
+                  Icon(LucideIcons.info, size: 14, color: c.textMuted),
+                  Expanded(
+                    child: Text(l10n.comptePreferencesAide, style: t.bodySm.copyWith(color: c.textMuted)),
                   ),
-                ),
-                DsFormRow(
-                  libelle: l10n.galerieTheme,
-                  child: Align(
-                    alignment: AlignmentDirectional.centerStart,
-                    child: DsSegmentedControl<ThemeMode>(
-                      options: [
-                        DsOption(ThemeMode.light, libelle: l10n.galerieClair, icone: LucideIcons.sun),
-                        DsOption(ThemeMode.dark, libelle: l10n.galerieSombre, icone: LucideIcons.moon),
-                      ],
-                      valeur: mode == ThemeMode.dark ? ThemeMode.dark : ThemeMode.light,
-                      onChanged: (v) => ref.read(themeModeProvider.notifier).changer(v),
-                    ),
-                  ),
-                ),
-                Row(
-                  spacing: 8,
-                  children: [
-                    Icon(LucideIcons.info, size: 14, color: c.textMuted),
-                    Expanded(
-                      child: Text(l10n.comptePreferencesAide, style: t.bodySm.copyWith(color: c.textMuted)),
-                    ),
-                  ],
-                ),
-              ]),
-            },
+                ],
+              ),
+            ]),
+          },
         ],
       ),
     );

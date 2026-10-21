@@ -298,6 +298,7 @@ class TiersRepository {
 
   /// Documents ouverts d'un client (ventes validées avec reste > 0, hors imputations), plus ancien d'abord.
   Future<List<DocumentOuvert>> documentsOuvertsClient(String clientCode) async {
+    final initial = await _soldeInitialOuvert('client', clientCode);
     final rows = await db.rawQuery(
       '''
       SELECT v.code code, v.date date, v.total_net total,
@@ -308,6 +309,7 @@ class TiersRepository {
       [clientCode],
     );
     return [
+      ?initial,
       for (final r in rows)
         if ((r['reste'] as num) > 0.0001)
           DocumentOuvert(
@@ -322,6 +324,7 @@ class TiersRepository {
 
   /// Documents ouverts d'un fournisseur (achats avec reste > 0), plus ancien d'abord.
   Future<List<DocumentOuvert>> documentsOuvertsFournisseur(String fournisseurCode) async {
+    final initial = await _soldeInitialOuvert('fournisseur', fournisseurCode);
     final rows = await db.rawQuery(
       '''
       SELECT a.code code, a.date date, a.total total,
@@ -332,6 +335,7 @@ class TiersRepository {
       [fournisseurCode],
     );
     return [
+      ?initial,
       for (final r in rows)
         if ((r['reste'] as num) > 0.0001)
           DocumentOuvert(
@@ -343,6 +347,32 @@ class TiersRepository {
           ),
     ];
   }
+
+  /// Solde initial (reprise) encore ouvert d'un tiers : 1ᵉʳ document à solder, avant toute pièce.
+  Future<DocumentOuvert?> _soldeInitialOuvert(String table, String code) async {
+    final r = await db.rawQuery(
+      '''
+      SELECT t.solde_initial - COALESCE((SELECT SUM(i.montant) FROM versement_imputation i
+        JOIN versement v ON v.code = i.versement_code AND v.etat = 1
+        WHERE i.document_type = '$typeSoldeInitial' AND i.document_code = t.code), 0) reste,
+        t.solde_initial total, t.cree_le date
+      FROM $table t WHERE t.code = ? AND t.solde_initial > 0
+      ''',
+      [code],
+    );
+    if (r.isEmpty || (r.first['reste']! as num) <= 0.0001) return null;
+    final date = r.first['date'] as String?;
+    return DocumentOuvert(
+      type: typeSoldeInitial,
+      code: code,
+      date: date == null ? DateTime(2000) : DateTime.parse(date).toLocal(),
+      total: (r.first['total']! as num).toDouble(),
+      reste: (r.first['reste']! as num).toDouble(),
+    );
+  }
+
+  /// Type d'imputation du solde initial d'un tiers (`document_code` = code du tiers).
+  static const String typeSoldeInitial = 'solde_initial';
 
   /// Solde unique d'un tiers (vue `solde_tiers`) : positif = dû par le client / au fournisseur, négatif = avance.
   Future<double> solde(String tiersType, String tiersCode) async {
@@ -372,12 +402,20 @@ class TiersRepository {
         COALESCE(SUM(MAX(v.reste - COALESCE((SELECT SUM(i.montant) FROM versement_imputation i
           WHERE i.document_type = 'vente' AND i.document_code = v.code), 0), 0)), 0) du
       FROM vente v WHERE v.statut = 'Validée' GROUP BY v.client_code
+      UNION ALL
+      SELECT t.code, MAX(t.solde_initial - COALESCE((SELECT SUM(i.montant) FROM versement_imputation i
+        WHERE i.document_type = '$typeSoldeInitial' AND i.document_code = t.code), 0), 0)
+      FROM client t WHERE t.solde_initial > 0
     ''')
         : await db.rawQuery('''
       SELECT a.fournisseur_code c,
         COALESCE(SUM(MAX(a.reste - COALESCE((SELECT SUM(i.montant) FROM versement_imputation i
           WHERE i.document_type = 'achat' AND i.document_code = a.code), 0), 0)), 0) du
       FROM achat a WHERE a.statut = 'Validé' GROUP BY a.fournisseur_code
+      UNION ALL
+      SELECT t.code, MAX(t.solde_initial - COALESCE((SELECT SUM(i.montant) FROM versement_imputation i
+        WHERE i.document_type = '$typeSoldeInitial' AND i.document_code = t.code), 0), 0)
+      FROM fournisseur t WHERE t.solde_initial > 0
     ''');
     final retours = await db.rawQuery(
       client
@@ -399,7 +437,7 @@ class TiersRepository {
     }
     for (final r in ouverts) {
       final c = r['c'] as String;
-      res[c] = de(c).copyWith(du: d(r['du']));
+      res[c] = de(c).copyWith(du: de(c).du + d(r['du']));
     }
     for (final r in retours) {
       final c = r['c'] as String;
@@ -414,6 +452,25 @@ class TiersRepository {
     final lignes = <LigneReleve>[];
     DateTime dt(Object? v) => DateTime.parse(v as String).toLocal();
     double d(Object? v) => (v as num?)?.toDouble() ?? 0;
+    final fiche = await db.query(
+      client ? 'client' : 'fournisseur',
+      columns: ['solde_initial', 'cree_le'],
+      where: 'code = ?',
+      whereArgs: [tiersCode],
+    );
+    final initial = fiche.isEmpty ? 0.0 : d(fiche.first['solde_initial']);
+    if (initial.abs() > 0.004) {
+      final le = fiche.first['cree_le'] as String?;
+      lignes.add(
+        LigneReleve(
+          date: le == null ? DateTime(2000) : dt(le),
+          nature: NatureReleve.soldeInitial,
+          reference: tiersCode,
+          credit: initial > 0 ? initial : 0,
+          debit: initial < 0 ? -initial : 0,
+        ),
+      );
+    }
     final docs = client
         ? await db.query(
             'vente',

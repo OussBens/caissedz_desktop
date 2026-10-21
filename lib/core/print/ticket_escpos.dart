@@ -27,6 +27,8 @@ class LibellesTicket {
     required this.points,
     required this.merci,
     required this.annule,
+    this.ht = 'HT',
+    this.tva = 'TVA',
     this.rtl = false,
   });
   final String ticket,
@@ -45,7 +47,9 @@ class LibellesTicket {
       resteDu,
       points,
       merci,
-      annule;
+      annule,
+      ht,
+      tva;
 
   /// Arabe : lignes alignées à droite (le texte reste en codage CP1256).
   final bool rtl;
@@ -87,6 +91,8 @@ class LibellesTicket {
     points: 'النقاط',
     merci: 'شكرا لزيارتكم',
     annule: 'تذكرة ملغاة',
+    ht: 'خارج الرسم',
+    tva: 'ر.ق.م',
     rtl: true,
   );
 }
@@ -96,13 +102,18 @@ class LibellesTicket {
 /// ⚠️ PROVISOIRE : mise en page à aligner sur le §11. L'arabe est émis en
 /// page de codes CP1256 (ESC t 22 sur la plupart des imprimantes Epson-compatibles).
 class TicketEscPos {
-  const TicketEscPos({required this.largeur, required this.libelles, this.devise = 'DA'});
+  const TicketEscPos({required this.largeur, required this.libelles, this.devise = 'DA', this.nomsAr = const {}});
 
   final LargeurTicket largeur;
   final LibellesTicket libelles;
   final String devise;
 
+  /// Noms arabes des produits (par code), imprimés à la place des désignations sur un ticket en arabe.
+  final Map<String, String> nomsAr;
+
   int get colonnes => largeur == LargeurTicket.mm58 ? 32 : 48;
+
+  static String _taux(double t) => t == t.roundToDouble() ? t.toInt().toString() : t.toString();
 
   static const _esc = 0x1B;
   static const _gs = 0x1D;
@@ -175,7 +186,8 @@ class TicketEscPos {
     if (nomClient != null) b.add(_ligne('${libelles.client} $nomClient'));
     b.add(_ligne('-' * colonnes));
     for (final l in vente.lignes) {
-      b.add(_ligne(l.designation.length > colonnes ? l.designation.substring(0, colonnes) : l.designation));
+      final nom = libelles.rtl ? l.nomImprime(nomsAr) : l.designation;
+      b.add(_ligne(nom.length > colonnes ? nom.substring(0, colonnes) : nom));
       final q = l.quantite == l.quantite.roundToDouble()
           ? l.quantite.toInt().toString()
           : l.quantite.toStringAsFixed(2);
@@ -188,6 +200,16 @@ class TicketEscPos {
     b.add(_ligne(_gauchDroite(libelles.netAPayer, montant(vente.totalNet))));
     b.add(_double(false));
     b.add(_gras(false));
+    // TVA incluse par taux (HT / TVA) puis total HT, si la vente porte de la TVA.
+    if (vente.totalTva > 0.004) {
+      for (final MapEntry(key: taux, value: t) in vente.parTaux.entries) {
+        if (t.tva <= 0.004) continue;
+        b.add(
+          _ligne(_gauchDroite('${libelles.tva} ${_taux(taux)}% (${libelles.ht} ${montant(t.ht)})', montant(t.tva))),
+        );
+      }
+      b.add(_ligne(_gauchDroite('${libelles.total} ${libelles.ht}', montant(vente.totalHt))));
+    }
     for (final p in vente.paiements) {
       b.add(_ligne(_gauchDroite(p.mode, montant(p.montant))));
     }

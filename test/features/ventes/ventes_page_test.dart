@@ -1,5 +1,6 @@
 import 'package:caissedz_desktop/app/providers.dart';
 import 'package:caissedz_desktop/application/catalogue_service.dart';
+import 'package:caissedz_desktop/application/facture_service.dart';
 import 'package:caissedz_desktop/application/session_caisse_service.dart';
 import 'package:caissedz_desktop/application/stock_service.dart';
 import 'package:caissedz_desktop/application/tiers_service.dart';
@@ -70,6 +71,9 @@ Future<ProviderContainer> _ouvrir(WidgetTester tester) async {
   final c = await pumpApp(tester, routeInitiale: '/ventes', taille: const Size(1500, 1000));
   await _donnees(c);
   await tester.pumpAndSettle();
+  // Chiffres et filtres sont repliés par défaut.
+  await ouvrirChiffres(tester);
+  await ouvrirFiltres(tester);
   return c;
 }
 
@@ -95,7 +99,7 @@ void main() {
       expect(find.text('Panier VTE0001'), findsOneWidget);
       expect(find.text('Produits du panier'), findsOneWidget);
       expect(find.text('Paiement & marge'), findsOneWidget);
-      await clic(tester, find.text('Modifier').last);
+      await clic(tester, find.byKey(const ValueKey('detail_modifier'))); // icône seule
       expect(find.text('Modifier le panier'), findsOneWidget);
       await tester.enterText(find.byKey(const ValueKey('panier_montant_paye')), '300');
       await tester.enterText(find.byKey(const ValueKey('panier_observation')), 'Soldé au comptoir');
@@ -113,7 +117,7 @@ void main() {
     testWidgets('annulation avec motif : stock réintégré, statut Annulé', (tester) async {
       final c = await _ouvrir(tester);
       await clic(tester, find.text('VTE0002'));
-      await clic(tester, find.text('Annuler').first);
+      await clic(tester, find.byTooltip('Annuler').first);
       await tester.enterText(find.byType(TextField).last, 'Erreur de saisie');
       await tester.pump();
       await clic(tester, find.text('Annuler (1)'));
@@ -137,9 +141,11 @@ void main() {
       );
       await _donnees(c);
       await tester.pumpAndSettle();
+      await ouvrirFiltres(tester);
       // Navigateur imbriqué du shell : la liste s'ouvre juste sous le champ, pas décalée de la barre latérale.
-      final champ = tester.getRect(find.byKey(const ValueKey('filtre_statut_panier')));
       await clic(tester, find.byKey(const ValueKey('filtre_statut_panier')));
+      // Mesuré après le clic : le champ a pu défiler pour être visible.
+      final champ = tester.getRect(find.byKey(const ValueKey('filtre_statut_panier')));
       final option = tester.getRect(find.text('Tous').last); // 1re option
       expect((option.top - champ.bottom).abs(), lessThan(24));
       expect((option.left - champ.left).abs(), lessThan(24));
@@ -187,6 +193,27 @@ void main() {
       await clic(tester, find.widgetWithText(DsButton, 'Choisir'));
       expect(find.text('Choisir un client'), findsNothing);
       expect(find.descendant(of: filtreClient, matching: find.text('Amina')), findsOneWidget);
+    });
+
+    testWidgets('onglet Factures & avoirs : facture émise, avoir à l\'annulation, chaîne vérifiée', (tester) async {
+      final c = await pumpApp(tester, routeInitiale: '/ventes', taille: const Size(1500, 1000));
+      await _donnees(c);
+      final db = c.read(appDatabaseProvider).db;
+      final factures = FactureService(db, utilisateurCode: 'USR0000');
+      await factures.emettre('VTE0002');
+      await VenteService(
+        db,
+        utilisateurCode: 'USR0000',
+        parametres: const ParametresVente(),
+      ).annuler('VTE0002', motif: 'Erreur');
+      c.read(commerceVersionProvider.notifier).incrementer();
+      await tester.pumpAndSettle();
+      await clic(tester, find.text('Factures & avoirs'));
+      expect(find.byKey(const ValueKey('ventes_factures')), findsOneWidget);
+      expect(find.text('FAC0001'), findsNWidgets(2), reason: 'la facture et l\'origine de son avoir');
+      expect(find.text('AVO0001'), findsOneWidget);
+      await clic(tester, find.byKey(const ValueKey('factures_verifier_chaine')));
+      expect(find.text('Chaîne des factures intacte'), findsWidgets);
     });
 
     testWidgets('« Nouvelle vente » ouvre la caisse', (tester) async {

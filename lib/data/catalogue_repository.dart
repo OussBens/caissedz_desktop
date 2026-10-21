@@ -82,9 +82,9 @@ class CatalogueRepository {
     final where = <String>['code <> ?'];
     final args = <Object>[produitMontant];
     if (recherche != null && recherche.trim().isNotEmpty) {
-      where.add('(designation LIKE ? OR code LIKE ? OR code_barres LIKE ?)');
+      where.add('(designation LIKE ? OR designation_ar LIKE ? OR code LIKE ? OR code_barres LIKE ?)');
       final r = '%${recherche.trim()}%';
-      args.addAll([r, r, r]);
+      args.addAll([r, r, r, r]);
     }
     if (actifsSeulement) where.add('actif = 1');
     if (categorieCode != null) {
@@ -93,6 +93,25 @@ class CatalogueRepository {
     }
     final rows = await db.query('produit', where: where.join(' AND '), whereArgs: args, orderBy: 'designation');
     return rows.map(Produit.depuisLigne).toList();
+  }
+
+  /// Les noms arabes renseignés des produits [codes] (tickets et documents en arabe).
+  Future<Map<String, String>> nomsArabes(Iterable<String> codes) async {
+    final liste = codes.toSet().toList();
+    final noms = <String, String>{};
+    for (var i = 0; i < liste.length; i += 500) {
+      final lot = liste.sublist(i, i + 500 > liste.length ? liste.length : i + 500);
+      final rows = await db.query(
+        'produit',
+        columns: ['code', 'designation_ar'],
+        where: "code IN (${List.filled(lot.length, '?').join(',')}) AND TRIM(COALESCE(designation_ar, '')) <> ''",
+        whereArgs: lot,
+      );
+      for (final r in rows) {
+        noms[r['code']! as String] = (r['designation_ar']! as String).trim();
+      }
+    }
+    return noms;
   }
 
   Future<Produit?> produitParCode(String code) async {

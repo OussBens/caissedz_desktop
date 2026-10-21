@@ -273,6 +273,7 @@ class CatalogueService {
       var produit = Produit(
         code: code,
         designation: prepare.designation,
+        designationAr: prepare.designationAr,
         codeBarres: prepare.codeBarres,
         categorieCode: prepare.categorieCode,
         sousCategorieCode: prepare.sousCategorieCode,
@@ -521,7 +522,11 @@ class CatalogueService {
     return CodesBarres.genererInterne(d, seq);
   }
 
-  /// Génère et affecte un code-barres interne (CAISSEDZ + date) à un produit sans code.
+  /// Réserve le prochain code-barres interne (`CDZ` + date + séquence) pour un produit en cours de saisie.
+  Future<String> reserverCodeBarresInterne({DateTime? date}) =>
+      db.transaction((txn) => _genererCodeBarresInterne(CatalogueRepository(txn), date));
+
+  /// Génère et affecte un code-barres interne (CDZ + date) à un produit sans code.
   Future<Produit> genererCodeBarresInterne(String produitCode, {DateTime? date}) async {
     return db.transaction((txn) async {
       final repo = CatalogueRepository(txn);

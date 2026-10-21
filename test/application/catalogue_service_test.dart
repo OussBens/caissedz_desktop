@@ -256,6 +256,7 @@ void main() {
       expect(rapport.importees, 1);
       final p = await CatalogueRepository(base.db).produitParCodeBarres('6130000000015');
       expect(p!.prixVente, 100);
+      expect(p.designationAr, 'حليب 1 ل', reason: 'colonne designation_ar du modèle');
       expect((await CatalogueRepository(base.db).categories()).any((c) => c.nom == 'Boissons'), isTrue);
       // Second import : code-barres déjà utilisé → ligne invalide
       final lignes2 = await s.analyser(ImportProduitsService.modele());
@@ -271,13 +272,14 @@ void main() {
       final octets = ImportProduitsService.modele();
       final entetes = s.entetes(octets);
       expect(entetes.first, 'designation');
-      final auto = s.correspondanceAuto(['Désignation', 'Prix de vente', 'Quantité']);
+      final auto = s.correspondanceAuto(['Désignation', 'Prix de vente', 'Quantité', 'Nom arabe']);
       expect(auto['designation'], 0);
       expect(auto['prix_vente'], 1);
       expect(auto['stock'], 2);
+      expect(auto['designation_ar'], 3);
       expect(auto['code_barres'], isNull);
       // Prix de vente ignoré, désignation lue dans la colonne « categorie ».
-      final lignes = await s.analyser(octets, correspondance: {'designation': 2, 'prix_vente': null});
+      final lignes = await s.analyser(octets, correspondance: {'designation': 3, 'prix_vente': null});
       expect(lignes.single.designation, 'Boissons');
       expect(lignes.single.prixVente, isNull);
     });

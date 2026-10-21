@@ -80,11 +80,15 @@ Future<void> exporterRapport(BuildContext context, WidgetRef ref, Rapport r, DsF
   final boutique = (await ref.read(parametresServiceProvider).lireBoutique())?.nom ?? '';
   final devise = ref.read(deviseProvider);
   final police = await policePdf(arabe);
+  final gras = await policePdf(arabe, gras: true);
+  final secours = await policesSecoursPdf(arabe);
   await ref.read(journalServiceProvider).export(id: r.id, format: 'PDF', fichier: '${r.id}_$date.pdf');
   if (!context.mounted) return;
   Future<Uint8List>? octets;
   Future<Uint8List> pdf() => octets ??= RapportPdf(
     police: police,
+    policeGras: gras,
+    secours: secours,
     rtl: arabe,
     devise: devise,
   ).generer(r, boutique: boutique, periode: DateFormat('dd/MM/yyyy').format(DateTime.now()));

@@ -34,13 +34,22 @@ class AchatLigne {
     this.nombre = 0,
     required this.prixAchat,
     required this.total,
+    this.tauxTva = 0,
+    this.montantTva = 0,
   });
   final String produitCode;
   final String designation;
   final double quantite;
   final double nombre;
   final double prixAchat;
+
+  /// Montant TTC de la ligne.
   final double total;
+
+  /// TVA déductible figée à l'entrée (régime réel ; 0 en IFU).
+  final double tauxTva;
+  final double montantTva;
+  double get montantHt => total - montantTva;
 
   factory AchatLigne.depuisLigne(Map<String, Object?> r) => AchatLigne(
     produitCode: r['produit_code'] as String,
@@ -49,6 +58,8 @@ class AchatLigne {
     nombre: (r['nombre'] as num).toDouble(),
     prixAchat: (r['prix_achat'] as num).toDouble(),
     total: (r['total'] as num).toDouble(),
+    tauxTva: ((r['taux_tva'] as num?) ?? 0).toDouble(),
+    montantTva: ((r['montant_tva'] as num?) ?? 0).toDouble(),
   );
 }
 
@@ -72,6 +83,7 @@ class Achat {
     this.lignes = const [],
     this.annulation,
     this.besoinCode,
+    this.commandeCode,
     this.nbVersements = 0,
   });
 
@@ -96,6 +108,9 @@ class Achat {
 
   /// Liste de besoins livrée par cette entrée (passée « Disponible »).
   final String? besoinCode;
+
+  /// Commande fournisseur (BCF) réceptionnée, en tout ou en partie, par cette entrée.
+  final String? commandeCode;
 
   /// Versements imputés à l'entrée (calculé).
   final int nbVersements;
@@ -129,6 +144,7 @@ class Achat {
     lignes: lignes,
     annulation: r['statut'] == StatutsAchat.annule ? Annulation.depuisLigne({...r, 'actif': 0}) : null,
     besoinCode: r['besoin_code'] as String?,
+    commandeCode: r['commande_code'] as String?,
     nbVersements: (r['nb_versements'] as int?) ?? 0,
   );
 }
@@ -174,6 +190,7 @@ class LigneDetectee {
     required this.quantite,
     required this.prixAchat,
     this.confiance,
+    this.produitCode,
   });
   final String designation;
   final String? codeBarres;
@@ -183,12 +200,27 @@ class LigneDetectee {
   /// Confiance de la lecture (0–100), si le serveur la renvoie.
   final double? confiance;
 
+  /// Produit sous lequel la ligne est entrée en stock au traitement du bon (null : ligne non reprise).
+  final String? produitCode;
+
+  bool get traitee => produitCode != null;
+
+  LigneDetectee entreeSous(String produitCode) => LigneDetectee(
+    designation: designation,
+    codeBarres: codeBarres,
+    quantite: quantite,
+    prixAchat: prixAchat,
+    confiance: confiance,
+    produitCode: produitCode,
+  );
+
   Map<String, Object?> versJson() => {
     'designation': designation,
     'code_barres': codeBarres,
     'quantite': quantite,
     'prix_achat': prixAchat,
     'confiance': confiance,
+    if (produitCode != null) 'produit_code': produitCode,
   };
 
   factory LigneDetectee.depuisJson(Map<dynamic, dynamic> j) => LigneDetectee(
@@ -197,6 +229,7 @@ class LigneDetectee {
     quantite: ((j['quantite'] as num?) ?? 1).toDouble(),
     prixAchat: ((j['prix_achat'] as num?) ?? 0).toDouble(),
     confiance: (j['confiance'] as num?)?.toDouble(),
+    produitCode: j['produit_code']?.toString(),
   );
 }
 

@@ -40,6 +40,11 @@ class CodeGenerator {
   static const String cloture = 'CLT';
   static const String inventaire = 'INV';
   static const String zakat = 'ZKT';
+  static const String devis = 'DEV';
+  static const String proforma = 'PRO';
+  static const String commandeClient = 'BCC';
+  static const String livraison = 'LIV';
+  static const String commandeFournisseur = 'BCF';
 
   /// Ordre SQL des codes par numéro (longueur puis texte) : `VTE10000` après `VTE9999`, contrairement à
   /// l'ordre texte seul.

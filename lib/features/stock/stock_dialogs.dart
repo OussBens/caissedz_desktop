@@ -35,7 +35,7 @@ class QuantiteSignee extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = context.ds.colors;
     return Text(
-      valeur > 0 ? '+${formaterNombre(valeur)}' : formaterNombre(valeur),
+      valeur > 0 ? isolerLtr('+${formaterNombre(valeur)}') : formaterNombre(valeur),
       style: context.ds.typo.bodySm.copyWith(fontWeight: FontWeight.w600, color: valeur > 0 ? c.successFg : c.dangerFg),
     );
   }
@@ -273,7 +273,6 @@ class _DistributionDialogState extends ConsumerState<_DistributionDialog> {
     return DsDialog(
       titre: l10n.stkDistribuerTitre,
       iconeData: LucideIcons.split,
-      description: l10n.stkDistribuerDescription(widget.produit.designation, formaterNombre(_total)),
       largeur: 680,
       actions: [
         DsButton(
@@ -440,7 +439,6 @@ class _SortieFormState extends ConsumerState<_SortieForm> {
     return DocFormDialog(
       titre: widget.sortie == null ? l10n.stkNouvelleSortie : l10n.stkModifierSortie,
       icone: LucideIcons.packageMinus,
-      description: widget.sortie?.code ?? l10n.stkSortieDescription,
       cleEnregistrer: const ValueKey('sortie_enregistrer'),
       magasinSelecteur: _magasin,
       saisieNombre: true,
@@ -484,11 +482,12 @@ class _SortieFormState extends ConsumerState<_SortieForm> {
         ),
       ],
       entete: [
-        DsFormRow(
-          libelle: l10n.produitsColCode,
-          largeurLibelle: _lw,
-          child: DsTextField(valeurInitiale: widget.sortie?.code ?? l10n.prdCodeAuto, actif: false),
-        ),
+        if (widget.sortie != null)
+          DsFormRow(
+            libelle: l10n.produitsColCode,
+            largeurLibelle: _lw,
+            child: DsTextField(valeurInitiale: widget.sortie?.code ?? l10n.prdCodeAuto, actif: false),
+          ),
         DsFormRow(
           libelle: l10n.communDate,
           obligatoire: true,
@@ -507,19 +506,20 @@ class _SortieFormState extends ConsumerState<_SortieForm> {
             onChanged: (v) => setState(() => _type = v ?? _type),
           ),
         ),
-        DsFormRow(
-          libelle: l10n.stockColMagasin,
-          obligatoire: true,
-          largeurLibelle: _lw,
-          child: DsSelect<String>(
-            cle: const ValueKey('sortie_magasin'),
-            valeur: _magasin,
-            options: [for (final m in magasins) m.code],
-            libelle: (c) => magasins.where((m) => m.code == c).firstOrNull?.nom ?? c,
-            recherche: rechercheListe(context, ref, ListeMetier.magasin),
-            onChanged: (v) => setState(() => _magasin = v ?? _magasin),
+        if (ref.watch(plusieursMagasinsProvider))
+          DsFormRow(
+            libelle: l10n.stockColMagasin,
+            obligatoire: true,
+            largeurLibelle: _lw,
+            child: DsSelect<String>(
+              cle: const ValueKey('sortie_magasin'),
+              valeur: _magasin,
+              options: [for (final m in magasins) m.code],
+              libelle: (c) => magasins.where((m) => m.code == c).firstOrNull?.nom ?? c,
+              recherche: rechercheListe(context, ref, ListeMetier.magasin),
+              onChanged: (v) => setState(() => _magasin = v ?? _magasin),
+            ),
           ),
-        ),
         DsSpan(
           child: DsFormRow(
             libelle: l10n.stkMotif,
@@ -591,7 +591,7 @@ Future<void> afficherDetailSortie(BuildContext context, WidgetRef ref, SortieSto
       icone: LucideIcons.packageMinus,
       titre: l10n.stkSortieTitre(s.code),
       description:
-          '${formatDate.format(s.date)} · ${libelleMotif(l10n, s.motif)} · ${noms[s.magasinCode] ?? s.magasinCode}',
+          '${formatDateHeure.format(s.date)} · ${libelleMotif(l10n, s.motif)} · ${noms[s.magasinCode] ?? s.magasinCode}',
       badges: [BadgeStatut(s.actif ? 'actif' : 'annule')],
       onModifier: () => afficherFormulaireSortie(context, ref, sortie: s),
       modifierDesactive: !s.actif || s.retourCode != null,
@@ -799,7 +799,6 @@ class _TransfertFormState extends ConsumerState<_TransfertForm> {
     return DocFormDialog(
       titre: widget.transfert == null ? l10n.stkNouveauTransfert : l10n.stkModifierTransfert,
       icone: LucideIcons.truck,
-      description: widget.transfert?.code ?? l10n.stkTransfertDescription,
       cleEnregistrer: const ValueKey('transfert_enregistrer'),
       libelleEnregistrer: l10n.stkValiderTransfert,
       magasinSelecteur: _source,
@@ -852,11 +851,12 @@ class _TransfertFormState extends ConsumerState<_TransfertForm> {
         ),
       ],
       entete: [
-        DsFormRow(
-          libelle: l10n.produitsColCode,
-          largeurLibelle: _lw,
-          child: DsTextField(valeurInitiale: widget.transfert?.code ?? l10n.prdCodeAuto, actif: false),
-        ),
+        if (widget.transfert != null)
+          DsFormRow(
+            libelle: l10n.produitsColCode,
+            largeurLibelle: _lw,
+            child: DsTextField(valeurInitiale: widget.transfert?.code ?? l10n.prdCodeAuto, actif: false),
+          ),
         DsFormRow(
           libelle: l10n.communDate,
           obligatoire: true,
@@ -922,7 +922,7 @@ Future<void> afficherDetailTransfert(BuildContext context, WidgetRef ref, Transf
       icone: LucideIcons.truck,
       titre: l10n.stkTransfertTitre(t.code),
       description:
-          '${formatDate.format(t.date)} · ${noms[t.magasinSource] ?? t.magasinSource} → '
+          '${formatDateHeure.format(t.date)} · ${noms[t.magasinSource] ?? t.magasinSource} → '
           '${noms[t.magasinDestination] ?? t.magasinDestination}',
       badges: [BadgeStatut(t.actif ? 'valide' : 'annule')],
       onModifier: () => afficherFormulaireTransfert(context, ref, transfert: t),
@@ -1077,7 +1077,6 @@ class _MagasinFormState extends ConsumerState<_MagasinForm> {
     return DsDialog(
       titre: m == null ? l10n.stkNouveauMagasin : l10n.stkModifierMagasin,
       iconeData: LucideIcons.store,
-      description: m?.code ?? l10n.stkMagasinDescription,
       largeur: 640,
       actions: [
         DsButton(
@@ -1097,10 +1096,11 @@ class _MagasinFormState extends ConsumerState<_MagasinForm> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         spacing: 12,
         children: [
-          DsFormRow(
-            libelle: l10n.produitsColCode,
-            child: DsTextField(valeurInitiale: m?.code ?? l10n.prdCodeAuto, actif: false),
-          ),
+          if (m != null)
+            DsFormRow(
+              libelle: l10n.produitsColCode,
+              child: DsTextField(valeurInitiale: m.code, actif: false),
+            ),
           DsFormRow(
             libelle: l10n.stkNom,
             obligatoire: true,
@@ -1448,9 +1448,6 @@ class _BesoinFormState extends ConsumerState<_BesoinForm> {
     return DocFormDialog(
       titre: b == null ? l10n.stkNouvelleListe : l10n.stkModifierListe,
       icone: LucideIcons.clipboardList,
-      description: b == null
-          ? l10n.stkListeDescription
-          : '${b.code} · ${fournisseurs.where((f) => f.code == b.fournisseurCode).firstOrNull?.nom ?? b.fournisseurCode}',
       cleEnregistrer: const ValueKey('besoin_enregistrer'),
       libelleEnregistrer: l10n.stkEnregistrerListe,
       actionsLignes: [
@@ -1523,11 +1520,12 @@ class _BesoinFormState extends ConsumerState<_BesoinForm> {
         ),
       ],
       entete: [
-        DsFormRow(
-          libelle: l10n.produitsColCode,
-          largeurLibelle: _lw,
-          child: DsTextField(valeurInitiale: b?.code ?? l10n.prdCodeAuto, actif: false),
-        ),
+        if (b != null)
+          DsFormRow(
+            libelle: l10n.produitsColCode,
+            largeurLibelle: _lw,
+            child: DsTextField(valeurInitiale: b.code, actif: false),
+          ),
         DsFormRow(
           libelle: l10n.communDate,
           obligatoire: true,
@@ -1587,7 +1585,7 @@ Future<void> afficherDetailBesoin(BuildContext context, WidgetRef ref, Besoin b)
       largeur: 960,
       icone: LucideIcons.clipboardList,
       titre: l10n.stkListeTitre(b.code),
-      description: '${formatDate.format(b.date)} · $nomFrn',
+      description: '${formatDateHeure.format(b.date)} · $nomFrn',
       badges: [BadgeStatut(statutBesoinDs(b))],
       onModifier: () => afficherFormulaireBesoin(context, ref, besoin: b),
       modifierDesactive: !b.actif || b.statut == StatutsBesoin.disponible,
@@ -1687,7 +1685,6 @@ Future<void> _listeProduitsStock(
   BuildContext context,
   WidgetRef ref, {
   required String code,
-  required String description,
   required List<LigneStock> lignes,
   required bool prix,
   String? libelleQte,
@@ -1701,7 +1698,6 @@ Future<void> _listeProduitsStock(
   return afficherListeProduits<LigneStock>(
     context,
     code: code,
-    description: description,
     lignes: lignes,
     cle: (l) => l.produitCode,
     colonnes: [
@@ -1754,32 +1750,17 @@ Future<void> _listeProduitsStock(
 
 /// « Liste des produits » d'une sortie (prix d'achat figé, si l'utilisateur voit les prix d'achat).
 Future<void> afficherProduitsSortie(BuildContext context, WidgetRef ref, SortieStock s) async {
-  final l10n = AppLocalizations.of(context);
-  final noms = _nomsMagasins(await ref.read(magasinsProvider.future));
-  if (!context.mounted) return;
-  return _listeProduitsStock(
-    context,
-    ref,
-    code: s.code,
-    description:
-        '${formatDate.format(s.date)} · ${libelleMotif(l10n, s.motif)} · ${noms[s.magasinCode] ?? s.magasinCode}',
-    lignes: s.lignes,
-    prix: voitPrixAchat(ref),
-  );
+  return _listeProduitsStock(context, ref, code: s.code, lignes: s.lignes, prix: voitPrixAchat(ref));
 }
 
 /// « Liste des produits » d'un transfert (valorisé au prix d'achat du catalogue).
 Future<void> afficherProduitsTransfert(BuildContext context, WidgetRef ref, TransfertStock t) async {
-  final noms = _nomsMagasins(await ref.read(magasinsProvider.future));
   final produits = {for (final p in await ref.read(produitsProvider.future)) p.code: p};
   if (!context.mounted) return;
   return _listeProduitsStock(
     context,
     ref,
     code: t.code,
-    description:
-        '${formatDate.format(t.date)} · ${noms[t.magasinSource] ?? t.magasinSource} → '
-        '${noms[t.magasinDestination] ?? t.magasinDestination}',
     lignes: [
       for (final l in t.lignes)
         LigneStock(
@@ -1796,13 +1777,10 @@ Future<void> afficherProduitsTransfert(BuildContext context, WidgetRef ref, Tran
 /// « Liste des produits » d'une liste de besoins (quantités à commander, prix estimés).
 Future<void> afficherProduitsBesoin(BuildContext context, WidgetRef ref, Besoin b) async {
   final l10n = AppLocalizations.of(context);
-  final fournisseurs = {for (final f in await ref.read(fournisseursProvider.future)) f.code: f.nom};
-  if (!context.mounted) return;
   return _listeProduitsStock(
     context,
     ref,
     code: b.code,
-    description: '${formatDate.format(b.date)} · ${fournisseurs[b.fournisseurCode] ?? b.fournisseurCode}',
     lignes: b.lignes,
     prix: true,
     libelleQte: l10n.stkACommander,

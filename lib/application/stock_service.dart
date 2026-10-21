@@ -30,6 +30,9 @@ enum ErreurStock {
   aucunChangement,
   nombreObligatoire,
   sortieRetour,
+
+  /// Le palier de la licence n'a plus de place pour un magasin (Desktop — Plans & Pricing).
+  limiteMagasins,
 }
 
 class StockException implements Exception {
@@ -43,10 +46,20 @@ class StockException implements Exception {
 /// Cas d'usage du stock. Le stock est TOUJOURS le journal des mouvements ;
 /// chaque document (transfert, sortie, entrée…) écrit ses mouvements dans UNE transaction.
 class StockService {
-  const StockService(this.db, {required this.utilisateurCode, this.gardeStock = true});
+  const StockService(this.db, {required this.utilisateurCode, this.gardeStock = true, this.maxMagasins});
 
   final Database db;
   final String utilisateurCode;
+
+  /// Magasins actifs permis par le palier (null : sans limite) ; le magasin principal compte.
+  final int? maxMagasins;
+
+  Future<void> _verifierPlace(DatabaseExecutor txn) async {
+    final max = maxMagasins;
+    if (max == null) return;
+    final n = (await txn.rawQuery('SELECT COUNT(*) n FROM magasin WHERE actif = 1')).first['n'] as int;
+    if (n >= max) throw const StockException(ErreurStock.limiteMagasins);
+  }
 
   /// Garde de stock : refuse toute sortie qui rendrait le stock négatif (toujours active, §8).
   final bool gardeStock;
@@ -65,6 +78,7 @@ class StockService {
     return db.transaction((txn) async {
       final repo = StockRepository(txn);
       if (await repo.nomMagasinPris(nom)) throw const StockException(ErreurStock.nomPris);
+      await _verifierPlace(txn);
       final code = await repo.prochainCode('magasin', CodeGenerator.magasin);
       final m = Magasin(
         code: code,
@@ -93,6 +107,7 @@ class StockService {
     if (m.nom.trim().isEmpty) throw ArgumentError('nom');
     if (await repo.nomMagasinPris(m.nom, sauf: m.code)) throw const StockException(ErreurStock.nomPris);
     if (avant.actif && !m.actif) await _verifierDesactivable(repo, avant);
+    if (!avant.actif && m.actif) await _verifierPlace(txn);
     await repo.mettreAJourMagasin(m.copyWith(nom: m.nom.trim()));
     await HistoriqueRepository(txn).journaliser(
       utilisateurCode: utilisateurCode,
@@ -129,6 +144,7 @@ class StockService {
       final m = await repo.magasin(code);
       if (m == null || m.actif == actif) continue;
       if (!actif) await _verifierDesactivable(repo, m);
+      if (actif) await _verifierPlace(txn);
       await repo.mettreAJourMagasin(m.copyWith(actif: actif));
       await HistoriqueRepository(txn).journaliser(
         utilisateurCode: utilisateurCode,

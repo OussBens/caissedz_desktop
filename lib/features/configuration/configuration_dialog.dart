@@ -163,7 +163,6 @@ class _ConfigurationDialogState extends ConsumerState<ConfigurationDialog> {
     return DsDialog(
       key: const ValueKey('dialog_configuration'),
       titre: l10n.configTitre,
-      description: l10n.configDescription,
       iconeData: LucideIcons.rocket,
       largeur: 820,
       fermable: false,
@@ -211,12 +210,6 @@ class _ConfigurationDialogState extends ConsumerState<ConfigurationDialog> {
               l10n.configEtapeBoutique,
               l10n.configEtapePaiements,
               l10n.configEtapeVente,
-            ],
-            descriptions: [
-              l10n.configEtapeLangueDetail,
-              l10n.configEtapeBoutiqueDetail,
-              l10n.configEtapePaiementsDetail,
-              l10n.configEtapeVenteDetail,
             ],
             onEtape: (i) => setState(() => _etape = i),
           ),

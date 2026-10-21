@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:caissedz_desktop/app/providers.dart';
 import 'package:caissedz_desktop/application/catalogue_service.dart';
 import 'package:caissedz_desktop/application/stock_service.dart';
 import 'package:caissedz_desktop/core/design_system/design_system.dart';
 import 'package:caissedz_desktop/data/parametre_repository.dart';
+import 'package:caissedz_desktop/data/stock_repository.dart';
 import 'package:caissedz_desktop/data/vente_repository.dart';
 import 'package:caissedz_desktop/domain/models/parametres_paiement.dart';
 import 'package:caissedz_desktop/domain/models/parametres_vente.dart';
@@ -13,6 +16,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
 
 import '../../helpers/app_test_helper.dart';
 
@@ -28,6 +33,7 @@ Future<void> _donnees(ProviderContainer c) async {
       sousCategorieCode: 'SC0000',
       prixAchat: 80,
       prixVente: 100,
+      tvaPct: 0, // exonéré : prix TTC = prix HT
     ),
   );
   await cat.creerProduit(
@@ -38,6 +44,7 @@ Future<void> _donnees(ProviderContainer c) async {
       sousCategorieCode: 'SC0000',
       prixAchat: 20,
       prixVente: 30,
+      tvaPct: 0, // exonéré : prix TTC = prix HT
     ),
   );
   await cat.creerColis(Colis(code: '', produitCode: lait.code, designation: 'Pack 6', quantite: 6, prixVente: 550));
@@ -70,7 +77,11 @@ void main() {
       final c = await pumpApp(tester, routeInitiale: '/caisse', taille: const Size(1600, 1000));
       await _donnees(c);
       await tester.pumpAndSettle();
-      expect(find.textContaining('Fermée'), findsOneWidget);
+      // Caisse fermée : la bande ne montre que la caisse et « Ouvrir ».
+      expect(
+        find.descendant(of: find.byKey(const ValueKey('caisse_session')), matching: find.text('Ouvrir')),
+        findsOneWidget,
+      );
       expect(find.text('Panier vide'), findsOneWidget);
 
       // Clic sur la tuile : le dialog « Quantité et colis » ajoute 1 unité au bout de 3 s.
@@ -82,6 +93,11 @@ void main() {
       expect(find.text('Quantité et colis'), findsNothing);
       expect(find.byKey(const ValueKey('ligne_0')), findsOneWidget);
       expect(_total(tester), contains('100,00'));
+      // Le stock de la tuile tient compte du panier dès l'ajout (avant l'encaissement) : 10 − 1.
+      expect(
+        find.descendant(of: find.byKey(const ValueKey('tuile_PRD0001')), matching: find.text('9 en stock')),
+        findsOneWidget,
+      );
 
       // Clic sur le colis de la ligne : passage au pack de 6 (modification, sans ajout automatique).
       await clic(tester, find.descendant(of: find.byKey(const ValueKey('ligne_0')), matching: find.text('À l\'unité')));
@@ -106,7 +122,11 @@ void main() {
       expect(v.totalNet, 550);
       expect(v.verse, 550);
       expect(v.hash.length, 64);
-      expect(find.textContaining('Ouverte'), findsOneWidget);
+      // Caisse ouverte : plus de bouton « Ouvrir » dans la bande.
+      expect(
+        find.descendant(of: find.byKey(const ValueKey('caisse_session')), matching: find.text('Ouvrir')),
+        findsNothing,
+      );
       expect(find.text('Panier vide'), findsOneWidget);
     });
 
@@ -174,7 +194,7 @@ void main() {
       await tester.enterText(champ, '6130000000015');
       await tester.testTextInput.receiveAction(TextInputAction.done);
       await tester.pump(const Duration(milliseconds: 300));
-      expect(find.textContaining('Produit scanné'), findsOneWidget);
+      expect(find.byKey(const ValueKey('selection_quantite')), findsOneWidget);
       await tester.pumpAndSettle();
       expect(find.byKey(const ValueKey('ligne_0')), findsOneWidget);
       expect(_total(tester), contains('100,00'));
@@ -205,6 +225,57 @@ void main() {
       await clic(tester, find.text('Fermer').last);
     });
 
+    testWidgets('code inconnu trouvé dans le catalogue BENS : le formulaire s’ouvre rempli', (tester) async {
+      final client = MockClient((req) async {
+        if (req.url.path == '/products/barcode/6130005000017') {
+          return http.Response(
+            jsonEncode({
+              'success': true,
+              'data': {'nom': 'Rouiba Orange 1L', 'nom_ar': 'رويبة برتقال', 'brand': 'Rouiba'},
+            }),
+            200,
+            headers: {'content-type': 'application/json; charset=utf-8'},
+          );
+        }
+        return http.Response('{"success":false}', 404);
+      });
+      final c = await pumpApp(
+        tester,
+        routeInitiale: '/caisse',
+        taille: const Size(1600, 1000),
+        overrides: [httpClientProvider.overrideWithValue(client)],
+      );
+      await _donnees(c);
+      await tester.pumpAndSettle();
+      final champ = find.descendant(of: find.byType(DsSearchField), matching: find.byType(TextField)).first;
+      await tester.enterText(champ, '6130005000017');
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.pumpAndSettle();
+      expect(find.text('Trouvé dans le catalogue BENS'), findsOneWidget);
+      expect(find.byKey(const ValueKey('introuvable_fiche_bens')), findsOneWidget);
+      expect(find.text('رويبة برتقال'), findsOneWidget);
+      await clic(tester, find.text('Créer depuis le catalogue'));
+      String texte(String cle) => tester
+          .widget<TextField>(find.descendant(of: find.byKey(ValueKey(cle)), matching: find.byType(TextField)).first)
+          .controller!
+          .text;
+      expect([texte('produit_designation'), texte('produit_designation_ar'), texte('produit_code_barres')], [
+        'Rouiba Orange 1L',
+        'رويبة برتقال',
+        '6130005000017',
+      ]);
+
+      // Absent du catalogue : le titre habituel, le formulaire avec le seul code-barres.
+      await clic(tester, find.text('Annuler').last);
+      expect(find.byKey(const ValueKey('produit_designation')), findsNothing);
+      await tester.enterText(champ, '9999999999994');
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.pumpAndSettle();
+      expect(find.text('Produit introuvable'), findsOneWidget);
+      await clic(tester, find.byKey(const ValueKey('introuvable_creer')));
+      expect([texte('produit_designation'), texte('produit_code_barres')], ['', '9999999999994']);
+    });
+
     testWidgets('ventes en parallèle, stock insuffisant, raccourcis F1 / F9 / F10 / F11', (tester) async {
       final c = await pumpApp(tester, routeInitiale: '/caisse', taille: const Size(1600, 1000));
       await _donnees(c);
@@ -232,6 +303,11 @@ void main() {
 
       await _touche(tester, LogicalKeyboardKey.f11);
       expect(find.byType(DsProductTile), findsNothing);
+      // Produits masqués : panneau d'encaissement à droite (client, remise, total, encaissement).
+      final panneau = find.byKey(const ValueKey('panier_encaissement'));
+      for (final cle in ['panier_client', 'panier_remise', 'caisse_encaisser']) {
+        expect(find.descendant(of: panneau, matching: find.byKey(ValueKey(cle))), findsOneWidget, reason: cle);
+      }
       await clic(tester, find.byKey(const ValueKey('caisse_basculer_produits')));
       expect(find.byType(DsProductTile), findsWidgets);
 
@@ -242,6 +318,46 @@ void main() {
       expect(find.text('Calculatrice'), findsOneWidget);
       await tester.sendKeyEvent(LogicalKeyboardKey.escape);
       await tester.pumpAndSettle();
+    });
+
+    testWidgets('admin : stock insuffisant ici mais disponible ailleurs → transfert proposé puis ajout', (
+      tester,
+    ) async {
+      final c = await pumpApp(tester, routeInitiale: '/caisse', taille: const Size(1600, 1000));
+      await _donnees(c);
+      final db = c.read(appDatabaseProvider).db;
+      final stock = StockService(db, utilisateurCode: 'USR0000');
+      final depot = await stock.creerMagasin('Dépôt');
+      // Eau : rien dans le magasin de la caisse, 20 au dépôt.
+      await stock.entrerStock(produitCode: 'PRD0002', magasinCode: depot.code, quantite: 20);
+      c.read(stockVersionProvider.notifier).incrementer();
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const ValueKey('tuile_PRD0002')));
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.tap(find.descendant(of: find.byType(DsNumpad), matching: find.text('3')));
+      await tester.pumpAndSettle();
+      // L'admin peut valider au-delà du stock : la caisse propose le transfert du manque.
+      await clic(tester, find.byKey(const ValueKey('selection_valider')));
+      expect(find.text('Stock insuffisant dans ce magasin'), findsOneWidget);
+      // Schéma : Dépôt (stock 20) → 13 → magasin de la caisse (stock 0, manque 13).
+      final schema = find.byKey(const ValueKey('schema_transfert'));
+      expect(find.descendant(of: schema, matching: find.text('Dépôt')), findsOneWidget);
+      expect(find.descendant(of: schema, matching: find.text('Stock : 20')), findsOneWidget);
+      expect(find.descendant(of: schema, matching: find.text('Manque 13')), findsOneWidget);
+      await clic(tester, find.text('Transférer et ajouter'));
+      await tester.pump(const Duration(seconds: 5));
+      expect(find.byKey(const ValueKey('ligne_0')), findsOneWidget);
+
+      final repo = StockRepository(db);
+      final transferts = await repo.transferts();
+      expect(transferts, hasLength(1));
+      expect(transferts.single.magasinSource, depot.code);
+      expect(transferts.single.magasinDestination, 'MAG0000');
+      // Quantité saisie : 1 puis « 3 » → 13, transférée en entier (rien dans le magasin de la caisse).
+      expect(transferts.single.lignes.single.quantite, 13);
+      expect((await repo.niveau('PRD0002', 'MAG0000')).quantite, 13);
+      expect((await repo.niveau('PRD0002', depot.code)).quantite, 7);
     });
 
     testWidgets('Paramètres appliqués : moyens de paiement visibles, vente sous achat interdite', (tester) async {
@@ -343,6 +459,21 @@ void main() {
       expect(find.descendant(of: ligne, matching: find.text('Lait 1 L')), findsOneWidget);
       expect(find.descendant(of: ligne, matching: find.text('4')), findsWidgets);
       expect(_total(tester), contains('360'));
+    });
+
+    testWidgets('paramètres de la caisse : bouton à côté de la calculatrice (Avancé, Ultra)', (tester) async {
+      await pumpApp(tester, routeInitiale: '/caisse', taille: const Size(1600, 1000));
+      expect(find.byKey(const ValueKey('caisse_parametres')), findsOneWidget);
+    });
+
+    testWidgets('paramètres de la caisse : absents en Basic', (tester) async {
+      await pumpApp(
+        tester,
+        etat: EtatApp.connecteeAdminBasic,
+        routeInitiale: '/caisse',
+        taille: const Size(1600, 1000),
+      );
+      expect(find.byKey(const ValueKey('caisse_parametres')), findsNothing);
     });
 
     testWidgets('arabe : écran caisse en RTL', (tester) async {

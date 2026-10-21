@@ -114,6 +114,12 @@ Future<List<Produit>> choisirProduits(
       : (await ref.read(magasinsProvider.future)).where((m) => m.code == magasin).firstOrNull?.nom ?? magasin;
   double dansMagasin(Produit p) => parMagasin?[p.code]?[magasin] ?? 0;
   final devise = ref.read(deviseProvider);
+  // Documents de vente : prix TTC (prix de vente HT + TVA), ou HT si les documents sont sans TVA ; achats : prix
+  // d'achat.
+  final prixDocument = ref.read(prixDocumentsProvider);
+  final avecTva = ref.read(parametresVenteProvider).value?.tvaDocuments ?? true;
+  double prix(Produit p) => prixVente ? prixDocument(p) : p.prixAchat;
+  final libellePrix = prixVente ? (avecTva ? l10n.docPuTtc : l10n.docPuHt) : l10n.produitsColPrixAchat;
   if (!context.mounted) return const [];
   final choix = await afficherDialog<List<Produit>>(
     context,
@@ -122,7 +128,7 @@ Future<List<Produit>> choisirProduits(
       icone: LucideIcons.package,
       multiple: true,
       elements: produits,
-      libelle: (p) => p.designation,
+      libelle: (p) => p.texteRecherche,
       indiceRecherche: l10n.prdRechercheProduits,
       largeur: 960,
       hauteurMax: hauteurListeDialog(context, reserve: 320),
@@ -138,8 +144,8 @@ Future<List<Produit>> choisirProduits(
           initiales: false,
           image: imageProduit(p.image),
           statut: p.service ? null : (stock <= 0 ? 'rupture' : 'disponible'),
-          montant: formaterMontant(prixVente ? p.prixVente : p.prixAchat, devise),
-          libelleMontant: prixVente ? l10n.produitsColPrixVente : l10n.produitsColPrixAchat,
+          montant: formaterMontant(prix(p), devise),
+          libelleMontant: libellePrix,
           lignes: [
             (LucideIcons.boxes, p.service ? l10n.prdService : l10n.prdStockN(formaterNombre(stock))),
             if (magasin != null && !p.service)
@@ -162,11 +168,7 @@ Future<List<Produit>> choisirProduits(
             valeur: (p) => formaterNombre(dansMagasin(p)),
             largeur: 150,
           ),
-        DsColonnePicker(
-          libelle: prixVente ? l10n.produitsColPrixVente : l10n.produitsColPrixAchat,
-          valeur: (p) => formaterMontant(prixVente ? p.prixVente : p.prixAchat, devise),
-          largeur: 130,
-        ),
+        DsColonnePicker(libelle: libellePrix, valeur: (p) => formaterMontant(prix(p), devise), largeur: 130),
       ],
     ),
   );
@@ -190,7 +192,6 @@ class DocFormDialog extends ConsumerStatefulWidget {
     required this.colonnes,
     required this.totalLigne,
     required this.onEnregistrer,
-    this.description,
     this.largeur = 1000,
     this.peutEnregistrer = true,
     this.libelleEnregistrer,
@@ -207,7 +208,6 @@ class DocFormDialog extends ConsumerStatefulWidget {
   });
   final String titre;
   final IconData icone;
-  final String? description;
   final double largeur;
   final List<Widget> entete;
 
@@ -304,7 +304,6 @@ class _DocFormDialogState extends ConsumerState<DocFormDialog> {
     return DsDialog(
       titre: widget.titre,
       iconeData: widget.icone,
-      description: widget.description,
       largeur: widget.largeur,
       actions: [
         DsButton(

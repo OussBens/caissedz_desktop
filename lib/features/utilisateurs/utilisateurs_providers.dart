@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
+import '../../app/demarrage_providers.dart';
 import '../../app/providers.dart';
 import '../../application/role_service.dart';
 import '../../application/utilisateur_service.dart';
@@ -17,8 +18,11 @@ import '../commun/referentiel_ui.dart';
 import '../produits/produits_providers.dart';
 
 final utilisateurServiceProvider = Provider<UtilisateurService>(
-  (ref) =>
-      UtilisateurService(ref.watch(appDatabaseProvider).db, utilisateurCode: ref.watch(utilisateurCourantCodeProvider)),
+  (ref) => UtilisateurService(
+    ref.watch(appDatabaseProvider).db,
+    utilisateurCode: ref.watch(utilisateurCourantCodeProvider),
+    maxCaissiers: ref.watch(licenceProvider).niveau?.caissiers,
+  ),
 );
 
 final roleServiceProvider = Provider<RoleService>(
@@ -76,6 +80,7 @@ String libellePermission(AppLocalizations l10n, Permission p) => switch (p) {
   Permission.gererTransfertsCaisse => l10n.permGererTransfertsCaisse,
   Permission.voirStockTousMagasins => l10n.permVoirStockTousMagasins,
   Permission.depasserPlafondCredit => l10n.permDepasserPlafondCredit,
+  Permission.utiliserMobile => l10n.permUtiliserMobile,
 };
 
 IconData _iconePermission(Permission p) => switch (p) {
@@ -87,18 +92,32 @@ IconData _iconePermission(Permission p) => switch (p) {
   Permission.gererTransfertsCaisse => LucideIcons.arrowLeftRight,
   Permission.voirStockTousMagasins => LucideIcons.store,
   Permission.depasserPlafondCredit => LucideIcons.creditCard,
+  Permission.utiliserMobile => LucideIcons.smartphone,
 };
 
-/// Modules attribuables à un rôle (`PermissionGrid.MODULES`) : les modules de premier niveau.
-List<PermissionItem> itemsModules(AppLocalizations l10n) => [
+/// Modules attribuables à un rôle (`PermissionGrid.MODULES`) : les modules de premier niveau, ceux du
+/// palier [niveau] seulement (null : tous).
+List<PermissionItem> itemsModules(AppLocalizations l10n, {NiveauLicence? niveau}) => [
   for (final m in Modules.tous)
-    if (m.parentId == null) PermissionItem(cle: m.id, libelle: m.libelle(l10n), icone: m.icone),
+    if (m.parentId == null && (niveau?.couvre(m.niveauRequis) ?? true))
+      PermissionItem(cle: m.id, libelle: m.libelle(l10n), icone: m.icone),
 ];
 
-/// Permissions spéciales (`PermissionGrid.SPECIAL`).
-List<PermissionItem> itemsSpeciales(AppLocalizations l10n) => [
+/// Une permission a-t-elle un sens dans le palier [niveau] ? Une seule caisse (Basic) : ni changer de caisse,
+/// ni transferts entre caisses ; un seul magasin (Basic, Advanced) : pas de stock de tous les magasins.
+bool permissionIncluse(Permission p, NiveauLicence? niveau) => switch (p) {
+  _ when niveau == null => true,
+  Permission.changerCaisseMagasin => niveau.caisses > 1 || niveau.magasins > 1,
+  Permission.gererTransfertsCaisse => niveau.transfertsCaisse,
+  Permission.voirStockTousMagasins => niveau.magasins > 1,
+  _ => true,
+};
+
+/// Permissions spéciales (`PermissionGrid.SPECIAL`), celles du palier [niveau] seulement (null : toutes).
+List<PermissionItem> itemsSpeciales(AppLocalizations l10n, {NiveauLicence? niveau}) => [
   for (final p in Permission.values)
-    PermissionItem(cle: p.code, libelle: libellePermission(l10n, p), icone: _iconePermission(p)),
+    if (permissionIncluse(p, niveau))
+      PermissionItem(cle: p.code, libelle: libellePermission(l10n, p), icone: _iconePermission(p)),
 ];
 
 /// Cases cochées d'un rôle (modules + permissions) ; l'Admin a tout.
@@ -115,11 +134,13 @@ String messageErreurUtilisateur(AppLocalizations l10n, ErreurUtilisateur e) => s
   ErreurUtilisateur.identifiantPris => l10n.usrIdentifiantPris,
   ErreurUtilisateur.motDePasseFaible => l10n.usrErrMotDePasse,
   ErreurUtilisateur.telephoneObligatoire => l10n.usrErrTelephone,
+  ErreurUtilisateur.telephoneInvalide => l10n.tiersFormatTelephone,
   ErreurUtilisateur.roleInvalide => l10n.usrErrRole,
   ErreurUtilisateur.magasinsObligatoires => l10n.usrErrMagasins,
   ErreurUtilisateur.compteAdministrateur => l10n.usrBloqueAdmin,
   ErreurUtilisateur.compteCourant => l10n.usrBloqueCourant,
   ErreurUtilisateur.dejaInactif => l10n.usrBloqueInactif,
+  ErreurUtilisateur.limiteCaissiers => l10n.limiteCaissiers,
 };
 
 String messageErreurRole(AppLocalizations l10n, ErreurRole e) => switch (e) {

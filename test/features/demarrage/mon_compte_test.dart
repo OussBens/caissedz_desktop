@@ -45,11 +45,10 @@ void main() {
       await tester.pumpAndSettle();
     });
 
-    testWidgets('compte démo : modification impossible', (tester) async {
-      await pumpApp(tester, etat: EtatApp.connecteeDemo);
+    testWidgets('pendant l’essai : le compte se modifie comme les autres', (tester) async {
+      await pumpApp(tester, etat: EtatApp.connecteeEssai);
       await ouvrir(tester);
-      expect(find.text('Le compte de démonstration ne peut pas être modifié.'), findsOneWidget);
-      expect(find.byKey(const ValueKey('compte_enregistrer')), findsNothing);
+      expect(find.byKey(const ValueKey('compte_enregistrer')), findsOneWidget);
     });
   });
 }

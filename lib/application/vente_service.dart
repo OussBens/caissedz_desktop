@@ -42,6 +42,9 @@ enum ErreurVente {
   nombreObligatoire,
   plafondCredit,
 
+  /// Article (produit, colis ou pack) inconnu ou inactif : vente depuis le téléphone.
+  articleInconnu,
+
   /// Monnaie rendue supérieure aux espèces reçues (une carte ou des points ne rendent pas de monnaie).
   monnaieSansEspeces,
 }
@@ -71,6 +74,7 @@ class VenteService {
   VenteRepository get _repo => VenteRepository(db);
 
   /// Encaisse le panier. [creditAutorise] permet un reste dû (vente à crédit, client identifié).
+  /// [txn] : dans la transaction d'un autre service (livraison d'une commande client).
   Future<Vente> encaisser(
     Panier panier, {
     required SessionCaisse session,
@@ -78,6 +82,8 @@ class VenteService {
     bool creditAutorise = false,
     bool depassementPlafond = false,
     DateTime? date,
+    Transaction? txn,
+    bool? avecTva,
   }) async {
     if (!session.estOuverte) throw const VenteException(ErreurVente.sessionRequise);
     if (panier.estVide) throw const VenteException(ErreurVente.panierVide);
@@ -116,7 +122,7 @@ class VenteService {
     );
     final d = date ?? DateTime.now();
 
-    return db.transaction((txn) async {
+    Future<Vente> corps(Transaction txn) async {
       final repo = VenteRepository(txn);
       final sessionDb = await repo.session(session.code);
       if (sessionDb == null || !sessionDb.estOuverte) throw const VenteException(ErreurVente.sessionRequise);
@@ -183,8 +189,10 @@ class VenteService {
         return CalculsPrix.arrondir(f.pa * l.unitesStock);
       }
 
-      // TVA figée par ligne (prix TTC) selon le régime fiscal (IFU : sans TVA).
+      // TVA figée par ligne (prix TTC) selon le régime fiscal (IFU : sans TVA) et le choix « vente avec TVA » de la
+      // caisse ([avecTva] : celui des documents pour une livraison) ; sans TVA, le prix HT est le prix de vente.
       final regime = await ParametreRepository(txn).lire(Fiscalite.cleRegime) ?? RegimesFiscaux.reel;
+      final tva = avecTva ?? await ParametreRepository(txn).lire(Fiscalite.cleTvaCaisse) != '0';
       final brutes = [
         for (final (i, l) in panier.lignes.indexed)
           _avecTva(
@@ -207,7 +215,7 @@ class VenteService {
               totalAchat: coutLigne(l),
               unites: l.unitesStock,
             ),
-            Fiscalite.taux(l.produit.tvaPct, regime),
+            Fiscalite.taux(l.produit.tvaPct, regime, avecTva: tva),
           ),
       ];
       // Remise globale : l'écart d'arrondi entre Σ lignes et le net du ticket va sur la dernière ligne (m6).
@@ -293,7 +301,9 @@ class VenteService {
         detail: 'net ${panier.totalNet}',
       );
       return vente;
-    });
+    }
+
+    return txn != null ? corps(txn) : db.transaction(corps);
   }
 
   static VenteLigne _avecTva(VenteLigne l, double taux) {

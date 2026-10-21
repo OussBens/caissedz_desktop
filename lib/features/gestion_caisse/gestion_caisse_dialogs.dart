@@ -124,7 +124,6 @@ Future<void> afficherFormulaireCaisse(BuildContext context, WidgetRef ref, {Cais
       builder: (ctx, setState) => DsDialog(
         titre: caisse == null ? l10n.caisseNouvelle : l10n.caisseModifier,
         iconeData: LucideIcons.wallet,
-        description: caisse?.code ?? l10n.gcFormDescription,
         largeur: 620,
         actions: [
           DsButton(
@@ -146,10 +145,11 @@ Future<void> afficherFormulaireCaisse(BuildContext context, WidgetRef ref, {Cais
           crossAxisAlignment: CrossAxisAlignment.stretch,
           spacing: 12,
           children: [
-            DsFormRow(
-              libelle: l10n.produitsColCode,
-              child: DsTextField(valeurInitiale: code, actif: false),
-            ),
+            if (caisse != null)
+              DsFormRow(
+                libelle: l10n.produitsColCode,
+                child: DsTextField(valeurInitiale: code, actif: false),
+              ),
             DsFormRow(
               libelle: l10n.caisseNom,
               obligatoire: true,
@@ -398,7 +398,6 @@ Future<void> afficherTransfertCaisse(BuildContext context, WidgetRef ref) async 
         return DsDialog(
           titre: l10n.gcTrfTitre,
           iconeData: LucideIcons.arrowLeftRight,
-          description: l10n.gcTrfDescription,
           largeur: 620,
           actions: [
             DsButton(
@@ -645,7 +644,6 @@ class _ClotureZDialogState extends ConsumerState<_ClotureZDialog> {
     return DsDialog(
       titre: l10n.gcNouvelleClotureZ,
       iconeData: LucideIcons.fileLock2,
-      description: l10n.gcZDescription,
       largeur: 820,
       actions: [
         DsButton(
@@ -669,29 +667,30 @@ class _ClotureZDialogState extends ConsumerState<_ClotureZDialog> {
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 24,
             children: [
-              Expanded(
-                child: DsFormRow(
-                  libelle: l10n.gcColCaisse,
-                  obligatoire: true,
-                  largeurLibelle: 80,
-                  child: DsSelect<String>(
-                    cle: const ValueKey('z_caisse'),
-                    valeur: _caisse,
-                    options: [for (final c in widget.caisses) c.code],
-                    libelle: (code) => widget.caisses.firstWhere((c) => c.code == code).nom,
-                    recherche: rechercheListe(context, ref, ListeMetier.caisse),
-                    onChanged: (v) {
-                      if (v == null || v == _caisse) return;
-                      setState(() {
-                        _caisse = v;
-                        _apercu = null;
-                        _confirme = false;
-                      });
-                      _charger();
-                    },
+              if (ref.watch(plusieursCaissesProvider))
+                Expanded(
+                  child: DsFormRow(
+                    libelle: l10n.gcColCaisse,
+                    obligatoire: true,
+                    largeurLibelle: 80,
+                    child: DsSelect<String>(
+                      cle: const ValueKey('z_caisse'),
+                      valeur: _caisse,
+                      options: [for (final c in widget.caisses) c.code],
+                      libelle: (code) => widget.caisses.firstWhere((c) => c.code == code).nom,
+                      recherche: rechercheListe(context, ref, ListeMetier.caisse),
+                      onChanged: (v) {
+                        if (v == null || v == _caisse) return;
+                        setState(() {
+                          _caisse = v;
+                          _apercu = null;
+                          _confirme = false;
+                        });
+                        _charger();
+                      },
+                    ),
                   ),
                 ),
-              ),
               Expanded(
                 child: DsFormRow(
                   libelle: l10n.cloturePeriode,
@@ -805,12 +804,29 @@ String empreinteCourte(String hash) =>
 String nomCaisseCloture(AppLocalizations l10n, Cloture z, Map<String, String> caisses) =>
     z.caisseCode == null ? l10n.gcToutesCaisses : (caisses[z.caisseCode] ?? z.caisseCode!);
 
-/// Détail d'une clôture Z (`ClotureZDetail`, 940 px) : totaux, répartition, intégrité, PDF.
+/// TVA d'une clôture Z par taux : ventes validées de la période de la caisse, retours clients déduits.
+Future<List<({double taux, double ht, double tva})>> tvaCloture(WidgetRef ref, Cloture z) async {
+  final g = await FiscaliteRepository(ref.read(appDatabaseProvider).db)
+      .g50(z.debut.add(const Duration(microseconds: 1)), z.fin, caisseCode: z.caisseCode);
+  return [
+    for (final t in g.taux)
+      (
+        taux: t,
+        ht: (g.ventes[t]?.ht ?? 0) - (g.retoursClients[t]?.ht ?? 0),
+        tva: (g.ventes[t]?.tva ?? 0) - (g.retoursClients[t]?.tva ?? 0),
+      ),
+  ];
+}
+
+String _pct(double t) => '${t == t.roundToDouble() ? t.toInt() : t} %';
+
+/// Détail d'une clôture Z (`ClotureZDetail`, 940 px) : totaux, répartition, TVA, intégrité, PDF.
 Future<void> afficherDetailCloture(BuildContext context, WidgetRef ref, Cloture z) async {
   final l10n = AppLocalizations.of(context);
   final devise = ref.read(deviseProvider);
   final caisses = {for (final c in await ref.read(caissesListeProvider.future)) c.code: c.nom};
   final utilisateurs = await ref.read(nomsUtilisateursProvider.future);
+  final tva = await tvaCloture(ref, z);
   if (!context.mounted) return;
   final valide = Scellement.hacher(z.versCanonique(), z.hashPrecedent) == z.hash;
   final repartition = z.encaissementsParMode.entries.toList();
@@ -897,6 +913,53 @@ Future<void> afficherDetailCloture(BuildContext context, WidgetRef ref, Cloture 
           ),
         ),
         DsSectionDetail(
+          titre: l10n.tvaRecapitulatif,
+          icone: LucideIcons.percent,
+          nbLignes: tva.length,
+          tableau: DsDataTable<({double taux, double ht, double tva})>(
+            dense: true,
+            encadre: false,
+            pagine: false,
+            cle: (e) => '${e.taux}',
+            lignes: tva,
+            messageVide: l10n.dsAucunElement,
+            afficherTotaux: true,
+            colonnes: [
+              DsColonne(
+                id: 'taux',
+                libelle: l10n.tvaTaux,
+                fort: true,
+                valeur: (e) => e.taux,
+                cellule: (_, e) => Text(_pct(e.taux)),
+              ),
+              DsColonne(
+                id: 'ht',
+                libelle: l10n.tvaBaseHt,
+                numerique: true,
+                valeur: (e) => e.ht,
+                cellule: (_, e) => Text(formaterMontant(e.ht, devise)),
+                total: (ls) => formaterMontant(ls.fold(0.0, (s, e) => s + e.ht), devise),
+              ),
+              DsColonne(
+                id: 'tva',
+                libelle: l10n.tvaMontant,
+                numerique: true,
+                valeur: (e) => e.tva,
+                cellule: (_, e) => Text(formaterMontant(e.tva, devise)),
+                total: (ls) => formaterMontant(ls.fold(0.0, (s, e) => s + e.tva), devise),
+              ),
+              DsColonne(
+                id: 'ttc',
+                libelle: l10n.tvaTtc,
+                numerique: true,
+                valeur: (e) => e.ht + e.tva,
+                cellule: (_, e) => Text(formaterMontant(e.ht + e.tva, devise)),
+                total: (ls) => formaterMontant(ls.fold(0.0, (s, e) => s + e.ht + e.tva), devise),
+              ),
+            ],
+          ),
+        ),
+        DsSectionDetail(
           titre: l10n.gcZTotaux,
           icone: LucideIcons.calculator,
           items: [
@@ -933,6 +996,8 @@ Future<void> imprimerCloture(BuildContext context, WidgetRef ref, Cloture z) asy
   final caisses = {for (final c in await ref.read(caissesListeProvider.future)) c.code: c.nom};
   if (!context.mounted) return;
   final caisse = nomCaisseCloture(l10n, z, caisses);
+  final tva = await tvaCloture(ref, z);
+  if (!context.mounted) return;
   final lignes = <List<Object?>>[
     [l10n.gcColCaisse, caisse],
     [l10n.dsDu, formatDateHeure.format(z.debut)],
@@ -947,6 +1012,10 @@ Future<void> imprimerCloture(BuildContext context, WidgetRef ref, Cloture z) asy
       ['${l10n.gcZRepartition} · ${libelleMode(context, e.key)}', f2(e.value)],
     [l10n.clotureColEncaissements, f2(z.totalEncaissements)],
     [l10n.clotureColDecaissements, f2(z.totalDecaissements)],
+    for (final t in tva) ...[
+      ['${l10n.tvaBaseHt} ${_pct(t.taux)}', f2(t.ht)],
+      ['${l10n.tvaMontant} ${_pct(t.taux)}', f2(t.tva)],
+    ],
     [l10n.gcColEmpreinte, z.hash],
     [l10n.gcZEmpreintePrecedente, z.hashPrecedent],
   ];
@@ -1093,7 +1162,6 @@ class _ExportFiscalDialogState extends ConsumerState<_ExportFiscalDialog> {
     return DsDialog(
       titre: l10n.gcFiscalTitre,
       iconeData: LucideIcons.landmark,
-      description: l10n.gcFiscalDescription,
       largeur: 760,
       piedDebut: DsButton(
         key: const ValueKey('fiscal_verifier'),
@@ -1260,16 +1328,12 @@ Future<void> afficherMouvementsSession(BuildContext context, WidgetRef ref, Sess
   if (!context.mounted) return;
   final entrees = mouvements.where((m) => m.sens == SensMouvementCaisse.entree).fold(0.0, (x, m) => x + m.montant);
   final sorties = mouvements.where((m) => m.sens != SensMouvementCaisse.entree).fold(0.0, (x, m) => x + m.montant);
-  final caisse = caisses[s.caisseCode] ?? s.caisseCode;
   final colonnes = colonnesMouvements(l10n, devise, caisses, utilisateurs, avecCaisse: false);
   await afficherDialog<void>(
     context,
     builder: (ctx) => DsDialog(
       titre: l10n.gcSesMvtTitre(s.code),
       iconeData: LucideIcons.list,
-      description: s.fermeeLe == null
-          ? l10n.gcSesMvtOuverte(caisse, formatJourHeure.format(s.ouverteLe))
-          : l10n.gcSesMvtCloturee(caisse, formatJourHeure.format(s.fermeeLe!), formatJourHeure.format(s.ouverteLe)),
       largeur: 1000,
       piedDebut: peutExporter(ref)
           ? DsExportMenu(

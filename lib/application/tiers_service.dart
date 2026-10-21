@@ -61,6 +61,7 @@ class TiersService {
         adresse: c.adresse.trim(),
         email: c.email.trim(),
         plafondCredit: c.plafondCredit,
+        soldeInitial: c.soldeInitial,
         actif: true,
         fiche: c.fiche,
       );
@@ -99,6 +100,7 @@ class TiersService {
         telephone: f.telephone.trim(),
         adresse: f.adresse.trim(),
         email: f.email.trim(),
+        soldeInitial: f.soldeInitial,
         fiche: f.fiche,
       );
       await repo.insererFournisseur(fournisseur);

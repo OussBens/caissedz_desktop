@@ -10,6 +10,7 @@ import '../../domain/models/retour.dart';
 import '../../domain/models/stock.dart';
 import '../../domain/models/tiers.dart';
 import '../../domain/permissions.dart';
+import '../commercial/commandes_fournisseurs_page.dart';
 import '../commun/colonnes_audit.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
@@ -65,9 +66,10 @@ class _BesoinsPageState extends ConsumerState<BesoinsPage> {
     final stocks = ref.watch(stocksProduitsProvider).value ?? const <String, double>{};
     final seuilGlobal = ref.watch(parametresVenteProvider).value?.seuilStockGlobal ?? 5;
     final maximum = ref.watch(parametresVenteProvider).value?.seuilStockMax ?? 0;
+    // Un produit du catalogue BENS jamais entré en stock n'est pas une rupture (même règle que les alertes).
     final ruptures = [
       for (final p in produits)
-        if ((stocks[p.code] ?? 0) <= seuilDe(p, seuilGlobal))
+        if ((stocks[p.code] ?? 0) <= seuilDe(p, seuilGlobal) && !(p.duCatalogue && !stocks.containsKey(p.code)))
           _Rupture(p, stocks[p.code] ?? 0, seuilDe(p, seuilGlobal), maximum),
     ];
     final aujourdhui = DateTime.now();
@@ -83,7 +85,6 @@ class _BesoinsPageState extends ConsumerState<BesoinsPage> {
     ].where((e) => e.jours <= BesoinsPage.joursAlerteExpiration).toList()..sort((a, b) => a.jours - b.jours);
     return PageModule(
       moduleId: 'besoins',
-      sousTitre: l10n.stkDescriptionBesoins,
       onglets: [l10n.stkOngletListes, l10n.stkOngletRuptures, l10n.stkOngletExpires],
       comptes: [besoins.length, ruptures.length, expires.length],
       ongletCourant: _onglet,
@@ -111,7 +112,7 @@ class _BesoinsPageState extends ConsumerState<BesoinsPage> {
         libelle: l10n.communDate,
         attenue: true,
         valeur: (b) => b.date,
-        cellule: (_, b) => Text(formatDate.format(b.date)),
+        cellule: (_, b) => Text(formatDateHeure.format(b.date)),
       ),
       DsColonne(
         id: 'frn',
@@ -220,6 +221,7 @@ class _BesoinsPageState extends ConsumerState<BesoinsPage> {
         DsActionModule(
           libelle: l10n.communModifier,
           icone: LucideIcons.pencil,
+          iconeSeule: true,
           regle: DsRegleSelection.une,
           desactive: (choix) => choix.isNotEmpty && fige(choix.first),
           onPressed: (choix, _) => afficherFormulaireBesoin(context, ref, besoin: choix.first),
@@ -237,9 +239,22 @@ class _BesoinsPageState extends ConsumerState<BesoinsPage> {
           },
         ),
         DsActionModule(
+          cle: const ValueKey('besoins_creer_commande'),
+          libelle: l10n.cmdfDepuisBesoin,
+          icone: LucideIcons.clipboardList,
+          regle: DsRegleSelection.une,
+          desactive: (choix) =>
+              choix.isNotEmpty && (!choix.first.actif || choix.first.statut == StatutsBesoin.disponible),
+          onPressed: (choix, effacer) async {
+            await afficherFormulaireCommandeFournisseur(context, ref, besoin: choix.first);
+            effacer();
+          },
+        ),
+        DsActionModule(
           cle: const ValueKey('besoins_annuler'),
           libelle: l10n.dsAnnuler,
-          icone: LucideIcons.ban,
+          icone: LucideIcons.x,
+          iconeSeule: true,
           danger: true,
           onPressed: (choix, effacer) => annulerBesoins(context, ref, choix, effacer),
         ),

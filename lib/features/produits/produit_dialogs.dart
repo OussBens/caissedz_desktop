@@ -17,6 +17,7 @@ import '../../domain/models/produit.dart';
 import '../../domain/models/stock.dart';
 import '../../domain/permissions.dart';
 import '../../domain/referentiel/referentiel.dart';
+import '../caisse/pos_dialogs.dart';
 import '../commun/export_module.dart';
 import '../commun/referentiel_ui.dart';
 import '../commun/selecteurs.dart';
@@ -126,7 +127,6 @@ class _DetailProduit extends ConsumerWidget {
     return DsDialog(
       titre: p.designation,
       iconeData: LucideIcons.package,
-      description: [p.code, categorie, if ((p.marque ?? '').isNotEmpty) p.marque!].join(' · '),
       largeur: 1120,
       actions: [
         if (onEtiquette != null)
@@ -140,6 +140,7 @@ class _DetailProduit extends ConsumerWidget {
           DsButton(
             libelle: l10n.communModifier,
             icone: LucideIcons.pencil,
+            iconeSeule: true,
             variante: DsButtonVariante.secondaire,
             onPressed: () => fermerPuis(onModifier),
           ),
@@ -178,6 +179,12 @@ class _DetailProduit extends ConsumerWidget {
                 valeur: f2(p.prixVente),
                 suffixe: devise,
                 icone: LucideIcons.tag,
+              ),
+              DsStatItem(
+                libelle: l10n.prdPrixTtc,
+                valeur: f2(ref.read(prixTtcProvider)(p)),
+                suffixe: devise,
+                icone: LucideIcons.receipt,
               ),
               if (voirAchat)
                 DsStatItem(
@@ -256,7 +263,7 @@ class _DetailProduit extends ConsumerWidget {
               final carte = DsBarcodeCard(
                 valeur: p.codeBarres,
                 nom: p.designation,
-                prix: p.prixVente,
+                prix: ref.read(prixCaisseProvider)(p),
                 devise: devise,
                 compact: true,
                 onImprimer: onEtiquette == null ? null : () => fermerPuis(onEtiquette),
@@ -292,7 +299,7 @@ class _DetailProduit extends ConsumerWidget {
                   libelle: l10n.communDate,
                   attenue: true,
                   valeur: (m) => m.date,
-                  cellule: (_, m) => Text(formatDate.format(m.date)),
+                  cellule: (_, m) => Text(formatDateHeure.format(m.date)),
                 ),
                 DsColonne(
                   id: 't',
@@ -307,7 +314,7 @@ class _DetailProduit extends ConsumerWidget {
                   numerique: true,
                   valeur: (m) => m.quantite,
                   cellule: (_, m) => Text(
-                    m.quantite > 0 ? '+${formaterNombre(m.quantite)}' : formaterNombre(m.quantite),
+                    m.quantite > 0 ? isolerLtr('+${formaterNombre(m.quantite)}') : formaterNombre(m.quantite),
                     style: t.bodySm.copyWith(
                       fontWeight: FontWeight.w600,
                       color: m.quantite > 0 ? c.successFg : c.dangerFg,
@@ -384,11 +391,16 @@ class _CodeBarreDialogState extends ConsumerState<_CodeBarreDialog> {
     final p = await _produitAJour();
     if (p == null) return null;
     final devise = ref.read(deviseProvider);
-    final etiquettes = [Etiquette(produit: p, quantite: _n)];
+    final etiquettes = [Etiquette(produit: p, quantite: _n, prix: ref.read(prixCaisseProvider)(p))];
+    final police = await policePdf(false);
+    final gras = await policePdf(false, gras: true);
+    final secours = await policesSecoursPdf(false);
+    EtiquettesPdf pdf(double l, double h) =>
+        EtiquettesPdf(largeurMm: l, hauteurMm: h, devise: devise, police: police, policeGras: gras, secours: secours);
     return switch (_format) {
-      FormatEtiquette.a4 => EtiquettesPdf(largeurMm: 38, hauteurMm: 21, devise: devise).plancheA4(etiquettes),
-      FormatEtiquette.rouleau40 => EtiquettesPdf(largeurMm: 40, hauteurMm: 30, devise: devise).rouleau(etiquettes),
-      FormatEtiquette.rouleau58 => EtiquettesPdf(largeurMm: 58, hauteurMm: 40, devise: devise).rouleau(etiquettes),
+      FormatEtiquette.a4 => pdf(38, 21).plancheA4(etiquettes),
+      FormatEtiquette.rouleau40 => pdf(40, 30).rouleau(etiquettes),
+      FormatEtiquette.rouleau58 => pdf(58, 40).rouleau(etiquettes),
     };
   }
 
@@ -466,14 +478,13 @@ class _CodeBarreDialogState extends ConsumerState<_CodeBarreDialog> {
     final apercu = DsBarcodeCard(
       valeur: v.isEmpty ? null : v,
       nom: widget.produit.designation,
-      prix: widget.produit.prixVente,
+      prix: ref.read(prixCaisseProvider)(widget.produit),
       devise: devise,
       onGenerer: _generer,
     );
     return DsDialog(
       titre: l10n.prdCodeBarreTitre,
       iconeData: LucideIcons.barcode,
-      description: '${widget.produit.designation} · ${widget.produit.code}',
       largeur: 760,
       actions: [
         DsButton(
@@ -594,11 +605,9 @@ class _AffecterDialogState extends ConsumerState<_AffecterDialog> {
     };
     if (_valeur == null || !options.containsKey(_valeur)) _valeur = options.keys.firstOrNull;
     final n = widget.produits.length;
-    final noms = widget.produits.take(3).map((p) => p.designation).join(', ');
     return DsDialog(
       titre: l10n.prdAffecterN(n),
       iconeData: LucideIcons.tags,
-      description: n > 3 ? '$noms… +${n - 3}' : noms,
       largeur: 640,
       actions: [
         DsButton(
@@ -830,6 +839,7 @@ class _ImportDialogState extends ConsumerState<_ImportDialog> {
 
   String _libelleChamp(AppLocalizations l10n, String? champ) => switch (champ) {
     'designation' => l10n.produitsColDesignation,
+    'designation_ar' => l10n.prdDesignationAr,
     'code_barres' => l10n.produitsColCodeBarres,
     'categorie' => l10n.produitsColCategorie,
     'prix_achat' => l10n.produitChampPrixAchat,
@@ -896,7 +906,6 @@ class _ImportDialogState extends ConsumerState<_ImportDialog> {
           DsStepper(
             courante: _etape - 1,
             etapes: [l10n.prdImportFichier, l10n.prdImportColonnes, l10n.communApercu],
-            descriptions: [l10n.prdImportFichierDesc, l10n.prdImportColonnesDesc, l10n.prdImportApercuDesc],
             onEtape: (i) {
               if (i + 1 < _etape) setState(() => _etape = i + 1);
             },

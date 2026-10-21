@@ -313,17 +313,21 @@ void main() {
         fichier: 'facture.jpg',
         fournisseurDetecte: 'Grossiste',
         numBon: 'F-9',
-        lignes: const [LigneDetectee(designation: 'LAIT', quantite: 12, prixAchat: 80, confiance: 96)],
+        lignes: const [
+          LigneDetectee(designation: 'LAIT', quantite: 12, prixAchat: 80, confiance: 96),
+          LigneDetectee(designation: 'SAC', quantite: 1, prixAchat: 5),
+        ],
       );
       expect(bon.code, 'BON0001');
       expect(bon.statut, StatutsBon.recu);
-      expect(bon.lignes.single.confiance, 96);
+      expect(bon.lignes.first.confiance, 96);
       final a = await s.enregistrer(
         fournisseurCode: f.code,
         magasinCode: 'MAG0000',
         lignes: [DemandeAchatLigne(produitCode: lait.code, quantite: 12, prixAchat: 80)],
         besoinCode: besoin.code,
         bonCode: bon.code,
+        lignesBon: {0: lait.code},
         source: SourcesAchat.ia,
       );
       expect(a.besoinCode, besoin.code);
@@ -331,6 +335,8 @@ void main() {
       final traite = (await s.bonReception(bon.code))!;
       expect(traite.statut, StatutsBon.traite);
       expect(traite.achatCode, a.code);
+      expect([for (final l in traite.lignes) l.produitCode], [lait.code, null]);
+      expect(traite.lignes.first.confiance, 96);
       await expectLater(
         s.supprimerBons([bon.code]),
         throwsA(isA<AchatException>().having((e) => e.erreur, 'e', ErreurAchat.bonTraite)),
@@ -343,54 +349,113 @@ void main() {
   });
 
   group('SmartScanService', () {
-    test('non configuré, quota, analyse, quota atteint (429), demande d’offre', () async {
-      await expectLater(
-        SmartScanService(client: MockClient((_) async => http.Response('', 500)), baseUrl: '').quota(),
-        throwsA(isA<SmartScanException>().having((e) => e.erreur, 'e', ErreurSmartScan.nonConfigure)),
-      );
-      var appels = 0;
+    test('quota par lots, OCR puis extraction, épuisé (429), licence refusée, fichiers', () async {
+      const poste = (machine: 'POSTE-TEST', cle: 'CLE-SIGNEE');
+      final appels = <http.Request>[];
+      var restant = 2;
       final client = MockClient((req) async {
-        if (req.url.path.endsWith('/quota')) return http.Response(jsonEncode({'utilise': 3, 'total': 10}), 200);
-        if (req.url.path.endsWith('/analyser')) {
-          appels++;
-          if (appels > 1) return http.Response('{"erreur":"quota"}', 429);
+        appels.add(req);
+        if (req.headers['X-License-Key'] != 'CLE-SIGNEE') {
+          return http.Response(jsonEncode({'success': false, 'error': 'LICENSE_INVALID'}), 401);
+        }
+        Map<String, Object?> quota() => {
+          'limit': 90,
+          'used': 90 - restant,
+          'remaining': restant,
+          'buckets': [
+            {'kind': 'included', 'scans': 90, 'remaining': restant, 'endsOn': '2027-01-19'},
+          ],
+          'expiring_soon': [
+            {'kind': 'pack', 'scans': 300, 'remaining': 12, 'endsOn': '2026-11-05'},
+          ],
+        };
+        if (req.url.path == '/smartscan/quota') {
+          return http.Response(jsonEncode({'success': true, 'quota': quota()}), 200);
+        }
+        if (req.url.path == '/smartscan/scan') {
+          if (restant == 0) {
+            return http.Response(jsonEncode({'success': false, 'error': 'SCAN_QUOTA_EXCEEDED', 'quota': quota()}), 429);
+          }
+          expect((jsonDecode(req.body) as Map)['image'], matches(r'^data:image/(jpeg|png);base64,'));
+          restant--;
+          return http.Response(
+            jsonEncode({'success': true, 'scan_id': 7, 'text': 'LAIT 1L x20 85,00', 'quota': quota()}),
+            200,
+          );
+        }
+        if (req.url.path == '/smartscan/extract') {
+          final corps = jsonDecode(req.body) as Map;
+          expect((corps['scan_id'], corps['model']), (7, SmartScanService.modeleExtraction));
+          final contenu = jsonEncode({
+            'fournisseur': 'Grossiste',
+            'reference': 'F-1',
+            'lignes': [
+              {'designation': 'Lait 1 L', 'code_barres': '6130000000015', 'quantite': '20', 'prix_unitaire': '85,00'},
+              {'designation': 'Total', 'quantite': 0},
+            ],
+          });
           return http.Response(
             jsonEncode({
-              'fournisseur': 'Grossiste',
-              'reference': 'F-1',
-              'total': 1700,
-              'quota': {'utilise': 4, 'total': 10},
-              'lignes': [
-                {'designation': 'Lait 1 L', 'code_barres': '6130000000015', 'quantite': 20, 'prix_achat': 85},
+              'choices': [
+                {
+                  'message': {'content': contenu},
+                },
               ],
             }),
             200,
           );
         }
-        if (req.url.path.endsWith('/demande-offre')) {
-          expect(jsonDecode(req.body)['email'], 'a@b.dz');
-          return http.Response('{}', 200);
-        }
-        return http.Response('', 404);
+        return http.Response('{}', 404);
       });
-      final s = SmartScanService(client: client, baseUrl: 'https://api.test');
+      final s = SmartScanService(
+        client: client,
+        baseUrl: 'https://api.test',
+        identite: () async => poste,
+        entreprise: 'Supérette',
+      );
       final q = await s.quota();
-      expect(q.restant, 7);
-      expect(q.atteint, isFalse);
-      final r = await s.analyser(Uint8List.fromList([1, 2, 3]), nomFichier: 'facture.jpg');
+      expect((q.total, q.restant, q.atteint), (90, 2, false));
+      expect(q.lots.single.finLe, DateTime(2027, 1, 19));
+      expect((q.expirentBientot.single.pack, q.expirentBientot.single.restant), (true, 12));
+      expect(appels.last.headers['X-Device-Id'], 'POSTE-TEST');
+      expect(appels.last.headers['X-Entreprise'], 'Sup%C3%A9rette');
+
+      final r = await s.analyser(Uint8List.fromList([1, 2, 3]), nomFichier: 'facture.JPG');
       expect(r.lignes.single.designation, 'Lait 1 L');
-      expect(r.lignes.single.prixAchat, 85);
-      expect(r.quota.utilise, 4);
-      expect(r.fournisseur, 'Grossiste');
+      expect(
+        (r.lignes.single.quantite, r.lignes.single.prixAchat, r.lignes.single.codeBarres),
+        (20.0, 85.0, '6130000000015'),
+      );
+      expect((r.fournisseur, r.reference, r.quota.restant), ('Grossiste', 'F-1', 1));
+
+      await s.analyser(Uint8List.fromList([1]), nomFichier: 'x.png');
       await expectLater(
         s.analyser(Uint8List.fromList([1]), nomFichier: 'x.jpg'),
         throwsA(isA<SmartScanException>().having((e) => e.erreur, 'e', ErreurSmartScan.quotaAtteint)),
       );
-      await expectLater(
-        s.analyser(Uint8List(0), nomFichier: 'x.jpg'),
-        throwsA(isA<SmartScanException>().having((e) => e.erreur, 'e', ErreurSmartScan.fichierInvalide)),
+      for (final (octets, nom) in [
+        (Uint8List(0), 'x.jpg'),
+        (Uint8List.fromList([1]), 'facture.pdf'),
+      ]) {
+        await expectLater(
+          s.analyser(octets, nomFichier: nom),
+          throwsA(isA<SmartScanException>().having((e) => e.erreur, 'e', ErreurSmartScan.fichierInvalide)),
+        );
+      }
+      final autre = SmartScanService(
+        client: client,
+        baseUrl: 'https://api.test',
+        identite: () async => (machine: 'P', cle: 'AUTRE'),
       );
-      await s.demanderOffre(email: 'a@b.dz', message: 'Plus de scans');
+      await expectLater(
+        autre.quota(),
+        throwsA(isA<SmartScanException>().having((e) => e.erreur, 'e', ErreurSmartScan.licence)),
+      );
+      final sansCle = SmartScanService(client: client, identite: () async => (machine: 'P', cle: null));
+      await expectLater(
+        sansCle.quota(),
+        throwsA(isA<SmartScanException>().having((e) => e.erreur, 'e', ErreurSmartScan.licence)),
+      );
       expect(const QuotaSmartScan(utilise: 10, total: 10).atteint, isTrue);
     });
   });

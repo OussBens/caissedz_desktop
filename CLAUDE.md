@@ -30,7 +30,7 @@ schéma minimal v2. Chaque hypothèse est marquée `⚠️ PROVISOIRE` dans le c
 
 ## Stack imposée
 
-- Flutter stable (3.47.x, Dart 3.13) pour Windows desktop. Fenêtre minimale 1000×700, barre de titre
+- Flutter stable (3.47.x, Dart 3.13) pour Windows desktop. Fenêtre minimale 1400×700, barre de titre
   personnalisée via `window_manager`.
 - Offline-first : SQLite chiffré SQLCipher (`sqflite_common_ffi` + `sqlite3` avec `sqlcipher_flutter_libs`),
   clé dérivée de la machine (§4.2), `PRAGMA foreign_keys = ON`, migrations versionnées (`PRAGMA user_version`).

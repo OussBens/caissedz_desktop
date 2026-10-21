@@ -249,7 +249,6 @@ class _ZakatFormState extends ConsumerState<_ZakatForm> {
     return DsDialog(
       titre: _z == null ? l10n.zkNouveauTitre : l10n.zkModifierTitre,
       iconeData: LucideIcons.handCoins,
-      description: _z?.code ?? l10n.zkFormDescription,
       largeur: 860,
       actions: [
         DsButton(

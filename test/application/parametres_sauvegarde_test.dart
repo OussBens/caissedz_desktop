@@ -6,6 +6,7 @@ import 'package:caissedz_desktop/application/sauvegarde_service.dart';
 import 'package:caissedz_desktop/core/db/app_database.dart';
 import 'package:caissedz_desktop/core/print/imprimante.dart';
 import 'package:caissedz_desktop/data/boutique_repository.dart';
+import 'package:caissedz_desktop/data/licence_repository.dart';
 import 'package:caissedz_desktop/domain/models/boutique.dart';
 import 'package:caissedz_desktop/domain/models/parametres_vente.dart';
 import 'package:caissedz_desktop/domain/models/produit.dart';
@@ -204,6 +205,9 @@ void main() {
           prixVente: 100,
         ),
       );
+      // La licence du PC d'où vient la sauvegarde…
+      await LicenceRepository(base.db).ecrireValeur('license_key', 'CLE-DE-L-ANCIEN-POSTE');
+      await LicenceRepository(base.db).ecrireValeur(LicenceRepository.cleJeton, 'jeton-ancien');
       final service = SauvegardeService(base, utilisateurCode: 'USR0000');
       final chemin = '${dossier.path}/sauvegarde.cdz';
       await expectLater(
@@ -228,6 +232,9 @@ void main() {
       );
       // La base continue d'évoluer, puis on prépare la restauration de l'état sauvegardé.
       await BoutiqueRepository(base.db).ecrire(const Boutique(nom: 'Après'));
+      // … et celle de ce poste, qui doit rester après la restauration.
+      await LicenceRepository(base.db).ecrireValeur('license_key', 'CLE-DE-CE-POSTE');
+      await LicenceRepository(base.db).ecrireValeur(LicenceRepository.cleJeton, null);
       await service.preparerRestauration(chemin: chemin, motDePasse: "secret 'dz'");
       expect(service.restaurationEnAttente, isTrue);
       expect((await BoutiqueRepository(base.db).lire())!.nom, 'Après', reason: 'jamais remplacée à chaud');
@@ -236,6 +243,16 @@ void main() {
       expect((await BoutiqueRepository(base.db).lire())!.nom, 'Avant');
       expect((await base.db.query('produit', where: "code <> 'PRD0000'")).length, 1);
       expect(SauvegardeService(base).restaurationEnAttente, isFalse);
+      expect(
+        await LicenceRepository(base.db).lireValeur('license_key'),
+        'CLE-DE-CE-POSTE',
+        reason: 'la licence du poste',
+      );
+      expect(
+        await LicenceRepository(base.db).lireValeur(LicenceRepository.cleJeton),
+        isNull,
+        reason: 'pas la session de l’autre PC',
+      );
       // La ligne « Sauvegarde » est écrite après la copie ; la restauration est journalisée dans la base restaurée.
       final journal = await base.db.query('historique', where: "entite = 'sauvegarde'", orderBy: 'id');
       expect([for (final h in journal) (h['action'], h['detail'])], [('Restauration', 'sauvegarde.cdz')]);

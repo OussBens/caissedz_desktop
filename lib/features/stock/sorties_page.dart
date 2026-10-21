@@ -66,7 +66,7 @@ class _SortiesPageState extends ConsumerState<SortiesPage> {
         libelle: l10n.communDate,
         attenue: true,
         valeur: (s) => s.date,
-        cellule: (_, s) => Text(formatDate.format(s.date)),
+        cellule: (_, s) => Text(formatDateHeure.format(s.date)),
       ),
       DsColonne(id: 'type', libelle: l10n.stockColType, fort: true, valeur: (s) => libelleMotif(l10n, s.motif)),
       DsColonne(id: 'mag', libelle: l10n.stockColMagasin, flex: 2, valeur: (s) => noms[s.magasinCode] ?? s.magasinCode),
@@ -118,7 +118,6 @@ class _SortiesPageState extends ConsumerState<SortiesPage> {
 
     return PageModule(
       moduleId: 'sorties',
-      sousTitre: l10n.stkDescriptionSorties,
       child: DsModuleTable<SortieStock>(
         entite: l10n.stkEntiteSorties,
         lignes: lignes,
@@ -167,17 +166,18 @@ class _SortiesPageState extends ConsumerState<SortiesPage> {
               onChanged: (v) => setState(() => _type = v),
             ),
           ),
-          DsFormRow(
-            libelle: l10n.stockColMagasin,
-            largeurLibelle: 80,
-            child: DsSelect<String?>(
-              valeur: _magasin,
-              options: [null, for (final m in magasins) m.code],
-              libelle: (c) => c == null ? l10n.retoursTous : (noms[c] ?? c),
-              recherche: rechercheListe(context, ref, ListeMetier.magasin),
-              onChanged: (v) => setState(() => _magasin = v),
+          if (ref.watch(plusieursMagasinsProvider))
+            DsFormRow(
+              libelle: l10n.stockColMagasin,
+              largeurLibelle: 80,
+              child: DsSelect<String?>(
+                valeur: _magasin,
+                options: [null, for (final m in magasins) m.code],
+                libelle: (c) => c == null ? l10n.retoursTous : (noms[c] ?? c),
+                recherche: rechercheListe(context, ref, ListeMetier.magasin),
+                onChanged: (v) => setState(() => _magasin = v),
+              ),
             ),
-          ),
           filtreProduit(
             context,
             ref,
@@ -216,6 +216,7 @@ class _SortiesPageState extends ConsumerState<SortiesPage> {
           DsActionModule(
             libelle: l10n.communModifier,
             icone: LucideIcons.pencil,
+            iconeSeule: true,
             regle: DsRegleSelection.une,
             desactive: (choix) => choix.isNotEmpty && (!choix.first.actif || choix.first.retourCode != null),
             onPressed: (choix, _) => afficherFormulaireSortie(context, ref, sortie: choix.first),
@@ -223,7 +224,8 @@ class _SortiesPageState extends ConsumerState<SortiesPage> {
           DsActionModule(
             cle: const ValueKey('sorties_annuler'),
             libelle: l10n.dsAnnuler,
-            icone: LucideIcons.ban,
+            icone: LucideIcons.x,
+            iconeSeule: true,
             danger: true,
             onPressed: (choix, effacer) => annulerSorties(context, ref, choix, effacer),
           ),

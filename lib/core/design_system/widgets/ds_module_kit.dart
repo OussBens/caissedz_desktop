@@ -16,6 +16,26 @@ import 'ds_primitives.dart';
 /// Briques partagées des écrans de module (`ui_kits/desktop/ModuleKit.jsx`) :
 /// [DsModuleTable], [DsGridCard], [DsEntityDetailDialog], [DsSubHead].
 
+/// Lecture seule (essai terminé), posée à la racine de l'application (pages et dialogs) : un
+/// [DsModuleTable] n'y offre que le détail des lignes (ni création, ni modification, ni export, ni menu
+/// contextuel) et un [DsEntityDetailDialog] ni Modifier ni ses actions de pied (impression, versement…).
+class DsLectureSeule extends InheritedWidget {
+  const DsLectureSeule({super.key, required this.actif, required super.child});
+
+  final bool actif;
+
+  static bool de(BuildContext context) => context.dependOnInheritedWidgetOfExactType<DsLectureSeule>()?.actif ?? false;
+
+  @override
+  bool updateShouldNotify(DsLectureSeule ancien) => ancien.actif != actif;
+}
+
+/// Place d'une action dans la barre d'un module, dans cet ordre : autres actions, Détail, Supprimer /
+/// Annuler / Désactiver, Modifier (puis le bouton Nouveau). Détail, suppression et modification sont des
+/// icônes seules, leur libellé en infobulle. [principale] : l'action phare du module, en violet tout à droite
+/// (avant le bouton Nouveau), avec son libellé.
+enum DsGenreAction { autre, detail, suppression, modification, principale }
+
 /// Action de la barre de sélection d'un [DsModuleTable] : reçoit les lignes cochées.
 class DsActionModule<T> {
   const DsActionModule({
@@ -27,7 +47,37 @@ class DsActionModule<T> {
     this.desactive,
     this.cle,
     this.detail = false,
+    this.iconeSeule = false,
+    this.genre,
   });
+
+  /// Place imposée dans la barre ; sinon déduite (voir [place]).
+  final DsGenreAction? genre;
+
+  /// Icônes de suppression, d'annulation et de désactivation (corbeille, croix, pause, utilisateur barré).
+  static final Set<IconData> _iconesSuppression = {
+    LucideIcons.trash2,
+    LucideIcons.x,
+    LucideIcons.circlePause,
+    LucideIcons.userX,
+    LucideIcons.ban,
+  };
+
+  /// Le genre donné, sinon déduit : [detail], le crayon (Modifier), une icône de suppression sur une
+  /// action [danger] ; le reste est une autre action.
+  DsGenreAction get place =>
+      genre ??
+      (detail
+          ? DsGenreAction.detail
+          : icone == LucideIcons.pencil
+          ? DsGenreAction.modification
+          : danger && _iconesSuppression.contains(icone)
+          ? DsGenreAction.suppression
+          : DsGenreAction.autre);
+
+  /// Bouton réduit à l'icône : Détail, Supprimer / Annuler, Modifier toujours, les autres sur demande.
+  bool get reduiteAIcone =>
+      icone != null && (iconeSeule || (place != DsGenreAction.autre && place != DsGenreAction.principale));
   final String libelle;
   final IconData? icone;
   final DsRegleSelection regle;
@@ -42,6 +92,9 @@ class DsActionModule<T> {
 
   /// Action « Détail » (œil) : déclenchée aussi par le double-clic sur une ligne.
   final bool detail;
+
+  /// Bouton réduit à l'icône (Modifier, Annuler), libellé en infobulle.
+  final bool iconeSeule;
 }
 
 /// Libellés FR / AR / EN des périodes rapides du [DsPeriodFilter].
@@ -90,6 +143,15 @@ bool dansPeriode(DateTime date, DsPeriode periode) {
   final du = DateTime(periode.du.year, periode.du.month, periode.du.day);
   final au = DateTime(periode.au.year, periode.au.month, periode.au.day);
   return !j.isBefore(du) && !j.isAfter(au);
+}
+
+/// Recherche pré-remplie dans les [DsModuleTable] du sous-arbre (ouverture depuis la recherche globale).
+class DsRechercheInitiale extends InheritedWidget {
+  const DsRechercheInitiale({super.key, required this.texte, required super.child});
+  final String? texte;
+
+  @override
+  bool updateShouldNotify(DsRechercheInitiale oldWidget) => texte != oldWidget.texte;
 }
 
 /// Mode d'affichage d'un [DsModuleTable] à cartes.
@@ -191,6 +253,20 @@ class _DsModuleTableState<T> extends State<DsModuleTable<T>> {
   Set<Object> _selection = {};
   String _recherche = '';
   final _controleur = TextEditingController();
+  bool _rechercheInitialeLue = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_rechercheInitialeLue) return;
+    _rechercheInitialeLue = true;
+    final texte = context.getInheritedWidgetOfExactType<DsRechercheInitiale>()?.texte;
+    if (texte != null && texte.isNotEmpty) {
+      _controleur.text = texte;
+      _recherche = texte;
+    }
+  }
+
   late DsVueModule _vue = widget.carte != null ? widget.vueParDefaut : DsVueModule.liste;
 
   @override
@@ -222,6 +298,11 @@ class _DsModuleTableState<T> extends State<DsModuleTable<T>> {
         ? widget.lignes
         : widget.lignes.where((l) => _texte(l).toLowerCase().contains(q)).toList();
     final choisis = widget.lignes.where((l) => _selection.contains(widget.cle(l))).toList();
+    final lectureSeule = DsLectureSeule.de(context);
+    // Ordre de la barre : autres actions, Détail, Supprimer / Annuler, Modifier (chacun dans l'ordre du
+    // module), puis Nouveau.
+    final source = lectureSeule ? widget.actions.where((a) => a.detail) : widget.actions;
+    final actions = [for (final g in DsGenreAction.values) ...source.where((a) => a.place == g)];
     final detail = widget.actions.where((a) => a.detail).firstOrNull;
     void Function(T)? ouvrir = widget.onOuvrir;
     if (ouvrir == null && detail != null) {
@@ -241,7 +322,7 @@ class _DsModuleTableState<T> extends State<DsModuleTable<T>> {
       ligne: l,
     );
 
-    final export = widget.onExport == null
+    final export = widget.onExport == null || lectureSeule
         ? null
         : DsExportMenu(
             nbSelection: _selection.length,
@@ -249,13 +330,23 @@ class _DsModuleTableState<T> extends State<DsModuleTable<T>> {
             onExport: (f, portee) => widget.onExport!(f, portee == DsPorteeExport.selection ? choisis : donnees),
           );
 
-    final enfants = <Widget>[
-      if (widget.kpis != null && widget.kpis!.isNotEmpty)
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          spacing: DsSpacing.s4,
-          children: [for (final k in widget.kpis!) Expanded(child: k)],
+    final autres = <Widget>[
+      if (widget.filtres == null && widget.periode == null && export != null) export,
+      if (widget.carte != null)
+        DsSegmentedControl<DsVueModule>(
+          key: const ValueKey('module_vue'),
+          valeur: _vue,
+          onChanged: (v) => setState(() => _vue = v),
+          options: [
+            DsOption(DsVueModule.grille, icone: LucideIcons.layoutGrid, tooltip: l10n.dsAffichageGrille),
+            DsOption(DsVueModule.liste, icone: LucideIcons.list, tooltip: l10n.dsAffichageListe),
+          ],
         ),
+      if (!lectureSeule) ?widget.secondaire,
+    ];
+
+    final enfants = <Widget>[
+      if (widget.kpis != null && widget.kpis!.isNotEmpty) DsChiffresRepliables(cle: widget.entite, kpis: widget.kpis!),
       if (widget.filtres != null || widget.periode != null)
         DsFilterPanel(
           ouvertParDefaut: widget.filtresOuverts,
@@ -284,36 +375,22 @@ class _DsModuleTableState<T> extends State<DsModuleTable<T>> {
           onChanged: (v) => setState(() => _recherche = v),
         ),
         actions: [
-          for (final a in widget.actions)
+          for (final a in actions)
             DsActionSelection(
               libelle: a.libelle,
               icone: a.icone,
               regle: a.regle,
               danger: a.danger,
+              variante: a.place == DsGenreAction.principale ? DsButtonVariante.primaire : DsButtonVariante.secondaire,
               cle: a.cle,
+              iconeSeule: a.reduiteAIcone,
               desactive: a.desactive?.call(choisis) ?? false,
               onPressed: () => a.onPressed(choisis, _effacer),
             ),
         ],
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          spacing: DsSpacing.s2,
-          children: [
-            if (widget.filtres == null && widget.periode == null && export != null) export,
-            if (widget.carte != null)
-              DsSegmentedControl<DsVueModule>(
-                key: const ValueKey('module_vue'),
-                valeur: _vue,
-                onChanged: (v) => setState(() => _vue = v),
-                options: [
-                  DsOption(DsVueModule.grille, icone: LucideIcons.layoutGrid, tooltip: l10n.dsAffichageGrille),
-                  DsOption(DsVueModule.liste, icone: LucideIcons.list, tooltip: l10n.dsAffichageListe),
-                ],
-              ),
-            ?widget.secondaire,
-            ?widget.primaire,
-          ],
-        ),
+        // Autres actions (export, vue, bouton secondaire) avant Détail / Supprimer / Modifier ; Nouveau en dernier.
+        avant: autres.isEmpty ? null : Row(mainAxisSize: MainAxisSize.min, spacing: DsSpacing.s2, children: autres),
+        trailing: lectureSeule ? null : widget.primaire,
       ),
       if (donnees.isEmpty && widget.lignes.isNotEmpty)
         DsCard(
@@ -385,13 +462,93 @@ class _DsModuleTableState<T> extends State<DsModuleTable<T>> {
           selection: _selection,
           onSelectionChanged: (s) => setState(() => _selection = s),
           onDoubleClic: ouvrir,
-          actionsContextuelles: widget.actionsContextuelles,
+          actionsContextuelles: lectureSeule ? const [] : widget.actionsContextuelles,
           afficherTotaux: widget.afficherTotaux,
           permissions: widget.permissions,
           messageVide: widget.messageVide,
         ),
     ];
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, spacing: DsTailles.gridGap, children: enfants);
+  }
+}
+
+/// Cartes de chiffres d'un module, repliables : fermées par défaut, l'en-tête « Chiffres clés » les ouvre.
+/// Le choix est gardé par module ([cle]) le temps de la session.
+class DsChiffresRepliables extends StatefulWidget {
+  const DsChiffresRepliables({super.key, required this.cle, required this.kpis});
+
+  final String cle;
+  final List<Widget> kpis;
+
+  /// Modules dont les chiffres sont ouverts (tests : à vider entre deux tests si besoin).
+  static final Set<String> ouverts = {};
+
+  @override
+  State<DsChiffresRepliables> createState() => _DsChiffresRepliablesState();
+}
+
+class _DsChiffresRepliablesState extends State<DsChiffresRepliables> {
+  bool get _ouvert => DsChiffresRepliables.ouverts.contains(widget.cle);
+
+  void _basculer() => setState(
+    () => _ouvert ? DsChiffresRepliables.ouverts.remove(widget.cle) : DsChiffresRepliables.ouverts.add(widget.cle),
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.ds.colors;
+    final t = context.ds.typo;
+    final l10n = AppLocalizations.of(context);
+    final o = _ouvert;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Align(
+          alignment: AlignmentDirectional.centerStart,
+          child: MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: GestureDetector(
+              key: const ValueKey('module_chiffres'),
+              behavior: HitTestBehavior.opaque,
+              onTap: _basculer,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: DsSpacing.s1),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  spacing: DsSpacing.s2,
+                  children: [
+                    Icon(LucideIcons.chartColumn, size: DsTailles.iconeSm, color: o ? c.iconActive : c.iconMuted),
+                    Text(l10n.dsChiffresCles, style: t.label.copyWith(color: c.textSecondary)),
+                    AnimatedRotation(
+                      turns: o ? .5 : 0,
+                      duration: DsMotion.base,
+                      curve: DsMotion.standard,
+                      child: Icon(LucideIcons.chevronDown, size: DsTailles.iconeSm, color: c.iconMuted),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        AnimatedSize(
+          duration: DsMotion.slow,
+          curve: DsMotion.emphasized,
+          alignment: Alignment.topCenter,
+          child: o
+              ? Padding(
+                  padding: const EdgeInsets.only(top: DsSpacing.s2),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: DsSpacing.s4,
+                    children: [for (final k in widget.kpis) Expanded(child: k)],
+                  ),
+                )
+              : const SizedBox(width: double.infinity),
+        ),
+      ],
+    );
   }
 }
 
@@ -469,6 +626,7 @@ class DsSectionDetail {
     this.nbLignes,
     this.contenu,
     this.repliable = false,
+    this.flex,
   });
   final String titre;
   final IconData? icone;
@@ -480,6 +638,9 @@ class DsSectionDetail {
   final int? nbLignes;
   final Widget? contenu;
   final bool repliable;
+
+  /// Sections consécutives avec un [flex] : côte à côte sur une rangée, dans ces proportions.
+  final int? flex;
 }
 
 /// Dialog de détail générique (`EntityDetailDialog`) : badges → StatsStrip → sections.
@@ -511,17 +672,21 @@ class DsEntityDetailDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    // Lecture seule : on consulte, sans modifier, imprimer ni exporter.
+    final lectureSeule = DsLectureSeule.de(context);
     return DsDialog(
       titre: titre,
       iconeData: icone,
-      description: description,
+      message: description,
       largeur: largeur,
       actions: [
-        ...piedSupplementaire,
-        if (onModifier != null)
+        if (!lectureSeule) ...piedSupplementaire,
+        if (onModifier != null && !lectureSeule)
           DsButton(
+            key: const ValueKey('detail_modifier'),
             libelle: l10n.communModifier,
             icone: LucideIcons.pencil,
+            iconeSeule: true,
             variante: DsButtonVariante.secondaire,
             onPressed: modifierDesactive
                 ? null
@@ -540,24 +705,44 @@ class DsEntityDetailDialog extends StatelessWidget {
           if (badges != null && badges!.isNotEmpty)
             Wrap(spacing: DsSpacing.s2, runSpacing: DsSpacing.s2, children: badges!),
           if (stats != null && stats!.isNotEmpty) DsStatsStrip(items: stats!),
-          for (final s in sections)
-            DsDetailSection(
-              titre: s.titre,
-              icone: s.icone,
-              compte: s.nbLignes,
-              padding: s.tableau != null ? EdgeInsets.zero : const EdgeInsets.all(DsSpacing.s4),
-              repliable: s.repliable,
-              ouverteParDefaut: !s.repliable,
-              child:
-                  s.tableau ??
-                  (s.items != null
-                      ? DsKeyValueGrid(items: s.items!, colonnes: s.colonnesGrille)
-                      : s.contenu ?? const SizedBox()),
-            ),
+          for (final rangee in _rangees())
+            if (rangee.first.flex == null)
+              _section(rangee.single)
+            else
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 14,
+                children: [for (final s in rangee) Expanded(flex: s.flex!, child: _section(s))],
+              ),
         ],
       ),
     );
   }
+
+  /// Regroupe les sections consécutives qui ont un `flex` (une rangée), les autres restent seules.
+  List<List<DsSectionDetail>> _rangees() {
+    final rangees = <List<DsSectionDetail>>[];
+    for (final s in sections) {
+      if (s.flex != null && rangees.isNotEmpty && rangees.last.last.flex != null) {
+        rangees.last.add(s);
+      } else {
+        rangees.add([s]);
+      }
+    }
+    return rangees;
+  }
+
+  Widget _section(DsSectionDetail s) => DsDetailSection(
+    titre: s.titre,
+    icone: s.icone,
+    compte: s.nbLignes,
+    padding: s.tableau != null ? EdgeInsets.zero : const EdgeInsets.all(DsSpacing.s4),
+    repliable: s.repliable,
+    ouverteParDefaut: !s.repliable,
+    child:
+        s.tableau ??
+        (s.items != null ? DsKeyValueGrid(items: s.items!, colonnes: s.colonnesGrille) : s.contenu ?? const SizedBox()),
+  );
 }
 
 /// Ouvre un [DsEntityDetailDialog].
@@ -690,7 +875,6 @@ Future<void> afficherDetailLigne<T>(
     builder: (ctx) => DsDialog(
       key: const ValueKey('detail_ligne'),
       titre: premiere == null || premiere.isEmpty ? entite : premiere,
-      description: entite,
       iconeData: LucideIcons.fileText,
       largeur: 720,
       actions: [

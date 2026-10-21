@@ -1,11 +1,8 @@
 import 'dart:math';
 
 import 'package:caissedz_desktop/application/auth_service.dart';
-import 'package:caissedz_desktop/application/licence_service.dart';
 import 'package:caissedz_desktop/application/role_service.dart';
 import 'package:caissedz_desktop/application/utilisateur_service.dart';
-import 'package:caissedz_desktop/core/db/machine_key.dart';
-import 'package:caissedz_desktop/core/licence/cle_activation.dart';
 import 'package:caissedz_desktop/core/securite/mot_de_passe.dart';
 import 'package:caissedz_desktop/data/permissions_repository.dart';
 import 'package:caissedz_desktop/data/stock_repository.dart';
@@ -14,15 +11,9 @@ import 'package:caissedz_desktop/domain/permissions.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../helpers/bases.dart';
+import '../helpers/licence_test_helper.dart';
 
 const _hachage = MotDePasse(iterations: 500);
-
-class _Machine implements MachineIdentifiant {
-  const _Machine(this.id);
-  final String id;
-  @override
-  Future<String> lire() async => id;
-}
 
 Matcher _erreurU(ErreurUtilisateur e) => throwsA(isA<UtilisateurException>().having((x) => x.erreur, 'erreur', e));
 Matcher _erreurR(ErreurRole e) => throwsA(isA<RoleException>().having((x) => x.erreur, 'erreur', e));
@@ -64,6 +55,8 @@ void main() {
       await expectLater(creer(identifiant: 'ADMIN'), _erreurU(ErreurUtilisateur.identifiantPris));
       await expectLater(creer(motDePasse: 'abcd'), _erreurU(ErreurUtilisateur.motDePasseFaible));
       await expectLater(creer(telephone: ' '), _erreurU(ErreurUtilisateur.telephoneObligatoire));
+      await expectLater(creer(telephone: '0552'), _erreurU(ErreurUtilisateur.telephoneInvalide));
+      await expectLater(creer(telephone: '0852112233'), _erreurU(ErreurUtilisateur.telephoneInvalide));
       await expectLater(creer(role: Roles.admin), _erreurU(ErreurUtilisateur.roleInvalide), reason: 'admin unique');
       await expectLater(creer(magasins: []), _erreurU(ErreurUtilisateur.magasinsObligatoires));
       await creer();
@@ -77,10 +70,7 @@ void main() {
       expect(historique.single['entite_code'], 'USR0002');
 
       // Connexion avec le rôle Caissier.
-      await LicenceService(
-        base.db,
-        identifiant: const _Machine('P'),
-      ).activer(CleActivation.cleAttendue(NiveauLicence.basic, 'P'));
+      await (await licenceServiceTest(base)).activer(await cleTest(NiveauLicence.basic));
       final session = await AuthService(base.db, hachage: _hachage).connecter('amina', 'Amina2026');
       expect(session.estAdmin, isFalse);
       expect(session.peutAcceder('caisse'), isTrue);
@@ -93,7 +83,7 @@ void main() {
       final u = await s.creer(
         identifiant: 'karim',
         motDePasse: 'Karim2026',
-        telephone: '0552',
+        telephone: '0552112233',
         roleCode: Roles.magasinier,
         magasins: const ['MAG0000'],
       );
@@ -116,7 +106,7 @@ void main() {
         s.modifier(
           'USR0000',
           identifiant: 'admin',
-          telephone: '0550',
+          telephone: '0550112233',
           roleCode: Roles.caissier,
           magasins: const ['MAG0000'],
         ),
@@ -125,7 +115,7 @@ void main() {
       final admin = await s.modifier(
         'USR0000',
         identifiant: 'admin',
-        telephone: '0550',
+        telephone: '0550112233',
         roleCode: Roles.admin,
         caisseCode: 'CIS0000',
         magasins: const ['MAG0000'],
@@ -139,7 +129,7 @@ void main() {
       final u = await s.creer(
         identifiant: 'nadia',
         motDePasse: 'Nadia2026',
-        telephone: '0663',
+        telephone: '0663112233',
         roleCode: Roles.caissier,
         magasins: const ['MAG0000'],
       );
@@ -195,7 +185,7 @@ void main() {
       await UtilisateurService(base.db, utilisateurCode: 'USR0000', hachage: _hachage).creer(
         identifiant: 'amina',
         motDePasse: 'Amina2026',
-        telephone: '0661',
+        telephone: '0661112233',
         roleCode: Roles.caissier,
         magasins: const ['MAG0000'],
       );
@@ -211,7 +201,7 @@ void main() {
         UtilisateurService(base.db, utilisateurCode: 'USR0000', hachage: _hachage).creer(
           identifiant: 'karim',
           motDePasse: 'Karim2026',
-          telephone: '0552',
+          telephone: '0552112233',
           roleCode: Roles.magasinier,
           magasins: const ['MAG0000'],
         ),

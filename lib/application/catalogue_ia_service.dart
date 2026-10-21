@@ -7,6 +7,7 @@ class FicheProduitIa {
   const FicheProduitIa({
     required this.codeBarres,
     required this.designation,
+    this.designationAr,
     this.marque,
     this.categorie,
     this.image,
@@ -15,6 +16,9 @@ class FicheProduitIa {
   });
   final String codeBarres;
   final String designation;
+
+  /// Nom arabe (catalogue BENS), s'il est connu.
+  final String? designationAr;
   final String? marque;
   final String? categorie;
   final String? image;
@@ -61,6 +65,44 @@ class SourceHttpJson implements SourceCatalogue {
   }
 }
 
+/// Catalogue BENS (catalog-api.bensds.com, `GET /products/barcode/<ean>`, lecture publique) : nom, nom arabe,
+/// marque, photo. Chaque recherche fait monter le produit dans le classement de son rayon.
+class SourceBens implements SourceCatalogue {
+  const SourceBens({required this.client, this.baseUrl = urlParDefaut, this.delai = const Duration(seconds: 5)});
+
+  static const String nomSource = 'Catalogue BENS';
+  static const String urlParDefaut = 'https://catalog-api.bensds.com';
+
+  @override
+  String get nom => nomSource;
+  final http.Client client;
+  final String baseUrl;
+  final Duration delai;
+
+  @override
+  Future<FicheProduitIa?> rechercher(String codeBarres) async {
+    if (!RegExp(r'^\d{6,14}$').hasMatch(codeBarres)) return null;
+    final r = await client
+        .get(Uri.parse('$baseUrl/products/barcode/$codeBarres'), headers: const {'Accept': 'application/json'})
+        .timeout(delai);
+    if (r.statusCode != 200) return null;
+    final j = jsonDecode(utf8.decode(r.bodyBytes));
+    if (j is! Map || j['success'] != true || j['data'] is! Map) return null;
+    final p = j['data'] as Map;
+    String? texte(Object? v) => v is String && v.trim().isNotEmpty ? v.trim() : null;
+    final nom = texte(p['nom']);
+    if (nom == null) return null;
+    return FicheProduitIa(
+      codeBarres: codeBarres,
+      designation: nom,
+      designationAr: texte(p['nom_ar']),
+      marque: texte(p['brand']),
+      image: texte(p['photo']),
+      source: nomSource,
+    );
+  }
+}
+
 /// Open Food Facts / Open Beauty Facts (API v2 publique).
 class SourceOpenFacts implements SourceCatalogue {
   const SourceOpenFacts({required this.nom, required this.hote, required this.client});
@@ -94,7 +136,7 @@ class SourceOpenFacts implements SourceCatalogue {
   }
 }
 
-/// Cascade CaisseDZ → Mantouj → Open Food Facts → Open Beauty Facts : première fiche trouvée.
+/// Cascade catalogue BENS → CaisseDZ → Mantouj → Open Food Facts → Open Beauty Facts : première fiche trouvée.
 class CatalogueIaService {
   const CatalogueIaService(this.sources);
 
@@ -106,6 +148,7 @@ class CatalogueIaService {
     String urlMantouj = '',
     String? cleApi,
   }) => CatalogueIaService([
+    SourceBens(client: client),
     SourceHttpJson(nom: 'CaisseDZ', baseUrl: urlCaisseDz, client: client, cleApi: cleApi),
     SourceHttpJson(nom: 'Mantouj', baseUrl: urlMantouj, client: client),
     SourceOpenFacts(nom: 'Open Food Facts', hote: 'world.openfoodfacts.org', client: client),

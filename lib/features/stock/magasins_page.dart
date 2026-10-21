@@ -42,7 +42,6 @@ class _MagasinsPageState extends ConsumerState<MagasinsPage> {
     final transferts = ref.watch(transfertsProvider).value ?? const <TransfertStock>[];
     return PageModule(
       moduleId: 'magasins',
-      sousTitre: l10n.stkDescriptionMagasins,
       actions: [DsBadge(libelle: l10n.stkPalierAvance, ton: DsBadgeTon.primaire, icone: LucideIcons.sparkles)],
       onglets: [l10n.stkOngletMagasins, l10n.stkOngletTransferts],
       comptes: [magasins.length, transferts.length],
@@ -157,6 +156,7 @@ class _MagasinsPageState extends ConsumerState<MagasinsPage> {
         DsActionModule(
           libelle: l10n.communModifier,
           icone: LucideIcons.pencil,
+          iconeSeule: true,
           regle: DsRegleSelection.une,
           onPressed: (choix, _) => afficherFormulaireMagasin(context, ref, magasin: choix.first),
         ),
@@ -195,7 +195,7 @@ class _MagasinsPageState extends ConsumerState<MagasinsPage> {
         libelle: l10n.communDate,
         attenue: true,
         valeur: (t) => t.date,
-        cellule: (_, t) => Text(formatDate.format(t.date)),
+        cellule: (_, t) => Text(formatDateHeure.format(t.date)),
       ),
       DsColonne(id: 'src', libelle: l10n.stkDepuis, flex: 2, valeur: (t) => noms[t.magasinSource] ?? t.magasinSource),
       DsColonne(
@@ -318,6 +318,7 @@ class _MagasinsPageState extends ConsumerState<MagasinsPage> {
         DsActionModule(
           libelle: l10n.communModifier,
           icone: LucideIcons.pencil,
+          iconeSeule: true,
           regle: DsRegleSelection.une,
           desactive: (choix) => choix.isNotEmpty && !choix.first.actif,
           onPressed: (choix, _) => afficherFormulaireTransfert(context, ref, transfert: choix.first),
@@ -325,7 +326,8 @@ class _MagasinsPageState extends ConsumerState<MagasinsPage> {
         DsActionModule(
           cle: const ValueKey('transferts_annuler'),
           libelle: l10n.dsAnnuler,
-          icone: LucideIcons.ban,
+          icone: LucideIcons.x,
+          iconeSeule: true,
           danger: true,
           onPressed: (choix, effacer) => annulerTransferts(context, ref, choix, effacer),
         ),

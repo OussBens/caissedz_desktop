@@ -21,7 +21,7 @@ void main() {
   group('Paramètres (DS v2.2)', () {
     testWidgets('barre unique : validation, puis tous les groupes enregistrés ensemble', (tester) async {
       final c = await pumpApp(tester, routeInitiale: '/parametres', taille: _taille);
-      expect(find.text('Préférences du poste, de la boutique et de l\'application.'), findsOneWidget);
+      expect(_cle('param_nav_systeme'), findsOneWidget);
       expect(tester.widget<DsButton>(_cle('param_enregistrer')).onPressed, isNull);
       // Système : valeur invalide refusée, rien n'est écrit.
       await tester.enterText(_champ('param_marge_pct'), '-5');

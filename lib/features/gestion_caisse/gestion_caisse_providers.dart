@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../app/demarrage_providers.dart';
 import '../../app/providers.dart';
 import '../../application/caisse_service.dart';
 import '../../application/cloture_service.dart';
@@ -14,8 +15,18 @@ import '../caisse/pos_controller.dart';
 import '../produits/produits_providers.dart';
 
 final caisseServiceProvider = Provider<CaisseService>(
-  (ref) => CaisseService(ref.watch(appDatabaseProvider).db, utilisateurCode: ref.watch(utilisateurCourantCodeProvider)),
+  (ref) => CaisseService(
+    ref.watch(appDatabaseProvider).db,
+    utilisateurCode: ref.watch(utilisateurCourantCodeProvider),
+    maxCaisses: ref.watch(licenceProvider).niveau?.caisses,
+  ),
 );
+
+/// Le palier permet-il les transferts entre caisses (plusieurs caisses) ? Basic : une seule caisse.
+final transfertsCaissePermisProvider = Provider<bool>((ref) => ref.watch(caisseServiceProvider).transfertsPermis);
+
+/// Le palier permet-il plus d'une caisse (« Nouvelle caisse ») ? Basic : la caisse principale seulement.
+final plusieursCaissesProvider = Provider<bool>((ref) => (ref.watch(licenceProvider).niveau?.caisses ?? 2) > 1);
 
 final clotureServiceProvider = Provider<ClotureService>(
   (ref) =>
@@ -118,6 +129,8 @@ String messageErreurCaisse(AppLocalizations l10n, ErreurCaisse e) => switch (e) 
   ErreurCaisse.dejaAnnule => l10n.gcErreurDejaAnnule,
   ErreurCaisse.motifObligatoire => l10n.entErreurMotif,
   ErreurCaisse.periodeCloturee => l10n.gcErreurPeriodeCloturee,
+  ErreurCaisse.limiteCaisses => l10n.limiteCaisses,
+  ErreurCaisse.transfertsNonInclus => l10n.limiteTransfertsCaisse,
 };
 
 String messageErreurCloture(AppLocalizations l10n, ErreurCloture e) => switch (e) {

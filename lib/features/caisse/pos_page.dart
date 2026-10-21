@@ -6,6 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../app/demarrage_providers.dart';
+import '../../application/catalogue_ia_service.dart';
+import '../../application/stock_service.dart';
 import '../../application/vente_service.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
@@ -21,6 +23,7 @@ import '../gestion_caisse/gestion_caisse_providers.dart';
 import '../produits/produit_form_dialog.dart';
 import '../produits/produits_donnees.dart';
 import '../produits/produits_providers.dart';
+import '../stock/stock_providers.dart';
 import '../tiers/tiers_dialogs.dart';
 import '../tiers/tiers_providers.dart';
 import 'caisse_dialogs.dart';
@@ -72,10 +75,14 @@ class _PosPageState extends ConsumerState<PosPage> {
   void _erreur(String message) =>
       unawaited(afficherResultat(context, type: DsResultatType.erreur, titre: l10n.posTitre, message: message));
 
-  Future<void> _executer(Future<void> Function() action) async {
+  Future<void> _executer(Future<void> Function() action, {bool transfertPropose = true}) async {
     try {
       await action();
     } on PosException catch (e) {
+      if (transfertPropose && e.manque != null && await _proposerTransfert(e.manque!)) {
+        return _executer(action, transfertPropose: false);
+      }
+      if (!mounted) return;
       _erreur(switch (e.erreur) {
         ErreurPos.stockInsuffisant => l10n.posErreurStock(e.detail ?? ''),
         ErreurPos.produitInconnu => l10n.posErreurProduitInconnu(e.detail ?? ''),
@@ -84,6 +91,47 @@ class _PosPageState extends ConsumerState<PosPage> {
       });
     } on VenteException catch (e) {
       _erreur(messageErreurVente(l10n, e, ref.read(deviseProvider)));
+    }
+  }
+
+  /// Admin seulement : le magasin de la caisse manque de stock mais un autre magasin en a assez → propose un
+  /// transfert du manque (document TRF) ; `true` si le transfert est fait (l'ajout est alors rejoué).
+  Future<bool> _proposerTransfert(ManqueStock manque) async {
+    if (!(ref.read(sessionProvider)?.estAdmin ?? false)) return false;
+    final source = await ctrl.sourceTransfert(manque);
+    if (source == null || !mounted) return false;
+    final magasins = await ref.read(stockRepositoryProvider).magasins();
+    final code = ref.read(posControllerProvider).magasinCode;
+    final destination = magasins.where((m) => m.code == code).firstOrNull?.nom ?? code;
+    String q(double v) => v == v.roundToDouble() ? v.toStringAsFixed(0) : v.toStringAsFixed(2);
+    if (!mounted) return false;
+    final ok = await afficherConfirmation(
+      context,
+      titre: l10n.posTransfertTitre,
+      message: l10n.posTransfertQuestion,
+      libelleConfirmer: l10n.posTransfertConfirmer,
+      icone: LucideIcons.arrowLeftRight,
+      contenu: _SchemaTransfert(
+        produit: manque.produit.designation,
+        source: source.magasin.nom,
+        stockSource: q(source.quantite),
+        destination: destination,
+        stockDestination: q(_disponible(manque.produit).clamp(0, double.infinity)),
+        quantite: q(manque.unites > 0 ? manque.unites : manque.nombre),
+      ),
+    );
+    if (!ok || !mounted) return false;
+    try {
+      final transfert = await ctrl.transfererManque(manque, source.magasin.code);
+      rafraichirStock(ref);
+      ref.invalidate(stocksCaisseProvider);
+      if (mounted) {
+        afficherToast(context, titre: l10n.posTransfertFait(transfert), ton: DsToastTon.succes);
+      }
+      return true;
+    } on StockException catch (e) {
+      _erreur(messageErreurStock(l10n, e.erreur));
+      return false;
     }
   }
 
@@ -126,6 +174,7 @@ class _PosPageState extends ConsumerState<PosPage> {
       produit: p,
       colis: _colisDe(p),
       stock: _disponible(p),
+      depassementPermis: ref.read(sessionProvider)?.estAdmin ?? false,
       scanne: scanne,
       // Scan pendant que le dialog est ouvert : même produit → + 1, autre code → traité après validation.
       estMemeProduit: (code) async {
@@ -153,6 +202,7 @@ class _PosPageState extends ConsumerState<PosPage> {
       produit: l.produit,
       colis: _colisDe(l.produit),
       stock: _disponible(l.produit, sauf: l),
+      depassementPermis: ref.read(sessionProvider)?.estAdmin ?? false,
       colisInitial: l.colis,
       nombreInitial: l.uniteVente == UniteVente.nombre,
       quantiteInitiale: l.quantite,
@@ -186,10 +236,17 @@ class _PosPageState extends ConsumerState<PosPage> {
     if (!mounted) return;
     if (r == null) {
       if (RegExp(r'^\d{8,}$').hasMatch(code)) {
-        final suite = await afficherProduitIntrouvable(context, code);
+        // Le code est cherché dans le catalogue BENS pendant que le dialog est ouvert : trouvé, le formulaire
+        // s'ouvre rempli (nom, nom arabe, marque, photo), sinon avec le seul code-barres.
+        FicheProduitIa? fiche;
+        final catalogue = SourceBens(client: ref.read(httpClientProvider)).rechercher(code).then(
+          (f) => fiche = f,
+          onError: (Object _) => null,
+        );
+        final suite = await afficherProduitIntrouvable(context, code, catalogue: catalogue);
         if (!mounted) return;
         if (suite == true) await _rechercheAvancee();
-        if (suite == false) await _nouveauProduit();
+        if (suite == false) await _creerProduitScanne(code, fiche);
       }
       return;
     }
@@ -245,6 +302,22 @@ class _PosPageState extends ConsumerState<PosPage> {
     ref.invalidate(produitsPosProvider);
   }
 
+  /// Produit créé depuis un code-barres inconnu : rempli par le catalogue BENS s'il l'a trouvé ; enregistré
+  /// avec un prix, il passe aussitôt au panier.
+  Future<void> _creerProduitScanne(String code, FicheProduitIa? fiche) async {
+    final p = await afficherFormulaireProduit(
+      context,
+      fiche: fiche,
+      propose: fiche == null ? ProduitPropose(designation: '', codeBarres: code) : null,
+    );
+    ref.invalidate(produitsPosProvider);
+    if (!mounted || p == null) return;
+    _scan.clear();
+    setState(() => _recherche = '');
+    if (p.prixVente > 0 && p.actif) await _choisirProduit(p, scanne: true);
+    _scanFocus.requestFocus();
+  }
+
   // ------------------------------------------------------------------ Panier
 
   Future<void> _choisirClient() async {
@@ -293,7 +366,12 @@ class _PosPageState extends ConsumerState<PosPage> {
     if (r == null || !mounted) return;
     ctrl.prixLigne(index, r.prix);
     if (r.catalogue) {
-      await ref.read(catalogueServiceProvider).modifierProduit(l.produit.copyWith(prixVente: r.prix));
+      await ref
+          .read(catalogueServiceProvider)
+          .modifierProduit(
+            // Prix saisi TTC ; le prix de vente du produit est HT.
+            l.produit.copyWith(prixVente: ref.read(prixHtProvider)(l.produit, r.prix)),
+          );
       ref.read(catalogueVersionProvider.notifier).incrementer();
     }
     if (!mounted) return;
@@ -561,22 +639,16 @@ class _PosPageState extends ConsumerState<PosPage> {
                 contour: true,
                 onPressed: () => unawaited(afficherCalculatrice(context)),
               ),
-              DsIconButton(
-                key: const ValueKey('caisse_basculer_produits'),
-                icone: _afficherProduits ? LucideIcons.panelLeftClose : LucideIcons.panelLeftOpen,
-                tooltip: _afficherProduits ? l10n.posMasquerProduits : l10n.posAfficherProduits,
-                taille: DsTailles.controleSm,
-                contour: _afficherProduits,
-                actif: !_afficherProduits,
-                onPressed: () => setState(() => _afficherProduits = !_afficherProduits),
-              ),
-              DsIconButton(
-                icone: LucideIcons.settings2,
-                tooltip: l10n.posParametres,
-                taille: DsTailles.controleSm,
-                contour: true,
-                onPressed: () => unawaited(afficherParametresCaisse(context, ref)),
-              ),
+              // Paramètres de la caisse (caisse et magasin du poste) : pas dans l'offre Basic (une caisse, un magasin).
+              if (ref.watch(licenceProvider).couvre(NiveauLicence.avance))
+                DsIconButton(
+                  key: const ValueKey('caisse_parametres'),
+                  icone: LucideIcons.settings2,
+                  tooltip: l10n.posParametres,
+                  taille: DsTailles.controleSm,
+                  contour: true,
+                  onPressed: () => unawaited(afficherParametresCaisse(context, ref)),
+                ),
             ],
           ),
         ),
@@ -639,8 +711,12 @@ class _PosPageState extends ConsumerState<PosPage> {
     final nomsCategories = {for (final c in categories) c.code: c.nom};
     final stocks = ref.watch(stocksCaisseProvider).value ?? const <String, double>{};
     final devise = ref.watch(deviseProvider);
+    final admin = ref.watch(sessionProvider)?.estAdmin ?? false;
+    // Stock affiché = stock du magasin − quantités déjà mises dans les paniers ouverts (avant l'encaissement).
+    final etat = ref.watch(posControllerProvider);
     final r = _recherche.trim().toLowerCase();
     final liste = _disposition == DsVueModule.liste;
+    final langue = Localizations.localeOf(context).languageCode;
     final List<Widget> tuiles;
     if (_vue == _Vue.packs) {
       tuiles = [
@@ -662,20 +738,21 @@ class _PosPageState extends ConsumerState<PosPage> {
         for (final p in produits)
           if ((_categorie == null || p.categorieCode == _categorie) &&
               (r.isEmpty ||
-                  p.designation.toLowerCase().contains(r) ||
+                  p.texteRecherche.toLowerCase().contains(r) ||
                   p.code.toLowerCase().contains(r) ||
                   (p.codeBarres?.contains(r) ?? false)))
             DsProductTile(
               key: ValueKey('tuile_${p.code}'),
-              nom: p.designation,
+              nom: p.nom(langue),
               code: p.code,
-              prix: p.prixVente,
-              stock: stocks[p.code] ?? 0,
+              prix: ref.read(prixCaisseProvider)(p),
+              stock: (stocks[p.code] ?? 0) - etat.unitesReservees(p.code),
               categorie: nomsCategories[p.categorieCode],
               image: imageProduit(p.image),
               seuilBas: (p.seuilStock ?? 5).toDouble(),
               devise: devise,
               enLigne: liste,
+              ruptureCliquable: admin,
               onAjouter: () => unawaited(_choisirProduit(p)),
               onEntree: () => unawaited(_entreeRapide(p)),
             ),
@@ -755,35 +832,39 @@ class _PosPageState extends ConsumerState<PosPage> {
     );
   }
 
-  /// Montants rapides de la vente au montant (balance, articles non codifiés) : cumulés sur une seule ligne.
+  /// Montants rapides de la vente au montant (balance, articles non codifiés) : cumulés sur une seule ligne ;
+  /// dans une colonne étroite, « Autre montant » se réduit à son icône pour que les montants restent lisibles.
   Widget _montantsRapides() {
     return Tooltip(
       message: l10n.posMontantAide,
       waitDuration: const Duration(seconds: 1),
-      child: Row(
-        spacing: DsSpacing.s2,
-        children: [
-          Icon(LucideIcons.coins, size: 16, color: context.ds.colors.textMuted),
-          for (final m in _montants)
-            Expanded(
-              child: DsButton(
-                key: ValueKey('montant_$m'),
-                libelle: '+$m',
-                taille: DsButtonTaille.sm,
-                variante: DsButtonVariante.secondaire,
-                pleineLargeur: true,
-                onPressed: () => _executer(() => ctrl.ajouterMontant(m.toDouble())),
+      child: LayoutBuilder(
+        builder: (context, contraintes) => Row(
+          spacing: DsSpacing.s2,
+          children: [
+            Icon(LucideIcons.coins, size: 16, color: context.ds.colors.textMuted),
+            for (final m in _montants)
+              Expanded(
+                child: DsButton(
+                  key: ValueKey('montant_$m'),
+                  libelle: isolerLtr('+$m'),
+                  taille: DsButtonTaille.sm,
+                  variante: DsButtonVariante.secondaire,
+                  pleineLargeur: true,
+                  onPressed: () => _executer(() => ctrl.ajouterMontant(m.toDouble())),
+                ),
               ),
+            DsButton(
+              key: const ValueKey('montant_autre'),
+              libelle: l10n.posMontantAutre,
+              icone: LucideIcons.pencil,
+              iconeSeule: contraintes.maxWidth < 440,
+              taille: DsButtonTaille.sm,
+              variante: DsButtonVariante.fantome,
+              onPressed: () => _saisirMontant(),
             ),
-          DsButton(
-            key: const ValueKey('montant_autre'),
-            libelle: l10n.posMontantAutre,
-            icone: LucideIcons.pencil,
-            taille: DsButtonTaille.sm,
-            variante: DsButtonVariante.fantome,
-            onPressed: () => _saisirMontant(),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -799,82 +880,97 @@ class _PosPageState extends ConsumerState<PosPage> {
     final clients = ref.watch(clientsProvider).value ?? const <Client>[];
     final remises = _remisesGlobales();
 
+    final titre = Text.rich(
+      TextSpan(
+        text: '${l10n.posPanierTitre} ',
+        children: [
+          TextSpan(
+            text: '· ${l10n.posVente(panier.id)}',
+            style: TextStyle(color: c.textMuted, fontWeight: FontWeight.w500),
+          ),
+        ],
+      ),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      style: t.cardTitle.copyWith(fontSize: 16),
+    );
+
+    // Nouveau produit, nouveau client, vider le panier, puis afficher / masquer les produits (à droite).
+    final boutons = [
+      DsIconButton(
+        icone: LucideIcons.packagePlus,
+        tooltip: l10n.posNouveauProduit,
+        taille: DsTailles.controleSm,
+        onPressed: () => unawaited(_nouveauProduit()),
+      ),
+      DsIconButton(
+        icone: LucideIcons.userPlus,
+        tooltip: l10n.posNouveauClient,
+        taille: DsTailles.controleSm,
+        onPressed: () => unawaited(_nouveauClient()),
+      ),
+      DsIconButton(
+        key: const ValueKey('panier_vider'),
+        icone: LucideIcons.trash2,
+        tooltip: l10n.posViderPanier,
+        taille: DsTailles.controleSm,
+        onPressed: panier.estVide ? null : _vider,
+      ),
+      DsIconButton(
+        key: const ValueKey('caisse_basculer_produits'),
+        icone: _afficherProduits ? LucideIcons.panelLeftClose : LucideIcons.panelLeftOpen,
+        tooltip: _afficherProduits ? l10n.posMasquerProduits : l10n.posAfficherProduits,
+        taille: DsTailles.controleSm,
+        contour: _afficherProduits,
+        actif: !_afficherProduits,
+        onPressed: () => setState(() => _afficherProduits = !_afficherProduits),
+      ),
+    ];
+
+    final selectClient = DsSelect<String>(
+      key: const ValueKey('panier_client'),
+      taille: DsTailles.controleSm,
+      icone: LucideIcons.user,
+      valeur: panier.clientCode,
+      options: [
+        'CLN0000',
+        // Clients inactifs masqués (le client déjà choisi reste affiché).
+        for (final cl in clients)
+          if (!cl.estDePassage && (cl.actif || cl.code == panier.clientCode)) cl.code,
+      ],
+      libelle: _nomClient,
+      onChanged: (v) => ctrl.choisirClient(v ?? 'CLN0000'),
+      onLookup: () => unawaited(_choisirClient()),
+      lookupTooltip: l10n.posChoisirClient,
+    );
+    final selectRemise = DsSelect<String?>(
+      key: const ValueKey('panier_remise'),
+      taille: DsTailles.controleSm,
+      icone: LucideIcons.percent,
+      valeur: panier.remiseCode,
+      options: [null, for (final r in remises) r.code],
+      libelle: (code) =>
+          code == null ? l10n.posAucuneRemise : _libelleRemise(remises.firstWhere((r) => r.code == code)),
+      onChanged: (code) => ctrl.appliquerRemise(remises.where((r) => r.code == code).firstOrNull),
+      onLookup: () => unawaited(_choisirRemise()),
+      lookupTooltip: l10n.posChoisirRemise,
+    );
+
+    // Titre et boutons en tête dans les deux dispositions. Produits affichés : client et remise sous le titre.
+    // Produits masqués : les lignes à gauche, le panneau d'encaissement à droite (client, remise, puis montants,
+    // total et encaissement).
     final tete = Row(
       spacing: DsSpacing.s2,
       children: [
-        Expanded(
-          child: Text.rich(
-            TextSpan(
-              text: '${l10n.posPanierTitre} ',
-              children: [
-                TextSpan(
-                  text: '· ${l10n.posVente(panier.id)}',
-                  style: TextStyle(color: c.textMuted, fontWeight: FontWeight.w500),
-                ),
-              ],
-            ),
-            style: t.cardTitle.copyWith(fontSize: 16),
-          ),
-        ),
-        DsIconButton(
-          icone: LucideIcons.packagePlus,
-          tooltip: l10n.posNouveauProduit,
-          taille: DsTailles.controleSm,
-          onPressed: () => unawaited(_nouveauProduit()),
-        ),
-        DsIconButton(
-          icone: LucideIcons.userPlus,
-          tooltip: l10n.posNouveauClient,
-          taille: DsTailles.controleSm,
-          onPressed: () => unawaited(_nouveauClient()),
-        ),
-        DsIconButton(
-          key: const ValueKey('panier_vider'),
-          icone: LucideIcons.trash2,
-          tooltip: l10n.posViderPanier,
-          taille: DsTailles.controleSm,
-          onPressed: panier.estVide ? null : _vider,
-        ),
+        Expanded(child: titre),
+        ...boutons,
       ],
     );
-
     final selects = Row(
       spacing: DsSpacing.s2,
       children: [
-        Expanded(
-          flex: 100,
-          child: DsSelect<String>(
-            key: const ValueKey('panier_client'),
-            taille: DsTailles.controleSm,
-            icone: LucideIcons.user,
-            valeur: panier.clientCode,
-            options: [
-              'CLN0000',
-              // Clients inactifs masqués (le client déjà choisi reste affiché).
-              for (final cl in clients)
-                if (!cl.estDePassage && (cl.actif || cl.code == panier.clientCode)) cl.code,
-            ],
-            libelle: _nomClient,
-            onChanged: (v) => ctrl.choisirClient(v ?? 'CLN0000'),
-            onLookup: () => unawaited(_choisirClient()),
-            lookupTooltip: l10n.posChoisirClient,
-          ),
-        ),
-        Expanded(
-          flex: 115,
-          child: DsSelect<String?>(
-            key: const ValueKey('panier_remise'),
-            taille: DsTailles.controleSm,
-            icone: LucideIcons.percent,
-            valeur: panier.remiseCode,
-            options: [null, for (final r in remises) r.code],
-            libelle: (code) =>
-                code == null ? l10n.posAucuneRemise : _libelleRemise(remises.firstWhere((r) => r.code == code)),
-            onChanged: (code) => ctrl.appliquerRemise(remises.where((r) => r.code == code).firstOrNull),
-            onLookup: () => unawaited(_choisirRemise()),
-            lookupTooltip: l10n.posChoisirRemise,
-          ),
-        ),
+        Expanded(flex: 100, child: selectClient),
+        Expanded(flex: 115, child: selectRemise),
       ],
     );
 
@@ -1009,24 +1105,32 @@ class _PosPageState extends ConsumerState<PosPage> {
       child: large
           ? Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              spacing: DsSpacing.s6,
+              spacing: DsSpacing.s4,
               children: [
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     spacing: DsSpacing.s3,
                     children: [
-                      tete,
+                      SizedBox(height: DsTailles.controleSm, child: tete),
                       Expanded(child: lignes),
                     ],
                   ),
                 ),
-                SizedBox(
-                  width: 380,
+                Container(
+                  key: const ValueKey('panier_encaissement'),
+                  width: 420,
+                  padding: const EdgeInsets.all(DsSpacing.s4),
+                  decoration: BoxDecoration(color: c.surfaceSunken, borderRadius: DsRadius.borderLg),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     spacing: DsSpacing.s3,
-                    children: [selects, const Spacer(), bas],
+                    children: [
+                      DsFormRow(libelle: l10n.posClientLabel, empile: true, child: selectClient),
+                      DsFormRow(libelle: l10n.dsPosRemise, empile: true, child: selectRemise),
+                      const Spacer(),
+                      bas,
+                    ],
                   ),
                 ),
               ],
@@ -1041,6 +1145,92 @@ class _PosPageState extends ConsumerState<PosPage> {
                 bas,
               ],
             ),
+    );
+  }
+}
+
+/// Schéma du transfert proposé : magasin source (stock) → quantité → magasin de la caisse (stock, manque).
+class _SchemaTransfert extends StatelessWidget {
+  const _SchemaTransfert({
+    required this.produit,
+    required this.source,
+    required this.stockSource,
+    required this.destination,
+    required this.stockDestination,
+    required this.quantite,
+  });
+
+  final String produit;
+  final String source;
+  final String stockSource;
+  final String destination;
+  final String stockDestination;
+  final String quantite;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.ds.colors;
+    final t = context.ds.typo;
+    final l10n = AppLocalizations.of(context);
+    Widget magasin(String titre, String nom, String stock, {String? manque}) => Expanded(
+      child: Container(
+        padding: const EdgeInsets.all(DsSpacing.s3),
+        decoration: BoxDecoration(
+          color: manque == null ? c.surfaceSunken : c.dangerTint,
+          borderRadius: DsRadius.borderLg,
+          border: Border.all(color: manque == null ? c.borderDefault : c.danger),
+        ),
+        child: Column(
+          spacing: DsSpacing.s1,
+          children: [
+            Text(titre.toUpperCase(), style: t.overline.copyWith(color: c.textMuted)),
+            Icon(LucideIcons.warehouse, size: DsTailles.iconeLg, color: manque == null ? c.primary : c.dangerFg),
+            Text(nom, style: t.bodySmStrong, textAlign: TextAlign.center, maxLines: 2),
+            Text(l10n.posTransfertStock(stock), style: t.caption.copyWith(color: c.textSecondary)),
+            if (manque != null) DsBadge(libelle: l10n.posTransfertManque(manque), ton: DsBadgeTon.danger, petit: true),
+          ],
+        ),
+      ),
+    );
+    return Column(
+      key: const ValueKey('schema_transfert'),
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      spacing: DsSpacing.s3,
+      children: [
+        Row(
+          spacing: DsSpacing.s2,
+          children: [
+            Icon(LucideIcons.package, size: DsTailles.iconeSm, color: c.textMuted),
+            Expanded(
+              child: Text(produit, style: t.bodyStrong, maxLines: 1, overflow: TextOverflow.ellipsis),
+            ),
+          ],
+        ),
+        IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              magasin(l10n.posTransfertDepuis, source, stockSource),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: DsSpacing.s2),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  spacing: DsSpacing.s1,
+                  children: [
+                    DsBadge(libelle: quantite, ton: DsBadgeTon.primaire),
+                    Icon(
+                      Directionality.of(context) == TextDirection.rtl ? LucideIcons.arrowLeft : LucideIcons.arrowRight,
+                      size: DsTailles.iconeLg,
+                      color: c.primary,
+                    ),
+                  ],
+                ),
+              ),
+              magasin(l10n.posTransfertVers, destination, stockDestination, manque: quantite),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

@@ -78,14 +78,12 @@ class _HistoriquePageState extends ConsumerState<HistoriquePage> {
     ];
     return PageModule(
       moduleId: 'historique',
-      sousTitre: l10n.hiDescription,
       child: DsModuleTable<EntreeHistorique>(
         key: const ValueKey('historique'),
         entite: l10n.hiEntite,
         lignes: lignes,
         colonnes: colonnes,
         cle: (e) => e.id,
-        filtresOuverts: true,
         colonnesFiltres: 4,
         permissions: permissionsSession(ref),
         messageVide: l10n.hiAucun,

@@ -21,11 +21,12 @@ void main() {
       final c = await pumpApp(tester, routeInitiale: '/utilisateurs', taille: _taille);
       expect(find.text('Utilisateurs'), findsWidgets);
       expect(find.text('Rôles'), findsWidgets);
+      await ouvrirChiffres(tester);
       expect(find.text('Utilisateurs actifs'), findsOneWidget);
       expect(find.text('Administrateur'), findsWidgets);
       expect(find.text('@demo'), findsNothing, reason: 'compte de démonstration masqué');
       await clic(tester, _cle('usr_nouveau'));
-      expect(find.text('USR0002'), findsOneWidget, reason: 'code proposé');
+      expect(find.text('USR0002'), findsNothing, reason: 'pas de champ Code à la création');
       expect(tester.widget<DsButton>(_cle('usr_enregistrer')).onPressed, isNull);
       await tester.enterText(_champ('usr_identifiant'), 'admin');
       await tester.pump();
@@ -85,7 +86,7 @@ void main() {
       await clic(tester, find.text('ROL0000'));
       // Assistant : nom unique, modules, permissions spéciales.
       await clic(tester, _cle('role_nouveau'));
-      expect(find.text('ROL0003'), findsOneWidget);
+      expect(find.text('ROL0003'), findsNothing, reason: 'pas de champ Code à la création');
       await tester.enterText(_champ('role_nom'), 'caissier');
       await tester.pump();
       expect(find.text('Ce nom de rôle existe déjà'), findsOneWidget);
@@ -110,6 +111,20 @@ void main() {
       expect(find.text('Rôles désactivés'), findsOneWidget);
       expect((await PermissionsRepository(c.read(appDatabaseProvider).db).role('ROL0002'))!.actif, isFalse);
       await tester.pump(const Duration(seconds: 5));
+    });
+
+    testWidgets('offre Basic : ni caisse attachée ni magasins à choisir (une caisse, un magasin)', (tester) async {
+      await pumpApp(tester, etat: EtatApp.connecteeAdminBasic, routeInitiale: '/utilisateurs', taille: _taille);
+      await clic(tester, _cle('usr_nouveau'));
+      expect(_cle('usr_caisse'), findsNothing);
+      expect(_cle('usr_magasins'), findsNothing);
+    });
+
+    testWidgets('Ultra : caisse attachée et magasins à choisir', (tester) async {
+      await pumpApp(tester, routeInitiale: '/utilisateurs', taille: _taille);
+      await clic(tester, _cle('usr_nouveau'));
+      expect(_cle('usr_caisse'), findsOneWidget);
+      expect(_cle('usr_magasins'), findsOneWidget);
     });
 
     testWidgets('arabe : écran Utilisateurs en RTL', (tester) async {

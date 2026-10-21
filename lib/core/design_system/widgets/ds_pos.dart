@@ -15,7 +15,7 @@ import 'ds_primitives.dart';
 class DsCartColonnes {
   const DsCartColonnes._();
   static const double colis = 72;
-  static const double qte = 80;
+  static const double qte = 92; // − n + : jusqu'à 4 chiffres sans débordement
   static const double pieces = 44;
   static const double montant = 88;
   static const double action = 18;
@@ -478,72 +478,7 @@ class DsCashSessionCard extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final fond = ouverte ? c.successTint : c.surfaceSunken;
     final couleur = ouverte ? c.successFg : c.textSecondary;
-    if (compact) {
-      return Container(
-        height: 40,
-        padding: const EdgeInsetsDirectional.only(start: 10, end: 6),
-        decoration: BoxDecoration(
-          color: c.surfaceCard,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: c.borderDefault),
-          boxShadow: c.shadowXs,
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          spacing: 10,
-          children: [
-            Container(
-              width: 8,
-              height: 8,
-              decoration: BoxDecoration(
-                color: ouverte ? c.success : c.textDisabled,
-                shape: BoxShape.circle,
-                boxShadow: ouverte ? [BoxShadow(color: c.successTint, spreadRadius: 3)] : null,
-              ),
-            ),
-            Text(
-              '$caisse · ${ouverte ? '${l10n.dsPosOuverte} ${ouvertureHeure ?? ''}' : l10n.dsPosFermee}',
-              style: t.bodySmStrong,
-            ),
-            if (ouverte && solde != null)
-              Container(
-                padding: const EdgeInsetsDirectional.only(start: 10),
-                decoration: BoxDecoration(
-                  border: BorderDirectional(start: BorderSide(color: c.borderDefault)),
-                ),
-                child: Text(
-                  formaterMontant(solde!, devise),
-                  style: t.bodySmStrong.copyWith(color: c.textSecondary, fontFeatures: DsTypography.tabular),
-                ),
-              ),
-            if (ouverte) ...[
-              if (onMouvement != null)
-                DsButton(
-                  libelle: l10n.dsPosMouvement,
-                  icone: LucideIcons.arrowLeftRight,
-                  taille: DsButtonTaille.sm,
-                  variante: DsButtonVariante.fantome,
-                  onPressed: onMouvement,
-                ),
-              if (onCloturer != null)
-                DsButton(
-                  libelle: l10n.dsPosCloturer,
-                  icone: LucideIcons.lock,
-                  taille: DsButtonTaille.sm,
-                  variante: DsButtonVariante.fantome,
-                  onPressed: onCloturer,
-                ),
-            ] else if (onOuvrir != null)
-              DsButton(
-                libelle: l10n.dsPosOuvrir,
-                icone: LucideIcons.lockOpen,
-                taille: DsButtonTaille.sm,
-                onPressed: onOuvrir,
-              ),
-          ],
-        ),
-      );
-    }
+    if (compact) return _BandeSessionCaisse(carte: this);
     final detail = ouverte
         ? [
             if (ouvertureHeure != null) l10n.dsPosOuverteA(ouvertureHeure!) else l10n.dsPosOuverte,
@@ -642,6 +577,119 @@ class DsCashSessionCard extends StatelessWidget {
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Bande compacte de la caisse (en-tête de la Caisse) : seulement la caisse au repos ; au survol, l'état,
+/// l'heure d'ouverture, le solde et les boutons Mouvement / Clôturer se déplient. Fermée, « Ouvrir » reste
+/// visible (seule action possible).
+class _BandeSessionCaisse extends StatefulWidget {
+  const _BandeSessionCaisse({required this.carte});
+  final DsCashSessionCard carte;
+
+  @override
+  State<_BandeSessionCaisse> createState() => _BandeSessionCaisseState();
+}
+
+class _BandeSessionCaisseState extends State<_BandeSessionCaisse> {
+  bool _survol = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.ds.colors;
+    final t = context.ds.typo;
+    final l10n = AppLocalizations.of(context);
+    final k = widget.carte;
+    final ouverte = k.ouverte;
+    final details = [
+      Text(
+        ouverte ? '${l10n.dsPosOuverte} ${k.ouvertureHeure ?? ''}'.trim() : l10n.dsPosFermee,
+        style: t.bodySm.copyWith(color: c.textSecondary),
+      ),
+      if (ouverte && k.solde != null)
+        Container(
+          padding: const EdgeInsetsDirectional.only(start: 10),
+          decoration: BoxDecoration(
+            border: BorderDirectional(start: BorderSide(color: c.borderDefault)),
+          ),
+          child: Text(
+            formaterMontant(k.solde!, k.devise),
+            style: t.bodySmStrong.copyWith(color: c.textSecondary, fontFeatures: DsTypography.tabular),
+          ),
+        ),
+      if (ouverte && k.onMouvement != null)
+        DsButton(
+          libelle: l10n.dsPosMouvement,
+          icone: LucideIcons.arrowLeftRight,
+          taille: DsButtonTaille.sm,
+          variante: DsButtonVariante.fantome,
+          onPressed: k.onMouvement,
+        ),
+      if (ouverte && k.onCloturer != null)
+        DsButton(
+          libelle: l10n.dsPosCloturer,
+          icone: LucideIcons.lock,
+          taille: DsButtonTaille.sm,
+          variante: DsButtonVariante.fantome,
+          onPressed: k.onCloturer,
+        ),
+    ];
+    return MouseRegion(
+      onEnter: (_) => setState(() => _survol = true),
+      onExit: (_) => setState(() => _survol = false),
+      child: AnimatedContainer(
+        duration: DsMotion.base,
+        curve: DsMotion.standard,
+        height: 40,
+        padding: const EdgeInsetsDirectional.only(start: 10, end: 6),
+        decoration: BoxDecoration(
+          color: c.surfaceCard,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: _survol ? c.borderStrong : c.borderDefault),
+          boxShadow: _survol ? c.shadowSm : c.shadowXs,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          spacing: 10,
+          children: [
+            Container(
+              width: 8,
+              height: 8,
+              decoration: BoxDecoration(
+                color: ouverte ? c.success : c.textDisabled,
+                shape: BoxShape.circle,
+                boxShadow: ouverte ? [BoxShadow(color: c.successTint, spreadRadius: 3)] : null,
+              ),
+            ),
+            Text(k.caisse, style: t.bodySmStrong),
+            AnimatedSize(
+              duration: DsMotion.slow,
+              curve: DsMotion.emphasized,
+              alignment: AlignmentDirectional.centerStart,
+              child: AnimatedOpacity(
+                duration: DsMotion.base,
+                opacity: _survol ? 1 : 0,
+                child: _survol
+                    ? Row(
+                        key: const ValueKey('caisse_session_details'),
+                        mainAxisSize: MainAxisSize.min,
+                        spacing: 10,
+                        children: details,
+                      )
+                    : const SizedBox(height: 40),
+              ),
+            ),
+            if (!ouverte && k.onOuvrir != null)
+              DsButton(
+                libelle: l10n.dsPosOuvrir,
+                icone: LucideIcons.lockOpen,
+                taille: DsButtonTaille.sm,
+                onPressed: k.onOuvrir,
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -1130,6 +1178,7 @@ class DsProductTile extends StatefulWidget {
     this.onEntree,
     this.seuilBas = 5,
     this.enLigne = false,
+    this.ruptureCliquable = false,
   });
   final String nom;
   final String? code;
@@ -1142,6 +1191,9 @@ class DsProductTile extends StatefulWidget {
   final VoidCallback? onEntree;
   final double seuilBas;
   final bool enLigne;
+
+  /// En rupture, la tuile reste cliquable (admin : la caisse propose un transfert depuis un autre magasin).
+  final bool ruptureCliquable;
 
   @override
   State<DsProductTile> createState() => _DsProductTileState();
@@ -1199,15 +1251,19 @@ class _DsProductTileState extends State<DsProductTile> {
     final rupture = w.stock != null && w.stock! <= 0;
     final stockTexte = w.stock == null
         ? null
-        : Text(
-            rupture ? l10n.dsPosRupture : l10n.dsPosEnStock(formaterNombre(w.stock!)),
-            style: t.caption.copyWith(
-              fontSize: 11,
-              fontWeight: FontWeight.w500,
-              color: rupture ? c.dangerFg : (w.stock! <= w.seuilBas ? c.warningFg : c.textMuted),
+        : DsStockAnime(
+            key: const ValueKey('tuile_stock'),
+            stock: w.stock!,
+            builder: (flash) => Text(
+              rupture ? l10n.dsPosRupture : l10n.dsPosEnStock(formaterNombre(w.stock!)),
+              style: t.caption.copyWith(
+                fontSize: 11,
+                fontWeight: flash == null ? FontWeight.w500 : FontWeight.w700,
+                color: flash ?? (rupture ? c.dangerFg : (w.stock! <= w.seuilBas ? c.warningFg : c.textMuted)),
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
           );
     final prixTexte = Text.rich(
       TextSpan(
@@ -1250,11 +1306,11 @@ class _DsProductTileState extends State<DsProductTile> {
 
     if (w.enLigne) {
       return MouseRegion(
-        cursor: rupture ? SystemMouseCursors.forbidden : SystemMouseCursors.click,
+        cursor: rupture && !w.ruptureCliquable ? SystemMouseCursors.forbidden : SystemMouseCursors.click,
         onEnter: (_) => setState(() => _survol = true),
         onExit: (_) => setState(() => _survol = false),
         child: GestureDetector(
-          onTap: rupture ? null : w.onAjouter,
+          onTap: rupture && !w.ruptureCliquable ? null : w.onAjouter,
           child: Opacity(
             opacity: rupture ? .55 : 1,
             child: AnimatedContainer(
@@ -1315,14 +1371,14 @@ class _DsProductTileState extends State<DsProductTile> {
     final rtl = Directionality.of(context) == TextDirection.rtl;
     final actif = _survol && !rupture;
     final carte = MouseRegion(
-      cursor: rupture ? SystemMouseCursors.forbidden : SystemMouseCursors.click,
+      cursor: rupture && !w.ruptureCliquable ? SystemMouseCursors.forbidden : SystemMouseCursors.click,
       onEnter: (_) => _entrerCarte(),
       onExit: (_) => _quitterCarte(),
       child: GestureDetector(
         onTapDown: (_) => setState(() => _presse = true),
         onTapUp: (_) => setState(() => _presse = false),
         onTapCancel: () => setState(() => _presse = false),
-        onTap: rupture ? null : w.onAjouter,
+        onTap: rupture && !w.ruptureCliquable ? null : w.onAjouter,
         child: AnimatedScale(
           scale: _presse ? .98 : 1,
           duration: DsMotion.fast,
@@ -1879,7 +1935,7 @@ class DsCalculator extends StatefulWidget {
   /// Évalue une expression (+ − × ÷ % parenthèses) ; `null` si invalide.
   static double? evaluer(String expr) {
     final e = expr
-        .replaceAll(' ', '')
+        .replaceAll(blancsNombre, '')
         .replaceAll(',', '.')
         .replaceAll('×', '*')
         .replaceAll('÷', '/')
@@ -2157,6 +2213,73 @@ class _DsCalculatorState extends State<DsCalculator> {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Stock d'une carte produit animé quand il baisse (produit mis au panier) : le texte rebondit et passe
+/// brièvement à la couleur primaire sur un fond teinté, puis revient à sa couleur d'état.
+class DsStockAnime extends StatefulWidget {
+  const DsStockAnime({super.key, required this.stock, required this.builder});
+
+  final double stock;
+
+  /// Construit le texte ; `flash` est la couleur de l'animation en cours, `null` au repos.
+  final Widget Function(Color? flash) builder;
+
+  @override
+  State<DsStockAnime> createState() => _DsStockAnimeState();
+}
+
+class _DsStockAnimeState extends State<DsStockAnime> with SingleTickerProviderStateMixin {
+  late final _anim = AnimationController(vsync: this, duration: DsMotion.slower + DsMotion.base);
+
+  // Rebond : grossit vite, redescend un peu sous la taille normale, puis se pose.
+  static final _echelle = TweenSequence<double>([
+    TweenSequenceItem(
+      tween: Tween<double>(begin: 1, end: 1.28).chain(CurveTween(curve: DsMotion.emphasized)),
+      weight: 30,
+    ),
+    TweenSequenceItem(
+      tween: Tween<double>(begin: 1.28, end: .94).chain(CurveTween(curve: DsMotion.standard)),
+      weight: 30,
+    ),
+    TweenSequenceItem(tween: Tween<double>(begin: .94, end: 1).chain(CurveTween(curve: DsMotion.standard)), weight: 40),
+  ]);
+
+  @override
+  void didUpdateWidget(DsStockAnime ancien) {
+    super.didUpdateWidget(ancien);
+    if (widget.stock < ancien.stock - 1e-9) _anim.forward(from: 0);
+  }
+
+  @override
+  void dispose() {
+    _anim.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.ds.colors;
+    return AnimatedBuilder(
+      animation: _anim,
+      builder: (context, _) {
+        final enCours = _anim.isAnimating;
+        // Intensité de la couleur : pleine au début, s'efface sur la fin.
+        final intensite = enCours ? (1 - Curves.easeIn.transform(_anim.value)).clamp(0.0, 1.0) : 0.0;
+        return Transform.scale(
+          scale: enCours ? _echelle.transform(_anim.value) : 1,
+          alignment: AlignmentDirectional.centerStart,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: Color.lerp(c.primaryTint.withValues(alpha: 0), c.primaryTint, intensite),
+              borderRadius: DsRadius.borderSm,
+            ),
+            child: widget.builder(enCours ? c.primary : null),
+          ),
+        );
+      },
     );
   }
 }

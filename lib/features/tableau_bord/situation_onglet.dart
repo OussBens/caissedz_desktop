@@ -29,7 +29,7 @@ import '../tiers/tiers_providers.dart';
 import 'tableau_bord_page.dart';
 
 /// Groupe d'analyses de la navigation de la Situation.
-enum GroupeSituation { tresorerie, stock, ventes, marges, tiers }
+enum GroupeSituation { tresorerie, stock, ventes, marges, tiers, fiscalite }
 
 /// Filtre proposé par une analyse.
 enum FiltreSituation { caisse, typeCaisse, produit, magasin, caissier, categorie, client, regrouper, typeTiers, wilaya }
@@ -78,6 +78,7 @@ class AnalyseSituation {
       FiltreSituation.typeTiers,
       FiltreSituation.wilaya,
     ], periode: false),
+    AnalyseSituation('tva', GroupeSituation.fiscalite, LucideIcons.landmark, []),
   ];
 }
 
@@ -92,6 +93,7 @@ String libelleAnalyse(AppLocalizations l10n, String id) => switch (id) {
   'cout' => l10n.situationCout,
   'scli' => l10n.situationScli,
   'sfrn' => l10n.situationSfrn,
+  'tva' => l10n.situationTva,
   _ => id,
 };
 
@@ -101,6 +103,7 @@ String libelleGroupeSituation(AppLocalizations l10n, GroupeSituation g) => switc
   GroupeSituation.ventes => l10n.situationGroupeVentes,
   GroupeSituation.marges => l10n.situationGroupeMarges,
   GroupeSituation.tiers => l10n.situationGroupeTiers,
+  GroupeSituation.fiscalite => l10n.situationGroupeFiscalite,
 };
 
 /// Onglet Situation du tableau de bord : navigation par groupes (220 px) et vue de l'analyse.
@@ -276,6 +279,7 @@ class _VueAnalyseState extends ConsumerState<_VueAnalyse> {
       'mgper' => await r.margeParPeriode(du, au, f),
       'inv' => await r.inventaire(f),
       'cout' => await r.coutProduit(f),
+      'tva' => await r.tva(du, au),
       _ => const <LigneSituation>[],
     };
     if (!mounted) return;
@@ -336,6 +340,8 @@ class _VueAnalyseState extends ConsumerState<_VueAnalyse> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final devise = ref.watch(deviseProvider);
+    // Un seul magasin : l'inventaire porte sur le principal (voir _magasinInventaire).
+    ref.watch(magasinPrincipalProvider);
     final tiers = _id == 'scli' || _id == 'sfrn';
     // Recharge après toute écriture métier (ventes, stock, caisse).
     final version =
@@ -363,13 +369,13 @@ class _VueAnalyseState extends ConsumerState<_VueAnalyse> {
       kpis: [DsStatsStrip(items: _stats(l10n, devise, lignes))],
       periode: widget.analyse.periode ? _periode : null,
       onPeriode: (p) => _maj(() => _periode = p),
-      filtresOuverts: true,
       colonnesFiltres: 3,
       nbFiltresActifs: filtresActifs.length,
       onReinitialiser: _reinitialiser,
       filtres: [
-        for (final f in widget.analyse.filtres) _filtre(l10n, f),
-        if (inventaire && _f[FiltreSituation.magasin] == null)
+        for (final f in widget.analyse.filtres)
+          if (_filtreVisible(f)) _filtre(l10n, f),
+        if (inventaire && _magasinInventaire == null)
           DsSpan(
             child: Text(
               l10n.situationInventaireMagasin,
@@ -397,7 +403,7 @@ class _VueAnalyseState extends ConsumerState<_VueAnalyse> {
               key: const ValueKey('inventaire_valider'),
               libelle: l10n.situationValiderInventaire,
               icone: LucideIcons.checkCheck,
-              onPressed: _f[FiltreSituation.magasin] == null ? null : _validerInventaire,
+              onPressed: _magasinInventaire == null ? null : _validerInventaire,
             )
           : null,
       onExport: peutExporter(ref)
@@ -416,6 +422,18 @@ class _VueAnalyseState extends ConsumerState<_VueAnalyse> {
       messageVide: !_charge && !tiers ? l10n.dsChargement : l10n.dsAucunElement,
     );
   }
+
+  /// Un seul magasin (Basic, Avancé) ou une seule caisse (Basic) : pas de filtre à choisir.
+  bool _filtreVisible(FiltreSituation f) => switch (f) {
+    FiltreSituation.magasin => ref.watch(plusieursMagasinsProvider),
+    FiltreSituation.caisse => ref.watch(plusieursCaissesProvider),
+    _ => true,
+  };
+
+  /// Magasin de l'inventaire : celui du filtre, sinon le seul magasin (le principal).
+  String? get _magasinInventaire =>
+      _f[FiltreSituation.magasin] ??
+      (ref.watch(plusieursMagasinsProvider) ? null : ref.watch(magasinPrincipalProvider).value);
 
   /// « Effacer les filtres » : période du mois, aucun filtre, regroupement par jour.
   void _reinitialiser() => _maj(() {
@@ -528,7 +546,7 @@ class _VueAnalyseState extends ConsumerState<_VueAnalyse> {
 
   Future<void> _validerInventaire() async {
     final l10n = AppLocalizations.of(context);
-    final magasin = _f[FiltreSituation.magasin]!;
+    final magasin = _magasinInventaire!;
     final comptes = <String, double>{
       for (final l in _lignes)
         if (lireNombre(_comptes[l['code']]?.text ?? '') case final q?)
@@ -774,6 +792,20 @@ class _VueAnalyseState extends ConsumerState<_VueAnalyse> {
           total: (ls) => da(s(ls, 'valeur')),
         ),
       ],
+      'tva' => [
+        DsColonne(
+          id: 'taux',
+          libelle: l10n.tvaTaux,
+          fort: true,
+          valeur: (r) => r['taux'] as Comparable?,
+          cellule: (_, r) => Text('${formaterNombre(r['taux']! as double)} %'),
+        ),
+        montant('baseVentes', '${l10n.tvaBaseHt} · ${l10n.situationGroupeVentes}'),
+        montant('collectee', l10n.tvaCollectee),
+        montant('baseAchats', '${l10n.tvaBaseHt} · ${l10n.situationAchats}'),
+        montant('deductible', l10n.tvaDeductible),
+        montant('nette', l10n.tvaNette, danger: true),
+      ],
       'cout' => [
         code,
         texte('nom', l10n.tableauBordProduit, fort: true, flex: 2),
@@ -798,7 +830,7 @@ class _VueAnalyseState extends ConsumerState<_VueAnalyse> {
         montant('achats', l10n.situationAchats),
         montant('paye', l10n.situationPaye),
         montant('credit', _id == 'scli' ? l10n.tiersCredit : l10n.situationDette, danger: true),
-        date('dernier', _id == 'scli' ? l10n.tiersDernierAchat : l10n.tiersDerniereEntree),
+        date('dernier', _id == 'scli' ? l10n.tiersDernierAchat : l10n.tiersDerniereEntree, heure: true),
       ],
     };
   }
@@ -845,6 +877,11 @@ class _VueAnalyseState extends ConsumerState<_VueAnalyse> {
         n(l10n.situationProduitsVendus, ls.length, LucideIcons.package),
         n(l10n.situationQuantite, s('quantite'), LucideIcons.hash),
         m(l10n.situationRecette, s('recette'), LucideIcons.banknote, DsBadgeTon.succes),
+      ],
+      'tva' => [
+        m(l10n.tvaCollectee, s('collectee'), LucideIcons.arrowDownLeft, DsBadgeTon.primaire),
+        m(l10n.tvaDeductible, s('deductible'), LucideIcons.arrowUpRight, DsBadgeTon.succes),
+        m(l10n.tvaNette, s('nette'), LucideIcons.landmark, DsBadgeTon.danger),
       ],
       'mgp' || 'mgper' => [
         m(l10n.situationCa, s('montant'), LucideIcons.banknote),

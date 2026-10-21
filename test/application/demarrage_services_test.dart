@@ -2,16 +2,13 @@ import 'package:caissedz_desktop/application/alertes_service.dart';
 import 'package:caissedz_desktop/application/auth_service.dart';
 import 'package:caissedz_desktop/application/catalogue_service.dart';
 import 'package:caissedz_desktop/application/configuration_initiale_service.dart';
-import 'package:caissedz_desktop/application/licence_service.dart';
 import 'package:caissedz_desktop/application/session_caisse_service.dart';
 import 'package:caissedz_desktop/application/stock_service.dart';
 import 'package:caissedz_desktop/application/tiers_service.dart';
 import 'package:caissedz_desktop/application/vente_service.dart';
 import 'package:caissedz_desktop/core/db/app_database.dart';
-import 'package:caissedz_desktop/core/db/machine_key.dart';
 import 'package:caissedz_desktop/core/db/migrations/v002_demarrage.dart';
 import 'package:caissedz_desktop/core/db/migrations/v008_shell_ds.dart';
-import 'package:caissedz_desktop/core/licence/cle_activation.dart';
 import 'package:caissedz_desktop/core/securite/mot_de_passe.dart';
 import 'package:caissedz_desktop/data/boutique_repository.dart';
 import 'package:caissedz_desktop/data/parametre_repository.dart';
@@ -29,13 +26,7 @@ import 'package:caissedz_desktop/domain/permissions.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../helpers/bases.dart';
-
-class _Machine implements MachineIdentifiant {
-  const _Machine(this.id);
-  final String id;
-  @override
-  Future<String> lire() async => id;
-}
+import '../helpers/licence_test_helper.dart';
 
 const _hachage = MotDePasse(iterations: 500);
 
@@ -47,11 +38,9 @@ ConfigurationInitiale _config({String nom = 'Superette El Baraka', double marge 
   parametres: ParametresVente(margeDefautPct: marge, seuilStockGlobal: 10, decimalesQuantite: 3),
 );
 
-/// Licence Basic sur le poste « P » (la connexion hors demo exige une application activée, §4.3).
-Future<void> _activer(AppDatabase base) => LicenceService(
-  base.db,
-  identifiant: const _Machine('P'),
-).activer(CleActivation.cleAttendue(NiveauLicence.basic, 'P'));
+/// Licence Basic sur le poste des tests (l'application la vérifie avant la connexion, SessionNotifier).
+Future<void> _activer(AppDatabase base) async =>
+    (await licenceServiceTest(base)).activer(await cleTest(NiveauLicence.basic));
 
 void main() {
   group('Seed de la migration v2', () {
@@ -82,44 +71,6 @@ void main() {
       expect(Permission.values.every(roles[Roles.admin]!.aPermission), isTrue);
       expect(roles[Roles.caissier]!.permissions, {Permission.modifierPrixVente});
       expect(roles[Roles.magasinier]!.modules, contains('stock'));
-    });
-  });
-
-  group('LicenceService', () {
-    test('active Basic / Avancé avec une clé liée à la machine, refuse le reste', () async {
-      final base = await ouvrirBaseDeTest();
-      final s = LicenceService(base.db, identifiant: const _Machine('POSTE-A'));
-      expect((await s.lire()).estActivee, isFalse);
-      await expectLater(
-        s.activer('abc'),
-        throwsA(isA<ActivationException>().having((e) => e.erreur, 'erreur', ErreurActivation.formatInvalide)),
-      );
-      await expectLater(
-        s.activer('1' * 64),
-        throwsA(isA<ActivationException>().having((e) => e.erreur, 'erreur', ErreurActivation.cleInconnue)),
-      );
-      await expectLater(
-        s.activer(CleActivation.cleAttendue(NiveauLicence.basic, 'POSTE-B')),
-        throwsA(isA<ActivationException>()),
-      );
-      final l = await s.activer(CleActivation.cleAttendue(NiveauLicence.basic, 'POSTE-A').toUpperCase());
-      expect(l.niveau, NiveauLicence.basic);
-      expect((await s.lire()).niveau, NiveauLicence.basic);
-      expect((await s.lire()).demo, isFalse);
-      final l2 = await s.activer(CleActivation.cleAttendue(NiveauLicence.avance, 'POSTE-A'));
-      expect(l2.niveau, NiveauLicence.avance);
-    });
-
-    test('mode démo : licence Avancé sans clé, impossible par-dessus une vraie licence', () async {
-      final base = await ouvrirBaseDeTest();
-      final s = LicenceService(base.db, identifiant: const _Machine('P'));
-      final d = await s.activerDemo();
-      expect(d.demo, isTrue);
-      expect(d.niveau, NiveauLicence.avance);
-      await s.activer(CleActivation.cleAttendue(NiveauLicence.basic, 'P'));
-      final apres = await s.activerDemo();
-      expect(apres.demo, isFalse);
-      expect(apres.niveau, NiveauLicence.basic);
     });
   });
 
@@ -173,7 +124,6 @@ void main() {
       expect(session.modulesAutorises, isNull);
       expect(session.peutAcceder('zakat'), isTrue);
       expect(session.a(Permission.voirPrixAchat), isTrue);
-      expect(session.demo, isFalse);
       expect((await UtilisateurRepository(base.db).parCode(_admin))!.dernierAcces, isNotNull);
       await auth.deconnecter(_admin);
       final journal = await base.db.query('historique', where: 'entite = ?', whereArgs: ['utilisateur'], orderBy: 'id');
@@ -185,37 +135,49 @@ void main() {
       await expectLater(auth.connecter('inconnu', 'x'), throwsA(isA<ConnexionException>()));
     });
 
-    test('application non activée : seul demo / demo est accepté (§4.3)', () async {
+    test('le compte demo / demo n’existe plus (l’essai de 14 jours le remplace)', () async {
       final base = await ouvrirBaseDeTest();
+      await _activer(base);
       final auth = AuthService(base.db, hachage: _hachage);
       await expectLater(
-        auth.connecter('admin', 'admin'),
-        throwsA(isA<ConnexionException>().having((e) => e.erreur, 'erreur', ErreurConnexion.nonActivee)),
-      );
-      await expectLater(
         auth.connecter('demo', 'demo'),
-        throwsA(isA<ConnexionException>().having((e) => e.erreur, 'erreur', ErreurConnexion.demoIndisponible)),
+        throwsA(isA<ConnexionException>().having((e) => e.erreur, 'erreur', ErreurConnexion.compteInactif)),
       );
     });
 
-    test('demo/demo disponible uniquement en mode démo', () async {
+    test('poste neuf : l’administrateur prend le mot de passe du compte BENS, une seule fois', () async {
       final base = await ouvrirBaseDeTest();
       final auth = AuthService(base.db, hachage: _hachage);
-      await LicenceService(base.db, identifiant: const _Machine('P')).activerDemo();
-      final s = await auth.connecter('demo', 'demo');
-      expect(s.demo, isTrue);
-      expect(s.estAdmin, isTrue);
-      await _activer(base);
-      await expectLater(
-        auth.connecter('demo', 'demo'),
-        throwsA(isA<ConnexionException>().having((e) => e.erreur, 'erreur', ErreurConnexion.demoIndisponible)),
+      final s = await auth.ouvrirAdminInitial(nom: 'Karim Haddad', motDePasse: 'secret pass 1');
+      expect(s!.utilisateur.code, _admin);
+      expect(s.utilisateur.nom, 'Karim Haddad');
+      await expectLater(auth.connecter('admin', 'admin'), throwsA(isA<ConnexionException>()));
+      expect((await auth.connecter('admin', 'secret pass 1')).estAdmin, isTrue);
+      expect(
+        await auth.ouvrirAdminInitial(nom: 'Autre', motDePasse: 'autre pass 2'),
+        isNull,
+        reason: 'déjà configuré',
       );
+    });
+
+    test('mot de passe du compte BENS réinitialisé : l’administrateur le prend, même déjà configuré', () async {
+      final base = await ouvrirBaseDeTest();
+      final auth = AuthService(base.db, hachage: _hachage);
+      await auth.ouvrirAdminInitial(nom: 'Karim Haddad', motDePasse: 'ancien pass 1');
+      final s = await auth.ouvrirAdminReinitialise('nouveau pass 2');
+      expect(s!.utilisateur.code, _admin);
+      expect(s.utilisateur.nom, 'Karim Haddad', reason: 'le nom ne change pas');
+      await expectLater(auth.connecter('admin', 'ancien pass 1'), throwsA(isA<ConnexionException>()));
+      expect((await auth.connecter('admin', 'nouveau pass 2')).estAdmin, isTrue);
+
+      // Aucun administrateur actif : rien à ouvrir.
+      await UtilisateurRepository(base.db).mettreAJour(_admin, {'actif': 0});
+      expect(await auth.ouvrirAdminReinitialise('autre pass 3'), isNull);
     });
 
     test('reprise de session (Rester connecté)', () async {
       final base = await ouvrirBaseDeTest();
       final auth = AuthService(base.db, hachage: _hachage);
-      expect(await auth.reprendreSession(_admin), isNull); // non activée
       await _activer(base);
       expect((await auth.reprendreSession(_admin))!.utilisateur.code, _admin);
       expect(await auth.reprendreSession('USR9999'), isNull);

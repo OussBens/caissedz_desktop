@@ -5,11 +5,15 @@ import 'package:pdf/widgets.dart' as pw;
 
 import '../../domain/codes_barres.dart';
 import '../../domain/models/produit.dart';
+import 'texte_pdf.dart';
 
 /// Une étiquette à imprimer.
 class Etiquette {
-  const Etiquette({required this.produit, required this.quantite, this.prixAffiche = true, this.qr = false});
+  const Etiquette({required this.produit, required this.quantite, this.prixAffiche = true, this.qr = false, this.prix});
   final Produit produit;
+
+  /// Prix affiché (TTC) ; à défaut, le prix de vente du produit.
+  final double? prix;
   final int quantite;
   final bool prixAffiche;
   final bool qr;
@@ -19,12 +23,25 @@ class Etiquette {
 ///
 /// ⚠️ PROVISOIRE : dimensions à aligner sur le §11 de la spec.
 class EtiquettesPdf {
-  const EtiquettesPdf({this.largeurMm = 50, this.hauteurMm = 30, this.colonnesA4 = 4, this.devise = 'DA'});
+  const EtiquettesPdf({
+    this.largeurMm = 50,
+    this.hauteurMm = 30,
+    this.colonnesA4 = 4,
+    this.devise = 'DA',
+    this.police,
+    this.policeGras,
+    this.secours = const [],
+  });
 
   final double largeurMm;
   final double hauteurMm;
   final int colonnesA4;
   final String devise;
+
+  /// Polices du document (latin) et de secours (arabe) : une désignation en arabe s'affiche lettres liées.
+  final pw.Font? police;
+  final pw.Font? policeGras;
+  final List<pw.Font> secours;
 
   static String formaterPrix(double v, String devise) => '${v.toStringAsFixed(2).replaceAll('.', ',')} $devise';
 
@@ -40,7 +57,12 @@ class EtiquettesPdf {
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.center,
         children: [
-          pw.Text(p.designation, style: const pw.TextStyle(fontSize: 7), maxLines: 2, textAlign: pw.TextAlign.center),
+          textePdf(
+            p.designation,
+            style: pw.TextStyle(font: police, fontFallback: secours, fontSize: 7),
+            maxLines: 2,
+            textAlign: pw.TextAlign.center,
+          ),
           pw.SizedBox(height: 2),
           pw.Expanded(
             child: e.qr
@@ -52,9 +74,9 @@ class EtiquettesPdf {
                   ),
           ),
           if (e.prixAffiche)
-            pw.Text(
-              formaterPrix(p.prixVente, devise),
-              style: pw.TextStyle(fontSize: 9, fontWeight: pw.FontWeight.bold),
+            textePdf(
+              formaterPrix(e.prix ?? p.prixVente, devise),
+              style: pw.TextStyle(font: policeGras, fontFallback: secours, fontSize: 9, fontWeight: pw.FontWeight.bold),
             ),
         ],
       ),

@@ -15,7 +15,7 @@
 > des tokens sont supprimés.
 
 ## Socle (lot 0)
-- [x] Fenêtre Windows minimale 1000×700, barre de titre personnalisée
+- [x] Fenêtre Windows minimale 1400×700 (1000 × 1,4, demande du 2026-10-17), barre de titre personnalisée
 - [x] Tokens du DS v2.2 (clair + sombre) traduits en ThemeExtension, sans alias historiques
 - [x] Widgets du DS (bundle v2.2 + nouveaux composants) disponibles dans la galerie (clair / sombre / RTL)
 - [x] Base SQLite chiffrée SQLCipher, `foreign_keys ON`, migrations versionnées
@@ -121,6 +121,12 @@
 - [x] Période clôturée évaluée par caisse (ventes, retours, versements ; les entrées, sans caisse, restent bloquées
       par toute clôture couvrant la date)
 - [x] Journal de caisse en ajout seul : contre-passations au lieu de suppressions, déclencheurs (migration v26)
+- [x] TVA HT / TVA / TTC affichée sur ticket, clôture Z, ventes, entrées (TVA déductible) et analyse TVA par taux ;
+      onglet Factures & avoirs (FAC / AVO, duplicata, vérification de la chaîne)
+- [x] Documents commerciaux (migration v34) : devis DEV, proforma PRO, commande client BCC livrée en une ou plusieurs
+      fois par bons de livraison LIV (vente + BL dans une transaction), commande fournisseur BCF réceptionnée en
+      partie par les entrées, soldable ; impressions A4 avec montant en lettres
+- [x] Téléphone client / fournisseur limité à 10 chiffres, solde initial des tiers, filtre par tiers des versements
 
 ## Rapports et paramètres (lot 8)
 - [x] Tableau de bord §9.14 (phase D) : période Jour / Semaine / Mois / Période, 6 KPI (ventes, période précédente,
@@ -197,6 +203,8 @@ Recopie de la checklist de la spec 06. `[x]` = fait et testé ; `[ ]` = manquant
 - [x] Retours client/fournisseur depuis le document d'origine, plafond de quantité, versement et mouvements liés
 - [x] Retour client par ligne de vente, daté du jour (possible après la Z), unités figées à la vente, pièces et
       points de fidélité repris au prorata ; CA et marges nets des retours, casse en perte
+- [x] Prix de vente saisi HT, TTC = HT + TVA du produit à la caisse (régime IFU : TTC = HT) ; admin : transfert
+      proposé depuis un autre magasin quand le magasin de la caisse manque de stock
 
 ### Achats
 - [x] Smart Scan multi-produits → magasin principal, mise à jour des prix, paiement partiel
@@ -223,8 +231,9 @@ Recopie de la checklist de la spec 06. `[x]` = fait et testé ; `[ ]` = manquant
 
 ### Paramètres, sorties
 - [x] Paramètres Système / Boutique / Avancé (§ 9.16) — écarts listés dans `docs/PLAN.md` (Paramètres)
-- [ ] Impression thermique 4 types + facture A4 FR/AR + aperçus — aperçu du ticket fait (caisse, Paramètres) ;
-      reste : Bluetooth via la file d'impression Windows
+- [ ] Impression thermique 4 types + facture A4 FR/AR + aperçus — aperçu du ticket et de tous les documents A4
+      (facture, avoir, devis, proforma, commande, BL), arabe lié dans les PDF ; reste : Bluetooth via la file
+      d'impression Windows
 - [x] Exports Excel de tous les modules + PDF dérivé de l'Excel
 - [x] Sauvegarde zip, auto-backup (au démarrage, quotidienne ou à chaque démarrage), restauration
 - [x] Catalogue partagé + cascade de recherche code-barres

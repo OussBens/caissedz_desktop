@@ -313,6 +313,7 @@ class DsFormRow extends StatelessWidget {
     this.alignerDebut = false,
     this.onLookup,
     this.lookupTooltip = 'Choisir dans la liste',
+    this.empile = false,
   });
   final String libelle;
   final Widget child;
@@ -328,10 +329,61 @@ class DsFormRow extends StatelessWidget {
   final VoidCallback? onLookup;
   final String lookupTooltip;
 
+  /// Libellé au-dessus du champ (formulaires en colonnes), au lieu de la colonne de libellés à gauche.
+  final bool empile;
+
   @override
   Widget build(BuildContext context) {
     final c = context.ds.colors;
     final t = context.ds.typo;
+    final etiquette = Text.rich(
+      TextSpan(
+        text: libelle,
+        children: [
+          if (obligatoire)
+            TextSpan(
+              text: ' *',
+              style: TextStyle(color: c.warning, fontWeight: FontWeight.w700),
+            ),
+        ],
+      ),
+      style: t.label.copyWith(color: c.textSecondary),
+    );
+    final champ = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      spacing: 4,
+      children: [
+        Row(
+          spacing: 6,
+          children: [
+            Expanded(child: child),
+            if (onLookup != null) DsLookupButton(onPressed: onLookup!, tooltip: lookupTooltip),
+          ],
+        ),
+        if (erreur != null || aide != null)
+          Row(
+            spacing: 4,
+            children: [
+              if (erreur != null) Icon(LucideIcons.circleAlert, size: 13, color: c.dangerFg),
+              Flexible(
+                child: Text(
+                  erreur ?? aide!,
+                  style: t.caption.copyWith(height: 1.4, color: erreur != null ? c.dangerFg : c.textMuted),
+                ),
+              ),
+            ],
+          ),
+      ],
+    );
+    if (empile) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        spacing: 6,
+        children: [etiquette, champ],
+      );
+    }
     return Row(
       crossAxisAlignment: alignerDebut ? CrossAxisAlignment.start : CrossAxisAlignment.center,
       children: [
@@ -339,51 +391,11 @@ class DsFormRow extends StatelessWidget {
           width: DsLargeurLibelle.of(context) ?? largeurLibelle,
           child: Padding(
             padding: EdgeInsets.only(top: alignerDebut ? 9 : 0),
-            child: Text.rich(
-              TextSpan(
-                text: libelle,
-                children: [
-                  if (obligatoire)
-                    TextSpan(
-                      text: ' *',
-                      style: TextStyle(color: c.warning, fontWeight: FontWeight.w700),
-                    ),
-                ],
-              ),
-              style: t.label.copyWith(color: c.textSecondary),
-            ),
+            child: etiquette,
           ),
         ),
         const SizedBox(width: DsSpacing.s4),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            spacing: 4,
-            children: [
-              Row(
-                spacing: 6,
-                children: [
-                  Expanded(child: child),
-                  if (onLookup != null) DsLookupButton(onPressed: onLookup!, tooltip: lookupTooltip),
-                ],
-              ),
-              if (erreur != null || aide != null)
-                Row(
-                  spacing: 4,
-                  children: [
-                    if (erreur != null) Icon(LucideIcons.circleAlert, size: 13, color: c.dangerFg),
-                    Flexible(
-                      child: Text(
-                        erreur ?? aide!,
-                        style: t.caption.copyWith(height: 1.4, color: erreur != null ? c.dangerFg : c.textMuted),
-                      ),
-                    ),
-                  ],
-                ),
-            ],
-          ),
-        ),
+        Expanded(child: champ),
       ],
     );
   }

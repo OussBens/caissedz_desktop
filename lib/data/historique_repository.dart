@@ -72,4 +72,31 @@ class HistoriqueRepository {
     );
     return rows.map(EntreeHistorique.depuisLigne).toList();
   }
+
+  /// Dernier identifiant du journal (0 s'il est vide).
+  Future<int> dernierId() async => ((await db.rawQuery('SELECT MAX(id) m FROM historique')).first['m'] as int?) ?? 0;
+
+  /// Lignes postérieures à [id] pour les points rouges : entité, action, code, type du tiers (retour, versement)
+  /// et client (vente, livraison).
+  Future<List<({int id, String entite, String action, String? code, String? tiersType, String? clientCode})>>
+  activiteDepuis(int id) async => [
+    for (final r in await db.rawQuery(
+      'SELECT h.id, h.entite, h.action, h.entite_code, COALESCE(r.type, v.tiers_type) tiers_type, '
+      'COALESCE(ve.client_code, b.client_code) client_code FROM historique h '
+      "LEFT JOIN retour r ON h.entite = 'retour' AND r.code = h.entite_code "
+      "LEFT JOIN versement v ON h.entite = 'versement' AND v.code = h.entite_code "
+      "LEFT JOIN vente ve ON h.entite = 'vente' AND ve.code = h.entite_code "
+      "LEFT JOIN bon_livraison b ON h.entite = 'bon_livraison' AND b.code = h.entite_code "
+      'WHERE h.id > ? ORDER BY h.id',
+      [id],
+    ))
+      (
+        id: r['id']! as int,
+        entite: r['entite']! as String,
+        action: r['action']! as String,
+        code: r['entite_code'] as String?,
+        tiersType: r['tiers_type'] as String?,
+        clientCode: r['client_code'] as String?,
+      ),
+  ];
 }

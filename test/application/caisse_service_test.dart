@@ -13,6 +13,7 @@ import 'package:caissedz_desktop/domain/models/parametres_vente.dart';
 import 'package:caissedz_desktop/domain/models/produit.dart';
 import 'package:caissedz_desktop/domain/models/retour.dart';
 import 'package:caissedz_desktop/domain/models/tiers.dart';
+import 'package:caissedz_desktop/domain/permissions.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../helpers/bases.dart';
@@ -296,6 +297,40 @@ void main() {
       );
       await s.desactiver([coffre.code]);
       expect((await s.caisses(actives: true)).map((c) => c.code), isNot(contains(coffre.code)));
+    });
+
+    test('Basic (1 caisse) : ni nouvelle caisse ni transfert ; le coffre ne compte pas', () async {
+      final base = await ouvrirBaseDeTest();
+      final s = CaisseService(base.db, utilisateurCode: 'USR0000', maxCaisses: NiveauLicence.basic.caisses);
+      expect(s.transfertsPermis, isFalse);
+      await expectLater(
+        s.creer(nom: 'Caisse 2'),
+        throwsA(isA<CaisseException>().having((e) => e.erreur, 'e', ErreurCaisse.limiteCaisses)),
+        reason: 'la caisse principale occupe la seule place (le coffre CIS0001 est hors limite)',
+      );
+      await expectLater(
+        s.transferer(caisseSource: 'CIS0000', caisseDestination: 'CIS0001', montant: 10),
+        throwsA(isA<CaisseException>().having((e) => e.erreur, 'e', ErreurCaisse.transfertsNonInclus)),
+      );
+    });
+
+    test('Advanced (5 caisses) : 4 de plus, puis refus ; une caisse désactivée ne se réactive pas au-delà', () async {
+      final base = await ouvrirBaseDeTest();
+      final s = CaisseService(base.db, utilisateurCode: 'USR0000', maxCaisses: NiveauLicence.avance.caisses);
+      expect(s.transfertsPermis, isTrue);
+      final creees = [for (var i = 2; i <= 5; i++) await s.creer(nom: 'Caisse $i')];
+      await expectLater(
+        s.creer(nom: 'Caisse 6'),
+        throwsA(isA<CaisseException>().having((e) => e.erreur, 'e', ErreurCaisse.limiteCaisses)),
+      );
+      await s.desactiver([creees.last.code]);
+      final sixieme = await s.creer(nom: 'Caisse 6');
+      await expectLater(
+        s.modifier(creees.last),
+        throwsA(isA<CaisseException>().having((e) => e.erreur, 'e', ErreurCaisse.limiteCaisses)),
+      );
+      expect(sixieme.actif, isTrue);
+      expect(await CaisseService(base.db, utilisateurCode: 'USR0000').creer(nom: 'Sans limite'), isA<Caisse>());
     });
   });
 }

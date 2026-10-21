@@ -19,6 +19,8 @@ SolidCompression=yes
 ArchitecturesInstallIn64BitMode=x64compatible
 WizardStyle=modern
 PrivilegesRequired=lowest
+SetupIconFile=..\windows\runner\resources\app_icon.ico
+UninstallDisplayIcon={app}\{#AppExe}
 
 [Languages]
 Name: "french"; MessagesFile: "compiler:Languages\French.isl"

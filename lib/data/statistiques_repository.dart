@@ -1,6 +1,7 @@
 import 'package:sqflite_common/sqlite_api.dart';
 
 import '../domain/calculs_prix.dart';
+import 'alertes_repository.dart';
 
 /// Point d'une série (étiquette, valeur).
 typedef PointSerie = ({String etiquette, double valeur});
@@ -55,6 +56,7 @@ class StatistiquesRepository {
       LEFT JOIN (SELECT produit_code, SUM(quantite) q FROM mouvement_stock $filtre GROUP BY produit_code) s
         ON s.produit_code = p.code
       WHERE p.actif = 1 AND p.service = 0 AND COALESCE(s.q, 0) <= COALESCE(p.seuil_stock, ?)
+        AND ${AlertesRepository.sansStockCatalogue}
       ''',
       [...?magasins, seuilGlobal],
     );

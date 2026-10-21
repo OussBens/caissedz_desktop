@@ -1,8 +1,12 @@
+import 'package:caissedz_desktop/app/demarrage_providers.dart';
 import 'package:caissedz_desktop/app/providers.dart';
+import 'package:caissedz_desktop/app/router.dart';
 import 'package:caissedz_desktop/application/catalogue_service.dart';
 import 'package:caissedz_desktop/core/design_system/design_system.dart';
+import 'package:caissedz_desktop/data/licence_repository.dart';
 import 'package:caissedz_desktop/domain/models/produit.dart';
 import 'package:caissedz_desktop/features/shell/app_shell.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -27,6 +31,7 @@ void main() {
 
     testWidgets('navigue vers un module depuis la barre latérale', (tester) async {
       await pumpApp(tester);
+      await clic(tester, find.byKey(const ValueKey('nav_categorie_2'))); // TIERS, fermé par défaut
       await tester.scrollUntilVisible(find.text('Clients'), 200, scrollable: find.byType(Scrollable).first);
       await clic(tester, find.text('Clients'));
       expect(find.text('Nouveau client'), findsOneWidget);
@@ -39,6 +44,16 @@ void main() {
       expect(find.descendant(of: barre, matching: find.text('Produits')), findsNothing);
       expect(find.descendant(of: barre, matching: find.text('Utilisateurs')), findsNothing);
       expect(find.descendant(of: barre, matching: find.text('STOCK')), findsNothing);
+    });
+
+    testWidgets('CaisseDZ Scan : l’icône du QR personnel suit la permission « Application mobile »', (tester) async {
+      await pumpApp(tester);
+      expect(find.byKey(const ValueKey('topbar_mobile')), findsOneWidget);
+    });
+
+    testWidgets('CaisseDZ Scan : un caissier sans la permission n’a pas l’icône', (tester) async {
+      await pumpApp(tester, etat: EtatApp.connecteeCaissier);
+      expect(find.byKey(const ValueKey('topbar_mobile')), findsNothing);
     });
 
     testWidgets('Ctrl+M ouvre le menu des modules, la recherche filtre', (tester) async {
@@ -101,29 +116,32 @@ void main() {
       expect(find.descendant(of: barre, matching: find.text('Clients')), findsOneWidget);
     });
 
-    testWidgets('barre latérale : catégories repliables, le module actif reste visible', (tester) async {
+    testWidgets('barre latérale : catégories fermées sauf celle du module actif, repliables', (tester) async {
       await pumpApp(tester);
       final barre = find.byType(DsSidebar);
       Finder dansBarre(String t) => find.descendant(of: barre, matching: find.text(t));
+      // Caisse ouverte : GÉNÉRAL déplié, les autres groupes fermés.
       expect(dansBarre('Ventes'), findsOneWidget);
+      expect(dansBarre('Produits'), findsNothing);
+      await clic(tester, find.byKey(const ValueKey('nav_categorie_1'))); // STOCK
+      expect(dansBarre('Produits'), findsOneWidget);
       await clic(tester, find.byKey(const ValueKey('nav_categorie_0'))); // GÉNÉRAL
       expect(dansBarre('Ventes'), findsNothing);
       expect(dansBarre('Caisse'), findsOneWidget, reason: 'module actif');
-      await clic(tester, find.byKey(const ValueKey('nav_categorie_1'))); // STOCK
-      expect(dansBarre('Produits'), findsNothing);
       await clic(tester, find.byKey(const ValueKey('nav_categorie_0')));
       expect(dansBarre('Ventes'), findsOneWidget);
     });
 
-    testWidgets('favoris : 7 maximum, persistés, affichés dans la barre supérieure', (tester) async {
-      final container = await pumpApp(tester);
+    testWidgets('favoris : 5 maximum, persistés, affichés dans la barre supérieure', (tester) async {
+      // Assez large pour les libellés (sinon : icônes seules, voir plus bas).
+      final container = await pumpApp(tester, taille: const Size(2400, 800));
       final notifier = container.read(favorisProvider.notifier);
-      final ids = ['caisse', 'ventes', 'retours', 'produits', 'stock', 'clients', 'fournisseurs'];
+      final ids = ['caisse', 'ventes', 'retours', 'produits', 'stock'];
       for (final id in ids) {
         expect(await notifier.ajouter(id), isTrue);
       }
       expect(await notifier.ajouter('zakat'), isFalse);
-      expect(container.read(favorisProvider).length, 7);
+      expect(container.read(favorisProvider).length, 5);
       await tester.pumpAndSettle();
       final barre = find.byKey(const ValueKey('barre_favoris'));
       expect(find.descendant(of: barre, matching: find.text('Caisse')), findsOneWidget);
@@ -157,9 +175,119 @@ void main() {
       expect(find.text('Lait en sachet'), findsOneWidget);
     });
 
-    testWidgets('mode démo : bandeau affiché', (tester) async {
-      await pumpApp(tester, etat: EtatApp.connecteeDemo);
-      expect(find.byKey(const ValueKey('bandeau_demo')), findsOneWidget);
+    for (final (etat, besoins) in [(EtatApp.connecteeAdmin, true), (EtatApp.connecteeAdminBasic, false)]) {
+      testWidgets('alertes de rupture : listes de besoins ${besoins ? 'proposées' : 'absentes en Basic'}', (
+        tester,
+      ) async {
+        final container = await pumpApp(tester, etat: etat);
+        await CatalogueService(container.read(appDatabaseProvider).db, utilisateurCode: 'USR0000').creerProduit(
+          const Produit(
+            code: '',
+            designation: 'Lait en sachet',
+            categorieCode: 'CATE0000',
+            sousCategorieCode: 'SC0000',
+            prixAchat: 80,
+            prixVente: 100,
+          ),
+        );
+        await container.read(alertesProvider.notifier).charger();
+        await tester.pumpAndSettle();
+        await clic(tester, find.byKey(const ValueKey('topbar_alertes')));
+        expect(find.text('Créer une liste de besoins'), besoins ? findsOneWidget : findsNothing);
+        // L'action de la ligne paraît au survol.
+        final souris = await tester.createGesture(kind: PointerDeviceKind.mouse);
+        addTearDown(souris.removePointer);
+        await souris.moveTo(tester.getCenter(find.text('Lait en sachet')));
+        await tester.pumpAndSettle();
+        expect(find.text('Commander'), besoins ? findsOneWidget : findsNothing);
+        expect(find.text('Voir le stock'), besoins ? findsNothing : findsOneWidget);
+        if (!besoins) {
+          await clic(tester, find.text('Voir le stock'));
+          expect(routeCourante(container), '/stock');
+        }
+      });
+    }
+
+    testWidgets('menu des modules en Basic : pas de module hors formule ni « Réservé au palier »', (tester) async {
+      await pumpApp(tester, etat: EtatApp.connecteeAdminBasic);
+      await clic(tester, find.byKey(const ValueKey('topbar_menu')));
+      final menu = find.byKey(const ValueKey('menu_modules'));
+      Finder dansMenu(String t) => find.descendant(of: menu, matching: find.textContaining(t));
+      for (final absent in ['Besoins', 'Magasins', 'Devis', 'Commandes fournisseurs', 'Réservé au palier']) {
+        expect(dansMenu(absent), findsNothing, reason: absent);
+      }
+      for (final present in ['Caisse', 'Produits', 'Stock', 'Gestion caisse']) {
+        expect(dansMenu(present), findsWidgets, reason: present);
+      }
+    });
+
+    // Police de test plus large que la vraie : la grande fenêtre est plus large qu'en vrai.
+    for (final (largeur, libelles) in [(1400.0, false), (2800.0, true)]) {
+      testWidgets(
+        'favoris à ${largeur.toInt()} px : ${libelles ? 'icônes et libellés' : 'icônes seules, libellé au survol'}',
+        (tester) async {
+          final c = await pumpApp(tester, taille: Size(largeur, 760));
+          for (final id in ['commandes_fournisseurs', 'entrees', 'gestion_caisse', 'tableau_bord', 'fournisseurs']) {
+            await c.read(favorisProvider.notifier).basculer(id);
+          }
+          await tester.pumpAndSettle();
+          final barre = find.byKey(const ValueKey('barre_favoris'));
+          final entrees = find.descendant(of: barre, matching: find.text('Entrées / Achats'));
+          expect(entrees, libelles ? findsOneWidget : findsNothing);
+          if (!libelles) {
+            final souris = await tester.createGesture(kind: PointerDeviceKind.mouse);
+            addTearDown(souris.removePointer);
+            await souris.moveTo(tester.getCenter(find.byKey(const ValueKey('favori_/entrees'))));
+            await tester.pumpAndSettle();
+            expect(entrees, findsOneWidget, reason: 'libellé au survol');
+            expect(find.descendant(of: barre, matching: find.text('Fournisseurs')), findsNothing);
+            await souris.moveTo(Offset.zero);
+            await tester.pumpAndSettle();
+            expect(entrees, findsNothing, reason: 'repli à la sortie');
+            await tester.pump(const Duration(seconds: 5));
+          }
+        },
+      );
+    }
+
+    testWidgets('essai : bandeau avec les jours restants', (tester) async {
+      await pumpApp(tester, etat: EtatApp.connecteeEssai);
+      expect(find.byKey(const ValueKey('bandeau_essai')), findsOneWidget);
+      expect(find.textContaining('Essai Avancé :'), findsOneWidget);
+    });
+
+    testWidgets('palier Basic : devis et multi-magasin verrouillés, avec leur palier', (tester) async {
+      await pumpApp(tester, etat: EtatApp.connecteeAdminBasic, routeInitiale: '/magasins');
+      expect(find.text('Disponible avec le palier Ultra'), findsOneWidget);
+    });
+
+    testWidgets('essai terminé : lecture seule, la caisse en pause, la consultation ouverte', (tester) async {
+      final c = await pumpApp(tester, etat: EtatApp.connecteeLectureSeule);
+      expect(c.read(licenceProvider).lectureSeule, isTrue);
+      expect(find.byKey(const ValueKey('bandeau_lecture_seule')), findsOneWidget);
+      c.read(routerProvider).go('/caisse');
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('gate_lecture_seule')), findsOneWidget);
+      c.read(routerProvider).go('/produits');
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('gate_lecture_seule')), findsNothing);
+      await clic(tester, find.byKey(const ValueKey('bandeau_lecture_seule_formules')));
+      expect(find.text('Choisissez votre formule'), findsOneWidget);
+      expect(find.byKey(const ValueKey('offres_avis')), findsOneWidget);
+    });
+
+    testWidgets('Smart Scan : rappel avant l’expiration de scans non utilisés', (tester) async {
+      final c = await pumpApp(tester);
+      await LicenceRepository(c.read(appDatabaseProvider).db).ecrireScans({
+        'remaining': 12,
+        'expiringSoon': [
+          {'kind': 'pack', 'remaining': 12, 'endsOn': '2026-11-05'},
+        ],
+      });
+      await c.read(licenceProvider.notifier).charger();
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('bandeau_scans')), findsOneWidget);
+      expect(find.text('12 Smart Scans expirent le 05/11/2026 : utilisez-les ou ajoutez un pack.'), findsOneWidget);
     });
 
     testWidgets('arabe : RTL et police Cairo', (tester) async {

@@ -104,6 +104,8 @@ String messageErreurRetour(AppLocalizations l10n, ErreurRetour e) => switch (e) 
   ErreurRetour.motifObligatoire => l10n.retourErreurMotif,
   ErreurRetour.sessionRequise => l10n.communSessionRequise,
   ErreurRetour.avoirEmis => l10n.retoursAvoirEmis,
+  ErreurRetour.montantInvalide => l10n.retoursErreurMontant,
+  ErreurRetour.montantPassage => l10n.retoursMontantRetourPassage,
 };
 
 String messageErreurTiers(AppLocalizations l10n, ErreurTiers e) => switch (e) {

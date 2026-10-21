@@ -112,6 +112,13 @@ class VenteLigne {
   /// Unités de stock de [q] articles de la ligne (au prorata de la quantité vendue).
   double unitesPour(double q) => quantite == 0 ? 0 : unites * q / quantite;
 
+  /// Le nom à imprimer sur un ticket ou un document en arabe : le nom arabe du produit ([nomsAr], par code
+  /// produit), sauf pour un colis ou un ancien pack, qui gardent leur propre désignation.
+  String nomImprime(Map<String, String> nomsAr) {
+    if (colisCode != null || (packCode != null && !composantPack)) return designation;
+    return nomsAr[produitCode] ?? designation;
+  }
+
   /// Pièces (2ᵉ stock) de [q] articles de la ligne (au prorata de la quantité vendue).
   double nombrePour(double q) => quantite == 0 ? 0 : nombre * q / quantite;
 
@@ -238,6 +245,19 @@ class Vente {
   final int versionScellement;
 
   double get monnaie => (verse - totalNet) > 0 ? verse - totalNet : 0;
+
+  /// Récapitulatif par taux de TVA (prix TTC figés par ligne) : taux → (HT, TVA).
+  Map<double, ({double ht, double tva})> get parTaux {
+    final m = <double, ({double ht, double tva})>{};
+    for (final l in lignes) {
+      final p = m[l.tauxTva];
+      m[l.tauxTva] = (ht: (p?.ht ?? 0) + l.montantHt, tva: (p?.tva ?? 0) + l.montantTva);
+    }
+    return m;
+  }
+
+  double get totalHt => lignes.fold(0.0, (s, l) => s + l.montantHt);
+  double get totalTva => lignes.fold(0.0, (s, l) => s + l.montantTva);
 
   Map<String, Object?> versLigne() => {
     'code': code,

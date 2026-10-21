@@ -72,7 +72,7 @@ void main() {
       expect(find.text('12'), findsWidgets);
       await clic(tester, _cle('stock_voir_mouvements'));
       expect(find.text('Stock initial'), findsOneWidget);
-      expect(find.text('+12'), findsOneWidget);
+      expect(find.text(isolerLtr('+12')), findsOneWidget);
     });
 
     testWidgets('sortie : quantité plafonnée au stock, puis enregistrée', (tester) async {

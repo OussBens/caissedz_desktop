@@ -4,6 +4,7 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../core/db/app_database.dart';
 import '../data/historique_repository.dart';
+import '../data/licence_repository.dart';
 import '../data/parametre_repository.dart';
 import 'parametres_service.dart';
 
@@ -139,6 +140,21 @@ class SauvegardeService {
       await db.execute("ATTACH DATABASE '${_echapper(cible)}' AS cible KEY \"x'${base.cleHex}'\"");
       await db.rawQuery("SELECT sqlcipher_export('cible')");
       await db.execute('PRAGMA cible.user_version = ${info.version}');
+      // La licence et le compte BENS sont ceux de ce poste, pas ceux du PC d'où vient la sauvegarde.
+      final marques = List.filled(LicenceRepository.clesDuPoste.length, '?').join(', ');
+      await db.rawDelete('DELETE FROM cible.parametre_app WHERE cle IN ($marques)', LicenceRepository.clesDuPoste);
+      final actuelles = await base.db.query(
+        'parametre_app',
+        where: 'cle IN ($marques)',
+        whereArgs: LicenceRepository.clesDuPoste,
+      );
+      for (final r in actuelles) {
+        await db.rawInsert('INSERT INTO cible.parametre_app (cle, valeur, modifie_le) VALUES (?, ?, ?)', [
+          r['cle'],
+          r['valeur'],
+          r['modifie_le'],
+        ]);
+      }
       // Journalisée dans la base restaurée, celle qui sera ouverte au prochain démarrage.
       if (utilisateurCode != null && info.version >= 3) {
         await db.rawInsert(

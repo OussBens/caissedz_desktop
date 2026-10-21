@@ -18,6 +18,7 @@ import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../helpers/app_test_helper.dart';
 
@@ -67,6 +68,14 @@ void main() {
     await _jeu(c);
     await tester.pumpAndSettle();
     expect(find.byType(DsStatCard), findsNWidgets(6));
+    // Toutes les cartes sont cliquables et de même hauteur.
+    final cartes = tester.widgetList<DsStatCard>(find.byType(DsStatCard));
+    expect(cartes.every((k) => k.onTap != null && k.sousTexte == null), isTrue);
+    // Cliquables vers un autre module : une flèche, pas l'icône « info ».
+    expect(find.byKey(const ValueKey('stat_fleche')), findsNWidgets(6));
+    expect(find.byIcon(LucideIcons.info), findsNothing);
+    final hauteurs = {for (final e in find.byType(DsStatCard).evaluate()) e.size!.height};
+    expect(hauteurs, hasLength(1));
     expect(find.text('Dette fournisseurs'), findsOneWidget);
     expect(find.textContaining('500,00', findRichText: true), findsWidgets); // ventes = net (aucun achat)
     expect(find.byType(DsLineChart), findsOneWidget);
@@ -115,6 +124,7 @@ void main() {
     // Même architecture que les autres modules : panneau de filtres, export et réinitialisation.
     await clic(tester, find.byKey(const ValueKey('situation_nav_rcpr')));
     expect(find.byType(DsFilterPanel), findsOneWidget);
+    await ouvrirFiltres(tester); // fermés par défaut
     expect(find.byType(DsExportMenu), findsOneWidget);
     final reinit = find.widgetWithText(DsButton, 'Réinitialiser');
     expect(tester.widget<DsButton>(reinit).onPressed, isNull);
@@ -131,6 +141,7 @@ void main() {
     c.read(zakatVersionProvider.notifier).incrementer();
     await tester.pumpAndSettle();
     // Capital = stock 5 × 80 + caisse 200 + créances 300 = 900.
+    await ouvrirChiffres(tester);
     expect(find.textContaining('900,00'), findsWidgets);
     await clic(tester, find.byKey(const ValueKey('zakat_nouveau')));
     expect(tester.widget<TextField>(_dansCle('zakat_stock')).controller!.text, '400,00');
@@ -143,8 +154,8 @@ void main() {
     await _jeu(c);
     c.read(rapportsVersionProvider.notifier).incrementer();
     await tester.pumpAndSettle();
-    expect(find.text('Journal de toutes les actions · accès selon le rôle'), findsOneWidget);
     expect(find.text('Encaissement'), findsWidgets);
+    await ouvrirFiltres(tester);
     await clic(tester, find.byKey(const ValueKey('filtre_module_historique')));
     await clic(tester, find.text('Produits').last);
     expect(find.text('Encaissement'), findsNothing);

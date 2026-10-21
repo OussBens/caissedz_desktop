@@ -141,7 +141,7 @@ class _TableauBordPageState extends ConsumerState<TableauBordPage> {
         builder: (ctx, maj) => DsDialog(
           titre: l10n.tableauBordChoisirPeriode,
           iconeData: LucideIcons.calendar,
-          largeur: 560,
+          largeur: 880,
           actions: [
             DsButton(
               libelle: l10n.communAnnuler,
@@ -173,15 +173,11 @@ class _TableauBordPageState extends ConsumerState<TableauBordPage> {
     final locale = Localizations.localeOf(context).toLanguageTag();
     final du = _periode.du, au = _periode.au;
     final cle = (DateTime(du.year, du.month, du.day), DateTime(au.year, au.month, au.day));
-    final jours = cle.$2.difference(cle.$1).inDays + 1;
     final libellePeriode =
         '${DateFormat('dd MMM', locale).format(du)} – ${DateFormat('dd MMM yyyy', locale).format(au)}';
     final donnees = ref.watch(tableauBordProvider(cle)).value;
     return PageModule(
       moduleId: 'tableau_bord',
-      sousTitre: _onglet == 0
-          ? l10n.tableauBordDescription(formatDate.format(du), formatDate.format(au), jours)
-          : l10n.situationDescription,
       onglets: [l10n.tableauBordOnglet, l10n.situationOnglet],
       comptes: [null, SituationRepository.analyses.length],
       ongletCourant: _onglet,
@@ -257,16 +253,18 @@ class _VueEnsemble extends ConsumerWidget {
         suffixe: devise,
         icone: LucideIcons.banknote,
         tendance: tendance,
-        sousTexte: l10n.tableauBordVsPrecedente,
         info: l10n.tableauBordVentesInfo,
+        onTap: () => context.go('/ventes'),
       ),
       DsStatCard(
         libelle: l10n.tableauBordPeriodePrecedente,
         valeur: v(d?.ventesAvant),
         suffixe: devise,
         icone: LucideIcons.history,
-        info: l10n.tableauBordPrecedenteInfo,
-        sousTexte: duAvant == null ? null : '$duAvant – $auAvant',
+        info: duAvant == null
+            ? l10n.tableauBordPrecedenteInfo
+            : '${l10n.tableauBordPrecedenteInfo}\n$duAvant – $auAvant',
+        onTap: () => context.go('/ventes'),
       ),
       DsStatCard(
         libelle: l10n.tableauBordAchats,
@@ -274,6 +272,7 @@ class _VueEnsemble extends ConsumerWidget {
         suffixe: devise,
         icone: LucideIcons.shoppingCart,
         info: l10n.tableauBordAchatsInfo,
+        onTap: () => context.go('/entrees'),
       ),
       DsStatCard(
         libelle: l10n.tableauBordNet,
@@ -281,6 +280,7 @@ class _VueEnsemble extends ConsumerWidget {
         suffixe: devise,
         icone: LucideIcons.scale,
         info: l10n.tableauBordNetInfo,
+        onTap: () => context.go('/situation'),
       ),
       DsStatCard(
         key: const ValueKey('kpi_dette_fournisseurs'),
@@ -326,10 +326,13 @@ class _VueEnsemble extends ConsumerWidget {
           spacing: DsTailles.gridGap,
           children: [
             for (var i = 0; i < kpis.length; i += parLigne)
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: DsSpacing.s4,
-                children: [for (final kpi in kpis.skip(i).take(parLigne)) Expanded(child: kpi)],
+              // Toutes les cartes d'une rangée ont la hauteur de la plus haute.
+              IntrinsicHeight(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  spacing: DsSpacing.s4,
+                  children: [for (final kpi in kpis.skip(i).take(parLigne)) Expanded(child: kpi)],
+                ),
               ),
             grille(
               [
@@ -458,7 +461,7 @@ class _VueEnsemble extends ConsumerWidget {
                         libelle: l10n.tableauBordHeure,
                         valeur: (r) => r['date'] as Comparable?,
                         attenue: true,
-                        cellule: (_, r) => Text(DateFormat('dd/MM HH:mm').format(r['date']! as DateTime)),
+                        cellule: (_, r) => Text(formatDateHeure.format(r['date']! as DateTime)),
                       ),
                       DsColonne(
                         id: 'client',

@@ -91,7 +91,7 @@ class DsMotion {
 @immutable
 class DsTailles {
   const DsTailles._();
-  static const double fenetreMinLargeur = 1000;
+  static const double fenetreMinLargeur = 1400; // 1000 × 1,4
   static const double fenetreMinHauteur = 700;
 
   // Contrôles (`--control-*`).

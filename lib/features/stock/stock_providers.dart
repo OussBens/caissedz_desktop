@@ -14,7 +14,11 @@ import '../produits/produits_providers.dart';
 final stockRepositoryProvider = Provider<StockRepository>((ref) => StockRepository(ref.watch(appDatabaseProvider).db));
 
 final stockServiceProvider = Provider<StockService>(
-  (ref) => StockService(ref.watch(appDatabaseProvider).db, utilisateurCode: ref.watch(utilisateurCourantCodeProvider)),
+  (ref) => StockService(
+    ref.watch(appDatabaseProvider).db,
+    utilisateurCode: ref.watch(utilisateurCourantCodeProvider),
+    maxMagasins: ref.watch(licenceProvider).niveau?.magasins,
+  ),
 );
 
 /// Version du stock : incrémentée après chaque écriture (mouvements, magasins, besoins…).
@@ -40,6 +44,10 @@ Future<List<String>?> magasinsDeLaSession(Ref ref) async {
   if (session == null || session.estAdmin) return null;
   return ref.read(mesMagasinsProvider.future);
 }
+
+/// Le palier a-t-il plusieurs magasins (Ultra) ? Basic et Avancé : un seul magasin, aucun choix de magasin
+/// dans les formulaires ni les filtres (tout va au magasin principal).
+final plusieursMagasinsProvider = Provider<bool>((ref) => (ref.watch(licenceProvider).niveau?.magasins ?? 2) > 1);
 
 final magasinPrincipalProvider = FutureProvider<String>((ref) {
   ref.watch(stockVersionProvider);
@@ -144,4 +152,5 @@ String messageErreurStock(AppLocalizations l10n, ErreurStock e) => switch (e) {
   ErreurStock.aucunChangement => l10n.stkAucunChangement,
   ErreurStock.nombreObligatoire => l10n.communNombreObligatoire,
   ErreurStock.sortieRetour => l10n.stkErreurSortieRetour,
+  ErreurStock.limiteMagasins => l10n.limiteMagasins,
 };

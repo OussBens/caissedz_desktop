@@ -1,8 +1,11 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:caissedz_desktop/app/mobile_providers.dart';
 import 'package:caissedz_desktop/app/providers.dart';
 import 'package:caissedz_desktop/application/catalogue_service.dart';
+import 'package:caissedz_desktop/application/serveur_mobile.dart';
+import 'package:caissedz_desktop/application/stock_service.dart';
 import 'package:caissedz_desktop/application/tiers_service.dart';
 import 'package:caissedz_desktop/core/design_system/design_system.dart';
 import 'package:caissedz_desktop/data/parametre_repository.dart';
@@ -14,6 +17,7 @@ import 'package:caissedz_desktop/domain/models/tiers.dart';
 import 'package:caissedz_desktop/features/caisse/pos_controller.dart';
 import 'package:caissedz_desktop/features/entrees/entrees_providers.dart';
 import 'package:caissedz_desktop/features/produits/produits_providers.dart';
+import 'package:caissedz_desktop/features/stock/stock_providers.dart';
 import 'package:caissedz_desktop/features/tiers/tiers_providers.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
@@ -49,33 +53,48 @@ Future<void> _donnees(WidgetTester tester, ProviderContainer c, {bool session = 
   await tester.pumpAndSettle();
 }
 
+/// Le serveur Smart Scan (catalog-api.bensds.com/smartscan/*) : quota par lots, OCR, extraction.
 MockClient _serveur({required bool quotaAtteint}) => MockClient((req) async {
-  if (req.url.path.endsWith('/quota')) {
-    return http.Response(jsonEncode({'utilise': quotaAtteint ? 10 : 3, 'total': 10}), 200);
+  final quota = {'limit': 10, 'used': quotaAtteint ? 10 : 3, 'remaining': quotaAtteint ? 0 : 7, 'buckets': []};
+  if (req.url.path.endsWith('/smartscan/quota')) {
+    return http.Response(jsonEncode({'success': true, 'quota': quota}), 200);
   }
-  if (req.url.path.endsWith('/analyser')) {
-    if (quotaAtteint) return http.Response('{"erreur":"quota"}', 429);
+  if (req.url.path.endsWith('/smartscan/scan')) {
+    if (quotaAtteint) {
+      return http.Response(jsonEncode({'success': false, 'error': 'SCAN_QUOTA_EXCEEDED', 'quota': quota}), 429);
+    }
+    return http.Response(
+      jsonEncode({'success': true, 'scan_id': 1, 'text': 'Grossiste F-2026-12 LAIT 1 L', 'quota': quota}),
+      200,
+    );
+  }
+  if (req.url.path.endsWith('/smartscan/extract')) {
+    final contenu = jsonEncode({
+      'fournisseur': 'Grossiste',
+      'reference': 'F-2026-12',
+      'lignes': [
+        {
+          'designation': 'LAIT 1 L',
+          'code_barres': '6130000000015',
+          'quantite': 20,
+          'prix_unitaire': 85,
+          'confiance': 98,
+        },
+        {'designation': 'Yaourt nature', 'quantite': 6, 'prix_unitaire': 30, 'confiance': 64},
+      ],
+    });
     return http.Response(
       jsonEncode({
-        'fournisseur': 'Grossiste',
-        'reference': 'F-2026-12',
-        'quota': {'utilise': 4, 'total': 10},
-        'lignes': [
+        'choices': [
           {
-            'designation': 'LAIT 1 L',
-            'code_barres': '6130000000015',
-            'quantite': 20,
-            'prix_achat': 85,
-            'confiance': 98,
+            'message': {'content': contenu},
           },
-          {'designation': 'Yaourt nature', 'quantite': 6, 'prix_achat': 30, 'confiance': 64},
         ],
       }),
       200,
     );
   }
-  if (req.url.path.endsWith('/demande-offre')) return http.Response('{}', 200);
-  return http.Response('', 404);
+  return http.Response('{}', 404);
 });
 
 Finder _cle(String cle) => find.byKey(ValueKey(cle));
@@ -128,6 +147,7 @@ void main() {
       await _donnees(tester, c);
       await clic(tester, _cle('entree_rapide'));
       expect(tester.widget<DsButton>(_cle('rapide_enregistrer')).onPressed, isNull);
+      expect(find.text('Répartition (option)'), findsNothing, reason: 'un seul magasin : tout au principal');
       await _choisir(tester, 'rapide_produit', 'Lait 1 L');
       await tester.enterText(_champ('rapide_quantite'), '5');
       await tester.pump();
@@ -137,6 +157,17 @@ void main() {
       expect(a.total, 400);
       expect(a.statutPaiement, 'paye');
       expect((await StockRepository(c.read(appDatabaseProvider).db).niveau('PRD0001', 'MAG0000')).quantite, 5);
+      await tester.pump(const Duration(seconds: 5));
+    });
+
+    testWidgets('entrée rapide : la répartition seulement en Ultra avec plusieurs magasins', (tester) async {
+      final c = await pumpApp(tester, routeInitiale: '/entrees', taille: _taille);
+      await _donnees(tester, c);
+      await StockService(c.read(appDatabaseProvider).db, utilisateurCode: 'USR0000').creerMagasin('Dépôt');
+      c.read(stockVersionProvider.notifier).incrementer();
+      await tester.pumpAndSettle();
+      await clic(tester, _cle('entree_rapide'));
+      expect(find.text('Répartition (option)'), findsOneWidget);
       await tester.pump(const Duration(seconds: 5));
     });
 
@@ -166,19 +197,37 @@ void main() {
         ],
       );
       await _donnees(tester, c);
-      await clic(tester, find.text('Mode IA'));
+      await clic(tester, find.text('Smart Scan').first);
       await clic(tester, _cle('ia_joindre'));
       expect(find.text('Reçu IA · lecture automatique du bon'), findsOneWidget);
       expect(tester.widget<DsButton>(_cle('ia_analyser')).onPressed, isNull);
       await clic(tester, _cle('ia_disque'));
-      expect(find.text('facture.jpg'), findsOneWidget);
+      expect(find.byKey(const ValueKey('ia_apercu_facture.jpg')), findsOneWidget, reason: 'aperçu de la photo');
+      expect(find.byType(DsImageZoom), findsOneWidget, reason: 'aperçu zoomable');
       await clic(tester, _cle('ia_analyser'));
       expect(find.text('LAIT 1 L'), findsOneWidget);
       expect(find.text('Lait 1 L'), findsOneWidget, reason: 'rapproché par code-barres');
       expect(find.text('98 %'), findsOneWidget);
       expect(find.text('1 ligne(s) à rapprocher'), findsOneWidget);
-      await _choisir(tester, 'ia_rapprocher_1', '+ Créer « Yaourt nature »');
+      // Produit absent du catalogue : le formulaire s'ouvre rempli (désignation, fournisseur, prix d'achat).
+      await clic(tester, _cle('ia_creer_produit_1'));
+      expect(
+        tester
+            .widget<TextField>(find.descendant(of: _cle('produit_designation'), matching: find.byType(TextField)))
+            .controller!
+            .text,
+        'Yaourt nature',
+      );
+      expect(find.descendant(of: _cle('produit_achat'), matching: find.byType(TextField)), findsOneWidget);
+      expect(find.text('Grossiste'), findsWidgets, reason: 'fournisseur du bon proposé');
+      // Stock initial à 0 : les 6 de la facture entrent avec l'entrée du bon (pas de double comptage).
+      expect(find.text("6 entreront en stock avec l'entrée du bon."), findsOneWidget);
+      final stockInitial = find.descendant(of: _cle('produit_stock_initial'), matching: find.byType(TextField));
+      expect(tester.widget<TextField>(stockInitial).enabled, isFalse);
+      await clic(tester, _cle('produit_enregistrer'));
+      expect(_cle('produit_enregistrer'), findsNothing);
       expect(find.text('Yaourt nature'), findsWidgets);
+      expect(find.text('1 ligne(s) à rapprocher'), findsNothing, reason: 'le produit créé est choisi pour la ligne');
       await clic(tester, _cle('ia_suivant'));
       expect(
         find.descendant(of: _cle('ia_fournisseur'), matching: find.text('Grossiste')),
@@ -191,10 +240,18 @@ void main() {
       expect(a.source, SourcesAchat.ia);
       expect(a.lignes.length, 2);
       expect(a.reference, 'F-2026-12');
+      final db = c.read(appDatabaseProvider).db;
+      expect((await StockRepository(db).niveau(a.lignes.last.produitCode, 'MAG0000')).quantite, 6);
       final bon = (await c.read(achatServiceProvider).bonsReception()).single;
       expect(bon.statut, StatutsBon.traite);
       expect(bon.achatCode, a.code);
       expect(find.text('Traité'), findsOneWidget);
+      expect(bon.lignes.every((l) => l.traitee), isTrue);
+      // Détail du bon : chaque ligne lue reprise dans l'entrée est marquée « Traité ».
+      await doubleClic(tester, find.text(bon.code));
+      expect(_cle('bon_ligne_traitee_0'), findsOneWidget);
+      expect(_cle('bon_ligne_traitee_1'), findsOneWidget);
+      expect(find.byType(DsImageZoom), findsNothing, reason: 'photo du disque absente : les lignes seules');
       await tester.pump(const Duration(seconds: 5));
     });
 
@@ -206,13 +263,31 @@ void main() {
         overrides: [httpClientProvider.overrideWithValue(_serveur(quotaAtteint: true))],
       );
       await _donnees(tester, c);
-      await clic(tester, find.text('Mode IA'));
+      await clic(tester, find.text('Smart Scan').first);
       await clic(tester, _cle('ia_joindre'));
+      // Un pack se demande depuis le compte BENS du poste (activé ici par une clé collée, sans compte).
       await clic(tester, _cle('ia_offre'));
-      await tester.enterText(_champ('offre_email'), 'a@b.dz');
-      await tester.pump();
-      await clic(tester, _cle('offre_envoyer'));
-      expect(find.textContaining('Demande envoyée'), findsOneWidget);
+      expect(
+        find.text('Connectez ce poste à votre compte BENS pour acheter des packs (Paramètres › Licence).'),
+        findsOneWidget,
+      );
+      await tester.pump(const Duration(seconds: 5));
+    });
+
+    testWidgets('photo envoyée par le téléphone : pop-up, puis l’onglet Smart Scan', (tester) async {
+      final c = await pumpApp(
+        tester,
+        routeInitiale: '/caisse',
+        taille: _taille,
+        overrides: [httpClientProvider.overrideWithValue(_serveur(quotaAtteint: false))],
+      );
+      c.read(factureMobileProvider.notifier).recue(const FactureMobile(bon: 'BON0001', utilisateur: 'Karim'));
+      await tester.pumpAndSettle();
+      expect(find.text('Facture reçue du téléphone'), findsOneWidget);
+      expect(find.text('Karim a envoyé une photo de facture (BON0001).'), findsOneWidget);
+      await clic(tester, _cle('facture_mobile_smart_scan'));
+      expect(find.text('Facture reçue du téléphone'), findsNothing);
+      expect(_cle('ia_joindre'), findsOneWidget, reason: 'Entrées ouvert sur l’onglet Smart Scan');
       await tester.pump(const Duration(seconds: 5));
     });
 

@@ -139,4 +139,30 @@ void main() {
     await _coherent(db, TypesTiers.fournisseur, djurdjura.code, -900);
     expect(await stats.dettesFournisseurs(), 0);
   });
+
+  test('solde initial : dans le solde, le relevé, imputé en premier ; négatif = avance', () async {
+    final base = await ouvrirBaseDeTest();
+    final db = base.db;
+    final tiers = TiersService(db, utilisateurCode: 'USR0000');
+    final amina = await tiers.creerClient(const Client(code: '', nom: 'Amina', soldeInitial: 500));
+    final djurdjura = await tiers.creerFournisseur(const Fournisseur(code: '', nom: 'Djurdjura', soldeInitial: -200));
+    await _coherent(db, TypesTiers.client, amina.code, 500);
+    await _coherent(db, TypesTiers.fournisseur, djurdjura.code, -200);
+    final repo = TiersRepository(db);
+    expect((await repo.documentsOuvertsClient(amina.code)).single.type, TiersRepository.typeSoldeInitial);
+    expect(await repo.documentsOuvertsFournisseur(djurdjura.code), isEmpty, reason: 'une avance n\'est pas due');
+    await SessionCaisseService(db, utilisateurCode: 'USR0000').ouvrir(caisseCode: 'CIS0000', fondInitial: 0);
+    final v = await VersementService(
+      db,
+      utilisateurCode: 'USR0000',
+    ).imputer(tiersType: TypesTiers.client, tiersCode: amina.code, montant: 300, mode: 'Espèces');
+    expect(v.imputations.single.documentType, TiersRepository.typeSoldeInitial);
+    expect((await repo.documentsOuvertsClient(amina.code)).single.reste, 200);
+    expect((await repo.statistiques(TypesTiers.client))[amina.code]!.du, 200);
+    await _coherent(db, TypesTiers.client, amina.code, 200);
+    // Solde initial corrigé dans la fiche : le solde suit.
+    await tiers.modifierClient(amina.copyWith(soldeInitial: 800));
+    await _coherent(db, TypesTiers.client, amina.code, 500);
+    await base.fermer();
+  });
 }

@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
@@ -5,11 +6,19 @@ import '../../i18n/generated/app_localizations.dart';
 import '../tokens/ds_theme.dart';
 import 'ds_button.dart';
 import 'ds_forms.dart';
+import 'ds_page.dart';
 import 'ds_primitives.dart';
 
 /// Entrée de navigation (module).
 class DsNavEntree {
-  const DsNavEntree({required this.route, required this.libelle, required this.icone, this.badge, this.badgeTexte});
+  const DsNavEntree({
+    required this.route,
+    required this.libelle,
+    required this.icone,
+    this.badge,
+    this.badgeTexte,
+    this.point = false,
+  });
   final String route;
   final String libelle;
   final IconData icone;
@@ -19,6 +28,9 @@ class DsNavEntree {
 
   /// Étiquette texte (pastille teintée, ex. « IA »).
   final String? badgeTexte;
+
+  /// Point rouge : nouvelle activité non consultée dans le module.
+  final bool point;
 }
 
 /// Groupe de la barre latérale.
@@ -71,7 +83,14 @@ class _DsNavItemState extends State<DsNavItem> {
                 mainAxisAlignment: widget.replie ? MainAxisAlignment.center : MainAxisAlignment.start,
                 spacing: 10,
                 children: [
-                  Icon(it.icone, size: DsTailles.icone, color: on ? c.iconActive : couleurTexte),
+                  Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Icon(it.icone, size: DsTailles.icone, color: on ? c.iconActive : couleurTexte),
+                      if (it.point && widget.replie)
+                        PositionedDirectional(top: -3, end: -3, child: DsPoint(key: ValueKey('point_${it.route}'))),
+                    ],
+                  ),
                   if (!widget.replie) ...[
                     Expanded(
                       child: Text(
@@ -84,6 +103,7 @@ class _DsNavItemState extends State<DsNavItem> {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
+                    if (it.point) DsPoint(key: ValueKey('point_${it.route}')),
                     if (it.badge != null)
                       Container(
                         constraints: const BoxConstraints(minWidth: 20),
@@ -184,8 +204,26 @@ class DsSidebar extends StatefulWidget {
 }
 
 class _DsSidebarState extends State<DsSidebar> {
-  /// Libellés des catégories repliées (le module actif d'une catégorie repliée reste visible).
-  final Set<String> _categoriesRepliees = {};
+  /// Catégories ouvertes ou fermées à la main. Par défaut, seule celle du module actif est ouverte
+  /// (le module actif d'une catégorie fermée reste visible).
+  final Set<String> _categoriesOuvertes = {};
+  final Set<String> _categoriesFermees = {};
+
+  bool _fermee(DsNavSection s) {
+    if (_categoriesFermees.contains(s.libelle)) return true;
+    if (_categoriesOuvertes.contains(s.libelle)) return false;
+    return !s.items.any((it) => it.route == widget.active);
+  }
+
+  void _basculer(DsNavSection s) => setState(() {
+    if (_fermee(s)) {
+      _categoriesFermees.remove(s.libelle);
+      _categoriesOuvertes.add(s.libelle);
+    } else {
+      _categoriesOuvertes.remove(s.libelle);
+      _categoriesFermees.add(s.libelle);
+    }
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -251,7 +289,7 @@ class _DsSidebarState extends State<DsSidebar> {
                     child: Builder(
                       builder: (context) {
                         final repliable = !replie && s.libelle.isNotEmpty;
-                        final fermee = repliable && _categoriesRepliees.contains(s.libelle);
+                        final fermee = repliable && _fermee(s);
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
@@ -260,11 +298,8 @@ class _DsSidebarState extends State<DsSidebar> {
                                 key: ValueKey('nav_categorie_$i'),
                                 libelle: s.libelle,
                                 ouverte: !fermee,
-                                onTap: () => setState(
-                                  () => fermee
-                                      ? _categoriesRepliees.remove(s.libelle)
-                                      : _categoriesRepliees.add(s.libelle),
-                                ),
+                                point: s.items.any((it) => it.point && it.route != active),
+                                onTap: () => _basculer(s),
                               ),
                             AnimatedSize(
                               duration: DsMotion.base,
@@ -318,10 +353,19 @@ class _DsSidebarState extends State<DsSidebar> {
 
 /// En-tête de catégorie de la barre latérale : libellé et chevron, clic = replier / déplier.
 class _EnteteCategorie extends StatefulWidget {
-  const _EnteteCategorie({super.key, required this.libelle, required this.ouverte, required this.onTap});
+  const _EnteteCategorie({
+    super.key,
+    required this.libelle,
+    required this.ouverte,
+    required this.onTap,
+    this.point = false,
+  });
   final String libelle;
   final bool ouverte;
   final VoidCallback onTap;
+
+  /// Fermée, avec un module à point rouge dedans : le point reste visible sur l'en-tête.
+  final bool point;
 
   @override
   State<_EnteteCategorie> createState() => _EnteteCategorieState();
@@ -355,7 +399,19 @@ class _EnteteCategorieState extends State<_EnteteCategorie> {
               child: Row(
                 children: [
                   Expanded(
-                    child: Text(widget.libelle.toUpperCase(), style: t.overline.copyWith(height: 1, color: couleur)),
+                    child: Row(
+                      spacing: DsSpacing.s2,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            widget.libelle.toUpperCase(),
+                            style: t.overline.copyWith(height: 1, color: couleur),
+                          ),
+                        ),
+                        if (widget.point && !widget.ouverte)
+                          DsPoint(key: ValueKey('point_categorie_${widget.libelle}')),
+                      ],
+                    ),
                   ),
                   AnimatedRotation(
                     // Replié : chevron vers le sens de lecture (droite en LTR, gauche en RTL).
@@ -619,6 +675,7 @@ class DsTopBar extends StatelessWidget {
     this.themeSombre = false,
     this.onTheme,
     this.largeurRecherche = 340,
+    this.rechercheGlobale,
   });
   final String utilisateur;
   final String role;
@@ -635,6 +692,9 @@ class DsTopBar extends StatelessWidget {
   final bool themeSombre;
   final ValueChanged<bool>? onTheme;
   final double largeurRecherche;
+
+  /// Champ de recherche globale, placé à côté du témoin réseau et des alertes.
+  final Widget? rechercheGlobale;
 
   @override
   Widget build(BuildContext context) {
@@ -665,6 +725,7 @@ class DsTopBar extends StatelessWidget {
                 ? const SizedBox.shrink()
                 : Padding(padding: const EdgeInsets.symmetric(horizontal: 8), child: favoris),
           ),
+          ?rechercheGlobale,
           DsTemoinLigne(enLigne: enLigne),
           ...actions,
           DsIconButton(
@@ -718,7 +779,8 @@ class DsFavori {
 }
 
 /// Barre de favoris (`FavoritesBar`) : onglets 32 px, soulignement primaire sous l'actif, « + ».
-class DsFavorisBar extends StatelessWidget {
+/// Trop étroite (fenêtre réduite) : elle défile horizontalement, à la molette aussi.
+class DsFavorisBar extends StatefulWidget {
   const DsFavorisBar({
     super.key,
     required this.items,
@@ -726,7 +788,7 @@ class DsFavorisBar extends StatelessWidget {
     this.onOuvrir,
     this.onRetirer,
     this.onAjouter,
-    this.max = 7,
+    this.max = 5,
     this.libelleAjouter,
   });
   final List<DsFavori> items;
@@ -738,61 +800,141 @@ class DsFavorisBar extends StatelessWidget {
   final String? libelleAjouter;
 
   @override
+  State<DsFavorisBar> createState() => _DsFavorisBarState();
+}
+
+class _DsFavorisBarState extends State<DsFavorisBar> {
+  final _defilement = ScrollController();
+
+  @override
+  void dispose() {
+    _defilement.dispose();
+    super.dispose();
+  }
+
+  /// La molette (verticale) fait défiler la barre horizontalement.
+  void _molette(PointerSignalEvent e) {
+    if (e is! PointerScrollEvent || !_defilement.hasClients) return;
+    final p = _defilement.position;
+    if (p.maxScrollExtent <= 0) return;
+    final delta = e.scrollDelta.dy != 0 ? e.scrollDelta.dy : e.scrollDelta.dx;
+    GestureBinding.instance.pointerSignalResolver.register(e, (_) {
+      _defilement.jumpTo((p.pixels + delta).clamp(p.minScrollExtent, p.maxScrollExtent));
+    });
+  }
+
+  /// Largeur des favoris avec leur libellé (le plus gras : l'actif) et du « + ».
+  double _largeurComplete(BuildContext context, TextStyle style) {
+    final items = widget.items;
+    final direction = Directionality.of(context);
+    final echelle = MediaQuery.textScalerOf(context);
+    var largeur = 0.0;
+    for (final i in items) {
+      final texte = TextPainter(
+        text: TextSpan(text: i.libelle, style: style),
+        textDirection: direction,
+        textScaler: echelle,
+        maxLines: 1,
+      )..layout();
+      // Marge 10 + icône 15 + écart 7 + libellé + fin (croix 4 + 20 + 6, sinon 10).
+      largeur += 10 + 15 + 7 + texte.width + (widget.onRetirer != null ? 30 : 10);
+      texte.dispose();
+    }
+    final ajout = widget.onAjouter != null && items.length < widget.max;
+    final n = items.length + (ajout ? 1 : 0);
+    return largeur + (ajout ? 36 : 0) + 4 * (n > 0 ? n - 1 : 0);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final t = context.ds.typo;
+    // Trop étroit pour les libellés : icônes seules, le libellé s'ouvre au survol.
+    return LayoutBuilder(
+      builder: (context, contraintes) => _barre(
+        context,
+        compact:
+            contraintes.maxWidth.isFinite &&
+            _largeurComplete(context, t.bodySm.copyWith(fontWeight: FontWeight.w600)) > contraintes.maxWidth,
+      ),
+    );
+  }
+
+  Widget _barre(BuildContext context, {required bool compact}) {
     final c = context.ds.colors;
     final t = context.ds.typo;
     final l10n = AppLocalizations.of(context);
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        spacing: 4,
-        children: [
-          for (final i in items)
-            _Favori(
-              favori: i,
-              actif: actif == i.route,
-              onOuvrir: () => onOuvrir?.call(i.route),
-              onRetirer: onRetirer == null ? null : () => onRetirer!(i.route),
-            ),
-          if (onAjouter != null && items.length < max)
-            Tooltip(
-              message: libelleAjouter ?? l10n.dsAjouterFavoris,
-              child: InkWell(
-                key: const ValueKey('favoris_ajouter'),
-                borderRadius: DsRadius.borderMd,
-                onTap: onAjouter,
-                child: Container(
-                  height: 30,
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  decoration: BoxDecoration(
+    final items = widget.items;
+    return Listener(
+      onPointerSignal: _molette,
+      child: SingleChildScrollView(
+        controller: _defilement,
+        scrollDirection: Axis.horizontal,
+        // Toute la hauteur de la barre : le soulignement de l'actif (en bas de la barre) n'est pas coupé.
+        child: SizedBox(
+          height: DsTailles.topbar,
+          child: Row(
+            spacing: 4,
+            children: [
+              for (final i in items)
+                _Favori(
+                  key: ValueKey('favori_${i.route}'),
+                  favori: i,
+                  compact: compact,
+                  actif: widget.actif == i.route,
+                  onOuvrir: () => widget.onOuvrir?.call(i.route),
+                  onRetirer: widget.onRetirer == null ? null : () => widget.onRetirer!(i.route),
+                ),
+              if (widget.onAjouter != null && items.length < widget.max)
+                Tooltip(
+                  message: widget.libelleAjouter ?? l10n.dsAjouterFavoris,
+                  child: InkWell(
+                    key: const ValueKey('favoris_ajouter'),
                     borderRadius: DsRadius.borderMd,
-                    border: Border.all(color: c.borderStrong),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    spacing: 6,
-                    children: [
-                      Icon(LucideIcons.plus, size: 14, color: c.textMuted),
-                      if (items.isEmpty)
-                        Text(
-                          libelleAjouter ?? l10n.dsAjouter,
-                          style: t.bodySm.copyWith(fontSize: 12.5, fontWeight: FontWeight.w500, color: c.textMuted),
-                        ),
-                    ],
+                    onTap: widget.onAjouter,
+                    child: Container(
+                      height: 30,
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                        borderRadius: DsRadius.borderMd,
+                        border: Border.all(color: c.borderStrong),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        spacing: 6,
+                        children: [
+                          Icon(LucideIcons.plus, size: 14, color: c.textMuted),
+                          if (items.isEmpty)
+                            Text(
+                              widget.libelleAjouter ?? l10n.dsAjouter,
+                              style: t.bodySm.copyWith(fontSize: 12.5, fontWeight: FontWeight.w500, color: c.textMuted),
+                            ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-        ],
+            ],
+          ),
+        ),
       ),
     );
   }
 }
 
 class _Favori extends StatefulWidget {
-  const _Favori({required this.favori, required this.actif, required this.onOuvrir, this.onRetirer});
+  const _Favori({
+    super.key,
+    required this.favori,
+    required this.actif,
+    required this.onOuvrir,
+    this.onRetirer,
+    this.compact = false,
+  });
   final DsFavori favori;
   final bool actif;
+
+  /// Icône seule ; le libellé (et la croix) s'ouvrent au survol.
+  final bool compact;
   final VoidCallback onOuvrir;
   final VoidCallback? onRetirer;
   @override
@@ -807,6 +949,7 @@ class _FavoriState extends State<_Favori> {
     final t = context.ds.typo;
     final l10n = AppLocalizations.of(context);
     final on = widget.actif;
+    final deplie = !widget.compact || _survol;
     return MouseRegion(
       onEnter: (_) => setState(() => _survol = true),
       onExit: (_) => setState(() => _survol = false),
@@ -826,46 +969,69 @@ class _FavoriState extends State<_Favori> {
                 InkWell(
                   onTap: widget.onOuvrir,
                   borderRadius: DsRadius.borderMd,
-                  child: Padding(
-                    padding: EdgeInsetsDirectional.only(start: 10, end: widget.onRetirer != null ? 4 : 10),
+                  child: AnimatedPadding(
+                    duration: DsMotion.base,
+                    curve: DsMotion.standard,
+                    padding: EdgeInsetsDirectional.only(
+                      start: widget.compact ? 9 : 10,
+                      end: !deplie ? 9 : (widget.onRetirer != null ? 4 : 10),
+                    ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
-                      spacing: 7,
                       children: [
                         Icon(widget.favori.icone, size: 15, color: on ? c.iconActive : c.textSecondary),
-                        Text(
-                          widget.favori.libelle,
-                          style: t.bodySm.copyWith(
-                            fontWeight: on ? FontWeight.w600 : FontWeight.w500,
-                            color: on ? c.primaryTintFg : c.textSecondary,
-                          ),
+                        // Icônes seules : le libellé glisse à côté de l'icône au survol.
+                        AnimatedSize(
+                          duration: DsMotion.base,
+                          curve: DsMotion.standard,
+                          alignment: AlignmentDirectional.centerStart,
+                          child: deplie
+                              ? Padding(
+                                  padding: const EdgeInsetsDirectional.only(start: 7),
+                                  child: Text(
+                                    widget.favori.libelle,
+                                    maxLines: 1,
+                                    softWrap: false,
+                                    style: t.bodySm.copyWith(
+                                      fontWeight: on ? FontWeight.w600 : FontWeight.w500,
+                                      color: on ? c.primaryTintFg : c.textSecondary,
+                                    ),
+                                  ),
+                                )
+                              : const SizedBox(height: 15),
                         ),
                       ],
                     ),
                   ),
                 ),
                 if (widget.onRetirer != null)
-                  Padding(
-                    padding: const EdgeInsetsDirectional.only(end: 6),
-                    child: AnimatedOpacity(
-                      opacity: _survol ? 1 : 0,
-                      duration: DsMotion.fast,
-                      child: DsIconButton(
-                        icone: LucideIcons.x,
-                        tooltip: l10n.dsRetirerFavoris,
-                        taille: 20,
-                        couleur: c.iconMuted,
-                        onPressed: widget.onRetirer,
-                      ),
-                    ),
+                  AnimatedSize(
+                    duration: DsMotion.base,
+                    curve: DsMotion.standard,
+                    child: deplie
+                        ? Padding(
+                            padding: const EdgeInsetsDirectional.only(end: 6),
+                            child: AnimatedOpacity(
+                              opacity: _survol ? 1 : 0,
+                              duration: DsMotion.fast,
+                              child: DsIconButton(
+                                icone: LucideIcons.x,
+                                tooltip: l10n.dsRetirerFavoris,
+                                taille: 20,
+                                couleur: c.iconMuted,
+                                onPressed: widget.onRetirer,
+                              ),
+                            ),
+                          )
+                        : const SizedBox.shrink(),
                   ),
               ],
             ),
           ),
           if (on)
             PositionedDirectional(
-              start: 10,
-              end: 10,
+              start: deplie ? 10 : 6,
+              end: deplie ? 10 : 6,
               bottom: -14,
               child: Container(
                 height: 2,
@@ -1131,7 +1297,8 @@ class _TuileModuleState extends State<_TuileModule> {
                       Text(
                         i.libelle,
                         textAlign: TextAlign.center,
-                        maxLines: 2,
+                        // Verrouillé : une ligne, pour laisser la place au palier requis.
+                        maxLines: verrou ? 1 : 2,
                         overflow: TextOverflow.ellipsis,
                         style: t.bodySm.copyWith(fontWeight: FontWeight.w600, height: 1.25),
                       ),

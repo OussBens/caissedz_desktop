@@ -345,7 +345,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get shellVerrouille => 'Réservé à la licence Avancé';
 
   @override
-  String get shellAccesRestreint => 'Accès non autorisé pour votre rôle';
+  String get shellAccesRestreint => 'Accès non autorisé';
 
   @override
   String get produitsOngletProduits => 'Produits';
@@ -378,7 +378,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get produitsColPrixAchat => 'Prix d\'achat';
 
   @override
-  String get produitsColPrixVente => 'Prix de vente';
+  String get produitsColPrixVente => 'Prix de vente HT';
 
   @override
   String get produitsColStock => 'Stock';
@@ -396,7 +396,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get produitChampPrixAchat => 'Prix d\'achat';
 
   @override
-  String get produitChampPrixVente => 'Prix de vente';
+  String get produitChampPrixVente => 'Prix de vente HT';
 
   @override
   String get produitChampUnite => 'Unité';
@@ -1234,6 +1234,15 @@ class AppLocalizationsFr extends AppLocalizations {
   String get dsLibelle => 'Libellé';
 
   @override
+  String get dsZoomAvant => 'Zoom avant';
+
+  @override
+  String get dsZoomArriere => 'Zoom arrière';
+
+  @override
+  String get dsZoomAjuster => 'Image entière';
+
+  @override
   String get dsCochezLignes => 'Cochez une ou plusieurs lignes';
 
   @override
@@ -1269,9 +1278,6 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get dsLotVerifier => 'Vérifiez la sélection avant de confirmer.';
-
-  @override
   String dsLotBloques(String n, String motif) {
     return '$n ne peuvent pas être traités : $motif.';
   }
@@ -1296,11 +1302,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get dsColonnesTitre => 'Afficher / masquer les colonnes';
-
-  @override
-  String dsColonnesVisibles(int n, int total) {
-    return '$n sur $total colonnes visibles';
-  }
 
   @override
   String get dsAppliquer => 'Appliquer';
@@ -1356,6 +1357,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get dsFiltres => 'Filtres';
+
+  @override
+  String get dsChiffresCles => 'Chiffres clés';
 
   @override
   String get dsFiltrer => 'Filtrer';
@@ -1675,6 +1679,33 @@ class AppLocalizationsFr extends AppLocalizations {
   String get connexionSousTitre => 'Connectez-vous pour ouvrir votre caisse.';
 
   @override
+  String get connexionChoisirCompte => 'Choisissez votre compte';
+
+  @override
+  String get connexionChoisirSousTitre => 'Les comptes de ce poste : cliquez sur le vôtre.';
+
+  @override
+  String get connexionAutreCompte => 'Autre compte';
+
+  @override
+  String get connexionPasVous => 'Ce n\'est pas vous ? Changer de compte';
+
+  @override
+  String get connexionVoirComptes => 'Voir les comptes de ce poste';
+
+  @override
+  String connexionCompteBens(String telephone) {
+    return 'Compte BENS $telephone';
+  }
+
+  @override
+  String get connexionMotDePasseBens => 'Par défaut : le mot de passe de votre compte BENS.';
+
+  @override
+  String get connexionIdentifiantOuTelephone =>
+      'Nom d\'utilisateur, ou le téléphone du compte BENS pour l\'administrateur';
+
+  @override
   String get connexionAfficher => 'Afficher';
 
   @override
@@ -1684,7 +1715,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get connexionResterConnecte => 'Rester connecté';
 
   @override
-  String get connexionMotDePasseOublie => 'Mot de passe oublié ? Voyez l\'administrateur';
+  String get connexionMotDePasseOublie => 'Mot de passe oublié ?';
+
+  @override
+  String get connexionMotDePasseOublieAide => 'Demandez à l\'administrateur de le réinitialiser.';
 
   @override
   String get connexionHorsLigne => 'Fonctionne hors ligne · données stockées sur ce poste';
@@ -1764,25 +1798,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get activationContinuer => 'Continuer';
 
   @override
-  String get configDescription => 'Quatre étapes pour configurer la boutique. Tout reste modifiable dans Paramètres.';
-
-  @override
   String get configEtapeLangue => 'Langue & devise';
 
   @override
-  String get configEtapeLangueDetail => 'Affichage';
-
-  @override
-  String get configEtapeBoutiqueDetail => 'Ticket et mentions';
-
-  @override
   String get configEtapePaiements => 'Paiements';
-
-  @override
-  String get configEtapePaiementsDetail => 'Moyens acceptés';
-
-  @override
-  String get configEtapeVenteDetail => 'Prix et alertes';
 
   @override
   String get configDecimales => 'Décimales des quantités';
@@ -1855,15 +1874,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get alertesTitre => 'Alertes du jour';
 
   @override
-  String alertesResume(int urgentes, int surveiller) {
-    String _temp0 = intl.Intl.pluralLogic(urgentes, locale: localeName, other: '$urgentes urgentes', one: '1 urgente');
-    return '$_temp0 · $surveiller à surveiller';
-  }
-
-  @override
-  String get alertesToutTraite => 'Tout est traité';
-
-  @override
   String get alertesUrgent => 'Urgent';
 
   @override
@@ -1916,6 +1926,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get alertesRuptureLigne => 'Commander';
+
+  @override
+  String get alertesVoirStock => 'Voir le stock';
 
   @override
   String get alertesExpire => 'Produits expirés';
@@ -2146,9 +2159,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get tiersBloqueSysteme => 'Élément système';
 
   @override
-  String get tiersChampsObligatoires => 'Les champs marqués * sont obligatoires';
-
-  @override
   String get tiersChoisir => 'Choisir…';
 
   @override
@@ -2186,16 +2196,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tiersDerniersPaniers => 'Derniers paniers';
-
-  @override
-  String tiersDescriptionClients(int n, int nb) {
-    return '$n clients · $nb avec un crédit en cours';
-  }
-
-  @override
-  String tiersDescriptionFournisseurs(int n, int nb) {
-    return '$n fournisseurs · $nb avec un crédit en cours';
-  }
 
   @override
   String get tiersDetail => 'Détail';
@@ -2305,12 +2305,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get tiersReference => 'Référence';
 
   @override
-  String get tiersReleveClient => 'Relevé client';
-
-  @override
-  String get tiersReleveFournisseur => 'Relevé fournisseur';
-
-  @override
   String get tiersReste => 'Reste';
 
   @override
@@ -2350,20 +2344,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tiersWilaya => 'Wilaya';
-
-  @override
-  String get versementAideClient =>
-      'Le montant est imputé sur les paniers à crédit du client, du plus ancien au plus récent.';
-
-  @override
-  String get versementAideFournisseur =>
-      'Le montant est imputé sur les entrées à crédit du fournisseur, de la plus ancienne à la plus récente.';
-
-  @override
-  String get versementAideRetourClient => 'Argent rendu au client (avance ou trop-perçu) : sortie de caisse.';
-
-  @override
-  String get versementAideRetourFournisseur => 'Argent remboursé par le fournisseur : entrée en caisse.';
 
   @override
   String get versementAucunBeneficiaire => 'Aucun bénéficiaire choisi';
@@ -2455,14 +2435,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get situationOnglet => 'Situation';
 
   @override
-  String tableauBordDescription(String au, String du, int n) {
-    return 'Du $du au $au, comparé aux $n jours précédents.';
-  }
-
-  @override
-  String get situationDescription => 'Analyses détaillées sur la période — chaque vue est exportable en Excel et PDF.';
-
-  @override
   String get tableauBordJour => 'Jour';
 
   @override
@@ -2491,9 +2463,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tableauBordVentesInfo => 'Total des paniers encaissés sur la période';
-
-  @override
-  String get tableauBordVsPrecedente => 'vs période précédente';
 
   @override
   String get tableauBordPrecedenteInfo => 'Même nombre de jours, juste avant la période';
@@ -2777,9 +2746,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get situationCreditTotal => 'Crédit total';
 
   @override
-  String get ventesDescription => 'Tous les paniers encaissés — tickets et BL / SC';
-
-  @override
   String get ventesKpiNombre => 'Nombre de ventes';
 
   @override
@@ -2932,11 +2898,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get ventesModifierTitre => 'Modifier le panier';
 
   @override
-  String ventesModifierDescription(String code) {
-    return '$code · les lignes ne sont pas modifiables — utilisez un retour.';
-  }
-
-  @override
   String get ventesClientScelle =>
       'Client du ticket scellé : pour un autre client, faites un retour puis une nouvelle vente.';
 
@@ -2976,9 +2937,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get posErreurRetourLie => 'Un retour est lié à ce panier : annulation impossible.';
-
-  @override
-  String get retoursDescription => 'Retours clients (remise en stock, remboursement) et retours fournisseurs';
 
   @override
   String get retoursOngletClients => 'Retours clients';
@@ -3312,12 +3270,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get posEncSaveTitre => 'Enregistrer le ticket';
 
   @override
-  String get posEncTicketDesc => 'Vérifiez le montant reçu puis validez : le ticket est imprimé.';
-
-  @override
-  String get posEncSaveDesc => 'Le ticket est enregistré : le reste est porté au crédit du client.';
-
-  @override
   String get posEncTicketOk => 'Encaisser et imprimer';
 
   @override
@@ -3371,11 +3323,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get posSelTitreModif => 'Modifier la quantité et le colis';
 
   @override
-  String posSelScanne(String code) {
-    return 'Produit scanné · $code';
-  }
-
-  @override
   String posSelAuto(String detail, String secondes) {
     return 'Ajout automatique de $detail dans $secondes s · touchez pour modifier';
   }
@@ -3427,9 +3374,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get posPrixTitre => 'Modifier le prix du produit';
-
-  @override
-  String get posPrixDesc => 'Réservé aux rôles autorisés — mot de passe requis.';
 
   @override
   String get posPrixAchat => 'Prix d\'achat';
@@ -3503,9 +3447,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get posRechTitre => 'Rechercher un produit';
 
   @override
-  String get posRechDesc => 'Filtrez puis cochez les produits à ajouter au panier.';
-
-  @override
   String get posRechAjouter => 'Ajouter au panier';
 
   @override
@@ -3518,9 +3459,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get posIntrouvableTitre => 'Produit introuvable';
-
-  @override
-  String get posIntrouvableDesc => 'Aucun produit actif ne correspond à ce code-barres.';
 
   @override
   String get posIntrouvableCreer => 'Créer le produit';
@@ -3540,9 +3478,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String posOuvertureTitre(String caisse) {
     return 'Ouvrir $caisse';
   }
-
-  @override
-  String get posOuvertureDesc => 'Comptez le fond de caisse avant de commencer.';
 
   @override
   String get posOuvertureSolde => 'Solde d\'ouverture';
@@ -3567,15 +3502,7 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String posClotureDesc(String code, String heure) {
-    return 'Session $code · ouverte à $heure';
-  }
-
-  @override
   String get posClotureFond => 'Fond de départ';
-
-  @override
-  String get posClotureVentesEspeces => 'Ventes en espèces (monnaie déduite)';
 
   @override
   String get posClotureTheorique => 'Solde théorique';
@@ -3612,9 +3539,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get posMvtTitre => 'Mouvement manuel';
 
   @override
-  String get posMvtDesc => 'Entrée ou sortie hors vente : dépôt de fond, prélèvement, frais divers.';
-
-  @override
   String get posMvtType => 'Type';
 
   @override
@@ -3637,11 +3561,6 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String posVdjTitre(String caisse) {
     return 'Recette caisse — $caisse';
-  }
-
-  @override
-  String posVdjDesc(String date) {
-    return 'Ventes du $date';
   }
 
   @override
@@ -3671,11 +3590,6 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String posRecDesc(String date) {
-    return 'Lignes vendues le $date';
-  }
-
-  @override
   String get posRecIndice => 'Produit, code ou panier…';
 
   @override
@@ -3686,9 +3600,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get posRecAucune => 'Aucune ligne vendue';
-
-  @override
-  String get posParamDesc => 'S\'applique à ce poste jusqu\'à la déconnexion.';
 
   @override
   String get posParamMagasin => 'Magasin';
@@ -3716,16 +3627,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get catalogueErreurNomPris => 'Ce nom est déjà utilisé.';
 
   @override
-  String get prdDescription => 'Catalogue, catégories, remises et packs';
-
-  @override
   String get prdOngletSousCategories => 'Sous-catégories';
 
   @override
   String get prdAchat => 'Achat';
 
   @override
-  String get prdVente => 'Vente';
+  String get prdVente => 'Vente HT';
 
   @override
   String get prdMarge => 'Marge';
@@ -3911,22 +3819,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get prdModeIa => 'IA';
 
   @override
-  String get prdEtape1 => 'Photos, identification et prix';
+  String get prdEtape1 => 'Produit et prix';
 
   @override
-  String get prdEtape1Desc => 'Photos, nom, codes, marge';
+  String get prdEtape2 => 'Stock';
 
   @override
-  String get prdEtape2 => 'Stock et emballages';
-
-  @override
-  String get prdEtape2Desc => 'Magasin, seuil, boîte, carton';
-
-  @override
-  String get prdEtape3 => 'Variantes et options';
-
-  @override
-  String get prdEtape3Desc => 'Tailles, couleurs, séries';
+  String get prdEtape3 => 'Variantes';
 
   @override
   String prdEtapeObligatoire(int n) {
@@ -3967,10 +3866,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get prdScannerOuSaisir => 'Scanner ou saisir';
 
   @override
-  String get prdGenererEan => 'Générer un EAN-13';
+  String get prdFournisseur => 'Fournisseur';
 
   @override
-  String get prdFournisseur => 'Fournisseur';
+  String get prdGenererCodeBarres => 'Générer un code-barres CDZ';
 
   @override
   String get prdPrix => 'Prix';
@@ -3990,17 +3889,15 @@ class AppLocalizationsFr extends AppLocalizations {
   String get prdStockInitial => 'Stock initial';
 
   @override
-  String get prdStockAide => 'Modifiable via Entrées / Sorties';
+  String prdStockViaEntree(String quantite) {
+    return '$quantite entreront en stock avec l\'entrée du bon.';
+  }
 
   @override
   String get prdSeuilAlerte => 'Seuil d\'alerte';
 
   @override
   String get prdEmballages => 'Emballages';
-
-  @override
-  String get prdEmballagesAide =>
-      'Colis proposés en caisse (dialog Quantité et colis) : nombre de pièces par colis et prix du colis.';
 
   @override
   String get prdBoite => 'Boîte';
@@ -4021,9 +3918,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get prdTailles => 'Tailles';
 
   @override
-  String get prdTaillesAide => 'Cliquez les tailles disponibles';
-
-  @override
   String prdTaillesN(int n) {
     return '$n taille(s) sélectionnée(s)';
   }
@@ -4032,16 +3926,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get prdCouleurs => 'Couleurs';
 
   @override
-  String get prdCouleursAide => '16 couleurs · plusieurs choix possibles';
-
-  @override
   String get prdOptions => 'Options';
 
   @override
   String get prdCodesMultiples => 'Codes multiples';
-
-  @override
-  String get prdCodesMultiplesAide => 'Autres codes-barres reconnus en caisse pour ce produit';
 
   @override
   String get prdAjouterCode => 'Ajouter un code';
@@ -4050,16 +3938,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get prdSuiviSerie => 'Suivi par n° de série';
 
   @override
-  String get prdSuiviSerieAide => 'Saisie obligatoire à la vente';
-
-  @override
   String get prdServiceSansStock => 'Service (sans stock)';
-
-  @override
-  String get prdServiceAide => 'Réparation, livraison, main d\'œuvre';
-
-  @override
-  String get prdExpirationAide => 'Alerte avant péremption';
 
   @override
   String get prdNoteInterne => 'Note interne';
@@ -4131,9 +4010,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get prdModifierRemise => 'Modifier la remise';
 
   @override
-  String get prdRemiseDescription => 'Une remise s\'applique automatiquement en caisse pendant sa période.';
-
-  @override
   String get prdProduitsConcernes => 'Produits concernés';
 
   @override
@@ -4173,9 +4049,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get prdModifierPack => 'Modifier le pack';
-
-  @override
-  String get prdPackDescription => 'Un pack se vend comme un seul article et déstocke chaque composant.';
 
   @override
   String get prdEnregistrerPack => 'Enregistrer le pack';
@@ -4310,16 +4183,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get prdImportFichier => 'Fichier';
 
   @override
-  String get prdImportFichierDesc => '.xlsx';
-
-  @override
   String get prdImportColonnes => 'Colonnes';
-
-  @override
-  String get prdImportColonnesDesc => 'Correspondance';
-
-  @override
-  String get prdImportApercuDesc => 'Contrôle';
 
   @override
   String prdImportInfos(int n, int total) {
@@ -4427,20 +4291,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get stkDesactiver => 'Désactiver';
 
   @override
-  String get stkDescriptionBesoins => 'Réapprovisionnement : listes fournisseurs, ruptures et produits expirés';
-
-  @override
-  String get stkDescriptionMagasins => 'Points de stock, transferts et rattachements';
-
-  @override
-  String get stkDescriptionSorties => 'Sorties de stock hors vente : casse, périmé, perte, consommation interne, don';
-
-  @override
-  String stkDescriptionStock(int n) {
-    return 'Quantités par magasin · $n magasins actifs';
-  }
-
-  @override
   String get stkDispoSource => 'Qté (Depuis)';
 
   @override
@@ -4453,11 +4303,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get stkDistribuer => 'Distribuer';
-
-  @override
-  String stkDistribuerDescription(String nom, String quantite) {
-    return '$nom · $quantite pièces à répartir entre les magasins';
-  }
 
   @override
   String get stkDistribuerTitre => 'Distribuer le stock';
@@ -4551,9 +4396,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get stkKpiValeurTotale => 'Valeur totale du stock';
 
   @override
-  String get stkListeDescription => 'Quantités suggérées = 2 × seuil − stock. Ajustez avant d\'envoyer au fournisseur.';
-
-  @override
   String stkListeTitre(String code) {
     return 'Liste $code';
   }
@@ -4563,9 +4405,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get stkMagasin => 'Magasin';
-
-  @override
-  String get stkMagasinDescription => 'Un magasin a son propre stock ; les caisses et utilisateurs y sont rattachés.';
 
   @override
   String get stkMagasinDifferent => 'Choisissez un magasin différent';
@@ -4697,9 +4536,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get stkSeuilAlerte => 'Seuil d\'alerte';
 
   @override
-  String get stkSortieDescription => 'Sortie de stock hors vente — valorisée au prix d\'achat.';
-
-  @override
   String get stkSortiePerime => 'Sortie « Périmé »';
 
   @override
@@ -4777,9 +4613,6 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get stkTransfertDescription => 'Déplacer du stock d\'un magasin à un autre.';
-
-  @override
   String stkTransfertTitre(String code) {
     return 'Transfert $code';
   }
@@ -4836,9 +4669,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get entChoisirProduit => 'Choisir un produit';
 
   @override
-  String get entDescription => 'Réceptions fournisseurs — scan, lecture IA des bons, entrée rapide';
-
-  @override
   String get entEntite => 'Entrée';
 
   @override
@@ -4866,13 +4696,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get entEtapeBon => 'Bon & fournisseur';
 
   @override
-  String get entEtapeBonDetail => 'En-tête, paiement';
-
-  @override
   String get entEtapeProduits => 'Produits reçus';
-
-  @override
-  String get entEtapeProduitsDetail => 'Scan et quantités';
 
   @override
   String get entFichier => 'Fichier';
@@ -4905,41 +4729,22 @@ class AppLocalizationsFr extends AppLocalizations {
   String get entIaDepuisTelephone => 'Depuis le téléphone';
 
   @override
-  String get entIaDescription =>
-      'Photo ou PDF d\'une facture fournisseur : les lignes sont détectées puis rapprochées du catalogue.';
-
-  @override
   String get entIaDetecte => 'Détecté sur le bon';
 
   @override
   String get entIaEtapeFournisseur => 'Fournisseur & paiement';
 
   @override
-  String get entIaEtapeFournisseurDetail => 'Valider';
-
-  @override
   String get entIaEtapeLignes => 'Lignes détectées';
 
   @override
-  String get entIaEtapeLignesDetail => 'Vérifier, rapprocher';
-
-  @override
   String get entIaEtapePhoto => 'Photo du bon';
-
-  @override
-  String get entIaEtapePhotoDetail => 'Image ou PDF';
-
-  @override
-  String get entIaFormats => 'JPG, PNG ou PDF';
 
   @override
   String get entIaJoindre => 'Joindre un bon';
 
   @override
   String get entIaLecture => 'Lecture du bon en cours…';
-
-  @override
-  String get entIaLectureDetail => 'Détection des lignes, quantités et prix';
 
   @override
   String get entIaLignes => 'Lignes';
@@ -5023,9 +4828,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get entNbVersements => 'Nb versements';
 
   @override
-  String get entNouvelleDescription => 'Scannez les produits reçus : chaque scan ajoute 1 à la quantité.';
-
-  @override
   String get entNouvelleTitre => 'Nouvelle entrée · Smart Scan';
 
   @override
@@ -5038,7 +4840,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get entOffreMessage => 'Je souhaite augmenter mon quota Smart Scan.';
 
   @override
-  String get entOngletIa => 'Mode IA';
+  String get entOngletEntree => 'Entrée';
 
   @override
   String get entPaiement => 'Paiement';
@@ -5054,9 +4856,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get entQteRecue => 'Qté reçue';
-
-  @override
-  String get entRapideDescription => 'Réception d\'un seul produit, sans bon fournisseur détaillé.';
 
   @override
   String get entRapideTitre => 'Entrée rapide';
@@ -5129,12 +4928,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String entCreerProduit(String nom) {
-    return '+ Créer « $nom »';
-  }
-
-  @override
-  String entDepuisListe(String code) {
-    return 'Réception de la liste de besoins $code';
+    return 'Créer le produit « $nom »';
   }
 
   @override
@@ -5158,11 +4952,6 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String entRapideDescriptionProduit(String code, String stock) {
-    return '$code · stock actuel $stock pièces — réception sans bon détaillé.';
-  }
-
-  @override
   String entRapideTitreProduit(String nom) {
     return 'Entrée rapide · $nom';
   }
@@ -5182,9 +4971,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get statutErreur => 'Erreur';
-
-  @override
-  String get gcDescription => 'Caisses, transferts, clôtures Z, mouvements et sessions';
 
   @override
   String get gcOngletCaisses => 'Caisses';
@@ -5340,9 +5126,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get gcOuvrirSession => 'Ouvrir une session';
 
   @override
-  String get gcFormDescription => 'Une caisse (tiroir, coffre) a son propre solde et ses sessions.';
-
-  @override
   String get gcFormNomIndice => 'Ex. Caisse 3';
 
   @override
@@ -5380,9 +5163,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get gcTrfTitre => 'Transfert entre caisses';
-
-  @override
-  String get gcTrfDescription => 'Ex. remise de la recette au coffre en fin de journée.';
 
   @override
   String gcTrfDisponible(String montant) {
@@ -5425,9 +5205,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get gcErreurPeriodeCloturee => 'Cette date appartient à une période clôturée.';
-
-  @override
-  String get gcZDescription => 'Rapport figé de la période : une fois créé, il ne peut plus être modifié ni supprimé.';
 
   @override
   String gcZPeriodeValeur(String debut) {
@@ -5519,10 +5296,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get gcFiscalTitre => 'Export pour contrôle fiscal';
 
   @override
-  String get gcFiscalDescription =>
-      'Archive des clôtures Z et des tickets de la période, avec la chaîne d\'empreintes vérifiée.';
-
-  @override
   String get gcFiscalZip => 'Archive complète';
 
   @override
@@ -5565,16 +5338,6 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String gcSesMvtOuverte(String caisse, String ouverture) {
-    return '$caisse · ouverte $ouverture';
-  }
-
-  @override
-  String gcSesMvtCloturee(String caisse, String cloture, String ouverture) {
-    return '$caisse · ouverte $ouverture · clôturée $cloture';
-  }
-
-  @override
   String get gcEntrees => 'Entrées';
 
   @override
@@ -5600,9 +5363,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get permVoirStockTousMagasins => 'Voir le stock de tous les magasins';
-
-  @override
-  String get usrDescription => 'Comptes, rôles et permissions';
 
   @override
   String get usrOngletUtilisateurs => 'Utilisateurs';
@@ -5680,10 +5440,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get usrModifierTitre => 'Modifier l\'utilisateur';
 
   @override
-  String get usrFormDescription =>
-      'Le rôle définit les modules visibles ; la caisse attachée verrouille l\'écran Caisse.';
-
-  @override
   String get usrSectionCompte => 'Compte';
 
   @override
@@ -5736,9 +5492,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get usrNom => 'Nom';
-
-  @override
-  String get usrTelephoneIndice => '05xx xx xx xx';
 
   @override
   String get usrAdminRole => 'Accès complet, ne peut pas être restreint';
@@ -5862,14 +5615,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get usrModifierRole => 'Modifier le rôle';
 
   @override
-  String get usrRoleDescription => 'Informations, modules accessibles, puis actions sensibles.';
-
-  @override
-  String usrRoleConcernes(String code, int n) {
-    return '$code · $n utilisateur(s) concerné(s)';
-  }
-
-  @override
   String get usrPrecedent => 'Précédent';
 
   @override
@@ -5882,21 +5627,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get usrEtapeInfos => 'Informations';
 
   @override
-  String get usrEtapeInfosDesc => 'Nom, état';
-
-  @override
   String get usrEtapePermissions => 'Permissions';
 
   @override
-  String usrEtapeModules(int n) {
-    return '$n modules';
-  }
-
-  @override
   String get usrEtapeSpeciales => 'Permissions spéciales';
-
-  @override
-  String get usrEtapeSpecialesDesc => 'Actions sensibles';
 
   @override
   String get usrNomRole => 'Nom du rôle';
@@ -5977,9 +5711,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get usrAucunRole => 'Aucun rôle.';
-
-  @override
-  String get zkDescription => 'Calcul annuel sur le stock, les liquidités et les créances';
 
   @override
   String get zkEntite => 'calculs';
@@ -6083,10 +5814,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get zkModifierTitre => 'Modifier la zakat';
-
-  @override
-  String get zkFormDescription =>
-      'Les montants sont pré-remplis depuis le stock, les caisses et les crédits ; ajustez-les si besoin.';
 
   @override
   String get zkSectionPeriode => 'Période (hawl)';
@@ -6212,9 +5939,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get zkAucun => 'Aucun calcul de zakat.';
-
-  @override
-  String get hiDescription => 'Journal de toutes les actions · accès selon le rôle';
 
   @override
   String get hiEntite => 'actions';
@@ -6371,9 +6095,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get hiActExport => 'Export';
-
-  @override
-  String get pmDescription => 'Préférences du poste, de la boutique et de l\'application.';
 
   @override
   String get pmNonEnregistre => 'Modifications non enregistrées';
@@ -6687,13 +6408,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get pmPalierAvance => 'Palier Avancé';
 
   @override
-  String get pmPalierAvanceDesc => 'Multi-magasins, multi-caisses';
+  String get pmPalierAvanceDesc => 'Un magasin, 5 caissiers : devis, commandes, commandes fournisseurs et besoins.';
 
   @override
   String get pmPalierBasic => 'Palier Basic';
 
   @override
-  String get pmPalierBasicDesc => 'Un magasin, toutes les fonctions de vente';
+  String get pmPalierBasicDesc => 'Un magasin, 5 caissiers : caisse, ventes, stock, clients et fournisseurs.';
 
   @override
   String get pmPalierDemo => 'Mode démo';
@@ -6705,7 +6426,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get pmPalierAucun => 'Application non activée';
 
   @override
-  String get pmPalierAucunDesc => 'Saisissez une clé pour activer CaisseDZ';
+  String get pmPalierAucunDesc => 'Choisissez une formule, connectez-vous à votre compte ou collez une clé.';
 
   @override
   String get pmActive => 'Active';
@@ -6725,7 +6446,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get pmGererLicence => 'Gérer la licence';
 
   @override
-  String get pmGererLicenceDesc => 'Saisir une nouvelle clé ou passer au palier Avancé.';
+  String get pmGererLicenceDesc => 'Coller une clé reçue de BENS (secours hors ligne).';
 
   @override
   String get posPrixSousAchatInterdit => 'Prix inférieur au prix d\'achat : interdit par les paramètres.';
@@ -6754,9 +6475,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get posApercuTicket => 'Aperçu du ticket';
-
-  @override
-  String get posApercuTicketDesc => 'Vérifiez la mise en page avant de l’envoyer à l’imprimante.';
 
   @override
   String get posImprimer => 'Imprimer';
@@ -6873,9 +6591,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get posMontantModifier => 'Modifier le montant';
-
-  @override
-  String get posMontantModifierDesc => 'Nouveau montant de la ligne « Vente au montant » ; 0 retire la ligne.';
 
   @override
   String get posMontantChamp => 'Montant';
@@ -7019,14 +6734,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get retoursNouveauFournisseur => 'Nouveau retour fournisseur';
 
   @override
-  String get retoursFormDescriptionClient =>
-      'Retour d\'un produit vendu : remis en stock, remboursé ou porté en avoir.';
-
-  @override
-  String get retoursFormDescriptionFournisseur =>
-      'Retour d\'un produit reçu : sorti du stock et déduit du crédit fournisseur.';
-
-  @override
   String get prdPorteeProduitAide => 'Appliquée automatiquement aux produits choisis, pendant sa période.';
 
   @override
@@ -7045,15 +6752,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get auditModifiePar => 'Modifié par';
-
-  @override
-  String get prdDescRapide => 'L\'essentiel sur une seule page.';
-
-  @override
-  String get prdDescDetaille => 'En 3 étapes : identification, stock, variantes.';
-
-  @override
-  String get prdDescIa => 'Fiche retrouvée par le code-barres.';
 
   @override
   String get prdFiltreQuantite => 'Quantité';
@@ -7210,4 +6908,1161 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get posErreurMonnaieSansEspeces =>
       'La monnaie rendue dépasse les espèces reçues : une carte, un chèque ou des points ne rendent pas de monnaie.';
+
+  @override
+  String get tiersSoldeInitial => 'Solde initial';
+
+  @override
+  String get tiersSoldeInitialAideClient => 'Reprise : montant dû par le client avant le logiciel (négatif = avance).';
+
+  @override
+  String get tiersSoldeInitialAideFournisseur =>
+      'Reprise : montant dû au fournisseur avant le logiciel (négatif = avance).';
+
+  @override
+  String get tvaRecapitulatif => 'Récapitulatif TVA';
+
+  @override
+  String get tvaTaux => 'Taux TVA';
+
+  @override
+  String get tvaBaseHt => 'Base HT';
+
+  @override
+  String get tvaMontant => 'TVA';
+
+  @override
+  String get tvaTtc => 'TTC';
+
+  @override
+  String get tvaCollectee => 'TVA collectée';
+
+  @override
+  String get tvaDeductible => 'TVA déductible';
+
+  @override
+  String get tvaNette => 'TVA à payer';
+
+  @override
+  String get tvaHt => 'HT';
+
+  @override
+  String get situationTva => 'TVA par taux';
+
+  @override
+  String get situationGroupeFiscalite => 'Fiscalité';
+
+  @override
+  String get ventesOngletPaniers => 'Paniers';
+
+  @override
+  String get ventesOngletFactures => 'Factures & avoirs';
+
+  @override
+  String get factureNumero => 'N° facture';
+
+  @override
+  String get factureTypeFacture => 'Facture';
+
+  @override
+  String get factureTypeAvoir => 'Avoir';
+
+  @override
+  String get factureVente => 'Ticket';
+
+  @override
+  String get factureOrigine => 'Facture d\'origine';
+
+  @override
+  String get factureTimbre => 'Timbre';
+
+  @override
+  String get factureNet => 'Net à payer';
+
+  @override
+  String get factureEntites => 'Factures et avoirs';
+
+  @override
+  String get factureAucune => 'Aucune facture sur la période';
+
+  @override
+  String get factureKpiFactures => 'Factures émises';
+
+  @override
+  String get factureKpiFacture => 'Total facturé';
+
+  @override
+  String get factureKpiAvoirs => 'Total des avoirs';
+
+  @override
+  String get factureImprimer => 'Imprimer (duplicata)';
+
+  @override
+  String get factureChaineOk => 'Chaîne des factures intacte';
+
+  @override
+  String get achatErreurCommandeInconnue => 'Commande fournisseur introuvable pour ce fournisseur';
+
+  @override
+  String get achatErreurCommandeCloturee => 'Commande fournisseur annulée ou soldée : réception impossible';
+
+  @override
+  String get moduleDocuments => 'Devis & commandes';
+
+  @override
+  String get moduleCommandesFournisseurs => 'Commandes fournisseurs';
+
+  @override
+  String get docOngletDevis => 'Devis';
+
+  @override
+  String get docOngletProformas => 'Proformas';
+
+  @override
+  String get docOngletCommandes => 'Commandes clients';
+
+  @override
+  String get docOngletLivraisons => 'Bons de livraison';
+
+  @override
+  String get docTypeDevis => 'Devis';
+
+  @override
+  String get docTypeProforma => 'Proforma';
+
+  @override
+  String get docTypeCommande => 'Commande';
+
+  @override
+  String get docBonLivraison => 'Bon de livraison';
+
+  @override
+  String get docStatutEnCours => 'En cours';
+
+  @override
+  String get docStatutAccepte => 'Accepté';
+
+  @override
+  String get docStatutRefuse => 'Refusé';
+
+  @override
+  String get docStatutTransforme => 'Transformé en commande';
+
+  @override
+  String get docStatutExpire => 'Expiré';
+
+  @override
+  String get docStatutPartielle => 'Partiellement livrée';
+
+  @override
+  String get docStatutLivree => 'Livrée';
+
+  @override
+  String get docStatutAnnule => 'Annulé';
+
+  @override
+  String get docValidite => 'Validité';
+
+  @override
+  String get docOrigine => 'Origine';
+
+  @override
+  String get docLivre => 'Livré';
+
+  @override
+  String get docResteALivrer => 'Reste à livrer';
+
+  @override
+  String get docALivrer => 'À livrer';
+
+  @override
+  String get docQuantiteLivree => 'Quantité livrée';
+
+  @override
+  String get docPuTtc => 'P.U. TTC';
+
+  @override
+  String get docTotalTtc => 'Total TTC';
+
+  @override
+  String get docAucun => 'Aucun document sur la période';
+
+  @override
+  String get docKpiNombre => 'Documents';
+
+  @override
+  String get docKpiMontant => 'Montant total';
+
+  @override
+  String get docKpiALivrer => 'À livrer';
+
+  @override
+  String get docKpiTransformes => 'Transformés en commande';
+
+  @override
+  String get docImprimer => 'Imprimer (A4)';
+
+  @override
+  String get docAccepter => 'Accepter';
+
+  @override
+  String get docRefuser => 'Refuser';
+
+  @override
+  String get docTransformer => 'Transformer en commande';
+
+  @override
+  String get docLivrer => 'Livrer';
+
+  @override
+  String get docNouveauDevis => 'Nouveau devis';
+
+  @override
+  String get docNouvelleProforma => 'Nouvelle proforma';
+
+  @override
+  String get docNouvelleCommande => 'Nouvelle commande';
+
+  @override
+  String docNouveauTitre(String type) {
+    return 'Nouveau document : $type';
+  }
+
+  @override
+  String docModifierTitre(String type) {
+    return 'Modifier : $type';
+  }
+
+  @override
+  String get docChoisirClient => 'Choisir un client';
+
+  @override
+  String get docToastEnregistre => 'Document enregistré';
+
+  @override
+  String get docToastTransforme => 'Commande créée';
+
+  @override
+  String get docToastLivre => 'Livraison enregistrée';
+
+  @override
+  String docLivrerTitre(String code) {
+    return 'Livrer la commande $code';
+  }
+
+  @override
+  String get docMontantPaye => 'Montant payé';
+
+  @override
+  String get docMontantPayeAide => 'Laisser vide : livraison à crédit';
+
+  @override
+  String get docValiderLivraison => 'Valider la livraison';
+
+  @override
+  String get docPdfDevis => 'DEVIS';
+
+  @override
+  String get docPdfProforma => 'FACTURE PROFORMA';
+
+  @override
+  String get docPdfCommande => 'BON DE COMMANDE';
+
+  @override
+  String get docPdfLivraison => 'BON DE LIVRAISON';
+
+  @override
+  String docArretee(String type) {
+    return 'Arrêté(e) le présent document ($type) à la somme de';
+  }
+
+  @override
+  String get docMentionProforma => 'Document sans valeur comptable : ne vaut pas facture.';
+
+  @override
+  String get docSignatureClient => 'Bon pour accord (client)';
+
+  @override
+  String get docSignatureVendeur => 'Cachet et signature';
+
+  @override
+  String get docSignatureLivreur => 'Livré par';
+
+  @override
+  String get docSignatureReception => 'Reçu par (nom, signature)';
+
+  @override
+  String get docErreurClient => 'Client inconnu';
+
+  @override
+  String get docErreurInconnu => 'Document introuvable';
+
+  @override
+  String get docErreurNonModifiable =>
+      'Ce document ne peut plus être modifié (transformé, refusé, annulé ou déjà livré)';
+
+  @override
+  String get docErreurDejaAnnule => 'Document déjà annulé';
+
+  @override
+  String get docErreurLivraisonLiee => 'Commande déjà livrée : annulez d\'abord la vente du bon de livraison';
+
+  @override
+  String get docErreurRienALivrer => 'Aucune quantité à livrer';
+
+  @override
+  String get docErreurQuantiteExcessive => 'Quantité supérieure au reste à livrer';
+
+  @override
+  String get docErreurLivraisonExistante => 'Cette vente a déjà un bon de livraison';
+
+  @override
+  String get docErreurVenteInconnue => 'Vente introuvable';
+
+  @override
+  String get cmdfNouvelle => 'Nouvelle commande fournisseur';
+
+  @override
+  String get cmdfModifier => 'Modifier la commande fournisseur';
+
+  @override
+  String cmdfTitre(String code) {
+    return 'Commande fournisseur $code';
+  }
+
+  @override
+  String get cmdfCommande => 'Commande fournisseur';
+
+  @override
+  String get cmdfPrix => 'Prix d\'achat';
+
+  @override
+  String get cmdfRecu => 'Reçu';
+
+  @override
+  String get cmdfReste => 'Reste à recevoir';
+
+  @override
+  String get cmdfReceptions => 'Entrées de réception';
+
+  @override
+  String get cmdfReceptionner => 'Réceptionner';
+
+  @override
+  String get cmdfSolder => 'Solder';
+
+  @override
+  String cmdfSolderMessage(String code) {
+    return 'Solder la commande $code ? Le reliquat ne sera plus attendu.';
+  }
+
+  @override
+  String get cmdfKpiAttendues => 'En attente de réception';
+
+  @override
+  String get cmdfStatutPartielle => 'Partiellement reçue';
+
+  @override
+  String get cmdfStatutRecue => 'Reçue';
+
+  @override
+  String get cmdfStatutSoldee => 'Soldée';
+
+  @override
+  String get cmdfPdfTitre => 'BON DE COMMANDE FOURNISSEUR';
+
+  @override
+  String get cmdfDepuisBesoin => 'Créer une commande fournisseur';
+
+  @override
+  String get cmdfErreurReceptionLiee => 'Commande déjà réceptionnée : annulez d\'abord les entrées liées';
+
+  @override
+  String get cmdfErreurDejaSoldee => 'Commande déjà soldée';
+
+  @override
+  String get apercuEnregistrerPdf => 'Enregistrer en PDF';
+
+  @override
+  String get rechercheGlobaleTitre => 'Recherche globale';
+
+  @override
+  String get rechercheGlobaleIndice => 'Rechercher dans tout le système…';
+
+  @override
+  String get rechercheGlobaleAide =>
+      'Code, nom, téléphone, code-barres, référence : produits, clients, fournisseurs, ventes, factures, devis, livraisons, entrées, retours, versements…';
+
+  @override
+  String rechercheGlobaleAucun(String texte) {
+    return 'Aucun résultat pour « $texte »';
+  }
+
+  @override
+  String get prdPrixTtc => 'Prix de vente TTC';
+
+  @override
+  String get prdVenteTtc => 'Vente TTC';
+
+  @override
+  String get posClotureNegatif =>
+      'Solde théorique négatif : il est sorti de cette caisse plus d\'espèces qu\'il n\'en est entré depuis l\'ouverture (voir le détail ci-dessus). Une caisse ne peut pas contenir moins de 0 : comptez les espèces réellement présentes (0 si le tiroir est vide), l\'écart sera enregistré comme manquant.';
+
+  @override
+  String get posTransfertTitre => 'Stock insuffisant dans ce magasin';
+
+  @override
+  String get posTransfertConfirmer => 'Transférer et ajouter';
+
+  @override
+  String posTransfertFait(String code) {
+    return 'Transfert $code créé';
+  }
+
+  @override
+  String get posTransfertQuestion => 'Transférer le manque pour compléter le panier ?';
+
+  @override
+  String get posTransfertDepuis => 'Depuis';
+
+  @override
+  String get posTransfertVers => 'Vers la caisse';
+
+  @override
+  String posTransfertStock(String stock) {
+    return 'Stock : $stock';
+  }
+
+  @override
+  String posTransfertManque(String quantite) {
+    return 'Manque $quantite';
+  }
+
+  @override
+  String get pmTvaCaisse => 'Vente en caisse avec TVA';
+
+  @override
+  String get pmTvaCaisseDesc => 'Oui : prix TTC (prix de vente HT + TVA du produit). Non : prix HT, ticket sans TVA.';
+
+  @override
+  String get pmTvaDocuments => 'Devis, proformas et commandes avec TVA';
+
+  @override
+  String get pmTvaDocumentsDesc => 'Même choix pour les devis, proformas, commandes clients et leurs livraisons.';
+
+  @override
+  String get docPuHt => 'P.U. HT';
+
+  @override
+  String get retoursMontantRetour => 'Montant retour';
+
+  @override
+  String get retoursMontantRetourAideClient => 'Rendu au client en espèces ; le reste va en avoir sur son solde.';
+
+  @override
+  String get retoursMontantRetourAideFournisseur =>
+      'Versé par le fournisseur en espèces ; le reste est déduit de ce que vous lui devez.';
+
+  @override
+  String get retoursMontantRetourPassage => 'Client de passage : il récupère tout le montant du retour.';
+
+  @override
+  String retoursMontantRetourMax(String plafond) {
+    return 'Entre 0 et $plafond';
+  }
+
+  @override
+  String get retoursErreurMontant => 'Montant retour invalide : il doit être compris entre 0 et le montant du retour.';
+
+  @override
+  String retoursRepartition(String avoir, String versement) {
+    return 'Versement $versement · Avoir $avoir';
+  }
+
+  @override
+  String get retoursMontantComplet => 'Montant complet';
+
+  @override
+  String get offresTitre => 'Choisissez votre formule';
+
+  @override
+  String offresSousTitre(int jours) {
+    return 'Chaque formule commence par $jours jours d\'essai gratuit. Ensuite, un paiement unique : la licence est à vous, à vie, sans abonnement.';
+  }
+
+  @override
+  String offresEssaiGratuit(int jours) {
+    return '$jours jours d\'essai gratuit';
+  }
+
+  @override
+  String offresPrix(String prix) {
+    return '$prix DA';
+  }
+
+  @override
+  String get offresPaiementUnique => 'paiement unique, à vie';
+
+  @override
+  String offresMagasins(int n) {
+    String _temp0 = intl.Intl.pluralLogic(n, locale: localeName, other: '$n magasins', one: '1 magasin');
+    return '$_temp0';
+  }
+
+  @override
+  String offresScans(int n, int mois) {
+    return '$n Smart Scans inclus ($mois mois)';
+  }
+
+  @override
+  String get offresAtoutStock => 'Produits, stock, entrées / sorties et inventaire';
+
+  @override
+  String get offresAtoutPdv => 'Caisse : ventes, scan, tickets, multi-paniers';
+
+  @override
+  String get offresAtoutVentes => 'Ventes, factures, avoirs et retours';
+
+  @override
+  String get offresAtoutGestionCaisse => 'Gestion de caisse, clôtures et coffre';
+
+  @override
+  String get offresAtoutRapports => 'Tableau de bord, situation, zakat et historique';
+
+  @override
+  String get offresAtoutCommandesClients => 'Commandes clients et bons de livraison';
+
+  @override
+  String get offresAtoutBesoins => 'Listes de besoins';
+
+  @override
+  String get offresAtoutTransferts => 'Transferts entre magasins';
+
+  @override
+  String offresToutPlus(String formule) {
+    return 'Tout $formule, plus :';
+  }
+
+  @override
+  String offresCaisses(int n) {
+    String _temp0 = intl.Intl.pluralLogic(n, locale: localeName, other: '$n caisses', one: '1 caisse');
+    return '$_temp0';
+  }
+
+  @override
+  String get offresAtoutTiers => 'Clients, fournisseurs, versements et crédit';
+
+  @override
+  String get offresAtoutDevis => 'Devis et proformas';
+
+  @override
+  String get offresAtoutAchats => 'Commandes fournisseurs (réception partielle)';
+
+  @override
+  String get offresAtoutMultiMagasin => 'Multi-magasin (stock par magasin)';
+
+  @override
+  String get offresIdealBasic => 'Petit commerce, une seule caisse';
+
+  @override
+  String get offresIdealAvance => 'Commerce qui fait des devis et passe des commandes';
+
+  @override
+  String get offresIdealUltra => 'Plusieurs magasins, gestion complète';
+
+  @override
+  String get offresTout => 'Tous les modules';
+
+  @override
+  String offresEssayer(int jours) {
+    return 'Essayer $jours jours';
+  }
+
+  @override
+  String offresChoisir(String formule) {
+    return 'Choisir $formule';
+  }
+
+  @override
+  String get offresDejaCompte => 'Vous avez déjà un compte ?';
+
+  @override
+  String get offresSeConnecter => 'Se connecter';
+
+  @override
+  String get offresJaiUneCle => 'J\'ai une clé d\'activation';
+
+  @override
+  String offresEssaiTermine(String date) {
+    return 'Votre essai s\'est terminé le $date. Choisissez une formule : BENS vous contacte pour le paiement, puis l\'application se débloque d\'elle-même. Vos données sont gardées.';
+  }
+
+  @override
+  String get offresSansFormule =>
+      'Aucune formule active sur ce poste. Choisissez une formule : BENS vous contacte pour le paiement.';
+
+  @override
+  String get offresLicenceRefuseeInvalide =>
+      'BENS a bien envoyé votre licence, mais cette version de CaisseDZ la refuse (clé prévue pour une autre application ou une autre version). Installez la dernière version de CaisseDZ puis cliquez sur Actualiser ; sinon, contactez BENS.';
+
+  @override
+  String get offresLicenceRefuseeAutrePoste =>
+      'BENS a envoyé une licence prévue pour un autre PC. Cliquez sur Changer de compte et reconnectez-vous sur ce PC ; sinon, contactez BENS.';
+
+  @override
+  String get offresLicenceRefuseeDate =>
+      'La date de ce PC a été reculée : la licence envoyée par BENS est refusée. Remettez la date et l\'heure du PC à jour, puis cliquez sur Actualiser.';
+
+  @override
+  String get offresDemandeTitre => 'Demande envoyée';
+
+  @override
+  String offresDemandeDetail(String telephone, String formule) {
+    return 'BENS Digital Solutions vous rappelle au $telephone pour le paiement de la formule $formule. Vous pouvez aussi nous écrire sur WhatsApp.';
+  }
+
+  @override
+  String get offresWhatsApp => 'Écrire sur WhatsApp';
+
+  @override
+  String offresWhatsAppMessage(String formule, String telephone) {
+    return 'Bonjour, je souhaite acheter CaisseDZ Desktop $formule (compte $telephone).';
+  }
+
+  @override
+  String get offresHorsLigne => 'Hors ligne : prix indicatifs. Connectez le poste à internet pour créer votre compte.';
+
+  @override
+  String get offresSeDeconnecter => 'Changer de compte';
+
+  @override
+  String get compteCreerTitre => 'Créer votre compte';
+
+  @override
+  String compteCreerSousTitre(String formule, int jours) {
+    return 'Formule $formule · $jours jours d\'essai gratuit';
+  }
+
+  @override
+  String get compteChangerFormule => 'Changer de formule';
+
+  @override
+  String compteFormule(String formule) {
+    return 'Formule $formule';
+  }
+
+  @override
+  String get offresSelectionnee => 'Formule sélectionnée';
+
+  @override
+  String get offresSelectionner => 'Sélectionner cette formule';
+
+  @override
+  String get compteNom => 'Nom et prénom';
+
+  @override
+  String get compteCommerce => 'Nom du commerce';
+
+  @override
+  String get compteFacultatif => 'Facultatif';
+
+  @override
+  String get compteTelephone => 'Numéro de téléphone';
+
+  @override
+  String get compteMotDePasse => 'Mot de passe';
+
+  @override
+  String get compteBensMotDePasseAide =>
+      '8 caractères au moins. Sur un poste neuf, il devient aussi celui de l\'administrateur (identifiant admin).';
+
+  @override
+  String get compteBensConfirmer => 'Confirmer le mot de passe';
+
+  @override
+  String get compteCreerBouton => 'Créer mon compte et commencer l\'essai';
+
+  @override
+  String get compteEssaiDejaUtilise =>
+      'Compte créé. L\'essai gratuit a déjà été utilisé sur ce poste ou avec ce numéro : choisissez une formule pour continuer.';
+
+  @override
+  String get compteConnexionTitre => 'Connexion à votre compte';
+
+  @override
+  String get compteConnexionSousTitre =>
+      'Le compte BENS de votre commerce : votre formule et votre licence. Se connecter ici déplace la licence sur ce poste.';
+
+  @override
+  String get compteConnexionBouton => 'Se connecter';
+
+  @override
+  String get compteMotDePasseOublie => 'Mot de passe oublié ?';
+
+  @override
+  String get comptePasEncore => 'Pas encore de compte ?';
+
+  @override
+  String get compteVoirFormules => 'Voir les formules';
+
+  @override
+  String get compteRetour => 'Retour';
+
+  @override
+  String get compteErrTelephone => 'Numéro invalide : 10 chiffres commençant par 05, 06 ou 07.';
+
+  @override
+  String get compteErrNom => 'Indiquez votre nom (2 caractères au moins).';
+
+  @override
+  String get compteErrMotDePasse => 'Le mot de passe fait 8 caractères au moins.';
+
+  @override
+  String get compteErrConfirmation => 'Les deux mots de passe ne sont pas identiques.';
+
+  @override
+  String get compteErrNumeroPris => 'Ce numéro a déjà un compte : connectez-vous.';
+
+  @override
+  String get compteErrIdentifiants => 'Numéro ou mot de passe incorrect.';
+
+  @override
+  String get compteErrReseau => 'Pas de connexion à BENS. Vérifiez internet et réessayez.';
+
+  @override
+  String get compteErrTropDEssais => 'Trop d\'essais. Réessayez dans 15 minutes.';
+
+  @override
+  String get compteErrAucunCompte => 'Aucun compte avec ce numéro.';
+
+  @override
+  String get compteErrCode => 'Code incorrect ou expiré. Demandez-en un nouveau à BENS.';
+
+  @override
+  String get compteErrServeur => 'Le serveur BENS n\'a pas pu répondre. Réessayez plus tard.';
+
+  @override
+  String get oubliTitre => 'Mot de passe oublié';
+
+  @override
+  String get oubliIntro =>
+      'Obtenez un code de récupération et envoyez-le à BENS sur WhatsApp. Après vérification, BENS vous envoie un code de réinitialisation, valable 48 heures.';
+
+  @override
+  String get oubliDemander => 'Obtenir mon code de récupération';
+
+  @override
+  String get oubliVotreCode => 'Votre code de récupération';
+
+  @override
+  String get oubliCopier => 'Copier';
+
+  @override
+  String get oubliCopie => 'Copié';
+
+  @override
+  String get oubliEnvoyer => 'Envoyer sur WhatsApp';
+
+  @override
+  String oubliMessage(String telephone, String code) {
+    return 'Bonjour, j\'ai oublié le mot de passe de mon compte CaisseDZ ($telephone). Mon code de récupération : $code';
+  }
+
+  @override
+  String get oubliRecu => 'J\'ai reçu mon code';
+
+  @override
+  String get oubliCodeReset => 'Code de réinitialisation';
+
+  @override
+  String get oubliNouveau => 'Nouveau mot de passe';
+
+  @override
+  String get oubliValider => 'Changer le mot de passe';
+
+  @override
+  String get activationColler => 'Coller';
+
+  @override
+  String get activationWhatsApp => 'Envoyer sur WhatsApp';
+
+  @override
+  String get activationCleSignee =>
+      'Envoyez le code de ce poste à BENS, puis collez ici la clé reçue (132 caractères).';
+
+  @override
+  String get activationErrVide => 'Collez la clé reçue.';
+
+  @override
+  String get activationErrInvalide => 'Clé invalide. Vérifiez qu\'elle a été copiée en entier.';
+
+  @override
+  String get activationErrAutrePoste => 'Cette clé est pour un autre poste. Envoyez-nous le code ci-dessus.';
+
+  @override
+  String activationErrExpiree(String date) {
+    return 'Votre licence a expiré le $date. Contactez-nous pour la renouveler.';
+  }
+
+  @override
+  String get activationErrDate => 'La date du poste semble incorrecte. Corrigez la date et l\'heure.';
+
+  @override
+  String get activationPoste => 'Code de ce poste';
+
+  @override
+  String get activationRetourOffres => 'Retour aux formules';
+
+  @override
+  String get licenceUltra => 'Ultra';
+
+  @override
+  String licenceEssai(String palier) {
+    return 'Essai $palier';
+  }
+
+  @override
+  String shellBandeauEssai(String palier, int jours) {
+    String _temp0 = intl.Intl.pluralLogic(
+      jours,
+      locale: localeName,
+      other: '$jours jours restants',
+      one: 'dernier jour',
+    );
+    return 'Essai $palier : $_temp0';
+  }
+
+  @override
+  String get shellVoirFormules => 'Choisir une formule';
+
+  @override
+  String get pmPalierUltra => 'Palier Ultra';
+
+  @override
+  String get pmPalierUltraDesc => 'Jusqu\'à 15 magasins et 15 caissiers, transferts, tous les modules.';
+
+  @override
+  String pmPalierEssai(String palier) {
+    return 'Essai $palier';
+  }
+
+  @override
+  String pmPalierEssaiDesc(String date) {
+    return 'Essai gratuit jusqu\'au $date, puis lecture seule tant qu\'aucune formule n\'est achetée.';
+  }
+
+  @override
+  String pmValableJusquAu(String date) {
+    return 'Valable jusqu\'au $date';
+  }
+
+  @override
+  String get pmLicencePermanente => 'Licence permanente';
+
+  @override
+  String get pmCodePoste => 'Code de ce poste';
+
+  @override
+  String get pmCompteBens => 'Compte BENS';
+
+  @override
+  String get pmCompteBensDesc => 'Le compte de votre commerce : la licence de ce poste en vient.';
+
+  @override
+  String get pmAucunCompte => 'Aucun compte BENS sur ce poste';
+
+  @override
+  String get pmDeconnecterCompte => 'Déconnecter ce poste';
+
+  @override
+  String get pmDeconnecterCompteConfirme =>
+      'La licence venue du compte est retirée de ce poste : il faudra se reconnecter pour l\'utiliser. Vos données restent sur le poste.';
+
+  @override
+  String get pmVoirFormules => 'Formules et mises à niveau';
+
+  @override
+  String shellReservePalier(String palier) {
+    return 'Réservé au palier $palier';
+  }
+
+  @override
+  String dsGatePalierTitre(String palier) {
+    return 'Disponible avec le palier $palier';
+  }
+
+  @override
+  String dsGatePalierAction(String palier) {
+    return 'Passer au palier $palier';
+  }
+
+  @override
+  String get lectureSeuleTitre => 'Lecture seule';
+
+  @override
+  String get lectureSeuleCourt => 'Lecture seule (essai terminé)';
+
+  @override
+  String get lectureSeuleDetail =>
+      'L\'essai est terminé : ce module attend l\'achat d\'une formule. Ventes, produits, stock et rapports restent consultables, vos données sont gardées.';
+
+  @override
+  String lectureSeuleBandeau(String date) {
+    return 'Essai terminé le $date : lecture seule. Vos données sont gardées ; choisissez une formule pour continuer à vendre.';
+  }
+
+  @override
+  String get limiteCaissiers =>
+      'Votre formule ne permet pas d\'autre caissier. Passez à la formule supérieure (Paramètres › Licence).';
+
+  @override
+  String get limiteMagasins =>
+      'Votre formule ne permet pas d\'autre magasin : le multi-magasin est dans la formule Ultra.';
+
+  @override
+  String get limiteCaisses =>
+      'Votre formule ne permet pas d\'autre caisse. Passez à la formule supérieure (Paramètres › Licence).';
+
+  @override
+  String get limiteTransfertsCaisse =>
+      'Votre formule n\'a qu\'une caisse : les transferts entre caisses sont dans les formules Advanced et Ultra.';
+
+  @override
+  String get smartScanErreurLicence =>
+      'La licence de ce poste n\'est pas reconnue par Smart Scan. Vérifiez votre formule (Paramètres › Licence).';
+
+  @override
+  String get smartScanPacksTitre => 'Acheter un pack Smart Scan';
+
+  @override
+  String smartScanPackLigne(String nom, int scans, String prix) {
+    return '$nom · $scans scans · $prix';
+  }
+
+  @override
+  String get smartScanPackCompte =>
+      'Connectez ce poste à votre compte BENS pour acheter des packs (Paramètres › Licence).';
+
+  @override
+  String smartScanExpiration(int scans, String date) {
+    String _temp0 = intl.Intl.pluralLogic(
+      scans,
+      locale: localeName,
+      other: '$scans Smart Scans expirent',
+      one: '1 Smart Scan expire',
+    );
+    return '$_temp0 le $date : utilisez-les ou ajoutez un pack.';
+  }
+
+  @override
+  String get permUtiliserMobile => 'Application mobile (CaisseDZ Scan)';
+
+  @override
+  String get mobileBouton => 'Application mobile';
+
+  @override
+  String get mobileTitre => 'Application mobile CaisseDZ Scan';
+
+  @override
+  String get mobileEtape1 => 'Installez CaisseDZ Scan.';
+
+  @override
+  String get mobileEtape2 => 'Connectez-vous au même Wi-Fi.';
+
+  @override
+  String get mobileEtape3 => 'Scannez ce QR code.';
+
+  @override
+  String get mobileEtape4 => 'Le téléphone est prêt.';
+
+  @override
+  String get mobileAucunReseau =>
+      'Aucun réseau local détecté : connectez cet ordinateur au Wi-Fi ou au réseau de la boutique.';
+
+  @override
+  String mobileErreurDemarrage(String detail) {
+    return 'Le service mobile n\'a pas pu démarrer : $detail';
+  }
+
+  @override
+  String mobileQrExpire(String heure) {
+    return 'Code valable jusqu\'à $heure';
+  }
+
+  @override
+  String get mobileNouveauQr => 'Nouveau QR code';
+
+  @override
+  String get mobileActiver => 'Activer l\'application mobile';
+
+  @override
+  String mobileQrDe(String nom) {
+    return 'QR code de $nom';
+  }
+
+  @override
+  String get mobileDesactiver => 'Désactiver';
+
+  @override
+  String mobileAppareils(int nombre) {
+    return 'Téléphones appairés ($nombre)';
+  }
+
+  @override
+  String mobileMesAppareils(int nombre) {
+    return 'Mes téléphones ($nombre)';
+  }
+
+  @override
+  String get mobileAucunAppareil => 'Aucun téléphone appairé pour l\'instant.';
+
+  @override
+  String mobileAppaireLe(String date) {
+    return 'Appairé le $date';
+  }
+
+  @override
+  String mobileDernierAcces(String date) {
+    return 'Dernier accès $date';
+  }
+
+  @override
+  String get mobileConnecte => 'Connecté';
+
+  @override
+  String get mobileFactureRecueTitre => 'Facture reçue du téléphone';
+
+  @override
+  String mobileFactureRecueMessage(String nom, String bon) {
+    return '$nom a envoyé une photo de facture ($bon).';
+  }
+
+  @override
+  String get mobileOuvrirSmartScan => 'Ouvrir Smart Scan';
+
+  @override
+  String get mobileRevoquer => 'Révoquer';
+
+  @override
+  String mobileRevoquerTitre(String nom) {
+    return 'Révoquer « $nom » ?';
+  }
+
+  @override
+  String get mobileRevoquerMessage =>
+      'Ce téléphone ne pourra plus se connecter à ce poste tant qu\'il n\'aura pas scanné un nouveau QR code.';
+
+  @override
+  String get catalogueRayonsTitre => 'Choisissez vos rayons';
+
+  @override
+  String get catalogueRayonsSousTitre =>
+      'Selon votre activité, téléchargez les produits les plus demandés de chaque rayon : code-barres, nom et photo, sans prix ni stock. Vous pourrez en ajouter d\'autres plus tard depuis Produits.';
+
+  @override
+  String catalogueRayonsNbProduits(String nombre) {
+    return '$nombre produits';
+  }
+
+  @override
+  String get catalogueRayonsBientot => 'Bientôt';
+
+  @override
+  String get catalogueRayonsDejaTelecharge => 'Déjà téléchargé';
+
+  @override
+  String get catalogueRayonsToutSelectionner => 'Tout sélectionner';
+
+  @override
+  String get catalogueRayonsToutDeselectionner => 'Tout désélectionner';
+
+  @override
+  String catalogueRayonsSelection(int rayons, String produits) {
+    String _temp0 = intl.Intl.pluralLogic(
+      rayons,
+      locale: localeName,
+      other: '$rayons rayons · $produits produits',
+      one: '1 rayon · $produits produits',
+      zero: 'Aucun rayon choisi',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get catalogueRayonsPlusTard => 'Plus tard';
+
+  @override
+  String get catalogueRayonsAppliquer => 'Appliquer';
+
+  @override
+  String get catalogueRayonsChargement => 'Chargement des rayons…';
+
+  @override
+  String get catalogueRayonsHorsLigne =>
+      'Le catalogue BENS est injoignable. Vérifiez la connexion internet, puis réessayez.';
+
+  @override
+  String get catalogueRayonsReessayer => 'Réessayer';
+
+  @override
+  String catalogueRayonsTelechargement(String rayon) {
+    return 'Téléchargement : $rayon…';
+  }
+
+  @override
+  String catalogueRayonsProgres(String recus, String attendus) {
+    return '$recus / $attendus produits reçus';
+  }
+
+  @override
+  String get catalogueRayonsEchec =>
+      'Le téléchargement a échoué : rien n\'a été ajouté. Vérifiez la connexion internet, puis réessayez.';
+
+  @override
+  String get catalogueRayonsResultatTitre => 'Produits téléchargés';
+
+  @override
+  String catalogueRayonsResultatMessage(String telecharges, String pourcentage) {
+    return '$telecharges produits ajoutés à votre catalogue : $pourcentage % des produits des rayons choisis.';
+  }
+
+  @override
+  String catalogueRayonsDejaPresents(String nombre) {
+    return '$nombre produits étaient déjà dans votre catalogue (même code-barres) : ils sont restés tels quels.';
+  }
+
+  @override
+  String get catalogueRayonsSansPrix =>
+      'Ces produits n\'ont ni prix ni stock : renseignez le prix dans la fiche produit ou à la première entrée en stock.';
+
+  @override
+  String catalogueRayonsLigne(String telecharges, String disponibles, String pourcentage) {
+    return '$telecharges / $disponibles · $pourcentage %';
+  }
+
+  @override
+  String get catalogueRayonsContinuer => 'Continuer';
+
+  @override
+  String get catalogueRayonsBouton => 'Catalogue BENS';
+
+  @override
+  String get prdDesignationAr => 'Nom arabe';
+
+  @override
+  String get prdDesignationArIndice => 'Ex. زيت إليو 1 ل';
+
+  @override
+  String get posCatalogueTrouveTitre => 'Trouvé dans le catalogue BENS';
+
+  @override
+  String get posCatalogueCreer => 'Créer depuis le catalogue';
+
+  @override
+  String get posCatalogueRecherche => 'Recherche dans le catalogue BENS…';
+
+  @override
+  String catalogueRayonsNbTendances(String nombre) {
+    return '$nombre en tendance';
+  }
 }

@@ -9,11 +9,12 @@ import 'ds_module_kit.dart';
 import 'ds_page.dart';
 import 'ds_primitives.dart';
 
-/// Tons de l'icône d'en-tête d'un [DsDialog].
+/// Tons de l'icأ´ne d'en-tأھte d'un [DsDialog].
 enum DsDialogTon { defaut, danger, avertissement, succes, info, neutre }
 
-/// Conteneur de dialogue (`Dialog`) : 520 px, rayon 16, surface élevée, en-tête icône 40 px tonale,
-/// titre 600 18, description, corps défilant, boutons du pied centrés.
+/// Conteneur de dialogue (`Dialog`) : 520 px, rayon 16, surface أ©levأ©e, en-tأھte icأ´ne 40 px tonale,
+/// titre 600 18, corps dأ©filant, boutons du pied centrأ©s. Sans sous-titre : seuls la confirmation et le rأ©sultat
+/// affichent leur [message] sous le titre.
 class DsDialog extends StatelessWidget {
   const DsDialog({
     super.key,
@@ -24,7 +25,7 @@ class DsDialog extends StatelessWidget {
     this.icone,
     this.iconeData,
     this.ton = DsDialogTon.defaut,
-    this.description,
+    this.message,
     this.fermable = true,
     this.piedDebut,
   });
@@ -34,14 +35,16 @@ class DsDialog extends StatelessWidget {
   final List<Widget> actions;
   final double largeur;
 
-  /// Icône d'en-tête (compat) : si c'est un [Icon], son glyphe est repris dans la boîte tonale.
+  /// Icأ´ne d'en-tأھte (compat) : si c'est un [Icon], son glyphe est repris dans la boأ®te tonale.
   final Widget? icone;
   final IconData? iconeData;
   final DsDialogTon ton;
-  final String? description;
+
+  /// Message de la confirmation ou du rأ©sultat (le seul texte sous le titre).
+  final String? message;
   final bool fermable;
 
-  /// Widget placé au début du pied (compteur de sélection, bouton « Nouveau »…).
+  /// Widget placأ© au dأ©but du pied (compteur de sأ©lection, bouton آ« Nouveau آ»â€¦).
   final Widget? piedDebut;
 
   static (Color, Color) couleursTon(DsColors c, DsDialogTon ton) => switch (ton) {
@@ -96,7 +99,7 @@ class DsDialog extends StatelessWidget {
                         spacing: 4,
                         children: [
                           Text(titre, style: t.heading.copyWith(fontSize: 18, height: 1.3, letterSpacing: -.18)),
-                          if (description != null) Text(description!, style: t.body.copyWith(color: c.textSecondary)),
+                          if (message != null) Text(message!, style: t.body.copyWith(color: c.textSecondary)),
                         ],
                       ),
                     ),
@@ -121,7 +124,7 @@ class DsDialog extends StatelessWidget {
             if (actions.isNotEmpty || piedDebut != null)
               Padding(
                 padding: const EdgeInsets.fromLTRB(DsSpacing.s5, DsSpacing.s6, DsSpacing.s5, DsSpacing.s5),
-                // Boutons centrés ; le contenu de début de pied (compteur, « Nouveau »…) reste au début.
+                // Boutons centrأ©s ; le contenu de dأ©but de pied (compteur, آ« Nouveau آ»â€¦) reste au dأ©but.
                 child: piedDebut == null
                     ? SizedBox(
                         width: double.infinity,
@@ -132,7 +135,7 @@ class DsDialog extends StatelessWidget {
                           children: actions,
                         ),
                       )
-                    // Deux zones égales de part et d'autre : les boutons restent au centre exact du pied.
+                    // Deux zones أ©gales de part et d'autre : les boutons restent au centre exact du pied.
                     : LayoutBuilder(
                         builder: (context, contraintes) => Row(
                           spacing: DsSpacing.s2,
@@ -177,10 +180,10 @@ Future<R?> afficherDialog<R>(BuildContext context, {required WidgetBuilder build
 /// Genres du dialog de confirmation (`ConfirmDialog.kind`).
 enum DsConfirmGenre { confirmer, danger, avertissement, refuser }
 
-/// Dialogue de confirmation. Retourne `true` si confirmé.
+/// Dialogue de confirmation. Retourne `true` si confirmأ©.
 ///
-/// [genre] : `confirmer` (?), `danger` (corbeille, bouton rouge « Supprimer »),
-/// `avertissement` (triangle, « Continuer »), `refuser` (interdit, un seul bouton « Compris »).
+/// [genre] : `confirmer` (?), `danger` (corbeille, bouton rouge آ« Supprimer آ»),
+/// `avertissement` (triangle, آ« Continuer آ»), `refuser` (interdit, un seul bouton آ« Compris آ»).
 Future<bool> afficherConfirmation(
   BuildContext context, {
   required String titre,
@@ -201,7 +204,7 @@ Future<bool> afficherConfirmation(
       DsButtonVariante.primaire,
       l10n.communConfirmer,
     ),
-    // Via `destructif` (compat) l'action reste « Confirmer » ; via `genre: danger` explicite : « Supprimer ».
+    // Via `destructif` (compat) l'action reste آ« Confirmer آ» ; via `genre: danger` explicite : آ« Supprimer آ».
     DsConfirmGenre.danger => (
       DsDialogTon.danger,
       genre == null ? LucideIcons.triangleAlert : LucideIcons.trash2,
@@ -220,7 +223,7 @@ Future<bool> afficherConfirmation(
     context,
     builder: (ctx) => DsDialog(
       titre: titre,
-      description: message,
+      message: message,
       iconeData: icone ?? iconeDefaut,
       ton: ton,
       largeur: 460,
@@ -254,7 +257,7 @@ Future<bool> afficherConfirmation(
 
 enum DsResultatType { succes, erreur, info, avertissement }
 
-/// Dialogue de résultat (`ResultDialog`) : succès / erreur / information.
+/// Dialogue de rأ©sultat (`ResultDialog`) : succأ¨s / erreur / information.
 Future<void> afficherResultat(
   BuildContext context, {
   required DsResultatType type,
@@ -275,7 +278,7 @@ Future<void> afficherResultat(
     context,
     builder: (ctx) => DsDialog(
       titre: titre,
-      description: message,
+      message: message,
       iconeData: icone,
       ton: ton,
       largeur: 440,
@@ -313,8 +316,8 @@ class DsColonnePicker<T> {
   final double? largeur;
 }
 
-/// Dialogue de sélection dans une liste filtrable (`PickerDialog`, sélection simple).
-/// Retourne l'élément choisi.
+/// Dialogue de sأ©lection dans une liste filtrable (`PickerDialog`, sأ©lection simple).
+/// Retourne l'أ©lأ©ment choisi.
 Future<T?> afficherSelecteur<T>(
   BuildContext context, {
   required String titre,
@@ -322,7 +325,6 @@ Future<T?> afficherSelecteur<T>(
   required String Function(T) libelle,
   String Function(T)? sousLibelle,
   String? indiceRecherche,
-  String? description,
   IconData icone = LucideIcons.list,
   List<DsColonnePicker<T>>? colonnes,
   VoidCallback? onCreer,
@@ -332,7 +334,6 @@ Future<T?> afficherSelecteur<T>(
     context,
     builder: (ctx) => DsPickerDialog<T>(
       titre: titre,
-      description: description,
       icone: icone,
       elements: elements,
       libelle: libelle,
@@ -345,17 +346,16 @@ Future<T?> afficherSelecteur<T>(
   );
 }
 
-/// Dialog de sélection (`PickerDialog`) : recherche, liste dense, « Nouveau », validation.
+/// Dialog de sأ©lection (`PickerDialog`) : recherche, liste dense, آ« Nouveau آ», validation.
 ///
-/// [multiple] : cases à cocher et retour d'une liste ; sinon une ligne cliquée est retournée au
-/// double-clic ou via « Choisir ».
+/// [multiple] : cases أ  cocher et retour d'une liste ; sinon une ligne cliquأ©e est retournأ©e au
+/// double-clic ou via آ« Choisir آ».
 class DsPickerDialog<T> extends StatefulWidget {
   const DsPickerDialog({
     super.key,
     required this.titre,
     required this.elements,
     required this.libelle,
-    this.description,
     this.icone = LucideIcons.list,
     this.sousLibelle,
     this.indiceRecherche,
@@ -377,7 +377,6 @@ class DsPickerDialog<T> extends StatefulWidget {
     this.vueInitiale = DsVueModule.liste,
   });
   final String titre;
-  final String? description;
   final IconData icone;
   final List<T> elements;
   final String Function(T) libelle;
@@ -392,18 +391,18 @@ class DsPickerDialog<T> extends StatefulWidget {
   final double hauteurMax;
   final List<T> selectionInitiale;
 
-  /// Clé stable d'un élément (par défaut l'objet lui-même).
+  /// Clأ© stable d'un أ©lأ©ment (par dأ©faut l'objet lui-mأھme).
   final Object Function(T)? cle;
 
-  /// La liste garde la hauteur [hauteurMax] même avec peu de résultats (le dialog ne saute pas à la saisie).
+  /// La liste garde la hauteur [hauteurMax] mأھme avec peu de rأ©sultats (le dialog ne saute pas أ  la saisie).
   final bool hauteurFixe;
 
-  /// Filtres complémentaires affichés sous la recherche ; [filtre] retient les éléments affichés (la sélection
-  /// des éléments masqués est conservée).
+  /// Filtres complأ©mentaires affichأ©s sous la recherche ; [filtre] retient les أ©lأ©ments affichأ©s (la sأ©lection
+  /// des أ©lأ©ments masquأ©s est conservأ©e).
   final Widget? filtres;
   final bool Function(T)? filtre;
 
-  /// Rendu en carte d'un élément : active la bascule « liste / cartes » (produits, clients, fournisseurs, ventes).
+  /// Rendu en carte d'un أ©lأ©ment : active la bascule آ« liste / cartes آ» (produits, clients, fournisseurs, ventes).
   final Widget Function(BuildContext context, T element, DsEtatCarte etat)? carte;
   final double largeurCarte;
   final double hauteurCarte;
@@ -473,7 +472,6 @@ class _DsPickerDialogState<T> extends State<DsPickerDialog<T>> {
         : (widget.multiple ? l10n.dsCochezLignes : l10n.dsCliquezLigne);
     return DsDialog(
       titre: widget.titre,
-      description: widget.description,
       iconeData: widget.icone,
       largeur: widget.largeur,
       piedDebut: Row(
@@ -691,7 +689,7 @@ class _LignePickerState extends State<_LignePicker> {
   bool _survol = false;
   DateTime? _dernierTap;
 
-  // Double-clic géré à la main : le simple clic sélectionne immédiatement (pas de délai
+  // Double-clic gأ©rأ© أ  la main : le simple clic sأ©lectionne immأ©diatement (pas de dأ©lai
   // d'attente du second clic), un second clic sous 400 ms valide.
   void _tap() {
     final maintenant = DateTime.now();
@@ -727,7 +725,7 @@ class _LignePickerState extends State<_LignePicker> {
   }
 }
 
-/// Élément d'un [DsBulkActionDialog].
+/// أ‰lأ©ment d'un [DsBulkActionDialog].
 class DsElementLot {
   const DsElementLot({required this.id, required this.titre, this.sousTitre, this.meta, this.motifBlocage});
   final Object id;
@@ -735,15 +733,15 @@ class DsElementLot {
   final String? sousTitre;
   final String? meta;
 
-  /// Raison pour laquelle l'élément ne peut pas être traité (ligne verrouillée).
+  /// Raison pour laquelle l'أ©lأ©ment ne peut pas أھtre traitأ© (ligne verrouillأ©e).
   final String? motifBlocage;
 }
 
 /// Actions en lot (`BulkActionDialog.action`).
 enum DsActionLot { annuler, supprimer, activer, desactiver }
 
-/// Dialog d'action en lot (`BulkActionDialog`) : liste des éléments, bloqués signalés, motif obligatoire.
-/// Retourne le motif saisi (chaîne vide si non requis) ou `null` si fermé.
+/// Dialog d'action en lot (`BulkActionDialog`) : liste des أ©lأ©ments, bloquأ©s signalأ©s, motif obligatoire.
+/// Retourne le motif saisi (chaأ®ne vide si non requis) ou `null` si fermأ©.
 Future<String?> afficherActionLot(
   BuildContext context, {
   required DsActionLot action,
@@ -851,11 +849,10 @@ class _BulkActionDialogState extends State<_BulkActionDialog> {
         final peut = okN > 0 && (!widget.motifRequis || motif.text.trim().isNotEmpty);
         return DsDialog(
           titre: widget.titre ?? '$verbe ${nom(widget.elements.length)} ?',
-          description:
+          // Seul un avertissement s'affiche sous le titre : message de l'appelant ou أ©lأ©ments bloquأ©s.
+          message:
               widget.description ??
-              (bloques.isNotEmpty
-                  ? l10n.dsLotPartiel(nom(okN), widget.elements.length, participe)
-                  : l10n.dsLotVerifier),
+              (bloques.isNotEmpty ? l10n.dsLotPartiel(nom(okN), widget.elements.length, participe) : null),
           iconeData: icone,
           ton: ton,
           largeur: 600,
@@ -997,11 +994,11 @@ class DsColonneReglage {
   );
 }
 
-/// Résultat du dialog « colonnes » : identifiants masqués + mémorisation.
+/// Rأ©sultat du dialog آ« colonnes آ» : identifiants masquأ©s + mأ©morisation.
 typedef DsReglageColonnes = ({Set<String> masquees, bool conserver});
 
-/// Dialog « Afficher / masquer les colonnes » (`ColumnSettings`) : obligatoires verrouillées,
-/// par défaut, autres ; recherche au-delà de 10 colonnes ; « Garder ma sélection ».
+/// Dialog آ« Afficher / masquer les colonnes آ» (`ColumnSettings`) : obligatoires verrouillأ©es,
+/// par dأ©faut, autres ; recherche au-delأ  de 10 colonnes ; آ« Garder ma sأ©lection آ».
 Future<DsReglageColonnes?> afficherReglageColonnes(
   BuildContext context, {
   required List<DsColonneReglage> colonnes,
@@ -1037,7 +1034,6 @@ class _ReglageColonnesDialogState extends State<_ReglageColonnesDialog> {
     final c = context.ds.colors;
     final t = context.ds.typo;
     final l10n = AppLocalizations.of(context);
-    final n = _cols.where((x) => x.visible).length;
     final q = _q.trim().toLowerCase();
     bool match(DsColonneReglage x) => q.isEmpty || x.libelle.toLowerCase().contains(q);
     final nombreuses = _cols.length > 10;
@@ -1063,7 +1059,6 @@ class _ReglageColonnesDialogState extends State<_ReglageColonnesDialog> {
     ].where((g) => g.$4.isNotEmpty).toList();
     return DsDialog(
       titre: l10n.dsColonnesTitre,
-      description: l10n.dsColonnesVisibles(n, _cols.length),
       iconeData: LucideIcons.columns3,
       largeur: nombreuses ? 640 : 440,
       actions: [
@@ -1169,7 +1164,7 @@ class _ReglageColonnesDialogState extends State<_ReglageColonnesDialog> {
                                       ),
                                     ),
                                     Text(
-                                      '· ${g.$4.length}',
+                                      'آ· ${g.$4.length}',
                                       style: t.caption.copyWith(fontWeight: FontWeight.w500, color: c.textMuted),
                                     ),
                                     if (g.$2 != null) ...[
@@ -1238,7 +1233,7 @@ class _ReglageColonnesDialogState extends State<_ReglageColonnesDialog> {
   }
 }
 
-/// Entrée d'un [afficherMenuContextuel].
+/// Entrأ©e d'un [afficherMenuContextuel].
 class DsMenuItem {
   const DsMenuItem({
     required this.libelle,
@@ -1265,7 +1260,7 @@ class DsMenuItem {
   final bool separateur;
 }
 
-/// Menu contextuel (`ContextMenu`) à la position donnée : 220 px min, surface élevée, items 34 px.
+/// Menu contextuel (`ContextMenu`) أ  la position donnأ©e : 220 px min, surface أ©levأ©e, items 34 px.
 Future<void> afficherMenuContextuel(
   BuildContext context, {
   required Offset position,
@@ -1284,7 +1279,7 @@ Future<void> afficherMenuContextuel(
       side: BorderSide(color: c.borderDefault),
     ),
     constraints: const BoxConstraints(minWidth: 220),
-    // [position] est globale ; l'overlay du navigateur imbriqué (shell) est décalé de la barre latérale.
+    // [position] est globale ; l'overlay du navigateur imbriquأ© (shell) est dأ©calأ© de la barre latأ©rale.
     position: RelativeRect.fromRect(overlay.globalToLocal(position) & const Size(1, 1), Offset.zero & overlay.size),
     items: [
       if (titre != null)
