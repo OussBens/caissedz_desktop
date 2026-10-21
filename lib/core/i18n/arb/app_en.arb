@@ -2689,5 +2689,11 @@
   "catalogueRayonsSansPrix": "These products have no price and no stock: set the price on the product sheet or at the first stock entry.",
   "catalogueRayonsLigne": "{telecharges} / {disponibles} · {pourcentage} %",
   "catalogueRayonsContinuer": "Continue",
-  "catalogueRayonsBouton": "BENS catalogue"
+  "catalogueRayonsBouton": "BENS catalogue",
+  "prdDesignationAr": "Arabic name",
+  "prdDesignationArIndice": "e.g. زيت إليو 1 ل",
+  "posCatalogueTrouveTitre": "Found in the BENS catalogue",
+  "posCatalogueCreer": "Create from catalogue",
+  "posCatalogueRecherche": "Searching the BENS catalogue…",
+  "catalogueRayonsNbTendances": "{nombre} trending"
 }

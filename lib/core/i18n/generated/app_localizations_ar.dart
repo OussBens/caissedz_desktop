@@ -8007,4 +8007,24 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get catalogueRayonsBouton => 'كتالوج BENS';
+
+  @override
+  String get prdDesignationAr => 'الاسم بالعربية';
+
+  @override
+  String get prdDesignationArIndice => 'مثال: زيت إليو 1 ل';
+
+  @override
+  String get posCatalogueTrouveTitre => 'موجود في كتالوج BENS';
+
+  @override
+  String get posCatalogueCreer => 'إنشاء من الكتالوج';
+
+  @override
+  String get posCatalogueRecherche => 'جارٍ البحث في كتالوج BENS…';
+
+  @override
+  String catalogueRayonsNbTendances(String nombre) {
+    return '$nombre رائج';
+  }
 }

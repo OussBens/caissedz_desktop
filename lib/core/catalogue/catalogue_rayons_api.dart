@@ -22,7 +22,8 @@ class CatalogueRayonsException implements Exception {
 }
 
 /// Les rayons du catalogue BENS (catalog-api.bensds.com, lecture publique) :
-/// `GET /rayons` et `GET /rayons/{code}/products?page=&limit=` (500 produits par page au plus).
+/// `GET /rayons` et `GET /rayons/{code}/products?page=&limit=[&depuis=AAAA-MM-JJ]` (500 produits par page au
+/// plus ; `depuis` : seulement ceux devenus tendance depuis ce jour).
 class CatalogueRayonsApi {
   const CatalogueRayonsApi({required this.client, this.baseUrl = urlParDefaut});
 
@@ -59,9 +60,11 @@ class CatalogueRayonsApi {
     return [for (final r in d['rayons'] as List? ?? const []) RayonCatalogue.depuisJson((r as Map).cast())];
   }
 
-  /// Une page des produits proposés par le rayon [code] (les mieux classés d'abord) et le nombre de pages.
-  Future<({List<ProduitCatalogue> produits, int pages})> produits(String code, {int page = 1}) async {
-    final d = await _get('/rayons/${Uri.encodeComponent(code)}/products?page=$page&limit=$parPage');
+  /// Une page des produits proposés par le rayon [code] (les mieux classés d'abord) et le nombre de pages ;
+  /// [depuis] : seulement ceux devenus tendance depuis ce jour.
+  Future<({List<ProduitCatalogue> produits, int pages})> produits(String code, {int page = 1, DateTime? depuis}) async {
+    final jour = depuis == null ? '' : '&depuis=${depuis.toIso8601String().substring(0, 10)}';
+    final d = await _get('/rayons/${Uri.encodeComponent(code)}/products?page=$page&limit=$parPage$jour');
     return (
       produits: [for (final p in d['products'] as List? ?? const []) ProduitCatalogue.depuisJson((p as Map).cast())],
       pages: (d['total_pages'] as num?)?.toInt() ?? 0,

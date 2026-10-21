@@ -13,6 +13,7 @@ class LigneImport {
   const LigneImport({
     required this.numero,
     required this.designation,
+    this.designationAr,
     this.codeBarres,
     this.categorie,
     this.prixAchat,
@@ -22,6 +23,7 @@ class LigneImport {
   });
   final int numero;
   final String designation;
+  final String? designationAr;
   final String? codeBarres;
   final String? categorie;
   final double? prixAchat;
@@ -43,7 +45,8 @@ class RapportImport {
 /// Import de produits depuis un classeur Excel (.xlsx).
 ///
 /// Colonnes attendues (en-tête ligne 1, insensible à la casse) :
-/// `designation` (obligatoire), `code_barres`, `categorie`, `prix_achat`, `prix_vente`, `stock`.
+/// `designation` (obligatoire), `designation_ar` (nom arabe), `code_barres`, `categorie`, `prix_achat`,
+/// `prix_vente`, `stock`.
 /// Une correspondance champ → colonne peut remplacer la détection par en-tête (étape « Colonnes »).
 /// Les catégories inconnues sont créées ; les codes-barres déjà utilisés sont ignorés.
 class ImportProduitsService {
@@ -53,7 +56,15 @@ class ImportProduitsService {
   final CatalogueService catalogue;
   final double? margeDefautPct;
 
-  static const List<String> colonnes = ['designation', 'code_barres', 'categorie', 'prix_achat', 'prix_vente', 'stock'];
+  static const List<String> colonnes = [
+    'designation',
+    'designation_ar',
+    'code_barres',
+    'categorie',
+    'prix_achat',
+    'prix_vente',
+    'stock',
+  ];
 
   static Sheet? _feuille(Uint8List octets) {
     final classeur = Excel.decodeBytes(octets);
@@ -74,7 +85,8 @@ class ImportProduitsService {
         .replaceAll("'", '_')
         .replaceAll('quantite', 'stock')
         .replaceAll('prix_de_', 'prix_')
-        .replaceAll('prix_d_', 'prix_');
+        .replaceAll('prix_d_', 'prix_')
+        .replaceAll('nom_arabe', 'designation_ar');
     final n = entetes.map(norm).toList();
     return {
       for (final c in colonnes)
@@ -92,6 +104,7 @@ class ImportProduitsService {
     final map = correspondance ?? correspondanceAuto(entetes(octets));
     final iDes = map['designation'];
     if (iDes == null) throw const FormatException('Colonne « designation » absente');
+    final iAr = map['designation_ar'];
     final iCb = map['code_barres'];
     final iCat = map['categorie'];
     final iPa = map['prix_achat'];
@@ -120,6 +133,7 @@ class ImportProduitsService {
         LigneImport(
           numero: n + 1,
           designation: designation,
+          designationAr: (cell(iAr) ?? '').isEmpty ? null : cell(iAr),
           codeBarres: cbNet,
           categorie: cell(iCat),
           prixAchat: nombre(iPa),
@@ -158,6 +172,7 @@ class ImportProduitsService {
           Produit(
             code: '',
             designation: l.designation,
+            designationAr: l.designationAr,
             codeBarres: l.codeBarres,
             categorieCode: categorieCode,
             sousCategorieCode: sousCategorieCode,
@@ -183,6 +198,7 @@ class ImportProduitsService {
     feuille.appendRow([for (final c in colonnes) TextCellValue(c)]);
     feuille.appendRow([
       TextCellValue('Exemple : Lait 1 L'),
+      TextCellValue('حليب 1 ل'),
       TextCellValue('6130000000015'),
       TextCellValue('Boissons'),
       const DoubleCellValue(80),

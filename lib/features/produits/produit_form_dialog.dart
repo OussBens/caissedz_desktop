@@ -137,6 +137,7 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
   String? _erreurCode;
 
   final _designation = TextEditingController();
+  final _designationAr = TextEditingController();
   final _codeBarres = TextEditingController();
   final _marque = TextEditingController();
   final _achat = TextEditingController();
@@ -182,6 +183,7 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
     final marge = ref.read(parametresVenteProvider).value?.margeDefautPct ?? 25;
     if (p != null) {
       _designation.text = p.designation;
+      _designationAr.text = p.designationAr ?? '';
       _codeBarres.text = p.codeBarres ?? '';
       _marque.text = p.marque ?? '';
       _achat.text = _nb(p.prixAchat);
@@ -253,6 +255,7 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
   void _appliquerFiche(FicheProduitIa f) {
     _fiche = f;
     if (f.designation.isNotEmpty) _designation.text = f.designation;
+    if (f.designationAr != null && _designationAr.text.trim().isEmpty) _designationAr.text = f.designationAr!;
     _codeBarres.text = f.codeBarres;
     _marque.text = f.marque ?? _marque.text;
     final nomCat = f.categorie?.toLowerCase();
@@ -271,6 +274,7 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
   void dispose() {
     for (final c in [
       _designation,
+      _designationAr,
       _codeBarres,
       _marque,
       _achat,
@@ -420,6 +424,7 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
     final produit = Produit(
       code: base?.code ?? '',
       designation: _designation.text.trim(),
+      designationAr: _designationAr.text.trim().isEmpty ? null : _designationAr.text.trim(),
       codeBarres: _codeBarres.text.trim().isEmpty ? null : _codeBarres.text.trim(),
       categorieCode: _categorie,
       sousCategorieCode: _sousCategorie ?? await _sousCategorieParDefaut(),
@@ -753,17 +758,31 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
         .toList();
     final fournisseurs = ref.watch(fournisseursProvider).value ?? const <Fournisseur>[];
     final identification = _bloc(l10n.prdIdentification, [
-      _champ(
-        l10n.produitsColDesignation,
-        obligatoire: true,
-        DsTextField(
-          key: const ValueKey('produit_designation'),
-          controller: _designation,
-          autofocus: !_edition,
-          indice: l10n.prdDesignationIndice,
-          onChanged: (_) => setState(() {}),
+      ..._grille([
+        _champ(
+          l10n.produitsColDesignation,
+          obligatoire: true,
+          DsTextField(
+            key: const ValueKey('produit_designation'),
+            controller: _designation,
+            autofocus: !_edition,
+            indice: l10n.prdDesignationIndice,
+            onChanged: (_) => setState(() {}),
+          ),
         ),
-      ),
+        // Nom arabe : saisi de droite à gauche quelle que soit la langue de l'interface.
+        _champ(
+          l10n.prdDesignationAr,
+          Directionality(
+            textDirection: TextDirection.rtl,
+            child: DsTextField(
+              key: const ValueKey('produit_designation_ar'),
+              controller: _designationAr,
+              indice: l10n.prdDesignationArIndice,
+            ),
+          ),
+        ),
+      ]),
       ..._grille([
         if (_edition) ...[
           _champ(l10n.produitsColCode, DsTextField(valeurInitiale: widget.produit!.code, actif: false)),

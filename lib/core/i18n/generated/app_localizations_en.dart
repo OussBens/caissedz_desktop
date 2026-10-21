@@ -8026,4 +8026,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get catalogueRayonsBouton => 'BENS catalogue';
+
+  @override
+  String get prdDesignationAr => 'Arabic name';
+
+  @override
+  String get prdDesignationArIndice => 'e.g. زيت إليو 1 ل';
+
+  @override
+  String get posCatalogueTrouveTitre => 'Found in the BENS catalogue';
+
+  @override
+  String get posCatalogueCreer => 'Create from catalogue';
+
+  @override
+  String get posCatalogueRecherche => 'Searching the BENS catalogue…';
+
+  @override
+  String catalogueRayonsNbTendances(String nombre) {
+    return '$nombre trending';
+  }
 }

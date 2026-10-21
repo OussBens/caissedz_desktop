@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:caissedz_desktop/app/providers.dart';
 import 'package:caissedz_desktop/application/catalogue_service.dart';
 import 'package:caissedz_desktop/application/stock_service.dart';
@@ -14,6 +16,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
 
 import '../../helpers/app_test_helper.dart';
 
@@ -219,6 +223,57 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Produit introuvable'), findsOneWidget);
       await clic(tester, find.text('Fermer').last);
+    });
+
+    testWidgets('code inconnu trouvé dans le catalogue BENS : le formulaire s’ouvre rempli', (tester) async {
+      final client = MockClient((req) async {
+        if (req.url.path == '/products/barcode/6130005000017') {
+          return http.Response(
+            jsonEncode({
+              'success': true,
+              'data': {'nom': 'Rouiba Orange 1L', 'nom_ar': 'رويبة برتقال', 'brand': 'Rouiba'},
+            }),
+            200,
+            headers: {'content-type': 'application/json; charset=utf-8'},
+          );
+        }
+        return http.Response('{"success":false}', 404);
+      });
+      final c = await pumpApp(
+        tester,
+        routeInitiale: '/caisse',
+        taille: const Size(1600, 1000),
+        overrides: [httpClientProvider.overrideWithValue(client)],
+      );
+      await _donnees(c);
+      await tester.pumpAndSettle();
+      final champ = find.descendant(of: find.byType(DsSearchField), matching: find.byType(TextField)).first;
+      await tester.enterText(champ, '6130005000017');
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.pumpAndSettle();
+      expect(find.text('Trouvé dans le catalogue BENS'), findsOneWidget);
+      expect(find.byKey(const ValueKey('introuvable_fiche_bens')), findsOneWidget);
+      expect(find.text('رويبة برتقال'), findsOneWidget);
+      await clic(tester, find.text('Créer depuis le catalogue'));
+      String texte(String cle) => tester
+          .widget<TextField>(find.descendant(of: find.byKey(ValueKey(cle)), matching: find.byType(TextField)).first)
+          .controller!
+          .text;
+      expect([texte('produit_designation'), texte('produit_designation_ar'), texte('produit_code_barres')], [
+        'Rouiba Orange 1L',
+        'رويبة برتقال',
+        '6130005000017',
+      ]);
+
+      // Absent du catalogue : le titre habituel, le formulaire avec le seul code-barres.
+      await clic(tester, find.text('Annuler').last);
+      expect(find.byKey(const ValueKey('produit_designation')), findsNothing);
+      await tester.enterText(champ, '9999999999994');
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.pumpAndSettle();
+      expect(find.text('Produit introuvable'), findsOneWidget);
+      await clic(tester, find.byKey(const ValueKey('introuvable_creer')));
+      expect([texte('produit_designation'), texte('produit_code_barres')], ['', '9999999999994']);
     });
 
     testWidgets('ventes en parallèle, stock insuffisant, raccourcis F1 / F9 / F10 / F11', (tester) async {

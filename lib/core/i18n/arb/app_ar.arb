@@ -2689,5 +2689,11 @@
   "catalogueRayonsSansPrix": "هذه المنتجات بدون سعر ولا مخزون: أدخل السعر في بطاقة المنتج أو عند أول إدخال للمخزون.",
   "catalogueRayonsLigne": "{telecharges} / {disponibles} · {pourcentage} %",
   "catalogueRayonsContinuer": "متابعة",
-  "catalogueRayonsBouton": "كتالوج BENS"
+  "catalogueRayonsBouton": "كتالوج BENS",
+  "prdDesignationAr": "الاسم بالعربية",
+  "prdDesignationArIndice": "مثال: زيت إليو 1 ل",
+  "posCatalogueTrouveTitre": "موجود في كتالوج BENS",
+  "posCatalogueCreer": "إنشاء من الكتالوج",
+  "posCatalogueRecherche": "جارٍ البحث في كتالوج BENS…",
+  "catalogueRayonsNbTendances": "{nombre} رائج"
 }

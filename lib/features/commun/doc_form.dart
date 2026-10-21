@@ -128,7 +128,7 @@ Future<List<Produit>> choisirProduits(
       icone: LucideIcons.package,
       multiple: true,
       elements: produits,
-      libelle: (p) => p.designation,
+      libelle: (p) => p.texteRecherche,
       indiceRecherche: l10n.prdRechercheProduits,
       largeur: 960,
       hauteurMax: hauteurListeDialog(context, reserve: 320),

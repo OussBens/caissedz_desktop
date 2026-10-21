@@ -4275,5 +4275,18 @@
     }
   },
   "catalogueRayonsContinuer": "Continuer",
-  "catalogueRayonsBouton": "Catalogue BENS"
+  "catalogueRayonsBouton": "Catalogue BENS",
+  "prdDesignationAr": "Nom arabe",
+  "prdDesignationArIndice": "Ex. زيت إليو 1 ل",
+  "posCatalogueTrouveTitre": "Trouvé dans le catalogue BENS",
+  "posCatalogueCreer": "Créer depuis le catalogue",
+  "posCatalogueRecherche": "Recherche dans le catalogue BENS…",
+  "catalogueRayonsNbTendances": "{nombre} en tendance",
+  "@catalogueRayonsNbTendances": {
+    "placeholders": {
+      "nombre": {
+        "type": "String"
+      }
+    }
+  }
 }

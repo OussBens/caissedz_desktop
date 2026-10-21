@@ -23,11 +23,13 @@ import '../helpers/licence_test_helper.dart';
 http.Response _json(Object corps, [int code = 200]) =>
     http.Response(jsonEncode(corps), code, headers: {'content-type': 'application/json; charset=utf-8'});
 
-Map<String, Object?> _p(String cb, String nom, {List<String> autres = const [], String? photo}) => {
+Map<String, Object?> _p(String cb, String nom, {List<String> autres = const [], String? photo, String? ar}) => {
   'id': cb.hashCode,
   'code_barres': cb,
   'codes_barres': [cb, ...autres],
   'nom': nom,
+  'nom_ar': ar,
+  'tendance': false,
   'marque': 'Hamoud',
   'photo': photo,
 };
@@ -38,14 +40,24 @@ class _Catalogue {
   bool enPanne = false;
 
   static const rayons = [
-    {'code': 'boissons', 'nom_fr': 'Boissons', 'nom_ar': 'المشروبات', 'nom_en': 'Drinks', 'icone': 'cup-soda', 'ordre': 80, 'produits': 3},
+    {'code': 'boissons', 'nom_fr': 'Boissons', 'nom_ar': 'المشروبات', 'nom_en': 'Drinks', 'icone': 'cup-soda', 'ordre': 80, 'produits': 3, 'tendances': 2},
     {'code': 'laitiers', 'nom_fr': 'Produits laitiers & œufs', 'nom_ar': 'مشتقات الحليب', 'nom_en': 'Dairy', 'icone': 'milk', 'ordre': 90, 'produits': 1},
   ];
+
+  /// Produits devenus tendance par rayon (réponse à `?depuis=`) et les jours demandés.
+  final tendances = <String, List<Map<String, Object?>>>{};
+  final depuis = <String, List<String>>{};
 
   final pages = <String, List<List<Map<String, Object?>>>>{
     'boissons': [
       [
-        _p('6130001000011', 'Selecto 1L', autres: ['6130001000028'], photo: 'https://catalog-api.bensds.com/uploads/photos/1.jpg'),
+        _p(
+          '6130001000011',
+          'Selecto 1L',
+          autres: ['6130001000028'],
+          photo: 'https://catalog-api.bensds.com/uploads/photos/1.jpg',
+          ar: 'سليكتو 1 ل',
+        ),
         _p('6130002000010', 'Hamoud Boualem 2L'),
       ],
       [
@@ -68,6 +80,14 @@ class _Catalogue {
         return _json({
           'success': true,
           'data': {'plafond': 2000, 'rayons': rayons},
+        });
+      }
+      if (s.length == 3 && s[0] == 'rayons' && s[2] == 'products' && r.url.queryParameters['depuis'] != null) {
+        (depuis[s[1]] ??= []).add(r.url.queryParameters['depuis']!);
+        final t = [for (final p in tendances[s[1]] ?? const <Map<String, Object?>>[]) {...p, 'tendance': true}];
+        return _json({
+          'success': true,
+          'data': {'rayon': s[1], 'total': t.length, 'page': 1, 'limit': 500, 'total_pages': 1, 'products': t},
         });
       }
       if (s.length == 3 && s[0] == 'rayons' && s[2] == 'products') {
@@ -101,7 +121,8 @@ void main() {
       final rayons = await s.rayons();
       expect(rayons.map((r) => r.code), ['boissons', 'laitiers']);
       expect([rayons.first.nom('ar'), rayons.first.nom('en'), rayons.first.nom('fr')], ['المشروبات', 'Drinks', 'Boissons']);
-      expect([rayons.first.icone, rayons.first.produits], ['cup-soda', 3]);
+      expect([rayons.first.icone, rayons.first.produits, rayons.first.tendances], ['cup-soda', 3, 2]);
+      expect(rayons.last.tendances, 0);
       expect(await s.estPropose(), isFalse);
     });
 
@@ -131,6 +152,9 @@ void main() {
       final selecto = produits.firstWhere((p) => p.designation == 'Selecto 1L');
       expect([selecto.prixAchat, selecto.prixVente, selecto.codeBarres, selecto.marque], [0, 0, '6130001000011', 'Hamoud']);
       expect(selecto.image, 'https://catalog-api.bensds.com/uploads/photos/1.jpg');
+      expect(selecto.designationAr, 'سليكتو 1 ل', reason: 'nom arabe du catalogue');
+      expect(selecto.nom('ar'), 'سليكتو 1 ل');
+      expect(produits.firstWhere((p) => p.designation == 'Cola 33cl').designationAr, isNull);
       expect(await CatalogueRepository(base.db).codesSecondaires(selecto.code), ['6130001000028']);
       expect((await CatalogueRepository(base.db).produitParCodeBarres('6130001000028'))!.code, selecto.code);
       expect(produits.map((p) => p.code).toSet().length, 4, reason: 'codes PRD uniques');
@@ -223,6 +247,103 @@ void main() {
         ),
       );
       expect((await AlertesRepository(base.db).ruptures(seuilGlobal: 5)).map((r) => r['code']), [selecto.code]);
+    });
+  });
+
+  group('CatalogueRayonsService.actualiserTendances', () {
+    test('seulement les nouveaux produits tendance des rayons téléchargés, depuis la dernière demande', () async {
+      final base = await ouvrirBaseDeTest();
+      final catalogue = _Catalogue();
+      final s = CatalogueRayonsService(base.db, api: catalogue.api, utilisateurCode: 'USR0000');
+      expect(await s.actualiserTendances(), (ajoutes: 0, nomsAr: 0), reason: 'aucun rayon téléchargé');
+      expect(catalogue.appels, isEmpty);
+
+      // Le commerce vend déjà Cola (saisi à la main, sans nom arabe), puis télécharge Boissons le 20.
+      await CatalogueRepository(base.db).insererProduit(
+        const Produit(
+          code: 'PRD0007',
+          designation: 'Coca 33',
+          codeBarres: '3000000000002',
+          categorieCode: 'CATE0000',
+          sousCategorieCode: 'SC0000',
+          prixVente: 80,
+        ),
+      );
+      await s.telecharger([(await s.rayons()).first], maintenant: DateTime(2026, 10, 20, 10));
+      final hamoud = (await CatalogueRepository(base.db).produitParCodeBarres('6130002000010'))!;
+      expect(hamoud.designationAr, isNull);
+
+      // Devenus tendance : Rouiba (nouveau), Hamoud (déjà là, le catalogue connaît maintenant son nom arabe),
+      // Cola (produit du commerce : son nom n'est pas touché).
+      catalogue.tendances['boissons'] = [
+        _p('6130005000017', 'Rouiba Orange 1L', ar: 'رويبة برتقال'),
+        _p('6130002000010', 'Hamoud Boualem 2L', ar: 'حمود بوعلام'),
+        _p('3000000000002', 'Cola 33cl', ar: 'كولا'),
+      ];
+      final r = await s.actualiserTendances(maintenant: DateTime(2026, 10, 21, 9));
+      expect(r, (ajoutes: 1, nomsAr: 1));
+      expect(catalogue.depuis, {
+        'boissons': ['2026-10-20'],
+      }, reason: 'depuis le téléchargement, rayon non téléchargé pas demandé');
+      final rouiba = (await CatalogueRepository(base.db).produitParCodeBarres('6130005000017'))!;
+      expect([rouiba.designationAr, rouiba.source, rouiba.categorieCode, rouiba.prixVente], [
+        'رويبة برتقال',
+        Produit.sourceCatalogue,
+        hamoud.categorieCode,
+        0,
+      ]);
+      expect((await CatalogueRepository(base.db).produitParCode(hamoud.code))!.designationAr, 'حمود بوعلام');
+      expect((await CatalogueRepository(base.db).produitParCode('PRD0007'))!.designationAr, isNull);
+      final ligne = (await base.db.query('catalogue_rayon')).single;
+      expect(ligne['telecharges'], 3, reason: '2 au téléchargement (Cola déjà là) + Rouiba');
+      expect(DateTime.parse(ligne['tendance_le']! as String).toLocal(), DateTime(2026, 10, 21, 9));
+      final journal = await HistoriqueRepository(base.db).lire();
+      expect(journal.where((h) => h.action == 'Tendance catalogue').single.detail, 'Boissons : 1 produits tendance ajoutés');
+
+      // La fois suivante : depuis le 21 (compris) ; plus rien de neuf.
+      expect(await s.actualiserTendances(maintenant: DateTime(2026, 10, 22, 9)), (ajoutes: 0, nomsAr: 0));
+      expect(catalogue.depuis['boissons'], ['2026-10-20', '2026-10-21']);
+      expect((await _produitsCatalogue(base.db)).length, 3);
+    });
+
+    test('un produit non marqué tendance n’est pas ajouté (serveur qui ignorerait « depuis »)', () async {
+      final base = await ouvrirBaseDeTest();
+      final catalogue = _Catalogue();
+      final s = CatalogueRayonsService(base.db, api: catalogue.api, utilisateurCode: 'USR0000');
+      await s.telecharger([(await s.rayons()).first], maintenant: DateTime(2026, 10, 20));
+      // Ancien serveur : `depuis` ignoré, la page normale du rayon (sans « tendance ») revient.
+      final ancien = CatalogueRayonsService(
+        base.db,
+        api: CatalogueRayonsApi(
+          baseUrl: 'https://catalogue.test',
+          client: MockClient(
+            (r) async => _json({
+              'success': true,
+              'data': {
+                'total_pages': 1,
+                'products': [
+                  {'code_barres': '6130006000016', 'codes_barres': ['6130006000016'], 'nom': 'Ifri 1,5L'},
+                ],
+              },
+            }),
+          ),
+        ),
+        utilisateurCode: 'USR0000',
+      );
+      expect(await ancien.actualiserTendances(), (ajoutes: 0, nomsAr: 0));
+      expect(await CatalogueRepository(base.db).produitParCodeBarres('6130006000016'), isNull);
+    });
+
+    test('hors ligne : exception, rien d’écrit', () async {
+      final base = await ouvrirBaseDeTest();
+      final catalogue = _Catalogue();
+      final s = CatalogueRayonsService(base.db, api: catalogue.api, utilisateurCode: 'USR0000');
+      await s.telecharger([(await s.rayons()).first], maintenant: DateTime(2026, 10, 20));
+      catalogue.tendances['boissons'] = [_p('6130005000017', 'Rouiba Orange 1L')];
+      catalogue.enPanne = true;
+      await expectLater(s.actualiserTendances(), throwsA(isA<CatalogueRayonsException>()));
+      expect(await CatalogueRepository(base.db).produitParCodeBarres('6130005000017'), isNull);
+      expect((await base.db.query('catalogue_rayon')).single['tendance_le'], isNull);
     });
   });
 

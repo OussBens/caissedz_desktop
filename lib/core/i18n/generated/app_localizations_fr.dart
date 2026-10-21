@@ -8045,4 +8045,24 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get catalogueRayonsBouton => 'Catalogue BENS';
+
+  @override
+  String get prdDesignationAr => 'Nom arabe';
+
+  @override
+  String get prdDesignationArIndice => 'Ex. زيت إليو 1 ل';
+
+  @override
+  String get posCatalogueTrouveTitre => 'Trouvé dans le catalogue BENS';
+
+  @override
+  String get posCatalogueCreer => 'Créer depuis le catalogue';
+
+  @override
+  String get posCatalogueRecherche => 'Recherche dans le catalogue BENS…';
+
+  @override
+  String catalogueRayonsNbTendances(String nombre) {
+    return '$nombre en tendance';
+  }
 }

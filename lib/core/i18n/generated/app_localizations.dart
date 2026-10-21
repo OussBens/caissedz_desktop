@@ -15104,6 +15104,42 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Catalogue BENS'**
   String get catalogueRayonsBouton;
+
+  /// No description provided for @prdDesignationAr.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom arabe'**
+  String get prdDesignationAr;
+
+  /// No description provided for @prdDesignationArIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex. زيت إليو 1 ل'**
+  String get prdDesignationArIndice;
+
+  /// No description provided for @posCatalogueTrouveTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Trouvé dans le catalogue BENS'**
+  String get posCatalogueTrouveTitre;
+
+  /// No description provided for @posCatalogueCreer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créer depuis le catalogue'**
+  String get posCatalogueCreer;
+
+  /// No description provided for @posCatalogueRecherche.
+  ///
+  /// In fr, this message translates to:
+  /// **'Recherche dans le catalogue BENS…'**
+  String get posCatalogueRecherche;
+
+  /// No description provided for @catalogueRayonsNbTendances.
+  ///
+  /// In fr, this message translates to:
+  /// **'{nombre} en tendance'**
+  String catalogueRayonsNbTendances(String nombre);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

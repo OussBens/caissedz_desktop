@@ -1087,5 +1087,61 @@ Trois dépôts : catalog-api (rayons, tri, exclusion), bens_ds (choix de chaque 
   `features/produits/catalogue_rayons_test.dart` (parcours complet, Plus tard, hors ligne) ; catalog-api
   `catalogue_core/tests/rayons_test.php` (62 vérifications) ; bens_ds `ApiTest` (catalog picks) et
   `licenses_test.dart` (onglet Catalogue).
-- À venir (docs « Product alerts and catalogue », parties 1 et 2) : les 18 alertes produits, le nom arabe
-  (`designation_ar`) et la tendance calculée sur les scans de tous les postes.
+- À venir (docs « Product alerts and catalogue », partie 1) : les 18 alertes produits. La partie 2 (nom arabe et
+  tendance) est faite : voir ci-dessous.
+
+## Nom arabe et tendance du catalogue BENS ✅ (2026-10-21)
+
+Partie 2 du document « Product alerts and catalogue ». Les produits téléchargés vont directement dans `produit`
+(décision du 2026-10-20) : pas de table `catalogue_reference` séparée ; la tendance enrichit les rayons déjà
+téléchargés et le code-barres inconnu est cherché dans le catalogue à la caisse.
+
+- **Nom arabe** (`produit.designation_ar`, migration v39, facultatif) : champ « Nom arabe » à côté de la
+  désignation dans la fiche produit (saisi de droite à gauche), cherché comme la désignation (Caisse, F3,
+  Ctrl+K, documents, liste Produits), colonne « Nom arabe » de la liste Produits (visible en arabe), tuiles et
+  recherche F3 de la Caisse sous le nom arabe en arabe (`Produit.nom(langue)`), colonne `designation_ar` de
+  l'import Excel et de son modèle. Tickets (ESC/POS et PDF), facture A4 de vente, devis, proforma, bons de
+  commande et de livraison, commandes fournisseurs imprimés en arabe : nom arabe des produits
+  (`VenteLigne.nomImprime`, `DocumentsPdf.nomProduit`), désignation gardée pour un colis ou un ancien pack.
+  La facture fiscale scellée garde ses désignations ; la vente n'a aucune colonne de plus (scellement inchangé).
+- **Catalogue BENS** (catalog-api) : `catalog_product.nom_ar` (le nom lui-même s'il est en arabe, sinon le premier
+  nom arabe proposé par un poste) ; renvoyé par les rayons et `GET /products/barcode/{code}` ; repris au
+  téléchargement d'un rayon et complété sur les produits du catalogue qui n'en avaient pas.
+- **Tendance** (`TendanceService`, au lancement après le check-in, licence active) : `POST /tendance` (licence
+  BENS signée du poste, comme Smart Scan) avec, par jour et par code-barres EAN, le nombre de tickets validés qui
+  le contenaient, et les fiches saisies ou modifiées (code-barres et codes secondaires EAN, nom, nom arabe,
+  marque, catégorie hors Divers ; services, codes internes et produits du catalogue jamais modifiés exclus) ;
+  ni prix, ni quantités, ni stocks, ni clients. Ventes depuis le dernier jour envoyé (compris), 30 jours au plus
+  après une longue absence ; fiches depuis la dernière envoyée ; hors ligne ou refusé, tout repart au lancement
+  suivant. Le serveur (`catalogue_core/Tendance.php`) compte sur 90 jours les boutiques et les tickets
+  (50 au plus par boutique et par jour), ajoute 1 000 points par boutique + 10 par ticket au classement du rayon
+  et marque **tendance** un produit vendu dans au moins **3 boutiques et 20 tickets** (`.env`
+  `TENDANCE_POSTES_MIN`, `TENDANCE_TICKETS_MIN` ; `tendance_le` : depuis quand). Chaque rayon propose
+  désormais ses **5 000** premiers (`Rayons::PLAFOND`, `ResultatTelechargement.plafond`).
+  Administration : `admin_rayons.php` → Tendance (plus vendus, contributions, recalcul).
+- **Fiches apportées au catalogue** (`catalogue_core/Contributions.php`) : un code-barres inconnu du catalogue
+  y devient aussitôt un produit (d'une seule boutique, `contribue_par`), rangé dans son rayon ; un produit
+  connu ne reçoit que ses champs vides (nom, nom arabe, marque, catégorie, codes-barres en plus), jamais
+  remplacés ; chaque création ou complément est noté par poste (`catalog_contribution`).
+- **Tableau de bord BENS** : Official apps → CaisseDZ → **Trending** (bens_ds `GET /api/admin/rev/catalog-trends`,
+  qui lit `GET /tendance/stats` de catalog-api avec `REV_SERVER_TOKEN`) : chiffres, tendances par rayon, plus
+  vendus, chaque boutique avec son client (code du poste → `app_accounts.device`), produits ajoutés et fiches
+  complétées par les boutiques.
+- **Produits devenus tendance** (`CatalogueRayonsService.actualiserTendances`, au lancement) : pour chaque rayon
+  téléchargé, `GET /rayons/{code}/products?depuis=<dernière demande>` ; seuls les produits marqués `tendance` (un
+  serveur pas encore à jour, qui ignorerait `depuis`, n'ajoute rien) ; les nouveaux entrent dans la catégorie du
+  rayon (sans prix ni stock), `catalogue_rayon.tendance_le` retient le jour ; listes de produits rafraîchies.
+  Écran des rayons : « N en tendance » sur chaque carte.
+- **Code-barres inconnu à la Caisse** : le dialog « Produit introuvable » cherche le code dans le catalogue BENS
+  pendant qu'il est ouvert (`SourceBens`, 5 s) ; trouvé : « Trouvé dans le catalogue BENS » (photo, nom, nom
+  arabe, marque) et « Créer depuis le catalogue » ouvre la fiche remplie ; sinon la fiche avec le code-barres.
+  Enregistré avec un prix, le produit passe au panier. Le catalogue BENS est aussi la 1ʳᵉ source du mode IA de
+  la fiche produit (puis CaisseDZ, Mantouj, Open Food / Beauty Facts).
+- Tests : `tendance_service_test.dart` (tickets par jour, ventes annulées et codes internes exclus, reprise,
+  licence absente, refus, hors ligne), `catalogue_rayons_service_test.dart` (nom arabe, `actualiserTendances`),
+  `core/print/noms_arabes_test.dart`, `app/synchro_lancement_test.dart`, widgets Produits (nom arabe, mode IA
+  BENS) et Caisse (code inconnu trouvé / absent) ; catalog-api `catalogue_core/tests/tendance_test.php`
+  (66 vérifications : seuils, fiches créées / complétées, statistiques) ; bens_ds `ApiTest` (catalog trends, non lancé ici faute de Postgres) et `licenses_test.dart` (onglet Trending).
+- **Mise en service** : déployer catalog-api, puis `admin_rayons.php` → « Installer / mettre à jour les tables »
+  et « Reclasser tout le catalogue » (reprend les noms arabes). Sans ce déploiement, l'envoi des ventes est
+  refusé (rien n'est perdu, il repart au lancement suivant).

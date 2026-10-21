@@ -102,11 +102,14 @@ class LibellesTicket {
 /// ⚠️ PROVISOIRE : mise en page à aligner sur le §11. L'arabe est émis en
 /// page de codes CP1256 (ESC t 22 sur la plupart des imprimantes Epson-compatibles).
 class TicketEscPos {
-  const TicketEscPos({required this.largeur, required this.libelles, this.devise = 'DA'});
+  const TicketEscPos({required this.largeur, required this.libelles, this.devise = 'DA', this.nomsAr = const {}});
 
   final LargeurTicket largeur;
   final LibellesTicket libelles;
   final String devise;
+
+  /// Noms arabes des produits (par code), imprimés à la place des désignations sur un ticket en arabe.
+  final Map<String, String> nomsAr;
 
   int get colonnes => largeur == LargeurTicket.mm58 ? 32 : 48;
 
@@ -183,7 +186,8 @@ class TicketEscPos {
     if (nomClient != null) b.add(_ligne('${libelles.client} $nomClient'));
     b.add(_ligne('-' * colonnes));
     for (final l in vente.lignes) {
-      b.add(_ligne(l.designation.length > colonnes ? l.designation.substring(0, colonnes) : l.designation));
+      final nom = libelles.rtl ? l.nomImprime(nomsAr) : l.designation;
+      b.add(_ligne(nom.length > colonnes ? nom.substring(0, colonnes) : nom));
       final q = l.quantite == l.quantite.roundToDouble()
           ? l.quantite.toInt().toString()
           : l.quantite.toStringAsFixed(2);

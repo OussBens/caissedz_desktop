@@ -148,6 +148,13 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
     final colonnes = <DsColonne<Produit>>[
       DsColonne(id: 'code', libelle: l10n.produitsColCode, valeur: (p) => p.code, attenue: true),
       DsColonne(id: 'nom', libelle: l10n.produitsColDesignation, valeur: (p) => p.designation, fort: true, flex: 3),
+      DsColonne(
+        id: 'nom_ar',
+        libelle: l10n.prdDesignationAr,
+        valeur: (p) => p.designationAr ?? '',
+        flex: 2,
+        visibleParDefaut: Localizations.localeOf(context).languageCode == 'ar',
+      ),
       DsColonne(id: 'cat', libelle: l10n.produitsColCategorie, valeur: (p) => nomsCat[p.categorieCode] ?? '', flex: 2),
       DsColonne(id: 'marque', libelle: l10n.prdMarque, valeur: (p) => p.marque ?? ''),
       DsColonne(

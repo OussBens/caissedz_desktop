@@ -5,14 +5,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../application/alertes_service.dart';
 import '../application/auth_service.dart';
+import '../application/catalogue_rayons_service.dart';
 import '../application/configuration_initiale_service.dart';
 import '../application/licence_service.dart';
+import '../application/tendance_service.dart';
+import '../core/catalogue/catalogue_rayons_api.dart';
 import '../core/licence/compte_bens_api.dart';
 import '../domain/models/licence.dart';
 import '../domain/models/session.dart';
 import '../domain/models/utilisateur.dart';
 import '../domain/permissions.dart';
-import '../features/produits/produits_providers.dart' show httpClientProvider;
+import '../features/produits/produits_providers.dart' show catalogueVersionProvider, httpClientProvider;
 import 'providers.dart';
 
 final licenceServiceProvider = Provider<LicenceService>(
@@ -23,6 +26,15 @@ final configurationServiceProvider = Provider<ConfigurationInitialeService>(
   (ref) => ConfigurationInitialeService(ref.watch(appDatabaseProvider).db),
 );
 final alertesServiceProvider = Provider<AlertesService>((ref) => AlertesService(ref.watch(appDatabaseProvider).db));
+
+/// Ventes et noms arabes envoyés au catalogue BENS (tendance), authentifiés par la licence du poste.
+final tendanceServiceProvider = Provider<TendanceService>(
+  (ref) => TendanceService(
+    ref.watch(appDatabaseProvider).db,
+    client: ref.watch(httpClientProvider),
+    identite: ref.watch(licenceServiceProvider).identiteSmartScan,
+  ),
+);
 
 /// Séquence post-connexion (§4.5) activée ? Les tests de widgets la désactivent (`pumpApp(sequence: false)`).
 final sequencePostConnexionProvider = Provider<bool>((ref) => true);
@@ -219,5 +231,24 @@ Future<void> chargerEtatDemarrage(ProviderContainer c, {bool synchroniser = true
   await c.read(licenceProvider.notifier).charger();
   await c.read(configurationTermineeProvider.notifier).charger();
   if (c.read(sessionProvider) == null) await c.read(sessionProvider.notifier).reprendre();
-  if (synchroniser) unawaited(c.read(licenceProvider.notifier).synchroniser());
+  if (synchroniser) unawaited(synchroniserAuLancement(c));
+}
+
+/// En arrière-plan au lancement : check-in du compte BENS, puis tendance du catalogue (ventes et noms arabes
+/// envoyés, produits devenus tendance ajoutés aux rayons téléchargés). Hors ligne, chaque étape attend le
+/// lancement suivant sans gêner les autres.
+Future<void> synchroniserAuLancement(ProviderContainer c) async {
+  await c.read(licenceProvider.notifier).synchroniser();
+  if (!c.read(licenceProvider).estActivee) return;
+  await c.read(tendanceServiceProvider).envoyer();
+  try {
+    final r = await CatalogueRayonsService(
+      c.read(appDatabaseProvider).db,
+      api: CatalogueRayonsApi(client: c.read(httpClientProvider)),
+      utilisateurCode: '',
+    ).actualiserTendances();
+    if (r.ajoutes > 0 || r.nomsAr > 0) c.read(catalogueVersionProvider.notifier).incrementer();
+  } on CatalogueRayonsException {
+    // Catalogue injoignable : au prochain lancement.
+  }
 }

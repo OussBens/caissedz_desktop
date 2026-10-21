@@ -227,9 +227,18 @@ Future<LogoDocuments?> logoDocuments(WidgetRef ref) async {
 
 /// Générateur des documents PDF (tickets, factures, devis, BL…) : polices selon la langue, logo de la boutique
 /// et couleur des documents (la plus utilisée du logo, violet sinon).
-Future<DocumentsPdf> documentsPdf(WidgetRef ref, {required bool arabe, LibellesTicket? libelles}) async {
+///
+/// En arabe, les produits [produits] (codes) sont imprimés sous leur nom arabe quand il est renseigné.
+Future<DocumentsPdf> documentsPdf(
+  WidgetRef ref, {
+  required bool arabe,
+  LibellesTicket? libelles,
+  Iterable<String> produits = const [],
+}) async {
   final logo = await logoDocuments(ref);
+  final nomsAr = arabe ? await nomsArabes(ref, produits) : const <String, String>{};
   return DocumentsPdf(
+    nomsAr: nomsAr,
     libelles: libelles ?? (arabe ? LibellesTicket.ar : LibellesTicket.fr),
     devise: ref.read(deviseProvider),
     police: await policePdf(arabe),
@@ -239,6 +248,10 @@ Future<DocumentsPdf> documentsPdf(WidgetRef ref, {required bool arabe, LibellesT
     couleur: logo?.couleur,
   );
 }
+
+/// Les noms arabes renseignés des produits [codes] (tickets et documents en arabe).
+Future<Map<String, String>> nomsArabes(WidgetRef ref, Iterable<String> codes) async =>
+    codes.isEmpty ? const {} : ref.read(catalogueRepositoryProvider).nomsArabes(codes);
 
 /// Résultat de vente : monnaie, impression ticket (ESC/POS ou PDF), facture A4.
 Future<void> afficherResultatVente(BuildContext context, WidgetRef ref, Vente vente) async {
@@ -251,6 +264,9 @@ Future<void> afficherResultatVente(BuildContext context, WidgetRef ref, Vente ve
   final arabe = Localizations.localeOf(context).languageCode == 'ar';
   final libelles = arabe ? LibellesTicket.ar : LibellesTicket.fr;
   final nomClient = client == null || client.estDePassage ? null : client.nom;
+  final codes = [for (final l in vente.lignes) l.produitCode];
+  final nomsAr = arabe ? await nomsArabes(ref, codes) : const <String, String>{};
+  if (!context.mounted) return;
 
   Future<void> imprimerTicket(LargeurTicket largeur) async {
     final transport = construireImprimante(imprimante.type, imprimante.adresse);
@@ -261,6 +277,7 @@ Future<void> afficherResultatVente(BuildContext context, WidgetRef ref, Vente ve
             largeur: largeur,
             libelles: libelles,
             devise: devise,
+            nomsAr: nomsAr,
           ).generer(vente, boutique: boutique, nomClient: nomClient, ouvrirTiroir: true),
         );
         if (!context.mounted) return;
@@ -270,6 +287,7 @@ Future<void> afficherResultatVente(BuildContext context, WidgetRef ref, Vente ve
           ref,
           arabe: arabe,
           libelles: libelles,
+          produits: codes,
         )).ticket(vente, boutique: boutique, largeur: largeur, nomClient: nomClient);
         await Printing.layoutPdf(onLayout: (_) async => octets, name: 'ticket_${vente.code}.pdf');
       }
@@ -419,11 +437,13 @@ Future<bool> imprimerTicketDirect(BuildContext context, WidgetRef ref, Vente ven
   final boutique = await BoutiqueRepository(db).lire() ?? const Boutique(nom: 'CaisseDZ');
   final client = await ClientRepository(db).parCode(vente.clientCode);
   try {
+    final nomsAr = arabe ? await nomsArabes(ref, [for (final l in vente.lignes) l.produitCode]) : const <String, String>{};
     await transport.envoyer(
       TicketEscPos(
         largeur: imprimante.largeur,
         libelles: arabe ? LibellesTicket.ar : LibellesTicket.fr,
         devise: ref.read(deviseProvider),
+        nomsAr: nomsAr,
       ).generer(
         vente,
         boutique: boutique,
@@ -481,10 +501,13 @@ class _ApercuTicketState extends ConsumerState<_ApercuTicket> {
 
   LibellesTicket get _libelles => _arabe ? LibellesTicket.ar : LibellesTicket.fr;
 
+  List<String> get _codes => [for (final l in widget.vente.lignes) l.produitCode];
+
   Future<Uint8List> _pdf() async => (await documentsPdf(
     ref,
     arabe: _arabe,
     libelles: _libelles,
+    produits: _codes,
   )).ticket(widget.vente, boutique: widget.boutique, largeur: _largeur, nomClient: widget.nomClient);
 
   Future<void> _imprimer() async {
@@ -492,11 +515,13 @@ class _ApercuTicketState extends ConsumerState<_ApercuTicket> {
     final transport = construireImprimante(widget.imprimante.type, widget.imprimante.adresse);
     try {
       if (transport != null) {
+        final nomsAr = _arabe ? await nomsArabes(ref, _codes) : const <String, String>{};
         await transport.envoyer(
           TicketEscPos(
             largeur: _largeur,
             libelles: _libelles,
             devise: ref.read(deviseProvider),
+            nomsAr: nomsAr,
           ).generer(widget.vente, boutique: widget.boutique, nomClient: widget.nomClient),
         );
         if (mounted) afficherToast(context, titre: l10n.posImpressionOk);

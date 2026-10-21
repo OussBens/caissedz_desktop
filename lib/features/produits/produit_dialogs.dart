@@ -839,6 +839,7 @@ class _ImportDialogState extends ConsumerState<_ImportDialog> {
 
   String _libelleChamp(AppLocalizations l10n, String? champ) => switch (champ) {
     'designation' => l10n.produitsColDesignation,
+    'designation_ar' => l10n.prdDesignationAr,
     'code_barres' => l10n.produitsColCodeBarres,
     'categorie' => l10n.produitsColCategorie,
     'prix_achat' => l10n.produitChampPrixAchat,

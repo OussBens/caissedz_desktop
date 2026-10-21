@@ -125,9 +125,19 @@ class DocumentsPdf {
     this.secours = const [],
     this.logo,
     this.couleur,
+    this.nomsAr = const {},
   });
 
   final LibellesTicket libelles;
+
+  /// Noms arabes des produits (par code), imprimés à la place des désignations sur un ticket ou une facture en
+  /// arabe (les factures fiscales scellées gardent leurs désignations).
+  final Map<String, String> nomsAr;
+
+  String _nom(VenteLigne l) => libelles.rtl ? l.nomImprime(nomsAr) : l.designation;
+
+  /// Le nom d'un produit sur un document commercial : son nom arabe sur un document en arabe.
+  String nomProduit(String code, String designation) => libelles.rtl ? (nomsAr[code] ?? designation) : designation;
 
   /// Logo de la boutique (PNG / JPEG), en tête des documents ; `null` si aucun.
   final Uint8List? logo;
@@ -202,7 +212,7 @@ class DocumentsPdf {
               if (nomClient != null) textePdf('${libelles.client} $nomClient', style: _s(8)),
               pw.Divider(thickness: 0.5),
               for (final l in v.lignes) ...[
-                textePdf(l.designation, style: _s(8)),
+                textePdf(_nom(l), style: _s(8)),
                 _ligneCle('  ${_q(l.quantite)} x ${l.prixUnitaire.toStringAsFixed(2)}', l.total.toStringAsFixed(2)),
               ],
               pw.Divider(thickness: 0.5),
@@ -317,7 +327,7 @@ class DocumentsPdf {
                   data: [
                     for (final l in v.lignes)
                       [
-                        l.designation,
+                        _nom(l),
                         _q(l.quantite),
                         l.prixUnitaire.toStringAsFixed(2),
                         l.remise.toStringAsFixed(2),

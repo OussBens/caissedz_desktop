@@ -12,6 +12,7 @@ class Produit {
     this.audit = Audit.vide,
     required this.code,
     required this.designation,
+    this.designationAr,
     this.codeBarres,
     required this.categorieCode,
     required this.sousCategorieCode,
@@ -43,6 +44,16 @@ class Produit {
 
   final String code;
   final String designation;
+
+  /// Nom arabe (facultatif) : cherché comme la désignation, imprimé sur les tickets et documents en arabe.
+  final String? designationAr;
+
+  /// Le nom dans la langue d'affichage : l'arabe s'il est renseigné, la désignation sinon.
+  String nom(String langue) =>
+      langue == 'ar' && designationAr != null && designationAr!.trim().isNotEmpty ? designationAr!.trim() : designation;
+
+  /// Ce qu'une recherche par nom compare : la désignation et le nom arabe.
+  String get texteRecherche => designationAr == null ? designation : '$designation $designationAr';
   final String? codeBarres;
   final String categorieCode;
   final String sousCategorieCode;
@@ -90,6 +101,8 @@ class Produit {
 
   Produit copyWith({
     String? designation,
+    String? designationAr,
+    bool effacerDesignationAr = false,
     String? codeBarres,
     bool effacerCodeBarres = false,
     String? categorieCode,
@@ -122,6 +135,7 @@ class Produit {
     audit: audit,
     code: code,
     designation: designation ?? this.designation,
+    designationAr: effacerDesignationAr ? null : (designationAr ?? this.designationAr),
     codeBarres: effacerCodeBarres ? null : (codeBarres ?? this.codeBarres),
     categorieCode: categorieCode ?? this.categorieCode,
     sousCategorieCode: sousCategorieCode ?? this.sousCategorieCode,
@@ -151,6 +165,7 @@ class Produit {
   Map<String, Object?> versLigne() => {
     'code': code,
     'designation': designation,
+    'designation_ar': _vide(designationAr),
     'code_barres': codeBarres,
     'categorie_code': categorieCode,
     'sous_categorie_code': sousCategorieCode,
@@ -183,6 +198,7 @@ class Produit {
     audit: Audit.depuisLigne(r),
     code: r['code'] as String,
     designation: r['designation'] as String,
+    designationAr: r['designation_ar'] as String?,
     codeBarres: r['code_barres'] as String?,
     categorieCode: r['categorie_code'] as String,
     sousCategorieCode: r['sous_categorie_code'] as String,
@@ -214,6 +230,7 @@ class Produit {
       other is Produit &&
       other.code == code &&
       other.designation == designation &&
+      other.designationAr == designationAr &&
       other.codeBarres == codeBarres &&
       other.prixAchat == prixAchat &&
       other.prixVente == prixVente &&

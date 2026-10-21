@@ -7,6 +7,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../app/demarrage_providers.dart';
 import '../../app/providers.dart';
+import '../../application/catalogue_ia_service.dart';
 import '../../application/session_caisse_service.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
@@ -1076,12 +1077,16 @@ class _RechercheProduitDialogState extends ConsumerState<_RechercheProduitDialog
           ),
         ],
       ),
-      libelle: (p) => p.designation,
+      libelle: (p) => p.texteRecherche,
       indiceRecherche: l10n.posRechIndice,
       libelleConfirmer: l10n.posRechAjouter,
       colonnes: [
         DsColonnePicker(libelle: l10n.dsPosCode, valeur: (p) => p.code, mono: true, attenue: true, largeur: 110),
-        DsColonnePicker(libelle: l10n.dsPosProduit, valeur: (p) => p.designation, fort: true),
+        DsColonnePicker(
+          libelle: l10n.dsPosProduit,
+          valeur: (p) => p.nom(Localizations.localeOf(context).languageCode),
+          fort: true,
+        ),
         DsColonnePicker(
           libelle: l10n.produitsColCategorie,
           valeur: (p) => categories[p.categorieCode] ?? p.categorieCode,
@@ -1102,39 +1107,109 @@ class _RechercheProduitDialogState extends ConsumerState<_RechercheProduitDialog
 // ---------------------------------------------------------------------------------------------------------------
 
 /// `true` = rechercher, `false` = créer le produit, `null` = fermer.
-Future<bool?> afficherProduitIntrouvable(BuildContext context, String code) {
+/// Code-barres inconnu à la caisse : `true` pour la recherche avancée, `false` pour créer le produit.
+///
+/// [catalogue] : la recherche du code dans le catalogue BENS, lancée par l'appelant ; pendant qu'elle tourne,
+/// le dialog l'indique, puis montre le produit trouvé (le formulaire s'ouvrira rempli).
+Future<bool?> afficherProduitIntrouvable(BuildContext context, String code, {Future<FicheProduitIa?>? catalogue}) {
   final l10n = AppLocalizations.of(context);
   return afficherDialog<bool>(
     context,
-    builder: (ctx) => DsDialog(
-      titre: l10n.posIntrouvableTitre,
-      iconeData: LucideIcons.searchX,
-      ton: DsDialogTon.avertissement,
-      largeur: 520,
-      actions: [
-        DsButton(
-          libelle: l10n.communFermer,
-          variante: DsButtonVariante.secondaire,
-          onPressed: () => Navigator.of(ctx).pop(),
-        ),
-        DsButton(
-          libelle: l10n.posRecherche,
-          icone: LucideIcons.search,
-          variante: DsButtonVariante.secondaire,
-          onPressed: () => Navigator.of(ctx).pop(true),
-        ),
-        DsButton(
-          libelle: l10n.posIntrouvableCreer,
-          icone: LucideIcons.packagePlus,
-          onPressed: () => Navigator.of(ctx).pop(false),
-        ),
-      ],
-      contenu: DsBarcodeCard(
-        valeur: code,
-        format: CodesBarres.ean13Valide(code) ? DsBarcodeFormat.ean13 : DsBarcodeFormat.code128,
-      ),
+    builder: (ctx) => FutureBuilder<FicheProduitIa?>(
+      future: catalogue,
+      builder: (ctx, etat) {
+        final fiche = etat.data;
+        final cherche = catalogue != null && etat.connectionState != ConnectionState.done;
+        return DsDialog(
+          titre: fiche == null ? l10n.posIntrouvableTitre : l10n.posCatalogueTrouveTitre,
+          iconeData: fiche == null ? LucideIcons.searchX : LucideIcons.packageSearch,
+          ton: fiche == null ? DsDialogTon.avertissement : DsDialogTon.info,
+          largeur: 520,
+          actions: [
+            DsButton(
+              libelle: l10n.communFermer,
+              variante: DsButtonVariante.secondaire,
+              onPressed: () => Navigator.of(ctx).pop(),
+            ),
+            DsButton(
+              libelle: l10n.posRecherche,
+              icone: LucideIcons.search,
+              variante: DsButtonVariante.secondaire,
+              onPressed: () => Navigator.of(ctx).pop(true),
+            ),
+            DsButton(
+              key: const ValueKey('introuvable_creer'),
+              libelle: fiche == null ? l10n.posIntrouvableCreer : l10n.posCatalogueCreer,
+              icone: LucideIcons.packagePlus,
+              onPressed: () => Navigator.of(ctx).pop(false),
+            ),
+          ],
+          contenu: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            spacing: DsSpacing.s3,
+            children: [
+              DsBarcodeCard(
+                valeur: code,
+                format: CodesBarres.ean13Valide(code) ? DsBarcodeFormat.ean13 : DsBarcodeFormat.code128,
+              ),
+              if (cherche)
+                Row(
+                  key: const ValueKey('introuvable_recherche_bens'),
+                  spacing: DsSpacing.s2,
+                  children: [
+                    const DsSpinner(),
+                    Text(l10n.posCatalogueRecherche, style: ctx.ds.typo.bodySm.copyWith(color: ctx.ds.colors.textSecondary)),
+                  ],
+                )
+              else if (fiche != null)
+                _FicheCatalogue(fiche),
+            ],
+          ),
+        );
+      },
     ),
   );
+}
+
+/// Produit trouvé dans le catalogue BENS : photo, désignation, nom arabe, marque.
+class _FicheCatalogue extends StatelessWidget {
+  const _FicheCatalogue(this.fiche);
+  final FicheProduitIa fiche;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.ds.colors;
+    final t = context.ds.typo;
+    final photo = imageProduit(fiche.image);
+    const icone = DsIconBox(LucideIcons.package, taille: 72, tailleIcone: 32);
+    return DsCard(
+      key: const ValueKey('introuvable_fiche_bens'),
+      child: Row(
+        spacing: DsSpacing.s3,
+        children: [
+          if (photo == null)
+            icone
+          else
+            ClipRRect(
+              borderRadius: DsRadius.borderMd,
+              child: Image(image: photo, width: 72, height: 72, fit: BoxFit.cover, errorBuilder: (_, _, _) => icone),
+            ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: DsSpacing.s1,
+              children: [
+                Text(fiche.designation, style: t.bodyStrong),
+                if (fiche.designationAr != null)
+                  Text(fiche.designationAr!, textDirection: TextDirection.rtl, style: t.body),
+                if (fiche.marque != null) Text(fiche.marque!, style: t.bodySm.copyWith(color: c.textSecondary)),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 /// `true` si l'utilisateur choisit d'ouvrir la caisse.

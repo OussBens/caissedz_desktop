@@ -37,6 +37,7 @@ import 'v035_licence_bens.dart';
 import 'v036_appareils_mobiles.dart';
 import 'v037_appareil_utilisateur.dart';
 import 'v038_catalogue_rayons.dart';
+import 'v039_nom_arabe_tendance.dart';
 
 export 'migration.dart';
 
@@ -80,4 +81,5 @@ const List<Migration> toutesLesMigrations = [
   MigrationV036AppareilsMobiles(),
   MigrationV037AppareilUtilisateur(),
   MigrationV038CatalogueRayons(),
+  MigrationV039NomArabeTendance(),
 ];

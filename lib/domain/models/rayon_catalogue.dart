@@ -12,6 +12,7 @@ class RayonCatalogue {
     this.nomEn = '',
     this.icone = 'package',
     this.produits = 0,
+    this.tendances = 0,
   });
 
   final String code;
@@ -20,6 +21,9 @@ class RayonCatalogue {
   final String nomEn;
   final String icone;
   final int produits;
+
+  /// Parmi eux, ceux qui se vendent dans plusieurs boutiques CaisseDZ (tendance).
+  final int tendances;
 
   /// Le nom dans la langue d'affichage (le français à défaut).
   String nom(String langue) => switch (langue) {
@@ -35,15 +39,29 @@ class RayonCatalogue {
     nomEn: j['nom_en'] as String? ?? '',
     icone: j['icone'] as String? ?? 'package',
     produits: (j['produits'] as num?)?.toInt() ?? 0,
+    tendances: (j['tendances'] as num?)?.toInt() ?? 0,
   );
 }
 
 /// Produit d'un rayon tel que le catalogue l'envoie (sans prix).
 @immutable
 class ProduitCatalogue {
-  const ProduitCatalogue({required this.nom, required this.codesBarres, this.marque, this.photo});
+  const ProduitCatalogue({
+    required this.nom,
+    required this.codesBarres,
+    this.nomAr,
+    this.marque,
+    this.photo,
+    this.tendance = false,
+  });
 
   final String nom;
+
+  /// Nom arabe du catalogue, s'il est connu.
+  final String? nomAr;
+
+  /// Se vend dans plusieurs boutiques CaisseDZ.
+  final bool tendance;
 
   /// Le principal d'abord.
   final List<String> codesBarres;
@@ -63,8 +81,10 @@ class ProduitCatalogue {
     return ProduitCatalogue(
       nom: (j['nom'] as String? ?? '').trim(),
       codesBarres: codes.toList(),
+      nomAr: texte(j['nom_ar']),
       marque: texte(j['marque']),
       photo: texte(j['photo']),
+      tendance: j['tendance'] == true,
     );
   }
 }
@@ -97,7 +117,7 @@ class ResultatTelechargement {
   const ResultatTelechargement(this.rayons);
 
   /// Produits proposés au plus par rayon (catalog-api).
-  static const int plafond = 2000;
+  static const int plafond = 5000;
 
   final List<ResultatRayon> rayons;
 

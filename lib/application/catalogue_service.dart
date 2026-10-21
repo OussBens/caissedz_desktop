@@ -273,6 +273,7 @@ class CatalogueService {
       var produit = Produit(
         code: code,
         designation: prepare.designation,
+        designationAr: prepare.designationAr,
         codeBarres: prepare.codeBarres,
         categorieCode: prepare.categorieCode,
         sousCategorieCode: prepare.sousCategorieCode,

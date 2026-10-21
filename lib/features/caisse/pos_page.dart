@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../app/demarrage_providers.dart';
+import '../../application/catalogue_ia_service.dart';
 import '../../application/stock_service.dart';
 import '../../application/vente_service.dart';
 import '../../core/design_system/design_system.dart';
@@ -235,10 +236,17 @@ class _PosPageState extends ConsumerState<PosPage> {
     if (!mounted) return;
     if (r == null) {
       if (RegExp(r'^\d{8,}$').hasMatch(code)) {
-        final suite = await afficherProduitIntrouvable(context, code);
+        // Le code est cherché dans le catalogue BENS pendant que le dialog est ouvert : trouvé, le formulaire
+        // s'ouvre rempli (nom, nom arabe, marque, photo), sinon avec le seul code-barres.
+        FicheProduitIa? fiche;
+        final catalogue = SourceBens(client: ref.read(httpClientProvider)).rechercher(code).then(
+          (f) => fiche = f,
+          onError: (Object _) => null,
+        );
+        final suite = await afficherProduitIntrouvable(context, code, catalogue: catalogue);
         if (!mounted) return;
         if (suite == true) await _rechercheAvancee();
-        if (suite == false) await _nouveauProduit();
+        if (suite == false) await _creerProduitScanne(code, fiche);
       }
       return;
     }
@@ -292,6 +300,22 @@ class _PosPageState extends ConsumerState<PosPage> {
   Future<void> _nouveauProduit() async {
     await afficherFormulaireProduit(context);
     ref.invalidate(produitsPosProvider);
+  }
+
+  /// Produit créé depuis un code-barres inconnu : rempli par le catalogue BENS s'il l'a trouvé ; enregistré
+  /// avec un prix, il passe aussitôt au panier.
+  Future<void> _creerProduitScanne(String code, FicheProduitIa? fiche) async {
+    final p = await afficherFormulaireProduit(
+      context,
+      fiche: fiche,
+      propose: fiche == null ? ProduitPropose(designation: '', codeBarres: code) : null,
+    );
+    ref.invalidate(produitsPosProvider);
+    if (!mounted || p == null) return;
+    _scan.clear();
+    setState(() => _recherche = '');
+    if (p.prixVente > 0 && p.actif) await _choisirProduit(p, scanne: true);
+    _scanFocus.requestFocus();
   }
 
   // ------------------------------------------------------------------ Panier
@@ -692,6 +716,7 @@ class _PosPageState extends ConsumerState<PosPage> {
     final etat = ref.watch(posControllerProvider);
     final r = _recherche.trim().toLowerCase();
     final liste = _disposition == DsVueModule.liste;
+    final langue = Localizations.localeOf(context).languageCode;
     final List<Widget> tuiles;
     if (_vue == _Vue.packs) {
       tuiles = [
@@ -713,12 +738,12 @@ class _PosPageState extends ConsumerState<PosPage> {
         for (final p in produits)
           if ((_categorie == null || p.categorieCode == _categorie) &&
               (r.isEmpty ||
-                  p.designation.toLowerCase().contains(r) ||
+                  p.texteRecherche.toLowerCase().contains(r) ||
                   p.code.toLowerCase().contains(r) ||
                   (p.codeBarres?.contains(r) ?? false)))
             DsProductTile(
               key: ValueKey('tuile_${p.code}'),
-              nom: p.designation,
+              nom: p.nom(langue),
               code: p.code,
               prix: ref.read(prixCaisseProvider)(p),
               stock: (stocks[p.code] ?? 0) - etat.unitesReservees(p.code),

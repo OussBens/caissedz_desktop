@@ -108,6 +108,65 @@ void main() {
       await tester.pump(const Duration(seconds: 5)); // fin du toast
     });
 
+    testWidgets('nom arabe : saisi de droite à gauche, enregistré, cherché', (tester) async {
+      final c = await pumpApp(tester, routeInitiale: '/produits', taille: const Size(1600, 1000));
+      await clic(tester, _cle('produit_nouveau'));
+      await tester.enterText(_champ('produit_designation'), 'Huile Elio 1 L');
+      await tester.enterText(_champ('produit_designation_ar'), 'زيت إليو 1 ل');
+      expect(
+        Directionality.of(tester.element(_champ('produit_designation_ar'))),
+        TextDirection.rtl,
+        reason: 'saisi de droite à gauche dans une interface en français',
+      );
+      await tester.enterText(_champ('produit_achat'), '200');
+      await tester.pump();
+      await clic(tester, _cle('produit_enregistrer'));
+      final repo = CatalogueRepository(c.read(appDatabaseProvider).db);
+      final p = (await repo.produits(recherche: 'إليو')).single;
+      expect([p.designation, p.designationAr], ['Huile Elio 1 L', 'زيت إليو 1 ل']);
+      await tester.pump(const Duration(seconds: 5)); // fin du toast
+    });
+
+    testWidgets('mode IA : le catalogue BENS d’abord, avec son nom arabe', (tester) async {
+      final appels = <Uri>[];
+      final client = MockClient((req) async {
+        appels.add(req.url);
+        if (req.url.host == 'catalog-api.bensds.com' && req.url.path == '/products/barcode/6130005000017') {
+          return http.Response(
+            jsonEncode({
+              'success': true,
+              'data': {'nom': 'Rouiba Orange 1L', 'nom_ar': 'رويبة برتقال', 'brand': 'Rouiba', 'photo': null},
+            }),
+            200,
+            headers: {'content-type': 'application/json; charset=utf-8'},
+          );
+        }
+        return http.Response('{"status":0}', 200);
+      });
+      final c = await pumpApp(
+        tester,
+        routeInitiale: '/produits',
+        taille: const Size(1600, 1000),
+        overrides: [httpClientProvider.overrideWithValue(client)],
+      );
+      await clic(tester, _cle('produit_nouveau'));
+      await clic(
+        tester,
+        find.descendant(of: find.byType(DsSegmentedControl<ModeFormulaireProduit>), matching: find.text('IA')),
+      );
+      await tester.enterText(_champ('produit_ia_code'), '6130005000017');
+      await clic(tester, _cle('produit_ia_rechercher'));
+      expect(appels.map((u) => u.host), ['catalog-api.bensds.com'], reason: 'trouvé : les autres sources ne sont pas appelées');
+      expect(tester.widget<TextField>(_champ('produit_designation')).controller!.text, 'Rouiba Orange 1L');
+      expect(tester.widget<TextField>(_champ('produit_designation_ar')).controller!.text, 'رويبة برتقال');
+      await tester.enterText(_champ('produit_achat'), '90');
+      await tester.pump();
+      await clic(tester, _cle('produit_enregistrer'));
+      final p = await CatalogueRepository(c.read(appDatabaseProvider).db).produitParCodeBarres('6130005000017');
+      expect([p!.designationAr, p.marque], ['رويبة برتقال', 'Rouiba']);
+      await tester.pump(const Duration(seconds: 5)); // fin du toast
+    });
+
     testWidgets('catégories : création d’une catégorie (sous-catégorie par défaut créée)', (tester) async {
       final c = await pumpApp(tester, routeInitiale: '/produits', taille: const Size(1600, 1000));
       await clic(tester, find.text('Catégories').first);

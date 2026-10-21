@@ -187,10 +187,11 @@ Future<void> _imprimer(
   WidgetRef ref,
   String titre,
   String nom,
-  Future<Uint8List> Function(DocumentsPdf) faire,
-) async {
+  Future<Uint8List> Function(DocumentsPdf) faire, {
+  Iterable<String> produits = const [],
+}) async {
   final arabe = Localizations.localeOf(context).languageCode == 'ar';
-  final pdf = await documentsPdf(ref, arabe: arabe);
+  final pdf = await documentsPdf(ref, arabe: arabe, produits: produits);
   if (!context.mounted) return;
   await afficherApercuDocument(context, ref, titre: '$titre $nom', nom: nom, pdf: () => faire(pdf));
 }
@@ -238,7 +239,7 @@ Future<void> imprimerDocumentClient(BuildContext context, WidgetRef ref, Documen
         for (final l in d.lignes)
           [
             l.produitCode,
-            l.designation,
+            pdf.nomProduit(l.produitCode, l.designation),
             formaterNombre(l.quantite),
             f2(l.prixUnitaire),
             '${formaterNombre(l.tauxTva)} %',
@@ -254,6 +255,7 @@ Future<void> imprimerDocumentClient(BuildContext context, WidgetRef ref, Documen
       mention: d.type == TypesDocumentClient.proforma ? l10n.docMentionProforma : null,
       signatures: [l10n.docSignatureClient, l10n.docSignatureVendeur],
     ),
+    produits: [for (final l in d.lignes) l.produitCode],
   );
 }
 
@@ -281,12 +283,13 @@ Future<void> imprimerBonLivraison(BuildContext context, WidgetRef ref, BonLivrai
       tiers: client,
       entetes: [l10n.produitsColCode, l10n.dsPosProduit, l10n.docQuantiteLivree],
       lignes: [
-        for (final l in b.lignes) [l.produitCode, l.designation, formaterNombre(l.quantite)],
+        for (final l in b.lignes) [l.produitCode, pdf.nomProduit(l.produitCode, l.designation), formaterNombre(l.quantite)],
       ],
       observation: b.observation,
       filigrane: b.actif ? null : l10n.docStatutAnnule,
       signatures: [l10n.docSignatureLivreur, l10n.docSignatureReception],
     ),
+    produits: [for (final l in b.lignes) l.produitCode],
   );
 }
 
@@ -323,12 +326,20 @@ Future<void> imprimerCommandeFournisseur(BuildContext context, WidgetRef ref, Co
       tiers: fournisseur,
       entetes: [l10n.produitsColCode, l10n.dsPosProduit, l10n.stockColQuantite, l10n.cmdfPrix, l10n.retoursMontant],
       lignes: [
-        for (final l in c.lignes) [l.produitCode, l.designation, formaterNombre(l.quantite), f2(l.prix), f2(l.montant)],
+        for (final l in c.lignes)
+          [
+            l.produitCode,
+            pdf.nomProduit(l.produitCode, l.designation),
+            formaterNombre(l.quantite),
+            f2(l.prix),
+            f2(l.montant),
+          ],
       ],
       totaux: [(l10n.communTotal, '${f2(c.total)} $devise')],
       observation: c.observation,
       signatures: [l10n.docSignatureVendeur],
     ),
+    produits: [for (final l in c.lignes) l.produitCode],
   );
 }
 

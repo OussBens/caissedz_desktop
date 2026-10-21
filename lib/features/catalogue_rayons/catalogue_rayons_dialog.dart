@@ -447,6 +447,12 @@ class _CarteRayonState extends State<_CarteRayon> {
                                     ? l10n.catalogueRayonsBientot
                                     : l10n.catalogueRayonsNbProduits(formaterNombre(widget.rayon.produits.toDouble())),
                               ),
+                              if (widget.rayon.tendances > 0 && !widget.dejaTelecharge)
+                                TextSpan(
+                                  text:
+                                      ' · ${l10n.catalogueRayonsNbTendances(formaterNombre(widget.rayon.tendances.toDouble()))}',
+                                  style: TextStyle(color: c.primary),
+                                ),
                               if (widget.dejaTelecharge)
                                 TextSpan(
                                   text: ' · ${l10n.catalogueRayonsDejaTelecharge}',

@@ -112,6 +112,13 @@ class VenteLigne {
   /// Unités de stock de [q] articles de la ligne (au prorata de la quantité vendue).
   double unitesPour(double q) => quantite == 0 ? 0 : unites * q / quantite;
 
+  /// Le nom à imprimer sur un ticket ou un document en arabe : le nom arabe du produit ([nomsAr], par code
+  /// produit), sauf pour un colis ou un ancien pack, qui gardent leur propre désignation.
+  String nomImprime(Map<String, String> nomsAr) {
+    if (colisCode != null || (packCode != null && !composantPack)) return designation;
+    return nomsAr[produitCode] ?? designation;
+  }
+
   /// Pièces (2ᵉ stock) de [q] articles de la ligne (au prorata de la quantité vendue).
   double nombrePour(double q) => quantite == 0 ? 0 : nombre * q / quantite;
 

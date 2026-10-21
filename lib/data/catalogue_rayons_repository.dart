@@ -2,8 +2,16 @@ import 'package:sqflite_common/sqlite_api.dart';
 
 import '../domain/models/produit.dart';
 
-/// Rayon du catalogue BENS déjà téléchargé et la catégorie locale qui l'accueille.
-typedef RayonImporte = ({String categorieCode, String sousCategorieCode, int telecharges, DateTime importeLe});
+/// Rayon du catalogue BENS déjà téléchargé et la catégorie locale qui l'accueille ; [tendanceLe] : dernier ajout
+/// des produits devenus tendance (`null` : jamais depuis le téléchargement).
+typedef RayonImporte = ({
+  String nom,
+  String categorieCode,
+  String sousCategorieCode,
+  int telecharges,
+  DateTime importeLe,
+  DateTime? tendanceLe,
+});
 
 /// Accès SQL aux rayons du catalogue BENS téléchargés (table `catalogue_rayon`).
 class CatalogueRayonsRepository {
@@ -14,12 +22,34 @@ class CatalogueRayonsRepository {
   Future<Map<String, RayonImporte>> rayonsImportes() async => {
     for (final r in await db.query('catalogue_rayon'))
       r['rayon_code']! as String: (
+        nom: r['nom']! as String,
         categorieCode: r['categorie_code']! as String,
         sousCategorieCode: r['sous_categorie_code']! as String,
         telecharges: r['telecharges']! as int,
         importeLe: DateTime.parse(r['importe_le']! as String).toLocal(),
+        tendanceLe: DateTime.tryParse((r['tendance_le'] as String?) ?? '')?.toLocal(),
       ),
   };
+
+  /// Donne leur nom arabe ([noms] : par code-barres) aux produits du catalogue qui n'en ont pas encore.
+  /// Renvoie le nombre de produits complétés.
+  Future<int> completerNomsArabes(Map<String, String> noms) async {
+    var n = 0;
+    for (final MapEntry(key: codeBarres, value: nom) in noms.entries) {
+      n += await db.rawUpdate(
+        'UPDATE produit SET designation_ar = ? WHERE code_barres = ? AND source = ? '
+        "AND TRIM(COALESCE(designation_ar, '')) = ''",
+        [nom, codeBarres, Produit.sourceCatalogue],
+      );
+    }
+    return n;
+  }
+
+  /// Les produits devenus tendance du rayon [rayonCode] ont été demandés le [le] ([ajoutes] nouveaux).
+  Future<void> marquerTendance(String rayonCode, {required int ajoutes, required DateTime le}) => db.rawUpdate(
+    'UPDATE catalogue_rayon SET telecharges = telecharges + ?, tendance_le = ? WHERE rayon_code = ?',
+    [ajoutes, le.toUtc().toIso8601String(), rayonCode],
+  );
 
   /// Tous les codes-barres déjà pris (produits, codes secondaires, colis, packs).
   Future<Set<String>> codesBarresUtilises() async => {
