@@ -15332,6 +15332,792 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'5 colis au plus par produit.'**
   String get produitErreurTropDeColis;
+
+  /// No description provided for @alpGroupeVentes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ventes'**
+  String get alpGroupeVentes;
+
+  /// No description provided for @alpGroupeStock.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock'**
+  String get alpGroupeStock;
+
+  /// No description provided for @alpGroupePrix.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix'**
+  String get alpGroupePrix;
+
+  /// No description provided for @alpGroupeQualite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Qualité'**
+  String get alpGroupeQualite;
+
+  /// No description provided for @alpGroupeMarche.
+  ///
+  /// In fr, this message translates to:
+  /// **'Marché'**
+  String get alpGroupeMarche;
+
+  /// No description provided for @alpMeilleuresVentes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Meilleures ventes'**
+  String get alpMeilleuresVentes;
+
+  /// No description provided for @alpStockDormant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock dormant'**
+  String get alpStockDormant;
+
+  /// No description provided for @alpCandidatsRemise.
+  ///
+  /// In fr, this message translates to:
+  /// **'Candidats à une remise'**
+  String get alpCandidatsRemise;
+
+  /// No description provided for @alpMargeFaible.
+  ///
+  /// In fr, this message translates to:
+  /// **'Marge faible ou vente à perte'**
+  String get alpMargeFaible;
+
+  /// No description provided for @alpRetoursEleves.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retours élevés'**
+  String get alpRetoursEleves;
+
+  /// No description provided for @alpEnHausse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produits en hausse'**
+  String get alpEnHausse;
+
+  /// No description provided for @alpStockLent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock lent'**
+  String get alpStockLent;
+
+  /// No description provided for @alpJamaisVendus.
+  ///
+  /// In fr, this message translates to:
+  /// **'Jamais vendus'**
+  String get alpJamaisVendus;
+
+  /// No description provided for @alpRemisesInefficaces.
+  ///
+  /// In fr, this message translates to:
+  /// **'Remises sans effet'**
+  String get alpRemisesInefficaces;
+
+  /// No description provided for @alpStockAnormal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock anormal'**
+  String get alpStockAnormal;
+
+  /// No description provided for @alpHausseFournisseur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Hausse du prix fournisseur'**
+  String get alpHausseFournisseur;
+
+  /// No description provided for @alpAchetesEnsemble.
+  ///
+  /// In fr, this message translates to:
+  /// **'Achetés ensemble'**
+  String get alpAchetesEnsemble;
+
+  /// No description provided for @alpStockDesequilibre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock déséquilibré entre magasins'**
+  String get alpStockDesequilibre;
+
+  /// No description provided for @alpRuptureSansCommande.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rupture sans commande'**
+  String get alpRuptureSansCommande;
+
+  /// No description provided for @alpSaisonniers.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produits de saison'**
+  String get alpSaisonniers;
+
+  /// No description provided for @alpRupturesFrequentes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ruptures fréquentes'**
+  String get alpRupturesFrequentes;
+
+  /// No description provided for @alpFicheIncomplete.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fiche produit incomplète'**
+  String get alpFicheIncomplete;
+
+  /// No description provided for @alpBonneMargePeuVendus.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bonne marge, peu vendu'**
+  String get alpBonneMargePeuVendus;
+
+  /// No description provided for @alpNouveautesMarche.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveautés du marché'**
+  String get alpNouveautesMarche;
+
+  /// No description provided for @alpTendancesMarche.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tendances du marché que vous n\'avez pas'**
+  String get alpTendancesMarche;
+
+  /// No description provided for @alpRegleMeilleuresVentes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les N produits les plus vendus sur la période (nets des retours) ; à réapprovisionner quand le stock couvre moins de Y jours de ventes.'**
+  String get alpRegleMeilleuresVentes;
+
+  /// No description provided for @alpRegleStockDormant.
+  ///
+  /// In fr, this message translates to:
+  /// **'En stock, aucune vente depuis plus de X jours ; classés par valeur immobilisée.'**
+  String get alpRegleStockDormant;
+
+  /// No description provided for @alpRegleCandidatsRemise.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dormants ou ventes en baisse de plus de X %, avec une marge encore au-dessus de Y % : une remise est conseillée.'**
+  String get alpRegleCandidatsRemise;
+
+  /// No description provided for @alpRegleMargeFaible.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix de vente HT proche du dernier prix d\'achat HT (marge sous X %) ou en dessous.'**
+  String get alpRegleMargeFaible;
+
+  /// No description provided for @alpRegleRetoursEleves.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plus de X % des quantités vendues sur la période sont revenues en retour (5 vendus au moins).'**
+  String get alpRegleRetoursEleves;
+
+  /// No description provided for @alpRegleEnHausse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ventes des X derniers jours plus de Y % au-dessus des X jours d\'avant.'**
+  String get alpRegleEnHausse;
+
+  /// No description provided for @alpRegleStockLent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Au rythme des ventes de la période, le stock mettrait plus de X jours à s\'écouler.'**
+  String get alpRegleStockLent;
+
+  /// No description provided for @alpRegleJamaisVendus.
+  ///
+  /// In fr, this message translates to:
+  /// **'En stock depuis plus de X jours, jamais vendu.'**
+  String get alpRegleJamaisVendus;
+
+  /// No description provided for @alpRegleRemisesInefficaces.
+  ///
+  /// In fr, this message translates to:
+  /// **'Remise active depuis au moins 7 jours : les ventes n\'ont pas augmenté par rapport au même nombre de jours avant elle.'**
+  String get alpRegleRemisesInefficaces;
+
+  /// No description provided for @alpRegleStockAnormal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock négatif, sorties « Casse » répétées ou gros écart d\'inventaire sur la période.'**
+  String get alpRegleStockAnormal;
+
+  /// No description provided for @alpRegleHausseFournisseur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dernier prix d\'achat plus de X % au-dessus du précédent : prix de vente conseillé à marge égale.'**
+  String get alpRegleHausseFournisseur;
+
+  /// No description provided for @alpRegleAchetesEnsemble.
+  ///
+  /// In fr, this message translates to:
+  /// **'Deux produits sur le même ticket dans plus de X % des ventes du moins vendu des deux : à proposer en pack.'**
+  String get alpRegleAchetesEnsemble;
+
+  /// No description provided for @alpRegleStockDesequilibre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bas ou en rupture dans un magasin, largement au-dessus du seuil dans un autre : transfert conseillé.'**
+  String get alpRegleStockDesequilibre;
+
+  /// No description provided for @alpRegleRuptureSansCommande.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rupture ou sous le seuil sans commande fournisseur ouverte, ou avec une commande en retard de plus de X jours.'**
+  String get alpRegleRuptureSansCommande;
+
+  /// No description provided for @alpRegleSaisonniers.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vendu l\'an passé dans les X prochains jours plus que le stock actuel.'**
+  String get alpRegleSaisonniers;
+
+  /// No description provided for @alpRegleRupturesFrequentes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plus de X jours en rupture sur la période ; ventes perdues estimées.'**
+  String get alpRegleRupturesFrequentes;
+
+  /// No description provided for @alpRegleFicheIncomplete.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sans code-barres, sans photo, rangé dans la catégorie Divers ou sans prix de vente.'**
+  String get alpRegleFicheIncomplete;
+
+  /// No description provided for @alpRegleBonneMargePeuVendus.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dans les X % des meilleures marges, mais dans la moitié la moins vendue.'**
+  String get alpRegleBonneMargePeuVendus;
+
+  /// No description provided for @alpRegleNouveautesMarche.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produits arrivés du catalogue BENS depuis moins de X jours, que vous n\'avez jamais eus en stock.'**
+  String get alpRegleNouveautesMarche;
+
+  /// No description provided for @alpRegleTendancesMarche.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produits qui se vendent dans plusieurs boutiques CaisseDZ (catalogue BENS) et que vous n\'avez jamais eus en stock.'**
+  String get alpRegleTendancesMarche;
+
+  /// No description provided for @alpActionBesoin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créer un besoin'**
+  String get alpActionBesoin;
+
+  /// No description provided for @alpActionRemise.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créer une remise'**
+  String get alpActionRemise;
+
+  /// No description provided for @alpActionPrix.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier le prix'**
+  String get alpActionPrix;
+
+  /// No description provided for @alpActionRetours.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir les retours'**
+  String get alpActionRetours;
+
+  /// No description provided for @alpActionModifierRemise.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier la remise'**
+  String get alpActionModifierRemise;
+
+  /// No description provided for @alpActionMouvements.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir les mouvements'**
+  String get alpActionMouvements;
+
+  /// No description provided for @alpActionPack.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créer un pack'**
+  String get alpActionPack;
+
+  /// No description provided for @alpActionTransfert.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créer un transfert'**
+  String get alpActionTransfert;
+
+  /// No description provided for @alpActionCommande.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commander'**
+  String get alpActionCommande;
+
+  /// No description provided for @alpActionSeuil.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajuster le seuil'**
+  String get alpActionSeuil;
+
+  /// No description provided for @alpActionFiche.
+  ///
+  /// In fr, this message translates to:
+  /// **'Compléter la fiche'**
+  String get alpActionFiche;
+
+  /// No description provided for @alpActionVoir.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir le produit'**
+  String get alpActionVoir;
+
+  /// No description provided for @alpActionCreerProduit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créer le produit'**
+  String get alpActionCreerProduit;
+
+  /// No description provided for @alpSeuilPeriode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Période d\'analyse des ventes'**
+  String get alpSeuilPeriode;
+
+  /// No description provided for @alpSeuilTopN.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nombre de produits'**
+  String get alpSeuilTopN;
+
+  /// No description provided for @alpSeuilCouverture.
+  ///
+  /// In fr, this message translates to:
+  /// **'Couverture minimale'**
+  String get alpSeuilCouverture;
+
+  /// No description provided for @alpSeuilDormant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sans vente depuis'**
+  String get alpSeuilDormant;
+
+  /// No description provided for @alpSeuilBaisse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Baisse des ventes'**
+  String get alpSeuilBaisse;
+
+  /// No description provided for @alpSeuilMargeRemise.
+  ///
+  /// In fr, this message translates to:
+  /// **'Marge gardée'**
+  String get alpSeuilMargeRemise;
+
+  /// No description provided for @alpSeuilMargeFaible.
+  ///
+  /// In fr, this message translates to:
+  /// **'Marge minimale'**
+  String get alpSeuilMargeFaible;
+
+  /// No description provided for @alpSeuilRetours.
+  ///
+  /// In fr, this message translates to:
+  /// **'Taux de retour'**
+  String get alpSeuilRetours;
+
+  /// No description provided for @alpSeuilHausseJours.
+  ///
+  /// In fr, this message translates to:
+  /// **'Période comparée'**
+  String get alpSeuilHausseJours;
+
+  /// No description provided for @alpSeuilHaussePct.
+  ///
+  /// In fr, this message translates to:
+  /// **'Hausse des ventes'**
+  String get alpSeuilHaussePct;
+
+  /// No description provided for @alpSeuilLent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Écoulement au-delà de'**
+  String get alpSeuilLent;
+
+  /// No description provided for @alpSeuilJamaisVendu.
+  ///
+  /// In fr, this message translates to:
+  /// **'En stock depuis'**
+  String get alpSeuilJamaisVendu;
+
+  /// No description provided for @alpSeuilCasse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sorties « Casse »'**
+  String get alpSeuilCasse;
+
+  /// No description provided for @alpSeuilEcart.
+  ///
+  /// In fr, this message translates to:
+  /// **'Écart d\'inventaire'**
+  String get alpSeuilEcart;
+
+  /// No description provided for @alpSeuilHausseAchat.
+  ///
+  /// In fr, this message translates to:
+  /// **'Hausse du prix d\'achat'**
+  String get alpSeuilHausseAchat;
+
+  /// No description provided for @alpSeuilEnsemble.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sur le même ticket'**
+  String get alpSeuilEnsemble;
+
+  /// No description provided for @alpSeuilRetard.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commande en retard de'**
+  String get alpSeuilRetard;
+
+  /// No description provided for @alpSeuilSaison.
+  ///
+  /// In fr, this message translates to:
+  /// **'Jours à venir (an passé)'**
+  String get alpSeuilSaison;
+
+  /// No description provided for @alpSeuilRuptures.
+  ///
+  /// In fr, this message translates to:
+  /// **'Jours en rupture'**
+  String get alpSeuilRuptures;
+
+  /// No description provided for @alpSeuilBonneMarge.
+  ///
+  /// In fr, this message translates to:
+  /// **'Meilleures marges'**
+  String get alpSeuilBonneMarge;
+
+  /// No description provided for @alpSeuilNouveautes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Arrivés depuis'**
+  String get alpSeuilNouveautes;
+
+  /// No description provided for @alpJours.
+  ///
+  /// In fr, this message translates to:
+  /// **'jours'**
+  String get alpJours;
+
+  /// No description provided for @alpFois.
+  ///
+  /// In fr, this message translates to:
+  /// **'fois'**
+  String get alpFois;
+
+  /// No description provided for @alpProduits.
+  ///
+  /// In fr, this message translates to:
+  /// **'produits'**
+  String get alpProduits;
+
+  /// No description provided for @alpDStock.
+  ///
+  /// In fr, this message translates to:
+  /// **'stock {stock}'**
+  String alpDStock(String stock);
+
+  /// No description provided for @alpDVendus.
+  ///
+  /// In fr, this message translates to:
+  /// **'{quantite} vendus'**
+  String alpDVendus(String quantite);
+
+  /// No description provided for @alpDCouverture.
+  ///
+  /// In fr, this message translates to:
+  /// **'{jours} j de ventes en stock'**
+  String alpDCouverture(String jours);
+
+  /// No description provided for @alpDSansVente.
+  ///
+  /// In fr, this message translates to:
+  /// **'aucune vente depuis {jours} j'**
+  String alpDSansVente(String jours);
+
+  /// No description provided for @alpDValeur.
+  ///
+  /// In fr, this message translates to:
+  /// **'{montant} immobilisés'**
+  String alpDValeur(String montant);
+
+  /// No description provided for @alpDBaisse.
+  ///
+  /// In fr, this message translates to:
+  /// **'ventes {pct} %'**
+  String alpDBaisse(String pct);
+
+  /// No description provided for @alpDMarge.
+  ///
+  /// In fr, this message translates to:
+  /// **'marge {pct} %'**
+  String alpDMarge(String pct);
+
+  /// No description provided for @alpDRemiseConseillee.
+  ///
+  /// In fr, this message translates to:
+  /// **'remise conseillée {pct} %'**
+  String alpDRemiseConseillee(String pct);
+
+  /// No description provided for @alpDDernierAchat.
+  ///
+  /// In fr, this message translates to:
+  /// **'dernier achat {montant}'**
+  String alpDDernierAchat(String montant);
+
+  /// No description provided for @alpDPerte.
+  ///
+  /// In fr, this message translates to:
+  /// **'vendu à perte'**
+  String get alpDPerte;
+
+  /// No description provided for @alpDPrixConseille.
+  ///
+  /// In fr, this message translates to:
+  /// **'prix conseillé {montant}'**
+  String alpDPrixConseille(String montant);
+
+  /// No description provided for @alpDRetours.
+  ///
+  /// In fr, this message translates to:
+  /// **'{retournes} retournés sur {vendus} vendus ({pct} %)'**
+  String alpDRetours(String retournes, String vendus, String pct);
+
+  /// No description provided for @alpDHausse.
+  ///
+  /// In fr, this message translates to:
+  /// **'{quantite} vendus contre {avant} ({pct} %)'**
+  String alpDHausse(String quantite, String avant, String pct);
+
+  /// No description provided for @alpDEcoulement.
+  ///
+  /// In fr, this message translates to:
+  /// **'écoulé en {jours} j au rythme actuel'**
+  String alpDEcoulement(String jours);
+
+  /// No description provided for @alpDJamaisVendu.
+  ///
+  /// In fr, this message translates to:
+  /// **'jamais vendu, en stock depuis {jours} j'**
+  String alpDJamaisVendu(String jours);
+
+  /// No description provided for @alpDRemise.
+  ///
+  /// In fr, this message translates to:
+  /// **'{remise} : {apres} vendus en {jours} j contre {avant} avant'**
+  String alpDRemise(String remise, String apres, String jours, String avant);
+
+  /// No description provided for @alpDNegatif.
+  ///
+  /// In fr, this message translates to:
+  /// **'stock négatif'**
+  String get alpDNegatif;
+
+  /// No description provided for @alpDCasses.
+  ///
+  /// In fr, this message translates to:
+  /// **'{nombre} sorties « Casse »'**
+  String alpDCasses(String nombre);
+
+  /// No description provided for @alpDEcart.
+  ///
+  /// In fr, this message translates to:
+  /// **'écart d\'inventaire {quantite}'**
+  String alpDEcart(String quantite);
+
+  /// No description provided for @alpDHausseAchat.
+  ///
+  /// In fr, this message translates to:
+  /// **'achat {avant} → {apres} ({pct} %)'**
+  String alpDHausseAchat(String avant, String apres, String pct);
+
+  /// No description provided for @alpDEnsemble.
+  ///
+  /// In fr, this message translates to:
+  /// **'avec {produit} sur {tickets} tickets ({pct} %)'**
+  String alpDEnsemble(String produit, String tickets, String pct);
+
+  /// No description provided for @alpDTransfert.
+  ///
+  /// In fr, this message translates to:
+  /// **'transférer {quantite} de {depuis} ({stockDepuis}) vers {vers} ({stockVers})'**
+  String alpDTransfert(String quantite, String depuis, String stockDepuis, String vers, String stockVers);
+
+  /// No description provided for @alpDCommandeRetard.
+  ///
+  /// In fr, this message translates to:
+  /// **'commande en retard de {jours} j'**
+  String alpDCommandeRetard(String jours);
+
+  /// No description provided for @alpDAucuneCommande.
+  ///
+  /// In fr, this message translates to:
+  /// **'aucune commande fournisseur'**
+  String get alpDAucuneCommande;
+
+  /// No description provided for @alpDSaison.
+  ///
+  /// In fr, this message translates to:
+  /// **'{quantite} vendus l\'an passé dans les {jours} prochains jours'**
+  String alpDSaison(String quantite, String jours);
+
+  /// No description provided for @alpDRuptures.
+  ///
+  /// In fr, this message translates to:
+  /// **'{jours} j en rupture · environ {perdues} ventes perdues'**
+  String alpDRuptures(String jours, String perdues);
+
+  /// No description provided for @alpDSansCodeBarres.
+  ///
+  /// In fr, this message translates to:
+  /// **'sans code-barres'**
+  String get alpDSansCodeBarres;
+
+  /// No description provided for @alpDSansPhoto.
+  ///
+  /// In fr, this message translates to:
+  /// **'sans photo'**
+  String get alpDSansPhoto;
+
+  /// No description provided for @alpDCategorieDivers.
+  ///
+  /// In fr, this message translates to:
+  /// **'catégorie Divers'**
+  String get alpDCategorieDivers;
+
+  /// No description provided for @alpDSansPrix.
+  ///
+  /// In fr, this message translates to:
+  /// **'sans prix de vente'**
+  String get alpDSansPrix;
+
+  /// No description provided for @alpDArrive.
+  ///
+  /// In fr, this message translates to:
+  /// **'arrivé du catalogue BENS il y a {jours} j'**
+  String alpDArrive(String jours);
+
+  /// No description provided for @alpDTendance.
+  ///
+  /// In fr, this message translates to:
+  /// **'tendance depuis {jours} j'**
+  String alpDTendance(String jours);
+
+  /// No description provided for @situationAlp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Alertes produits'**
+  String get situationAlp;
+
+  /// No description provided for @situationGroupeAlertes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Alertes'**
+  String get situationGroupeAlertes;
+
+  /// No description provided for @alpFiltreType.
+  ///
+  /// In fr, this message translates to:
+  /// **'Alerte'**
+  String get alpFiltreType;
+
+  /// No description provided for @alpToutes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Toutes les alertes'**
+  String get alpToutes;
+
+  /// No description provided for @alpColAlerte.
+  ///
+  /// In fr, this message translates to:
+  /// **'Alerte'**
+  String get alpColAlerte;
+
+  /// No description provided for @alpColDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Détail'**
+  String get alpColDetail;
+
+  /// No description provided for @alpColAction.
+  ///
+  /// In fr, this message translates to:
+  /// **'Action'**
+  String get alpColAction;
+
+  /// No description provided for @alpCarteTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Alertes produits'**
+  String get alpCarteTitre;
+
+  /// No description provided for @alpCarteAucune.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune alerte produit.'**
+  String get alpCarteAucune;
+
+  /// No description provided for @alpCarteInfo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Calculées sur les ventes nettes des retours et le journal du stock (Paramètres › Alertes). Cliquez sur une alerte pour la voir dans la Situation.'**
+  String get alpCarteInfo;
+
+  /// No description provided for @alpCarteCritiques.
+  ///
+  /// In fr, this message translates to:
+  /// **'{nombre} à traiter'**
+  String alpCarteCritiques(int nombre);
+
+  /// No description provided for @alpCarteNouvelles.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouvelles alertes'**
+  String get alpCarteNouvelles;
+
+  /// No description provided for @alpActualiser.
+  ///
+  /// In fr, this message translates to:
+  /// **'Actualiser'**
+  String get alpActualiser;
+
+  /// No description provided for @alpParamTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Alertes produits'**
+  String get alpParamTitre;
+
+  /// No description provided for @alpParamDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vingt alertes calculées sur les ventes (nettes des retours), le journal du stock, les achats et le catalogue BENS. Désactivez celles qui ne vous servent pas et ajustez leurs seuils.'**
+  String get alpParamDesc;
+
+  /// No description provided for @alpParamActive.
+  ///
+  /// In fr, this message translates to:
+  /// **'Activer « {alerte} »'**
+  String alpParamActive(String alerte);
+
+  /// No description provided for @alpCritiques.
+  ///
+  /// In fr, this message translates to:
+  /// **'À traiter'**
+  String get alpCritiques;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

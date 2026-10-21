@@ -27,6 +27,7 @@ import '../configuration/configuration_dialog.dart';
 import '../entrees/recu_ia_dialog.dart' show afficherDemandeOffre;
 import '../mobile/mobile_dialog.dart';
 import '../offres/offres_page.dart';
+import '../tableau_bord/alertes_produits_providers.dart';
 import 'alertes_dialog.dart';
 import 'controles_fenetre.dart';
 import 'recherche_globale.dart';
@@ -165,7 +166,11 @@ class _AppShellState extends ConsumerState<AppShell> {
     final alertes = ref.watch(alertesProvider);
     final routeActive = module == null ? route : (Modules.parId(module.idAcces) ?? module).route;
     final pastilles = ref.watch(pastillesProvider);
-    bool point(ModuleApp m) => m.route != routeActive && pastilles.any((c) => PastillesModules.module(c) == m.id);
+    // Nouvelles alertes produits : point rouge sur le Tableau de bord (Situation › Alertes produits).
+    final nouvellesAlertes = ref.watch(alertesProduitsNouvellesProvider).isNotEmpty;
+    bool point(ModuleApp m) =>
+        m.route != routeActive &&
+        (pastilles.any((c) => PastillesModules.module(c) == m.id) || (m.id == 'tableau_bord' && nouvellesAlertes));
 
     bool visible(ModuleApp m) => verrouModule(l10n, m, licence: licence, session: session) == null;
     final sections = [

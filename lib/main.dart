@@ -15,6 +15,7 @@ import 'app/providers.dart';
 import 'application/sauvegarde_service.dart';
 import 'core/db/app_database.dart';
 import 'core/design_system/design_system.dart';
+import 'features/tableau_bord/alertes_produits_providers.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,6 +45,8 @@ Future<void> main() async {
   await chargerEtatDemarrage(container);
   unawaited(sauvegardeAutomatique(base));
   container.read(internetProvider.notifier).demarrer();
+  // Alertes produits recalculées toutes les 15 minutes pour l'utilisateur connecté.
+  container.read(alertesProduitsProvider.notifier).demarrer();
   // CaisseDZ Scan : le service des téléphones reprend s'il était activé.
   unawaited(container.read(mobileProvider.notifier).demarrerSiActif());
 

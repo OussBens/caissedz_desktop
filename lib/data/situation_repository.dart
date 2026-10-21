@@ -43,7 +43,7 @@ class SituationRepository {
   static const String _venteValidee = 'Validée';
   static const String _achatValide = 'Validé';
 
-  /// Identifiants des 11 analyses, dans l'ordre de la navigation du DS (+ TVA par taux).
+  /// Identifiants des analyses, dans l'ordre de la navigation du DS (+ TVA par taux, alertes produits).
   static const List<String> analyses = [
     'mvc',
     'mvp',
@@ -56,6 +56,7 @@ class SituationRepository {
     'scli',
     'sfrn',
     'tva',
+    'alp',
   ];
 
   /// Analyses qui exposent le coût d'achat (permission `voirPrixAchat`).

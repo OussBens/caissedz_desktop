@@ -1,15 +1,20 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
+import '../../app/demarrage_providers.dart';
 import '../../app/providers.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
 import '../../data/situation_repository.dart';
 import '../../data/statistiques_repository.dart';
+import '../../domain/alertes_produits.dart';
 import '../../domain/models/rapport.dart';
+import '../../domain/modules.dart';
 import '../caisse/pos_dialogs.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
@@ -19,6 +24,8 @@ import '../produits/produits_providers.dart';
 import '../rapports/rapports_providers.dart';
 import '../stock/stock_providers.dart';
 import '../tiers/tiers_providers.dart';
+import 'alertes_produits_providers.dart';
+import 'alertes_produits_ui.dart';
 import 'situation_onglet.dart';
 
 final situationRepositoryProvider = Provider<SituationRepository>(
@@ -117,6 +124,17 @@ class _TableauBordPageState extends ConsumerState<TableauBordPage> {
   ModePeriode _mode = ModePeriode.mois;
   DsPeriode _periode = DsPeriode.calculer('month');
 
+  @override
+  void initState() {
+    super.initState();
+    // Alertes produits recalculées à l'ouverture du tableau de bord (la Situation les recalcule elle-même).
+    if (widget.ongletInitial == 0) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) unawaited(ref.read(alertesProduitsProvider.notifier).actualiser());
+      });
+    }
+  }
+
   void _choisirMode(ModePeriode m) {
     if (m == ModePeriode.periode) {
       _choisirPeriode();
@@ -180,6 +198,7 @@ class _TableauBordPageState extends ConsumerState<TableauBordPage> {
       moduleId: 'tableau_bord',
       onglets: [l10n.tableauBordOnglet, l10n.situationOnglet],
       comptes: [null, SituationRepository.analyses.length],
+      pointsOnglets: {if (ref.watch(alertesProduitsNouvellesProvider).isNotEmpty) 1},
       ongletCourant: _onglet,
       onOnglet: (i) => setState(() => _onglet = i),
       actions: _onglet == 0
@@ -241,6 +260,9 @@ class _VueEnsemble extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final c = context.ds.colors;
     final devise = ref.watch(deviseProvider);
+    final session = ref.watch(sessionProvider);
+    // Alertes produits : avec le module Produits, Stock ou Besoins.
+    final alertesVisibles = session != null && ['produits', 'stock', 'besoins'].any(session.peutAcceder);
     final d = donnees;
     String v(double? x) => x == null ? '—' : f2(x);
     String k(double x) => '${formaterK(x)} $devise';
@@ -334,6 +356,7 @@ class _VueEnsemble extends ConsumerWidget {
                   children: [for (final kpi in kpis.skip(i).take(parLigne)) Expanded(child: kpi)],
                 ),
               ),
+            if (alertesVisibles) const _CarteAlertesProduits(),
             grille(
               [
                 DsCarteGraphique(
@@ -534,4 +557,99 @@ class _VueEnsemble extends ConsumerWidget {
           ),
         )
       : enfant;
+}
+
+/// Carte « Alertes produits » : une tuile par type d'alerte (nombre, à traiter, point rouge des nouvelles) ; un
+/// clic ouvre Situation › Alertes produits sur ce type.
+class _CarteAlertesProduits extends ConsumerWidget {
+  const _CarteAlertesProduits();
+
+  void _ouvrir(BuildContext context, WidgetRef ref, TypeAlerteProduit? type) {
+    ref.read(demandeAlertesProvider.notifier).demander(type);
+    context.go(Modules.parId('situation')!.route);
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final c = context.ds.colors;
+    final t = context.ds.typo;
+    final alertes = ref.watch(alertesProduitsProvider);
+    final nouvelles = ref.watch(alertesProduitsNouvellesProvider);
+    final types = [
+      for (final g in GroupeAlerteProduit.values)
+        for (final ty in alertes.parType.keys.where((x) => x.groupe == g))
+          if (alertes.de(ty).isNotEmpty) ty,
+    ];
+    Widget tuile(TypeAlerteProduit ty) {
+      final n = alertes.de(ty).length;
+      final critiques = alertes.de(ty).where((a) => a.critique).length;
+      return Tooltip(
+        message: regleAlerte(l10n, ty),
+        waitDuration: const Duration(milliseconds: 600),
+        child: InkWell(
+          key: ValueKey('carte_alerte_${ty.name}'),
+          borderRadius: DsRadius.borderMd,
+          onTap: () => _ouvrir(context, ref, ty),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: DsSpacing.s3, vertical: DsSpacing.s2),
+            decoration: BoxDecoration(
+              borderRadius: DsRadius.borderMd,
+              border: Border.all(color: c.borderSubtle),
+            ),
+            child: Row(
+              spacing: DsSpacing.s2,
+              children: [
+                Icon(iconeAlerte(ty), size: 16, color: critiques > 0 ? c.dangerFg : c.iconMuted),
+                Expanded(
+                  child: Text(
+                    libelleTypeAlerte(l10n, ty),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: t.bodySm.copyWith(color: c.textPrimary),
+                  ),
+                ),
+                if (nouvelles.contains(ty)) const DsPoint(),
+                if (critiques > 0)
+                  DsBadge(libelle: l10n.alpCarteCritiques(critiques), ton: DsBadgeTon.danger, petit: true),
+                DsBadge(libelle: formaterNombre(n.toDouble()), ton: DsBadgeTon.neutre, petit: true),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    return DsCard(
+      titre: l10n.alpCarteTitre,
+      icone: LucideIcons.bellRing,
+      actions: types.isEmpty
+          ? null
+          : DsButton(
+              key: const ValueKey('carte_alertes_toutes'),
+              libelle: l10n.alpToutes,
+              variante: DsButtonVariante.fantome,
+              taille: DsButtonTaille.sm,
+              onPressed: () => _ouvrir(context, ref, null),
+            ),
+      child: types.isEmpty
+          ? Padding(
+              padding: const EdgeInsets.symmetric(vertical: DsSpacing.s4),
+              child: Center(
+                child: Text(l10n.alpCarteAucune, style: t.body.copyWith(color: c.textMuted)),
+              ),
+            )
+          : LayoutBuilder(
+              builder: (context, contraintes) {
+                final colonnes = contraintes.maxWidth >= 1100 ? 4 : (contraintes.maxWidth >= 640 ? 2 : 1);
+                final largeur = (contraintes.maxWidth - DsSpacing.s3 * (colonnes - 1)) / colonnes;
+                return Wrap(
+                  spacing: DsSpacing.s3,
+                  runSpacing: DsSpacing.s3,
+                  children: [for (final ty in types) SizedBox(width: largeur, child: tuile(ty))],
+                );
+              },
+            ),
+    );
+  }
 }

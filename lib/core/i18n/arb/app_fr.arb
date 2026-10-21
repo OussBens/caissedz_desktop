@@ -4375,5 +4375,376 @@
       }
     }
   },
-  "produitErreurTropDeColis": "5 colis au plus par produit."
+  "produitErreurTropDeColis": "5 colis au plus par produit.",
+  "alpGroupeVentes": "Ventes",
+  "alpGroupeStock": "Stock",
+  "alpGroupePrix": "Prix",
+  "alpGroupeQualite": "Qualité",
+  "alpGroupeMarche": "Marché",
+  "alpMeilleuresVentes": "Meilleures ventes",
+  "alpStockDormant": "Stock dormant",
+  "alpCandidatsRemise": "Candidats à une remise",
+  "alpMargeFaible": "Marge faible ou vente à perte",
+  "alpRetoursEleves": "Retours élevés",
+  "alpEnHausse": "Produits en hausse",
+  "alpStockLent": "Stock lent",
+  "alpJamaisVendus": "Jamais vendus",
+  "alpRemisesInefficaces": "Remises sans effet",
+  "alpStockAnormal": "Stock anormal",
+  "alpHausseFournisseur": "Hausse du prix fournisseur",
+  "alpAchetesEnsemble": "Achetés ensemble",
+  "alpStockDesequilibre": "Stock déséquilibré entre magasins",
+  "alpRuptureSansCommande": "Rupture sans commande",
+  "alpSaisonniers": "Produits de saison",
+  "alpRupturesFrequentes": "Ruptures fréquentes",
+  "alpFicheIncomplete": "Fiche produit incomplète",
+  "alpBonneMargePeuVendus": "Bonne marge, peu vendu",
+  "alpNouveautesMarche": "Nouveautés du marché",
+  "alpTendancesMarche": "Tendances du marché que vous n'avez pas",
+  "alpRegleMeilleuresVentes": "Les N produits les plus vendus sur la période (nets des retours) ; à réapprovisionner quand le stock couvre moins de Y jours de ventes.",
+  "alpRegleStockDormant": "En stock, aucune vente depuis plus de X jours ; classés par valeur immobilisée.",
+  "alpRegleCandidatsRemise": "Dormants ou ventes en baisse de plus de X %, avec une marge encore au-dessus de Y % : une remise est conseillée.",
+  "alpRegleMargeFaible": "Prix de vente HT proche du dernier prix d'achat HT (marge sous X %) ou en dessous.",
+  "alpRegleRetoursEleves": "Plus de X % des quantités vendues sur la période sont revenues en retour (5 vendus au moins).",
+  "alpRegleEnHausse": "Ventes des X derniers jours plus de Y % au-dessus des X jours d'avant.",
+  "alpRegleStockLent": "Au rythme des ventes de la période, le stock mettrait plus de X jours à s'écouler.",
+  "alpRegleJamaisVendus": "En stock depuis plus de X jours, jamais vendu.",
+  "alpRegleRemisesInefficaces": "Remise active depuis au moins 7 jours : les ventes n'ont pas augmenté par rapport au même nombre de jours avant elle.",
+  "alpRegleStockAnormal": "Stock négatif, sorties « Casse » répétées ou gros écart d'inventaire sur la période.",
+  "alpRegleHausseFournisseur": "Dernier prix d'achat plus de X % au-dessus du précédent : prix de vente conseillé à marge égale.",
+  "alpRegleAchetesEnsemble": "Deux produits sur le même ticket dans plus de X % des ventes du moins vendu des deux : à proposer en pack.",
+  "alpRegleStockDesequilibre": "Bas ou en rupture dans un magasin, largement au-dessus du seuil dans un autre : transfert conseillé.",
+  "alpRegleRuptureSansCommande": "Rupture ou sous le seuil sans commande fournisseur ouverte, ou avec une commande en retard de plus de X jours.",
+  "alpRegleSaisonniers": "Vendu l'an passé dans les X prochains jours plus que le stock actuel.",
+  "alpRegleRupturesFrequentes": "Plus de X jours en rupture sur la période ; ventes perdues estimées.",
+  "alpRegleFicheIncomplete": "Sans code-barres, sans photo, rangé dans la catégorie Divers ou sans prix de vente.",
+  "alpRegleBonneMargePeuVendus": "Dans les X % des meilleures marges, mais dans la moitié la moins vendue.",
+  "alpRegleNouveautesMarche": "Produits arrivés du catalogue BENS depuis moins de X jours, que vous n'avez jamais eus en stock.",
+  "alpRegleTendancesMarche": "Produits qui se vendent dans plusieurs boutiques CaisseDZ (catalogue BENS) et que vous n'avez jamais eus en stock.",
+  "alpActionBesoin": "Créer un besoin",
+  "alpActionRemise": "Créer une remise",
+  "alpActionPrix": "Modifier le prix",
+  "alpActionRetours": "Voir les retours",
+  "alpActionModifierRemise": "Modifier la remise",
+  "alpActionMouvements": "Voir les mouvements",
+  "alpActionPack": "Créer un pack",
+  "alpActionTransfert": "Créer un transfert",
+  "alpActionCommande": "Commander",
+  "alpActionSeuil": "Ajuster le seuil",
+  "alpActionFiche": "Compléter la fiche",
+  "alpActionVoir": "Voir le produit",
+  "alpActionCreerProduit": "Créer le produit",
+  "alpSeuilPeriode": "Période d'analyse des ventes",
+  "alpSeuilTopN": "Nombre de produits",
+  "alpSeuilCouverture": "Couverture minimale",
+  "alpSeuilDormant": "Sans vente depuis",
+  "alpSeuilBaisse": "Baisse des ventes",
+  "alpSeuilMargeRemise": "Marge gardée",
+  "alpSeuilMargeFaible": "Marge minimale",
+  "alpSeuilRetours": "Taux de retour",
+  "alpSeuilHausseJours": "Période comparée",
+  "alpSeuilHaussePct": "Hausse des ventes",
+  "alpSeuilLent": "Écoulement au-delà de",
+  "alpSeuilJamaisVendu": "En stock depuis",
+  "alpSeuilCasse": "Sorties « Casse »",
+  "alpSeuilEcart": "Écart d'inventaire",
+  "alpSeuilHausseAchat": "Hausse du prix d'achat",
+  "alpSeuilEnsemble": "Sur le même ticket",
+  "alpSeuilRetard": "Commande en retard de",
+  "alpSeuilSaison": "Jours à venir (an passé)",
+  "alpSeuilRuptures": "Jours en rupture",
+  "alpSeuilBonneMarge": "Meilleures marges",
+  "alpSeuilNouveautes": "Arrivés depuis",
+  "alpJours": "jours",
+  "alpFois": "fois",
+  "alpProduits": "produits",
+  "alpDStock": "stock {stock}",
+  "@alpDStock": {
+    "placeholders": {
+      "stock": {
+        "type": "String"
+      }
+    }
+  },
+  "alpDVendus": "{quantite} vendus",
+  "@alpDVendus": {
+    "placeholders": {
+      "quantite": {
+        "type": "String"
+      }
+    }
+  },
+  "alpDCouverture": "{jours} j de ventes en stock",
+  "@alpDCouverture": {
+    "placeholders": {
+      "jours": {
+        "type": "String"
+      }
+    }
+  },
+  "alpDSansVente": "aucune vente depuis {jours} j",
+  "@alpDSansVente": {
+    "placeholders": {
+      "jours": {
+        "type": "String"
+      }
+    }
+  },
+  "alpDValeur": "{montant} immobilisés",
+  "@alpDValeur": {
+    "placeholders": {
+      "montant": {
+        "type": "String"
+      }
+    }
+  },
+  "alpDBaisse": "ventes {pct} %",
+  "@alpDBaisse": {
+    "placeholders": {
+      "pct": {
+        "type": "String"
+      }
+    }
+  },
+  "alpDMarge": "marge {pct} %",
+  "@alpDMarge": {
+    "placeholders": {
+      "pct": {
+        "type": "String"
+      }
+    }
+  },
+  "alpDRemiseConseillee": "remise conseillée {pct} %",
+  "@alpDRemiseConseillee": {
+    "placeholders": {
+      "pct": {
+        "type": "String"
+      }
+    }
+  },
+  "alpDDernierAchat": "dernier achat {montant}",
+  "@alpDDernierAchat": {
+    "placeholders": {
+      "montant": {
+        "type": "String"
+      }
+    }
+  },
+  "alpDPerte": "vendu à perte",
+  "alpDPrixConseille": "prix conseillé {montant}",
+  "@alpDPrixConseille": {
+    "placeholders": {
+      "montant": {
+        "type": "String"
+      }
+    }
+  },
+  "alpDRetours": "{retournes} retournés sur {vendus} vendus ({pct} %)",
+  "@alpDRetours": {
+    "placeholders": {
+      "retournes": {
+        "type": "String"
+      },
+      "vendus": {
+        "type": "String"
+      },
+      "pct": {
+        "type": "String"
+      }
+    }
+  },
+  "alpDHausse": "{quantite} vendus contre {avant} ({pct} %)",
+  "@alpDHausse": {
+    "placeholders": {
+      "quantite": {
+        "type": "String"
+      },
+      "avant": {
+        "type": "String"
+      },
+      "pct": {
+        "type": "String"
+      }
+    }
+  },
+  "alpDEcoulement": "écoulé en {jours} j au rythme actuel",
+  "@alpDEcoulement": {
+    "placeholders": {
+      "jours": {
+        "type": "String"
+      }
+    }
+  },
+  "alpDJamaisVendu": "jamais vendu, en stock depuis {jours} j",
+  "@alpDJamaisVendu": {
+    "placeholders": {
+      "jours": {
+        "type": "String"
+      }
+    }
+  },
+  "alpDRemise": "{remise} : {apres} vendus en {jours} j contre {avant} avant",
+  "@alpDRemise": {
+    "placeholders": {
+      "remise": {
+        "type": "String"
+      },
+      "apres": {
+        "type": "String"
+      },
+      "jours": {
+        "type": "String"
+      },
+      "avant": {
+        "type": "String"
+      }
+    }
+  },
+  "alpDNegatif": "stock négatif",
+  "alpDCasses": "{nombre} sorties « Casse »",
+  "@alpDCasses": {
+    "placeholders": {
+      "nombre": {
+        "type": "String"
+      }
+    }
+  },
+  "alpDEcart": "écart d'inventaire {quantite}",
+  "@alpDEcart": {
+    "placeholders": {
+      "quantite": {
+        "type": "String"
+      }
+    }
+  },
+  "alpDHausseAchat": "achat {avant} → {apres} ({pct} %)",
+  "@alpDHausseAchat": {
+    "placeholders": {
+      "avant": {
+        "type": "String"
+      },
+      "apres": {
+        "type": "String"
+      },
+      "pct": {
+        "type": "String"
+      }
+    }
+  },
+  "alpDEnsemble": "avec {produit} sur {tickets} tickets ({pct} %)",
+  "@alpDEnsemble": {
+    "placeholders": {
+      "produit": {
+        "type": "String"
+      },
+      "tickets": {
+        "type": "String"
+      },
+      "pct": {
+        "type": "String"
+      }
+    }
+  },
+  "alpDTransfert": "transférer {quantite} de {depuis} ({stockDepuis}) vers {vers} ({stockVers})",
+  "@alpDTransfert": {
+    "placeholders": {
+      "quantite": {
+        "type": "String"
+      },
+      "depuis": {
+        "type": "String"
+      },
+      "stockDepuis": {
+        "type": "String"
+      },
+      "vers": {
+        "type": "String"
+      },
+      "stockVers": {
+        "type": "String"
+      }
+    }
+  },
+  "alpDCommandeRetard": "commande en retard de {jours} j",
+  "@alpDCommandeRetard": {
+    "placeholders": {
+      "jours": {
+        "type": "String"
+      }
+    }
+  },
+  "alpDAucuneCommande": "aucune commande fournisseur",
+  "alpDSaison": "{quantite} vendus l'an passé dans les {jours} prochains jours",
+  "@alpDSaison": {
+    "placeholders": {
+      "quantite": {
+        "type": "String"
+      },
+      "jours": {
+        "type": "String"
+      }
+    }
+  },
+  "alpDRuptures": "{jours} j en rupture · environ {perdues} ventes perdues",
+  "@alpDRuptures": {
+    "placeholders": {
+      "jours": {
+        "type": "String"
+      },
+      "perdues": {
+        "type": "String"
+      }
+    }
+  },
+  "alpDSansCodeBarres": "sans code-barres",
+  "alpDSansPhoto": "sans photo",
+  "alpDCategorieDivers": "catégorie Divers",
+  "alpDSansPrix": "sans prix de vente",
+  "alpDArrive": "arrivé du catalogue BENS il y a {jours} j",
+  "@alpDArrive": {
+    "placeholders": {
+      "jours": {
+        "type": "String"
+      }
+    }
+  },
+  "alpDTendance": "tendance depuis {jours} j",
+  "@alpDTendance": {
+    "placeholders": {
+      "jours": {
+        "type": "String"
+      }
+    }
+  },
+  "situationAlp": "Alertes produits",
+  "situationGroupeAlertes": "Alertes",
+  "alpFiltreType": "Alerte",
+  "alpToutes": "Toutes les alertes",
+  "alpColAlerte": "Alerte",
+  "alpColDetail": "Détail",
+  "alpColAction": "Action",
+  "alpCarteTitre": "Alertes produits",
+  "alpCarteAucune": "Aucune alerte produit.",
+  "alpCarteInfo": "Calculées sur les ventes nettes des retours et le journal du stock (Paramètres › Alertes). Cliquez sur une alerte pour la voir dans la Situation.",
+  "alpCarteCritiques": "{nombre} à traiter",
+  "@alpCarteCritiques": {
+    "placeholders": {
+      "nombre": {
+        "type": "int"
+      }
+    }
+  },
+  "alpCarteNouvelles": "Nouvelles alertes",
+  "alpActualiser": "Actualiser",
+  "alpParamTitre": "Alertes produits",
+  "alpParamDesc": "Vingt alertes calculées sur les ventes (nettes des retours), le journal du stock, les achats et le catalogue BENS. Désactivez celles qui ne vous servent pas et ajustez leurs seuils.",
+  "alpParamActive": "Activer « {alerte} »",
+  "@alpParamActive": {
+    "placeholders": {
+      "alerte": {
+        "type": "String"
+      }
+    }
+  },
+  "alpCritiques": "À traiter"
 }

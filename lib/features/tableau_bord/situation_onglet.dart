@@ -8,6 +8,7 @@ import '../../app/demarrage_providers.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
 import '../../data/situation_repository.dart';
+import '../../domain/alertes_produits.dart';
 import '../../domain/models/caisse.dart';
 import '../../domain/models/produit.dart';
 import '../../domain/models/stock.dart';
@@ -26,13 +27,27 @@ import '../rapports/rapports_providers.dart';
 import '../stock/stock_providers.dart';
 import '../tiers/tiers_dialogs.dart';
 import '../tiers/tiers_providers.dart';
+import 'alertes_produits_providers.dart';
+import 'alertes_produits_ui.dart';
 import 'tableau_bord_page.dart';
 
 /// Groupe d'analyses de la navigation de la Situation.
-enum GroupeSituation { tresorerie, stock, ventes, marges, tiers, fiscalite }
+enum GroupeSituation { tresorerie, stock, ventes, marges, tiers, fiscalite, alertes }
 
 /// Filtre proposé par une analyse.
-enum FiltreSituation { caisse, typeCaisse, produit, magasin, caissier, categorie, client, regrouper, typeTiers, wilaya }
+enum FiltreSituation {
+  caisse,
+  typeCaisse,
+  produit,
+  magasin,
+  caissier,
+  categorie,
+  client,
+  regrouper,
+  typeTiers,
+  wilaya,
+  typeAlerte,
+}
 
 /// Déclaration d'une analyse (`SituationScreen.VIEWS`).
 class AnalyseSituation {
@@ -79,6 +94,10 @@ class AnalyseSituation {
       FiltreSituation.wilaya,
     ], periode: false),
     AnalyseSituation('tva', GroupeSituation.fiscalite, LucideIcons.landmark, []),
+    AnalyseSituation('alp', GroupeSituation.alertes, LucideIcons.bellRing, [
+      FiltreSituation.typeAlerte,
+      FiltreSituation.categorie,
+    ], periode: false),
   ];
 }
 
@@ -94,6 +113,7 @@ String libelleAnalyse(AppLocalizations l10n, String id) => switch (id) {
   'scli' => l10n.situationScli,
   'sfrn' => l10n.situationSfrn,
   'tva' => l10n.situationTva,
+  'alp' => l10n.situationAlp,
   _ => id,
 };
 
@@ -104,6 +124,7 @@ String libelleGroupeSituation(AppLocalizations l10n, GroupeSituation g) => switc
   GroupeSituation.marges => l10n.situationGroupeMarges,
   GroupeSituation.tiers => l10n.situationGroupeTiers,
   GroupeSituation.fiscalite => l10n.situationGroupeFiscalite,
+  GroupeSituation.alertes => l10n.situationGroupeAlertes,
 };
 
 /// Onglet Situation du tableau de bord : navigation par groupes (220 px) et vue de l'analyse.
@@ -117,15 +138,43 @@ class SituationOnglet extends ConsumerStatefulWidget {
 class _SituationOngletState extends ConsumerState<SituationOnglet> {
   String _id = 'mvc';
 
+  /// Alertes produits demandées par la carte du tableau de bord : type à afficher ; [_demande] renouvelle la vue.
+  TypeAlerteProduit? _typeDemande;
+  int _demande = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _lireDemande();
+  }
+
+  void _lireDemande() {
+    final d = ref.read(demandeAlertesProvider);
+    if (d == null) return;
+    _id = 'alp';
+    _typeDemande = d.type;
+    _demande++;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) ref.read(demandeAlertesProvider.notifier).effacer();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final c = context.ds.colors;
     final t = context.ds.typo;
-    final cout = ref.watch(sessionProvider)?.a(Permission.voirPrixAchat) ?? false;
+    ref.listen(demandeAlertesProvider, (_, d) {
+      if (d != null) setState(_lireDemande);
+    });
+    final session = ref.watch(sessionProvider);
+    final cout = session?.a(Permission.voirPrixAchat) ?? false;
+    // Alertes produits : avec le module Produits, Stock ou Besoins.
+    final alertes = session != null && ['produits', 'stock', 'besoins'].any(session.peutAcceder);
+    final nouvelles = ref.watch(alertesProduitsNouvellesProvider).isNotEmpty;
     final analyses = [
       for (final a in AnalyseSituation.toutes)
-        if (cout || !SituationRepository.analysesCout.contains(a.id)) a,
+        if ((cout || !SituationRepository.analysesCout.contains(a.id)) && (a.id != 'alp' || alertes)) a,
     ];
     final courante = analyses.firstWhere((a) => a.id == _id, orElse: () => analyses.first);
     final nav = Column(
@@ -147,7 +196,11 @@ class _SituationOngletState extends ConsumerState<SituationOnglet> {
                 libelle: libelleAnalyse(l10n, a.id),
                 icone: a.icone,
                 actif: a.id == courante.id,
-                onTap: () => setState(() => _id = a.id),
+                point: a.id == 'alp' && nouvelles && a.id != courante.id,
+                onTap: () => setState(() {
+                  _id = a.id;
+                  _typeDemande = null;
+                }),
               ),
           ],
       ],
@@ -158,7 +211,11 @@ class _SituationOngletState extends ConsumerState<SituationOnglet> {
       children: [
         SizedBox(width: 220, child: nav),
         Expanded(
-          child: _VueAnalyse(key: ValueKey(courante.id), analyse: courante),
+          child: _VueAnalyse(
+            key: ValueKey('${courante.id}#$_demande'),
+            analyse: courante,
+            typeAlerte: courante.id == 'alp' ? _typeDemande : null,
+          ),
         ),
       ],
     );
@@ -166,11 +223,21 @@ class _SituationOngletState extends ConsumerState<SituationOnglet> {
 }
 
 class _EntreeNav extends StatefulWidget {
-  const _EntreeNav({super.key, required this.libelle, required this.icone, required this.actif, required this.onTap});
+  const _EntreeNav({
+    super.key,
+    required this.libelle,
+    required this.icone,
+    required this.actif,
+    required this.onTap,
+    this.point = false,
+  });
   final String libelle;
   final IconData icone;
   final bool actif;
   final VoidCallback onTap;
+
+  /// Point rouge : de nouvelles alertes à consulter.
+  final bool point;
 
   @override
   State<_EntreeNav> createState() => _EntreeNavState();
@@ -216,6 +283,7 @@ class _EntreeNavState extends State<_EntreeNav> {
                   ),
                 ),
               ),
+              if (widget.point) const DsPoint(key: ValueKey('point_situation_alertes')),
             ],
           ),
         ),
@@ -226,8 +294,11 @@ class _EntreeNavState extends State<_EntreeNav> {
 
 /// Vue d'une analyse : carte de filtres (période, filtres, export), bandeau de stats, graphique, tableau.
 class _VueAnalyse extends ConsumerStatefulWidget {
-  const _VueAnalyse({super.key, required this.analyse});
+  const _VueAnalyse({super.key, required this.analyse, this.typeAlerte});
   final AnalyseSituation analyse;
+
+  /// Alertes produits : type affiché à l'ouverture (`null` : toutes).
+  final TypeAlerteProduit? typeAlerte;
 
   @override
   ConsumerState<_VueAnalyse> createState() => _VueAnalyseState();
@@ -235,7 +306,9 @@ class _VueAnalyse extends ConsumerStatefulWidget {
 
 class _VueAnalyseState extends ConsumerState<_VueAnalyse> {
   DsPeriode _periode = DsPeriode.calculer('month');
-  final Map<FiltreSituation, String?> _f = {};
+  late final Map<FiltreSituation, String?> _f = {
+    if (widget.typeAlerte != null) FiltreSituation.typeAlerte: widget.typeAlerte!.name,
+  };
   Regroupement _regroupement = Regroupement.jour;
   List<LigneSituation> _lignes = const [];
   bool _charge = false;
@@ -280,6 +353,7 @@ class _VueAnalyseState extends ConsumerState<_VueAnalyse> {
       'inv' => await r.inventaire(f),
       'cout' => await r.coutProduit(f),
       'tva' => await r.tva(du, au),
+      'alp' => await _alertes(),
       _ => const <LigneSituation>[],
     };
     if (!mounted) return;
@@ -300,6 +374,40 @@ class _VueAnalyseState extends ConsumerState<_VueAnalyse> {
           ..addAll({for (final l in lignes) l['code']! as String: champ(l, 'theoriqueNombre')});
       }
     });
+  }
+
+  /// Alertes produits recalculées, filtrées par type et par catégorie ; les alertes affichées sont consultées
+  /// (le point rouge s'éteint).
+  Future<List<LigneSituation>> _alertes() async {
+    final l10n = AppLocalizations.of(context);
+    final devise = ref.read(deviseProvider);
+    final cout = ref.read(sessionProvider)?.a(Permission.voirPrixAchat) ?? false;
+    final magasins = {for (final m in await ref.read(magasinsProvider.future)) m.code: m.nom};
+    final categorie = _f[FiltreSituation.categorie] == null
+        ? null
+        : (await ref.read(categoriesProvider.future))
+              .where((c) => c.code == _f[FiltreSituation.categorie])
+              .firstOrNull
+              ?.nom;
+    final type = TypeAlerteProduit.parNom(_f[FiltreSituation.typeAlerte]);
+    final a = await ref.read(alertesProduitsProvider.notifier).actualiser();
+    if (!mounted) return const [];
+    unawaited(ref.read(alertesProduitsVuesProvider.notifier).marquerVues(type == null ? null : [type]));
+    return [
+      for (final x in type == null ? a.toutes : a.de(type))
+        if (categorie == null || x.categorie == categorie)
+          {
+            'cle': x.cle,
+            'type': libelleTypeAlerte(l10n, x.type),
+            'code': x.produitCode,
+            'nom': x.designation,
+            'categorie': x.categorie,
+            'detail': detailAlerte(l10n, x, devise: devise, magasins: magasins, cout: cout),
+            'action': libelleActionAlerte(l10n, x.type.action),
+            'critique': x.critique,
+            'alerte': x,
+          },
+    ];
   }
 
   void _maj(VoidCallback f) {
@@ -365,7 +473,7 @@ class _VueAnalyseState extends ConsumerState<_VueAnalyse> {
       entite: libelleAnalyse(l10n, _id).toLowerCase(),
       lignes: lignes,
       colonnes: colonnes,
-      cle: (r) => r['code'] ?? r['periode'] ?? '${r['date']}|${r['caisse']}|${r['type']}',
+      cle: (r) => r['cle'] ?? r['code'] ?? r['periode'] ?? '${r['date']}|${r['caisse']}|${r['type']}',
       kpis: [DsStatsStrip(items: _stats(l10n, devise, lignes))],
       periode: widget.analyse.periode ? _periode : null,
       onPeriode: (p) => _maj(() => _periode = p),
@@ -530,6 +638,23 @@ class _VueAnalyseState extends ConsumerState<_VueAnalyse> {
             valeur: _f[f],
             placeholder: l10n.tiersToutes,
             onChanged: (v) => setState(() => _f[f] = v),
+          ),
+        );
+      case FiltreSituation.typeAlerte:
+        // Les types visibles (actifs, et sur le prix d'achat avec la permission), avec leur nombre d'alertes.
+        final alertes = ref.watch(alertesProduitsProvider);
+        return DsFormRow(
+          libelle: l10n.alpFiltreType,
+          largeurLibelle: 80,
+          child: DsSelect<String?>(
+            key: const ValueKey('situation_filtre_typeAlerte'),
+            valeur: _f[f],
+            options: [null, for (final t in alertes.parType.keys) t.name],
+            libelle: (n) => switch (TypeAlerteProduit.parNom(n)) {
+              null => l10n.alpToutes,
+              final t => '${libelleTypeAlerte(l10n, t)} (${alertes.de(t).length})',
+            },
+            onChanged: (v) => _maj(() => _f[f] = v),
           ),
         );
     }
@@ -792,6 +917,60 @@ class _VueAnalyseState extends ConsumerState<_VueAnalyse> {
           total: (ls) => da(s(ls, 'valeur')),
         ),
       ],
+      'alp' => [
+        DsColonne(
+          id: 'type',
+          libelle: l10n.alpColAlerte,
+          valeur: (r) => r['type'] as Comparable?,
+          cellule: (context, r) {
+            final a = r['alerte']! as AlerteProduit;
+            return Row(
+              spacing: 6,
+              children: [
+                Icon(
+                  iconeAlerte(a.type),
+                  size: 15,
+                  color: a.critique ? context.ds.colors.dangerFg : context.ds.colors.iconMuted,
+                ),
+                Flexible(child: Text(r['type']! as String, overflow: TextOverflow.ellipsis)),
+              ],
+            );
+          },
+          flex: 2,
+        ),
+        code,
+        texte('nom', l10n.tableauBordProduit, fort: true, flex: 2),
+        texte('categorie', l10n.situationCategorie),
+        DsColonne(
+          id: 'detail',
+          libelle: l10n.alpColDetail,
+          valeur: (r) => r['detail'] as Comparable?,
+          cellule: (context, r) => Text(
+            r['detail']! as String,
+            style: r['critique'] == true ? TextStyle(color: context.ds.colors.dangerFg) : null,
+          ),
+          flex: 4,
+        ),
+        DsColonne(
+          id: 'action',
+          libelle: l10n.alpColAction,
+          valeur: (r) => r['action'] as Comparable?,
+          cellule: (context, r) => Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: DsButton(
+              key: ValueKey('alerte_action_${r['cle']}'),
+              libelle: r['action']! as String,
+              variante: DsButtonVariante.secondaire,
+              taille: DsButtonTaille.sm,
+              onPressed: () async {
+                await executerActionAlerte(context, ref, r['alerte']! as AlerteProduit);
+                if (mounted) await _charger();
+              },
+            ),
+          ),
+          flex: 2,
+        ),
+      ],
       'tva' => [
         DsColonne(
           id: 'taux',
@@ -877,6 +1056,16 @@ class _VueAnalyseState extends ConsumerState<_VueAnalyse> {
         n(l10n.situationProduitsVendus, ls.length, LucideIcons.package),
         n(l10n.situationQuantite, s('quantite'), LucideIcons.hash),
         m(l10n.situationRecette, s('recette'), LucideIcons.banknote, DsBadgeTon.succes),
+      ],
+      'alp' => [
+        n(l10n.situationAlp, ls.length, LucideIcons.bellRing),
+        n(
+          l10n.alpCritiques,
+          ls.where((r) => r['critique'] == true).length,
+          LucideIcons.triangleAlert,
+          DsBadgeTon.danger,
+        ),
+        n(l10n.situationProduits, {for (final r in ls) r['code']}.length, LucideIcons.package),
       ],
       'tva' => [
         m(l10n.tvaCollectee, s('collectee'), LucideIcons.arrowDownLeft, DsBadgeTon.primaire),

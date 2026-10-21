@@ -686,7 +686,16 @@ Future<void> annulerSorties(BuildContext context, WidgetRef ref, List<SortieStoc
 // ———————————————————————————— Transferts ————————————————————————————
 
 /// Formulaire de transfert (`TransfertFormDialog`, DocForm) : depuis / vers, lignes avec disponible source.
-Future<void> afficherFormulaireTransfert(BuildContext context, WidgetRef ref, {TransfertStock? transfert}) async {
+/// Nouveau transfert, ou modification de [transfert]. Une alerte « Stock déséquilibré » propose le magasin de
+/// départ ([source]), celui d'arrivée ([destination]) et les quantités ([proposes]).
+Future<void> afficherFormulaireTransfert(
+  BuildContext context,
+  WidgetRef ref, {
+  TransfertStock? transfert,
+  String? source,
+  String? destination,
+  List<(Produit, double)> proposes = const [],
+}) async {
   final produits = {for (final p in await ref.read(produitsProvider.future)) p.code: p};
   final principal = await ref.read(magasinPrincipalProvider.future);
   final magasins = (await ref.read(magasinsProvider.future)).where((m) => m.actif).toList();
@@ -695,13 +704,19 @@ Future<void> afficherFormulaireTransfert(BuildContext context, WidgetRef ref, {T
     for (final l in transfert?.lignes ?? const <LigneStock>[])
       if (produits[l.produitCode] != null)
         LigneDoc(produit: produits[l.produitCode]!, quantite: l.quantite, nombre: l.nombre),
+    if (transfert == null)
+      for (final (p, q) in proposes) LigneDoc(produit: p, quantite: q),
   ];
-  final destination =
-      transfert?.magasinDestination ?? magasins.where((m) => m.code != principal).firstOrNull?.code ?? principal;
+  final depart = transfert?.magasinSource ?? source ?? principal;
+  final arrivee =
+      transfert?.magasinDestination ??
+      destination ??
+      magasins.where((m) => m.code != depart).firstOrNull?.code ??
+      principal;
   await afficherDialog<bool>(
     context,
     fermableParVoile: false,
-    builder: (_) => _TransfertForm(transfert, lignes, transfert?.magasinSource ?? principal, destination),
+    builder: (_) => _TransfertForm(transfert, lignes, depart, arrivee),
   );
 }
 

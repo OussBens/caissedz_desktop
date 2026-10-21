@@ -16,6 +16,7 @@ import '../domain/models/session.dart';
 import '../domain/models/utilisateur.dart';
 import '../domain/permissions.dart';
 import '../features/produits/produits_providers.dart' show catalogueVersionProvider, httpClientProvider;
+import '../features/tableau_bord/alertes_produits_providers.dart' show alertesProduitsProvider;
 import 'providers.dart';
 
 final licenceServiceProvider = Provider<LicenceService>(
@@ -181,6 +182,7 @@ class SessionNotifier extends Notifier<Session?> {
     ref.read(favorisProvider.notifier).reinitialiser();
     ref.read(magasinCourantProvider.notifier).reinitialiser();
     ref.read(alertesProvider.notifier).reinitialiser();
+    ref.read(alertesProduitsProvider.notifier).reinitialiser();
     ref.read(sequenceEnAttenteProvider.notifier).terminer();
     await _memoriser(null);
     if (code != null) await ref.read(authServiceProvider).deconnecter(code);
@@ -194,6 +196,8 @@ class SessionNotifier extends Notifier<Session?> {
     await ref.read(favorisProvider.notifier).charger();
     await ref.read(magasinCourantProvider.notifier).charger();
     await ref.read(alertesProvider.notifier).charger();
+    // Alertes produits calculées en arrière-plan (point rouge du Tableau de bord).
+    unawaited(ref.read(alertesProduitsProvider.notifier).actualiser());
     ref.read(sequenceEnAttenteProvider.notifier).demander();
   }
 

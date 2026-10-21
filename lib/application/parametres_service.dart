@@ -4,6 +4,7 @@ import '../core/print/imprimante.dart';
 import '../data/boutique_repository.dart';
 import '../data/historique_repository.dart';
 import '../data/parametre_repository.dart';
+import '../domain/alertes_produits.dart';
 import '../domain/models/boutique.dart';
 import '../domain/models/parametres_paiement.dart';
 import '../domain/models/parametres_vente.dart';
@@ -70,24 +71,34 @@ class ParametresZakat {
   final double tauxPct;
 }
 
-/// Alertes (Paramètres › Alertes) : ouverture automatique à la connexion, seuil de crédit client signalé.
+/// Alertes (Paramètres › Alertes) : ouverture automatique à la connexion, seuil de crédit client signalé, seuils
+/// et alertes produits désactivées.
 class ParametresAlertes {
-  const ParametresAlertes({this.afficherConnexion = true, this.seuilCreditClient = 0});
+  const ParametresAlertes({
+    this.afficherConnexion = true,
+    this.seuilCreditClient = 0,
+    this.produits = const SeuilsAlertesProduits(),
+  });
   static const String cleConnexion = AlertesService.cleConnexion;
   static const String cleSeuilCredit = AlertesService.cleSeuilCredit;
-  static const List<String> cles = [cleConnexion, cleSeuilCredit];
+  static const List<String> cles = [cleConnexion, cleSeuilCredit, ...SeuilsAlertesProduits.cles];
   final bool afficherConnexion;
 
   /// Les clients dont le reste dû dépasse ce montant sont signalés (0 = tous les clients à crédit).
   final double seuilCreditClient;
 
+  /// Alertes produits : seuils et alertes désactivées.
+  final SeuilsAlertesProduits produits;
+
   factory ParametresAlertes.depuisCles(Map<String, String?> m) => ParametresAlertes(
     afficherConnexion: (m[cleConnexion] ?? '1') == '1',
     seuilCreditClient: double.tryParse(m[cleSeuilCredit] ?? '') ?? 0,
+    produits: SeuilsAlertesProduits.depuisCles(m),
   );
   Map<String, String> versCles() => {
     cleConnexion: afficherConnexion ? '1' : '0',
     cleSeuilCredit: seuilCreditClient.toString(),
+    ...produits.versCles(),
   };
 }
 

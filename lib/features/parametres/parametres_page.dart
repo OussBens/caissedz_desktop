@@ -15,6 +15,7 @@ import '../../core/i18n/generated/app_localizations.dart';
 import '../../core/print/imprimante.dart';
 import '../../core/print/ticket_escpos.dart';
 import '../../data/vente_repository.dart';
+import '../../domain/alertes_produits.dart';
 import '../../domain/fiscalite.dart';
 import '../../domain/models/licence.dart';
 import '../../domain/models/panier.dart';
@@ -31,6 +32,8 @@ import '../compte_bens/compte_bens_pages.dart';
 import '../offres/offres_page.dart';
 import '../produits/produits_providers.dart';
 import '../rapports/rapports_providers.dart';
+import '../tableau_bord/alertes_produits_providers.dart';
+import '../tableau_bord/alertes_produits_ui.dart';
 
 /// Groupes de la navigation latérale (`ParametresScreen` du DS v2.2).
 enum GroupeParametres { systeme, boutique, caisse, impression, alertes, sauvegarde, licence }
@@ -96,6 +99,13 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
   ParametresSauvegardeAuto _sauvegardeAuto = const ParametresSauvegardeAuto();
   final _seuilCredit = TextEditingController();
 
+  // Alertes produits : seuils (hors alertes désactivées) et alertes désactivées.
+  final Map<String, TextEditingController> _seuilsAlertes = {
+    for (final c in SeuilsAlertesProduits.cles)
+      if (c != SeuilsAlertesProduits.cleInactives) c: TextEditingController(),
+  };
+  Set<TypeAlerteProduit> _alertesInactives = {};
+
   List<TextEditingController> get _champs => [
     _margePct,
     _margeMontant,
@@ -119,6 +129,7 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
     _tranche,
     _adresseImprimante,
     _seuilCredit,
+    ..._seuilsAlertes.values,
   ];
 
   @override
@@ -200,6 +211,10 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
       _alertesConnexion = p.alertes.afficherConnexion;
       _sauvegardeAuto = p.sauvegarde;
       _seuilCredit.text = _entier(p.alertes.seuilCreditClient);
+      _alertesInactives = {...p.alertes.produits.inactives};
+      for (final MapEntry(:key, :value) in _seuilsAlertes.entries) {
+        value.text = _entier(p.alertes.produits.valeur(key));
+      }
       _modifie = false;
       _testEnvoye = null;
     });
@@ -247,7 +262,13 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
       impression: ParametresImpression(type: _typeImprimante, adresse: _adresseImprimante.text, largeur: _largeur),
       serveur: ParametresServeur(url: _url.text, cle: _cle.text, urlMantouj: _mantouj.text),
       zakat: ParametresZakat(nissab: _v(_nissab), tauxPct: _v(_taux)),
-      alertes: ParametresAlertes(afficherConnexion: _alertesConnexion, seuilCreditClient: _v(_seuilCredit, defaut: 0)),
+      alertes: ParametresAlertes(
+        afficherConnexion: _alertesConnexion,
+        seuilCreditClient: _v(_seuilCredit, defaut: 0),
+        produits: i.alertes.produits.avec({
+          for (final MapEntry(:key, :value) in _seuilsAlertes.entries) key: value.text,
+        }, inactives: _alertesInactives),
+      ),
       sauvegarde: _sauvegardeAuto,
     );
   }
@@ -271,7 +292,9 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
     ref
       ..invalidate(parametresVenteProvider)
       ..invalidate(parametresPaiementProvider)
-      ..invalidate(serveurCaisseDzProvider);
+      ..invalidate(serveurCaisseDzProvider)
+      ..invalidate(seuilsAlertesProduitsProvider);
+    unawaited(ref.read(alertesProduitsProvider.notifier).actualiser());
     await _charger();
     if (!mounted) return;
     afficherToast(context, titre: l10n.pmEnregistre, ton: DsToastTon.succes);
@@ -1265,7 +1288,70 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
         ],
       ),
     ),
+    _alertesProduits(l10n),
   ];
+
+  /// Alertes produits : période d'analyse commune, puis chaque alerte (interrupteur, règle, ses seuils) par famille.
+  Widget _alertesProduits(AppLocalizations l10n) {
+    final c = context.ds.colors;
+    final t = context.ds.typo;
+    Widget seuil(String cle, {bool actif = true}) => Row(
+      mainAxisSize: MainAxisSize.min,
+      spacing: DsSpacing.s2,
+      children: [
+        Text(libelleSeuilAlerte(l10n, cle), style: t.bodySm.copyWith(color: c.textSecondary)),
+        _nombre('param_$cle', _seuilsAlertes[cle]!, largeur: 140, suffixe: uniteSeuilAlerte(l10n, cle), actif: actif),
+      ],
+    );
+    return DsCard(
+      titre: l10n.alpParamTitre,
+      icone: LucideIcons.bellRing,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(l10n.alpParamDesc, style: t.bodySm.copyWith(color: c.textSecondary, height: 1.45)),
+          _ligne(l10n.alpSeuilPeriode, child: seuil(SeuilsAlertesProduits.clePeriode)),
+          for (final g in GroupeAlerteProduit.values) ...[
+            Padding(
+              padding: const EdgeInsets.only(top: DsSpacing.s4, bottom: DsSpacing.s1),
+              child: Text(libelleGroupeAlerte(l10n, g).toUpperCase(), style: t.overline.copyWith(color: c.textMuted)),
+            ),
+            for (final ty in TypeAlerteProduit.values.where((x) => x.groupe == g))
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: DsSpacing.s3),
+                decoration: BoxDecoration(
+                  border: Border(bottom: BorderSide(color: c.borderSubtle)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  spacing: DsSpacing.s2,
+                  children: [
+                    DsSwitch(
+                      cle: ValueKey('param_alerte_${ty.name}'),
+                      valeur: !_alertesInactives.contains(ty),
+                      libelle: libelleTypeAlerte(l10n, ty),
+                      aide: regleAlerte(l10n, ty),
+                      onChanged: (v) => _changer(
+                        () => _alertesInactives = v ? ({..._alertesInactives}..remove(ty)) : {..._alertesInactives, ty},
+                      ),
+                    ),
+                    if (SeuilsAlertesProduits.clesDe(ty).isNotEmpty)
+                      Wrap(
+                        spacing: DsSpacing.s5,
+                        runSpacing: DsSpacing.s2,
+                        children: [
+                          for (final cle in SeuilsAlertesProduits.clesDe(ty))
+                            seuil(cle, actif: !_alertesInactives.contains(ty)),
+                        ],
+                      ),
+                  ],
+                ),
+              ),
+          ],
+        ],
+      ),
+    );
+  }
 
   // ------------------------------------------------------------------ Sauvegarde
 

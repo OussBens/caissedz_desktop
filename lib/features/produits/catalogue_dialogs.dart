@@ -402,22 +402,37 @@ class BadgeStatutRemise extends StatelessWidget {
 
 /// Formulaire remise (`RemiseFormDialog`, `DocFormDialog` 980 px) : nom, type de taux (Pourcentage /
 /// Montant fixe), valeur, période, type de remise (§8.9, en tête) et produits concernés (remise par produit).
-Future<void> afficherFormulaireRemise(BuildContext context, WidgetRef ref, {Remise? remise}) async {
+/// Nouvelle remise, ou modification de [remise]. Une alerte produit propose les [proposes] et le [pourcentage]
+/// conseillé.
+Future<void> afficherFormulaireRemise(
+  BuildContext context,
+  WidgetRef ref, {
+  Remise? remise,
+  List<Produit> proposes = const [],
+  double? pourcentage,
+}) async {
   final produits = await ref.read(produitsProvider.future);
   if (!context.mounted) return;
   final lignes = remise == null
-      ? <LigneDoc>[]
+      ? [for (final p in proposes) LigneDoc(produit: p)]
       : [
           for (final p in produits)
             if (p.remiseCode == remise.code || p.code == remise.produitCode) LigneDoc(produit: p),
         ];
-  await afficherDialog<bool>(context, fermableParVoile: false, builder: (_) => _RemiseForm(remise, lignes));
+  await afficherDialog<bool>(
+    context,
+    fermableParVoile: false,
+    builder: (_) => _RemiseForm(remise, lignes, pourcentage: pourcentage),
+  );
 }
 
 class _RemiseForm extends ConsumerStatefulWidget {
-  const _RemiseForm(this.remise, this.lignesInitiales);
+  const _RemiseForm(this.remise, this.lignesInitiales, {this.pourcentage});
   final Remise? remise;
   final List<LigneDoc> lignesInitiales;
+
+  /// Pourcentage proposé à une nouvelle remise.
+  final double? pourcentage;
 
   @override
   ConsumerState<_RemiseForm> createState() => _RemiseFormState();
@@ -425,7 +440,9 @@ class _RemiseForm extends ConsumerStatefulWidget {
 
 class _RemiseFormState extends ConsumerState<_RemiseForm> {
   late final _nom = TextEditingController(text: widget.remise?.designation ?? '');
-  late final _valeur = TextEditingController(text: widget.remise == null ? '10' : texteQuantite(widget.remise!.valeur));
+  late final _valeur = TextEditingController(
+    text: widget.remise == null ? texteQuantite(widget.pourcentage ?? 10) : texteQuantite(widget.remise!.valeur),
+  );
   late final _seuil = TextEditingController(text: widget.remise == null ? '' : texteQuantite(widget.remise!.seuil));
   late final _observation = TextEditingController(text: widget.remise?.observation ?? '');
   late String _type = widget.remise?.type ?? 'Pourcentage';
@@ -783,12 +800,20 @@ int packsPossibles(Pack k, Map<String, double> stocks) {
 }
 
 /// Formulaire pack (`PackFormDialog`, `DocFormDialog` 940 px) : code-barres, nom, prix, composants.
-Future<void> afficherFormulairePack(BuildContext context, WidgetRef ref, {Pack? pack}) async {
+/// Nouveau pack (avec les [proposes] d'une alerte « Achetés ensemble »), ou modification de [pack].
+Future<void> afficherFormulairePack(
+  BuildContext context,
+  WidgetRef ref, {
+  Pack? pack,
+  List<Produit> proposes = const [],
+}) async {
   final produits = {for (final p in await ref.read(produitsProvider.future)) p.code: p};
   if (!context.mounted) return;
   final lignes = [
     for (final l in pack?.lignes ?? const <PackLigne>[])
       if (produits[l.produitCode] != null) LigneDoc(produit: produits[l.produitCode]!, quantite: l.quantite.toDouble()),
+    if (pack == null)
+      for (final p in proposes) LigneDoc(produit: p),
   ];
   await afficherDialog<bool>(context, fermableParVoile: false, builder: (_) => _PackForm(pack, lignes));
 }

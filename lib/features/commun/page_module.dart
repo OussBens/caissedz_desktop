@@ -24,6 +24,7 @@ class PageModule extends ConsumerWidget {
     this.onOnglet,
     this.actions = const [],
     this.defilable = true,
+    this.pointsOnglets = const {},
   });
 
   final String moduleId;
@@ -39,6 +40,9 @@ class PageModule extends ConsumerWidget {
 
   /// `false` : le contenu gère son propre défilement (navigation latérale fixe, tableaux).
   final bool defilable;
+
+  /// Onglets portant un point rouge hors journal (nouvelles alertes produits de la Situation).
+  final Set<int> pointsOnglets;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -82,7 +86,8 @@ class PageModule extends ConsumerWidget {
               comptes: comptes,
               points: [
                 for (var i = 0; i < onglets!.length; i++)
-                  i != ongletCourant && pastilles.contains(PastillesModules.cible(moduleId, i)),
+                  i != ongletCourant &&
+                      (pastilles.contains(PastillesModules.cible(moduleId, i)) || pointsOnglets.contains(i)),
               ],
               onChanged: onOnglet ?? (_) {},
             ),

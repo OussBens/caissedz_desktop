@@ -8177,4 +8177,466 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get produitErreurTropDeColis => '5 colis au plus par produit.';
+
+  @override
+  String get alpGroupeVentes => 'Ventes';
+
+  @override
+  String get alpGroupeStock => 'Stock';
+
+  @override
+  String get alpGroupePrix => 'Prix';
+
+  @override
+  String get alpGroupeQualite => 'Qualité';
+
+  @override
+  String get alpGroupeMarche => 'Marché';
+
+  @override
+  String get alpMeilleuresVentes => 'Meilleures ventes';
+
+  @override
+  String get alpStockDormant => 'Stock dormant';
+
+  @override
+  String get alpCandidatsRemise => 'Candidats à une remise';
+
+  @override
+  String get alpMargeFaible => 'Marge faible ou vente à perte';
+
+  @override
+  String get alpRetoursEleves => 'Retours élevés';
+
+  @override
+  String get alpEnHausse => 'Produits en hausse';
+
+  @override
+  String get alpStockLent => 'Stock lent';
+
+  @override
+  String get alpJamaisVendus => 'Jamais vendus';
+
+  @override
+  String get alpRemisesInefficaces => 'Remises sans effet';
+
+  @override
+  String get alpStockAnormal => 'Stock anormal';
+
+  @override
+  String get alpHausseFournisseur => 'Hausse du prix fournisseur';
+
+  @override
+  String get alpAchetesEnsemble => 'Achetés ensemble';
+
+  @override
+  String get alpStockDesequilibre => 'Stock déséquilibré entre magasins';
+
+  @override
+  String get alpRuptureSansCommande => 'Rupture sans commande';
+
+  @override
+  String get alpSaisonniers => 'Produits de saison';
+
+  @override
+  String get alpRupturesFrequentes => 'Ruptures fréquentes';
+
+  @override
+  String get alpFicheIncomplete => 'Fiche produit incomplète';
+
+  @override
+  String get alpBonneMargePeuVendus => 'Bonne marge, peu vendu';
+
+  @override
+  String get alpNouveautesMarche => 'Nouveautés du marché';
+
+  @override
+  String get alpTendancesMarche => 'Tendances du marché que vous n\'avez pas';
+
+  @override
+  String get alpRegleMeilleuresVentes =>
+      'Les N produits les plus vendus sur la période (nets des retours) ; à réapprovisionner quand le stock couvre moins de Y jours de ventes.';
+
+  @override
+  String get alpRegleStockDormant => 'En stock, aucune vente depuis plus de X jours ; classés par valeur immobilisée.';
+
+  @override
+  String get alpRegleCandidatsRemise =>
+      'Dormants ou ventes en baisse de plus de X %, avec une marge encore au-dessus de Y % : une remise est conseillée.';
+
+  @override
+  String get alpRegleMargeFaible =>
+      'Prix de vente HT proche du dernier prix d\'achat HT (marge sous X %) ou en dessous.';
+
+  @override
+  String get alpRegleRetoursEleves =>
+      'Plus de X % des quantités vendues sur la période sont revenues en retour (5 vendus au moins).';
+
+  @override
+  String get alpRegleEnHausse => 'Ventes des X derniers jours plus de Y % au-dessus des X jours d\'avant.';
+
+  @override
+  String get alpRegleStockLent => 'Au rythme des ventes de la période, le stock mettrait plus de X jours à s\'écouler.';
+
+  @override
+  String get alpRegleJamaisVendus => 'En stock depuis plus de X jours, jamais vendu.';
+
+  @override
+  String get alpRegleRemisesInefficaces =>
+      'Remise active depuis au moins 7 jours : les ventes n\'ont pas augmenté par rapport au même nombre de jours avant elle.';
+
+  @override
+  String get alpRegleStockAnormal =>
+      'Stock négatif, sorties « Casse » répétées ou gros écart d\'inventaire sur la période.';
+
+  @override
+  String get alpRegleHausseFournisseur =>
+      'Dernier prix d\'achat plus de X % au-dessus du précédent : prix de vente conseillé à marge égale.';
+
+  @override
+  String get alpRegleAchetesEnsemble =>
+      'Deux produits sur le même ticket dans plus de X % des ventes du moins vendu des deux : à proposer en pack.';
+
+  @override
+  String get alpRegleStockDesequilibre =>
+      'Bas ou en rupture dans un magasin, largement au-dessus du seuil dans un autre : transfert conseillé.';
+
+  @override
+  String get alpRegleRuptureSansCommande =>
+      'Rupture ou sous le seuil sans commande fournisseur ouverte, ou avec une commande en retard de plus de X jours.';
+
+  @override
+  String get alpRegleSaisonniers => 'Vendu l\'an passé dans les X prochains jours plus que le stock actuel.';
+
+  @override
+  String get alpRegleRupturesFrequentes => 'Plus de X jours en rupture sur la période ; ventes perdues estimées.';
+
+  @override
+  String get alpRegleFicheIncomplete =>
+      'Sans code-barres, sans photo, rangé dans la catégorie Divers ou sans prix de vente.';
+
+  @override
+  String get alpRegleBonneMargePeuVendus => 'Dans les X % des meilleures marges, mais dans la moitié la moins vendue.';
+
+  @override
+  String get alpRegleNouveautesMarche =>
+      'Produits arrivés du catalogue BENS depuis moins de X jours, que vous n\'avez jamais eus en stock.';
+
+  @override
+  String get alpRegleTendancesMarche =>
+      'Produits qui se vendent dans plusieurs boutiques CaisseDZ (catalogue BENS) et que vous n\'avez jamais eus en stock.';
+
+  @override
+  String get alpActionBesoin => 'Créer un besoin';
+
+  @override
+  String get alpActionRemise => 'Créer une remise';
+
+  @override
+  String get alpActionPrix => 'Modifier le prix';
+
+  @override
+  String get alpActionRetours => 'Voir les retours';
+
+  @override
+  String get alpActionModifierRemise => 'Modifier la remise';
+
+  @override
+  String get alpActionMouvements => 'Voir les mouvements';
+
+  @override
+  String get alpActionPack => 'Créer un pack';
+
+  @override
+  String get alpActionTransfert => 'Créer un transfert';
+
+  @override
+  String get alpActionCommande => 'Commander';
+
+  @override
+  String get alpActionSeuil => 'Ajuster le seuil';
+
+  @override
+  String get alpActionFiche => 'Compléter la fiche';
+
+  @override
+  String get alpActionVoir => 'Voir le produit';
+
+  @override
+  String get alpActionCreerProduit => 'Créer le produit';
+
+  @override
+  String get alpSeuilPeriode => 'Période d\'analyse des ventes';
+
+  @override
+  String get alpSeuilTopN => 'Nombre de produits';
+
+  @override
+  String get alpSeuilCouverture => 'Couverture minimale';
+
+  @override
+  String get alpSeuilDormant => 'Sans vente depuis';
+
+  @override
+  String get alpSeuilBaisse => 'Baisse des ventes';
+
+  @override
+  String get alpSeuilMargeRemise => 'Marge gardée';
+
+  @override
+  String get alpSeuilMargeFaible => 'Marge minimale';
+
+  @override
+  String get alpSeuilRetours => 'Taux de retour';
+
+  @override
+  String get alpSeuilHausseJours => 'Période comparée';
+
+  @override
+  String get alpSeuilHaussePct => 'Hausse des ventes';
+
+  @override
+  String get alpSeuilLent => 'Écoulement au-delà de';
+
+  @override
+  String get alpSeuilJamaisVendu => 'En stock depuis';
+
+  @override
+  String get alpSeuilCasse => 'Sorties « Casse »';
+
+  @override
+  String get alpSeuilEcart => 'Écart d\'inventaire';
+
+  @override
+  String get alpSeuilHausseAchat => 'Hausse du prix d\'achat';
+
+  @override
+  String get alpSeuilEnsemble => 'Sur le même ticket';
+
+  @override
+  String get alpSeuilRetard => 'Commande en retard de';
+
+  @override
+  String get alpSeuilSaison => 'Jours à venir (an passé)';
+
+  @override
+  String get alpSeuilRuptures => 'Jours en rupture';
+
+  @override
+  String get alpSeuilBonneMarge => 'Meilleures marges';
+
+  @override
+  String get alpSeuilNouveautes => 'Arrivés depuis';
+
+  @override
+  String get alpJours => 'jours';
+
+  @override
+  String get alpFois => 'fois';
+
+  @override
+  String get alpProduits => 'produits';
+
+  @override
+  String alpDStock(String stock) {
+    return 'stock $stock';
+  }
+
+  @override
+  String alpDVendus(String quantite) {
+    return '$quantite vendus';
+  }
+
+  @override
+  String alpDCouverture(String jours) {
+    return '$jours j de ventes en stock';
+  }
+
+  @override
+  String alpDSansVente(String jours) {
+    return 'aucune vente depuis $jours j';
+  }
+
+  @override
+  String alpDValeur(String montant) {
+    return '$montant immobilisés';
+  }
+
+  @override
+  String alpDBaisse(String pct) {
+    return 'ventes $pct %';
+  }
+
+  @override
+  String alpDMarge(String pct) {
+    return 'marge $pct %';
+  }
+
+  @override
+  String alpDRemiseConseillee(String pct) {
+    return 'remise conseillée $pct %';
+  }
+
+  @override
+  String alpDDernierAchat(String montant) {
+    return 'dernier achat $montant';
+  }
+
+  @override
+  String get alpDPerte => 'vendu à perte';
+
+  @override
+  String alpDPrixConseille(String montant) {
+    return 'prix conseillé $montant';
+  }
+
+  @override
+  String alpDRetours(String retournes, String vendus, String pct) {
+    return '$retournes retournés sur $vendus vendus ($pct %)';
+  }
+
+  @override
+  String alpDHausse(String quantite, String avant, String pct) {
+    return '$quantite vendus contre $avant ($pct %)';
+  }
+
+  @override
+  String alpDEcoulement(String jours) {
+    return 'écoulé en $jours j au rythme actuel';
+  }
+
+  @override
+  String alpDJamaisVendu(String jours) {
+    return 'jamais vendu, en stock depuis $jours j';
+  }
+
+  @override
+  String alpDRemise(String remise, String apres, String jours, String avant) {
+    return '$remise : $apres vendus en $jours j contre $avant avant';
+  }
+
+  @override
+  String get alpDNegatif => 'stock négatif';
+
+  @override
+  String alpDCasses(String nombre) {
+    return '$nombre sorties « Casse »';
+  }
+
+  @override
+  String alpDEcart(String quantite) {
+    return 'écart d\'inventaire $quantite';
+  }
+
+  @override
+  String alpDHausseAchat(String avant, String apres, String pct) {
+    return 'achat $avant → $apres ($pct %)';
+  }
+
+  @override
+  String alpDEnsemble(String produit, String tickets, String pct) {
+    return 'avec $produit sur $tickets tickets ($pct %)';
+  }
+
+  @override
+  String alpDTransfert(String quantite, String depuis, String stockDepuis, String vers, String stockVers) {
+    return 'transférer $quantite de $depuis ($stockDepuis) vers $vers ($stockVers)';
+  }
+
+  @override
+  String alpDCommandeRetard(String jours) {
+    return 'commande en retard de $jours j';
+  }
+
+  @override
+  String get alpDAucuneCommande => 'aucune commande fournisseur';
+
+  @override
+  String alpDSaison(String quantite, String jours) {
+    return '$quantite vendus l\'an passé dans les $jours prochains jours';
+  }
+
+  @override
+  String alpDRuptures(String jours, String perdues) {
+    return '$jours j en rupture · environ $perdues ventes perdues';
+  }
+
+  @override
+  String get alpDSansCodeBarres => 'sans code-barres';
+
+  @override
+  String get alpDSansPhoto => 'sans photo';
+
+  @override
+  String get alpDCategorieDivers => 'catégorie Divers';
+
+  @override
+  String get alpDSansPrix => 'sans prix de vente';
+
+  @override
+  String alpDArrive(String jours) {
+    return 'arrivé du catalogue BENS il y a $jours j';
+  }
+
+  @override
+  String alpDTendance(String jours) {
+    return 'tendance depuis $jours j';
+  }
+
+  @override
+  String get situationAlp => 'Alertes produits';
+
+  @override
+  String get situationGroupeAlertes => 'Alertes';
+
+  @override
+  String get alpFiltreType => 'Alerte';
+
+  @override
+  String get alpToutes => 'Toutes les alertes';
+
+  @override
+  String get alpColAlerte => 'Alerte';
+
+  @override
+  String get alpColDetail => 'Détail';
+
+  @override
+  String get alpColAction => 'Action';
+
+  @override
+  String get alpCarteTitre => 'Alertes produits';
+
+  @override
+  String get alpCarteAucune => 'Aucune alerte produit.';
+
+  @override
+  String get alpCarteInfo =>
+      'Calculées sur les ventes nettes des retours et le journal du stock (Paramètres › Alertes). Cliquez sur une alerte pour la voir dans la Situation.';
+
+  @override
+  String alpCarteCritiques(int nombre) {
+    return '$nombre à traiter';
+  }
+
+  @override
+  String get alpCarteNouvelles => 'Nouvelles alertes';
+
+  @override
+  String get alpActualiser => 'Actualiser';
+
+  @override
+  String get alpParamTitre => 'Alertes produits';
+
+  @override
+  String get alpParamDesc =>
+      'Vingt alertes calculées sur les ventes (nettes des retours), le journal du stock, les achats et le catalogue BENS. Désactivez celles qui ne vous servent pas et ajustez leurs seuils.';
+
+  @override
+  String alpParamActive(String alerte) {
+    return 'Activer « $alerte »';
+  }
+
+  @override
+  String get alpCritiques => 'À traiter';
 }

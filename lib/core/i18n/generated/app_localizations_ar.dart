@@ -8139,4 +8139,458 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get produitErreurTropDeColis => '5 طرود كحد أقصى لكل منتج.';
+
+  @override
+  String get alpGroupeVentes => 'المبيعات';
+
+  @override
+  String get alpGroupeStock => 'المخزون';
+
+  @override
+  String get alpGroupePrix => 'الأسعار';
+
+  @override
+  String get alpGroupeQualite => 'الجودة';
+
+  @override
+  String get alpGroupeMarche => 'السوق';
+
+  @override
+  String get alpMeilleuresVentes => 'الأكثر مبيعًا';
+
+  @override
+  String get alpStockDormant => 'مخزون راكد';
+
+  @override
+  String get alpCandidatsRemise => 'مرشحة لتخفيض';
+
+  @override
+  String get alpMargeFaible => 'هامش ضعيف أو بيع بخسارة';
+
+  @override
+  String get alpRetoursEleves => 'مرتجعات مرتفعة';
+
+  @override
+  String get alpEnHausse => 'منتجات في ارتفاع';
+
+  @override
+  String get alpStockLent => 'مخزون بطيء';
+
+  @override
+  String get alpJamaisVendus => 'لم تُبع أبدًا';
+
+  @override
+  String get alpRemisesInefficaces => 'تخفيضات دون أثر';
+
+  @override
+  String get alpStockAnormal => 'مخزون غير عادي';
+
+  @override
+  String get alpHausseFournisseur => 'ارتفاع سعر المورد';
+
+  @override
+  String get alpAchetesEnsemble => 'تُشترى معًا';
+
+  @override
+  String get alpStockDesequilibre => 'مخزون غير متوازن بين المخازن';
+
+  @override
+  String get alpRuptureSansCommande => 'نفاد دون طلبية';
+
+  @override
+  String get alpSaisonniers => 'منتجات موسمية';
+
+  @override
+  String get alpRupturesFrequentes => 'نفاد متكرر';
+
+  @override
+  String get alpFicheIncomplete => 'بطاقة منتج ناقصة';
+
+  @override
+  String get alpBonneMargePeuVendus => 'هامش جيد، مبيعات قليلة';
+
+  @override
+  String get alpNouveautesMarche => 'جديد السوق';
+
+  @override
+  String get alpTendancesMarche => 'رائج في السوق وليس عندك';
+
+  @override
+  String get alpRegleMeilleuresVentes =>
+      'المنتجات N الأكثر مبيعًا خلال الفترة (بعد خصم المرتجعات)؛ يجب التموين عندما يغطي المخزون أقل من Y أيام من المبيعات.';
+
+  @override
+  String get alpRegleStockDormant => 'في المخزون دون أي بيع منذ أكثر من X يومًا؛ مرتبة حسب القيمة المجمدة.';
+
+  @override
+  String get alpRegleCandidatsRemise => 'راكدة أو مبيعات منخفضة بأكثر من X %، مع هامش أعلى من Y %: يُنصح بتخفيض.';
+
+  @override
+  String get alpRegleMargeFaible => 'سعر البيع دون رسوم قريب من آخر سعر شراء دون رسوم (هامش أقل من X %) أو أقل منه.';
+
+  @override
+  String get alpRegleRetoursEleves => 'أكثر من X % من الكميات المباعة خلال الفترة أُرجعت (5 مبيعات على الأقل).';
+
+  @override
+  String get alpRegleEnHausse => 'مبيعات آخر X أيام أعلى بأكثر من Y % من الأيام X التي قبلها.';
+
+  @override
+  String get alpRegleStockLent => 'بإيقاع مبيعات الفترة، يحتاج المخزون أكثر من X يومًا لينفد.';
+
+  @override
+  String get alpRegleJamaisVendus => 'في المخزون منذ أكثر من X يومًا ولم يُبع أبدًا.';
+
+  @override
+  String get alpRegleRemisesInefficaces =>
+      'تخفيض نشط منذ 7 أيام على الأقل: لم ترتفع المبيعات مقارنة بنفس عدد الأيام قبله.';
+
+  @override
+  String get alpRegleStockAnormal => 'مخزون سالب، أو إخراجات «كسر» متكررة، أو فارق جرد كبير خلال الفترة.';
+
+  @override
+  String get alpRegleHausseFournisseur => 'آخر سعر شراء أعلى بأكثر من X % من السابق: سعر بيع مقترح بنفس الهامش.';
+
+  @override
+  String get alpRegleAchetesEnsemble =>
+      'منتجان في نفس التذكرة في أكثر من X % من مبيعات الأقل مبيعًا منهما: يُقترح جمعهما في حزمة.';
+
+  @override
+  String get alpRegleStockDesequilibre => 'منخفض أو نافد في مخزن، وأعلى بكثير من العتبة في مخزن آخر: يُنصح بتحويل.';
+
+  @override
+  String get alpRegleRuptureSansCommande =>
+      'نفاد أو تحت العتبة دون طلبية مورد مفتوحة، أو مع طلبية متأخرة بأكثر من X يومًا.';
+
+  @override
+  String get alpRegleSaisonniers => 'بيع في العام الماضي خلال الأيام X القادمة أكثر من المخزون الحالي.';
+
+  @override
+  String get alpRegleRupturesFrequentes => 'أكثر من X يومًا نفاد خلال الفترة؛ مع تقدير المبيعات الضائعة.';
+
+  @override
+  String get alpRegleFicheIncomplete => 'دون رمز شريطي، أو دون صورة، أو في فئة «متنوع»، أو دون سعر بيع.';
+
+  @override
+  String get alpRegleBonneMargePeuVendus => 'ضمن X % من أفضل الهوامش، لكن في النصف الأقل مبيعًا.';
+
+  @override
+  String get alpRegleNouveautesMarche => 'منتجات وصلت من كتالوج BENS منذ أقل من X يومًا ولم تكن لديك في المخزون أبدًا.';
+
+  @override
+  String get alpRegleTendancesMarche =>
+      'منتجات تُباع في عدة محلات CaisseDZ (كتالوج BENS) ولم تكن لديك في المخزون أبدًا.';
+
+  @override
+  String get alpActionBesoin => 'إنشاء احتياج';
+
+  @override
+  String get alpActionRemise => 'إنشاء تخفيض';
+
+  @override
+  String get alpActionPrix => 'تعديل السعر';
+
+  @override
+  String get alpActionRetours => 'عرض المرتجعات';
+
+  @override
+  String get alpActionModifierRemise => 'تعديل التخفيض';
+
+  @override
+  String get alpActionMouvements => 'عرض الحركات';
+
+  @override
+  String get alpActionPack => 'إنشاء حزمة';
+
+  @override
+  String get alpActionTransfert => 'إنشاء تحويل';
+
+  @override
+  String get alpActionCommande => 'طلب';
+
+  @override
+  String get alpActionSeuil => 'ضبط العتبة';
+
+  @override
+  String get alpActionFiche => 'إكمال البطاقة';
+
+  @override
+  String get alpActionVoir => 'عرض المنتج';
+
+  @override
+  String get alpActionCreerProduit => 'إنشاء المنتج';
+
+  @override
+  String get alpSeuilPeriode => 'فترة تحليل المبيعات';
+
+  @override
+  String get alpSeuilTopN => 'عدد المنتجات';
+
+  @override
+  String get alpSeuilCouverture => 'التغطية الدنيا';
+
+  @override
+  String get alpSeuilDormant => 'دون بيع منذ';
+
+  @override
+  String get alpSeuilBaisse => 'انخفاض المبيعات';
+
+  @override
+  String get alpSeuilMargeRemise => 'الهامش المحفوظ';
+
+  @override
+  String get alpSeuilMargeFaible => 'الهامش الأدنى';
+
+  @override
+  String get alpSeuilRetours => 'نسبة الإرجاع';
+
+  @override
+  String get alpSeuilHausseJours => 'الفترة المقارنة';
+
+  @override
+  String get alpSeuilHaussePct => 'ارتفاع المبيعات';
+
+  @override
+  String get alpSeuilLent => 'النفاد بعد';
+
+  @override
+  String get alpSeuilJamaisVendu => 'في المخزون منذ';
+
+  @override
+  String get alpSeuilCasse => 'إخراجات «كسر»';
+
+  @override
+  String get alpSeuilEcart => 'فارق الجرد';
+
+  @override
+  String get alpSeuilHausseAchat => 'ارتفاع سعر الشراء';
+
+  @override
+  String get alpSeuilEnsemble => 'في نفس التذكرة';
+
+  @override
+  String get alpSeuilRetard => 'طلبية متأخرة بـ';
+
+  @override
+  String get alpSeuilSaison => 'الأيام القادمة (العام الماضي)';
+
+  @override
+  String get alpSeuilRuptures => 'أيام النفاد';
+
+  @override
+  String get alpSeuilBonneMarge => 'أفضل الهوامش';
+
+  @override
+  String get alpSeuilNouveautes => 'وصلت منذ';
+
+  @override
+  String get alpJours => 'أيام';
+
+  @override
+  String get alpFois => 'مرات';
+
+  @override
+  String get alpProduits => 'منتجات';
+
+  @override
+  String alpDStock(String stock) {
+    return 'المخزون $stock';
+  }
+
+  @override
+  String alpDVendus(String quantite) {
+    return '$quantite مباعة';
+  }
+
+  @override
+  String alpDCouverture(String jours) {
+    return '$jours يوم مبيعات في المخزون';
+  }
+
+  @override
+  String alpDSansVente(String jours) {
+    return 'دون بيع منذ $jours يوم';
+  }
+
+  @override
+  String alpDValeur(String montant) {
+    return '$montant مجمدة';
+  }
+
+  @override
+  String alpDBaisse(String pct) {
+    return 'المبيعات $pct %';
+  }
+
+  @override
+  String alpDMarge(String pct) {
+    return 'الهامش $pct %';
+  }
+
+  @override
+  String alpDRemiseConseillee(String pct) {
+    return 'تخفيض مقترح $pct %';
+  }
+
+  @override
+  String alpDDernierAchat(String montant) {
+    return 'آخر شراء $montant';
+  }
+
+  @override
+  String get alpDPerte => 'يُباع بخسارة';
+
+  @override
+  String alpDPrixConseille(String montant) {
+    return 'سعر مقترح $montant';
+  }
+
+  @override
+  String alpDRetours(String retournes, String vendus, String pct) {
+    return '$retournes مرتجعة من $vendus مباعة ($pct %)';
+  }
+
+  @override
+  String alpDHausse(String quantite, String avant, String pct) {
+    return '$quantite مباعة مقابل $avant ($pct %)';
+  }
+
+  @override
+  String alpDEcoulement(String jours) {
+    return 'ينفد في $jours يوم بالإيقاع الحالي';
+  }
+
+  @override
+  String alpDJamaisVendu(String jours) {
+    return 'لم يُبع أبدًا، في المخزون منذ $jours يوم';
+  }
+
+  @override
+  String alpDRemise(String remise, String apres, String jours, String avant) {
+    return '$remise: $apres مباعة في $jours يوم مقابل $avant قبله';
+  }
+
+  @override
+  String get alpDNegatif => 'مخزون سالب';
+
+  @override
+  String alpDCasses(String nombre) {
+    return '$nombre إخراجات «كسر»';
+  }
+
+  @override
+  String alpDEcart(String quantite) {
+    return 'فارق الجرد $quantite';
+  }
+
+  @override
+  String alpDHausseAchat(String avant, String apres, String pct) {
+    return 'الشراء $avant ← $apres ($pct %)';
+  }
+
+  @override
+  String alpDEnsemble(String produit, String tickets, String pct) {
+    return 'مع $produit في $tickets تذكرة ($pct %)';
+  }
+
+  @override
+  String alpDTransfert(String quantite, String depuis, String stockDepuis, String vers, String stockVers) {
+    return 'تحويل $quantite من $depuis ($stockDepuis) إلى $vers ($stockVers)';
+  }
+
+  @override
+  String alpDCommandeRetard(String jours) {
+    return 'طلبية متأخرة بـ $jours يوم';
+  }
+
+  @override
+  String get alpDAucuneCommande => 'لا توجد طلبية مورد';
+
+  @override
+  String alpDSaison(String quantite, String jours) {
+    return '$quantite مباعة العام الماضي في الأيام $jours القادمة';
+  }
+
+  @override
+  String alpDRuptures(String jours, String perdues) {
+    return '$jours يوم نفاد · حوالي $perdues مبيعات ضائعة';
+  }
+
+  @override
+  String get alpDSansCodeBarres => 'دون رمز شريطي';
+
+  @override
+  String get alpDSansPhoto => 'دون صورة';
+
+  @override
+  String get alpDCategorieDivers => 'فئة «متنوع»';
+
+  @override
+  String get alpDSansPrix => 'دون سعر بيع';
+
+  @override
+  String alpDArrive(String jours) {
+    return 'وصل من كتالوج BENS منذ $jours يوم';
+  }
+
+  @override
+  String alpDTendance(String jours) {
+    return 'رائج منذ $jours يوم';
+  }
+
+  @override
+  String get situationAlp => 'تنبيهات المنتجات';
+
+  @override
+  String get situationGroupeAlertes => 'التنبيهات';
+
+  @override
+  String get alpFiltreType => 'التنبيه';
+
+  @override
+  String get alpToutes => 'كل التنبيهات';
+
+  @override
+  String get alpColAlerte => 'التنبيه';
+
+  @override
+  String get alpColDetail => 'التفاصيل';
+
+  @override
+  String get alpColAction => 'الإجراء';
+
+  @override
+  String get alpCarteTitre => 'تنبيهات المنتجات';
+
+  @override
+  String get alpCarteAucune => 'لا توجد تنبيهات للمنتجات.';
+
+  @override
+  String get alpCarteInfo =>
+      'محسوبة على المبيعات بعد خصم المرتجعات وسجل المخزون (الإعدادات › التنبيهات). انقر على تنبيه لعرضه في الوضعية.';
+
+  @override
+  String alpCarteCritiques(int nombre) {
+    return '$nombre للمعالجة';
+  }
+
+  @override
+  String get alpCarteNouvelles => 'تنبيهات جديدة';
+
+  @override
+  String get alpActualiser => 'تحديث';
+
+  @override
+  String get alpParamTitre => 'تنبيهات المنتجات';
+
+  @override
+  String get alpParamDesc =>
+      'عشرون تنبيهًا محسوبة على المبيعات (بعد خصم المرتجعات) وسجل المخزون والمشتريات وكتالوج BENS. عطّل ما لا تحتاجه واضبط العتبات.';
+
+  @override
+  String alpParamActive(String alerte) {
+    return 'تفعيل «$alerte»';
+  }
+
+  @override
+  String get alpCritiques => 'للمعالجة';
 }

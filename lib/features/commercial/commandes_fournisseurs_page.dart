@@ -6,6 +6,7 @@ import '../../application/document_commercial_service.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
 import '../../domain/models/document_commercial.dart';
+import '../../domain/models/produit.dart';
 import '../../domain/models/stock.dart';
 import '../../domain/models/tiers.dart';
 import '../commun/colonnes_audit.dart';
@@ -310,6 +311,7 @@ Future<void> afficherFormulaireCommandeFournisseur(
   WidgetRef ref, {
   CommandeFournisseur? commande,
   Besoin? besoin,
+  List<(Produit, double)> proposes = const [],
 }) async {
   final produits = {for (final p in await ref.read(produitsProvider.future)) p.code: p};
   final principal = await ref.read(magasinPrincipalProvider.future);
@@ -317,6 +319,8 @@ Future<void> afficherFormulaireCommandeFournisseur(
   await ref.read(magasinsProvider.future);
   if (!context.mounted) return;
   final lignes = [
+    // Alerte « Rupture sans commande » : produits et quantités proposés, au prix d'achat de la fiche.
+    for (final (p, q) in proposes) LigneDoc(produit: p, quantite: q, prix: p.prixAchat),
     if (commande != null)
       for (final l in commande.lignes)
         if (produits[l.produitCode] != null)
