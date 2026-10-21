@@ -66,9 +66,10 @@ class _BesoinsPageState extends ConsumerState<BesoinsPage> {
     final stocks = ref.watch(stocksProduitsProvider).value ?? const <String, double>{};
     final seuilGlobal = ref.watch(parametresVenteProvider).value?.seuilStockGlobal ?? 5;
     final maximum = ref.watch(parametresVenteProvider).value?.seuilStockMax ?? 0;
+    // Un produit du catalogue BENS jamais entré en stock n'est pas une rupture (même règle que les alertes).
     final ruptures = [
       for (final p in produits)
-        if ((stocks[p.code] ?? 0) <= seuilDe(p, seuilGlobal))
+        if ((stocks[p.code] ?? 0) <= seuilDe(p, seuilGlobal) && !(p.duCatalogue && !stocks.containsKey(p.code)))
           _Rupture(p, stocks[p.code] ?? 0, seuilDe(p, seuilGlobal), maximum),
     ];
     final aujourdhui = DateTime.now();
@@ -84,7 +85,6 @@ class _BesoinsPageState extends ConsumerState<BesoinsPage> {
     ].where((e) => e.jours <= BesoinsPage.joursAlerteExpiration).toList()..sort((a, b) => a.jours - b.jours);
     return PageModule(
       moduleId: 'besoins',
-      sousTitre: l10n.stkDescriptionBesoins,
       onglets: [l10n.stkOngletListes, l10n.stkOngletRuptures, l10n.stkOngletExpires],
       comptes: [besoins.length, ruptures.length, expires.length],
       ongletCourant: _onglet,

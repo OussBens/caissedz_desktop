@@ -8,11 +8,13 @@ import '../features/activation/activation_page.dart';
 import '../features/caisse/pos_page.dart';
 import '../features/commercial/commandes_fournisseurs_page.dart';
 import '../features/commercial/documents_page.dart';
+import '../features/compte_bens/compte_bens_pages.dart';
 import '../features/connexion/connexion_page.dart';
 import '../features/entrees/entrees_page.dart';
 import '../features/galerie/galerie_page.dart';
 import '../features/gestion_caisse/gestion_caisse_page.dart';
 import '../features/historique/historique_page.dart';
+import '../features/offres/offres_page.dart';
 import '../features/parametres/parametres_page.dart';
 import '../features/produits/produits_page.dart';
 import '../features/retours/retours_page.dart';
@@ -36,18 +38,35 @@ const String routeAccueil = '/caisse';
 /// Route initiale (surchargée dans les tests).
 final routeInitialeProvider = Provider<String>((ref) => routeAccueil);
 
-/// Routes hors shell (avant connexion).
-const Set<String> routesDemarrage = {ActivationPage.route, ConnexionPage.route};
+/// Routes hors shell (avant connexion) : formules, compte BENS, clé, connexion locale.
+const Set<String> routesDemarrage = {
+  OffresPage.route,
+  InscriptionPage.route,
+  ConnexionComptePage.route,
+  MotDePasseOubliePage.route,
+  ActivationPage.route,
+  ConnexionPage.route,
+};
 
-/// Redirections (§5.1) : non connecté → connexion (activation si l'application n'est pas activée,
-/// la connexion restant accessible pour demo / demo) ; connecté vers la connexion → caisse.
-/// L'activation reste accessible une fois connecté (sortie du mode démo, Paramètres › Licence).
-String? redirigerDemarrage({required bool activee, required bool connecte, required String cible}) {
+/// Écran ouvert après la connexion en lecture seule (la caisse est en pause).
+const String routeAccueilLectureSeule = '/tableau-de-bord';
+
+/// Redirections (§5.1) : sans licence sur ce poste (premier lancement, licence retirée) → les formules ;
+/// avec une licence valable, ou en lecture seule (essai terminé), non connecté → la connexion locale ;
+/// connecté vers la connexion → caisse (tableau de bord en lecture seule). Les formules et la clé restent
+/// accessibles une fois connecté (mise à niveau, Paramètres › Licence).
+String? redirigerDemarrage({
+  required bool activee,
+  required bool connecte,
+  required String cible,
+  bool lectureSeule = false,
+}) {
   if (!connecte) {
+    if (cible == ConnexionPage.route) return activee ? null : OffresPage.route;
     if (routesDemarrage.contains(cible)) return null;
-    return activee ? ConnexionPage.route : ActivationPage.route;
+    return activee ? ConnexionPage.route : OffresPage.route;
   }
-  if (cible == ConnexionPage.route) return routeAccueil;
+  if (cible == ConnexionPage.route) return lectureSeule ? routeAccueilLectureSeule : routeAccueil;
   return null;
 }
 
@@ -57,11 +76,34 @@ GoRouter construireRouter(Ref ref, {String routeInitiale = routeAccueil}) {
     initialLocation: routeInitiale,
     refreshListenable: ref.read(demarrageListenableProvider),
     redirect: (context, state) => redirigerDemarrage(
-      activee: ref.read(licenceProvider).estActivee,
+      activee: ref.read(licenceProvider).peutOuvrir,
+      lectureSeule: ref.read(licenceProvider).lectureSeule,
       connecte: ref.read(sessionProvider) != null,
       cible: state.uri.path,
     ),
     routes: [
+      GoRoute(
+        path: OffresPage.route,
+        pageBuilder: (c, s) => const NoTransitionPage(child: OffresPage()),
+      ),
+      GoRoute(
+        path: InscriptionPage.route,
+        pageBuilder: (c, s) => NoTransitionPage(
+          key: s.pageKey,
+          child: InscriptionPage(offre: s.uri.queryParameters['offre']),
+        ),
+      ),
+      GoRoute(
+        path: ConnexionComptePage.route,
+        pageBuilder: (c, s) => const NoTransitionPage(child: ConnexionComptePage()),
+      ),
+      GoRoute(
+        path: MotDePasseOubliePage.route,
+        pageBuilder: (c, s) => NoTransitionPage(
+          key: s.pageKey,
+          child: MotDePasseOubliePage(telephone: s.uri.queryParameters['telephone']),
+        ),
+      ),
       GoRoute(
         path: ActivationPage.route,
         pageBuilder: (c, s) => const NoTransitionPage(child: ActivationPage()),
@@ -105,7 +147,7 @@ Widget pageModule(ModuleApp module, {int? onglet}) => switch (module.id) {
   'zakat' => const ZakatPage(),
   'historique' => const HistoriquePage(),
   'caisse' => const PosPage(),
-  'entrees' => const EntreesPage(),
+  'entrees' => EntreesPage(ongletInitial: onglet ?? 0),
   'gestion_caisse' => const GestionCaissePage(),
   'clotures' => const GestionCaissePage(ongletInitial: 2),
   'ventes' => VentesPage(ongletInitial: onglet ?? 0),

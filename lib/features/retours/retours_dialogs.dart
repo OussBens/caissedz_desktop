@@ -390,9 +390,6 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
           ? l10n.retoursModifierTitre
           : (_client ? l10n.retoursNouveauClient : l10n.retoursNouveauFournisseur),
       iconeData: _edition ? LucideIcons.pencil : LucideIcons.undo2,
-      description: _edition
-          ? '${widget.retour!.code} · $nomTiers'
-          : (_client ? l10n.retoursFormDescriptionClient : l10n.retoursFormDescriptionFournisseur),
       largeur: 920,
       actions: [
         DsButton(
@@ -436,11 +433,12 @@ class _FormulaireRetourState extends ConsumerState<_FormulaireRetour> {
             ),
           DsGrilleFormulaire(
             children: [
-              DsFormRow(
-                libelle: l10n.produitsColCode,
-                largeurLibelle: lw,
-                child: DsTextField(valeurInitiale: widget.retour?.code ?? l10n.tiersCodeAuto, actif: false),
-              ),
+              if (widget.retour != null)
+                DsFormRow(
+                  libelle: l10n.produitsColCode,
+                  largeurLibelle: lw,
+                  child: DsTextField(valeurInitiale: widget.retour?.code ?? l10n.tiersCodeAuto, actif: false),
+                ),
               DsFormRow(
                 libelle: l10n.communDate,
                 obligatoire: true,

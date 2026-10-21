@@ -124,7 +124,6 @@ Future<void> afficherFormulaireCaisse(BuildContext context, WidgetRef ref, {Cais
       builder: (ctx, setState) => DsDialog(
         titre: caisse == null ? l10n.caisseNouvelle : l10n.caisseModifier,
         iconeData: LucideIcons.wallet,
-        description: caisse?.code ?? l10n.gcFormDescription,
         largeur: 620,
         actions: [
           DsButton(
@@ -146,10 +145,11 @@ Future<void> afficherFormulaireCaisse(BuildContext context, WidgetRef ref, {Cais
           crossAxisAlignment: CrossAxisAlignment.stretch,
           spacing: 12,
           children: [
-            DsFormRow(
-              libelle: l10n.produitsColCode,
-              child: DsTextField(valeurInitiale: code, actif: false),
-            ),
+            if (caisse != null)
+              DsFormRow(
+                libelle: l10n.produitsColCode,
+                child: DsTextField(valeurInitiale: code, actif: false),
+              ),
             DsFormRow(
               libelle: l10n.caisseNom,
               obligatoire: true,
@@ -398,7 +398,6 @@ Future<void> afficherTransfertCaisse(BuildContext context, WidgetRef ref) async 
         return DsDialog(
           titre: l10n.gcTrfTitre,
           iconeData: LucideIcons.arrowLeftRight,
-          description: l10n.gcTrfDescription,
           largeur: 620,
           actions: [
             DsButton(
@@ -645,7 +644,6 @@ class _ClotureZDialogState extends ConsumerState<_ClotureZDialog> {
     return DsDialog(
       titre: l10n.gcNouvelleClotureZ,
       iconeData: LucideIcons.fileLock2,
-      description: l10n.gcZDescription,
       largeur: 820,
       actions: [
         DsButton(
@@ -669,29 +667,30 @@ class _ClotureZDialogState extends ConsumerState<_ClotureZDialog> {
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 24,
             children: [
-              Expanded(
-                child: DsFormRow(
-                  libelle: l10n.gcColCaisse,
-                  obligatoire: true,
-                  largeurLibelle: 80,
-                  child: DsSelect<String>(
-                    cle: const ValueKey('z_caisse'),
-                    valeur: _caisse,
-                    options: [for (final c in widget.caisses) c.code],
-                    libelle: (code) => widget.caisses.firstWhere((c) => c.code == code).nom,
-                    recherche: rechercheListe(context, ref, ListeMetier.caisse),
-                    onChanged: (v) {
-                      if (v == null || v == _caisse) return;
-                      setState(() {
-                        _caisse = v;
-                        _apercu = null;
-                        _confirme = false;
-                      });
-                      _charger();
-                    },
+              if (ref.watch(plusieursCaissesProvider))
+                Expanded(
+                  child: DsFormRow(
+                    libelle: l10n.gcColCaisse,
+                    obligatoire: true,
+                    largeurLibelle: 80,
+                    child: DsSelect<String>(
+                      cle: const ValueKey('z_caisse'),
+                      valeur: _caisse,
+                      options: [for (final c in widget.caisses) c.code],
+                      libelle: (code) => widget.caisses.firstWhere((c) => c.code == code).nom,
+                      recherche: rechercheListe(context, ref, ListeMetier.caisse),
+                      onChanged: (v) {
+                        if (v == null || v == _caisse) return;
+                        setState(() {
+                          _caisse = v;
+                          _apercu = null;
+                          _confirme = false;
+                        });
+                        _charger();
+                      },
+                    ),
                   ),
                 ),
-              ),
               Expanded(
                 child: DsFormRow(
                   libelle: l10n.cloturePeriode,
@@ -1163,7 +1162,6 @@ class _ExportFiscalDialogState extends ConsumerState<_ExportFiscalDialog> {
     return DsDialog(
       titre: l10n.gcFiscalTitre,
       iconeData: LucideIcons.landmark,
-      description: l10n.gcFiscalDescription,
       largeur: 760,
       piedDebut: DsButton(
         key: const ValueKey('fiscal_verifier'),
@@ -1330,16 +1328,12 @@ Future<void> afficherMouvementsSession(BuildContext context, WidgetRef ref, Sess
   if (!context.mounted) return;
   final entrees = mouvements.where((m) => m.sens == SensMouvementCaisse.entree).fold(0.0, (x, m) => x + m.montant);
   final sorties = mouvements.where((m) => m.sens != SensMouvementCaisse.entree).fold(0.0, (x, m) => x + m.montant);
-  final caisse = caisses[s.caisseCode] ?? s.caisseCode;
   final colonnes = colonnesMouvements(l10n, devise, caisses, utilisateurs, avecCaisse: false);
   await afficherDialog<void>(
     context,
     builder: (ctx) => DsDialog(
       titre: l10n.gcSesMvtTitre(s.code),
       iconeData: LucideIcons.list,
-      description: s.fermeeLe == null
-          ? l10n.gcSesMvtOuverte(caisse, formatJourHeure.format(s.ouverteLe))
-          : l10n.gcSesMvtCloturee(caisse, formatJourHeure.format(s.fermeeLe!), formatJourHeure.format(s.ouverteLe)),
       largeur: 1000,
       piedDebut: peutExporter(ref)
           ? DsExportMenu(

@@ -24,6 +24,12 @@ enum ErreurCaisse {
   dejaAnnule,
   motifObligatoire,
   periodeCloturee,
+
+  /// Le palier ne permet pas d'autre caisse active.
+  limiteCaisses,
+
+  /// Le palier n'a qu'une caisse : pas de transfert entre caisses.
+  transfertsNonInclus,
 }
 
 class CaisseException implements Exception {
@@ -38,12 +44,25 @@ class CaisseException implements Exception {
 /// journal des mouvements, apports / dépenses, transferts TRF (= 2 mouvements dans UNE transaction) et leur
 /// annulation (mouvements retirés du journal, transfert conservé avec son motif).
 class CaisseService {
-  const CaisseService(this.db, {required this.utilisateurCode});
+  const CaisseService(this.db, {required this.utilisateurCode, this.maxCaisses});
 
   final Database db;
   final String utilisateurCode;
 
+  /// Caisses actives permises par le palier, coffre non compté (null : sans limite). Une seule : ni
+  /// création de caisse ni transfert entre caisses.
+  final int? maxCaisses;
+
+  bool get transfertsPermis => (maxCaisses ?? 2) > 1;
+
   CaisseRepository get _repo => CaisseRepository(db);
+
+  Future<void> _verifierPlace(DatabaseExecutor txn) async {
+    final max = maxCaisses;
+    if (max == null) return;
+    final n = (await txn.rawQuery('SELECT COUNT(*) n FROM caisse WHERE actif = 1 AND coffre = 0')).first['n'] as int;
+    if (n >= max) throw const CaisseException(ErreurCaisse.limiteCaisses);
+  }
 
   /// Journalise un mouvement dans la transaction courante (utilisé par les autres services).
   static Future<int> journaliser(
@@ -93,6 +112,7 @@ class CaisseService {
     _validerCaisse(nom, type, soldeInitial);
     return db.transaction((txn) async {
       final repo = CaisseRepository(txn);
+      await _verifierPlace(txn);
       await _verifierMagasin(txn, magasinCode);
       final code = await repo.prochainCode('caisse', CodeGenerator.caisse);
       final c = Caisse(
@@ -121,6 +141,7 @@ class CaisseService {
         final e = await _blocageDesactivation(txn, existante);
         if (e != null) throw CaisseException(e);
       }
+      if (!existante.actif && c.actif && !existante.coffre) await _verifierPlace(txn);
       await _verifierMagasin(txn, c.magasinCode);
       final maj = c.copyWith(nom: c.nom.trim(), observation: () => _texte(c.observation));
       await repo.mettreAJourCaisse(maj);
@@ -215,6 +236,7 @@ class CaisseService {
     String? commentaire,
     DateTime? date,
   }) async {
+    if (!transfertsPermis) throw const CaisseException(ErreurCaisse.transfertsNonInclus);
     if (montant <= 0) throw const CaisseException(ErreurCaisse.montantInvalide);
     if (caisseSource == caisseDestination) throw const CaisseException(ErreurCaisse.memeCaisse);
     if (!Referentiel.modesPaiement.contient(mode) || mode == 'Points') {

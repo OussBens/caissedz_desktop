@@ -53,20 +53,26 @@ class _GestionCaissePageState extends ConsumerState<GestionCaissePage> {
     final sessions = ref.watch(sessionsCaisseProvider).value ?? const <SessionCaisse>[];
     final noms = {for (final c in caisses) c.code: c.nom};
     final utilisateurs = ref.watch(nomsUtilisateursProvider).value ?? const <String, String>{};
+    // Basic (une seule caisse) : pas d'onglet Transferts. Les onglets gardent leur numéro (0…4, celui des
+    // routes) ; seul l'affichage saute les transferts.
+    final avecTransferts = ref.watch(transfertsCaissePermisProvider);
+    final visibles = [0, if (avecTransferts) 1, 2, 3, 4];
+    final onglet = visibles.contains(_onglet) ? _onglet : 0;
+    final libelles = [
+      l10n.gcOngletCaisses,
+      l10n.gcOngletTransferts,
+      l10n.gcOngletClotures,
+      l10n.gcOngletMouvements,
+      l10n.gcOngletSessions,
+    ];
+    final comptes = [caisses.length, transferts.length, clotures.length, mouvements.length, sessions.length];
     return PageModule(
       moduleId: 'gestion_caisse',
-      sousTitre: l10n.gcDescription,
-      onglets: [
-        l10n.gcOngletCaisses,
-        l10n.gcOngletTransferts,
-        l10n.gcOngletClotures,
-        l10n.gcOngletMouvements,
-        l10n.gcOngletSessions,
-      ],
-      comptes: [caisses.length, transferts.length, clotures.length, mouvements.length, sessions.length],
-      ongletCourant: _onglet,
-      onOnglet: (i) => setState(() => _onglet = i),
-      child: switch (_onglet) {
+      onglets: [for (final i in visibles) libelles[i]],
+      comptes: [for (final i in visibles) comptes[i]],
+      ongletCourant: visibles.indexOf(onglet),
+      onOnglet: (i) => setState(() => _onglet = visibles[i]),
+      child: switch (onglet) {
         // §9.13 : transferts caisse réservés à la permission `gererTransfertsCaisse` (sinon « accès refusé »).
         1 when !ref.watch(permissionProvider(Permission.gererTransfertsCaisse)) => LicenceGate(
           key: const ValueKey('transferts_refuse'),
@@ -229,12 +235,15 @@ class _GestionCaissePageState extends ConsumerState<GestionCaissePage> {
               onPressed: (choix, effacer) => desactiverCaisses(context, ref, choix, effacer),
             ),
           ],
-          primaire: DsButton(
-            key: const ValueKey('caisse_nouvelle'),
-            libelle: l10n.caisseNouvelle,
-            icone: LucideIcons.plus,
-            onPressed: () => afficherFormulaireCaisse(context, ref),
-          ),
+          // Basic : la caisse principale seulement, pas de nouvelle caisse.
+          primaire: ref.watch(plusieursCaissesProvider)
+              ? DsButton(
+                  key: const ValueKey('caisse_nouvelle'),
+                  libelle: l10n.caisseNouvelle,
+                  icone: LucideIcons.plus,
+                  onPressed: () => afficherFormulaireCaisse(context, ref),
+                )
+              : null,
         ),
       ],
     );
@@ -367,18 +376,19 @@ class _GestionCaissePageState extends ConsumerState<GestionCaissePage> {
       nbFiltresActifs: _caisseClotures == null ? 0 : 1,
       onReinitialiser: () => setState(() => _caisseClotures = null),
       filtres: [
-        DsFormRow(
-          libelle: l10n.gcColCaisse,
-          largeurLibelle: 90,
-          child: DsSelect<String?>(
-            cle: const ValueKey('clotures_filtre_caisse'),
-            valeur: _caisseClotures,
-            options: [null, for (final c in caisses) c.code],
-            libelle: (code) => code == null ? l10n.tiersToutes : (noms[code] ?? code),
-            recherche: rechercheListe(context, ref, ListeMetier.caisse),
-            onChanged: (v) => setState(() => _caisseClotures = v),
+        if (ref.watch(plusieursCaissesProvider))
+          DsFormRow(
+            libelle: l10n.gcColCaisse,
+            largeurLibelle: 90,
+            child: DsSelect<String?>(
+              cle: const ValueKey('clotures_filtre_caisse'),
+              valeur: _caisseClotures,
+              options: [null, for (final c in caisses) c.code],
+              libelle: (code) => code == null ? l10n.tiersToutes : (noms[code] ?? code),
+              recherche: rechercheListe(context, ref, ListeMetier.caisse),
+              onChanged: (v) => setState(() => _caisseClotures = v),
+            ),
           ),
-        ),
       ],
       colonnes: colonnes,
       onExport: peutExporter(ref)
@@ -471,18 +481,19 @@ class _GestionCaissePageState extends ConsumerState<GestionCaissePage> {
         _typeMouvements = null;
       }),
       filtres: [
-        DsFormRow(
-          libelle: l10n.gcColCaisse,
-          largeurLibelle: 90,
-          child: DsSelect<String?>(
-            cle: const ValueKey('mouvements_filtre_caisse'),
-            valeur: _caisseMouvements,
-            options: [null, for (final c in caisses) c.code],
-            libelle: (code) => code == null ? l10n.tiersToutes : (noms[code] ?? code),
-            recherche: rechercheListe(context, ref, ListeMetier.caisse),
-            onChanged: (v) => setState(() => _caisseMouvements = v),
+        if (ref.watch(plusieursCaissesProvider))
+          DsFormRow(
+            libelle: l10n.gcColCaisse,
+            largeurLibelle: 90,
+            child: DsSelect<String?>(
+              cle: const ValueKey('mouvements_filtre_caisse'),
+              valeur: _caisseMouvements,
+              options: [null, for (final c in caisses) c.code],
+              libelle: (code) => code == null ? l10n.tiersToutes : (noms[code] ?? code),
+              recherche: rechercheListe(context, ref, ListeMetier.caisse),
+              onChanged: (v) => setState(() => _caisseMouvements = v),
+            ),
           ),
-        ),
         DsFormRow(
           libelle: l10n.gcColSession,
           largeurLibelle: 90,

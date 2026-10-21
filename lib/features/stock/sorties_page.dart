@@ -118,7 +118,6 @@ class _SortiesPageState extends ConsumerState<SortiesPage> {
 
     return PageModule(
       moduleId: 'sorties',
-      sousTitre: l10n.stkDescriptionSorties,
       child: DsModuleTable<SortieStock>(
         entite: l10n.stkEntiteSorties,
         lignes: lignes,
@@ -167,17 +166,18 @@ class _SortiesPageState extends ConsumerState<SortiesPage> {
               onChanged: (v) => setState(() => _type = v),
             ),
           ),
-          DsFormRow(
-            libelle: l10n.stockColMagasin,
-            largeurLibelle: 80,
-            child: DsSelect<String?>(
-              valeur: _magasin,
-              options: [null, for (final m in magasins) m.code],
-              libelle: (c) => c == null ? l10n.retoursTous : (noms[c] ?? c),
-              recherche: rechercheListe(context, ref, ListeMetier.magasin),
-              onChanged: (v) => setState(() => _magasin = v),
+          if (ref.watch(plusieursMagasinsProvider))
+            DsFormRow(
+              libelle: l10n.stockColMagasin,
+              largeurLibelle: 80,
+              child: DsSelect<String?>(
+                valeur: _magasin,
+                options: [null, for (final m in magasins) m.code],
+                libelle: (c) => c == null ? l10n.retoursTous : (noms[c] ?? c),
+                recherche: rechercheListe(context, ref, ListeMetier.magasin),
+                onChanged: (v) => setState(() => _magasin = v),
+              ),
             ),
-          ),
           filtreProduit(
             context,
             ref,

@@ -152,7 +152,6 @@ class _AlertesDialogState extends ConsumerState<AlertesDialog> {
       titre: l10n.alertesTitre,
       iconeData: LucideIcons.bell,
       largeur: 1000,
-      description: urgentes + aSurveiller > 0 ? l10n.alertesResume(urgentes, aSurveiller) : l10n.alertesToutTraite,
       piedDebut: Wrap(
         spacing: DsSpacing.s4,
         runSpacing: DsSpacing.s2,
@@ -226,7 +225,11 @@ class _AlertesDialogState extends ConsumerState<AlertesDialog> {
     final l10n = AppLocalizations.of(context);
     final p = _famille(l10n, f);
     final items = _restantes(alertes, f);
-    final route = Modules.parId(f.moduleId)!.route;
+    // Module de la famille hors formule (Besoins en Basic) : on ouvre le Stock, sans l'action de la famille.
+    final module = Modules.parId(f.moduleId)!;
+    final inclus = ref.watch(licenceProvider).couvre(module.niveauRequis);
+    final route = inclus ? module.route : Modules.parId('stock')!.route;
+    final routeAction = inclus ? (p.routeAction ?? route) : route;
     final maxValeur = alertes.de(f).fold<double>(1, (m, x) => (x.valeur ?? 0) > m ? x.valeur! : m);
     return Container(
       color: c.surfaceCard,
@@ -274,13 +277,13 @@ class _AlertesDialogState extends ConsumerState<AlertesDialog> {
                   taille: DsButtonTaille.sm,
                   onPressed: () => _ouvrir(route),
                 ),
-                if (items.isNotEmpty)
+                if (items.isNotEmpty && inclus)
                   DsButton(
                     libelle: p.action,
                     icone: p.iconeAction,
                     variante: DsButtonVariante.doux,
                     taille: DsButtonTaille.sm,
-                    onPressed: () => _ouvrir(p.routeAction ?? route),
+                    onPressed: () => _ouvrir(routeAction),
                   ),
               ],
             ),
@@ -314,8 +317,8 @@ class _AlertesDialogState extends ConsumerState<AlertesDialog> {
                               ? ((x.valeur ?? 0) / maxValeur).clamp(.06, 1.0)
                               : null,
                           premiere: i == 0,
-                          libelleAction: p.actionLigne,
-                          onAction: () => _ouvrir(p.routeAction ?? route),
+                          libelleAction: inclus ? p.actionLigne : l10n.alertesVoirStock,
+                          onAction: () => _ouvrir(routeAction),
                           onTraitee: () => setState(() => _traitees.add('${f.name}/${x.cle}')),
                         ),
                     ],

@@ -42,6 +42,9 @@ enum ErreurVente {
   nombreObligatoire,
   plafondCredit,
 
+  /// Article (produit, colis ou pack) inconnu ou inactif : vente depuis le téléphone.
+  articleInconnu,
+
   /// Monnaie rendue supérieure aux espèces reçues (une carte ou des points ne rendent pas de monnaie).
   monnaieSansEspeces,
 }

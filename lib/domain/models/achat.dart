@@ -190,6 +190,7 @@ class LigneDetectee {
     required this.quantite,
     required this.prixAchat,
     this.confiance,
+    this.produitCode,
   });
   final String designation;
   final String? codeBarres;
@@ -199,12 +200,27 @@ class LigneDetectee {
   /// Confiance de la lecture (0–100), si le serveur la renvoie.
   final double? confiance;
 
+  /// Produit sous lequel la ligne est entrée en stock au traitement du bon (null : ligne non reprise).
+  final String? produitCode;
+
+  bool get traitee => produitCode != null;
+
+  LigneDetectee entreeSous(String produitCode) => LigneDetectee(
+    designation: designation,
+    codeBarres: codeBarres,
+    quantite: quantite,
+    prixAchat: prixAchat,
+    confiance: confiance,
+    produitCode: produitCode,
+  );
+
   Map<String, Object?> versJson() => {
     'designation': designation,
     'code_barres': codeBarres,
     'quantite': quantite,
     'prix_achat': prixAchat,
     'confiance': confiance,
+    if (produitCode != null) 'produit_code': produitCode,
   };
 
   factory LigneDetectee.depuisJson(Map<dynamic, dynamic> j) => LigneDetectee(
@@ -213,6 +229,7 @@ class LigneDetectee {
     quantite: ((j['quantite'] as num?) ?? 1).toDouble(),
     prixAchat: ((j['prix_achat'] as num?) ?? 0).toDouble(),
     confiance: (j['confiance'] as num?)?.toDouble(),
+    produitCode: j['produit_code']?.toString(),
   );
 }
 

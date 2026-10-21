@@ -127,7 +127,6 @@ class _DetailProduit extends ConsumerWidget {
     return DsDialog(
       titre: p.designation,
       iconeData: LucideIcons.package,
-      description: [p.code, categorie, if ((p.marque ?? '').isNotEmpty) p.marque!].join(' · '),
       largeur: 1120,
       actions: [
         if (onEtiquette != null)
@@ -315,7 +314,7 @@ class _DetailProduit extends ConsumerWidget {
                   numerique: true,
                   valeur: (m) => m.quantite,
                   cellule: (_, m) => Text(
-                    m.quantite > 0 ? '+${formaterNombre(m.quantite)}' : formaterNombre(m.quantite),
+                    m.quantite > 0 ? isolerLtr('+${formaterNombre(m.quantite)}') : formaterNombre(m.quantite),
                     style: t.bodySm.copyWith(
                       fontWeight: FontWeight.w600,
                       color: m.quantite > 0 ? c.successFg : c.dangerFg,
@@ -486,7 +485,6 @@ class _CodeBarreDialogState extends ConsumerState<_CodeBarreDialog> {
     return DsDialog(
       titre: l10n.prdCodeBarreTitre,
       iconeData: LucideIcons.barcode,
-      description: '${widget.produit.designation} · ${widget.produit.code}',
       largeur: 760,
       actions: [
         DsButton(
@@ -607,11 +605,9 @@ class _AffecterDialogState extends ConsumerState<_AffecterDialog> {
     };
     if (_valeur == null || !options.containsKey(_valeur)) _valeur = options.keys.firstOrNull;
     final n = widget.produits.length;
-    final noms = widget.produits.take(3).map((p) => p.designation).join(', ');
     return DsDialog(
       titre: l10n.prdAffecterN(n),
       iconeData: LucideIcons.tags,
-      description: n > 3 ? '$noms… +${n - 3}' : noms,
       largeur: 640,
       actions: [
         DsButton(
@@ -909,7 +905,6 @@ class _ImportDialogState extends ConsumerState<_ImportDialog> {
           DsStepper(
             courante: _etape - 1,
             etapes: [l10n.prdImportFichier, l10n.prdImportColonnes, l10n.communApercu],
-            descriptions: [l10n.prdImportFichierDesc, l10n.prdImportColonnesDesc, l10n.prdImportApercuDesc],
             onEtape: (i) {
               if (i + 1 < _etape) setState(() => _etape = i + 1);
             },

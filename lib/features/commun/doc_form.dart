@@ -192,7 +192,6 @@ class DocFormDialog extends ConsumerStatefulWidget {
     required this.colonnes,
     required this.totalLigne,
     required this.onEnregistrer,
-    this.description,
     this.largeur = 1000,
     this.peutEnregistrer = true,
     this.libelleEnregistrer,
@@ -209,7 +208,6 @@ class DocFormDialog extends ConsumerStatefulWidget {
   });
   final String titre;
   final IconData icone;
-  final String? description;
   final double largeur;
   final List<Widget> entete;
 
@@ -306,7 +304,6 @@ class _DocFormDialogState extends ConsumerState<DocFormDialog> {
     return DsDialog(
       titre: widget.titre,
       iconeData: widget.icone,
-      description: widget.description,
       largeur: widget.largeur,
       actions: [
         DsButton(

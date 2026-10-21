@@ -58,6 +58,7 @@ class AchatService {
   final String utilisateurCode;
   final VerificateurCloture? periodeCloturee;
 
+  /// [lignesBon] : index de la ligne lue du bon → produit sous lequel elle entre (lignes marquées traitées).
   Future<Achat> enregistrer({
     required String fournisseurCode,
     required String magasinCode,
@@ -72,6 +73,7 @@ class AchatService {
     MajPrixAchat majPrix = MajPrixAchat.dernier,
     String? besoinCode,
     String? bonCode,
+    Map<int, String> lignesBon = const {},
     String? commandeCode,
   }) async {
     _verifier(lignes, verse);
@@ -82,8 +84,9 @@ class AchatService {
       if (await TiersRepository(txn).fournisseur(fournisseurCode) == null) {
         throw const AchatException(ErreurAchat.fournisseurInconnu);
       }
+      BonReception? bon;
       if (bonCode != null) {
-        final bon = await bonReception(bonCode, txn);
+        bon = await bonReception(bonCode, txn);
         if (bon == null) throw const AchatException(ErreurAchat.bonInconnu);
         if (bon.statut == StatutsBon.traite) throw const AchatException(ErreurAchat.bonTraite);
       }
@@ -119,17 +122,21 @@ class AchatService {
         date: d,
       );
       if (besoinCode != null) await StockRepository(txn).changerStatutBesoin(besoinCode, StatutsBesoin.disponible);
-      if (bonCode != null) {
+      if (bon != null) {
         await txn.update(
           'bon_reception',
           {
+            'lignes_json': jsonEncode([
+              for (final (i, l) in bon.lignes.indexed)
+                (lignesBon[i] == null ? l : l.entreeSous(lignesBon[i]!)).versJson(),
+            ]),
             'statut': StatutsBon.traite,
             'achat_code': code,
             'traite_par_code': utilisateurCode,
             'fournisseur_code': fournisseurCode,
           },
           where: 'code = ?',
-          whereArgs: [bonCode],
+          whereArgs: [bon.code],
         );
       }
       await HistoriqueRepository(txn).journaliser(

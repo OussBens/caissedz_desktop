@@ -185,8 +185,10 @@ class PosController extends Notifier<PosEtat> {
     }
   }
 
-  /// Autre magasin actif pouvant couvrir [manque] (le mieux pourvu), ou `null`.
+  /// Autre magasin actif pouvant couvrir [manque] (le mieux pourvu), ou `null`. Les transferts entre
+  /// magasins sont dans la formule Ultra seulement.
   Future<SourceTransfert?> sourceTransfert(ManqueStock manque) async {
+    if (!ref.read(licenceProvider).couvre(NiveauLicence.ultra)) return null;
     final repo = StockRepository(ref.read(appDatabaseProvider).db);
     SourceTransfert? meilleure;
     for (final m in await repo.magasins(actifsSeulement: true)) {

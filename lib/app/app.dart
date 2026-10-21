@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/design_system/design_system.dart';
 import '../core/i18n/generated/app_localizations.dart';
+import 'demarrage_providers.dart';
 import 'providers.dart';
 import 'router.dart';
 
@@ -15,6 +16,7 @@ class CaisseDzApp extends ConsumerWidget {
     final locale = ref.watch(localeProvider);
     final mode = ref.watch(themeModeProvider);
     final router = ref.watch(routerProvider);
+    final lectureSeule = ref.watch(licenceProvider.select((l) => l.lectureSeule));
     return MaterialApp.router(
       title: 'CaisseDZ',
       debugShowCheckedModeBanner: false,
@@ -30,6 +32,8 @@ class CaisseDzApp extends ConsumerWidget {
       themeMode: mode,
       theme: construireTheme(brightness: Brightness.light, locale: locale),
       darkTheme: construireTheme(brightness: Brightness.dark, locale: locale),
+      // Au-dessus du navigateur : les dialogs (détails) voient aussi la lecture seule.
+      builder: (context, child) => DsLectureSeule(actif: lectureSeule, child: child ?? const SizedBox.shrink()),
     );
   }
 }

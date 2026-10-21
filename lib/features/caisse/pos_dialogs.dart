@@ -44,7 +44,7 @@ String messageErreurVente(AppLocalizations l10n, VenteException e, String devise
   ErreurVente.pointsInsuffisants => l10n.posErreurPoints,
   ErreurVente.stockInsuffisant => l10n.posErreurStock(e.detail ?? ''),
   ErreurVente.creditNonAutorise => l10n.posErreurCredit,
-  ErreurVente.venteInconnue => l10n.communAucunResultat,
+  ErreurVente.venteInconnue || ErreurVente.articleInconnu => l10n.communAucunResultat,
   ErreurVente.dejaAnnulee => l10n.ventesBloqueDejaAnnule,
   ErreurVente.periodeCloturee => l10n.posErreurPeriodeCloturee,
   ErreurVente.quantiteInvalide => l10n.posErreurQuantite,
@@ -522,7 +522,6 @@ class _ApercuTicketState extends ConsumerState<_ApercuTicket> {
     return DsDialog(
       key: const ValueKey('apercu_ticket'),
       titre: l10n.posApercuTicket,
-      description: l10n.posApercuTicketDesc,
       iconeData: LucideIcons.receipt,
       largeur: 860,
       actions: [

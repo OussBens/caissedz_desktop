@@ -27,6 +27,8 @@ import '../activation/activation_page.dart';
 import '../caisse/pos_dialogs.dart';
 import '../commun/page_module.dart';
 import '../commun/referentiel_ui.dart';
+import '../compte_bens/compte_bens_pages.dart';
+import '../offres/offres_page.dart';
 import '../produits/produits_providers.dart';
 import '../rapports/rapports_providers.dart';
 
@@ -277,7 +279,6 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
     final l10n = AppLocalizations.of(context);
     return PageModule(
       moduleId: 'parametres',
-      sousTitre: l10n.pmDescription,
       actions: [
         if (_modifie)
           DsBadge(
@@ -1470,16 +1471,19 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
     final c = context.ds.colors;
     final t = context.ds.typo;
     final licence = ref.watch(licenceProvider);
+    final date = DateFormat('dd/MM/yyyy');
+    final niveau = licence.niveau;
     final (palier, detail) = switch (licence) {
-      Licence(demo: true) => (l10n.pmPalierDemo, l10n.pmPalierDemoDesc),
+      Licence(niveau: final n?, essai: true) => (
+        l10n.pmPalierEssai(libellePalier(l10n, n)),
+        l10n.pmPalierEssaiDesc(licence.expireLe == null ? '—' : date.format(licence.expireLe!)),
+      ),
+      Licence(niveau: NiveauLicence.ultra) => (l10n.pmPalierUltra, l10n.pmPalierUltraDesc),
       Licence(niveau: NiveauLicence.avance) => (l10n.pmPalierAvance, l10n.pmPalierAvanceDesc),
       Licence(niveau: NiveauLicence.basic) => (l10n.pmPalierBasic, l10n.pmPalierBasicDesc),
       _ => (l10n.pmPalierAucun, l10n.pmPalierAucunDesc),
     };
-    final cle = licence.cle;
-    final cleMasquee = cle == null || cle.isEmpty
-        ? '—'
-        : (cle.length <= 8 ? cle : '${cle.substring(0, cle.length > 12 ? 12 : cle.length ~/ 2)}-••••-••••');
+    final compte = licence.compte;
     return [
       DsCard(
         titre: l10n.pmGrpLicence,
@@ -1502,6 +1506,13 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
                       children: [
                         Text(palier, style: t.heading.copyWith(color: DsColors.blanc)),
                         Text(detail, style: t.bodySm.copyWith(color: DsColors.blanc.withValues(alpha: .8))),
+                        if (niveau != null)
+                          Text(
+                            licence.expireLe == null
+                                ? l10n.pmLicencePermanente
+                                : l10n.pmValableJusquAu(date.format(licence.expireLe!)),
+                            style: t.caption.copyWith(color: DsColors.blanc.withValues(alpha: .7)),
+                          ),
                       ],
                     ),
                   ),
@@ -1510,11 +1521,58 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
               ),
             ),
             _ligne(
-              l10n.pmCle,
+              l10n.pmCompteBens,
+              description: compte == null
+                  ? l10n.pmAucunCompte
+                  : [
+                      if (compte.commerce.isNotEmpty) compte.commerce else if (compte.nom.isNotEmpty) compte.nom,
+                      compte.telephone,
+                    ].join(' · '),
+              child: compte == null
+                  ? DsButton(
+                      key: const ValueKey('param_compte_connexion'),
+                      libelle: l10n.offresSeConnecter,
+                      icone: LucideIcons.logIn,
+                      variante: DsButtonVariante.secondaire,
+                      onPressed: () => context.push(ConnexionComptePage.route),
+                    )
+                  : DsButton(
+                      key: const ValueKey('param_compte_deconnexion'),
+                      libelle: l10n.pmDeconnecterCompte,
+                      icone: LucideIcons.logOut,
+                      variante: DsButtonVariante.secondaire,
+                      onPressed: () async {
+                        final ok = await afficherConfirmation(
+                          context,
+                          titre: l10n.pmDeconnecterCompte,
+                          message: l10n.pmDeconnecterCompteConfirme,
+                          genre: DsConfirmGenre.avertissement,
+                        );
+                        if (ok) await ref.read(licenceProvider.notifier).deconnecterCompte();
+                      },
+                    ),
+            ),
+            _ligne(
+              l10n.pmVoirFormules,
+              description: l10n.pmCompteBensDesc,
+              child: DsButton(
+                key: const ValueKey('param_formules'),
+                libelle: l10n.shellVoirFormules,
+                icone: LucideIcons.sparkles,
+                variante: DsButtonVariante.secondaire,
+                onPressed: () => context.push(OffresPage.route),
+              ),
+            ),
+            _ligne(
+              l10n.pmCodePoste,
               description: licence.activeeLe == null
-                  ? l10n.pmCleDesc
-                  : '${l10n.pmCleDesc} ${l10n.pmActiveeLe(DateFormat('dd/MM/yyyy').format(licence.activeeLe!.toLocal()))}',
-              child: Text(cleMasquee, style: t.mono.copyWith(color: c.textPrimary, letterSpacing: 1.1)),
+                  ? null
+                  : l10n.pmActiveeLe(date.format(licence.activeeLe!.toLocal())),
+              child: FutureBuilder<String>(
+                future: ref.read(licenceServiceProvider).codePoste(),
+                builder: (context, s) =>
+                    SelectableText(s.data ?? '—', style: t.mono.copyWith(color: c.textPrimary, letterSpacing: 1.1)),
+              ),
             ),
             _ligne(
               l10n.pmGererLicence,
@@ -1523,7 +1581,7 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
               child: DsButton(
                 key: const ValueKey('param_licence'),
                 libelle: l10n.pmGererLicence,
-                icone: LucideIcons.refreshCw,
+                icone: LucideIcons.keyRound,
                 variante: DsButtonVariante.secondaire,
                 onPressed: () => context.push(ActivationPage.route),
               ),
@@ -1562,7 +1620,6 @@ class _MotDePasseDialogState extends State<_MotDePasseDialog> {
     return DsDialog(
       titre: widget.titre,
       iconeData: LucideIcons.keyRound,
-      description: l10n.sauvegardeIntro,
       largeur: 520,
       actions: [
         DsButton(

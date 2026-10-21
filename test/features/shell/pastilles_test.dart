@@ -83,7 +83,12 @@ void main() {
     await tester.pumpAndSettle();
     expect(c.read(pastillesProvider), {'ventes#0', 'gestion_caisse#3', 'stock#1', 'clients#0'});
     expect(find.byKey(const ValueKey('point_/ventes')), findsOneWidget);
+    // Le groupe Tiers est fermé (seul celui du module ouvert est déplié) : le point est sur son en-tête.
+    expect(find.byKey(const ValueKey('point_/clients')), findsNothing);
+    expect(find.byKey(const ValueKey('point_categorie_Tiers')), findsOneWidget);
+    await clic(tester, find.byKey(const ValueKey('nav_categorie_2')));
     expect(find.byKey(const ValueKey('point_/clients')), findsOneWidget);
+    expect(find.byKey(const ValueKey('point_categorie_Tiers')), findsNothing);
     expect(find.byKey(const ValueKey('point_/produits')), findsNothing);
 
     // Gestion caisse : point sur l'onglet Mouvements, éteint quand on l'ouvre.
@@ -95,6 +100,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byKey(const ValueKey('point_onglet_3')), findsNothing);
     expect(c.read(pastillesProvider), isNot(contains('gestion_caisse#3')));
-    expect(find.byKey(const ValueKey('point_/ventes')), findsOneWidget, reason: 'les ventes ne sont pas encore vues');
+    // Gestion caisse ouverte : GÉNÉRAL est fermé, le point des ventes (pas encore vues) est sur son en-tête.
+    expect(find.byKey(const ValueKey('point_categorie_Général')), findsOneWidget, reason: 'ventes pas encore vues');
   });
 }

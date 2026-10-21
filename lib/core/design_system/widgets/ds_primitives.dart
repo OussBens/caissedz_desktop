@@ -305,6 +305,16 @@ class DsTrendBadge extends StatelessWidget {
   }
 }
 
+/// Infobulle seulement s'il y a un message.
+class _Infobulle extends StatelessWidget {
+  const _Infobulle({required this.message, required this.child});
+  final String? message;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => message == null ? child : Tooltip(message: message!, child: child);
+}
+
 /// Carte d'indicateur (`StatCard`) : titre, valeur 700 28 tabulaire, tendance, légende.
 class DsStatCard extends StatelessWidget {
   const DsStatCard({
@@ -367,7 +377,21 @@ class DsStatCard extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              if (info != null)
+              // Cliquable : une flèche dit qu'on part vers un autre module (l'explication en infobulle) ;
+              // sinon l'icône « info ».
+              if (onTap != null)
+                _Infobulle(
+                  message: info,
+                  child: Icon(
+                    Directionality.of(context) == TextDirection.rtl
+                        ? LucideIcons.arrowUpLeft
+                        : LucideIcons.arrowUpRight,
+                    key: const ValueKey('stat_fleche'),
+                    size: DsTailles.icone,
+                    color: c.iconActive,
+                  ),
+                )
+              else if (info != null)
                 Tooltip(
                   message: info!,
                   child: Icon(LucideIcons.info, size: DsTailles.iconeSm, color: c.iconMuted),
@@ -443,6 +467,7 @@ class DsTextField extends StatefulWidget {
     this.taille = DsTailles.controleMd,
     this.largeur,
     this.valeurInitiale,
+    this.ltr,
   });
 
   final TextEditingController? controller;
@@ -481,9 +506,23 @@ class DsTextField extends StatefulWidget {
   final double? largeur;
   final String? valeurInitiale;
 
+  /// Saisie de gauche à droite même en arabe. Par défaut : les champs [numerique] et les claviers
+  /// numériques ou téléphone.
+  final bool? ltr;
+
   @override
   State<DsTextField> createState() => _DsTextFieldState();
 }
+
+bool _clavierChiffres(TextInputType? t) =>
+    t != null && (t.index == TextInputType.number.index || t.index == TextInputType.phone.index);
+
+/// [TextAlign.start] / [TextAlign.end] de la langue, en gauche / droite (le champ passe en LTR).
+TextAlign _alignementPhysique(TextAlign a, {required bool rtl}) => switch (a) {
+  TextAlign.start => rtl ? TextAlign.right : TextAlign.left,
+  TextAlign.end => rtl ? TextAlign.left : TextAlign.right,
+  _ => a,
+};
 
 class _DsTextFieldState extends State<DsTextField> {
   FocusNode? _interne;
@@ -546,6 +585,11 @@ class _DsTextFieldState extends State<DsTextField> {
       fontFeatures: widget.numerique ? DsTypography.tabular : null,
     );
     final couleurBordure = erreur != null ? c.danger : (_focus ? c.borderFocus : c.borderDefault);
+    // Chiffres (montants, quantités, téléphones) : toujours saisis de gauche à droite, même en arabe ;
+    // l'alignement reste celui de la langue (début / fin résolus avant de passer en LTR).
+    final ltr = widget.ltr ?? (widget.numerique || _clavierChiffres(widget.typeClavier));
+    final rtl = Directionality.of(context) == TextDirection.rtl;
+    final alignement = widget.numerique ? TextAlign.end : widget.alignement;
     final champ = TextField(
       controller: _controleur,
       focusNode: _node,
@@ -561,7 +605,8 @@ class _DsTextFieldState extends State<DsTextField> {
               ? const TextInputType.numberWithOptions(decimal: true)
               : (widget.multiligne ? TextInputType.multiline : null)),
       inputFormatters: widget.inputFormatters,
-      textAlign: widget.numerique ? TextAlign.end : widget.alignement,
+      textAlign: ltr ? _alignementPhysique(alignement, rtl: rtl) : alignement,
+      textDirection: ltr ? TextDirection.ltr : null,
       maxLines: widget.multiligne ? widget.lignes : 1,
       style: styleTexte,
       cursorColor: c.primary,
@@ -569,6 +614,7 @@ class _DsTextFieldState extends State<DsTextField> {
         isDense: true,
         isCollapsed: true,
         hintText: widget.indice,
+        hintTextDirection: ltr ? TextDirection.ltr : null,
         hintStyle: styleTexte.copyWith(color: c.textMuted),
         border: InputBorder.none,
         enabledBorder: InputBorder.none,

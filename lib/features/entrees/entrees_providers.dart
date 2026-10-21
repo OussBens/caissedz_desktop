@@ -1,6 +1,7 @@
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../app/demarrage_providers.dart';
 import '../../app/providers.dart';
 import '../../application/achat_service.dart';
 import '../../application/cloture_service.dart';
@@ -34,7 +35,14 @@ final bonsReceptionProvider = FutureProvider<List<BonReception>>((ref) {
 
 final smartScanServiceProvider = Provider<SmartScanService>((ref) {
   final s = ref.watch(serveurCaisseDzProvider).value;
-  return SmartScanService(client: ref.watch(httpClientProvider), baseUrl: s?.url ?? '', cleApi: s?.cle);
+  // Le serveur des Paramètres (Serveurs), sinon celui de BENS ; le poste s'authentifie par sa licence.
+  final url = s?.url ?? '';
+  return SmartScanService(
+    client: ref.watch(httpClientProvider),
+    baseUrl: url.isEmpty ? SmartScanService.urlParDefaut : url,
+    identite: ref.watch(licenceServiceProvider).identiteSmartScan,
+    entreprise: ref.watch(licenceProvider).compte?.commerce,
+  );
 });
 
 /// Quota Smart Scan du serveur (erreur si non configuré ou hors ligne).
@@ -48,7 +56,7 @@ final selecteurFactureProvider = Provider<Future<XFile?> Function()>(
   (_) =>
       () => openFile(
         acceptedTypeGroups: const [
-          XTypeGroup(label: 'Factures', extensions: ['jpg', 'jpeg', 'png', 'pdf']),
+          XTypeGroup(label: 'Factures', extensions: ['jpg', 'jpeg', 'png', 'webp']),
         ],
       ),
 );
@@ -86,6 +94,7 @@ String messageErreurSmartScan(AppLocalizations l10n, SmartScanException e) => sw
   ErreurSmartScan.reseau => l10n.smartScanErreurReseau(e.detail ?? ''),
   ErreurSmartScan.serveur => l10n.smartScanErreurServeur(e.detail ?? ''),
   ErreurSmartScan.fichierInvalide => l10n.smartScanErreurFichier,
+  ErreurSmartScan.licence => l10n.smartScanErreurLicence,
 };
 
 /// Libellé localisé de l'origine d'une entrée.

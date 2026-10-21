@@ -52,6 +52,11 @@ dependencies:
   file_selector: ^1.1.0
   ffi: ^2.2.0
   shared_preferences: ^2.5.6
+  url_launcher: ^6.3.2
+
+  # Licences BENS signées (copie de bens_ds packages/bens_license : lib, pubspec.yaml, FORMAT.md)
+  bens_license:
+    path: packages/bens_license
 
 dev_dependencies:
   flutter_test:

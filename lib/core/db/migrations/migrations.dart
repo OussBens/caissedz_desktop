@@ -33,6 +33,10 @@ import 'v031_fiscalite.dart';
 import 'v032_inventaire_types.dart';
 import 'v033_solde_initial.dart';
 import 'v034_documents_commerciaux.dart';
+import 'v035_licence_bens.dart';
+import 'v036_appareils_mobiles.dart';
+import 'v037_appareil_utilisateur.dart';
+import 'v038_catalogue_rayons.dart';
 
 export 'migration.dart';
 
@@ -72,4 +76,8 @@ const List<Migration> toutesLesMigrations = [
   MigrationV032InventaireTypes(),
   MigrationV033SoldeInitial(),
   MigrationV034DocumentsCommerciaux(),
+  MigrationV035LicenceBens(),
+  MigrationV036AppareilsMobiles(),
+  MigrationV037AppareilUtilisateur(),
+  MigrationV038CatalogueRayons(),
 ];

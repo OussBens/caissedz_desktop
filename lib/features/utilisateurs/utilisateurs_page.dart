@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
+import '../../app/demarrage_providers.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
 import '../../domain/models/audit.dart';
 import '../../domain/models/utilisateur.dart';
-import '../../domain/permissions.dart';
 import '../commun/carte_entite.dart';
 import '../commun/colonnes_audit.dart';
 import '../commun/export_module.dart';
@@ -40,7 +40,6 @@ class _UtilisateursPageState extends ConsumerState<UtilisateursPage> {
     final roles = ref.watch(rolesProvider).value ?? const <Role>[];
     return PageModule(
       moduleId: 'utilisateurs',
-      sousTitre: l10n.usrDescription,
       onglets: [l10n.usrOngletUtilisateurs, l10n.usrOngletRoles],
       comptes: [lignes.length, roles.length],
       ongletCourant: _onglet,
@@ -263,7 +262,13 @@ class _UtilisateursPageState extends ConsumerState<UtilisateursPage> {
   }
 
   Widget _roles(AppLocalizations l10n, List<Role> roles) {
-    final nbModules = itemsModules(l10n).length;
+    // Ce que le palier propose : les modules et permissions hors palier ne sont ni montrés ni comptés.
+    final niveau = ref.watch(licenceProvider).niveau;
+    final modulesPalier = {for (final i in itemsModules(l10n, niveau: niveau)) i.cle};
+    final specialesPalier = {for (final i in itemsSpeciales(l10n, niveau: niveau)) i.cle};
+    final nbModules = modulesPalier.length;
+    int modulesDe(Role r) => r.modules.where(modulesPalier.contains).length;
+    int specialesDe(Role r) => r.permissions.where((p) => specialesPalier.contains(p.code)).length;
     final colonnes = <DsColonne<Role>>[
       DsColonne(id: 'code', libelle: l10n.usrCode, valeur: (r) => r.code, attenue: true),
       DsColonne(
@@ -284,15 +289,15 @@ class _UtilisateursPageState extends ConsumerState<UtilisateursPage> {
         id: 'modules',
         libelle: l10n.usrColModules,
         numerique: true,
-        valeur: (r) => r.estAdmin ? nbModules : r.modules.length,
-        cellule: (_, r) => Text(r.estAdmin ? l10n.usrTous : '${r.modules.length}'),
+        valeur: (r) => r.estAdmin ? nbModules : modulesDe(r),
+        cellule: (_, r) => Text(r.estAdmin ? l10n.usrTous : '${modulesDe(r)}'),
       ),
       DsColonne(
         id: 'speciales',
         libelle: l10n.usrColSpeciales,
         numerique: true,
-        valeur: (r) => r.estAdmin ? Permission.values.length : r.permissions.length,
-        cellule: (_, r) => Text(r.estAdmin ? l10n.usrToutes : '${r.permissions.length}'),
+        valeur: (r) => r.estAdmin ? specialesPalier.length : specialesDe(r),
+        cellule: (_, r) => Text(r.estAdmin ? l10n.usrToutes : '${specialesDe(r)}'),
       ),
       DsColonne(id: 'users', libelle: l10n.usrOngletUtilisateurs, numerique: true, valeur: (r) => r.nbUtilisateurs),
       DsColonne(id: 'obs', libelle: l10n.usrObservation, attenue: true, flex: 2, valeur: (r) => r.observation),

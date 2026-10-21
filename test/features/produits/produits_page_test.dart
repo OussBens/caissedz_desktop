@@ -41,6 +41,32 @@ void main() {
       await tester.pump(const Duration(seconds: 5)); // fin du toast
     });
 
+    testWidgets('fiche détaillée : code-barres CDZ généré, blocs Identification / Photos / Prix', (tester) async {
+      final c = await pumpApp(tester, routeInitiale: '/produits', taille: const Size(1600, 1000));
+      await clic(tester, _cle('produit_nouveau'));
+      await clic(tester, find.text('Détaillé · 3 étapes'));
+      for (final bloc in ['Identification', 'Photos', 'Prix']) {
+        expect(find.text(bloc), findsOneWidget);
+      }
+      await clic(tester, _cle('produit_generer_code'));
+      final code = tester.widget<TextField>(_champ('produit_code_barres')).controller!.text;
+      expect(code, matches(RegExp(r'^CDZ\d{12}$')));
+      await clic(tester, _cle('produit_generer_code'));
+      expect(tester.widget<TextField>(_champ('produit_code_barres')).controller!.text, isNot(code), reason: 'séquence');
+      await tester.enterText(_champ('produit_designation'), 'Savon');
+      await tester.enterText(_champ('produit_achat'), '40');
+      await tester.pump();
+      await clic(tester, _cle('produit_suivant'));
+      expect(find.text('Emballages'), findsOneWidget);
+      await clic(tester, _cle('produit_suivant'));
+      expect(find.text('Variantes'), findsNWidgets(2), reason: 'étape et bloc');
+      expect(find.text('Options'), findsOneWidget);
+      await clic(tester, _cle('produit_enregistrer'));
+      final p = await CatalogueRepository(c.read(appDatabaseProvider).db).produitParCode('PRD0001');
+      expect(p!.codeBarres, startsWith('CDZ'));
+      await tester.pump(const Duration(seconds: 5)); // fin du toast
+    });
+
     testWidgets('caissier : accès refusé au module Produits', (tester) async {
       await pumpApp(tester, etat: EtatApp.connecteeCaissier, routeInitiale: '/produits');
       expect(find.text('Accès refusé'), findsOneWidget);

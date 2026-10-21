@@ -8,6 +8,7 @@ import 'package:caissedz_desktop/data/parametre_repository.dart';
 import 'package:caissedz_desktop/data/stock_repository.dart';
 import 'package:caissedz_desktop/domain/fiscalite.dart';
 import 'package:caissedz_desktop/domain/models/produit.dart';
+import 'package:caissedz_desktop/domain/permissions.dart';
 import 'package:caissedz_desktop/features/caisse/pos_controller.dart';
 import 'package:caissedz_desktop/features/produits/produits_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,13 +27,13 @@ void main() {
     c = ProviderContainer(
       overrides: [
         appDatabaseProvider.overrideWithValue(base),
-        licenceServiceProvider.overrideWithValue(licenceServiceTest(base)),
+        licenceServiceProvider.overrideWithValue(await licenceServiceTest(base)),
         authServiceProvider.overrideWithValue(authServiceTest(base)),
         configurationServiceProvider.overrideWithValue(configurationServiceTest(base)),
       ],
     );
     addTearDown(c.dispose);
-    await c.read(licenceProvider.notifier).activerDemo();
+    await c.read(licenceProvider.notifier).activer(await cleTest(NiveauLicence.ultra));
     await c.read(configurationTermineeProvider.notifier).terminer(configurationTest());
     await c.read(sessionProvider.notifier).connecter(identifiantAdmin, motDePasseAdmin);
     final cat = CatalogueService(base.db, utilisateurCode: 'USR0000');

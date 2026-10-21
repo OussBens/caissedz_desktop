@@ -48,7 +48,6 @@ class _DocumentsPageState extends ConsumerState<DocumentsPage> {
     final l10n = AppLocalizations.of(context);
     return PageModule(
       moduleId: 'documents',
-      sousTitre: l10n.docDescriptionModule,
       onglets: [l10n.docOngletDevis, l10n.docOngletProformas, l10n.docOngletCommandes, l10n.docOngletLivraisons],
       ongletCourant: _onglet,
       onOnglet: (i) => setState(() => _onglet = i),
@@ -484,7 +483,6 @@ class _DocumentFormState extends ConsumerState<_DocumentForm> {
     return DocFormDialog(
       titre: d == null ? l10n.docNouveauTitre(type) : l10n.docModifierTitre(type),
       icone: widget.type == TypesDocumentClient.commande ? LucideIcons.clipboardList : LucideIcons.fileText,
-      description: d == null ? l10n.docFormDescription : '${d.code} · ${type.toLowerCase()}',
       cleEnregistrer: const ValueKey('doc_enregistrer'),
       prixVenteSelecteur: true,
       lignes: _lignes,
@@ -536,11 +534,12 @@ class _DocumentFormState extends ConsumerState<_DocumentForm> {
         ),
       ],
       entete: [
-        DsFormRow(
-          libelle: l10n.produitsColCode,
-          largeurLibelle: _lw,
-          child: DsTextField(valeurInitiale: d?.code ?? l10n.prdCodeAuto, actif: false),
-        ),
+        if (d != null)
+          DsFormRow(
+            libelle: l10n.produitsColCode,
+            largeurLibelle: _lw,
+            child: DsTextField(valeurInitiale: d.code, actif: false),
+          ),
         DsFormRow(
           libelle: l10n.ventesClient,
           obligatoire: true,
@@ -813,7 +812,6 @@ class _LivraisonDialogState extends ConsumerState<_LivraisonDialog> {
     return DsDialog(
       titre: l10n.docLivrerTitre(widget.commande.code),
       iconeData: LucideIcons.truck,
-      description: l10n.docLivrerDescription,
       largeur: 860,
       fermable: !_occupe,
       contenu: Column(
@@ -865,16 +863,17 @@ class _LivraisonDialogState extends ConsumerState<_LivraisonDialog> {
           DsGrilleFormulaire(
             colonnes: 2,
             children: [
-              DsFormRow(
-                libelle: l10n.stkMagasin,
-                largeurLibelle: _lw,
-                child: DsSelect<String>(
-                  valeur: _magasin,
-                  options: [for (final m in magasins) m.code],
-                  libelle: (c) => magasins.where((m) => m.code == c).firstOrNull?.nom ?? c,
-                  onChanged: (v) => setState(() => _magasin = v ?? _magasin),
+              if (ref.watch(plusieursMagasinsProvider))
+                DsFormRow(
+                  libelle: l10n.stkMagasin,
+                  largeurLibelle: _lw,
+                  child: DsSelect<String>(
+                    valeur: _magasin,
+                    options: [for (final m in magasins) m.code],
+                    libelle: (c) => magasins.where((m) => m.code == c).firstOrNull?.nom ?? c,
+                    onChanged: (v) => setState(() => _magasin = v ?? _magasin),
+                  ),
                 ),
-              ),
               DsFormRow(
                 libelle: l10n.communTotal,
                 largeurLibelle: _lw,

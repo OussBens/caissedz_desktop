@@ -7,6 +7,7 @@ import '../../core/i18n/generated/app_localizations.dart';
 import '../../domain/models/produit.dart';
 import '../../domain/permissions.dart';
 import '../../domain/referentiel/referentiel.dart';
+import '../catalogue_rayons/catalogue_rayons_dialog.dart';
 import '../commun/colonnes_audit.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
@@ -64,7 +65,6 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
     final packs = ref.watch(packsProvider).value ?? const <Pack>[];
     return PageModule(
       moduleId: 'produits',
-      sousTitre: l10n.prdDescription,
       onglets: [
         l10n.produitsOngletProduits,
         l10n.produitsOngletCategories,
@@ -312,7 +312,6 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
       afficherTotaux: true,
       permissions: permissionsSession(ref),
       messageVide: l10n.produitsAucun,
-      filtresOuverts: true,
       // 1re ligne : catégorie, stock, marque ; 2e ligne : quantité, prix de vente, prix d'achat.
       colonnesFiltres: 3,
       nbFiltresActifs:
@@ -470,12 +469,25 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
           onPressed: (choix, effacer) => supprimerProduits(context, ref, choix, effacer, stocks: stocks),
         ),
       ],
-      secondaire: DsButton(
-        key: const ValueKey('produits_importer'),
-        libelle: l10n.prdImporter,
-        icone: LucideIcons.fileSpreadsheet,
-        variante: DsButtonVariante.secondaire,
-        onPressed: () => afficherImportProduits(context),
+      secondaire: Row(
+        mainAxisSize: MainAxisSize.min,
+        spacing: DsSpacing.s2,
+        children: [
+          DsButton(
+            key: const ValueKey('produits_catalogue_bens'),
+            libelle: l10n.catalogueRayonsBouton,
+            icone: LucideIcons.store,
+            variante: DsButtonVariante.secondaire,
+            onPressed: () => afficherCatalogueRayons(context),
+          ),
+          DsButton(
+            key: const ValueKey('produits_importer'),
+            libelle: l10n.prdImporter,
+            icone: LucideIcons.fileSpreadsheet,
+            variante: DsButtonVariante.secondaire,
+            onPressed: () => afficherImportProduits(context),
+          ),
+        ],
       ),
       primaire: DsButton(
         key: const ValueKey('produit_nouveau'),
@@ -607,7 +619,6 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
       permissions: permissionsSession(ref),
       indiceRecherche: l10n.prdRechercheSousCategorie,
       texteRecherche: (s) => '${s.code} ${s.nom}',
-      filtresOuverts: true,
       nbFiltresActifs: _categorieSc == null ? 0 : 1,
       onReinitialiser: () => setState(() => _categorieSc = null),
       filtres: [

@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../core/i18n/generated/app_localizations.dart';
+import 'models/licence.dart';
 import 'permissions.dart';
 
 /// Groupes de la barre latérale (DS v2.2 : Général, Stock, Tiers, Gestion).
@@ -28,7 +29,8 @@ class ModuleApp {
   final String route;
   final String Function(AppLocalizations l10n) libelle;
 
-  /// Niveau de licence nécessaire (§6.1 : seul le multi-magasin est réservé au palier Avancé).
+  /// Palier nécessaire (Desktop — Plans & Pricing) : devis, commandes, commandes fournisseurs et besoins
+  /// à partir d'Advanced ; multi-magasin et transferts en Ultra ; le reste dans tous les paliers.
   final NiveauLicence niveauRequis;
 
   /// Page rattachée à un module : l'accès du rôle est celui du module parent.
@@ -84,6 +86,7 @@ class Modules {
       icone: LucideIcons.fileText,
       route: '/documents',
       libelle: (l) => l.moduleDocuments,
+      niveauRequis: NiveauLicence.avance,
     ),
     ModuleApp(
       id: 'retours',
@@ -121,6 +124,7 @@ class Modules {
       icone: LucideIcons.clipboardList,
       route: '/commandes-fournisseurs',
       libelle: (l) => l.moduleCommandesFournisseurs,
+      niveauRequis: NiveauLicence.avance,
     ),
     ModuleApp(
       id: 'sorties',
@@ -135,7 +139,7 @@ class Modules {
       icone: LucideIcons.store,
       route: '/magasins',
       libelle: (l) => l.moduleMagasins,
-      niveauRequis: NiveauLicence.avance,
+      niveauRequis: NiveauLicence.ultra,
     ),
     ModuleApp(
       id: 'besoins',
@@ -143,6 +147,7 @@ class Modules {
       icone: LucideIcons.triangleAlert,
       route: '/besoins',
       libelle: (l) => l.moduleBesoins,
+      niveauRequis: NiveauLicence.avance,
     ),
     // Tiers
     ModuleApp(
@@ -207,7 +212,7 @@ class Modules {
       icone: LucideIcons.arrowLeftRight,
       route: '/transferts',
       libelle: (l) => l.moduleTransferts,
-      niveauRequis: NiveauLicence.avance,
+      niveauRequis: NiveauLicence.ultra,
     ),
     ModuleApp(
       id: 'versements',
@@ -252,3 +257,23 @@ class Modules {
 
   static List<ModuleApp> parGroupe(GroupeModule groupe) => tous.where((m) => m.groupe == groupe).toList();
 }
+
+/// Les modules de consultation, ouverts en lecture seule (essai terminé) : on y consulte ventes, produits,
+/// stock, tiers et rapports, sans y rien créer (les listes n'offrent alors que le détail).
+const Set<String> modulesLectureSeule = {
+  'tableau_bord',
+  'situation',
+  'ventes',
+  'produits',
+  'stock',
+  'clients',
+  'versements',
+  'fournisseurs',
+  'historique',
+  'zakat',
+  'parametres',
+};
+
+/// Le module s'ouvre-t-il avec cette licence : son palier, et en lecture seule un module de consultation.
+bool moduleOuvert(Licence licence, ModuleApp m) =>
+    licence.couvre(m.niveauRequis) && (!licence.lectureSeule || modulesLectureSeule.contains(m.id));

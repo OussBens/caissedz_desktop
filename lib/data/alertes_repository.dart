@@ -8,8 +8,14 @@ class AlertesRepository {
 
   final DatabaseExecutor db;
 
+  /// Condition SQL sur `produit p` : exclut les produits du catalogue BENS jamais entrés en stock.
+  static const String sansStockCatalogue =
+      "NOT (p.source = 'Catalogue' AND NOT EXISTS (SELECT 1 FROM mouvement_stock m WHERE m.produit_code = p.code))";
+
   /// Produits actifs dont le stock (magasins [magasins], tous si `null`) est ≤ leur seuil
-  /// (seuil du produit, sinon [seuilGlobal]) ; ruptures d'abord.
+  /// (seuil du produit, sinon [seuilGlobal]) ; ruptures d'abord. Un produit téléchargé du catalogue BENS
+  /// qui n'est jamais entré en stock ([sansStockCatalogue]) n'est pas une rupture : le commerce ne le vend
+  /// peut-être pas encore.
   Future<List<Map<String, Object?>>> ruptures({required int seuilGlobal, List<String>? magasins}) {
     final filtre = magasins == null ? '' : 'WHERE magasin_code IN (${List.filled(magasins.length, '?').join(',')})';
     return db.rawQuery(
@@ -20,7 +26,7 @@ class AlertesRepository {
       LEFT JOIN categorie c ON c.code = p.categorie_code
       LEFT JOIN (SELECT produit_code, SUM(quantite) q FROM mouvement_stock $filtre GROUP BY produit_code) s
         ON s.produit_code = p.code
-      WHERE p.actif = 1 AND p.service = 0 AND COALESCE(s.q, 0) <= COALESCE(p.seuil_stock, ?)
+      WHERE p.actif = 1 AND p.service = 0 AND COALESCE(s.q, 0) <= COALESCE(p.seuil_stock, ?) AND $sansStockCatalogue
       ORDER BY COALESCE(s.q, 0) > 0, COALESCE(s.q, 0), p.designation
       ''',
       [seuilGlobal, ...?magasins, seuilGlobal],

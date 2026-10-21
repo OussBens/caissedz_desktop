@@ -181,17 +181,18 @@ class _VersementsOngletState extends ConsumerState<VersementsOnglet> {
             onChanged: (m) => setState(() => _mode = m),
           ),
         ),
-        DsFormRow(
-          libelle: l10n.versementCaisse,
-          largeurLibelle: 60,
-          child: DsSelect<String?>(
-            valeur: _caisse,
-            options: [null, ...caisses.map((c) => c.code)],
-            libelle: (c) => c == null ? l10n.tiersToutes : nomCaisse(c),
-            recherche: rechercheListe(context, ref, ListeMetier.caisse),
-            onChanged: (c) => setState(() => _caisse = c),
+        if (ref.watch(plusieursCaissesProvider))
+          DsFormRow(
+            libelle: l10n.versementCaisse,
+            largeurLibelle: 60,
+            child: DsSelect<String?>(
+              valeur: _caisse,
+              options: [null, ...caisses.map((c) => c.code)],
+              libelle: (c) => c == null ? l10n.tiersToutes : nomCaisse(c),
+              recherche: rechercheListe(context, ref, ListeMetier.caisse),
+              onChanged: (c) => setState(() => _caisse = c),
+            ),
           ),
-        ),
       ],
       onExport: peutExporter(ref)
           ? (format, ls) => exporterTableau(
@@ -526,13 +527,9 @@ class _VersementTiersState extends ConsumerState<_VersementTiers> {
     final titre = _edition
         ? (widget.retour ? l10n.versementRetourModifier : l10n.versementModifier)
         : (widget.retour ? l10n.versementRetourNouveau : l10n.versementNouveau);
-    final description = widget.retour
-        ? (_client ? l10n.versementAideRetourClient : l10n.versementAideRetourFournisseur)
-        : (_client ? l10n.versementAideClient : l10n.versementAideFournisseur);
     return DsDialog(
       titre: titre,
       iconeData: widget.retour ? LucideIcons.undo2 : LucideIcons.handCoins,
-      description: description,
       largeur: 680,
       actions: [
         DsButton(
@@ -552,11 +549,12 @@ class _VersementTiersState extends ConsumerState<_VersementTiers> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         spacing: DsSpacing.s3,
         children: [
-          DsFormRow(
-            libelle: l10n.versementNumero,
-            largeurLibelle: lw,
-            child: DsTextField(valeurInitiale: widget.versement?.code ?? l10n.tiersCodeAuto, actif: false),
-          ),
+          if (widget.versement != null)
+            DsFormRow(
+              libelle: l10n.versementNumero,
+              largeurLibelle: lw,
+              child: DsTextField(valeurInitiale: widget.versement?.code ?? l10n.tiersCodeAuto, actif: false),
+            ),
           DsFormRow(
             libelle: l10n.communDate,
             obligatoire: true,
@@ -613,18 +611,19 @@ class _VersementTiersState extends ConsumerState<_VersementTiers> {
               onChanged: (v) => setState(() => _type = v ?? _type),
             ),
           ),
-          DsFormRow(
-            libelle: l10n.versementCaisse,
-            obligatoire: true,
-            largeurLibelle: lw,
-            child: DsSelect<String>(
-              valeur: _caisse,
-              options: caisses.map((c) => c.code).toList(),
-              libelle: (code) => caisses.where((c) => c.code == code).firstOrNull?.nom ?? code,
-              recherche: rechercheListe(context, ref, ListeMetier.caisse),
-              onChanged: (v) => setState(() => _caisse = v),
+          if (ref.watch(plusieursCaissesProvider))
+            DsFormRow(
+              libelle: l10n.versementCaisse,
+              obligatoire: true,
+              largeurLibelle: lw,
+              child: DsSelect<String>(
+                valeur: _caisse,
+                options: caisses.map((c) => c.code).toList(),
+                libelle: (code) => caisses.where((c) => c.code == code).firstOrNull?.nom ?? code,
+                recherche: rechercheListe(context, ref, ListeMetier.caisse),
+                onChanged: (v) => setState(() => _caisse = v),
+              ),
             ),
-          ),
           DsFormRow(
             libelle: l10n.tiersObservation,
             largeurLibelle: lw,

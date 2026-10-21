@@ -115,7 +115,6 @@ class _CommandesFournisseursPageState extends ConsumerState<CommandesFournisseur
     final actives = lignes.where((c) => c.actif);
     return PageModule(
       moduleId: 'commandes_fournisseurs',
-      sousTitre: l10n.cmdfDescriptionModule,
       child: DsModuleTable<CommandeFournisseur>(
         key: const ValueKey('cmdf_table'),
         entite: l10n.moduleCommandesFournisseurs,
@@ -406,8 +405,6 @@ class _CommandeFormState extends ConsumerState<_CommandeForm> {
     return DocFormDialog(
       titre: c == null ? l10n.cmdfNouvelle : l10n.cmdfModifier,
       icone: LucideIcons.clipboardList,
-      description:
-          c?.code ?? (widget.besoin == null ? l10n.cmdfFormDescription : l10n.entDepuisListe(widget.besoin!.code)),
       cleEnregistrer: const ValueKey('cmdf_enregistrer'),
       lignes: _lignes,
       onLignes: (l) => setState(() => _lignes = l),
@@ -459,16 +456,17 @@ class _CommandeFormState extends ConsumerState<_CommandeForm> {
             onChanged: (v) => setState(() => _fournisseur = v),
           ),
         ),
-        DsFormRow(
-          libelle: l10n.stkMagasin,
-          largeurLibelle: _lw,
-          child: DsSelect<String>(
-            valeur: _magasin,
-            options: [for (final m in magasins) m.code],
-            libelle: (x) => magasins.where((m) => m.code == x).firstOrNull?.nom ?? x,
-            onChanged: (v) => setState(() => _magasin = v ?? _magasin),
+        if (ref.watch(plusieursMagasinsProvider))
+          DsFormRow(
+            libelle: l10n.stkMagasin,
+            largeurLibelle: _lw,
+            child: DsSelect<String>(
+              valeur: _magasin,
+              options: [for (final m in magasins) m.code],
+              libelle: (x) => magasins.where((m) => m.code == x).firstOrNull?.nom ?? x,
+              onChanged: (v) => setState(() => _magasin = v ?? _magasin),
+            ),
           ),
-        ),
         DsFormRow(
           libelle: l10n.stkLivraison,
           largeurLibelle: _lw,

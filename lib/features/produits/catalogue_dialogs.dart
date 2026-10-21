@@ -133,7 +133,6 @@ class _CategorieFormState extends ConsumerState<_CategorieForm> {
           ? (_edition ? l10n.prdModifierSousCategorie : l10n.categoriesNouvelleSous)
           : (_edition ? l10n.prdModifierCategorie : l10n.categoriesNouvelle),
       iconeData: widget.sous ? LucideIcons.folderTree : LucideIcons.folder,
-      description: _code,
       largeur: 600,
       actions: [
         DsButton(
@@ -153,10 +152,11 @@ class _CategorieFormState extends ConsumerState<_CategorieForm> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         spacing: 12,
         children: [
-          DsFormRow(
-            libelle: l10n.produitsColCode,
-            child: DsTextField(valeurInitiale: _code ?? l10n.prdCodeAuto, actif: false),
-          ),
+          if (_code != null)
+            DsFormRow(
+              libelle: l10n.produitsColCode,
+              child: DsTextField(valeurInitiale: _code ?? l10n.prdCodeAuto, actif: false),
+            ),
           if (widget.sous)
             DsFormRow(
               libelle: l10n.prdCategorieParente,
@@ -498,9 +498,6 @@ class _RemiseFormState extends ConsumerState<_RemiseForm> {
     return DocFormDialog(
       titre: widget.remise == null ? l10n.remiseNouvelle : l10n.prdModifierRemise,
       icone: LucideIcons.percent,
-      description: widget.remise == null
-          ? l10n.prdRemiseDescription
-          : '${widget.remise!.code} · ${widget.remise!.designation}',
       largeur: 980,
       cleEnregistrer: const ValueKey('remise_enregistrer'),
       lignes: parMontant ? const [] : _lignes,
@@ -566,11 +563,12 @@ class _RemiseFormState extends ConsumerState<_RemiseForm> {
           ),
         ),
         DsSpan(child: DsSubHead(l10n.remiseSectionInfos, icone: LucideIcons.info)),
-        DsFormRow(
-          libelle: l10n.produitsColCode,
-          largeurLibelle: lw,
-          child: DsTextField(valeurInitiale: widget.remise?.code ?? l10n.prdCodeAuto, actif: false),
-        ),
+        if (widget.remise != null)
+          DsFormRow(
+            libelle: l10n.produitsColCode,
+            largeurLibelle: lw,
+            child: DsTextField(valeurInitiale: widget.remise?.code ?? l10n.prdCodeAuto, actif: false),
+          ),
         DsFormRow(
           libelle: l10n.categorieNom,
           obligatoire: true,
@@ -873,7 +871,6 @@ class _PackFormState extends ConsumerState<_PackForm> {
     return DocFormDialog(
       titre: widget.pack == null ? l10n.packNouveau : l10n.prdModifierPack,
       icone: LucideIcons.gift,
-      description: widget.pack == null ? l10n.prdPackDescription : '${widget.pack!.code} · ${widget.pack!.designation}',
       largeur: 940,
       cleEnregistrer: const ValueKey('pack_enregistrer'),
       libelleEnregistrer: l10n.prdEnregistrerPack,
@@ -918,11 +915,12 @@ class _PackFormState extends ConsumerState<_PackForm> {
         ),
       ],
       entete: [
-        DsFormRow(
-          libelle: l10n.produitsColCode,
-          largeurLibelle: lw,
-          child: DsTextField(valeurInitiale: widget.pack?.code ?? l10n.prdCodeAuto, actif: false),
-        ),
+        if (widget.pack != null)
+          DsFormRow(
+            libelle: l10n.produitsColCode,
+            largeurLibelle: lw,
+            child: DsTextField(valeurInitiale: widget.pack?.code ?? l10n.prdCodeAuto, actif: false),
+          ),
         DsFormRow(
           libelle: l10n.produitsColCodeBarres,
           largeurLibelle: lw,

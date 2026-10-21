@@ -15,7 +15,7 @@ void main() {
   group('Zakat (DS v2.2)', () {
     testWidgets('nouveau calcul, marquer payée, annulation bloquée une fois payée', (tester) async {
       final c = await pumpApp(tester, routeInitiale: '/zakat', taille: _taille);
-      expect(find.text('Calcul annuel sur le stock, les liquidités et les créances'), findsOneWidget);
+      expect(find.byKey(const ValueKey('zakat_nouveau')), findsOneWidget);
       await clic(tester, _cle('zakat_nouveau'));
       await tester.enterText(_champ('zakat_stock'), '1000000');
       await tester.enterText(_champ('zakat_liquidites'), '200000');

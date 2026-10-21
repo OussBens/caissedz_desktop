@@ -2,6 +2,7 @@ import 'package:sqflite_common/sqlite_api.dart';
 
 import '../domain/calculs_prix.dart';
 import '../domain/models/stock.dart';
+import 'alertes_repository.dart';
 import 'fiscalite_repository.dart';
 
 /// Ligne d'une analyse de la Situation (valeurs brutes par clé de colonne).
@@ -457,7 +458,8 @@ class SituationRepository {
       '''
       SELECT p.code, p.designation d, COALESCE((SELECT SUM(m.quantite) FROM mouvement_stock m
         WHERE m.produit_code = p.code $filtre), 0) q
-      FROM produit p WHERE p.actif = 1 AND p.service = 0 AND q <= 0 ORDER BY p.designation LIMIT ?
+      FROM produit p WHERE p.actif = 1 AND p.service = 0 AND q <= 0 AND ${AlertesRepository.sansStockCatalogue}
+      ORDER BY p.designation LIMIT ?
       ''',
       [...?magasins, limite],
     );

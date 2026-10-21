@@ -74,7 +74,7 @@ class _RechercheGlobaleDialogState extends ConsumerState<RechercheGlobaleDialog>
     bool accessible(ResultatRecherche r) {
       final m = Modules.parId(r.moduleId);
       return m != null &&
-          verrouModule(l10n, m, licenceCouvre: licence.couvre(m.niveauRequis), session: session) == null &&
+          verrouModule(l10n, m, licence: licence, session: session) == null &&
           (session?.peutAcceder(m.idAcces) ?? false);
     }
 

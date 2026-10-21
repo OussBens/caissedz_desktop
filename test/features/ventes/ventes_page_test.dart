@@ -71,6 +71,9 @@ Future<ProviderContainer> _ouvrir(WidgetTester tester) async {
   final c = await pumpApp(tester, routeInitiale: '/ventes', taille: const Size(1500, 1000));
   await _donnees(c);
   await tester.pumpAndSettle();
+  // Chiffres et filtres sont repliés par défaut.
+  await ouvrirChiffres(tester);
+  await ouvrirFiltres(tester);
   return c;
 }
 
@@ -96,7 +99,7 @@ void main() {
       expect(find.text('Panier VTE0001'), findsOneWidget);
       expect(find.text('Produits du panier'), findsOneWidget);
       expect(find.text('Paiement & marge'), findsOneWidget);
-      await clic(tester, find.text('Modifier').last);
+      await clic(tester, find.byKey(const ValueKey('detail_modifier'))); // icône seule
       expect(find.text('Modifier le panier'), findsOneWidget);
       await tester.enterText(find.byKey(const ValueKey('panier_montant_paye')), '300');
       await tester.enterText(find.byKey(const ValueKey('panier_observation')), 'Soldé au comptoir');
@@ -138,6 +141,7 @@ void main() {
       );
       await _donnees(c);
       await tester.pumpAndSettle();
+      await ouvrirFiltres(tester);
       // Navigateur imbriqué du shell : la liste s'ouvre juste sous le champ, pas décalée de la barre latérale.
       await clic(tester, find.byKey(const ValueKey('filtre_statut_panier')));
       // Mesuré après le clic : le champ a pu défiler pour être visible.

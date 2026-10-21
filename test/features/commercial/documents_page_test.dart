@@ -128,10 +128,10 @@ void main() {
     expect(find.text('En cours'), findsWidgets);
     await clic(tester, find.text('BCF0001'));
     await clic(tester, _cle('cmdf_receptionner'));
-    expect(find.text('Réception de la commande BCF0001'), findsOneWidget);
+    expect(find.byKey(const ValueKey('entree_fournisseur')), findsOneWidget);
     await tester.sendKeyEvent(LogicalKeyboardKey.escape);
     await tester.pumpAndSettle();
-    if (find.text('Réception de la commande BCF0001').evaluate().isNotEmpty) {
+    if (find.byKey(const ValueKey('entree_fournisseur')).evaluate().isNotEmpty) {
       await clic(tester, find.text('Annuler').last);
     }
     await clic(tester, find.text('BCF0001'));

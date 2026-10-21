@@ -63,12 +63,8 @@ class _TiersPageState extends ConsumerState<TiersPage> {
     final nbVersements = (ref.watch(versementsProvider).value ?? const <Versement>[])
         .where((v) => v.tiersType == widget.type && v.mode != 'Avoir')
         .length;
-    final avecCredit = tous.where((t) => t.stats.credit > 0.004).length;
     return PageModule(
       moduleId: _client ? 'clients' : 'fournisseurs',
-      sousTitre: _client
-          ? l10n.tiersDescriptionClients(tous.length, avecCredit)
-          : l10n.tiersDescriptionFournisseurs(tous.length, avecCredit),
       onglets: [_client ? l10n.moduleClients : l10n.moduleFournisseurs, l10n.moduleVersements],
       comptes: [tous.length, nbVersements],
       ongletCourant: _onglet,
@@ -244,7 +240,6 @@ class _TiersPageState extends ConsumerState<TiersPage> {
       colonnes: colonnes,
       cle: (t) => t.code,
       afficherTotaux: true,
-      filtresOuverts: true,
       kpis: kpis,
       indiceRecherche: l10n.tiersRechercheIndice,
       texteRecherche: (t) => '${t.nom} ${t.code} ${t.telephone}',

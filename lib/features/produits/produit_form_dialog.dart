@@ -73,6 +73,25 @@ List<String> _liste(String? s) =>
 /// Mode du formulaire : Rapide (une page), Détaillé (3 étapes) ou IA (recherche par code-barres, §10.1).
 enum ModeFormulaireProduit { rapide, detaille, ia }
 
+/// Valeurs proposées à la création d'un produit (Reçu IA : la ligne lue sur la facture du fournisseur).
+@immutable
+class ProduitPropose {
+  const ProduitPropose({
+    required this.designation,
+    this.codeBarres,
+    this.fournisseurCode,
+    this.prixAchat,
+    this.quantiteEntree,
+  });
+  final String designation;
+  final String? codeBarres;
+  final String? fournisseurCode;
+  final double? prixAchat;
+
+  /// Quantité lue sur la facture : elle entre en stock avec l'entrée du bon, le stock initial reste donc à 0.
+  final double? quantiteEntree;
+}
+
 /// Formulaire produit (`ProduitFormDialog` du DS v2.2, 960 px) : création ou modification.
 Future<Produit?> afficherFormulaireProduit(
   BuildContext context, {
@@ -80,6 +99,7 @@ Future<Produit?> afficherFormulaireProduit(
   bool detaille = false,
   ModeFormulaireProduit? mode,
   FicheProduitIa? fiche,
+  ProduitPropose? propose,
 }) => afficherDialog<Produit>(
   context,
   fermableParVoile: false,
@@ -87,22 +107,28 @@ Future<Produit?> afficherFormulaireProduit(
     produit: produit,
     mode: mode ?? (detaille ? ModeFormulaireProduit.detaille : ModeFormulaireProduit.rapide),
     fiche: fiche,
+    propose: propose,
   ),
 );
 
 class ProduitFormDialog extends ConsumerStatefulWidget {
-  const ProduitFormDialog({super.key, this.produit, this.mode = ModeFormulaireProduit.rapide, this.fiche});
+  const ProduitFormDialog({
+    super.key,
+    this.produit,
+    this.mode = ModeFormulaireProduit.rapide,
+    this.fiche,
+    this.propose,
+  });
   final Produit? produit;
   final ModeFormulaireProduit mode;
   final FicheProduitIa? fiche;
+  final ProduitPropose? propose;
 
   @override
   ConsumerState<ProduitFormDialog> createState() => _ProduitFormDialogState();
 }
 
 class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
-  static const double _lw = 128;
-
   late ModeFormulaireProduit _mode = widget.mode;
   int _etape = 1;
   late int _vu = _edition ? 3 : 1;
@@ -192,6 +218,13 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
       _seuil.text = seuil?.toString() ?? '';
       final f = widget.fiche;
       if (f != null) _appliquerFiche(f);
+      final pr = widget.propose;
+      if (pr != null) {
+        _designation.text = pr.designation;
+        _codeBarres.text = pr.codeBarres ?? '';
+        _fournisseur = pr.fournisseurCode;
+        if (pr.prixAchat != null && pr.prixAchat! > 0) _achat.text = _nb(pr.prixAchat!);
+      }
     }
   }
 
@@ -258,7 +291,7 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
   }
 
   static String _nb(double v) => v == v.roundToDouble() ? v.toStringAsFixed(0) : v.toString();
-  static double _d(String s) => double.tryParse(s.replaceAll(' ', '').replaceAll(',', '.')) ?? 0;
+  static double _d(String s) => lireNombre(s) ?? 0;
 
   double get _a => _d(_achat.text);
   double get _m => _d(_marge.text);
@@ -424,7 +457,7 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
           produit,
           codesSecondaires: _codes,
           emballages: emballages,
-          stockInitial: _service ? 0 : _d(_stock.text),
+          stockInitial: _service || widget.propose?.quantiteEntree != null ? 0 : _d(_stock.text),
           magasinCode: _magasin ?? await ref.read(magasinPrincipalProvider.future),
           photos: photos,
         );
@@ -482,7 +515,6 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
     final s2 = !det || _etape == 2;
     final s3 = det && _etape == 3;
     final dernier = !det || _etape == 3;
-    final p = widget.produit;
     final cb = _codeBarres.text.trim();
     final eanInvalide = cb.length == 13 && RegExp(r'^\d{13}$').hasMatch(cb) && !CodesBarres.ean13Valide(cb);
 
@@ -539,14 +571,7 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
     return DsDialog(
       titre: _edition ? l10n.produitModifier : l10n.produitsNouveau,
       iconeData: _edition ? LucideIcons.pencil : LucideIcons.packagePlus,
-      description: _edition
-          ? '${p!.designation} · ${p.code}'
-          : switch (_mode) {
-              ModeFormulaireProduit.rapide => l10n.prdDescRapide,
-              ModeFormulaireProduit.detaille => l10n.prdDescDetaille,
-              ModeFormulaireProduit.ia => l10n.prdDescIa,
-            },
-      largeur: 960,
+      largeur: 1040,
       piedDebut: Text(
         det ? l10n.prdEtapeObligatoire(_etape) : l10n.prdObligatoire,
         style: t.caption.copyWith(color: c.textMuted, fontWeight: FontWeight.w500),
@@ -554,12 +579,10 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
       actions: pied,
       contenu: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        spacing: 16,
+        spacing: DsSpacing.s4,
         children: [
-          Wrap(
-            spacing: 20,
-            runSpacing: 12,
-            crossAxisAlignment: WrapCrossAlignment.center,
+          Row(
+            spacing: DsSpacing.s6,
             children: [
               DsSegmentedControl<ModeFormulaireProduit>(
                 valeur: _mode,
@@ -575,13 +598,11 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
                 ],
               ),
               if (det)
-                ConstrainedBox(
-                  constraints: const BoxConstraints(minWidth: 360, maxWidth: 560),
+                Expanded(
                   child: DsStepper(
                     petit: true,
                     courante: _etape - 1,
                     etapes: [l10n.prdEtape1, l10n.prdEtape2, l10n.prdEtape3],
-                    descriptions: [l10n.prdEtape1Desc, l10n.prdEtape2Desc, l10n.prdEtape3Desc],
                     onEtape: (i) {
                       final n = i + 1;
                       if (n <= _vu && (n < _etape || _ok1)) setState(() => _etape = n);
@@ -596,19 +617,83 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
               alignment: AlignmentDirectional.centerStart,
               child: DsBadge(libelle: l10n.iaTrouve(_fiche!.source), ton: DsBadgeTon.info, icone: LucideIcons.sparkles),
             ),
-          if (_mode != ModeFormulaireProduit.ia)
-            DsGrilleFormulaire(
-              colonnes: 2,
-              children: [
-                if (s1) ..._etape1(l10n, devise, eanInvalide),
-                if (s2) ..._etape2(l10n, devise),
-                if (s3) ..._etape3(l10n),
-              ],
-            ),
+          if (_mode != ModeFormulaireProduit.ia) ...[
+            if (s1) ..._etape1(l10n, devise, eanInvalide),
+            if (s2) ..._etape2(l10n, devise),
+            if (s3) ..._etape3(l10n),
+          ],
           if (_erreur != null) Text(_erreur!, style: t.bodySm.copyWith(color: c.dangerFg)),
         ],
       ),
     );
+  }
+
+  /// Bloc du formulaire : un titre sobre puis ses rangées de champs, sur une surface encadrée.
+  Widget _bloc(String titre, List<Widget> rangees) {
+    final c = context.ds.colors;
+    final t = context.ds.typo;
+    return Container(
+      padding: const EdgeInsets.all(DsSpacing.s4),
+      decoration: BoxDecoration(
+        color: c.surfaceCard,
+        borderRadius: DsRadius.borderMd,
+        border: Border.all(color: c.borderSubtle),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        spacing: 14,
+        children: [
+          Text(
+            titre,
+            style: t.label.copyWith(color: c.textPrimary, fontWeight: FontWeight.w600),
+          ),
+          ...rangees,
+        ],
+      ),
+    );
+  }
+
+  /// Champs répartis en rangées de [colonnes] cases de même largeur (la dernière rangée garde l'alignement).
+  List<Widget> _grille(List<Widget> champs, {int colonnes = 2}) => [
+    for (var i = 0; i < champs.length; i += colonnes)
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: DsSpacing.s4,
+        children: [
+          for (var j = i; j < i + colonnes; j++) Expanded(child: j < champs.length ? champs[j] : const SizedBox()),
+        ],
+      ),
+  ];
+
+  /// Une rangée de champs aux largeurs relatives [flex].
+  Widget _rangee(List<Widget> champs, {required List<int> flex}) => Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    spacing: DsSpacing.s4,
+    children: [for (final (i, x) in champs.indexed) Expanded(flex: flex[i], child: x)],
+  );
+
+  /// Interrupteur dans une case encadrée (libellé à gauche, bascule à droite).
+  Widget _option(Widget interrupteur) {
+    final c = context.ds.colors;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: DsSpacing.s3, vertical: 10),
+      decoration: BoxDecoration(color: c.surfaceSunken, borderRadius: DsRadius.borderMd),
+      child: interrupteur,
+    );
+  }
+
+  /// Champ à libellé au-dessus.
+  DsFormRow _champ(String libelle, Widget child, {bool obligatoire = false, String? aide, String? erreur}) =>
+      DsFormRow(libelle: libelle, obligatoire: obligatoire, aide: aide, erreur: erreur, empile: true, child: child);
+
+  /// Code-barres interne `CDZ` + date + séquence (CODE128), réservé auprès du catalogue.
+  Future<void> _genererCodeBarres() async {
+    final code = await ref.read(catalogueServiceProvider).reserverCodeBarresInterne();
+    if (!mounted) return;
+    setState(() {
+      _codeBarres.text = code;
+      _erreurCode = null;
+    });
   }
 
   Widget _blocIa(AppLocalizations l10n) {
@@ -667,223 +752,201 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
         .where((s) => s.categorieCode == _categorie && (s.actif || s.code == _sousCategorie))
         .toList();
     final fournisseurs = ref.watch(fournisseursProvider).value ?? const <Fournisseur>[];
-    return [
-      DsSpan(child: DsSubHead(l10n.prdPhotos, icone: LucideIcons.image)),
-      DsSpan(
-        child: Align(
-          alignment: AlignmentDirectional.centerStart,
-          child: DsPhotoUploader(
-            photos: _photos,
-            onAjouter: _ajouterPhoto,
-            onRetirer: (x) => setState(() => _photos = _photos.where((y) => y != x).toList()),
-            libelleAjouter: l10n.dsAjouter,
-            libellePrincipale: l10n.prdPrincipale,
-            aide: l10n.prdPhotosFormat,
-            libelleFin: l10n.prdPhotosFin,
-          ),
-        ),
-      ),
-      DsSpan(child: DsSubHead(l10n.prdIdentification, icone: LucideIcons.tag)),
-      DsFormRow(
-        libelle: l10n.produitsColCode,
-        largeurLibelle: _lw,
-        child: DsTextField(valeurInitiale: widget.produit?.code ?? l10n.prdCodeAuto, actif: false),
-      ),
-      if (_edition)
-        DsFormRow(
-          libelle: l10n.retoursEtat,
-          largeurLibelle: _lw,
-          child: DsSwitch(valeur: _actif, libelle: l10n.communActif, onChanged: (v) => setState(() => _actif = v)),
-        )
-      else
-        const SizedBox.shrink(),
-      DsSpan(
-        child: DsFormRow(
-          libelle: l10n.produitsColDesignation,
-          obligatoire: true,
-          largeurLibelle: _lw,
-          child: DsTextField(
-            key: const ValueKey('produit_designation'),
-            controller: _designation,
-            autofocus: !_edition,
-            indice: l10n.prdDesignationIndice,
-            onChanged: (_) => setState(() {}),
-          ),
-        ),
-      ),
-      DsFormRow(
-        libelle: l10n.produitsColCodeBarres,
-        largeurLibelle: _lw,
-        erreur: _erreurCode,
-        aide: eanInvalide ? l10n.prdEanInvalide : null,
-        child: Row(
-          spacing: 6,
-          children: [
-            Expanded(
-              child: DsTextField(
-                key: const ValueKey('produit_code_barres'),
-                controller: _codeBarres,
-                iconePrefixe: LucideIcons.barcode,
-                indice: l10n.prdScannerOuSaisir,
-                onChanged: (_) => setState(() => _erreurCode = null),
-              ),
-            ),
-            DsIconButton(
-              icone: LucideIcons.wandSparkles,
-              tooltip: l10n.prdGenererEan,
-              onPressed: () => setState(() => _codeBarres.text = CodesBarres.genererEan13()),
-            ),
-          ],
-        ),
-      ),
-      DsFormRow(
-        libelle: l10n.produitsColCategorie,
+    final identification = _bloc(l10n.prdIdentification, [
+      _champ(
+        l10n.produitsColDesignation,
         obligatoire: true,
-        largeurLibelle: _lw,
-        child: DsSelect<String>(
-          cle: const ValueKey('produit_categorie'),
-          valeur: _categorie,
-          options: [for (final x in categories) x.code],
-          libelle: (code) => categories.where((x) => x.code == code).firstOrNull?.nom ?? code,
-          recherche: rechercheListe(context, ref, ListeMetier.categorie),
-          onChanged: (v) => setState(() {
-            _categorie = v ?? _categorie;
-            _sousCategorie = null;
-          }),
-        ),
-      ),
-      DsFormRow(
-        libelle: l10n.produitChampSousCategorie,
-        largeurLibelle: _lw,
-        child: DsSelect<String?>(
-          valeur: _sousCategorie,
-          options: [null, for (final s in sous) s.code],
-          libelle: (code) =>
-              code == null ? l10n.communAucune : (sous.where((s) => s.code == code).firstOrNull?.nom ?? code),
-          recherche: rechercheListe(context, ref, ListeMetier.sousCategorie),
-          onChanged: (v) => setState(() => _sousCategorie = v),
-        ),
-      ),
-      if (det)
-        DsFormRow(
-          libelle: l10n.prdMarque,
-          largeurLibelle: _lw,
-          child: DsTextField(controller: _marque, indice: l10n.prdMarqueIndice),
-        )
-      else
-        const SizedBox.shrink(),
-      if (det) ...[
-        DsFormRow(
-          libelle: l10n.prdFournisseur,
-          largeurLibelle: _lw,
-          child: DsSelect<String?>(
-            valeur: _fournisseur,
-            options: [null, for (final f in fournisseurs) f.code],
-            libelle: (code) =>
-                code == null ? l10n.communAucune : (fournisseurs.where((f) => f.code == code).firstOrNull?.nom ?? code),
-            recherche: rechercheListe(context, ref, ListeMetier.fournisseur),
-            onChanged: (v) => setState(() => _fournisseur = v),
-          ),
-        ),
-        DsSpan(
-          child: DsFormRow(
-            libelle: l10n.prdDescriptionChamp,
-            largeurLibelle: _lw,
-            alignerDebut: true,
-            child: DsTextField(controller: _description, multiligne: true, lignes: 2),
-          ),
-        ),
-      ],
-      DsSpan(child: DsSubHead(l10n.prdPrix, icone: LucideIcons.banknote)),
-      DsFormRow(
-        libelle: l10n.produitChampPrixAchat,
-        obligatoire: true,
-        largeurLibelle: _lw,
-        child: DsTextField(
-          key: const ValueKey('produit_achat'),
-          controller: _achat,
-          numerique: true,
-          suffixeTexte: devise,
-          indice: '0,00',
+        DsTextField(
+          key: const ValueKey('produit_designation'),
+          controller: _designation,
+          autofocus: !_edition,
+          indice: l10n.prdDesignationIndice,
           onChanged: (_) => setState(() {}),
         ),
       ),
-      DsFormRow(
-        libelle: l10n.prdMarge,
-        largeurLibelle: _lw,
-        child: Row(
-          spacing: 6,
-          children: [
-            Expanded(
-              child: DsTextField(
-                key: const ValueKey('produit_marge'),
-                controller: _marge,
-                numerique: true,
-                suffixeTexte: _modeMarge == '%' ? '%' : devise,
-                onChanged: (_) => setState(() {}),
+      ..._grille([
+        if (_edition) ...[
+          _champ(l10n.produitsColCode, DsTextField(valeurInitiale: widget.produit!.code, actif: false)),
+          _champ(
+            l10n.retoursEtat,
+            _option(DsSwitch(valeur: _actif, libelle: l10n.communActif, onChanged: (v) => setState(() => _actif = v))),
+          ),
+        ],
+        _champ(
+          l10n.produitsColCodeBarres,
+          erreur: _erreurCode,
+          aide: eanInvalide ? l10n.prdEanInvalide : null,
+          Row(
+            spacing: 6,
+            children: [
+              Expanded(
+                child: DsTextField(
+                  key: const ValueKey('produit_code_barres'),
+                  controller: _codeBarres,
+                  iconePrefixe: LucideIcons.barcode,
+                  indice: l10n.prdScannerOuSaisir,
+                  onChanged: (_) => setState(() => _erreurCode = null),
+                ),
               ),
+              DsIconButton(
+                key: const ValueKey('produit_generer_code'),
+                icone: LucideIcons.wandSparkles,
+                tooltip: l10n.prdGenererCodeBarres,
+                onPressed: _genererCodeBarres,
+              ),
+            ],
+          ),
+        ),
+        if (det) _champ(l10n.prdMarque, DsTextField(controller: _marque, indice: l10n.prdMarqueIndice)),
+        _champ(
+          l10n.produitsColCategorie,
+          obligatoire: true,
+          DsSelect<String>(
+            cle: const ValueKey('produit_categorie'),
+            valeur: _categorie,
+            options: [for (final x in categories) x.code],
+            libelle: (code) => categories.where((x) => x.code == code).firstOrNull?.nom ?? code,
+            recherche: rechercheListe(context, ref, ListeMetier.categorie),
+            onChanged: (v) => setState(() {
+              _categorie = v ?? _categorie;
+              _sousCategorie = null;
+            }),
+          ),
+        ),
+        _champ(
+          l10n.produitChampSousCategorie,
+          DsSelect<String?>(
+            valeur: _sousCategorie,
+            options: [null, for (final s in sous) s.code],
+            libelle: (code) =>
+                code == null ? l10n.communAucune : (sous.where((s) => s.code == code).firstOrNull?.nom ?? code),
+            recherche: rechercheListe(context, ref, ListeMetier.sousCategorie),
+            onChanged: (v) => setState(() => _sousCategorie = v),
+          ),
+        ),
+        if (det)
+          _champ(
+            l10n.prdFournisseur,
+            DsSelect<String?>(
+              valeur: _fournisseur,
+              options: [null, for (final f in fournisseurs) f.code],
+              libelle: (code) => code == null
+                  ? l10n.communAucune
+                  : (fournisseurs.where((f) => f.code == code).firstOrNull?.nom ?? code),
+              recherche: rechercheListe(context, ref, ListeMetier.fournisseur),
+              onChanged: (v) => setState(() => _fournisseur = v),
             ),
-            DsSegmentedControl<String>(
-              petit: true,
-              valeur: _modeMarge,
-              onChanged: _changerModeMarge,
-              options: [
-                const DsOption('%', libelle: '%'),
-                DsOption('DA', libelle: devise),
+          ),
+      ]),
+    ]);
+    final photos = _bloc(l10n.prdPhotos, [
+      DsPhotoUploader(
+        photos: _photos,
+        onAjouter: _ajouterPhoto,
+        onRetirer: (x) => setState(() => _photos = _photos.where((y) => y != x).toList()),
+        libelleAjouter: l10n.dsAjouter,
+        libellePrincipale: l10n.prdPrincipale,
+        aide: l10n.prdPhotosFormat,
+        libelleFin: l10n.prdPhotosFin,
+      ),
+    ]);
+    final prix = _bloc(l10n.prdPrix, [
+      _rangee(
+        flex: [5, 6, 5, if (det) 3, 5],
+        [
+          _champ(
+            l10n.produitChampPrixAchat,
+            obligatoire: true,
+            DsTextField(
+              key: const ValueKey('produit_achat'),
+              controller: _achat,
+              numerique: true,
+              suffixeTexte: devise,
+              indice: '0,00',
+              onChanged: (_) => setState(() {}),
+            ),
+          ),
+          _champ(
+            l10n.prdMarge,
+            Row(
+              spacing: 6,
+              children: [
+                Expanded(
+                  child: DsTextField(
+                    key: const ValueKey('produit_marge'),
+                    controller: _marge,
+                    numerique: true,
+                    suffixeTexte: _modeMarge == '%' ? '%' : devise,
+                    onChanged: (_) => setState(() {}),
+                  ),
+                ),
+                DsSegmentedControl<String>(
+                  petit: true,
+                  valeur: _modeMarge,
+                  onChanged: _changerModeMarge,
+                  options: [
+                    const DsOption('%', libelle: '%'),
+                    DsOption('DA', libelle: devise),
+                  ],
+                ),
               ],
             ),
-          ],
-        ),
-      ),
-      DsFormRow(
-        libelle: l10n.produitChampPrixVente,
-        obligatoire: true,
-        largeurLibelle: _lw,
-        // Sous le prix d'achat selon les Paramètres : erreur bloquante (Interdire), avertissement (Avertir) ou
-        // simple marge négative (Autoriser).
-        erreur: _sousAchat && _interdit ? l10n.posPrixSousAchatInterdit : null,
-        aide: _a <= 0 || (_sousAchat && _interdit)
-            ? null
-            : _sousAchat && _regleSousAchat == ParametresVente.venteSousAchatAvertir
-            ? l10n.prdSousAchat
-            : l10n.prdMargeUnitaire(formaterMontant(_vente - _a, devise)),
-        child: DsTextField(
-          key: ValueKey('produit_vente_${f2(_vente)}'),
-          valeurInitiale: f2(_vente),
-          suffixeTexte: devise,
-          actif: false,
-        ),
-      ),
-      DsFormRow(
-        libelle: l10n.prdPrixTtc,
-        largeurLibelle: _lw,
-        aide: '${l10n.prdTva} ${_nb(_tauxTva)} %',
-        child: DsTextField(
-          key: ValueKey('produit_ttc_${f2(Fiscalite.ttc(_vente, _tauxTva))}'),
-          valeurInitiale: f2(Fiscalite.ttc(_vente, _tauxTva)),
-          suffixeTexte: devise,
-          actif: false,
-        ),
-      ),
-      if (det)
-        DsFormRow(
-          libelle: l10n.prdTva,
-          largeurLibelle: _lw,
-          child: DsSelect<double>(
-            valeur: _tva,
-            options: const [0, 9, 19],
-            libelle: (v) => '${_nb(v)} %',
-            onChanged: (v) => setState(() => _tva = v ?? _tva),
           ),
-        )
-      else
-        const SizedBox.shrink(),
+          _champ(
+            l10n.produitChampPrixVente,
+            obligatoire: true,
+            // Sous le prix d'achat selon les Paramètres : erreur bloquante (Interdire), avertissement (Avertir) ou
+            // simple marge négative (Autoriser).
+            erreur: _sousAchat && _interdit ? l10n.posPrixSousAchatInterdit : null,
+            aide: _a <= 0 || (_sousAchat && _interdit)
+                ? null
+                : _sousAchat && _regleSousAchat == ParametresVente.venteSousAchatAvertir
+                ? l10n.prdSousAchat
+                : l10n.prdMargeUnitaire(formaterMontant(_vente - _a, devise)),
+            DsTextField(
+              key: ValueKey('produit_vente_${f2(_vente)}'),
+              valeurInitiale: f2(_vente),
+              suffixeTexte: devise,
+              actif: false,
+            ),
+          ),
+          if (det)
+            _champ(
+              l10n.prdTva,
+              DsSelect<double>(
+                valeur: _tva,
+                options: const [0, 9, 19],
+                libelle: (v) => '${_nb(v)} %',
+                onChanged: (v) => setState(() => _tva = v ?? _tva),
+              ),
+            ),
+          _champ(
+            l10n.prdPrixTtc,
+            aide: det ? null : '${l10n.prdTva} ${_nb(_tauxTva)} %',
+            DsTextField(
+              key: ValueKey('produit_ttc_${f2(Fiscalite.ttc(_vente, _tauxTva))}'),
+              valeurInitiale: f2(Fiscalite.ttc(_vente, _tauxTva)),
+              suffixeTexte: devise,
+              actif: false,
+            ),
+          ),
+        ],
+      ),
+    ]);
+    return [
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: DsSpacing.s4,
+        children: [
+          Expanded(child: identification),
+          SizedBox(width: 232, child: photos),
+        ],
+      ),
+      prix,
     ];
   }
 
   List<Widget> _etape2(AppLocalizations l10n, String devise) {
-    final c = context.ds.colors;
-    final t = context.ds.typo;
     final det = _detaille;
     final magasins = (ref.watch(magasinsProvider).value ?? const <Magasin>[]).where((m) => m.actif).toList();
     _magasin ??= ref.watch(magasinPrincipalProvider).value;
@@ -893,14 +956,13 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
       final piece = _prixPiece(q, p);
       final sous = piece != null && _estSousAchat(piece);
       final parPiece = piece == null ? null : l10n.posSelParPiece(formaterMontant(piece, devise));
-      return DsFormRow(
-        libelle: libelle,
-        largeurLibelle: _lw,
+      return _champ(
+        libelle,
         erreur: sous && _interdit ? '$parPiece · ${l10n.posPrixSousAchatInterdit}' : null,
         aide: sous && _regleSousAchat == ParametresVente.venteSousAchatAvertir
             ? '$parPiece · ${l10n.prdSousAchat}'
             : parPiece,
-        child: Row(
+        Row(
           spacing: 6,
           children: [
             Expanded(
@@ -929,61 +991,57 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
     }
 
     return [
-      DsSpan(child: DsSubHead(l10n.produitsColStock, icone: LucideIcons.boxes)),
-      DsFormRow(
-        libelle: _edition ? l10n.prdStockActuel : l10n.prdStockInitial,
-        largeurLibelle: _lw,
-        aide: _edition ? l10n.prdStockAide : null,
-        child: _edition
-            ? DsTextField(
-                key: const ValueKey('produit_stock_actuel'),
-                valeurInitiale: formaterNombre(stock!),
-                actif: false,
-              )
-            : DsTextField(
-                key: const ValueKey('produit_stock_initial'),
-                controller: _stock,
-                numerique: true,
-                actif: !_service,
-              ),
-      ),
-      DsFormRow(
-        libelle: l10n.prdSeuilAlerte,
-        largeurLibelle: _lw,
-        child: DsTextField(controller: _seuil, numerique: true),
-      ),
-      DsFormRow(
-        libelle: l10n.dsMagasin,
-        largeurLibelle: _lw,
-        child: DsSelect<String>(
-          valeur: _magasin,
-          actif: !_edition,
-          options: [for (final m in magasins) m.code],
-          libelle: (code) => magasins.where((m) => m.code == code).firstOrNull?.nom ?? code,
-          recherche: rechercheListe(context, ref, ListeMetier.magasin),
-          onChanged: (v) => setState(() => _magasin = v),
-        ),
-      ),
-      if (det)
-        DsFormRow(
-          libelle: l10n.produitChampUnite,
-          largeurLibelle: _lw,
-          child: DsSelectReferentiel(
-            liste: Referentiel.unitesMesure,
-            valeur: _unite,
-            onChanged: (v) => setState(() => _unite = v ?? _unite),
+      _bloc(l10n.produitsColStock, [
+        ..._grille(colonnes: 4, [
+          _champ(
+            _edition ? l10n.prdStockActuel : l10n.prdStockInitial,
+            aide: _edition || widget.propose?.quantiteEntree == null
+                ? null
+                : l10n.prdStockViaEntree(formaterNombre(widget.propose!.quantiteEntree!)),
+            _edition
+                ? DsTextField(
+                    key: const ValueKey('produit_stock_actuel'),
+                    valeurInitiale: formaterNombre(stock!),
+                    actif: false,
+                  )
+                : DsTextField(
+                    key: const ValueKey('produit_stock_initial'),
+                    controller: _stock,
+                    numerique: true,
+                    actif: !_service && widget.propose?.quantiteEntree == null,
+                  ),
           ),
-        )
-      else
-        const SizedBox.shrink(),
-      if (det) ...[
-        DsSpan(child: DsSubHead(l10n.prdEmballages, icone: LucideIcons.package)),
-        DsSpan(
-          child: Text(l10n.prdEmballagesAide, style: t.bodySm.copyWith(color: c.textMuted, height: 1.5)),
-        ),
-        emballage(l10n.prdBoite, _boiteQ, _boiteP, 'produit_boite'),
-        emballage(l10n.prdCarton, _cartonQ, _cartonP, 'produit_carton'),
-      ],
+          _champ(l10n.prdSeuilAlerte, DsTextField(controller: _seuil, numerique: true)),
+          if (det)
+            _champ(
+              l10n.produitChampUnite,
+              DsSelectReferentiel(
+                liste: Referentiel.unitesMesure,
+                valeur: _unite,
+                onChanged: (v) => setState(() => _unite = v ?? _unite),
+              ),
+            ),
+          if (ref.watch(plusieursMagasinsProvider))
+            _champ(
+              l10n.dsMagasin,
+              DsSelect<String>(
+                valeur: _magasin,
+                actif: !_edition,
+                options: [for (final m in magasins) m.code],
+                libelle: (code) => magasins.where((m) => m.code == code).firstOrNull?.nom ?? code,
+                recherche: rechercheListe(context, ref, ListeMetier.magasin),
+                onChanged: (v) => setState(() => _magasin = v),
+              ),
+            ),
+        ]),
+      ]),
+      if (det)
+        _bloc(l10n.prdEmballages, [
+          ..._grille([
+            emballage(l10n.prdBoite, _boiteQ, _boiteP, 'produit_boite'),
+            emballage(l10n.prdCarton, _cartonQ, _cartonP, 'produit_carton'),
+          ]),
+        ]),
     ];
   }
 
@@ -992,38 +1050,29 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
     final t = context.ds.typo;
     final tailles = _typeTaille == null ? const <String>[] : taillesParType[_typeTaille]!;
     return [
-      DsSpan(child: DsSubHead(l10n.prdVariantes, icone: LucideIcons.layers)),
-      DsSpan(
-        child: DsFormRow(
-          libelle: l10n.prdTypeTaille,
-          largeurLibelle: _lw,
-          child: Align(
-            alignment: AlignmentDirectional.centerStart,
-            child: SizedBox(
-              width: 320,
-              child: DsSelect<String?>(
-                valeur: _typeTaille,
-                options: [null, ...taillesParType.keys],
-                libelle: (v) => v == null ? l10n.communAucune : libelleRef(context, Referentiel.typesTaille, v),
-                onChanged: (v) => setState(() {
-                  _typeTaille = v;
-                  _tailles = v == 'Taille unique' ? {'Taille unique'} : {};
-                }),
-              ),
+      _bloc(l10n.prdVariantes, [
+        ..._grille(colonnes: 3, [
+          _champ(
+            l10n.prdTypeTaille,
+            DsSelect<String?>(
+              valeur: _typeTaille,
+              options: [null, ...taillesParType.keys],
+              libelle: (v) => v == null ? l10n.communAucune : libelleRef(context, Referentiel.typesTaille, v),
+              onChanged: (v) => setState(() {
+                _typeTaille = v;
+                _tailles = v == 'Taille unique' ? {'Taille unique'} : {};
+              }),
             ),
           ),
-        ),
-      ),
-      if (tailles.isNotEmpty && _typeTaille != 'Taille unique')
-        DsSpan(
-          child: DsFormRow(
-            libelle: l10n.prdTailles,
-            largeurLibelle: _lw,
-            alignerDebut: true,
-            aide: _tailles.isEmpty ? l10n.prdTaillesAide : l10n.prdTaillesN(_tailles.length),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 6,
+        ]),
+        if (tailles.isNotEmpty && _typeTaille != 'Taille unique')
+          _champ(
+            l10n.prdTailles,
+            aide: _tailles.isEmpty ? null : l10n.prdTaillesN(_tailles.length),
+            Wrap(
+              spacing: 8,
+              runSpacing: 6,
+              crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 DsChipGroup<String>(
                   petit: true,
@@ -1031,37 +1080,25 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
                   selection: _tailles,
                   onChanged: (v) => setState(() => _tailles = v),
                 ),
-                Row(
-                  spacing: 8,
-                  children: [
-                    DsButton(
-                      libelle: l10n.communToutSelectionner,
-                      taille: DsButtonTaille.sm,
-                      variante: DsButtonVariante.fantome,
-                      onPressed: () => setState(() => _tailles = tailles.toSet()),
-                    ),
-                    if (_tailles.isNotEmpty)
-                      DsButton(
-                        libelle: l10n.dsEffacer,
-                        taille: DsButtonTaille.sm,
-                        variante: DsButtonVariante.fantome,
-                        onPressed: () => setState(() => _tailles = {}),
-                      ),
-                  ],
+                DsButton(
+                  libelle: l10n.communToutSelectionner,
+                  taille: DsButtonTaille.sm,
+                  variante: DsButtonVariante.fantome,
+                  onPressed: () => setState(() => _tailles = tailles.toSet()),
                 ),
+                if (_tailles.isNotEmpty)
+                  DsButton(
+                    libelle: l10n.dsEffacer,
+                    taille: DsButtonTaille.sm,
+                    variante: DsButtonVariante.fantome,
+                    onPressed: () => setState(() => _tailles = {}),
+                  ),
               ],
             ),
           ),
-        ),
-      DsSpan(
-        child: DsFormRow(
-          libelle: l10n.prdCouleurs,
-          largeurLibelle: _lw,
-          alignerDebut: true,
-          aide: _couleurs.isEmpty
-              ? l10n.prdCouleursAide
-              : _couleurs.map((x) => libelleRef(context, Referentiel.couleursProduit, x)).join(', '),
-          child: DsChipGroup<String>(
+        _champ(
+          l10n.prdCouleurs,
+          DsChipGroup<String>(
             petit: true,
             options: [
               for (final e in pastillesCouleurs.entries)
@@ -1071,15 +1108,11 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
             onChanged: (v) => setState(() => _couleurs = v),
           ),
         ),
-      ),
-      DsSpan(child: DsSubHead(l10n.prdOptions, icone: LucideIcons.settings2)),
-      DsSpan(
-        child: DsFormRow(
-          libelle: l10n.prdCodesMultiples,
-          largeurLibelle: _lw,
-          alignerDebut: true,
-          aide: l10n.prdCodesMultiplesAide,
-          child: Wrap(
+      ]),
+      _bloc(l10n.prdOptions, [
+        _champ(
+          l10n.prdCodesMultiples,
+          Wrap(
             spacing: 6,
             runSpacing: 6,
             crossAxisAlignment: WrapCrossAlignment.center,
@@ -1125,50 +1158,43 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
             ],
           ),
         ),
-      ),
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 12,
-        children: [
-          DsSwitch(
-            valeur: _serie,
-            libelle: l10n.prdSuiviSerie,
-            aide: l10n.prdSuiviSerieAide,
-            onChanged: (v) => setState(() => _serie = v),
+        ..._grille(colonnes: 3, [
+          _option(DsSwitch(valeur: _serie, libelle: l10n.prdSuiviSerie, onChanged: (v) => setState(() => _serie = v))),
+          _option(
+            DsSwitch(
+              cle: const ValueKey('produit_service'),
+              valeur: _service,
+              libelle: l10n.prdServiceSansStock,
+              onChanged: (v) => setState(() => _service = v),
+            ),
           ),
-          DsSwitch(
-            cle: const ValueKey('produit_service'),
-            valeur: _service,
-            libelle: l10n.prdServiceSansStock,
-            aide: l10n.prdServiceAide,
-            onChanged: (v) => setState(() => _service = v),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            spacing: 10,
+            children: [
+              _option(
+                DsSwitch(
+                  valeur: _expiration,
+                  libelle: l10n.prdDateExpiration,
+                  onChanged: (v) => setState(() {
+                    _expiration = v;
+                    _dateExpiration ??= DateTime(DateTime.now().year, 12, 31);
+                  }),
+                ),
+              ),
+              if (_expiration)
+                DsDateField(valeur: _dateExpiration, onChanged: (d) => setState(() => _dateExpiration = d)),
+            ],
           ),
-        ],
-      ),
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 10,
-        children: [
-          DsSwitch(
-            valeur: _expiration,
-            libelle: l10n.prdDateExpiration,
-            aide: l10n.prdExpirationAide,
-            onChanged: (v) => setState(() {
-              _expiration = v;
-              _dateExpiration ??= DateTime(DateTime.now().year, 12, 31);
-            }),
+        ]),
+        ..._grille([
+          _champ(l10n.prdDescriptionChamp, DsTextField(controller: _description, multiligne: true, lignes: 2)),
+          _champ(
+            l10n.retoursObservation,
+            DsTextField(controller: _observation, multiligne: true, lignes: 2, indice: l10n.prdNoteInterne),
           ),
-          if (_expiration) DsDateField(valeur: _dateExpiration, onChanged: (d) => setState(() => _dateExpiration = d)),
-        ],
-      ),
-      DsSpan(
-        child: DsFormRow(
-          libelle: l10n.retoursObservation,
-          largeurLibelle: _lw,
-          alignerDebut: true,
-          child: DsTextField(controller: _observation, multiligne: true, lignes: 2, indice: l10n.prdNoteInterne),
-        ),
-      ),
+        ]),
+      ]),
     ];
   }
 

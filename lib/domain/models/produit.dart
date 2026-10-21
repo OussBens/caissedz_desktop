@@ -60,8 +60,13 @@ class Produit {
   /// 2ᵉ stock « nombre » obligatoire (> 0) à la saisie (§8.1) : paramètre global [global] ou propre au produit.
   bool exigeNombre({required bool global}) => !service && (global || suiviNombre);
 
-  /// `Manuel` ou `IA` (valeur stockée FR).
+  /// `Manuel`, `IA` ou `Catalogue` (valeur stockée FR).
   final String source;
+
+  /// Produit téléchargé depuis le catalogue BENS (rayons choisis à l'accueil), sans prix au départ.
+  static const String sourceCatalogue = 'Catalogue';
+
+  bool get duCatalogue => source == sourceCatalogue;
   final bool actif;
   final String? image;
   final String? marque;

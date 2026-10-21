@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
+import '../../app/demarrage_providers.dart';
 import '../../app/providers.dart';
 import '../../application/role_service.dart';
 import '../../application/tiers_service.dart';
@@ -220,11 +221,9 @@ class _UtilisateurFormState extends ConsumerState<_UtilisateurForm> {
         _magasins.isNotEmpty &&
         telErr == null;
     const lw = 128.0;
-    final nomAffiche = _u == null ? '' : (_u!.nomComplet.isEmpty ? _u!.identifiant : _u!.nomComplet);
     return DsDialog(
       titre: _edition ? l10n.usrModifierTitre : l10n.usrNouvel,
       iconeData: _edition ? LucideIcons.pencil : LucideIcons.userPlus,
-      description: _edition ? '$nomAffiche · ${_u!.code}' : l10n.usrFormDescription,
       largeur: 900,
       actions: [
         DsButton(
@@ -243,11 +242,12 @@ class _UtilisateurFormState extends ConsumerState<_UtilisateurForm> {
       contenu: DsGrilleFormulaire(
         children: [
           DsSpan(child: DsSubHead(l10n.usrSectionCompte, icone: LucideIcons.user)),
-          DsFormRow(
-            libelle: l10n.usrCode,
-            largeurLibelle: lw,
-            child: DsTextField(valeurInitiale: widget.code, actif: false),
-          ),
+          if (_edition)
+            DsFormRow(
+              libelle: l10n.usrCode,
+              largeurLibelle: lw,
+              child: DsTextField(valeurInitiale: widget.code, actif: false),
+            ),
           if (_edition)
             DsFormRow(
               libelle: l10n.usrEtat,
@@ -345,40 +345,42 @@ class _UtilisateurFormState extends ConsumerState<_UtilisateurForm> {
               onChanged: (v) => setState(() => _role = v ?? _role),
             ),
           ),
-          DsFormRow(
-            libelle: l10n.usrCaisseAttachee,
-            largeurLibelle: lw,
-            aide: _admin ? l10n.usrCaisseAdmin : l10n.usrCaisseIndice,
-            child: DsSelect<String?>(
-              cle: const ValueKey('usr_caisse'),
-              valeur: _admin ? null : _caisse,
-              options: [null, for (final c in widget.caisses) c.code],
-              libelle: (c) => c == null ? l10n.usrAucune : widget.caisses.firstWhere((x) => x.code == c).nom,
-              actif: !_admin,
-              recherche: rechercheListe(context, ref, ListeMetier.caisse),
-              onChanged: (v) => setState(() => _caisse = v),
-            ),
-          ),
-          DsSpan(
-            child: DsFormRow(
-              libelle: l10n.usrColMagasins,
-              obligatoire: true,
+          if (ref.watch(plusieursCaissesProvider))
+            DsFormRow(
+              libelle: l10n.usrCaisseAttachee,
               largeurLibelle: lw,
-              alignerDebut: true,
-              aide: l10n.usrMagasinsIndice,
-              erreur: _erreurs['magasins'],
-              child: DsOrderedMultiSelect<String>(
-                key: const ValueKey('usr_magasins'),
-                options: [for (final m in widget.magasins) DsOption(m.code, libelle: m.nom)],
-                valeur: _magasins,
-                libellePremier: l10n.usrDefaut,
-                onChanged: (v) => setState(() {
-                  _magasins = v;
-                  _erreurs.remove('magasins');
-                }),
+              aide: _admin ? l10n.usrCaisseAdmin : l10n.usrCaisseIndice,
+              child: DsSelect<String?>(
+                cle: const ValueKey('usr_caisse'),
+                valeur: _admin ? null : _caisse,
+                options: [null, for (final c in widget.caisses) c.code],
+                libelle: (c) => c == null ? l10n.usrAucune : widget.caisses.firstWhere((x) => x.code == c).nom,
+                actif: !_admin,
+                recherche: rechercheListe(context, ref, ListeMetier.caisse),
+                onChanged: (v) => setState(() => _caisse = v),
               ),
             ),
-          ),
+          if (ref.watch(plusieursMagasinsProvider))
+            DsSpan(
+              child: DsFormRow(
+                libelle: l10n.usrColMagasins,
+                obligatoire: true,
+                largeurLibelle: lw,
+                alignerDebut: true,
+                aide: l10n.usrMagasinsIndice,
+                erreur: _erreurs['magasins'],
+                child: DsOrderedMultiSelect<String>(
+                  key: const ValueKey('usr_magasins'),
+                  options: [for (final m in widget.magasins) DsOption(m.code, libelle: m.nom)],
+                  valeur: _magasins,
+                  libellePremier: l10n.usrDefaut,
+                  onChanged: (v) => setState(() {
+                    _magasins = v;
+                    _erreurs.remove('magasins');
+                  }),
+                ),
+              ),
+            ),
           DsSpan(
             child: DsFormRow(
               libelle: l10n.usrObservation,
@@ -503,7 +505,10 @@ Future<void> afficherDetailUtilisateur(BuildContext context, WidgetRef ref, Lign
             contenu: PermissionGrid(
               lectureSeule: true,
               colonnes: 4,
-              items: [...itemsModules(l10n), ...itemsSpeciales(l10n)],
+              items: [
+                ...itemsModules(l10n, niveau: ref.read(licenceProvider).niveau),
+                ...itemsSpeciales(l10n, niveau: ref.read(licenceProvider).niveau),
+              ],
               valeur: valeursRole(role, l10n),
             ),
           ),
@@ -704,9 +709,6 @@ class _RoleAssistantState extends ConsumerState<_RoleAssistant> {
     return DsDialog(
       titre: _edition ? l10n.usrModifierRole : l10n.usrNouveauRole,
       iconeData: _edition ? LucideIcons.pencil : LucideIcons.shieldPlus,
-      description: _edition
-          ? l10n.usrRoleConcernes(widget.role!.code, widget.role!.nbUtilisateurs)
-          : l10n.usrRoleDescription,
       largeur: 900,
       piedDebut: _etape > 0
           ? DsButton(
@@ -745,7 +747,6 @@ class _RoleAssistantState extends ConsumerState<_RoleAssistant> {
         children: [
           DsStepper(
             etapes: [l10n.usrEtapeInfos, l10n.usrEtapePermissions, l10n.usrEtapeSpeciales],
-            descriptions: [l10n.usrEtapeInfosDesc, l10n.usrEtapeModules(nMod), l10n.usrEtapeSpecialesDesc],
             courante: _etape,
             onEtape: (i) => setState(() => _etape = i),
           ),
@@ -758,10 +759,11 @@ class _RoleAssistantState extends ConsumerState<_RoleAssistant> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   spacing: DsSpacing.s3,
                   children: [
-                    DsFormRow(
-                      libelle: l10n.usrCode,
-                      child: DsTextField(valeurInitiale: widget.code, actif: false),
-                    ),
+                    if (_edition)
+                      DsFormRow(
+                        libelle: l10n.usrCode,
+                        child: DsTextField(valeurInitiale: widget.code, actif: false),
+                      ),
                     DsFormRow(
                       libelle: l10n.usrNomRole,
                       obligatoire: true,
@@ -803,7 +805,7 @@ class _RoleAssistantState extends ConsumerState<_RoleAssistant> {
               prefixeCle: 'role_module',
               titre: l10n.usrModulesTitre,
               description: l10n.usrModulesDesc,
-              items: itemsModules(l10n),
+              items: itemsModules(l10n, niveau: ref.watch(licenceProvider).niveau),
               valeur: _valeurs!,
               onChanged: (v) => setState(() => _valeurs = v),
             )
@@ -813,7 +815,7 @@ class _RoleAssistantState extends ConsumerState<_RoleAssistant> {
               colonnes: 2,
               titre: l10n.usrEtapeSpeciales,
               description: l10n.usrSpecialesDesc,
-              items: itemsSpeciales(l10n),
+              items: itemsSpeciales(l10n, niveau: ref.watch(licenceProvider).niveau),
               valeur: _valeurs!,
               onChanged: (v) => setState(() => _valeurs = v),
             ),
@@ -855,7 +857,10 @@ Future<void> afficherDetailRole(BuildContext context, WidgetRef ref, Role r) asy
           contenu: PermissionGrid(
             lectureSeule: true,
             colonnes: 4,
-            items: [...itemsModules(l10n), ...itemsSpeciales(l10n)],
+            items: [
+              ...itemsModules(l10n, niveau: ref.read(licenceProvider).niveau),
+              ...itemsSpeciales(l10n, niveau: ref.read(licenceProvider).niveau),
+            ],
             valeur: valeursRole(r, l10n),
           ),
         ),

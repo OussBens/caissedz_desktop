@@ -18,7 +18,6 @@ class PageModule extends ConsumerWidget {
     required this.moduleId,
     required this.child,
     this.titre,
-    this.sousTitre,
     this.onglets,
     this.comptes,
     this.ongletCourant = 0,
@@ -32,7 +31,6 @@ class PageModule extends ConsumerWidget {
 
   /// Titre (par défaut : libellé du module).
   final String? titre;
-  final String? sousTitre;
   final List<String>? onglets;
   final List<int?>? comptes;
   final int ongletCourant;
@@ -57,7 +55,6 @@ class PageModule extends ConsumerWidget {
     final nom = titre ?? module?.libelle(l10n) ?? moduleId;
     return DsPage(
       titre: nom,
-      sousTitre: sousTitre,
       filAriane: module == null ? null : [libelleGroupe(l10n, module.groupe), module.libelle(l10n)],
       defilable: defilable,
       actions: [

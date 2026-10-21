@@ -125,7 +125,6 @@ class ZakatPage extends ConsumerWidget {
     ];
     return PageModule(
       moduleId: 'zakat',
-      sousTitre: l10n.zkDescription,
       child: DsModuleTable<Zakat>(
         key: const ValueKey('zakat'),
         entite: l10n.zkEntite,

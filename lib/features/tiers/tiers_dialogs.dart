@@ -244,7 +244,6 @@ class _FormulaireTiersState extends ConsumerState<_FormulaireTiers> {
     return DsDialog(
       titre: titre,
       iconeData: _edition ? LucideIcons.pencil : (_client ? LucideIcons.userPlus : LucideIcons.truck),
-      description: _edition ? '${t!.nom} · ${t!.code}' : l10n.tiersChampsObligatoires,
       largeur: 920,
       actions: [
         DsButton(
@@ -264,11 +263,12 @@ class _FormulaireTiersState extends ConsumerState<_FormulaireTiers> {
       contenu: DsGrilleFormulaire(
         children: [
           DsSpan(child: DsSubHead(l10n.tiersInfosGenerales, icone: LucideIcons.idCard)),
-          DsFormRow(
-            libelle: l10n.produitsColCode,
-            largeurLibelle: lw,
-            child: DsTextField(valeurInitiale: t?.code ?? l10n.tiersCodeAuto, actif: false),
-          ),
+          if (t != null)
+            DsFormRow(
+              libelle: l10n.produitsColCode,
+              largeurLibelle: lw,
+              child: DsTextField(valeurInitiale: t?.code ?? l10n.tiersCodeAuto, actif: false),
+            ),
           if (_edition)
             DsFormRow(
               libelle: l10n.tiersEtat,
@@ -719,7 +719,6 @@ class _SituationTiersState extends ConsumerState<_SituationTiers> {
     return DsDialog(
       titre: l10n.tiersSituationDe(widget.tiers.nom),
       iconeData: LucideIcons.scale,
-      description: widget.tiers.estClient ? l10n.tiersReleveClient : l10n.tiersReleveFournisseur,
       largeur: 1100,
       piedDebut: peutExporter(ref)
           ? DsExportMenu(

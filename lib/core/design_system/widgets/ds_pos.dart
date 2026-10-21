@@ -478,72 +478,7 @@ class DsCashSessionCard extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final fond = ouverte ? c.successTint : c.surfaceSunken;
     final couleur = ouverte ? c.successFg : c.textSecondary;
-    if (compact) {
-      return Container(
-        height: 40,
-        padding: const EdgeInsetsDirectional.only(start: 10, end: 6),
-        decoration: BoxDecoration(
-          color: c.surfaceCard,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: c.borderDefault),
-          boxShadow: c.shadowXs,
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          spacing: 10,
-          children: [
-            Container(
-              width: 8,
-              height: 8,
-              decoration: BoxDecoration(
-                color: ouverte ? c.success : c.textDisabled,
-                shape: BoxShape.circle,
-                boxShadow: ouverte ? [BoxShadow(color: c.successTint, spreadRadius: 3)] : null,
-              ),
-            ),
-            Text(
-              '$caisse · ${ouverte ? '${l10n.dsPosOuverte} ${ouvertureHeure ?? ''}' : l10n.dsPosFermee}',
-              style: t.bodySmStrong,
-            ),
-            if (ouverte && solde != null)
-              Container(
-                padding: const EdgeInsetsDirectional.only(start: 10),
-                decoration: BoxDecoration(
-                  border: BorderDirectional(start: BorderSide(color: c.borderDefault)),
-                ),
-                child: Text(
-                  formaterMontant(solde!, devise),
-                  style: t.bodySmStrong.copyWith(color: c.textSecondary, fontFeatures: DsTypography.tabular),
-                ),
-              ),
-            if (ouverte) ...[
-              if (onMouvement != null)
-                DsButton(
-                  libelle: l10n.dsPosMouvement,
-                  icone: LucideIcons.arrowLeftRight,
-                  taille: DsButtonTaille.sm,
-                  variante: DsButtonVariante.fantome,
-                  onPressed: onMouvement,
-                ),
-              if (onCloturer != null)
-                DsButton(
-                  libelle: l10n.dsPosCloturer,
-                  icone: LucideIcons.lock,
-                  taille: DsButtonTaille.sm,
-                  variante: DsButtonVariante.fantome,
-                  onPressed: onCloturer,
-                ),
-            ] else if (onOuvrir != null)
-              DsButton(
-                libelle: l10n.dsPosOuvrir,
-                icone: LucideIcons.lockOpen,
-                taille: DsButtonTaille.sm,
-                onPressed: onOuvrir,
-              ),
-          ],
-        ),
-      );
-    }
+    if (compact) return _BandeSessionCaisse(carte: this);
     final detail = ouverte
         ? [
             if (ouvertureHeure != null) l10n.dsPosOuverteA(ouvertureHeure!) else l10n.dsPosOuverte,
@@ -642,6 +577,119 @@ class DsCashSessionCard extends StatelessWidget {
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Bande compacte de la caisse (en-tête de la Caisse) : seulement la caisse au repos ; au survol, l'état,
+/// l'heure d'ouverture, le solde et les boutons Mouvement / Clôturer se déplient. Fermée, « Ouvrir » reste
+/// visible (seule action possible).
+class _BandeSessionCaisse extends StatefulWidget {
+  const _BandeSessionCaisse({required this.carte});
+  final DsCashSessionCard carte;
+
+  @override
+  State<_BandeSessionCaisse> createState() => _BandeSessionCaisseState();
+}
+
+class _BandeSessionCaisseState extends State<_BandeSessionCaisse> {
+  bool _survol = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.ds.colors;
+    final t = context.ds.typo;
+    final l10n = AppLocalizations.of(context);
+    final k = widget.carte;
+    final ouverte = k.ouverte;
+    final details = [
+      Text(
+        ouverte ? '${l10n.dsPosOuverte} ${k.ouvertureHeure ?? ''}'.trim() : l10n.dsPosFermee,
+        style: t.bodySm.copyWith(color: c.textSecondary),
+      ),
+      if (ouverte && k.solde != null)
+        Container(
+          padding: const EdgeInsetsDirectional.only(start: 10),
+          decoration: BoxDecoration(
+            border: BorderDirectional(start: BorderSide(color: c.borderDefault)),
+          ),
+          child: Text(
+            formaterMontant(k.solde!, k.devise),
+            style: t.bodySmStrong.copyWith(color: c.textSecondary, fontFeatures: DsTypography.tabular),
+          ),
+        ),
+      if (ouverte && k.onMouvement != null)
+        DsButton(
+          libelle: l10n.dsPosMouvement,
+          icone: LucideIcons.arrowLeftRight,
+          taille: DsButtonTaille.sm,
+          variante: DsButtonVariante.fantome,
+          onPressed: k.onMouvement,
+        ),
+      if (ouverte && k.onCloturer != null)
+        DsButton(
+          libelle: l10n.dsPosCloturer,
+          icone: LucideIcons.lock,
+          taille: DsButtonTaille.sm,
+          variante: DsButtonVariante.fantome,
+          onPressed: k.onCloturer,
+        ),
+    ];
+    return MouseRegion(
+      onEnter: (_) => setState(() => _survol = true),
+      onExit: (_) => setState(() => _survol = false),
+      child: AnimatedContainer(
+        duration: DsMotion.base,
+        curve: DsMotion.standard,
+        height: 40,
+        padding: const EdgeInsetsDirectional.only(start: 10, end: 6),
+        decoration: BoxDecoration(
+          color: c.surfaceCard,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: _survol ? c.borderStrong : c.borderDefault),
+          boxShadow: _survol ? c.shadowSm : c.shadowXs,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          spacing: 10,
+          children: [
+            Container(
+              width: 8,
+              height: 8,
+              decoration: BoxDecoration(
+                color: ouverte ? c.success : c.textDisabled,
+                shape: BoxShape.circle,
+                boxShadow: ouverte ? [BoxShadow(color: c.successTint, spreadRadius: 3)] : null,
+              ),
+            ),
+            Text(k.caisse, style: t.bodySmStrong),
+            AnimatedSize(
+              duration: DsMotion.slow,
+              curve: DsMotion.emphasized,
+              alignment: AlignmentDirectional.centerStart,
+              child: AnimatedOpacity(
+                duration: DsMotion.base,
+                opacity: _survol ? 1 : 0,
+                child: _survol
+                    ? Row(
+                        key: const ValueKey('caisse_session_details'),
+                        mainAxisSize: MainAxisSize.min,
+                        spacing: 10,
+                        children: details,
+                      )
+                    : const SizedBox(height: 40),
+              ),
+            ),
+            if (!ouverte && k.onOuvrir != null)
+              DsButton(
+                libelle: l10n.dsPosOuvrir,
+                icone: LucideIcons.lockOpen,
+                taille: DsButtonTaille.sm,
+                onPressed: k.onOuvrir,
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -1887,7 +1935,7 @@ class DsCalculator extends StatefulWidget {
   /// Évalue une expression (+ − × ÷ % parenthèses) ; `null` si invalide.
   static double? evaluer(String expr) {
     final e = expr
-        .replaceAll(' ', '')
+        .replaceAll(blancsNombre, '')
         .replaceAll(',', '.')
         .replaceAll('×', '*')
         .replaceAll('÷', '/')

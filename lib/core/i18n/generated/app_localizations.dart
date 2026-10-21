@@ -2433,6 +2433,24 @@ abstract class AppLocalizations {
   /// **'Libellé'**
   String get dsLibelle;
 
+  /// No description provided for @dsZoomAvant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Zoom avant'**
+  String get dsZoomAvant;
+
+  /// No description provided for @dsZoomArriere.
+  ///
+  /// In fr, this message translates to:
+  /// **'Zoom arrière'**
+  String get dsZoomArriere;
+
+  /// No description provided for @dsZoomAjuster.
+  ///
+  /// In fr, this message translates to:
+  /// **'Image entière'**
+  String get dsZoomAjuster;
+
   /// No description provided for @dsCochezLignes.
   ///
   /// In fr, this message translates to:
@@ -2499,12 +2517,6 @@ abstract class AppLocalizations {
   /// **'{ok} sur {total} seront {participe}.'**
   String dsLotPartiel(String ok, int total, String participe);
 
-  /// No description provided for @dsLotVerifier.
-  ///
-  /// In fr, this message translates to:
-  /// **'Vérifiez la sélection avant de confirmer.'**
-  String get dsLotVerifier;
-
   /// No description provided for @dsLotBloques.
   ///
   /// In fr, this message translates to:
@@ -2552,12 +2564,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Afficher / masquer les colonnes'**
   String get dsColonnesTitre;
-
-  /// No description provided for @dsColonnesVisibles.
-  ///
-  /// In fr, this message translates to:
-  /// **'{n} sur {total} colonnes visibles'**
-  String dsColonnesVisibles(int n, int total);
 
   /// No description provided for @dsAppliquer.
   ///
@@ -2660,6 +2666,12 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Filtres'**
   String get dsFiltres;
+
+  /// No description provided for @dsChiffresCles.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chiffres clés'**
+  String get dsChiffresCles;
 
   /// No description provided for @dsFiltrer.
   ///
@@ -3255,6 +3267,54 @@ abstract class AppLocalizations {
   /// **'Connectez-vous pour ouvrir votre caisse.'**
   String get connexionSousTitre;
 
+  /// No description provided for @connexionChoisirCompte.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisissez votre compte'**
+  String get connexionChoisirCompte;
+
+  /// No description provided for @connexionChoisirSousTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les comptes de ce poste : cliquez sur le vôtre.'**
+  String get connexionChoisirSousTitre;
+
+  /// No description provided for @connexionAutreCompte.
+  ///
+  /// In fr, this message translates to:
+  /// **'Autre compte'**
+  String get connexionAutreCompte;
+
+  /// No description provided for @connexionPasVous.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce n\'est pas vous ? Changer de compte'**
+  String get connexionPasVous;
+
+  /// No description provided for @connexionVoirComptes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir les comptes de ce poste'**
+  String get connexionVoirComptes;
+
+  /// No description provided for @connexionCompteBens.
+  ///
+  /// In fr, this message translates to:
+  /// **'Compte BENS {telephone}'**
+  String connexionCompteBens(String telephone);
+
+  /// No description provided for @connexionMotDePasseBens.
+  ///
+  /// In fr, this message translates to:
+  /// **'Par défaut : le mot de passe de votre compte BENS.'**
+  String get connexionMotDePasseBens;
+
+  /// No description provided for @connexionIdentifiantOuTelephone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom d\'utilisateur, ou le téléphone du compte BENS pour l\'administrateur'**
+  String get connexionIdentifiantOuTelephone;
+
   /// No description provided for @connexionAfficher.
   ///
   /// In fr, this message translates to:
@@ -3276,8 +3336,14 @@ abstract class AppLocalizations {
   /// No description provided for @connexionMotDePasseOublie.
   ///
   /// In fr, this message translates to:
-  /// **'Mot de passe oublié ? Voyez l\'administrateur'**
+  /// **'Mot de passe oublié ?'**
   String get connexionMotDePasseOublie;
+
+  /// No description provided for @connexionMotDePasseOublieAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Demandez à l\'administrateur de le réinitialiser.'**
+  String get connexionMotDePasseOublieAide;
 
   /// No description provided for @connexionHorsLigne.
   ///
@@ -3417,47 +3483,17 @@ abstract class AppLocalizations {
   /// **'Continuer'**
   String get activationContinuer;
 
-  /// No description provided for @configDescription.
-  ///
-  /// In fr, this message translates to:
-  /// **'Quatre étapes pour configurer la boutique. Tout reste modifiable dans Paramètres.'**
-  String get configDescription;
-
   /// No description provided for @configEtapeLangue.
   ///
   /// In fr, this message translates to:
   /// **'Langue & devise'**
   String get configEtapeLangue;
 
-  /// No description provided for @configEtapeLangueDetail.
-  ///
-  /// In fr, this message translates to:
-  /// **'Affichage'**
-  String get configEtapeLangueDetail;
-
-  /// No description provided for @configEtapeBoutiqueDetail.
-  ///
-  /// In fr, this message translates to:
-  /// **'Ticket et mentions'**
-  String get configEtapeBoutiqueDetail;
-
   /// No description provided for @configEtapePaiements.
   ///
   /// In fr, this message translates to:
   /// **'Paiements'**
   String get configEtapePaiements;
-
-  /// No description provided for @configEtapePaiementsDetail.
-  ///
-  /// In fr, this message translates to:
-  /// **'Moyens acceptés'**
-  String get configEtapePaiementsDetail;
-
-  /// No description provided for @configEtapeVenteDetail.
-  ///
-  /// In fr, this message translates to:
-  /// **'Prix et alertes'**
-  String get configEtapeVenteDetail;
 
   /// No description provided for @configDecimales.
   ///
@@ -3591,18 +3627,6 @@ abstract class AppLocalizations {
   /// **'Alertes du jour'**
   String get alertesTitre;
 
-  /// No description provided for @alertesResume.
-  ///
-  /// In fr, this message translates to:
-  /// **'{urgentes, plural, =1{1 urgente} other{{urgentes} urgentes}} · {surveiller} à surveiller'**
-  String alertesResume(int urgentes, int surveiller);
-
-  /// No description provided for @alertesToutTraite.
-  ///
-  /// In fr, this message translates to:
-  /// **'Tout est traité'**
-  String get alertesToutTraite;
-
   /// No description provided for @alertesUrgent.
   ///
   /// In fr, this message translates to:
@@ -3698,6 +3722,12 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Commander'**
   String get alertesRuptureLigne;
+
+  /// No description provided for @alertesVoirStock.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir le stock'**
+  String get alertesVoirStock;
 
   /// No description provided for @alertesExpire.
   ///
@@ -4155,12 +4185,6 @@ abstract class AppLocalizations {
   /// **'Élément système'**
   String get tiersBloqueSysteme;
 
-  /// No description provided for @tiersChampsObligatoires.
-  ///
-  /// In fr, this message translates to:
-  /// **'Les champs marqués * sont obligatoires'**
-  String get tiersChampsObligatoires;
-
   /// No description provided for @tiersChoisir.
   ///
   /// In fr, this message translates to:
@@ -4238,18 +4262,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Derniers paniers'**
   String get tiersDerniersPaniers;
-
-  /// No description provided for @tiersDescriptionClients.
-  ///
-  /// In fr, this message translates to:
-  /// **'{n} clients · {nb} avec un crédit en cours'**
-  String tiersDescriptionClients(int n, int nb);
-
-  /// No description provided for @tiersDescriptionFournisseurs.
-  ///
-  /// In fr, this message translates to:
-  /// **'{n} fournisseurs · {nb} avec un crédit en cours'**
-  String tiersDescriptionFournisseurs(int n, int nb);
 
   /// No description provided for @tiersDetail.
   ///
@@ -4461,18 +4473,6 @@ abstract class AppLocalizations {
   /// **'Référence'**
   String get tiersReference;
 
-  /// No description provided for @tiersReleveClient.
-  ///
-  /// In fr, this message translates to:
-  /// **'Relevé client'**
-  String get tiersReleveClient;
-
-  /// No description provided for @tiersReleveFournisseur.
-  ///
-  /// In fr, this message translates to:
-  /// **'Relevé fournisseur'**
-  String get tiersReleveFournisseur;
-
   /// No description provided for @tiersReste.
   ///
   /// In fr, this message translates to:
@@ -4550,30 +4550,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Wilaya'**
   String get tiersWilaya;
-
-  /// No description provided for @versementAideClient.
-  ///
-  /// In fr, this message translates to:
-  /// **'Le montant est imputé sur les paniers à crédit du client, du plus ancien au plus récent.'**
-  String get versementAideClient;
-
-  /// No description provided for @versementAideFournisseur.
-  ///
-  /// In fr, this message translates to:
-  /// **'Le montant est imputé sur les entrées à crédit du fournisseur, de la plus ancienne à la plus récente.'**
-  String get versementAideFournisseur;
-
-  /// No description provided for @versementAideRetourClient.
-  ///
-  /// In fr, this message translates to:
-  /// **'Argent rendu au client (avance ou trop-perçu) : sortie de caisse.'**
-  String get versementAideRetourClient;
-
-  /// No description provided for @versementAideRetourFournisseur.
-  ///
-  /// In fr, this message translates to:
-  /// **'Argent remboursé par le fournisseur : entrée en caisse.'**
-  String get versementAideRetourFournisseur;
 
   /// No description provided for @versementAucunBeneficiaire.
   ///
@@ -4748,18 +4724,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Situation'**
   String get situationOnglet;
-
-  /// No description provided for @tableauBordDescription.
-  ///
-  /// In fr, this message translates to:
-  /// **'Du {du} au {au}, comparé aux {n} jours précédents.'**
-  String tableauBordDescription(String au, String du, int n);
-
-  /// No description provided for @situationDescription.
-  ///
-  /// In fr, this message translates to:
-  /// **'Analyses détaillées sur la période — chaque vue est exportable en Excel et PDF.'**
-  String get situationDescription;
 
   /// No description provided for @tableauBordJour.
   ///
@@ -5367,12 +5331,6 @@ abstract class AppLocalizations {
   /// **'Crédit total'**
   String get situationCreditTotal;
 
-  /// No description provided for @ventesDescription.
-  ///
-  /// In fr, this message translates to:
-  /// **'Tous les paniers encaissés — tickets et BL / SC'**
-  String get ventesDescription;
-
   /// No description provided for @ventesKpiNombre.
   ///
   /// In fr, this message translates to:
@@ -5673,12 +5631,6 @@ abstract class AppLocalizations {
   /// **'Modifier le panier'**
   String get ventesModifierTitre;
 
-  /// No description provided for @ventesModifierDescription.
-  ///
-  /// In fr, this message translates to:
-  /// **'{code} · les lignes ne sont pas modifiables — utilisez un retour.'**
-  String ventesModifierDescription(String code);
-
   /// No description provided for @ventesClientScelle.
   ///
   /// In fr, this message translates to:
@@ -5750,12 +5702,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Un retour est lié à ce panier : annulation impossible.'**
   String get posErreurRetourLie;
-
-  /// No description provided for @retoursDescription.
-  ///
-  /// In fr, this message translates to:
-  /// **'Retours clients (remise en stock, remboursement) et retours fournisseurs'**
-  String get retoursDescription;
 
   /// No description provided for @retoursOngletClients.
   ///
@@ -6387,18 +6333,6 @@ abstract class AppLocalizations {
   /// **'Enregistrer le ticket'**
   String get posEncSaveTitre;
 
-  /// No description provided for @posEncTicketDesc.
-  ///
-  /// In fr, this message translates to:
-  /// **'Vérifiez le montant reçu puis validez : le ticket est imprimé.'**
-  String get posEncTicketDesc;
-
-  /// No description provided for @posEncSaveDesc.
-  ///
-  /// In fr, this message translates to:
-  /// **'Le ticket est enregistré : le reste est porté au crédit du client.'**
-  String get posEncSaveDesc;
-
   /// No description provided for @posEncTicketOk.
   ///
   /// In fr, this message translates to:
@@ -6489,12 +6423,6 @@ abstract class AppLocalizations {
   /// **'Modifier la quantité et le colis'**
   String get posSelTitreModif;
 
-  /// No description provided for @posSelScanne.
-  ///
-  /// In fr, this message translates to:
-  /// **'Produit scanné · {code}'**
-  String posSelScanne(String code);
-
   /// No description provided for @posSelAuto.
   ///
   /// In fr, this message translates to:
@@ -6572,12 +6500,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Modifier le prix du produit'**
   String get posPrixTitre;
-
-  /// No description provided for @posPrixDesc.
-  ///
-  /// In fr, this message translates to:
-  /// **'Réservé aux rôles autorisés — mot de passe requis.'**
-  String get posPrixDesc;
 
   /// No description provided for @posPrixAchat.
   ///
@@ -6705,12 +6627,6 @@ abstract class AppLocalizations {
   /// **'Rechercher un produit'**
   String get posRechTitre;
 
-  /// No description provided for @posRechDesc.
-  ///
-  /// In fr, this message translates to:
-  /// **'Filtrez puis cochez les produits à ajouter au panier.'**
-  String get posRechDesc;
-
   /// No description provided for @posRechAjouter.
   ///
   /// In fr, this message translates to:
@@ -6734,12 +6650,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Produit introuvable'**
   String get posIntrouvableTitre;
-
-  /// No description provided for @posIntrouvableDesc.
-  ///
-  /// In fr, this message translates to:
-  /// **'Aucun produit actif ne correspond à ce code-barres.'**
-  String get posIntrouvableDesc;
 
   /// No description provided for @posIntrouvableCreer.
   ///
@@ -6770,12 +6680,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Ouvrir {caisse}'**
   String posOuvertureTitre(String caisse);
-
-  /// No description provided for @posOuvertureDesc.
-  ///
-  /// In fr, this message translates to:
-  /// **'Comptez le fond de caisse avant de commencer.'**
-  String get posOuvertureDesc;
 
   /// No description provided for @posOuvertureSolde.
   ///
@@ -6812,12 +6716,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Clôturer {caisse}'**
   String posClotureTitre(String caisse);
-
-  /// No description provided for @posClotureDesc.
-  ///
-  /// In fr, this message translates to:
-  /// **'Session {code} · ouverte à {heure}'**
-  String posClotureDesc(String code, String heure);
 
   /// No description provided for @posClotureFond.
   ///
@@ -6885,12 +6783,6 @@ abstract class AppLocalizations {
   /// **'Mouvement manuel'**
   String get posMvtTitre;
 
-  /// No description provided for @posMvtDesc.
-  ///
-  /// In fr, this message translates to:
-  /// **'Entrée ou sortie hors vente : dépôt de fond, prélèvement, frais divers.'**
-  String get posMvtDesc;
-
   /// No description provided for @posMvtType.
   ///
   /// In fr, this message translates to:
@@ -6932,12 +6824,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Recette caisse — {caisse}'**
   String posVdjTitre(String caisse);
-
-  /// No description provided for @posVdjDesc.
-  ///
-  /// In fr, this message translates to:
-  /// **'Ventes du {date}'**
-  String posVdjDesc(String date);
 
   /// No description provided for @posVdjIndice.
   ///
@@ -6987,12 +6873,6 @@ abstract class AppLocalizations {
   /// **'Recette par produit — {caisse}'**
   String posRecTitre(String caisse);
 
-  /// No description provided for @posRecDesc.
-  ///
-  /// In fr, this message translates to:
-  /// **'Lignes vendues le {date}'**
-  String posRecDesc(String date);
-
   /// No description provided for @posRecIndice.
   ///
   /// In fr, this message translates to:
@@ -7016,12 +6896,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Aucune ligne vendue'**
   String get posRecAucune;
-
-  /// No description provided for @posParamDesc.
-  ///
-  /// In fr, this message translates to:
-  /// **'S\'applique à ce poste jusqu\'à la déconnexion.'**
-  String get posParamDesc;
 
   /// No description provided for @posParamMagasin.
   ///
@@ -7064,12 +6938,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Ce nom est déjà utilisé.'**
   String get catalogueErreurNomPris;
-
-  /// No description provided for @prdDescription.
-  ///
-  /// In fr, this message translates to:
-  /// **'Catalogue, catégories, remises et packs'**
-  String get prdDescription;
 
   /// No description provided for @prdOngletSousCategories.
   ///
@@ -7434,38 +7302,20 @@ abstract class AppLocalizations {
   /// No description provided for @prdEtape1.
   ///
   /// In fr, this message translates to:
-  /// **'Photos, identification et prix'**
+  /// **'Produit et prix'**
   String get prdEtape1;
-
-  /// No description provided for @prdEtape1Desc.
-  ///
-  /// In fr, this message translates to:
-  /// **'Photos, nom, codes, marge'**
-  String get prdEtape1Desc;
 
   /// No description provided for @prdEtape2.
   ///
   /// In fr, this message translates to:
-  /// **'Stock et emballages'**
+  /// **'Stock'**
   String get prdEtape2;
-
-  /// No description provided for @prdEtape2Desc.
-  ///
-  /// In fr, this message translates to:
-  /// **'Magasin, seuil, boîte, carton'**
-  String get prdEtape2Desc;
 
   /// No description provided for @prdEtape3.
   ///
   /// In fr, this message translates to:
-  /// **'Variantes et options'**
+  /// **'Variantes'**
   String get prdEtape3;
-
-  /// No description provided for @prdEtape3Desc.
-  ///
-  /// In fr, this message translates to:
-  /// **'Tailles, couleurs, séries'**
-  String get prdEtape3Desc;
 
   /// No description provided for @prdEtapeObligatoire.
   ///
@@ -7539,17 +7389,17 @@ abstract class AppLocalizations {
   /// **'Scanner ou saisir'**
   String get prdScannerOuSaisir;
 
-  /// No description provided for @prdGenererEan.
-  ///
-  /// In fr, this message translates to:
-  /// **'Générer un EAN-13'**
-  String get prdGenererEan;
-
   /// No description provided for @prdFournisseur.
   ///
   /// In fr, this message translates to:
   /// **'Fournisseur'**
   String get prdFournisseur;
+
+  /// No description provided for @prdGenererCodeBarres.
+  ///
+  /// In fr, this message translates to:
+  /// **'Générer un code-barres CDZ'**
+  String get prdGenererCodeBarres;
 
   /// No description provided for @prdPrix.
   ///
@@ -7581,11 +7431,11 @@ abstract class AppLocalizations {
   /// **'Stock initial'**
   String get prdStockInitial;
 
-  /// No description provided for @prdStockAide.
+  /// No description provided for @prdStockViaEntree.
   ///
   /// In fr, this message translates to:
-  /// **'Modifiable via Entrées / Sorties'**
-  String get prdStockAide;
+  /// **'{quantite} entreront en stock avec l\'entrée du bon.'**
+  String prdStockViaEntree(String quantite);
 
   /// No description provided for @prdSeuilAlerte.
   ///
@@ -7598,12 +7448,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Emballages'**
   String get prdEmballages;
-
-  /// No description provided for @prdEmballagesAide.
-  ///
-  /// In fr, this message translates to:
-  /// **'Colis proposés en caisse (dialog Quantité et colis) : nombre de pièces par colis et prix du colis.'**
-  String get prdEmballagesAide;
 
   /// No description provided for @prdBoite.
   ///
@@ -7641,12 +7485,6 @@ abstract class AppLocalizations {
   /// **'Tailles'**
   String get prdTailles;
 
-  /// No description provided for @prdTaillesAide.
-  ///
-  /// In fr, this message translates to:
-  /// **'Cliquez les tailles disponibles'**
-  String get prdTaillesAide;
-
   /// No description provided for @prdTaillesN.
   ///
   /// In fr, this message translates to:
@@ -7658,12 +7496,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Couleurs'**
   String get prdCouleurs;
-
-  /// No description provided for @prdCouleursAide.
-  ///
-  /// In fr, this message translates to:
-  /// **'16 couleurs · plusieurs choix possibles'**
-  String get prdCouleursAide;
 
   /// No description provided for @prdOptions.
   ///
@@ -7677,12 +7509,6 @@ abstract class AppLocalizations {
   /// **'Codes multiples'**
   String get prdCodesMultiples;
 
-  /// No description provided for @prdCodesMultiplesAide.
-  ///
-  /// In fr, this message translates to:
-  /// **'Autres codes-barres reconnus en caisse pour ce produit'**
-  String get prdCodesMultiplesAide;
-
   /// No description provided for @prdAjouterCode.
   ///
   /// In fr, this message translates to:
@@ -7695,29 +7521,11 @@ abstract class AppLocalizations {
   /// **'Suivi par n° de série'**
   String get prdSuiviSerie;
 
-  /// No description provided for @prdSuiviSerieAide.
-  ///
-  /// In fr, this message translates to:
-  /// **'Saisie obligatoire à la vente'**
-  String get prdSuiviSerieAide;
-
   /// No description provided for @prdServiceSansStock.
   ///
   /// In fr, this message translates to:
   /// **'Service (sans stock)'**
   String get prdServiceSansStock;
-
-  /// No description provided for @prdServiceAide.
-  ///
-  /// In fr, this message translates to:
-  /// **'Réparation, livraison, main d\'œuvre'**
-  String get prdServiceAide;
-
-  /// No description provided for @prdExpirationAide.
-  ///
-  /// In fr, this message translates to:
-  /// **'Alerte avant péremption'**
-  String get prdExpirationAide;
 
   /// No description provided for @prdNoteInterne.
   ///
@@ -7845,12 +7653,6 @@ abstract class AppLocalizations {
   /// **'Modifier la remise'**
   String get prdModifierRemise;
 
-  /// No description provided for @prdRemiseDescription.
-  ///
-  /// In fr, this message translates to:
-  /// **'Une remise s\'applique automatiquement en caisse pendant sa période.'**
-  String get prdRemiseDescription;
-
   /// No description provided for @prdProduitsConcernes.
   ///
   /// In fr, this message translates to:
@@ -7928,12 +7730,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Modifier le pack'**
   String get prdModifierPack;
-
-  /// No description provided for @prdPackDescription.
-  ///
-  /// In fr, this message translates to:
-  /// **'Un pack se vend comme un seul article et déstocke chaque composant.'**
-  String get prdPackDescription;
 
   /// No description provided for @prdEnregistrerPack.
   ///
@@ -8175,29 +7971,11 @@ abstract class AppLocalizations {
   /// **'Fichier'**
   String get prdImportFichier;
 
-  /// No description provided for @prdImportFichierDesc.
-  ///
-  /// In fr, this message translates to:
-  /// **'.xlsx'**
-  String get prdImportFichierDesc;
-
   /// No description provided for @prdImportColonnes.
   ///
   /// In fr, this message translates to:
   /// **'Colonnes'**
   String get prdImportColonnes;
-
-  /// No description provided for @prdImportColonnesDesc.
-  ///
-  /// In fr, this message translates to:
-  /// **'Correspondance'**
-  String get prdImportColonnesDesc;
-
-  /// No description provided for @prdImportApercuDesc.
-  ///
-  /// In fr, this message translates to:
-  /// **'Contrôle'**
-  String get prdImportApercuDesc;
 
   /// No description provided for @prdImportInfos.
   ///
@@ -8397,30 +8175,6 @@ abstract class AppLocalizations {
   /// **'Désactiver'**
   String get stkDesactiver;
 
-  /// No description provided for @stkDescriptionBesoins.
-  ///
-  /// In fr, this message translates to:
-  /// **'Réapprovisionnement : listes fournisseurs, ruptures et produits expirés'**
-  String get stkDescriptionBesoins;
-
-  /// No description provided for @stkDescriptionMagasins.
-  ///
-  /// In fr, this message translates to:
-  /// **'Points de stock, transferts et rattachements'**
-  String get stkDescriptionMagasins;
-
-  /// No description provided for @stkDescriptionSorties.
-  ///
-  /// In fr, this message translates to:
-  /// **'Sorties de stock hors vente : casse, périmé, perte, consommation interne, don'**
-  String get stkDescriptionSorties;
-
-  /// No description provided for @stkDescriptionStock.
-  ///
-  /// In fr, this message translates to:
-  /// **'Quantités par magasin · {n} magasins actifs'**
-  String stkDescriptionStock(int n);
-
   /// No description provided for @stkDispoSource.
   ///
   /// In fr, this message translates to:
@@ -8444,12 +8198,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Distribuer'**
   String get stkDistribuer;
-
-  /// No description provided for @stkDistribuerDescription.
-  ///
-  /// In fr, this message translates to:
-  /// **'{nom} · {quantite} pièces à répartir entre les magasins'**
-  String stkDistribuerDescription(String nom, String quantite);
 
   /// No description provided for @stkDistribuerTitre.
   ///
@@ -8625,12 +8373,6 @@ abstract class AppLocalizations {
   /// **'Valeur totale du stock'**
   String get stkKpiValeurTotale;
 
-  /// No description provided for @stkListeDescription.
-  ///
-  /// In fr, this message translates to:
-  /// **'Quantités suggérées = 2 × seuil − stock. Ajustez avant d\'envoyer au fournisseur.'**
-  String get stkListeDescription;
-
   /// No description provided for @stkListeTitre.
   ///
   /// In fr, this message translates to:
@@ -8648,12 +8390,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Magasin'**
   String get stkMagasin;
-
-  /// No description provided for @stkMagasinDescription.
-  ///
-  /// In fr, this message translates to:
-  /// **'Un magasin a son propre stock ; les caisses et utilisateurs y sont rattachés.'**
-  String get stkMagasinDescription;
 
   /// No description provided for @stkMagasinDifferent.
   ///
@@ -8913,12 +8649,6 @@ abstract class AppLocalizations {
   /// **'Seuil d\'alerte'**
   String get stkSeuilAlerte;
 
-  /// No description provided for @stkSortieDescription.
-  ///
-  /// In fr, this message translates to:
-  /// **'Sortie de stock hors vente — valorisée au prix d\'achat.'**
-  String get stkSortieDescription;
-
   /// No description provided for @stkSortiePerime.
   ///
   /// In fr, this message translates to:
@@ -9057,12 +8787,6 @@ abstract class AppLocalizations {
   /// **'Transférer {quantite} pièce(s)'**
   String stkTransfererPieces(String quantite);
 
-  /// No description provided for @stkTransfertDescription.
-  ///
-  /// In fr, this message translates to:
-  /// **'Déplacer du stock d\'un magasin à un autre.'**
-  String get stkTransfertDescription;
-
   /// No description provided for @stkTransfertTitre.
   ///
   /// In fr, this message translates to:
@@ -9171,12 +8895,6 @@ abstract class AppLocalizations {
   /// **'Choisir un produit'**
   String get entChoisirProduit;
 
-  /// No description provided for @entDescription.
-  ///
-  /// In fr, this message translates to:
-  /// **'Réceptions fournisseurs — scan, lecture IA des bons, entrée rapide'**
-  String get entDescription;
-
   /// No description provided for @entEntite.
   ///
   /// In fr, this message translates to:
@@ -9231,23 +8949,11 @@ abstract class AppLocalizations {
   /// **'Bon & fournisseur'**
   String get entEtapeBon;
 
-  /// No description provided for @entEtapeBonDetail.
-  ///
-  /// In fr, this message translates to:
-  /// **'En-tête, paiement'**
-  String get entEtapeBonDetail;
-
   /// No description provided for @entEtapeProduits.
   ///
   /// In fr, this message translates to:
   /// **'Produits reçus'**
   String get entEtapeProduits;
-
-  /// No description provided for @entEtapeProduitsDetail.
-  ///
-  /// In fr, this message translates to:
-  /// **'Scan et quantités'**
-  String get entEtapeProduitsDetail;
 
   /// No description provided for @entFichier.
   ///
@@ -9309,12 +9015,6 @@ abstract class AppLocalizations {
   /// **'Depuis le téléphone'**
   String get entIaDepuisTelephone;
 
-  /// No description provided for @entIaDescription.
-  ///
-  /// In fr, this message translates to:
-  /// **'Photo ou PDF d\'une facture fournisseur : les lignes sont détectées puis rapprochées du catalogue.'**
-  String get entIaDescription;
-
   /// No description provided for @entIaDetecte.
   ///
   /// In fr, this message translates to:
@@ -9327,41 +9027,17 @@ abstract class AppLocalizations {
   /// **'Fournisseur & paiement'**
   String get entIaEtapeFournisseur;
 
-  /// No description provided for @entIaEtapeFournisseurDetail.
-  ///
-  /// In fr, this message translates to:
-  /// **'Valider'**
-  String get entIaEtapeFournisseurDetail;
-
   /// No description provided for @entIaEtapeLignes.
   ///
   /// In fr, this message translates to:
   /// **'Lignes détectées'**
   String get entIaEtapeLignes;
 
-  /// No description provided for @entIaEtapeLignesDetail.
-  ///
-  /// In fr, this message translates to:
-  /// **'Vérifier, rapprocher'**
-  String get entIaEtapeLignesDetail;
-
   /// No description provided for @entIaEtapePhoto.
   ///
   /// In fr, this message translates to:
   /// **'Photo du bon'**
   String get entIaEtapePhoto;
-
-  /// No description provided for @entIaEtapePhotoDetail.
-  ///
-  /// In fr, this message translates to:
-  /// **'Image ou PDF'**
-  String get entIaEtapePhotoDetail;
-
-  /// No description provided for @entIaFormats.
-  ///
-  /// In fr, this message translates to:
-  /// **'JPG, PNG ou PDF'**
-  String get entIaFormats;
 
   /// No description provided for @entIaJoindre.
   ///
@@ -9374,12 +9050,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Lecture du bon en cours…'**
   String get entIaLecture;
-
-  /// No description provided for @entIaLectureDetail.
-  ///
-  /// In fr, this message translates to:
-  /// **'Détection des lignes, quantités et prix'**
-  String get entIaLectureDetail;
 
   /// No description provided for @entIaLignes.
   ///
@@ -9543,12 +9213,6 @@ abstract class AppLocalizations {
   /// **'Nb versements'**
   String get entNbVersements;
 
-  /// No description provided for @entNouvelleDescription.
-  ///
-  /// In fr, this message translates to:
-  /// **'Scannez les produits reçus : chaque scan ajoute 1 à la quantité.'**
-  String get entNouvelleDescription;
-
   /// No description provided for @entNouvelleTitre.
   ///
   /// In fr, this message translates to:
@@ -9573,11 +9237,11 @@ abstract class AppLocalizations {
   /// **'Je souhaite augmenter mon quota Smart Scan.'**
   String get entOffreMessage;
 
-  /// No description provided for @entOngletIa.
+  /// No description provided for @entOngletEntree.
   ///
   /// In fr, this message translates to:
-  /// **'Mode IA'**
-  String get entOngletIa;
+  /// **'Entrée'**
+  String get entOngletEntree;
 
   /// No description provided for @entPaiement.
   ///
@@ -9608,12 +9272,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Qté reçue'**
   String get entQteRecue;
-
-  /// No description provided for @entRapideDescription.
-  ///
-  /// In fr, this message translates to:
-  /// **'Réception d\'un seul produit, sans bon fournisseur détaillé.'**
-  String get entRapideDescription;
 
   /// No description provided for @entRapideTitre.
   ///
@@ -9756,14 +9414,8 @@ abstract class AppLocalizations {
   /// No description provided for @entCreerProduit.
   ///
   /// In fr, this message translates to:
-  /// **'+ Créer « {nom} »'**
+  /// **'Créer le produit « {nom} »'**
   String entCreerProduit(String nom);
-
-  /// No description provided for @entDepuisListe.
-  ///
-  /// In fr, this message translates to:
-  /// **'Réception de la liste de besoins {code}'**
-  String entDepuisListe(String code);
 
   /// No description provided for @entDetailTitre.
   ///
@@ -9788,12 +9440,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Valider l\'entrée · {montant}'**
   String entValider(String montant);
-
-  /// No description provided for @entRapideDescriptionProduit.
-  ///
-  /// In fr, this message translates to:
-  /// **'{code} · stock actuel {stock} pièces — réception sans bon détaillé.'**
-  String entRapideDescriptionProduit(String code, String stock);
 
   /// No description provided for @entRapideTitreProduit.
   ///
@@ -9824,12 +9470,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Erreur'**
   String get statutErreur;
-
-  /// No description provided for @gcDescription.
-  ///
-  /// In fr, this message translates to:
-  /// **'Caisses, transferts, clôtures Z, mouvements et sessions'**
-  String get gcDescription;
 
   /// No description provided for @gcOngletCaisses.
   ///
@@ -10137,12 +9777,6 @@ abstract class AppLocalizations {
   /// **'Ouvrir une session'**
   String get gcOuvrirSession;
 
-  /// No description provided for @gcFormDescription.
-  ///
-  /// In fr, this message translates to:
-  /// **'Une caisse (tiroir, coffre) a son propre solde et ses sessions.'**
-  String get gcFormDescription;
-
   /// No description provided for @gcFormNomIndice.
   ///
   /// In fr, this message translates to:
@@ -10221,12 +9855,6 @@ abstract class AppLocalizations {
   /// **'Transfert entre caisses'**
   String get gcTrfTitre;
 
-  /// No description provided for @gcTrfDescription.
-  ///
-  /// In fr, this message translates to:
-  /// **'Ex. remise de la recette au coffre en fin de journée.'**
-  String get gcTrfDescription;
-
   /// No description provided for @gcTrfDisponible.
   ///
   /// In fr, this message translates to:
@@ -10298,12 +9926,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Cette date appartient à une période clôturée.'**
   String get gcErreurPeriodeCloturee;
-
-  /// No description provided for @gcZDescription.
-  ///
-  /// In fr, this message translates to:
-  /// **'Rapport figé de la période : une fois créé, il ne peut plus être modifié ni supprimé.'**
-  String get gcZDescription;
 
   /// No description provided for @gcZPeriodeValeur.
   ///
@@ -10455,12 +10077,6 @@ abstract class AppLocalizations {
   /// **'Export pour contrôle fiscal'**
   String get gcFiscalTitre;
 
-  /// No description provided for @gcFiscalDescription.
-  ///
-  /// In fr, this message translates to:
-  /// **'Archive des clôtures Z et des tickets de la période, avec la chaîne d\'empreintes vérifiée.'**
-  String get gcFiscalDescription;
-
   /// No description provided for @gcFiscalZip.
   ///
   /// In fr, this message translates to:
@@ -10533,18 +10149,6 @@ abstract class AppLocalizations {
   /// **'Mouvements · {code}'**
   String gcSesMvtTitre(String code);
 
-  /// No description provided for @gcSesMvtOuverte.
-  ///
-  /// In fr, this message translates to:
-  /// **'{caisse} · ouverte {ouverture}'**
-  String gcSesMvtOuverte(String caisse, String ouverture);
-
-  /// No description provided for @gcSesMvtCloturee.
-  ///
-  /// In fr, this message translates to:
-  /// **'{caisse} · ouverte {ouverture} · clôturée {cloture}'**
-  String gcSesMvtCloturee(String caisse, String cloture, String ouverture);
-
   /// No description provided for @gcEntrees.
   ///
   /// In fr, this message translates to:
@@ -10598,12 +10202,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Voir le stock de tous les magasins'**
   String get permVoirStockTousMagasins;
-
-  /// No description provided for @usrDescription.
-  ///
-  /// In fr, this message translates to:
-  /// **'Comptes, rôles et permissions'**
-  String get usrDescription;
 
   /// No description provided for @usrOngletUtilisateurs.
   ///
@@ -10754,12 +10352,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Modifier l\'utilisateur'**
   String get usrModifierTitre;
-
-  /// No description provided for @usrFormDescription.
-  ///
-  /// In fr, this message translates to:
-  /// **'Le rôle définit les modules visibles ; la caisse attachée verrouille l\'écran Caisse.'**
-  String get usrFormDescription;
 
   /// No description provided for @usrSectionCompte.
   ///
@@ -11103,18 +10695,6 @@ abstract class AppLocalizations {
   /// **'Modifier le rôle'**
   String get usrModifierRole;
 
-  /// No description provided for @usrRoleDescription.
-  ///
-  /// In fr, this message translates to:
-  /// **'Informations, modules accessibles, puis actions sensibles.'**
-  String get usrRoleDescription;
-
-  /// No description provided for @usrRoleConcernes.
-  ///
-  /// In fr, this message translates to:
-  /// **'{code} · {n} utilisateur(s) concerné(s)'**
-  String usrRoleConcernes(String code, int n);
-
   /// No description provided for @usrPrecedent.
   ///
   /// In fr, this message translates to:
@@ -11139,35 +10719,17 @@ abstract class AppLocalizations {
   /// **'Informations'**
   String get usrEtapeInfos;
 
-  /// No description provided for @usrEtapeInfosDesc.
-  ///
-  /// In fr, this message translates to:
-  /// **'Nom, état'**
-  String get usrEtapeInfosDesc;
-
   /// No description provided for @usrEtapePermissions.
   ///
   /// In fr, this message translates to:
   /// **'Permissions'**
   String get usrEtapePermissions;
 
-  /// No description provided for @usrEtapeModules.
-  ///
-  /// In fr, this message translates to:
-  /// **'{n} modules'**
-  String usrEtapeModules(int n);
-
   /// No description provided for @usrEtapeSpeciales.
   ///
   /// In fr, this message translates to:
   /// **'Permissions spéciales'**
   String get usrEtapeSpeciales;
-
-  /// No description provided for @usrEtapeSpecialesDesc.
-  ///
-  /// In fr, this message translates to:
-  /// **'Actions sensibles'**
-  String get usrEtapeSpecialesDesc;
 
   /// No description provided for @usrNomRole.
   ///
@@ -11306,12 +10868,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Aucun rôle.'**
   String get usrAucunRole;
-
-  /// No description provided for @zkDescription.
-  ///
-  /// In fr, this message translates to:
-  /// **'Calcul annuel sur le stock, les liquidités et les créances'**
-  String get zkDescription;
 
   /// No description provided for @zkEntite.
   ///
@@ -11510,12 +11066,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Modifier la zakat'**
   String get zkModifierTitre;
-
-  /// No description provided for @zkFormDescription.
-  ///
-  /// In fr, this message translates to:
-  /// **'Les montants sont pré-remplis depuis le stock, les caisses et les crédits ; ajustez-les si besoin.'**
-  String get zkFormDescription;
 
   /// No description provided for @zkSectionPeriode.
   ///
@@ -11750,12 +11300,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Aucun calcul de zakat.'**
   String get zkAucun;
-
-  /// No description provided for @hiDescription.
-  ///
-  /// In fr, this message translates to:
-  /// **'Journal de toutes les actions · accès selon le rôle'**
-  String get hiDescription;
 
   /// No description provided for @hiEntite.
   ///
@@ -12068,12 +11612,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Export'**
   String get hiActExport;
-
-  /// No description provided for @pmDescription.
-  ///
-  /// In fr, this message translates to:
-  /// **'Préférences du poste, de la boutique et de l\'application.'**
-  String get pmDescription;
 
   /// No description provided for @pmNonEnregistre.
   ///
@@ -12690,7 +12228,7 @@ abstract class AppLocalizations {
   /// No description provided for @pmPalierAvanceDesc.
   ///
   /// In fr, this message translates to:
-  /// **'Multi-magasins, multi-caisses'**
+  /// **'Un magasin, 5 caissiers : devis, commandes, commandes fournisseurs et besoins.'**
   String get pmPalierAvanceDesc;
 
   /// No description provided for @pmPalierBasic.
@@ -12702,7 +12240,7 @@ abstract class AppLocalizations {
   /// No description provided for @pmPalierBasicDesc.
   ///
   /// In fr, this message translates to:
-  /// **'Un magasin, toutes les fonctions de vente'**
+  /// **'Un magasin, 5 caissiers : caisse, ventes, stock, clients et fournisseurs.'**
   String get pmPalierBasicDesc;
 
   /// No description provided for @pmPalierDemo.
@@ -12726,7 +12264,7 @@ abstract class AppLocalizations {
   /// No description provided for @pmPalierAucunDesc.
   ///
   /// In fr, this message translates to:
-  /// **'Saisissez une clé pour activer CaisseDZ'**
+  /// **'Choisissez une formule, connectez-vous à votre compte ou collez une clé.'**
   String get pmPalierAucunDesc;
 
   /// No description provided for @pmActive.
@@ -12762,7 +12300,7 @@ abstract class AppLocalizations {
   /// No description provided for @pmGererLicenceDesc.
   ///
   /// In fr, this message translates to:
-  /// **'Saisir une nouvelle clé ou passer au palier Avancé.'**
+  /// **'Coller une clé reçue de BENS (secours hors ligne).'**
   String get pmGererLicenceDesc;
 
   /// No description provided for @posPrixSousAchatInterdit.
@@ -12812,12 +12350,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Aperçu du ticket'**
   String get posApercuTicket;
-
-  /// No description provided for @posApercuTicketDesc.
-  ///
-  /// In fr, this message translates to:
-  /// **'Vérifiez la mise en page avant de l’envoyer à l’imprimante.'**
-  String get posApercuTicketDesc;
 
   /// No description provided for @posImprimer.
   ///
@@ -13034,12 +12566,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Modifier le montant'**
   String get posMontantModifier;
-
-  /// No description provided for @posMontantModifierDesc.
-  ///
-  /// In fr, this message translates to:
-  /// **'Nouveau montant de la ligne « Vente au montant » ; 0 retire la ligne.'**
-  String get posMontantModifierDesc;
 
   /// No description provided for @posMontantChamp.
   ///
@@ -13311,18 +12837,6 @@ abstract class AppLocalizations {
   /// **'Nouveau retour fournisseur'**
   String get retoursNouveauFournisseur;
 
-  /// No description provided for @retoursFormDescriptionClient.
-  ///
-  /// In fr, this message translates to:
-  /// **'Retour d\'un produit vendu : remis en stock, remboursé ou porté en avoir.'**
-  String get retoursFormDescriptionClient;
-
-  /// No description provided for @retoursFormDescriptionFournisseur.
-  ///
-  /// In fr, this message translates to:
-  /// **'Retour d\'un produit reçu : sorti du stock et déduit du crédit fournisseur.'**
-  String get retoursFormDescriptionFournisseur;
-
   /// No description provided for @prdPorteeProduitAide.
   ///
   /// In fr, this message translates to:
@@ -13358,24 +12872,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Modifié par'**
   String get auditModifiePar;
-
-  /// No description provided for @prdDescRapide.
-  ///
-  /// In fr, this message translates to:
-  /// **'L\'essentiel sur une seule page.'**
-  String get prdDescRapide;
-
-  /// No description provided for @prdDescDetaille.
-  ///
-  /// In fr, this message translates to:
-  /// **'En 3 étapes : identification, stock, variantes.'**
-  String get prdDescDetaille;
-
-  /// No description provided for @prdDescIa.
-  ///
-  /// In fr, this message translates to:
-  /// **'Fiche retrouvée par le code-barres.'**
-  String get prdDescIa;
 
   /// No description provided for @prdFiltreQuantite.
   ///
@@ -13857,12 +13353,6 @@ abstract class AppLocalizations {
   /// **'Commandes fournisseurs'**
   String get moduleCommandesFournisseurs;
 
-  /// No description provided for @docDescriptionModule.
-  ///
-  /// In fr, this message translates to:
-  /// **'Devis, factures proforma, bons de commande clients et bons de livraison'**
-  String get docDescriptionModule;
-
   /// No description provided for @docOngletDevis.
   ///
   /// In fr, this message translates to:
@@ -14097,12 +13587,6 @@ abstract class AppLocalizations {
   /// **'Modifier : {type}'**
   String docModifierTitre(String type);
 
-  /// No description provided for @docFormDescription.
-  ///
-  /// In fr, this message translates to:
-  /// **'Client, validité et produits au prix de vente TTC (TVA du produit figée)'**
-  String get docFormDescription;
-
   /// No description provided for @docChoisirClient.
   ///
   /// In fr, this message translates to:
@@ -14132,12 +13616,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Livrer la commande {code}'**
   String docLivrerTitre(String code);
-
-  /// No description provided for @docLivrerDescription.
-  ///
-  /// In fr, this message translates to:
-  /// **'Saisissez les quantités livrées : la vente et le bon de livraison sont créés ensemble ; le reste est dû par le client.'**
-  String get docLivrerDescription;
 
   /// No description provided for @docMontantPaye.
   ///
@@ -14271,12 +13749,6 @@ abstract class AppLocalizations {
   /// **'Vente introuvable'**
   String get docErreurVenteInconnue;
 
-  /// No description provided for @cmdfDescriptionModule.
-  ///
-  /// In fr, this message translates to:
-  /// **'Bons de commande fournisseurs réceptionnés en une ou plusieurs entrées'**
-  String get cmdfDescriptionModule;
-
   /// No description provided for @cmdfNouvelle.
   ///
   /// In fr, this message translates to:
@@ -14288,12 +13760,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Modifier la commande fournisseur'**
   String get cmdfModifier;
-
-  /// No description provided for @cmdfFormDescription.
-  ///
-  /// In fr, this message translates to:
-  /// **'Fournisseur, magasin de réception, livraison prévue et produits au prix d\'achat'**
-  String get cmdfFormDescription;
 
   /// No description provided for @cmdfTitre.
   ///
@@ -14396,12 +13862,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Commande déjà soldée'**
   String get cmdfErreurDejaSoldee;
-
-  /// No description provided for @entDepuisCommande.
-  ///
-  /// In fr, this message translates to:
-  /// **'Réception de la commande {code}'**
-  String entDepuisCommande(String code);
 
   /// No description provided for @apercuEnregistrerPdf.
   ///
@@ -14576,6 +14036,1074 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Montant complet'**
   String get retoursMontantComplet;
+
+  /// No description provided for @offresTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisissez votre formule'**
+  String get offresTitre;
+
+  /// No description provided for @offresSousTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chaque formule commence par {jours} jours d\'essai gratuit. Ensuite, un paiement unique : la licence est à vous, à vie, sans abonnement.'**
+  String offresSousTitre(int jours);
+
+  /// No description provided for @offresEssaiGratuit.
+  ///
+  /// In fr, this message translates to:
+  /// **'{jours} jours d\'essai gratuit'**
+  String offresEssaiGratuit(int jours);
+
+  /// No description provided for @offresPrix.
+  ///
+  /// In fr, this message translates to:
+  /// **'{prix} DA'**
+  String offresPrix(String prix);
+
+  /// No description provided for @offresPaiementUnique.
+  ///
+  /// In fr, this message translates to:
+  /// **'paiement unique, à vie'**
+  String get offresPaiementUnique;
+
+  /// No description provided for @offresMagasins.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n, plural, =1{1 magasin} other{{n} magasins}}'**
+  String offresMagasins(int n);
+
+  /// No description provided for @offresScans.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n} Smart Scans inclus ({mois} mois)'**
+  String offresScans(int n, int mois);
+
+  /// No description provided for @offresAtoutStock.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produits, stock, entrées / sorties et inventaire'**
+  String get offresAtoutStock;
+
+  /// No description provided for @offresAtoutPdv.
+  ///
+  /// In fr, this message translates to:
+  /// **'Caisse : ventes, scan, tickets, multi-paniers'**
+  String get offresAtoutPdv;
+
+  /// No description provided for @offresAtoutVentes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ventes, factures, avoirs et retours'**
+  String get offresAtoutVentes;
+
+  /// No description provided for @offresAtoutGestionCaisse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Gestion de caisse, clôtures et coffre'**
+  String get offresAtoutGestionCaisse;
+
+  /// No description provided for @offresAtoutRapports.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tableau de bord, situation, zakat et historique'**
+  String get offresAtoutRapports;
+
+  /// No description provided for @offresAtoutCommandesClients.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commandes clients et bons de livraison'**
+  String get offresAtoutCommandesClients;
+
+  /// No description provided for @offresAtoutBesoins.
+  ///
+  /// In fr, this message translates to:
+  /// **'Listes de besoins'**
+  String get offresAtoutBesoins;
+
+  /// No description provided for @offresAtoutTransferts.
+  ///
+  /// In fr, this message translates to:
+  /// **'Transferts entre magasins'**
+  String get offresAtoutTransferts;
+
+  /// No description provided for @offresToutPlus.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tout {formule}, plus :'**
+  String offresToutPlus(String formule);
+
+  /// No description provided for @offresCaisses.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n, plural, =1{1 caisse} other{{n} caisses}}'**
+  String offresCaisses(int n);
+
+  /// No description provided for @offresAtoutTiers.
+  ///
+  /// In fr, this message translates to:
+  /// **'Clients, fournisseurs, versements et crédit'**
+  String get offresAtoutTiers;
+
+  /// No description provided for @offresAtoutDevis.
+  ///
+  /// In fr, this message translates to:
+  /// **'Devis et proformas'**
+  String get offresAtoutDevis;
+
+  /// No description provided for @offresAtoutAchats.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commandes fournisseurs (réception partielle)'**
+  String get offresAtoutAchats;
+
+  /// No description provided for @offresAtoutMultiMagasin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Multi-magasin (stock par magasin)'**
+  String get offresAtoutMultiMagasin;
+
+  /// No description provided for @offresIdealBasic.
+  ///
+  /// In fr, this message translates to:
+  /// **'Petit commerce, une seule caisse'**
+  String get offresIdealBasic;
+
+  /// No description provided for @offresIdealAvance.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commerce qui fait des devis et passe des commandes'**
+  String get offresIdealAvance;
+
+  /// No description provided for @offresIdealUltra.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plusieurs magasins, gestion complète'**
+  String get offresIdealUltra;
+
+  /// No description provided for @offresTout.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tous les modules'**
+  String get offresTout;
+
+  /// No description provided for @offresEssayer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Essayer {jours} jours'**
+  String offresEssayer(int jours);
+
+  /// No description provided for @offresChoisir.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir {formule}'**
+  String offresChoisir(String formule);
+
+  /// No description provided for @offresDejaCompte.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous avez déjà un compte ?'**
+  String get offresDejaCompte;
+
+  /// No description provided for @offresSeConnecter.
+  ///
+  /// In fr, this message translates to:
+  /// **'Se connecter'**
+  String get offresSeConnecter;
+
+  /// No description provided for @offresJaiUneCle.
+  ///
+  /// In fr, this message translates to:
+  /// **'J\'ai une clé d\'activation'**
+  String get offresJaiUneCle;
+
+  /// No description provided for @offresEssaiTermine.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre essai s\'est terminé le {date}. Choisissez une formule : BENS vous contacte pour le paiement, puis l\'application se débloque d\'elle-même. Vos données sont gardées.'**
+  String offresEssaiTermine(String date);
+
+  /// No description provided for @offresSansFormule.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune formule active sur ce poste. Choisissez une formule : BENS vous contacte pour le paiement.'**
+  String get offresSansFormule;
+
+  /// No description provided for @offresLicenceRefuseeInvalide.
+  ///
+  /// In fr, this message translates to:
+  /// **'BENS a bien envoyé votre licence, mais cette version de CaisseDZ la refuse (clé prévue pour une autre application ou une autre version). Installez la dernière version de CaisseDZ puis cliquez sur Actualiser ; sinon, contactez BENS.'**
+  String get offresLicenceRefuseeInvalide;
+
+  /// No description provided for @offresLicenceRefuseeAutrePoste.
+  ///
+  /// In fr, this message translates to:
+  /// **'BENS a envoyé une licence prévue pour un autre PC. Cliquez sur Changer de compte et reconnectez-vous sur ce PC ; sinon, contactez BENS.'**
+  String get offresLicenceRefuseeAutrePoste;
+
+  /// No description provided for @offresLicenceRefuseeDate.
+  ///
+  /// In fr, this message translates to:
+  /// **'La date de ce PC a été reculée : la licence envoyée par BENS est refusée. Remettez la date et l\'heure du PC à jour, puis cliquez sur Actualiser.'**
+  String get offresLicenceRefuseeDate;
+
+  /// No description provided for @offresDemandeTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Demande envoyée'**
+  String get offresDemandeTitre;
+
+  /// No description provided for @offresDemandeDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'BENS Digital Solutions vous rappelle au {telephone} pour le paiement de la formule {formule}. Vous pouvez aussi nous écrire sur WhatsApp.'**
+  String offresDemandeDetail(String telephone, String formule);
+
+  /// No description provided for @offresWhatsApp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Écrire sur WhatsApp'**
+  String get offresWhatsApp;
+
+  /// No description provided for @offresWhatsAppMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bonjour, je souhaite acheter CaisseDZ Desktop {formule} (compte {telephone}).'**
+  String offresWhatsAppMessage(String formule, String telephone);
+
+  /// No description provided for @offresHorsLigne.
+  ///
+  /// In fr, this message translates to:
+  /// **'Hors ligne : prix indicatifs. Connectez le poste à internet pour créer votre compte.'**
+  String get offresHorsLigne;
+
+  /// No description provided for @offresSeDeconnecter.
+  ///
+  /// In fr, this message translates to:
+  /// **'Changer de compte'**
+  String get offresSeDeconnecter;
+
+  /// No description provided for @compteCreerTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créer votre compte'**
+  String get compteCreerTitre;
+
+  /// No description provided for @compteCreerSousTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Formule {formule} · {jours} jours d\'essai gratuit'**
+  String compteCreerSousTitre(String formule, int jours);
+
+  /// No description provided for @compteChangerFormule.
+  ///
+  /// In fr, this message translates to:
+  /// **'Changer de formule'**
+  String get compteChangerFormule;
+
+  /// No description provided for @compteFormule.
+  ///
+  /// In fr, this message translates to:
+  /// **'Formule {formule}'**
+  String compteFormule(String formule);
+
+  /// No description provided for @offresSelectionnee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Formule sélectionnée'**
+  String get offresSelectionnee;
+
+  /// No description provided for @offresSelectionner.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sélectionner cette formule'**
+  String get offresSelectionner;
+
+  /// No description provided for @compteNom.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom et prénom'**
+  String get compteNom;
+
+  /// No description provided for @compteCommerce.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom du commerce'**
+  String get compteCommerce;
+
+  /// No description provided for @compteFacultatif.
+  ///
+  /// In fr, this message translates to:
+  /// **'Facultatif'**
+  String get compteFacultatif;
+
+  /// No description provided for @compteTelephone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Numéro de téléphone'**
+  String get compteTelephone;
+
+  /// No description provided for @compteMotDePasse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mot de passe'**
+  String get compteMotDePasse;
+
+  /// No description provided for @compteBensMotDePasseAide.
+  ///
+  /// In fr, this message translates to:
+  /// **'8 caractères au moins. Sur un poste neuf, il devient aussi celui de l\'administrateur (identifiant admin).'**
+  String get compteBensMotDePasseAide;
+
+  /// No description provided for @compteBensConfirmer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Confirmer le mot de passe'**
+  String get compteBensConfirmer;
+
+  /// No description provided for @compteCreerBouton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créer mon compte et commencer l\'essai'**
+  String get compteCreerBouton;
+
+  /// No description provided for @compteEssaiDejaUtilise.
+  ///
+  /// In fr, this message translates to:
+  /// **'Compte créé. L\'essai gratuit a déjà été utilisé sur ce poste ou avec ce numéro : choisissez une formule pour continuer.'**
+  String get compteEssaiDejaUtilise;
+
+  /// No description provided for @compteConnexionTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Connexion à votre compte'**
+  String get compteConnexionTitre;
+
+  /// No description provided for @compteConnexionSousTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le compte BENS de votre commerce : votre formule et votre licence. Se connecter ici déplace la licence sur ce poste.'**
+  String get compteConnexionSousTitre;
+
+  /// No description provided for @compteConnexionBouton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Se connecter'**
+  String get compteConnexionBouton;
+
+  /// No description provided for @compteMotDePasseOublie.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mot de passe oublié ?'**
+  String get compteMotDePasseOublie;
+
+  /// No description provided for @comptePasEncore.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pas encore de compte ?'**
+  String get comptePasEncore;
+
+  /// No description provided for @compteVoirFormules.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir les formules'**
+  String get compteVoirFormules;
+
+  /// No description provided for @compteRetour.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retour'**
+  String get compteRetour;
+
+  /// No description provided for @compteErrTelephone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Numéro invalide : 10 chiffres commençant par 05, 06 ou 07.'**
+  String get compteErrTelephone;
+
+  /// No description provided for @compteErrNom.
+  ///
+  /// In fr, this message translates to:
+  /// **'Indiquez votre nom (2 caractères au moins).'**
+  String get compteErrNom;
+
+  /// No description provided for @compteErrMotDePasse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le mot de passe fait 8 caractères au moins.'**
+  String get compteErrMotDePasse;
+
+  /// No description provided for @compteErrConfirmation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les deux mots de passe ne sont pas identiques.'**
+  String get compteErrConfirmation;
+
+  /// No description provided for @compteErrNumeroPris.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce numéro a déjà un compte : connectez-vous.'**
+  String get compteErrNumeroPris;
+
+  /// No description provided for @compteErrIdentifiants.
+  ///
+  /// In fr, this message translates to:
+  /// **'Numéro ou mot de passe incorrect.'**
+  String get compteErrIdentifiants;
+
+  /// No description provided for @compteErrReseau.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pas de connexion à BENS. Vérifiez internet et réessayez.'**
+  String get compteErrReseau;
+
+  /// No description provided for @compteErrTropDEssais.
+  ///
+  /// In fr, this message translates to:
+  /// **'Trop d\'essais. Réessayez dans 15 minutes.'**
+  String get compteErrTropDEssais;
+
+  /// No description provided for @compteErrAucunCompte.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun compte avec ce numéro.'**
+  String get compteErrAucunCompte;
+
+  /// No description provided for @compteErrCode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code incorrect ou expiré. Demandez-en un nouveau à BENS.'**
+  String get compteErrCode;
+
+  /// No description provided for @compteErrServeur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le serveur BENS n\'a pas pu répondre. Réessayez plus tard.'**
+  String get compteErrServeur;
+
+  /// No description provided for @oubliTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mot de passe oublié'**
+  String get oubliTitre;
+
+  /// No description provided for @oubliIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Obtenez un code de récupération et envoyez-le à BENS sur WhatsApp. Après vérification, BENS vous envoie un code de réinitialisation, valable 48 heures.'**
+  String get oubliIntro;
+
+  /// No description provided for @oubliDemander.
+  ///
+  /// In fr, this message translates to:
+  /// **'Obtenir mon code de récupération'**
+  String get oubliDemander;
+
+  /// No description provided for @oubliVotreCode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre code de récupération'**
+  String get oubliVotreCode;
+
+  /// No description provided for @oubliCopier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Copier'**
+  String get oubliCopier;
+
+  /// No description provided for @oubliCopie.
+  ///
+  /// In fr, this message translates to:
+  /// **'Copié'**
+  String get oubliCopie;
+
+  /// No description provided for @oubliEnvoyer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Envoyer sur WhatsApp'**
+  String get oubliEnvoyer;
+
+  /// No description provided for @oubliMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bonjour, j\'ai oublié le mot de passe de mon compte CaisseDZ ({telephone}). Mon code de récupération : {code}'**
+  String oubliMessage(String telephone, String code);
+
+  /// No description provided for @oubliRecu.
+  ///
+  /// In fr, this message translates to:
+  /// **'J\'ai reçu mon code'**
+  String get oubliRecu;
+
+  /// No description provided for @oubliCodeReset.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code de réinitialisation'**
+  String get oubliCodeReset;
+
+  /// No description provided for @oubliNouveau.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau mot de passe'**
+  String get oubliNouveau;
+
+  /// No description provided for @oubliValider.
+  ///
+  /// In fr, this message translates to:
+  /// **'Changer le mot de passe'**
+  String get oubliValider;
+
+  /// No description provided for @activationColler.
+  ///
+  /// In fr, this message translates to:
+  /// **'Coller'**
+  String get activationColler;
+
+  /// No description provided for @activationWhatsApp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Envoyer sur WhatsApp'**
+  String get activationWhatsApp;
+
+  /// No description provided for @activationCleSignee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Envoyez le code de ce poste à BENS, puis collez ici la clé reçue (132 caractères).'**
+  String get activationCleSignee;
+
+  /// No description provided for @activationErrVide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Collez la clé reçue.'**
+  String get activationErrVide;
+
+  /// No description provided for @activationErrInvalide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Clé invalide. Vérifiez qu\'elle a été copiée en entier.'**
+  String get activationErrInvalide;
+
+  /// No description provided for @activationErrAutrePoste.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette clé est pour un autre poste. Envoyez-nous le code ci-dessus.'**
+  String get activationErrAutrePoste;
+
+  /// No description provided for @activationErrExpiree.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre licence a expiré le {date}. Contactez-nous pour la renouveler.'**
+  String activationErrExpiree(String date);
+
+  /// No description provided for @activationErrDate.
+  ///
+  /// In fr, this message translates to:
+  /// **'La date du poste semble incorrecte. Corrigez la date et l\'heure.'**
+  String get activationErrDate;
+
+  /// No description provided for @activationPoste.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code de ce poste'**
+  String get activationPoste;
+
+  /// No description provided for @activationRetourOffres.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retour aux formules'**
+  String get activationRetourOffres;
+
+  /// No description provided for @licenceUltra.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ultra'**
+  String get licenceUltra;
+
+  /// No description provided for @licenceEssai.
+  ///
+  /// In fr, this message translates to:
+  /// **'Essai {palier}'**
+  String licenceEssai(String palier);
+
+  /// No description provided for @shellBandeauEssai.
+  ///
+  /// In fr, this message translates to:
+  /// **'Essai {palier} : {jours, plural, =1{dernier jour} other{{jours} jours restants}}'**
+  String shellBandeauEssai(String palier, int jours);
+
+  /// No description provided for @shellVoirFormules.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir une formule'**
+  String get shellVoirFormules;
+
+  /// No description provided for @pmPalierUltra.
+  ///
+  /// In fr, this message translates to:
+  /// **'Palier Ultra'**
+  String get pmPalierUltra;
+
+  /// No description provided for @pmPalierUltraDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Jusqu\'à 15 magasins et 15 caissiers, transferts, tous les modules.'**
+  String get pmPalierUltraDesc;
+
+  /// No description provided for @pmPalierEssai.
+  ///
+  /// In fr, this message translates to:
+  /// **'Essai {palier}'**
+  String pmPalierEssai(String palier);
+
+  /// No description provided for @pmPalierEssaiDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Essai gratuit jusqu\'au {date}, puis lecture seule tant qu\'aucune formule n\'est achetée.'**
+  String pmPalierEssaiDesc(String date);
+
+  /// No description provided for @pmValableJusquAu.
+  ///
+  /// In fr, this message translates to:
+  /// **'Valable jusqu\'au {date}'**
+  String pmValableJusquAu(String date);
+
+  /// No description provided for @pmLicencePermanente.
+  ///
+  /// In fr, this message translates to:
+  /// **'Licence permanente'**
+  String get pmLicencePermanente;
+
+  /// No description provided for @pmCodePoste.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code de ce poste'**
+  String get pmCodePoste;
+
+  /// No description provided for @pmCompteBens.
+  ///
+  /// In fr, this message translates to:
+  /// **'Compte BENS'**
+  String get pmCompteBens;
+
+  /// No description provided for @pmCompteBensDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le compte de votre commerce : la licence de ce poste en vient.'**
+  String get pmCompteBensDesc;
+
+  /// No description provided for @pmAucunCompte.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun compte BENS sur ce poste'**
+  String get pmAucunCompte;
+
+  /// No description provided for @pmDeconnecterCompte.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déconnecter ce poste'**
+  String get pmDeconnecterCompte;
+
+  /// No description provided for @pmDeconnecterCompteConfirme.
+  ///
+  /// In fr, this message translates to:
+  /// **'La licence venue du compte est retirée de ce poste : il faudra se reconnecter pour l\'utiliser. Vos données restent sur le poste.'**
+  String get pmDeconnecterCompteConfirme;
+
+  /// No description provided for @pmVoirFormules.
+  ///
+  /// In fr, this message translates to:
+  /// **'Formules et mises à niveau'**
+  String get pmVoirFormules;
+
+  /// No description provided for @shellReservePalier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réservé au palier {palier}'**
+  String shellReservePalier(String palier);
+
+  /// No description provided for @dsGatePalierTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Disponible avec le palier {palier}'**
+  String dsGatePalierTitre(String palier);
+
+  /// No description provided for @dsGatePalierAction.
+  ///
+  /// In fr, this message translates to:
+  /// **'Passer au palier {palier}'**
+  String dsGatePalierAction(String palier);
+
+  /// No description provided for @lectureSeuleTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lecture seule'**
+  String get lectureSeuleTitre;
+
+  /// No description provided for @lectureSeuleCourt.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lecture seule (essai terminé)'**
+  String get lectureSeuleCourt;
+
+  /// No description provided for @lectureSeuleDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'L\'essai est terminé : ce module attend l\'achat d\'une formule. Ventes, produits, stock et rapports restent consultables, vos données sont gardées.'**
+  String get lectureSeuleDetail;
+
+  /// No description provided for @lectureSeuleBandeau.
+  ///
+  /// In fr, this message translates to:
+  /// **'Essai terminé le {date} : lecture seule. Vos données sont gardées ; choisissez une formule pour continuer à vendre.'**
+  String lectureSeuleBandeau(String date);
+
+  /// No description provided for @limiteCaissiers.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre formule ne permet pas d\'autre caissier. Passez à la formule supérieure (Paramètres › Licence).'**
+  String get limiteCaissiers;
+
+  /// No description provided for @limiteMagasins.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre formule ne permet pas d\'autre magasin : le multi-magasin est dans la formule Ultra.'**
+  String get limiteMagasins;
+
+  /// No description provided for @limiteCaisses.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre formule ne permet pas d\'autre caisse. Passez à la formule supérieure (Paramètres › Licence).'**
+  String get limiteCaisses;
+
+  /// No description provided for @limiteTransfertsCaisse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre formule n\'a qu\'une caisse : les transferts entre caisses sont dans les formules Advanced et Ultra.'**
+  String get limiteTransfertsCaisse;
+
+  /// No description provided for @smartScanErreurLicence.
+  ///
+  /// In fr, this message translates to:
+  /// **'La licence de ce poste n\'est pas reconnue par Smart Scan. Vérifiez votre formule (Paramètres › Licence).'**
+  String get smartScanErreurLicence;
+
+  /// No description provided for @smartScanPacksTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Acheter un pack Smart Scan'**
+  String get smartScanPacksTitre;
+
+  /// No description provided for @smartScanPackLigne.
+  ///
+  /// In fr, this message translates to:
+  /// **'{nom} · {scans} scans · {prix}'**
+  String smartScanPackLigne(String nom, int scans, String prix);
+
+  /// No description provided for @smartScanPackCompte.
+  ///
+  /// In fr, this message translates to:
+  /// **'Connectez ce poste à votre compte BENS pour acheter des packs (Paramètres › Licence).'**
+  String get smartScanPackCompte;
+
+  /// No description provided for @smartScanExpiration.
+  ///
+  /// In fr, this message translates to:
+  /// **'{scans, plural, =1{1 Smart Scan expire} other{{scans} Smart Scans expirent}} le {date} : utilisez-les ou ajoutez un pack.'**
+  String smartScanExpiration(int scans, String date);
+
+  /// No description provided for @permUtiliserMobile.
+  ///
+  /// In fr, this message translates to:
+  /// **'Application mobile (CaisseDZ Scan)'**
+  String get permUtiliserMobile;
+
+  /// No description provided for @mobileBouton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Application mobile'**
+  String get mobileBouton;
+
+  /// No description provided for @mobileTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Application mobile CaisseDZ Scan'**
+  String get mobileTitre;
+
+  /// No description provided for @mobileEtape1.
+  ///
+  /// In fr, this message translates to:
+  /// **'Installez CaisseDZ Scan.'**
+  String get mobileEtape1;
+
+  /// No description provided for @mobileEtape2.
+  ///
+  /// In fr, this message translates to:
+  /// **'Connectez-vous au même Wi-Fi.'**
+  String get mobileEtape2;
+
+  /// No description provided for @mobileEtape3.
+  ///
+  /// In fr, this message translates to:
+  /// **'Scannez ce QR code.'**
+  String get mobileEtape3;
+
+  /// No description provided for @mobileEtape4.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le téléphone est prêt.'**
+  String get mobileEtape4;
+
+  /// No description provided for @mobileAucunReseau.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun réseau local détecté : connectez cet ordinateur au Wi-Fi ou au réseau de la boutique.'**
+  String get mobileAucunReseau;
+
+  /// No description provided for @mobileErreurDemarrage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le service mobile n\'a pas pu démarrer : {detail}'**
+  String mobileErreurDemarrage(String detail);
+
+  /// No description provided for @mobileQrExpire.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code valable jusqu\'à {heure}'**
+  String mobileQrExpire(String heure);
+
+  /// No description provided for @mobileNouveauQr.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau QR code'**
+  String get mobileNouveauQr;
+
+  /// No description provided for @mobileActiver.
+  ///
+  /// In fr, this message translates to:
+  /// **'Activer l\'application mobile'**
+  String get mobileActiver;
+
+  /// No description provided for @mobileQrDe.
+  ///
+  /// In fr, this message translates to:
+  /// **'QR code de {nom}'**
+  String mobileQrDe(String nom);
+
+  /// No description provided for @mobileDesactiver.
+  ///
+  /// In fr, this message translates to:
+  /// **'Désactiver'**
+  String get mobileDesactiver;
+
+  /// No description provided for @mobileAppareils.
+  ///
+  /// In fr, this message translates to:
+  /// **'Téléphones appairés ({nombre})'**
+  String mobileAppareils(int nombre);
+
+  /// No description provided for @mobileMesAppareils.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mes téléphones ({nombre})'**
+  String mobileMesAppareils(int nombre);
+
+  /// No description provided for @mobileAucunAppareil.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun téléphone appairé pour l\'instant.'**
+  String get mobileAucunAppareil;
+
+  /// No description provided for @mobileAppaireLe.
+  ///
+  /// In fr, this message translates to:
+  /// **'Appairé le {date}'**
+  String mobileAppaireLe(String date);
+
+  /// No description provided for @mobileDernierAcces.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dernier accès {date}'**
+  String mobileDernierAcces(String date);
+
+  /// No description provided for @mobileConnecte.
+  ///
+  /// In fr, this message translates to:
+  /// **'Connecté'**
+  String get mobileConnecte;
+
+  /// No description provided for @mobileFactureRecueTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Facture reçue du téléphone'**
+  String get mobileFactureRecueTitre;
+
+  /// No description provided for @mobileFactureRecueMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'{nom} a envoyé une photo de facture ({bon}).'**
+  String mobileFactureRecueMessage(String nom, String bon);
+
+  /// No description provided for @mobileOuvrirSmartScan.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouvrir Smart Scan'**
+  String get mobileOuvrirSmartScan;
+
+  /// No description provided for @mobileRevoquer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Révoquer'**
+  String get mobileRevoquer;
+
+  /// No description provided for @mobileRevoquerTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Révoquer « {nom} » ?'**
+  String mobileRevoquerTitre(String nom);
+
+  /// No description provided for @mobileRevoquerMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce téléphone ne pourra plus se connecter à ce poste tant qu\'il n\'aura pas scanné un nouveau QR code.'**
+  String get mobileRevoquerMessage;
+
+  /// No description provided for @catalogueRayonsTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisissez vos rayons'**
+  String get catalogueRayonsTitre;
+
+  /// No description provided for @catalogueRayonsSousTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Selon votre activité, téléchargez les produits les plus demandés de chaque rayon : code-barres, nom et photo, sans prix ni stock. Vous pourrez en ajouter d\'autres plus tard depuis Produits.'**
+  String get catalogueRayonsSousTitre;
+
+  /// No description provided for @catalogueRayonsNbProduits.
+  ///
+  /// In fr, this message translates to:
+  /// **'{nombre} produits'**
+  String catalogueRayonsNbProduits(String nombre);
+
+  /// No description provided for @catalogueRayonsBientot.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bientôt'**
+  String get catalogueRayonsBientot;
+
+  /// No description provided for @catalogueRayonsDejaTelecharge.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déjà téléchargé'**
+  String get catalogueRayonsDejaTelecharge;
+
+  /// No description provided for @catalogueRayonsToutSelectionner.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tout sélectionner'**
+  String get catalogueRayonsToutSelectionner;
+
+  /// No description provided for @catalogueRayonsToutDeselectionner.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tout désélectionner'**
+  String get catalogueRayonsToutDeselectionner;
+
+  /// No description provided for @catalogueRayonsSelection.
+  ///
+  /// In fr, this message translates to:
+  /// **'{rayons, plural, =0{Aucun rayon choisi} =1{1 rayon · {produits} produits} other{{rayons} rayons · {produits} produits}}'**
+  String catalogueRayonsSelection(int rayons, String produits);
+
+  /// No description provided for @catalogueRayonsPlusTard.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plus tard'**
+  String get catalogueRayonsPlusTard;
+
+  /// No description provided for @catalogueRayonsAppliquer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Appliquer'**
+  String get catalogueRayonsAppliquer;
+
+  /// No description provided for @catalogueRayonsChargement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chargement des rayons…'**
+  String get catalogueRayonsChargement;
+
+  /// No description provided for @catalogueRayonsHorsLigne.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le catalogue BENS est injoignable. Vérifiez la connexion internet, puis réessayez.'**
+  String get catalogueRayonsHorsLigne;
+
+  /// No description provided for @catalogueRayonsReessayer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réessayer'**
+  String get catalogueRayonsReessayer;
+
+  /// No description provided for @catalogueRayonsTelechargement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Téléchargement : {rayon}…'**
+  String catalogueRayonsTelechargement(String rayon);
+
+  /// No description provided for @catalogueRayonsProgres.
+  ///
+  /// In fr, this message translates to:
+  /// **'{recus} / {attendus} produits reçus'**
+  String catalogueRayonsProgres(String recus, String attendus);
+
+  /// No description provided for @catalogueRayonsEchec.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le téléchargement a échoué : rien n\'a été ajouté. Vérifiez la connexion internet, puis réessayez.'**
+  String get catalogueRayonsEchec;
+
+  /// No description provided for @catalogueRayonsResultatTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produits téléchargés'**
+  String get catalogueRayonsResultatTitre;
+
+  /// No description provided for @catalogueRayonsResultatMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'{telecharges} produits ajoutés à votre catalogue : {pourcentage} % des produits des rayons choisis.'**
+  String catalogueRayonsResultatMessage(String telecharges, String pourcentage);
+
+  /// No description provided for @catalogueRayonsDejaPresents.
+  ///
+  /// In fr, this message translates to:
+  /// **'{nombre} produits étaient déjà dans votre catalogue (même code-barres) : ils sont restés tels quels.'**
+  String catalogueRayonsDejaPresents(String nombre);
+
+  /// No description provided for @catalogueRayonsSansPrix.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ces produits n\'ont ni prix ni stock : renseignez le prix dans la fiche produit ou à la première entrée en stock.'**
+  String get catalogueRayonsSansPrix;
+
+  /// No description provided for @catalogueRayonsLigne.
+  ///
+  /// In fr, this message translates to:
+  /// **'{telecharges} / {disponibles} · {pourcentage} %'**
+  String catalogueRayonsLigne(String telecharges, String disponibles, String pourcentage);
+
+  /// No description provided for @catalogueRayonsContinuer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Continuer'**
+  String get catalogueRayonsContinuer;
+
+  /// No description provided for @catalogueRayonsBouton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Catalogue BENS'**
+  String get catalogueRayonsBouton;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -73,7 +73,11 @@ void main() {
       final c = await pumpApp(tester, routeInitiale: '/caisse', taille: const Size(1600, 1000));
       await _donnees(c);
       await tester.pumpAndSettle();
-      expect(find.textContaining('Fermée'), findsOneWidget);
+      // Caisse fermée : la bande ne montre que la caisse et « Ouvrir ».
+      expect(
+        find.descendant(of: find.byKey(const ValueKey('caisse_session')), matching: find.text('Ouvrir')),
+        findsOneWidget,
+      );
       expect(find.text('Panier vide'), findsOneWidget);
 
       // Clic sur la tuile : le dialog « Quantité et colis » ajoute 1 unité au bout de 3 s.
@@ -114,7 +118,11 @@ void main() {
       expect(v.totalNet, 550);
       expect(v.verse, 550);
       expect(v.hash.length, 64);
-      expect(find.textContaining('Ouverte'), findsOneWidget);
+      // Caisse ouverte : plus de bouton « Ouvrir » dans la bande.
+      expect(
+        find.descendant(of: find.byKey(const ValueKey('caisse_session')), matching: find.text('Ouvrir')),
+        findsNothing,
+      );
       expect(find.text('Panier vide'), findsOneWidget);
     });
 
@@ -182,7 +190,7 @@ void main() {
       await tester.enterText(champ, '6130000000015');
       await tester.testTextInput.receiveAction(TextInputAction.done);
       await tester.pump(const Duration(milliseconds: 300));
-      expect(find.textContaining('Produit scanné'), findsOneWidget);
+      expect(find.byKey(const ValueKey('selection_quantite')), findsOneWidget);
       await tester.pumpAndSettle();
       expect(find.byKey(const ValueKey('ligne_0')), findsOneWidget);
       expect(_total(tester), contains('100,00'));
@@ -240,6 +248,11 @@ void main() {
 
       await _touche(tester, LogicalKeyboardKey.f11);
       expect(find.byType(DsProductTile), findsNothing);
+      // Produits masqués : panneau d'encaissement à droite (client, remise, total, encaissement).
+      final panneau = find.byKey(const ValueKey('panier_encaissement'));
+      for (final cle in ['panier_client', 'panier_remise', 'caisse_encaisser']) {
+        expect(find.descendant(of: panneau, matching: find.byKey(ValueKey(cle))), findsOneWidget, reason: cle);
+      }
       await clic(tester, find.byKey(const ValueKey('caisse_basculer_produits')));
       expect(find.byType(DsProductTile), findsWidgets);
 
@@ -391,6 +404,21 @@ void main() {
       expect(find.descendant(of: ligne, matching: find.text('Lait 1 L')), findsOneWidget);
       expect(find.descendant(of: ligne, matching: find.text('4')), findsWidgets);
       expect(_total(tester), contains('360'));
+    });
+
+    testWidgets('paramètres de la caisse : bouton à côté de la calculatrice (Avancé, Ultra)', (tester) async {
+      await pumpApp(tester, routeInitiale: '/caisse', taille: const Size(1600, 1000));
+      expect(find.byKey(const ValueKey('caisse_parametres')), findsOneWidget);
+    });
+
+    testWidgets('paramètres de la caisse : absents en Basic', (tester) async {
+      await pumpApp(
+        tester,
+        etat: EtatApp.connecteeAdminBasic,
+        routeInitiale: '/caisse',
+        taille: const Size(1600, 1000),
+      );
+      expect(find.byKey(const ValueKey('caisse_parametres')), findsNothing);
     });
 
     testWidgets('arabe : écran caisse en RTL', (tester) async {

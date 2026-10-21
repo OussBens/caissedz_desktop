@@ -173,15 +173,11 @@ class _TableauBordPageState extends ConsumerState<TableauBordPage> {
     final locale = Localizations.localeOf(context).toLanguageTag();
     final du = _periode.du, au = _periode.au;
     final cle = (DateTime(du.year, du.month, du.day), DateTime(au.year, au.month, au.day));
-    final jours = cle.$2.difference(cle.$1).inDays + 1;
     final libellePeriode =
         '${DateFormat('dd MMM', locale).format(du)} – ${DateFormat('dd MMM yyyy', locale).format(au)}';
     final donnees = ref.watch(tableauBordProvider(cle)).value;
     return PageModule(
       moduleId: 'tableau_bord',
-      sousTitre: _onglet == 0
-          ? l10n.tableauBordDescription(formatDate.format(au), formatDate.format(du), jours) // paramètres (au, du)
-          : l10n.situationDescription,
       onglets: [l10n.tableauBordOnglet, l10n.situationOnglet],
       comptes: [null, SituationRepository.analyses.length],
       ongletCourant: _onglet,

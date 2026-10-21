@@ -222,7 +222,6 @@ class _VentesPageState extends ConsumerState<VentesPage> {
 
     return PageModule(
       moduleId: 'ventes',
-      sousTitre: l10n.ventesDescription,
       onglets: [l10n.ventesOngletPaniers, l10n.ventesOngletFactures],
       ongletCourant: _onglet,
       onOnglet: (i) => setState(() => _onglet = i),
@@ -243,7 +242,6 @@ class _VentesPageState extends ConsumerState<VentesPage> {
               colonnes: colonnes,
               cle: (p) => p.code,
               afficherTotaux: true,
-              filtresOuverts: true,
               colonnesFiltres: 4,
               permissions: permissionsSession(ref),
               messageVide: l10n.ventesAucune,
@@ -307,14 +305,15 @@ class _VentesPageState extends ConsumerState<VentesPage> {
                   liste: ListeMetier.client,
                   onChanged: (v) => setState(() => _client = v),
                 ),
-                _filtre<String?>(
-                  l10n.ventesCaisse,
-                  valeur: _caisse,
-                  options: [null, ...caisses.map((c) => c.code)],
-                  libelle: (v) => v == null ? l10n.ventesToutes : nomCaisse(v),
-                  liste: ListeMetier.caisse,
-                  onChanged: (v) => setState(() => _caisse = v),
-                ),
+                if (ref.watch(plusieursCaissesProvider))
+                  _filtre<String?>(
+                    l10n.ventesCaisse,
+                    valeur: _caisse,
+                    options: [null, ...caisses.map((c) => c.code)],
+                    libelle: (v) => v == null ? l10n.ventesToutes : nomCaisse(v),
+                    liste: ListeMetier.caisse,
+                    onChanged: (v) => setState(() => _caisse = v),
+                  ),
                 _filtre<String?>(
                   l10n.ventesSession,
                   valeur: _session,

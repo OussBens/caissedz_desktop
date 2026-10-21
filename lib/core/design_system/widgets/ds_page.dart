@@ -19,7 +19,6 @@ class DsPage extends StatelessWidget {
     this.onRecherche,
     this.indiceRecherche,
     this.filtres,
-    this.sousTitre,
     this.defilable = false,
     this.filAriane,
     this.onRetour,
@@ -27,9 +26,6 @@ class DsPage extends StatelessWidget {
   });
 
   final String titre;
-
-  /// Description sous le titre.
-  final String? sousTitre;
   final Widget child;
   final List<Widget> actions;
 
@@ -101,7 +97,6 @@ class DsPage extends StatelessWidget {
                       Text(titre, style: t.pageTitle),
                     ],
                   ),
-                  if (sousTitre != null) Text(sousTitre!, style: t.body.copyWith(color: c.textSecondary)),
                 ],
               ),
             ),
@@ -770,22 +765,32 @@ class DsVide extends StatelessWidget {
   }
 }
 
-/// Formatage monétaire commun (2 décimales, virgule, espaces fines, devise).
+/// Séparateur de milliers : l'espace insécable. Comme la virgule, c'est un séparateur de chiffres pour
+/// l'algorithme bidirectionnel : « 20 000 » reste un seul nombre, lu de gauche à droite même en arabe
+/// (avec une espace ordinaire, l'arabe affiche « 000 20 »).
+const String separateurMilliers = '\u00A0';
+
+/// Isole un texte de gauche à droite (LRI … PDI) : en arabe, un nombre signé (« -1 200 », « +500 »)
+/// garde son signe devant les chiffres.
+String isolerLtr(String texte) => '\u2066$texte\u2069';
+
+String _signe(bool neg, String nombre) => neg ? isolerLtr('-$nombre') : nombre;
+
+String _grouper(String entier) => entier.replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (m) => separateurMilliers);
+
+/// Formatage monétaire commun (2 décimales, virgule, espaces insécables, devise).
 String formaterMontant(double v, [String devise = 'DA']) {
-  final neg = v < 0;
   final s = v.abs().toStringAsFixed(2);
   final parties = s.split('.');
-  final entier = parties[0].replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (m) => ' ');
-  return '${neg ? '-' : ''}$entier,${parties[1]} $devise';
+  return '${_signe(v < 0, '${_grouper(parties[0])},${parties[1]}')} $devise';
 }
 
-/// Formatage d'un nombre à la française : séparateur de milliers (espace) et virgule décimale.
+/// Formatage d'un nombre à la française : séparateur de milliers (espace insécable) et virgule décimale.
 String formaterNombre(double v, {int decimales = 0, bool grouper = true}) {
-  final neg = v < 0;
   final s = v.abs().toStringAsFixed(decimales);
   final parties = s.split('.');
-  final entier = grouper ? parties[0].replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (m) => ' ') : parties[0];
-  return '${neg ? '-' : ''}$entier${parties.length > 1 ? ',${parties[1]}' : ''}';
+  final entier = grouper ? _grouper(parties[0]) : parties[0];
+  return _signe(v < 0, '$entier${parties.length > 1 ? ',${parties[1]}' : ''}');
 }
 
 /// Abréviation « k » des montants (axes de graphiques) : 12 400 → « 12,4 k ».
@@ -797,9 +802,12 @@ String formaterK(double v) {
   return formaterNombre(v);
 }
 
+/// Espaces et marques de direction (formaterNombre) qu'une saisie peut contenir autour des chiffres.
+final RegExp blancsNombre = RegExp(r'[\s\u200E\u200F\u2066-\u2069]');
+
 /// Lit un nombre saisi (virgule ou point, espaces tolérés) ; `null` si vide ou invalide.
 double? lireNombre(String texte) {
-  final s = texte.replaceAll(RegExp(r'\s'), '').replaceAll(',', '.');
+  final s = texte.replaceAll(blancsNombre, '').replaceAll(',', '.');
   if (s.isEmpty) return null;
   return double.tryParse(s);
 }

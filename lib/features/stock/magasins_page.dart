@@ -42,7 +42,6 @@ class _MagasinsPageState extends ConsumerState<MagasinsPage> {
     final transferts = ref.watch(transfertsProvider).value ?? const <TransfertStock>[];
     return PageModule(
       moduleId: 'magasins',
-      sousTitre: l10n.stkDescriptionMagasins,
       actions: [DsBadge(libelle: l10n.stkPalierAvance, ton: DsBadgeTon.primaire, icone: LucideIcons.sparkles)],
       onglets: [l10n.stkOngletMagasins, l10n.stkOngletTransferts],
       comptes: [magasins.length, transferts.length],

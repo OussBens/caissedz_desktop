@@ -343,7 +343,6 @@ class _SelectionProduitDialogState extends ConsumerState<_SelectionProduitDialog
         child: DsDialog(
           titre: widget.modification ? l10n.posSelTitreModif : l10n.posSelTitre,
           iconeData: widget.scanne ? LucideIcons.scanBarcode : LucideIcons.package,
-          description: widget.scanne ? l10n.posSelScanne(p.code) : p.code,
           largeur: 880,
           actions: [
             DsButton(
@@ -622,10 +621,6 @@ class _EncaisserDialogState extends ConsumerState<_EncaisserDialog> {
         titre: titre,
         iconeData: icone,
         largeur: 860,
-        description: switch (widget.nature) {
-          NatureEncaissement.ticket => l10n.posEncTicketDesc,
-          NatureEncaissement.enregistrer => l10n.posEncSaveDesc,
-        },
         actions: [
           DsButton(
             libelle: l10n.dsAnnuler,
@@ -782,7 +777,6 @@ class _ModifPrixDialogState extends ConsumerState<_ModifPrixDialog> {
     return DsDialog(
       titre: l10n.posPrixTitre,
       iconeData: LucideIcons.tag,
-      description: l10n.posPrixDesc,
       largeur: 640,
       actions: [
         DsButton(
@@ -908,7 +902,6 @@ class _SaisieMontantDialogState extends ConsumerState<_SaisieMontantDialog> {
     return DsDialog(
       titre: _modification ? l10n.posMontantModifier : l10n.posMontantAutre,
       iconeData: LucideIcons.coins,
-      description: _modification ? l10n.posMontantModifierDesc : l10n.posMontantAide,
       largeur: 440,
       actions: [
         DsButton(
@@ -1047,7 +1040,6 @@ class _RechercheProduitDialogState extends ConsumerState<_RechercheProduitDialog
     );
     return DsPickerDialog<Produit>(
       titre: l10n.posRechTitre,
-      description: l10n.posRechDesc,
       icone: LucideIcons.search,
       multiple: true,
       largeur: 980,
@@ -1118,7 +1110,6 @@ Future<bool?> afficherProduitIntrouvable(BuildContext context, String code) {
       titre: l10n.posIntrouvableTitre,
       iconeData: LucideIcons.searchX,
       ton: DsDialogTon.avertissement,
-      description: l10n.posIntrouvableDesc,
       largeur: 520,
       actions: [
         DsButton(
@@ -1155,7 +1146,7 @@ Future<bool> afficherCaisseFermee(BuildContext context, {required String caisse,
       titre: l10n.posFermeeTitre,
       iconeData: LucideIcons.lock,
       ton: DsDialogTon.avertissement,
-      description: description ?? l10n.posFermeeDesc(caisse),
+      message: description ?? l10n.posFermeeDesc(caisse),
       largeur: 480,
       actions: [
         DsButton(
@@ -1223,7 +1214,6 @@ Future<bool> afficherOuvertureCaisse(BuildContext context, WidgetRef ref, {Strin
       builder: (ctx, setState) => DsDialog(
         titre: l10n.posOuvertureTitre(caisse.nom),
         iconeData: LucideIcons.lockOpen,
-        description: l10n.posOuvertureDesc,
         largeur: 560,
         actions: [
           DsButton(
@@ -1243,29 +1233,30 @@ Future<bool> afficherOuvertureCaisse(BuildContext context, WidgetRef ref, {Strin
           crossAxisAlignment: CrossAxisAlignment.stretch,
           spacing: 12,
           children: [
-            DsFormRow(
-              libelle: l10n.posSessionCaisse,
-              obligatoire: true,
-              child: DsSelect<Caisse>(
-                valeur: caisse,
-                options: caisses,
-                libelle: (c) => c.nom,
-                recherche: (options, valeur) async {
-                  final code = await choisirDansListe(
-                    context,
-                    ref,
-                    ListeMetier.caisse,
-                    codes: {for (final c in options) c.code},
-                    valeur: valeur?.code,
-                  );
-                  return options.where((c) => c.code == code).firstOrNull;
-                },
-                onChanged: (v) => setState(() {
-                  caisse = v ?? caisse;
-                  fond.text = formaterNombre(caisse.soldeInitial, decimales: 2);
-                }),
+            if (ref.read(plusieursCaissesProvider))
+              DsFormRow(
+                libelle: l10n.posSessionCaisse,
+                obligatoire: true,
+                child: DsSelect<Caisse>(
+                  valeur: caisse,
+                  options: caisses,
+                  libelle: (c) => c.nom,
+                  recherche: (options, valeur) async {
+                    final code = await choisirDansListe(
+                      context,
+                      ref,
+                      ListeMetier.caisse,
+                      codes: {for (final c in options) c.code},
+                      valeur: valeur?.code,
+                    );
+                    return options.where((c) => c.code == code).firstOrNull;
+                  },
+                  onChanged: (v) => setState(() {
+                    caisse = v ?? caisse;
+                    fond.text = formaterNombre(caisse.soldeInitial, decimales: 2);
+                  }),
+                ),
               ),
-            ),
             DsFormRow(
               libelle: l10n.posOuvertureSolde,
               obligatoire: true,
@@ -1357,7 +1348,6 @@ Future<void> afficherClotureSession(
         return DsDialog(
           titre: l10n.posClotureTitre(nomCaisse),
           iconeData: LucideIcons.lock,
-          description: l10n.posClotureDesc(session.code, formatHeure(session.ouverteLe)),
           largeur: 680,
           actions: [
             DsButton(
@@ -1487,7 +1477,6 @@ Future<void> afficherMouvementManuel(BuildContext context, WidgetRef ref, {Strin
       builder: (ctx, setState) => DsDialog(
         titre: l10n.posMvtTitre,
         iconeData: LucideIcons.arrowLeftRight,
-        description: l10n.posMvtDesc,
         largeur: 620,
         actions: [
           DsButton(
@@ -1510,18 +1499,19 @@ Future<void> afficherMouvementManuel(BuildContext context, WidgetRef ref, {Strin
           spacing: 12,
           children: [
             if (caisses.isNotEmpty)
-              DsFormRow(
-                libelle: l10n.posSessionCaisse,
-                obligatoire: true,
-                child: DsSelect<String>(
-                  cle: const ValueKey('mouvement_caisse'),
-                  valeur: caisse,
-                  options: [for (final c in caisses) c.code],
-                  libelle: (code) => caisses.firstWhere((c) => c.code == code).nom,
-                  recherche: rechercheListe(context, ref, ListeMetier.caisse),
-                  onChanged: (v) => setState(() => caisse = v ?? caisse),
+              if (ref.read(plusieursCaissesProvider))
+                DsFormRow(
+                  libelle: l10n.posSessionCaisse,
+                  obligatoire: true,
+                  child: DsSelect<String>(
+                    cle: const ValueKey('mouvement_caisse'),
+                    valeur: caisse,
+                    options: [for (final c in caisses) c.code],
+                    libelle: (code) => caisses.firstWhere((c) => c.code == code).nom,
+                    recherche: rechercheListe(context, ref, ListeMetier.caisse),
+                    onChanged: (v) => setState(() => caisse = v ?? caisse),
+                  ),
                 ),
-              ),
             DsFormRow(
               libelle: l10n.posMvtType,
               obligatoire: true,
@@ -1670,7 +1660,6 @@ class _VentesDuJourDialogState extends ConsumerState<_VentesDuJourDialog> {
     return DsDialog(
       titre: l10n.posVdjTitre(widget.nomCaisse),
       iconeData: LucideIcons.receiptText,
-      description: l10n.posVdjDesc(formatDate.format(aujourdhui)),
       largeur: 1100,
       actions: [DsButton(libelle: l10n.communFermer, onPressed: () => Navigator.of(context).pop())],
       contenu: Column(
@@ -1840,7 +1829,6 @@ class _RecetteProduitDialogState extends ConsumerState<_RecetteProduitDialog> {
     return DsDialog(
       titre: l10n.posRecTitre(widget.nomCaisse),
       iconeData: LucideIcons.chartColumn,
-      description: l10n.posRecDesc(formatDate.format(DateTime.now())),
       largeur: 1100,
       actions: [DsButton(libelle: l10n.communFermer, onPressed: () => Navigator.of(context).pop())],
       contenu: Column(
@@ -1907,7 +1895,6 @@ Future<void> afficherParametresCaisse(BuildContext context, WidgetRef ref) async
       builder: (ctx, setState) => DsDialog(
         titre: l10n.posParametres,
         iconeData: LucideIcons.settings2,
-        description: l10n.posParamDesc,
         largeur: 560,
         actions: [
           DsButton(
@@ -1937,17 +1924,18 @@ Future<void> afficherParametresCaisse(BuildContext context, WidgetRef ref) async
                 onChanged: (v) => setState(() => caisse = v ?? caisse),
               ),
             ),
-            DsFormRow(
-              libelle: l10n.posParamMagasin,
-              child: DsSelect<String>(
-                valeur: magasin,
-                options: [for (final m in magasins) m.code],
-                libelle: (c) => magasins.firstWhere((x) => x.code == c).nom,
-                actif: libre,
-                recherche: rechercheListe(context, ref, ListeMetier.magasin),
-                onChanged: (v) => setState(() => magasin = v ?? magasin),
+            if (ref.read(plusieursMagasinsProvider))
+              DsFormRow(
+                libelle: l10n.posParamMagasin,
+                child: DsSelect<String>(
+                  valeur: magasin,
+                  options: [for (final m in magasins) m.code],
+                  libelle: (c) => magasins.firstWhere((x) => x.code == c).nom,
+                  actif: libre,
+                  recherche: rechercheListe(context, ref, ListeMetier.magasin),
+                  onChanged: (v) => setState(() => magasin = v ?? magasin),
+                ),
               ),
-            ),
           ],
         ),
       ),

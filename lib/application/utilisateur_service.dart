@@ -24,6 +24,9 @@ enum ErreurUtilisateur {
   compteAdministrateur,
   compteCourant,
   dejaInactif,
+
+  /// Le palier de la licence n'a plus de place pour un caissier (Desktop — Plans & Pricing).
+  limiteCaissiers,
 }
 
 class UtilisateurException implements Exception {
@@ -36,11 +39,35 @@ class UtilisateurException implements Exception {
 /// Comptes utilisateurs (§9.12) : identifiant unique, mot de passe haché, rôle assignable (jamais Admin),
 /// caisse attachée (sauf Admin), magasins ordonnés (le premier est le magasin par défaut).
 class UtilisateurService {
-  const UtilisateurService(this.db, {required this.utilisateurCode, this.hachage = const MotDePasse()});
+  const UtilisateurService(
+    this.db, {
+    required this.utilisateurCode,
+    this.hachage = const MotDePasse(),
+    this.maxCaissiers,
+  });
 
   final Database db;
   final String utilisateurCode;
   final MotDePasse hachage;
+
+  /// Comptes actifs autres que l'administrateur permis par le palier (null : sans limite).
+  final int? maxCaissiers;
+
+  /// Comptes actifs comptés dans la limite : tous sauf l'administrateur et les comptes système.
+  static Future<int> nombreCaissiers(DatabaseExecutor db) async {
+    final r = await db.rawQuery(
+      'SELECT COUNT(*) n FROM utilisateur WHERE actif = 1 AND systeme = 0 AND role_code <> ?',
+      [Roles.admin],
+    );
+    return r.first['n'] as int;
+  }
+
+  Future<void> _verifierPlace(DatabaseExecutor txn) async {
+    final max = maxCaissiers;
+    if (max != null && await nombreCaissiers(txn) >= max) {
+      throw const UtilisateurException(ErreurUtilisateur.limiteCaissiers);
+    }
+  }
 
   /// Force d'un mot de passe, de 0 à 4 (longueur ≥ 8, majuscules et minuscules, chiffre, symbole).
   static int force(String p) {
@@ -77,6 +104,7 @@ class UtilisateurService {
     await _valider(txn, identifiant: identifiant, telephone: telephone, magasins: magasins);
     if (!motDePasseAcceptable(motDePasse)) throw const UtilisateurException(ErreurUtilisateur.motDePasseFaible);
     await _validerRole(txn, roleCode, actuel: null);
+    await _verifierPlace(txn);
     final code = await repo.prochainCode();
     await repo.inserer(
       Utilisateur(
@@ -122,6 +150,8 @@ class UtilisateurService {
     if (u == null) throw const UtilisateurException(ErreurUtilisateur.utilisateurInconnu);
     await _valider(txn, identifiant: identifiant, telephone: telephone, magasins: magasins, saufCode: code);
     await _validerRole(txn, roleCode, actuel: u);
+    // Réactiver un compte reprend une place du palier.
+    if (actif && !u.actif && !u.estAdmin) await _verifierPlace(txn);
     if (!actif && u.actif) {
       final blocage = blocageDesactivation(u);
       if (blocage != null) throw UtilisateurException(blocage);

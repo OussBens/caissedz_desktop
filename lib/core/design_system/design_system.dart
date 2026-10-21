@@ -8,6 +8,7 @@ export 'widgets/ds_charts.dart';
 export 'widgets/ds_data_table.dart';
 export 'widgets/ds_dialog.dart';
 export 'widgets/ds_forms.dart';
+export 'widgets/ds_image_zoom.dart';
 export 'widgets/ds_line_items.dart';
 export 'widgets/ds_module.dart';
 export 'widgets/ds_module_kit.dart';

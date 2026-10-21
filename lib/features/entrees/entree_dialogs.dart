@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
+import '../../app/demarrage_providers.dart';
 import '../../application/achat_service.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
@@ -14,6 +15,7 @@ import '../../domain/models/document_commercial.dart';
 import '../../domain/models/produit.dart';
 import '../../domain/models/stock.dart';
 import '../../domain/models/tiers.dart';
+import '../../domain/permissions.dart';
 import '../caisse/caisse_dialogs.dart';
 import '../caisse/pos_dialogs.dart';
 import '../commun/doc_form.dart';
@@ -170,21 +172,22 @@ List<Widget> lignesPaiement(
         },
       ),
     ),
-    DsFormRow(
-      libelle: l10n.versementCaisse,
-      obligatoire: true,
-      largeurLibelle: largeurLibelle,
-      child: DsSelect<String>(
-        valeur: etat.caisse ?? caisses.firstOrNull?.code,
-        options: [for (final c in caisses) c.code],
-        libelle: (code) => caisses.where((c) => c.code == code).firstOrNull?.nom ?? code,
-        recherche: ref == null ? null : rechercheListe(context, ref, ListeMetier.caisse),
-        onChanged: (v) {
-          etat.caisse = v;
-          onChanged();
-        },
+    if (ref?.read(plusieursCaissesProvider) ?? true)
+      DsFormRow(
+        libelle: l10n.versementCaisse,
+        obligatoire: true,
+        largeurLibelle: largeurLibelle,
+        child: DsSelect<String>(
+          valeur: etat.caisse ?? caisses.firstOrNull?.code,
+          options: [for (final c in caisses) c.code],
+          libelle: (code) => caisses.where((c) => c.code == code).firstOrNull?.nom ?? code,
+          recherche: ref == null ? null : rechercheListe(context, ref, ListeMetier.caisse),
+          onChanged: (v) {
+            etat.caisse = v;
+            onChanged();
+          },
+        ),
       ),
-    ),
   ];
 }
 
@@ -418,7 +421,6 @@ class _EntreeFormState extends ConsumerState<_EntreeForm> {
         .where((m) => m.actif || m.code == _magasin)
         .toList();
     final caisses = (ref.watch(caissesListeProvider).value ?? const <Caisse>[]).where((c) => c.actif).toList();
-    final nomFrn = fournisseurs.where((f) => f.code == _fournisseur).firstOrNull?.nom;
     final nombreGlobal = ref.watch(parametresVenteProvider).value?.nombreActif ?? false;
     final erreurs = erreursNombre(
       context,
@@ -435,13 +437,6 @@ class _EntreeFormState extends ConsumerState<_EntreeForm> {
     return DsDialog(
       titre: _edition ? l10n.entModifierTitre : l10n.entNouvelleTitre,
       iconeData: LucideIcons.scanLine,
-      description: _edition
-          ? '${widget.achat!.code} · ${nomFrn ?? ''}'
-          : widget.besoin != null
-          ? l10n.entDepuisListe(widget.besoin!.code)
-          : widget.commande != null
-          ? l10n.entDepuisCommande(widget.commande!.code)
-          : l10n.entNouvelleDescription,
       largeur: 1040,
       fermable: !_occupe,
       piedDebut: _etape > 0
@@ -480,7 +475,6 @@ class _EntreeFormState extends ConsumerState<_EntreeForm> {
         children: [
           DsStepper(
             etapes: [l10n.entEtapeBon, l10n.entEtapeProduits],
-            descriptions: [l10n.entEtapeBonDetail, l10n.entEtapeProduitsDetail],
             courante: _etape,
             onEtape: (i) => setState(() => _etape = i),
           ),
@@ -488,11 +482,12 @@ class _EntreeFormState extends ConsumerState<_EntreeForm> {
             DsGrilleFormulaire(
               children: [
                 DsSpan(child: DsSubHead(l10n.entBonReception, icone: LucideIcons.scanLine)),
-                DsFormRow(
-                  libelle: l10n.produitsColCode,
-                  largeurLibelle: _lw,
-                  child: DsTextField(valeurInitiale: widget.achat?.code ?? l10n.prdCodeAuto, actif: false),
-                ),
+                if (widget.achat != null)
+                  DsFormRow(
+                    libelle: l10n.produitsColCode,
+                    largeurLibelle: _lw,
+                    child: DsTextField(valeurInitiale: widget.achat?.code ?? l10n.prdCodeAuto, actif: false),
+                  ),
                 DsFormRow(
                   libelle: l10n.communDate,
                   obligatoire: true,
@@ -522,19 +517,20 @@ class _EntreeFormState extends ConsumerState<_EntreeForm> {
                     indice: l10n.entNumFactureIndice,
                   ),
                 ),
-                DsFormRow(
-                  libelle: l10n.stockColMagasin,
-                  obligatoire: true,
-                  largeurLibelle: _lw,
-                  aide: l10n.entMagasinAide,
-                  child: DsSelect<String>(
-                    valeur: _magasin,
-                    options: [for (final m in magasins) m.code],
-                    libelle: (c) => magasins.where((m) => m.code == c).firstOrNull?.nom ?? c,
-                    recherche: rechercheListe(context, ref, ListeMetier.magasin),
-                    onChanged: (v) => setState(() => _magasin = v ?? _magasin),
+                if (ref.watch(plusieursMagasinsProvider))
+                  DsFormRow(
+                    libelle: l10n.stockColMagasin,
+                    obligatoire: true,
+                    largeurLibelle: _lw,
+                    aide: l10n.entMagasinAide,
+                    child: DsSelect<String>(
+                      valeur: _magasin,
+                      options: [for (final m in magasins) m.code],
+                      libelle: (c) => magasins.where((m) => m.code == c).firstOrNull?.nom ?? c,
+                      recherche: rechercheListe(context, ref, ListeMetier.magasin),
+                      onChanged: (v) => setState(() => _magasin = v ?? _magasin),
+                    ),
                   ),
-                ),
                 DsFormRow(
                   libelle: l10n.entMajPrix,
                   largeurLibelle: _lw,
@@ -811,6 +807,8 @@ class _EntreeRapideFormState extends ConsumerState<_EntreeRapideForm> {
         .where((f) => (f.actif && f.code != _frnSysteme) || f.code == _fournisseur)
         .toList();
     final magasins = (ref.watch(magasinsProvider).value ?? const <Magasin>[]).where((m) => m.actif).toList();
+    // Basic et Advanced (un seul magasin) : ni magasin ni répartition, tout va au magasin principal.
+    final multiMagasin = ref.watch(licenceProvider).couvre(NiveauLicence.ultra) && magasins.length > 1;
     final stocks = ref.watch(stocksParMagasinProvider).value ?? const {};
     final fixe =
         widget.produit ?? (widget.achat != null ? produits.where((p) => p.code == _produit).firstOrNull : null);
@@ -823,12 +821,6 @@ class _EntreeRapideFormState extends ConsumerState<_EntreeRapideForm> {
     return DsDialog(
       titre: fixe != null ? l10n.entRapideTitreProduit(fixe.designation) : l10n.entRapideTitre,
       iconeData: LucideIcons.zap,
-      description: fixe != null
-          ? l10n.entRapideDescriptionProduit(
-              fixe.code,
-              formaterNombre((stocks[fixe.code] ?? const <String, double>{}).values.fold<double>(0, (a, q) => a + q)),
-            )
-          : l10n.entRapideDescription,
       largeur: 720,
       fermable: !_occupe,
       actions: [
@@ -921,26 +913,27 @@ class _EntreeRapideFormState extends ConsumerState<_EntreeRapideForm> {
               onChanged: (v) => setState(() => _fournisseur = v),
             ),
           ),
-          DsFormRow(
-            libelle: l10n.entRepartitionOption,
-            alignerDebut: true,
-            child: DsSplitAllocator(
-              total: total,
-              unite: l10n.stkPcs,
-              magasins: [
-                for (final m in magasins)
-                  DsMagasinRepartition(
-                    code: m.code,
-                    nom: m.nom,
-                    principal: m.code == widget.principal,
-                    stock: _produit == null ? null : (stocks[_produit]?[m.code] ?? 0),
-                  ),
-              ],
-              valeur: _repartition,
-              onChanged: (v) => setState(() => _repartition = v),
-              libelles: libellesRepartition(l10n),
+          if (multiMagasin)
+            DsFormRow(
+              libelle: l10n.entRepartitionOption,
+              alignerDebut: true,
+              child: DsSplitAllocator(
+                total: total,
+                unite: l10n.stkPcs,
+                magasins: [
+                  for (final m in magasins)
+                    DsMagasinRepartition(
+                      code: m.code,
+                      nom: m.nom,
+                      principal: m.code == widget.principal,
+                      stock: _produit == null ? null : (stocks[_produit]?[m.code] ?? 0),
+                    ),
+                ],
+                valeur: _repartition,
+                onChanged: (v) => setState(() => _repartition = v),
+                libelles: libellesRepartition(l10n),
+              ),
             ),
-          ),
         ],
       ),
     );
@@ -1146,14 +1139,12 @@ Future<void> annulerEntrees(BuildContext context, WidgetRef ref, List<Achat> cho
 Future<void> afficherProduitsEntree(BuildContext context, WidgetRef ref, Achat a) async {
   final l10n = AppLocalizations.of(context);
   final devise = ref.read(deviseProvider);
-  final fournisseurs = {for (final f in await ref.read(fournisseursProvider.future)) f.code: f.nom};
   if (!context.mounted) return;
   final achat = voitPrixAchat(ref);
   String da(double v) => formaterMontant(v, devise);
   return afficherListeProduits<AchatLigne>(
     context,
     code: a.code,
-    description: '${formatDateHeure.format(a.date)} · ${fournisseurs[a.fournisseurCode] ?? a.fournisseurCode}',
     lignes: a.lignes,
     cle: (l) => l.produitCode,
     colonnes: [

@@ -9,7 +9,6 @@ import '../../core/i18n/generated/app_localizations.dart';
 Future<void> afficherListeProduits<T>(
   BuildContext context, {
   required String code,
-  String? description,
   required List<T> lignes,
   required List<DsColonne<T>> colonnes,
   required Object Function(T) cle,
@@ -21,7 +20,6 @@ Future<void> afficherListeProduits<T>(
       key: const ValueKey('liste_produits'),
       titre: l10n.stkListeProduitsTitre(code),
       iconeData: LucideIcons.listOrdered,
-      description: description,
       largeur: 900,
       actions: [
         DsButton(
@@ -34,7 +32,7 @@ Future<void> afficherListeProduits<T>(
         dense: true,
         encadre: false,
         pagine: false,
-        reserveEcran: description != null ? 290 : 260,
+        reserveEcran: 260,
         hauteurFixe: true,
         afficherTotaux: true,
         cle: cle,

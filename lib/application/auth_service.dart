@@ -1,23 +1,21 @@
 import 'package:sqflite_common/sqlite_api.dart';
 
+import '../core/db/migrations/v008_shell_ds.dart';
 import '../core/securite/mot_de_passe.dart';
 import '../data/historique_repository.dart';
-import '../data/licence_repository.dart';
 import '../data/permissions_repository.dart';
 import '../data/utilisateur_repository.dart';
 import '../domain/models/session.dart';
 import '../domain/models/utilisateur.dart';
 import '../domain/permissions.dart';
+import 'licence_service.dart';
 
 enum ErreurConnexion {
   identifiantsInvalides,
   compteInactif,
   motDePasseNonDefini,
 
-  /// Le compte demo/demo n'est disponible qu'en mode démo.
-  demoIndisponible,
-
-  /// Application non activée : seul le compte demo/demo est accepté (§4.3).
+  /// Pas de licence valable sur ce poste (essai terminé, aucune licence) : voir les offres.
   nonActivee,
 }
 
@@ -51,37 +49,97 @@ class AuthService {
 
   static bool identifiantValide(String identifiant) => _identifiantValide.hasMatch(identifiant.trim());
 
-  /// Identifiant du compte de démonstration (demo / demo).
-  static const String identifiantDemo = 'demo';
-
-  static bool estIdentifiantDemo(String identifiant) => identifiant.trim().toLowerCase() == identifiantDemo;
-
-  /// Vérifie identifiant + mot de passe et construit la session avec les droits du rôle.
-  Future<Session> connecter(String identifiant, String motDePasse) async {
-    final u = await _utilisateurs.parIdentifiant(identifiant);
+  /// Vérifie identifiant + mot de passe et construit la session avec les droits du rôle. La licence est
+  /// vérifiée avant (SessionNotifier : pas de connexion sans licence valable sur ce poste).
+  /// [telephoneCompte] : le numéro du compte BENS de ce poste ; tapé à la place de l'identifiant, il
+  /// désigne l'administrateur (celui qui a créé le compte).
+  Future<Session> connecter(String identifiant, String motDePasse, {String? telephoneCompte}) async {
+    final u = await _utilisateurs.parIdentifiant(identifiant) ?? await _adminDuCompte(identifiant, telephoneCompte);
     if (u == null) throw const ConnexionException(ErreurConnexion.identifiantsInvalides);
-    final licence = await LicenceRepository(db).lire();
-    final estDemo = estIdentifiantDemo(u.identifiant) && u.systeme;
-    if (!licence.estActivee && !estDemo) throw const ConnexionException(ErreurConnexion.nonActivee);
-    if (estDemo && !licence.demo) throw const ConnexionException(ErreurConnexion.demoIndisponible);
     if (!u.actif) throw const ConnexionException(ErreurConnexion.compteInactif);
     final empreinte = await _utilisateurs.empreinte(u.code);
     if (empreinte == null) throw const ConnexionException(ErreurConnexion.motDePasseNonDefini);
     if (!MotDePasse.verifier(motDePasse, empreinte)) {
       throw const ConnexionException(ErreurConnexion.identifiantsInvalides);
     }
-    return _ouvrir(u, demo: licence.demo);
+    return _ouvrir(u);
   }
 
   /// Reprend la session mémorisée par « Rester connecté » (§4.1, `tryAutoLogin`) : `null` si le compte
-  /// n'existe plus, est inactif, ou si la licence ne l'autorise plus.
+  /// n'existe plus ou est inactif (la licence est vérifiée avant, par SessionNotifier).
   Future<Session?> reprendreSession(String code) async {
     final u = await _utilisateurs.parCode(code);
     if (u == null || !u.actif) return null;
-    final licence = await LicenceRepository(db).lire();
-    final estDemo = estIdentifiantDemo(u.identifiant) && u.systeme;
-    if (!licence.estActivee || estDemo != licence.demo) return null;
-    return _ouvrir(u, demo: licence.demo);
+    return _ouvrir(u);
+  }
+
+  /// Les comptes proposés à l'écran de connexion (comme les « comptes récents ») : actifs, avec un
+  /// mot de passe ; le dernier connecté d'abord, l'administrateur devant les autres à égalité.
+  Future<List<Utilisateur>> comptesConnexion() async {
+    final comptes = <Utilisateur>[];
+    for (final u in await _utilisateurs.tous()) {
+      if (u.actif && await _utilisateurs.empreinte(u.code) != null) comptes.add(u);
+    }
+    comptes.sort((a, b) {
+      final da = a.dernierAcces, db = b.dernierAcces;
+      if (da != db) {
+        if (da == null) return 1;
+        if (db == null) return -1;
+        return db.compareTo(da);
+      }
+      if (a.estAdmin != b.estAdmin) return a.estAdmin ? -1 : 1;
+      return a.code.compareTo(b.code);
+    });
+    return comptes;
+  }
+
+  /// Le numéro du compte BENS tapé comme identifiant : l'administrateur (`admin` s'il l'est encore,
+  /// sinon le premier administrateur actif). Null pour tout autre texte.
+  Future<Utilisateur?> _adminDuCompte(String identifiant, String? telephoneCompte) async {
+    if (telephoneCompte == null || !RegExp(r'\d{6}').hasMatch(identifiant.replaceAll(RegExp(r'\D'), ''))) {
+      return null;
+    }
+    if (LicenceService.telephoneE164(identifiant) != telephoneCompte) return null;
+    return _administrateurDuCompte();
+  }
+
+  /// L'administrateur du compte BENS : `admin` s'il l'est encore, sinon le premier administrateur actif.
+  Future<Utilisateur?> _administrateurDuCompte() async {
+    final admin = await _utilisateurs.parIdentifiant(MigrationV008ShellDs.identifiantAdmin);
+    if (admin != null && admin.estAdmin) return admin;
+    return (await _utilisateurs.tous()).where((u) => u.estAdmin && u.actif).firstOrNull;
+  }
+
+  /// Après l'inscription ou la connexion au compte BENS sur un poste neuf : l'administrateur local
+  /// prend le mot de passe du compte (et son nom) tant qu'il a encore celui d'origine (admin / admin),
+  /// puis sa session s'ouvre. Ailleurs (administrateur déjà configuré) : null, connexion habituelle.
+  Future<Session?> ouvrirAdminInitial({required String nom, required String motDePasse}) async {
+    final u = await _utilisateurs.parIdentifiant(MigrationV008ShellDs.identifiantAdmin);
+    final empreinte = u == null ? null : await _utilisateurs.empreinte(u.code);
+    if (u == null ||
+        !u.estAdmin ||
+        !u.actif ||
+        empreinte == null ||
+        !MotDePasse.verifier(MigrationV008ShellDs.motDePasseAdmin, empreinte)) {
+      return null;
+    }
+    await _utilisateurs.mettreAJour(u.code, {
+      'mot_de_passe': hachage.hacher(motDePasse),
+      if (nom.trim().isNotEmpty) 'nom': nom.trim(),
+    });
+    final mis = await _utilisateurs.parCode(u.code);
+    return _ouvrir(mis ?? u);
+  }
+
+  /// Après la réinitialisation du mot de passe du compte BENS (le code de BENS prouve que c'est le
+  /// gérant) : l'administrateur du compte prend le nouveau mot de passe, puis sa session s'ouvre.
+  /// Null sans administrateur actif.
+  Future<Session?> ouvrirAdminReinitialise(String motDePasse) async {
+    final u = await _administrateurDuCompte();
+    if (u == null || !u.actif) return null;
+    await _utilisateurs.mettreAJour(u.code, {'mot_de_passe': hachage.hacher(motDePasse)});
+    final mis = await _utilisateurs.parCode(u.code);
+    return _ouvrir(mis ?? u);
   }
 
   /// Journalise la déconnexion (§4.4).
@@ -91,7 +149,7 @@ class AuthService {
         .journaliser(utilisateurCode: code, action: 'Déconnexion', entite: 'utilisateur', entiteCode: code);
   });
 
-  Future<Session> _ouvrir(Utilisateur u, {required bool demo}) async {
+  Future<Session> _ouvrir(Utilisateur u) async {
     final maintenant = DateTime.now();
     await db.transaction((txn) async {
       await UtilisateurRepository(txn).enregistrerAcces(u.code, maintenant);
@@ -99,14 +157,14 @@ class AuthService {
       await HistoriqueRepository(txn)
           .journaliser(utilisateurCode: u.code, action: 'Connexion', entite: 'utilisateur', entiteCode: u.code);
     });
-    return construireSession(u, demo: demo);
+    return construireSession(u);
   }
 
-  Future<Session> construireSession(Utilisateur u, {required bool demo}) async {
+  Future<Session> construireSession(Utilisateur u) async {
     final perms = PermissionsRepository(db);
     final permissions = u.estAdmin ? Permission.values.toSet() : await perms.permissionsDe(u.roleCode);
     final modules = u.estAdmin ? null : await perms.modulesDe(u.roleCode);
-    return Session(utilisateur: u, permissions: permissions, modulesAutorises: modules, demo: demo);
+    return Session(utilisateur: u, permissions: permissions, modulesAutorises: modules);
   }
 
   /// Change l'identifiant de connexion (Mon compte). Le mot de passe actuel est exigé.

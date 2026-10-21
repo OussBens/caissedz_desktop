@@ -174,7 +174,6 @@ class _RetoursPageState extends ConsumerState<RetoursPage> {
 
     return PageModule(
       moduleId: 'retours',
-      sousTitre: l10n.retoursDescription,
       onglets: [l10n.retoursOngletClients, l10n.retoursOngletFournisseurs],
       comptes: [
         tous.where((r) => r.type == TypesTiers.client).length,

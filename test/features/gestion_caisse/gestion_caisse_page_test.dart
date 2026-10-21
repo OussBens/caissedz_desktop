@@ -74,7 +74,7 @@ void main() {
       }
       expect(find.text('Caisse principale'), findsWidgets);
       await clic(tester, _cle('caisse_nouvelle'));
-      expect(find.text('CS0001'), findsOneWidget, reason: 'code proposé');
+      expect(find.text('CS0001'), findsNothing, reason: 'pas de champ Code à la création');
       expect(tester.widget<DsButton>(_cle('caisse_enregistrer')).onPressed, isNull, reason: 'nom obligatoire');
       await tester.enterText(_champ('caisse_nom'), 'Caisse 2');
       await tester.enterText(_champ('caisse_solde_initial'), '3000');
@@ -86,7 +86,10 @@ void main() {
       // Ouverture depuis la carte : fond pré-rempli par le solde initial.
       final carte = _cle('carte_CS0001');
       await clic(tester, find.descendant(of: carte, matching: find.text('Ouvrir la caisse')));
-      expect(find.descendant(of: _cle('ouverture_fond'), matching: find.textContaining('3 000')), findsOneWidget);
+      expect(
+        find.descendant(of: _cle('ouverture_fond'), matching: find.textContaining(formaterNombre(3000))),
+        findsOneWidget,
+      );
       await clic(tester, _cle('ouverture_valider'));
       expect(find.descendant(of: carte, matching: find.textContaining('SES0001')), findsOneWidget);
       // Mouvement manuel depuis la carte.
@@ -103,7 +106,7 @@ void main() {
       await clic(tester, find.text('Fermer').last);
       // Désactivation bloquée : session ouverte.
       await clic(tester, find.text('CS0001'));
-      await clic(tester, find.text('Désactiver').first);
+      await clic(tester, _cle('caisses_desactiver')); // icône seule
       expect(find.textContaining('Session ouverte'), findsOneWidget);
       await tester.pump(const Duration(seconds: 5));
     });
@@ -235,6 +238,38 @@ void main() {
       final bouton = _cle('caisse_nouvelle');
       expect(bouton, findsOneWidget);
       expect(Directionality.of(tester.element(bouton)), TextDirection.rtl);
+    });
+
+    testWidgets('barre d’actions : autres, Détail, Désactiver, Modifier, Nouveau ; icônes seules', (tester) async {
+      await pumpApp(tester, routeInitiale: '/gestion-caisse', taille: _taille);
+      final barre = find.ancestor(of: _cle('caisses_modifier'), matching: find.byType(DsSelectionBar));
+      double x(Finder f) => tester.getCenter(f).dx;
+      final detail = find.descendant(of: barre, matching: find.byTooltip('Sélectionnez une seule ligne')).first;
+      expect(x(detail), lessThan(x(_cle('caisses_desactiver'))));
+      expect(x(_cle('caisses_desactiver')), lessThan(x(_cle('caisses_modifier'))));
+      expect(x(_cle('caisses_modifier')), lessThan(x(_cle('caisse_nouvelle'))));
+      for (final libelle in ['Détail', 'Désactiver', 'Modifier']) {
+        expect(
+          find.descendant(of: barre, matching: find.text(libelle)),
+          findsNothing,
+          reason: '$libelle : icône seule',
+        );
+      }
+    });
+
+    testWidgets('Basic (une seule caisse) : ni « Nouvelle caisse » ni onglet Transferts', (tester) async {
+      await pumpApp(tester, etat: EtatApp.connecteeAdminBasic, routeInitiale: '/gestion-caisse', taille: _taille);
+      expect(_cle('gc_caisses'), findsOneWidget);
+      expect(_cle('caisse_nouvelle'), findsNothing);
+      expect(find.text('Transferts'), findsNothing);
+      // Les onglets suivants gardent leur place : Clôtures Z s'ouvre toujours.
+      await clic(tester, find.text('Clôtures Z'));
+      expect(_cle('gc_clotures'), findsOneWidget);
+    });
+
+    testWidgets('Basic : la route des clôtures ouvre bien l’onglet Clôtures Z', (tester) async {
+      await pumpApp(tester, etat: EtatApp.connecteeAdminBasic, routeInitiale: '/clotures', taille: _taille);
+      expect(_cle('gc_clotures'), findsOneWidget);
     });
   });
 }

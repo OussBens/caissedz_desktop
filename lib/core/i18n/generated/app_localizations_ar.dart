@@ -1227,6 +1227,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get dsLibelle => 'التسمية';
 
   @override
+  String get dsZoomAvant => 'تكبير';
+
+  @override
+  String get dsZoomArriere => 'تصغير';
+
+  @override
+  String get dsZoomAjuster => 'الصورة كاملة';
+
+  @override
   String get dsCochezLignes => 'حدّد سطرًا أو أكثر';
 
   @override
@@ -1262,9 +1271,6 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get dsLotVerifier => 'تحقّق من التحديد قبل التأكيد.';
-
-  @override
   String dsLotBloques(String n, String motif) {
     return '$n لا يمكن معالجتها: $motif.';
   }
@@ -1289,11 +1295,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get dsColonnesTitre => 'إظهار / إخفاء الأعمدة';
-
-  @override
-  String dsColonnesVisibles(int n, int total) {
-    return '$n من $total أعمدة ظاهرة';
-  }
 
   @override
   String get dsAppliquer => 'تطبيق';
@@ -1349,6 +1350,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get dsFiltres => 'عوامل التصفية';
+
+  @override
+  String get dsChiffresCles => 'الأرقام الرئيسية';
 
   @override
   String get dsFiltrer => 'تصفية';
@@ -1668,6 +1672,32 @@ class AppLocalizationsAr extends AppLocalizations {
   String get connexionSousTitre => 'سجّل الدخول لفتح صندوقك.';
 
   @override
+  String get connexionChoisirCompte => 'اختر حسابك';
+
+  @override
+  String get connexionChoisirSousTitre => 'حسابات هذا الجهاز: اضغط على حسابك.';
+
+  @override
+  String get connexionAutreCompte => 'حساب آخر';
+
+  @override
+  String get connexionPasVous => 'لست أنت؟ غيّر الحساب';
+
+  @override
+  String get connexionVoirComptes => 'عرض حسابات هذا الجهاز';
+
+  @override
+  String connexionCompteBens(String telephone) {
+    return 'حساب BENS $telephone';
+  }
+
+  @override
+  String get connexionMotDePasseBens => 'افتراضيًا: كلمة مرور حساب BENS الخاص بك.';
+
+  @override
+  String get connexionIdentifiantOuTelephone => 'اسم المستخدم، أو هاتف حساب BENS للمسؤول';
+
+  @override
   String get connexionAfficher => 'إظهار';
 
   @override
@@ -1677,7 +1707,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get connexionResterConnecte => 'البقاء متصلًا';
 
   @override
-  String get connexionMotDePasseOublie => 'نسيت كلمة المرور؟ راجع المسؤول';
+  String get connexionMotDePasseOublie => 'نسيت كلمة المرور؟';
+
+  @override
+  String get connexionMotDePasseOublieAide => 'اطلب من المسؤول إعادة تعيينها.';
 
   @override
   String get connexionHorsLigne => 'يعمل دون اتصال · البيانات محفوظة على هذا الجهاز';
@@ -1756,25 +1789,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get activationContinuer => 'متابعة';
 
   @override
-  String get configDescription => 'أربع خطوات لإعداد المتجر. يبقى كل شيء قابلًا للتعديل في الإعدادات.';
-
-  @override
   String get configEtapeLangue => 'اللغة والعملة';
 
   @override
-  String get configEtapeLangueDetail => 'العرض';
-
-  @override
-  String get configEtapeBoutiqueDetail => 'التذكرة والبيانات';
-
-  @override
   String get configEtapePaiements => 'المدفوعات';
-
-  @override
-  String get configEtapePaiementsDetail => 'الوسائل المقبولة';
-
-  @override
-  String get configEtapeVenteDetail => 'الأسعار والتنبيهات';
 
   @override
   String get configDecimales => 'أرقام الكميات العشرية';
@@ -1847,14 +1865,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get alertesTitre => 'تنبيهات اليوم';
 
   @override
-  String alertesResume(int urgentes, int surveiller) {
-    return '$urgentes عاجلة · $surveiller للمتابعة';
-  }
-
-  @override
-  String get alertesToutTraite => 'تمت معالجة الكل';
-
-  @override
   String get alertesUrgent => 'عاجل';
 
   @override
@@ -1907,6 +1917,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get alertesRuptureLigne => 'طلب';
+
+  @override
+  String get alertesVoirStock => 'عرض المخزون';
 
   @override
   String get alertesExpire => 'منتجات منتهية الصلاحية';
@@ -2137,9 +2150,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tiersBloqueSysteme => 'عنصر نظام';
 
   @override
-  String get tiersChampsObligatoires => 'الحقول المعلمة بـ * إلزامية';
-
-  @override
   String get tiersChoisir => 'اختر…';
 
   @override
@@ -2177,16 +2187,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get tiersDerniersPaniers => 'آخر السلال';
-
-  @override
-  String tiersDescriptionClients(int n, int nb) {
-    return '$n زبون · $nb بدين جار';
-  }
-
-  @override
-  String tiersDescriptionFournisseurs(int n, int nb) {
-    return '$n مورد · $nb بدين جار';
-  }
 
   @override
   String get tiersDetail => 'التفاصيل';
@@ -2296,12 +2296,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tiersReference => 'المرجع';
 
   @override
-  String get tiersReleveClient => 'كشف حساب الزبون';
-
-  @override
-  String get tiersReleveFournisseur => 'كشف حساب المورد';
-
-  @override
   String get tiersReste => 'الباقي';
 
   @override
@@ -2341,18 +2335,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get tiersWilaya => 'الولاية';
-
-  @override
-  String get versementAideClient => 'يُخصم المبلغ من سلال الزبون الآجلة، من الأقدم إلى الأحدث.';
-
-  @override
-  String get versementAideFournisseur => 'يُخصم المبلغ من إدخالات المورد الآجلة، من الأقدم إلى الأحدث.';
-
-  @override
-  String get versementAideRetourClient => 'مبلغ يُعاد إلى الزبون (تسبيق أو فائض): خروج من الصندوق.';
-
-  @override
-  String get versementAideRetourFournisseur => 'مبلغ يرده المورد: دخول إلى الصندوق.';
 
   @override
   String get versementAucunBeneficiaire => 'لم يتم اختيار مستفيد';
@@ -2442,14 +2424,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get situationOnglet => 'الوضعية';
-
-  @override
-  String tableauBordDescription(String au, String du, int n) {
-    return 'من $du إلى $au، مقارنة بالأيام الـ $n السابقة.';
-  }
-
-  @override
-  String get situationDescription => 'تحليلات مفصلة للفترة — كل عرض قابل للتصدير بصيغة Excel وPDF.';
 
   @override
   String get tableauBordJour => 'يوم';
@@ -2763,9 +2737,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get situationCreditTotal => 'مجموع الديون';
 
   @override
-  String get ventesDescription => 'كل السلال المحصلة — تذاكر ووصولات BL / SC';
-
-  @override
   String get ventesKpiNombre => 'عدد المبيعات';
 
   @override
@@ -2918,11 +2889,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get ventesModifierTitre => 'تعديل السلة';
 
   @override
-  String ventesModifierDescription(String code) {
-    return '$code · لا يمكن تعديل الأسطر — استعمل الإرجاع.';
-  }
-
-  @override
   String get ventesClientScelle => 'زبون التذكرة المختومة: لزبون آخر، قم بإرجاع ثم بيع جديد.';
 
   @override
@@ -2961,9 +2927,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get posErreurRetourLie => 'يوجد إرجاع مرتبط بهذه السلة: الإلغاء غير ممكن.';
-
-  @override
-  String get retoursDescription => 'مرتجعات الزبائن (إعادة إلى المخزون، استرداد) ومرتجعات الموردين';
 
   @override
   String get retoursOngletClients => 'مرتجعات الزبائن';
@@ -3297,12 +3260,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get posEncSaveTitre => 'حفظ التذكرة';
 
   @override
-  String get posEncTicketDesc => 'تحقق من المبلغ المستلم ثم أكّد: تُطبع التذكرة.';
-
-  @override
-  String get posEncSaveDesc => 'تُحفظ التذكرة: يُسجَّل الباقي دينًا على الزبون.';
-
-  @override
   String get posEncTicketOk => 'تحصيل وطباعة';
 
   @override
@@ -3356,11 +3313,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get posSelTitreModif => 'تعديل الكمية والطرد';
 
   @override
-  String posSelScanne(String code) {
-    return 'منتج ممسوح · $code';
-  }
-
-  @override
   String posSelAuto(String detail, String secondes) {
     return 'إضافة تلقائية لـ $detail خلال $secondes ث · المس للتعديل';
   }
@@ -3412,9 +3364,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get posPrixTitre => 'تعديل سعر المنتج';
-
-  @override
-  String get posPrixDesc => 'مخصص للأدوار المرخصة — كلمة المرور مطلوبة.';
 
   @override
   String get posPrixAchat => 'سعر الشراء';
@@ -3488,9 +3437,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get posRechTitre => 'البحث عن منتج';
 
   @override
-  String get posRechDesc => 'صفِّ ثم حدد المنتجات لإضافتها إلى السلة.';
-
-  @override
   String get posRechAjouter => 'إضافة إلى السلة';
 
   @override
@@ -3503,9 +3449,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get posIntrouvableTitre => 'المنتج غير موجود';
-
-  @override
-  String get posIntrouvableDesc => 'لا يوجد منتج نشط يطابق هذا الرمز الشريطي.';
 
   @override
   String get posIntrouvableCreer => 'إنشاء المنتج';
@@ -3527,9 +3470,6 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get posOuvertureDesc => 'عُدّ رصيد الصندوق قبل البدء.';
-
-  @override
   String get posOuvertureSolde => 'رصيد الافتتاح';
 
   @override
@@ -3549,11 +3489,6 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String posClotureTitre(String caisse) {
     return 'إقفال $caisse';
-  }
-
-  @override
-  String posClotureDesc(String code, String heure) {
-    return 'الجلسة $code · فُتحت على $heure';
   }
 
   @override
@@ -3594,9 +3529,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get posMvtTitre => 'حركة يدوية';
 
   @override
-  String get posMvtDesc => 'إدخال أو إخراج خارج البيع: إيداع، سحب، مصاريف متنوعة.';
-
-  @override
   String get posMvtType => 'النوع';
 
   @override
@@ -3619,11 +3551,6 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String posVdjTitre(String caisse) {
     return 'إيراد الصندوق — $caisse';
-  }
-
-  @override
-  String posVdjDesc(String date) {
-    return 'مبيعات $date';
   }
 
   @override
@@ -3653,11 +3580,6 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String posRecDesc(String date) {
-    return 'الأسطر المباعة يوم $date';
-  }
-
-  @override
   String get posRecIndice => 'المنتج أو الرمز أو السلة…';
 
   @override
@@ -3668,9 +3590,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get posRecAucune => 'لا توجد أسطر مباعة';
-
-  @override
-  String get posParamDesc => 'يُطبَّق على هذا الجهاز حتى تسجيل الخروج.';
 
   @override
   String get posParamMagasin => 'المخزن';
@@ -3696,9 +3615,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get catalogueErreurNomPris => 'هذا الاسم مستخدم بالفعل.';
-
-  @override
-  String get prdDescription => 'الكتالوج والفئات والتخفيضات والحزم';
 
   @override
   String get prdOngletSousCategories => 'الفئات الفرعية';
@@ -3893,22 +3809,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get prdModeIa => 'ذكاء اصطناعي';
 
   @override
-  String get prdEtape1 => 'الصور والتعريف والأسعار';
+  String get prdEtape1 => 'المنتج والسعر';
 
   @override
-  String get prdEtape1Desc => 'الصور، الاسم، الرموز، الهامش';
+  String get prdEtape2 => 'المخزون';
 
   @override
-  String get prdEtape2 => 'المخزون والتغليف';
-
-  @override
-  String get prdEtape2Desc => 'المخزن، الحد، العلبة، الكرتون';
-
-  @override
-  String get prdEtape3 => 'المتغيرات والخيارات';
-
-  @override
-  String get prdEtape3Desc => 'المقاسات، الألوان، الأرقام التسلسلية';
+  String get prdEtape3 => 'المتغيرات';
 
   @override
   String prdEtapeObligatoire(int n) {
@@ -3949,10 +3856,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get prdScannerOuSaisir => 'امسح أو أدخل';
 
   @override
-  String get prdGenererEan => 'توليد EAN-13';
+  String get prdFournisseur => 'المورد';
 
   @override
-  String get prdFournisseur => 'المورد';
+  String get prdGenererCodeBarres => 'توليد رمز شريطي CDZ';
 
   @override
   String get prdPrix => 'الأسعار';
@@ -3972,16 +3879,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get prdStockInitial => 'المخزون الأولي';
 
   @override
-  String get prdStockAide => 'يعدل عبر المدخلات / المخرجات';
+  String prdStockViaEntree(String quantite) {
+    return 'ستدخل $quantite إلى المخزون مع إدخال الوصل.';
+  }
 
   @override
   String get prdSeuilAlerte => 'حد التنبيه';
 
   @override
   String get prdEmballages => 'التغليف';
-
-  @override
-  String get prdEmballagesAide => 'الطرود المقترحة في الصندوق (نافذة الكمية والطرد): عدد القطع في الطرد وسعره.';
 
   @override
   String get prdBoite => 'علبة';
@@ -4002,9 +3908,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get prdTailles => 'المقاسات';
 
   @override
-  String get prdTaillesAide => 'اختر المقاسات المتوفرة';
-
-  @override
   String prdTaillesN(int n) {
     return '$n مقاس(ات) محدد(ة)';
   }
@@ -4013,16 +3916,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get prdCouleurs => 'الألوان';
 
   @override
-  String get prdCouleursAide => '16 لونا · يمكن اختيار عدة ألوان';
-
-  @override
   String get prdOptions => 'الخيارات';
 
   @override
   String get prdCodesMultiples => 'رموز متعددة';
-
-  @override
-  String get prdCodesMultiplesAide => 'رموز شريطية أخرى يتعرف عليها الصندوق لهذا المنتج';
 
   @override
   String get prdAjouterCode => 'إضافة رمز';
@@ -4031,16 +3928,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get prdSuiviSerie => 'التتبع بالرقم التسلسلي';
 
   @override
-  String get prdSuiviSerieAide => 'إدخال إلزامي عند البيع';
-
-  @override
   String get prdServiceSansStock => 'خدمة (بدون مخزون)';
-
-  @override
-  String get prdServiceAide => 'تصليح، توصيل، يد عاملة';
-
-  @override
-  String get prdExpirationAide => 'تنبيه قبل انتهاء الصلاحية';
 
   @override
   String get prdNoteInterne => 'ملاحظة داخلية';
@@ -4112,9 +4000,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get prdModifierRemise => 'تعديل التخفيض';
 
   @override
-  String get prdRemiseDescription => 'يطبق التخفيض تلقائيا في الصندوق خلال فترته.';
-
-  @override
   String get prdProduitsConcernes => 'المنتجات المعنية';
 
   @override
@@ -4154,9 +4039,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get prdModifierPack => 'تعديل الحزمة';
-
-  @override
-  String get prdPackDescription => 'تباع الحزمة كسلعة واحدة وتخصم كل مكون من المخزون.';
 
   @override
   String get prdEnregistrerPack => 'حفظ الحزمة';
@@ -4291,16 +4173,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get prdImportFichier => 'الملف';
 
   @override
-  String get prdImportFichierDesc => '.xlsx';
-
-  @override
   String get prdImportColonnes => 'الأعمدة';
-
-  @override
-  String get prdImportColonnesDesc => 'المطابقة';
-
-  @override
-  String get prdImportApercuDesc => 'المراقبة';
 
   @override
   String prdImportInfos(int n, int total) {
@@ -4408,20 +4281,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get stkDesactiver => 'تعطيل';
 
   @override
-  String get stkDescriptionBesoins => 'التموين: قوائم الموردين، النفاد والمنتجات المنتهية';
-
-  @override
-  String get stkDescriptionMagasins => 'نقاط المخزون، التحويلات والارتباطات';
-
-  @override
-  String get stkDescriptionSorties => 'إخراجات المخزون خارج البيع: كسر، منتهي، ضياع، استهلاك داخلي، هبة';
-
-  @override
-  String stkDescriptionStock(int n) {
-    return 'الكميات حسب المخزن · $n مخازن نشطة';
-  }
-
-  @override
   String get stkDispoSource => 'الكمية (من)';
 
   @override
@@ -4434,11 +4293,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get stkDistribuer => 'توزيع';
-
-  @override
-  String stkDistribuerDescription(String nom, String quantite) {
-    return '$nom · $quantite قطعة للتوزيع بين المخازن';
-  }
 
   @override
   String get stkDistribuerTitre => 'توزيع المخزون';
@@ -4532,9 +4386,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get stkKpiValeurTotale => 'القيمة الإجمالية للمخزون';
 
   @override
-  String get stkListeDescription => 'الكميات المقترحة = 2 × الحد − المخزون. عدّلها قبل الإرسال للمورد.';
-
-  @override
   String stkListeTitre(String code) {
     return 'القائمة $code';
   }
@@ -4544,9 +4395,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get stkMagasin => 'المخزن';
-
-  @override
-  String get stkMagasinDescription => 'لكل مخزن مخزونه؛ ترتبط به الصناديق والمستخدمون.';
 
   @override
   String get stkMagasinDifferent => 'اختر مخزنًا مختلفًا';
@@ -4678,9 +4526,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get stkSeuilAlerte => 'حد التنبيه';
 
   @override
-  String get stkSortieDescription => 'إخراج من المخزون خارج البيع — مقيم بسعر الشراء.';
-
-  @override
   String get stkSortiePerime => 'إخراج «منتهي الصلاحية»';
 
   @override
@@ -4758,9 +4603,6 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get stkTransfertDescription => 'نقل المخزون من مخزن إلى آخر.';
-
-  @override
   String stkTransfertTitre(String code) {
     return 'التحويل $code';
   }
@@ -4817,9 +4659,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get entChoisirProduit => 'اختر منتجا';
 
   @override
-  String get entDescription => 'استلامات الموردين — مسح، قراءة الوصولات بالذكاء الاصطناعي، إدخال سريع';
-
-  @override
   String get entEntite => 'إدخال';
 
   @override
@@ -4847,13 +4686,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get entEtapeBon => 'الوصل والمورد';
 
   @override
-  String get entEtapeBonDetail => 'الرأسية، الدفع';
-
-  @override
   String get entEtapeProduits => 'المنتجات المستلمة';
-
-  @override
-  String get entEtapeProduitsDetail => 'المسح والكميات';
 
   @override
   String get entFichier => 'الملف';
@@ -4886,40 +4719,22 @@ class AppLocalizationsAr extends AppLocalizations {
   String get entIaDepuisTelephone => 'من الهاتف';
 
   @override
-  String get entIaDescription => 'صورة أو PDF لفاتورة المورد: تُكتشف الأسطر ثم تُطابق مع الكتالوج.';
-
-  @override
   String get entIaDetecte => 'مكتشف في الوصل';
 
   @override
   String get entIaEtapeFournisseur => 'المورد والدفع';
 
   @override
-  String get entIaEtapeFournisseurDetail => 'تأكيد';
-
-  @override
   String get entIaEtapeLignes => 'الأسطر المكتشفة';
 
   @override
-  String get entIaEtapeLignesDetail => 'التحقق والمطابقة';
-
-  @override
   String get entIaEtapePhoto => 'صورة الوصل';
-
-  @override
-  String get entIaEtapePhotoDetail => 'صورة أو PDF';
-
-  @override
-  String get entIaFormats => 'JPG أو PNG أو PDF';
 
   @override
   String get entIaJoindre => 'إرفاق وصل';
 
   @override
   String get entIaLecture => 'جارٍ قراءة الوصل…';
-
-  @override
-  String get entIaLectureDetail => 'اكتشاف الأسطر والكميات والأسعار';
 
   @override
   String get entIaLignes => 'الأسطر';
@@ -5003,9 +4818,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get entNbVersements => 'عدد الدفعات';
 
   @override
-  String get entNouvelleDescription => 'امسح المنتجات المستلمة: كل مسح يضيف 1 إلى الكمية.';
-
-  @override
   String get entNouvelleTitre => 'إدخال جديد · Smart Scan';
 
   @override
@@ -5018,7 +4830,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get entOffreMessage => 'أرغب في زيادة حصة Smart Scan.';
 
   @override
-  String get entOngletIa => 'وضع الذكاء الاصطناعي';
+  String get entOngletEntree => 'إدخال';
 
   @override
   String get entPaiement => 'الدفع';
@@ -5034,9 +4846,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get entQteRecue => 'الكمية المستلمة';
-
-  @override
-  String get entRapideDescription => 'استلام منتج واحد دون وصل مورد مفصل.';
 
   @override
   String get entRapideTitre => 'إدخال سريع';
@@ -5109,12 +4918,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String entCreerProduit(String nom) {
-    return '+ إنشاء « $nom »';
-  }
-
-  @override
-  String entDepuisListe(String code) {
-    return 'استلام قائمة الاحتياجات $code';
+    return 'إنشاء المنتج « $nom »';
   }
 
   @override
@@ -5138,11 +4942,6 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String entRapideDescriptionProduit(String code, String stock) {
-    return '$code · المخزون الحالي $stock قطعة — استلام دون وصل مفصل.';
-  }
-
-  @override
   String entRapideTitreProduit(String nom) {
     return 'إدخال سريع · $nom';
   }
@@ -5162,9 +4961,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get statutErreur => 'خطأ';
-
-  @override
-  String get gcDescription => 'الصناديق، التحويلات، إقفالات Z، الحركات والجلسات';
 
   @override
   String get gcOngletCaisses => 'الصناديق';
@@ -5320,9 +5116,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get gcOuvrirSession => 'فتح جلسة';
 
   @override
-  String get gcFormDescription => 'لكل صندوق (درج، خزنة) رصيده وجلساته.';
-
-  @override
   String get gcFormNomIndice => 'مثال: الصندوق 3';
 
   @override
@@ -5360,9 +5153,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get gcTrfTitre => 'تحويل بين الصناديق';
-
-  @override
-  String get gcTrfDescription => 'مثال: إيداع مداخيل اليوم في الخزنة في نهاية اليوم.';
 
   @override
   String gcTrfDisponible(String montant) {
@@ -5405,9 +5195,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get gcErreurPeriodeCloturee => 'هذا التاريخ ضمن فترة مقفلة.';
-
-  @override
-  String get gcZDescription => 'تقرير ثابت للفترة: بعد إنشائه لا يمكن تعديله أو حذفه.';
 
   @override
   String gcZPeriodeValeur(String debut) {
@@ -5499,9 +5286,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get gcFiscalTitre => 'تصدير للمراقبة الجبائية';
 
   @override
-  String get gcFiscalDescription => 'أرشيف إقفالات Z وتذاكر الفترة مع سلسلة بصمات متحقق منها.';
-
-  @override
   String get gcFiscalZip => 'أرشيف كامل';
 
   @override
@@ -5544,16 +5328,6 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String gcSesMvtOuverte(String caisse, String ouverture) {
-    return '$caisse · فُتحت $ouverture';
-  }
-
-  @override
-  String gcSesMvtCloturee(String caisse, String cloture, String ouverture) {
-    return '$caisse · فُتحت $ouverture · أُقفلت $cloture';
-  }
-
-  @override
   String get gcEntrees => 'المداخيل';
 
   @override
@@ -5579,9 +5353,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get permVoirStockTousMagasins => 'عرض مخزون كل المخازن';
-
-  @override
-  String get usrDescription => 'الحسابات والأدوار والصلاحيات';
 
   @override
   String get usrOngletUtilisateurs => 'المستخدمون';
@@ -5657,9 +5428,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get usrModifierTitre => 'تعديل المستخدم';
-
-  @override
-  String get usrFormDescription => 'يحدد الدور الوحدات الظاهرة؛ والصندوق المرتبط يقفل شاشة الصندوق.';
 
   @override
   String get usrSectionCompte => 'الحساب';
@@ -5837,14 +5605,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get usrModifierRole => 'تعديل الدور';
 
   @override
-  String get usrRoleDescription => 'المعلومات، الوحدات المتاحة، ثم العمليات الحساسة.';
-
-  @override
-  String usrRoleConcernes(String code, int n) {
-    return '$code · $n مستخدم(ين) معنيين';
-  }
-
-  @override
   String get usrPrecedent => 'السابق';
 
   @override
@@ -5857,21 +5617,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get usrEtapeInfos => 'المعلومات';
 
   @override
-  String get usrEtapeInfosDesc => 'الاسم، الحالة';
-
-  @override
   String get usrEtapePermissions => 'الصلاحيات';
 
   @override
-  String usrEtapeModules(int n) {
-    return '$n وحدات';
-  }
-
-  @override
   String get usrEtapeSpeciales => 'صلاحيات خاصة';
-
-  @override
-  String get usrEtapeSpecialesDesc => 'عمليات حساسة';
 
   @override
   String get usrNomRole => 'اسم الدور';
@@ -5950,9 +5699,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get usrAucunRole => 'لا توجد أدوار.';
-
-  @override
-  String get zkDescription => 'حساب سنوي على المخزون والسيولة والديون المستحقة';
 
   @override
   String get zkEntite => 'حسابات';
@@ -6056,9 +5802,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get zkModifierTitre => 'تعديل الزكاة';
-
-  @override
-  String get zkFormDescription => 'المبالغ معبأة مسبقًا من المخزون والصناديق والديون؛ عدّلها عند الحاجة.';
 
   @override
   String get zkSectionPeriode => 'الفترة (الحول)';
@@ -6184,9 +5927,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get zkAucun => 'لا يوجد حساب زكاة.';
-
-  @override
-  String get hiDescription => 'سجل جميع العمليات · الوصول حسب الدور';
 
   @override
   String get hiEntite => 'عمليات';
@@ -6343,9 +6083,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get hiActExport => 'تصدير';
-
-  @override
-  String get pmDescription => 'تفضيلات المحطة والمتجر والتطبيق.';
 
   @override
   String get pmNonEnregistre => 'تعديلات غير محفوظة';
@@ -6656,13 +6393,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get pmPalierAvance => 'المستوى المتقدم';
 
   @override
-  String get pmPalierAvanceDesc => 'متاجر وصناديق متعددة';
+  String get pmPalierAvanceDesc => 'متجر واحد، 5 أمناء صندوق: عروض الأسعار، الطلبيات، طلبيات الموردين والاحتياجات.';
 
   @override
   String get pmPalierBasic => 'المستوى الأساسي';
 
   @override
-  String get pmPalierBasicDesc => 'متجر واحد، جميع وظائف البيع';
+  String get pmPalierBasicDesc => 'متجر واحد، 5 أمناء صندوق: الصندوق، المبيعات، المخزون، العملاء والموردون.';
 
   @override
   String get pmPalierDemo => 'الوضع التجريبي';
@@ -6674,7 +6411,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get pmPalierAucun => 'التطبيق غير مفعل';
 
   @override
-  String get pmPalierAucunDesc => 'أدخل مفتاحا لتفعيل CaisseDZ';
+  String get pmPalierAucunDesc => 'اختر باقة، سجّل الدخول إلى حسابك أو الصق مفتاحًا.';
 
   @override
   String get pmActive => 'مفعلة';
@@ -6694,7 +6431,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get pmGererLicence => 'إدارة الترخيص';
 
   @override
-  String get pmGererLicenceDesc => 'إدخال مفتاح جديد أو الانتقال إلى المستوى المتقدم.';
+  String get pmGererLicenceDesc => 'لصق مفتاح من BENS (حل احتياطي دون اتصال).';
 
   @override
   String get posPrixSousAchatInterdit => 'سعر أقل من سعر الشراء: ممنوع في الإعدادات.';
@@ -6723,9 +6460,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get posApercuTicket => 'معاينة التذكرة';
-
-  @override
-  String get posApercuTicketDesc => 'تحقق من التخطيط قبل إرساله إلى الطابعة.';
 
   @override
   String get posImprimer => 'طباعة';
@@ -6840,9 +6574,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get posMontantModifier => 'تعديل المبلغ';
-
-  @override
-  String get posMontantModifierDesc => 'المبلغ الجديد لسطر « بيع بالمبلغ »؛ 0 يحذف السطر.';
 
   @override
   String get posMontantChamp => 'المبلغ';
@@ -6986,12 +6717,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get retoursNouveauFournisseur => 'مرتجع مورد جديد';
 
   @override
-  String get retoursFormDescriptionClient => 'إرجاع منتج مباع: يعاد إلى المخزون أو يُسترد أو يُسجل كرصيد.';
-
-  @override
-  String get retoursFormDescriptionFournisseur => 'إرجاع منتج مستلم: يُخرج من المخزون ويُخصم من دين المورد.';
-
-  @override
   String get prdPorteeProduitAide => 'تُطبق تلقائيًا على المنتجات المختارة خلال فترتها.';
 
   @override
@@ -7010,15 +6735,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get auditModifiePar => 'عدّله';
-
-  @override
-  String get prdDescRapide => 'الأساسي في صفحة واحدة.';
-
-  @override
-  String get prdDescDetaille => 'في 3 خطوات: التعريف، المخزون، المتغيرات.';
-
-  @override
-  String get prdDescIa => 'بطاقة مسترجعة بالرمز الشريطي.';
 
   @override
   String get prdFiltreQuantite => 'الكمية';
@@ -7276,9 +6992,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get moduleCommandesFournisseurs => 'طلبيات الموردين';
 
   @override
-  String get docDescriptionModule => 'عروض الأسعار، الفواتير الشكلية، طلبيات الزبائن ووصولات التسليم';
-
-  @override
   String get docOngletDevis => 'عروض الأسعار';
 
   @override
@@ -7400,9 +7113,6 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get docFormDescription => 'الزبون، الصلاحية والمنتجات بسعر البيع بالرسوم (ر.ق.م مثبتة)';
-
-  @override
   String get docChoisirClient => 'اختر زبونا';
 
   @override
@@ -7418,9 +7128,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String docLivrerTitre(String code) {
     return 'تسليم الطلبية $code';
   }
-
-  @override
-  String get docLivrerDescription => 'أدخل الكميات المسلمة: يتم إنشاء البيع ووصل التسليم معا؛ والباقي دين على الزبون.';
 
   @override
   String get docMontantPaye => 'المبلغ المدفوع';
@@ -7491,16 +7198,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get docErreurVenteInconnue => 'البيع غير موجود';
 
   @override
-  String get cmdfDescriptionModule => 'طلبيات الموردين المستلمة في دخول واحد أو أكثر';
-
-  @override
   String get cmdfNouvelle => 'طلبية مورد جديدة';
 
   @override
   String get cmdfModifier => 'تعديل طلبية المورد';
-
-  @override
-  String get cmdfFormDescription => 'المورد، مخزن الاستلام، التسليم المتوقع والمنتجات بسعر الشراء';
 
   @override
   String cmdfTitre(String code) {
@@ -7556,11 +7257,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get cmdfErreurDejaSoldee => 'الطلبية مسواة مسبقا';
-
-  @override
-  String entDepuisCommande(String code) {
-    return 'استلام الطلبية $code';
-  }
 
   @override
   String get apercuEnregistrerPdf => 'حفظ بصيغة PDF';
@@ -7662,4 +7358,653 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get retoursMontantComplet => 'المبلغ كاملاً';
+
+  @override
+  String get offresTitre => 'اختر باقتك';
+
+  @override
+  String offresSousTitre(int jours) {
+    return 'كل باقة تبدأ بتجربة مجانية لمدة $jours يومًا. بعدها دفعة واحدة: الترخيص لك مدى الحياة، دون اشتراك.';
+  }
+
+  @override
+  String offresEssaiGratuit(int jours) {
+    return 'تجربة مجانية $jours يومًا';
+  }
+
+  @override
+  String offresPrix(String prix) {
+    return '$prix دج';
+  }
+
+  @override
+  String get offresPaiementUnique => 'دفعة واحدة، مدى الحياة';
+
+  @override
+  String offresMagasins(int n) {
+    String _temp0 = intl.Intl.pluralLogic(n, locale: localeName, other: '$n متاجر', one: 'متجر واحد');
+    return '$_temp0';
+  }
+
+  @override
+  String offresScans(int n, int mois) {
+    return '$n مسحًا ذكيًا مشمولًا ($mois أشهر)';
+  }
+
+  @override
+  String get offresAtoutStock => 'المنتجات، المخزون، الإدخالات والإخراجات والجرد';
+
+  @override
+  String get offresAtoutPdv => 'نقطة البيع: المبيعات، المسح، التذاكر، سلال متعددة';
+
+  @override
+  String get offresAtoutVentes => 'المبيعات، الفواتير، الإشعارات الدائنة والمرتجعات';
+
+  @override
+  String get offresAtoutGestionCaisse => 'تسيير الصندوق، الإقفالات والخزنة';
+
+  @override
+  String get offresAtoutRapports => 'لوحة القيادة، الوضعية، الزكاة والسجل';
+
+  @override
+  String get offresAtoutCommandesClients => 'طلبيات العملاء ووصولات التسليم';
+
+  @override
+  String get offresAtoutBesoins => 'قوائم الاحتياجات';
+
+  @override
+  String get offresAtoutTransferts => 'التحويلات بين المتاجر';
+
+  @override
+  String offresToutPlus(String formule) {
+    return 'كل ما في $formule، بالإضافة إلى:';
+  }
+
+  @override
+  String offresCaisses(int n) {
+    String _temp0 = intl.Intl.pluralLogic(n, locale: localeName, other: '$n صناديق', one: 'صندوق واحد');
+    return '$_temp0';
+  }
+
+  @override
+  String get offresAtoutTiers => 'العملاء، الموردون، الدفعات والديون';
+
+  @override
+  String get offresAtoutDevis => 'عروض الأسعار والفواتير الشكلية';
+
+  @override
+  String get offresAtoutAchats => 'طلبيات الموردين (استلام جزئي)';
+
+  @override
+  String get offresAtoutMultiMagasin => 'تعدد المتاجر (مخزون لكل متجر)';
+
+  @override
+  String get offresIdealBasic => 'متجر صغير، صندوق واحد';
+
+  @override
+  String get offresIdealAvance => 'تجارة تُصدر عروض أسعار وتطلب سلعًا';
+
+  @override
+  String get offresIdealUltra => 'عدة متاجر، تسيير كامل';
+
+  @override
+  String get offresTout => 'كل الوحدات';
+
+  @override
+  String offresEssayer(int jours) {
+    return 'جرّب $jours يومًا';
+  }
+
+  @override
+  String offresChoisir(String formule) {
+    return 'اختر $formule';
+  }
+
+  @override
+  String get offresDejaCompte => 'لديك حساب بالفعل؟';
+
+  @override
+  String get offresSeConnecter => 'تسجيل الدخول';
+
+  @override
+  String get offresJaiUneCle => 'لدي مفتاح تفعيل';
+
+  @override
+  String offresEssaiTermine(String date) {
+    return 'انتهت تجربتك في $date. اختر باقة: تتواصل معك BENS للدفع، ثم يُفتح التطبيق تلقائيًا. بياناتك محفوظة.';
+  }
+
+  @override
+  String get offresSansFormule => 'لا توجد باقة نشطة على هذا الجهاز. اختر باقة: تتواصل معك BENS للدفع.';
+
+  @override
+  String get offresLicenceRefuseeInvalide =>
+      'أرسلت BENS ترخيصك، لكن هذا الإصدار من CaisseDZ يرفضه (مفتاح مخصص لتطبيق أو إصدار آخر). ثبّت آخر إصدار من CaisseDZ ثم اضغط تحديث؛ وإلا تواصل مع BENS.';
+
+  @override
+  String get offresLicenceRefuseeAutrePoste =>
+      'أرسلت BENS ترخيصًا مخصصًا لجهاز آخر. اضغط تغيير الحساب وسجّل الدخول من جديد على هذا الجهاز؛ وإلا تواصل مع BENS.';
+
+  @override
+  String get offresLicenceRefuseeDate =>
+      'تم إرجاع تاريخ هذا الجهاز إلى الوراء: الترخيص الذي أرسلته BENS مرفوض. صحّح تاريخ ووقت الجهاز ثم اضغط تحديث.';
+
+  @override
+  String get offresDemandeTitre => 'تم إرسال الطلب';
+
+  @override
+  String offresDemandeDetail(String telephone, String formule) {
+    return 'ستتصل بك BENS Digital Solutions على $telephone بخصوص دفع باقة $formule. يمكنك أيضًا مراسلتنا على واتساب.';
+  }
+
+  @override
+  String get offresWhatsApp => 'راسلنا على واتساب';
+
+  @override
+  String offresWhatsAppMessage(String formule, String telephone) {
+    return 'مرحبًا، أود شراء CaisseDZ Desktop $formule (الحساب $telephone).';
+  }
+
+  @override
+  String get offresHorsLigne => 'غير متصل: أسعار تقريبية. صِل الجهاز بالإنترنت لإنشاء حسابك.';
+
+  @override
+  String get offresSeDeconnecter => 'تغيير الحساب';
+
+  @override
+  String get compteCreerTitre => 'أنشئ حسابك';
+
+  @override
+  String compteCreerSousTitre(String formule, int jours) {
+    return 'باقة $formule · تجربة مجانية $jours يومًا';
+  }
+
+  @override
+  String get compteChangerFormule => 'تغيير الباقة';
+
+  @override
+  String compteFormule(String formule) {
+    return 'باقة $formule';
+  }
+
+  @override
+  String get offresSelectionnee => 'الباقة المختارة';
+
+  @override
+  String get offresSelectionner => 'اختر هذه الباقة';
+
+  @override
+  String get compteNom => 'الاسم واللقب';
+
+  @override
+  String get compteCommerce => 'اسم المحل';
+
+  @override
+  String get compteFacultatif => 'اختياري';
+
+  @override
+  String get compteTelephone => 'رقم الهاتف';
+
+  @override
+  String get compteMotDePasse => 'كلمة المرور';
+
+  @override
+  String get compteBensMotDePasseAide =>
+      '8 أحرف على الأقل. على جهاز جديد تصبح أيضًا كلمة مرور المسؤول (اسم المستخدم admin).';
+
+  @override
+  String get compteBensConfirmer => 'تأكيد كلمة المرور';
+
+  @override
+  String get compteCreerBouton => 'أنشئ حسابي وابدأ التجربة';
+
+  @override
+  String get compteEssaiDejaUtilise =>
+      'تم إنشاء الحساب. التجربة المجانية استُخدمت من قبل على هذا الجهاز أو بهذا الرقم: اختر باقة للمتابعة.';
+
+  @override
+  String get compteConnexionTitre => 'تسجيل الدخول إلى حسابك';
+
+  @override
+  String get compteConnexionSousTitre =>
+      'حساب BENS لمحلّك: باقتك وترخيصك. تسجيل الدخول هنا ينقل الترخيص إلى هذا الجهاز.';
+
+  @override
+  String get compteConnexionBouton => 'تسجيل الدخول';
+
+  @override
+  String get compteMotDePasseOublie => 'نسيت كلمة المرور؟';
+
+  @override
+  String get comptePasEncore => 'ليس لديك حساب بعد؟';
+
+  @override
+  String get compteVoirFormules => 'عرض الباقات';
+
+  @override
+  String get compteRetour => 'رجوع';
+
+  @override
+  String get compteErrTelephone => 'رقم غير صالح: 10 أرقام تبدأ بـ 05 أو 06 أو 07.';
+
+  @override
+  String get compteErrNom => 'أدخل اسمك (حرفان على الأقل).';
+
+  @override
+  String get compteErrMotDePasse => 'كلمة المرور 8 أحرف على الأقل.';
+
+  @override
+  String get compteErrConfirmation => 'كلمتا المرور غير متطابقتين.';
+
+  @override
+  String get compteErrNumeroPris => 'لهذا الرقم حساب بالفعل: سجّل الدخول.';
+
+  @override
+  String get compteErrIdentifiants => 'الرقم أو كلمة المرور غير صحيحة.';
+
+  @override
+  String get compteErrReseau => 'تعذّر الاتصال بـ BENS. تحقق من الإنترنت وأعد المحاولة.';
+
+  @override
+  String get compteErrTropDEssais => 'محاولات كثيرة. أعد المحاولة بعد 15 دقيقة.';
+
+  @override
+  String get compteErrAucunCompte => 'لا يوجد حساب بهذا الرقم.';
+
+  @override
+  String get compteErrCode => 'رمز غير صحيح أو منتهي الصلاحية. اطلب رمزًا جديدًا من BENS.';
+
+  @override
+  String get compteErrServeur => 'لم يتمكن خادم BENS من الرد. أعد المحاولة لاحقًا.';
+
+  @override
+  String get oubliTitre => 'نسيت كلمة المرور';
+
+  @override
+  String get oubliIntro =>
+      'احصل على رمز استرجاع وأرسله إلى BENS على واتساب. بعد التحقق، ترسل لك BENS رمز إعادة تعيين صالحًا 48 ساعة.';
+
+  @override
+  String get oubliDemander => 'احصل على رمز الاسترجاع';
+
+  @override
+  String get oubliVotreCode => 'رمز الاسترجاع الخاص بك';
+
+  @override
+  String get oubliCopier => 'نسخ';
+
+  @override
+  String get oubliCopie => 'تم النسخ';
+
+  @override
+  String get oubliEnvoyer => 'أرسل على واتساب';
+
+  @override
+  String oubliMessage(String telephone, String code) {
+    return 'مرحبًا، نسيت كلمة مرور حسابي في CaisseDZ ($telephone). رمز الاسترجاع: $code';
+  }
+
+  @override
+  String get oubliRecu => 'استلمت رمزي';
+
+  @override
+  String get oubliCodeReset => 'رمز إعادة التعيين';
+
+  @override
+  String get oubliNouveau => 'كلمة المرور الجديدة';
+
+  @override
+  String get oubliValider => 'غيّر كلمة المرور';
+
+  @override
+  String get activationColler => 'لصق';
+
+  @override
+  String get activationWhatsApp => 'أرسل على واتساب';
+
+  @override
+  String get activationCleSignee => 'أرسل رمز هذا الجهاز إلى BENS، ثم الصق هنا المفتاح الذي تستلمه (132 حرفًا).';
+
+  @override
+  String get activationErrVide => 'الصق المفتاح الذي استلمته.';
+
+  @override
+  String get activationErrInvalide => 'مفتاح غير صالح. تأكد من نسخه بالكامل.';
+
+  @override
+  String get activationErrAutrePoste => 'هذا المفتاح لجهاز آخر. أرسل لنا الرمز أعلاه.';
+
+  @override
+  String activationErrExpiree(String date) {
+    return 'انتهت صلاحية الترخيص في $date. تواصل معنا لتجديده.';
+  }
+
+  @override
+  String get activationErrDate => 'يبدو أن تاريخ الجهاز غير صحيح. صحّح التاريخ والوقت.';
+
+  @override
+  String get activationPoste => 'رمز هذا الجهاز';
+
+  @override
+  String get activationRetourOffres => 'العودة إلى الباقات';
+
+  @override
+  String get licenceUltra => 'ألترا';
+
+  @override
+  String licenceEssai(String palier) {
+    return 'تجربة $palier';
+  }
+
+  @override
+  String shellBandeauEssai(String palier, int jours) {
+    String _temp0 = intl.Intl.pluralLogic(jours, locale: localeName, other: '$jours أيام متبقية', one: 'آخر يوم');
+    return 'تجربة $palier: $_temp0';
+  }
+
+  @override
+  String get shellVoirFormules => 'اختر باقة';
+
+  @override
+  String get pmPalierUltra => 'باقة ألترا';
+
+  @override
+  String get pmPalierUltraDesc => 'حتى 15 متجرًا و15 أمين صندوق، التحويلات، كل الوحدات.';
+
+  @override
+  String pmPalierEssai(String palier) {
+    return 'تجربة $palier';
+  }
+
+  @override
+  String pmPalierEssaiDesc(String date) {
+    return 'تجربة مجانية حتى $date، ثم للقراءة فقط حتى شراء باقة.';
+  }
+
+  @override
+  String pmValableJusquAu(String date) {
+    return 'صالح حتى $date';
+  }
+
+  @override
+  String get pmLicencePermanente => 'ترخيص دائم';
+
+  @override
+  String get pmCodePoste => 'رمز هذا الجهاز';
+
+  @override
+  String get pmCompteBens => 'حساب BENS';
+
+  @override
+  String get pmCompteBensDesc => 'حساب محلّك: منه يأتي ترخيص هذا الجهاز.';
+
+  @override
+  String get pmAucunCompte => 'لا يوجد حساب BENS على هذا الجهاز';
+
+  @override
+  String get pmDeconnecterCompte => 'فصل هذا الجهاز';
+
+  @override
+  String get pmDeconnecterCompteConfirme =>
+      'سيُزال الترخيص القادم من الحساب من هذا الجهاز: يلزم تسجيل الدخول من جديد لاستعماله. بياناتك تبقى على الجهاز.';
+
+  @override
+  String get pmVoirFormules => 'الباقات والترقيات';
+
+  @override
+  String shellReservePalier(String palier) {
+    return 'مخصص لباقة $palier';
+  }
+
+  @override
+  String dsGatePalierTitre(String palier) {
+    return 'متاح مع باقة $palier';
+  }
+
+  @override
+  String dsGatePalierAction(String palier) {
+    return 'الترقية إلى $palier';
+  }
+
+  @override
+  String get lectureSeuleTitre => 'للقراءة فقط';
+
+  @override
+  String get lectureSeuleCourt => 'للقراءة فقط (انتهت التجربة)';
+
+  @override
+  String get lectureSeuleDetail =>
+      'انتهت التجربة: هذه الوحدة تنتظر شراء باقة. تبقى المبيعات والمنتجات والمخزون والتقارير متاحة للاطلاع، وبياناتك محفوظة.';
+
+  @override
+  String lectureSeuleBandeau(String date) {
+    return 'انتهت التجربة في $date: للقراءة فقط. بياناتك محفوظة؛ اختر باقة لمواصلة البيع.';
+  }
+
+  @override
+  String get limiteCaissiers => 'باقتك لا تسمح بأمين صندوق إضافي. انتقل إلى الباقة الأعلى (الإعدادات › الترخيص).';
+
+  @override
+  String get limiteMagasins => 'باقتك لا تسمح بمتجر إضافي: تعدد المتاجر متوفر في باقة ألترا.';
+
+  @override
+  String get limiteCaisses => 'باقتك لا تسمح بصندوق إضافي. انتقل إلى الباقة الأعلى (الإعدادات › الترخيص).';
+
+  @override
+  String get limiteTransfertsCaisse =>
+      'باقتك تضم صندوقًا واحدًا: التحويلات بين الصناديق متوفرة في باقتي المتقدم وألترا.';
+
+  @override
+  String get smartScanErreurLicence =>
+      'لا يتعرّف Smart Scan على ترخيص هذا الجهاز. تحقق من باقتك (الإعدادات › الترخيص).';
+
+  @override
+  String get smartScanPacksTitre => 'شراء باقة Smart Scan';
+
+  @override
+  String smartScanPackLigne(String nom, int scans, String prix) {
+    return '$nom · $scans مسحًا · $prix';
+  }
+
+  @override
+  String get smartScanPackCompte => 'سجّل دخول هذا الجهاز إلى حسابك في BENS لشراء الباقات (الإعدادات › الترخيص).';
+
+  @override
+  String smartScanExpiration(int scans, String date) {
+    String _temp0 = intl.Intl.pluralLogic(
+      scans,
+      locale: localeName,
+      other: '$scans مسحات ذكية تنتهي',
+      one: 'مسح ذكي واحد ينتهي',
+    );
+    return '$_temp0 في $date: استعملها أو أضف باقة.';
+  }
+
+  @override
+  String get permUtiliserMobile => 'تطبيق الهاتف (CaisseDZ Scan)';
+
+  @override
+  String get mobileBouton => 'تطبيق الهاتف';
+
+  @override
+  String get mobileTitre => 'تطبيق الهاتف CaisseDZ Scan';
+
+  @override
+  String get mobileEtape1 => 'ثبّت CaisseDZ Scan.';
+
+  @override
+  String get mobileEtape2 => 'اتصل بنفس شبكة Wi-Fi.';
+
+  @override
+  String get mobileEtape3 => 'امسح رمز QR هذا.';
+
+  @override
+  String get mobileEtape4 => 'الهاتف جاهز.';
+
+  @override
+  String get mobileAucunReseau => 'لم يتم العثور على شبكة محلية: اربط هذا الحاسوب بشبكة Wi-Fi أو بشبكة المحل.';
+
+  @override
+  String mobileErreurDemarrage(String detail) {
+    return 'تعذّر تشغيل خدمة الهاتف: $detail';
+  }
+
+  @override
+  String mobileQrExpire(String heure) {
+    return 'الرمز صالح حتى $heure';
+  }
+
+  @override
+  String get mobileNouveauQr => 'رمز QR جديد';
+
+  @override
+  String get mobileActiver => 'تفعيل تطبيق الهاتف';
+
+  @override
+  String mobileQrDe(String nom) {
+    return 'رمز QR الخاص بـ $nom';
+  }
+
+  @override
+  String get mobileDesactiver => 'إيقاف';
+
+  @override
+  String mobileAppareils(int nombre) {
+    return 'الهواتف المقترنة ($nombre)';
+  }
+
+  @override
+  String mobileMesAppareils(int nombre) {
+    return 'هواتفي ($nombre)';
+  }
+
+  @override
+  String get mobileAucunAppareil => 'لا يوجد هاتف مقترن حاليا.';
+
+  @override
+  String mobileAppaireLe(String date) {
+    return 'اقترن في $date';
+  }
+
+  @override
+  String mobileDernierAcces(String date) {
+    return 'آخر دخول $date';
+  }
+
+  @override
+  String get mobileConnecte => 'متصل';
+
+  @override
+  String get mobileFactureRecueTitre => 'فاتورة مستلمة من الهاتف';
+
+  @override
+  String mobileFactureRecueMessage(String nom, String bon) {
+    return 'أرسل $nom صورة فاتورة ($bon).';
+  }
+
+  @override
+  String get mobileOuvrirSmartScan => 'فتح Smart Scan';
+
+  @override
+  String get mobileRevoquer => 'إلغاء الاقتران';
+
+  @override
+  String mobileRevoquerTitre(String nom) {
+    return 'إلغاء اقتران « $nom »؟';
+  }
+
+  @override
+  String get mobileRevoquerMessage => 'لن يتمكن هذا الهاتف من الاتصال بهذا الجهاز إلا بعد مسح رمز QR جديد.';
+
+  @override
+  String get catalogueRayonsTitre => 'اختر أقسام متجرك';
+
+  @override
+  String get catalogueRayonsSousTitre =>
+      'حسب نشاطك، حمّل المنتجات الأكثر طلبًا في كل قسم: الرمز الشريطي والاسم والصورة، دون سعر ولا مخزون. يمكنك إضافة المزيد لاحقًا من «المنتجات».';
+
+  @override
+  String catalogueRayonsNbProduits(String nombre) {
+    return '$nombre منتج';
+  }
+
+  @override
+  String get catalogueRayonsBientot => 'قريبًا';
+
+  @override
+  String get catalogueRayonsDejaTelecharge => 'تم تحميله';
+
+  @override
+  String get catalogueRayonsToutSelectionner => 'تحديد الكل';
+
+  @override
+  String get catalogueRayonsToutDeselectionner => 'إلغاء تحديد الكل';
+
+  @override
+  String catalogueRayonsSelection(int rayons, String produits) {
+    String _temp0 = intl.Intl.pluralLogic(
+      rayons,
+      locale: localeName,
+      other: '$rayons أقسام · $produits منتج',
+      one: 'قسم واحد · $produits منتج',
+      zero: 'لم يتم اختيار أي قسم',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get catalogueRayonsPlusTard => 'لاحقًا';
+
+  @override
+  String get catalogueRayonsAppliquer => 'تطبيق';
+
+  @override
+  String get catalogueRayonsChargement => 'جارٍ تحميل الأقسام…';
+
+  @override
+  String get catalogueRayonsHorsLigne => 'تعذّر الوصول إلى كتالوج BENS. تحقق من اتصال الإنترنت ثم أعد المحاولة.';
+
+  @override
+  String get catalogueRayonsReessayer => 'إعادة المحاولة';
+
+  @override
+  String catalogueRayonsTelechargement(String rayon) {
+    return 'جارٍ التحميل: $rayon…';
+  }
+
+  @override
+  String catalogueRayonsProgres(String recus, String attendus) {
+    return 'تم استلام $recus / $attendus منتج';
+  }
+
+  @override
+  String get catalogueRayonsEchec => 'فشل التحميل: لم تتم إضافة أي شيء. تحقق من اتصال الإنترنت ثم أعد المحاولة.';
+
+  @override
+  String get catalogueRayonsResultatTitre => 'تم تحميل المنتجات';
+
+  @override
+  String catalogueRayonsResultatMessage(String telecharges, String pourcentage) {
+    return 'تمت إضافة $telecharges منتج إلى كتالوجك: $pourcentage % من منتجات الأقسام المختارة.';
+  }
+
+  @override
+  String catalogueRayonsDejaPresents(String nombre) {
+    return '$nombre منتج كان موجودًا مسبقًا في كتالوجك (نفس الرمز الشريطي): بقي كما هو.';
+  }
+
+  @override
+  String get catalogueRayonsSansPrix =>
+      'هذه المنتجات بدون سعر ولا مخزون: أدخل السعر في بطاقة المنتج أو عند أول إدخال للمخزون.';
+
+  @override
+  String catalogueRayonsLigne(String telecharges, String disponibles, String pourcentage) {
+    return '$telecharges / $disponibles · $pourcentage %';
+  }
+
+  @override
+  String get catalogueRayonsContinuer => 'متابعة';
+
+  @override
+  String get catalogueRayonsBouton => 'كتالوج BENS';
 }

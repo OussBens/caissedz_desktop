@@ -10,7 +10,10 @@ enum Permission {
   voirStockTousMagasins('voirStockTousMagasins'),
 
   /// Vendre à crédit au-delà du plafond de crédit du client (audit M7).
-  depasserPlafondCredit('depasserPlafondCredit');
+  depasserPlafondCredit('depasserPlafondCredit'),
+
+  /// Se connecter depuis l'application mobile CaisseDZ Scan (téléphone appairé au poste).
+  utiliserMobile('utiliserMobile');
 
   const Permission(this.code);
   final String code;
@@ -27,15 +30,43 @@ class Roles {
   static const String magasinier = 'ROL0002';
 }
 
-/// Niveaux de licence (valeur stockée FR du référentiel).
+/// Paliers de licence (Desktop — Plans & Pricing). Le palier signé dans la licence BENS est
+/// l'index : 0 Basic, 1 Advanced, 2 Ultra (les paliers du produit `caissedz-desktop`, dans cet ordre).
+/// L'essai de 14 jours est le palier choisi à l'inscription, jusqu'à sa date de fin.
 enum NiveauLicence {
-  basic('Basic'),
-  avance('Avancé');
+  basic('Basic', 'DSK-BASIC', magasins: 1, caisses: 1, caissiers: 5),
+  avance('Avancé', 'DSK-ADV', magasins: 1, caisses: 5, caissiers: 5),
+  ultra('Ultra', 'DSK-ULTRA', magasins: 15, caisses: 15, caissiers: 15);
 
-  const NiveauLicence(this.stocke);
+  const NiveauLicence(
+    this.stocke,
+    this.offre, {
+    required this.magasins,
+    required this.caisses,
+    required this.caissiers,
+  });
+
   final String stocke;
 
+  /// Code de l'offre bensdsRev qui le vend.
+  final String offre;
+
+  /// Magasins, caisses (points de vente actifs, coffre non compté) et comptes caissiers du palier
+  /// (l'essai a ceux du palier choisi). Desktop — Plans & Pricing : Basic 1 / 1, Advanced 1 / 5,
+  /// Ultra 15 / 15 (magasins / caisses).
+  final int magasins;
+  final int caisses;
+  final int caissiers;
+
+  /// Transferts entre caisses : seulement avec plusieurs caisses (pas en Basic, une seule caisse).
+  bool get transfertsCaisse => caisses > 1;
+
   static NiveauLicence? parValeur(String? v) => values.where((n) => n.stocke == v).firstOrNull;
+
+  /// Le palier d'une licence signée (son numéro), ou null s'il est inconnu.
+  static NiveauLicence? parNumero(int? n) => n != null && n >= 0 && n < values.length ? values[n] : null;
+
+  static NiveauLicence? parOffre(String? code) => values.where((n) => n.offre == code).firstOrNull;
 
   bool couvre(NiveauLicence requis) => index >= requis.index;
 }

@@ -125,9 +125,6 @@ Future<void> afficherProduitsPanier(
       key: const ValueKey('ventes_liste_produits'),
       titre: l10n.ventesListeProduitsTitre(p.code),
       iconeData: LucideIcons.listOrdered,
-      description:
-          '${formatDateHeure.format(vente.date)} · ${nomClientPanier(l10n, vente.clientCode, nomsClients)} · '
-          '${l10n.ventesArticles} : ${vente.lignes.length}',
       largeur: 900,
       actions: [
         DsButton(
@@ -343,7 +340,6 @@ class _ModifPanierState extends ConsumerState<_ModifPanier> {
     return DsDialog(
       titre: l10n.ventesModifierTitre,
       iconeData: LucideIcons.pencil,
-      description: l10n.ventesModifierDescription(v.code),
       largeur: 980,
       actions: [
         DsButton(

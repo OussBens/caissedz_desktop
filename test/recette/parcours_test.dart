@@ -56,13 +56,18 @@ void main() {
   });
 
   group('Recette — licence', () {
-    testWidgets('Basic : modules Avancé verrouillés (LicenceGate), modules Basic ouverts', (tester) async {
+    testWidgets('Basic : modules Avancé et Ultra verrouillés (LicenceGate), modules Basic ouverts', (tester) async {
       for (final m in modules) {
         await pumpApp(tester, etat: EtatApp.connecteeAdminBasic, routeInitiale: m.route, taille: taille);
         expect(tester.takeException(), isNull, reason: m.id);
         expect(
           find.text('Disponible avec le palier Avancé'),
           m.niveauRequis == NiveauLicence.avance ? findsOneWidget : findsNothing,
+          reason: m.id,
+        );
+        expect(
+          find.text('Disponible avec le palier Ultra'),
+          m.niveauRequis == NiveauLicence.ultra ? findsOneWidget : findsNothing,
           reason: m.id,
         );
       }

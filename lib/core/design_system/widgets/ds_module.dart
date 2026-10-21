@@ -78,6 +78,7 @@ class _DsFilterPanelState extends State<DsFilterPanel> {
                 MouseRegion(
                   cursor: SystemMouseCursors.click,
                   child: GestureDetector(
+                    key: const ValueKey('panneau_filtres'),
                     behavior: HitTestBehavior.opaque,
                     onTap: basculer,
                     child: Row(
@@ -426,6 +427,7 @@ class DsSelectionBar extends StatelessWidget {
     this.actions = const [],
     this.onEffacer,
     this.leading,
+    this.avant,
     this.trailing,
     this.petit = false,
   });
@@ -434,6 +436,9 @@ class DsSelectionBar extends StatelessWidget {
   final List<DsActionSelection> actions;
   final VoidCallback? onEffacer;
   final Widget? leading;
+
+  /// Boutons placés avant les actions de sélection (autres actions : export, vue, bouton secondaire).
+  final Widget? avant;
   final Widget? trailing;
   final bool petit;
 
@@ -483,6 +488,7 @@ class DsSelectionBar extends StatelessWidget {
                     ],
                   ),
                 ),
+              ?avant,
               for (final a in actions)
                 Builder(
                   builder: (context) {

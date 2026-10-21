@@ -72,7 +72,6 @@ class _StockPageState extends ConsumerState<StockPage> {
     final mouvements = ref.watch(mouvementsProvider).value ?? const <MouvementStock>[];
     return PageModule(
       moduleId: 'stock',
-      sousTitre: l10n.stkDescriptionStock(consultables.length),
       onglets: [l10n.stockTitre, l10n.stkOngletMouvements],
       comptes: [produits.length, mouvements.length],
       ongletCourant: _onglet,
@@ -92,7 +91,7 @@ class _StockPageState extends ConsumerState<StockPage> {
     };
     final remises = {for (final r in ref.watch(remisesProvider).value ?? const <Remise>[]) r.code: r.designation};
     final licence = ref.watch(licenceProvider);
-    final avance = licence.couvre(NiveauLicence.avance);
+    final multiMagasin = licence.couvre(NiveauLicence.ultra);
     final colonnesMagasins = _magasin == null ? consultables : consultables.where((m) => m.code == _magasin).toList();
     final toutes = [
       for (final p in produits)
@@ -262,7 +261,6 @@ class _StockPageState extends ConsumerState<StockPage> {
       cle: (l) => l.produit.code,
       afficherTotaux: true,
       permissions: permissionsSession(ref),
-      filtresOuverts: true,
       kpis: [
         DsStatCard(
           libelle: l10n.stkQuantiteTotale,
@@ -295,18 +293,19 @@ class _StockPageState extends ConsumerState<StockPage> {
         _marque = null;
       }),
       filtres: [
-        DsFormRow(
-          libelle: l10n.stockColMagasin,
-          largeurLibelle: 80,
-          child: DsSelect<String?>(
-            cle: const ValueKey('stock_filtre_magasin'),
-            valeur: _magasin,
-            options: [null, for (final m in consultables) m.code],
-            libelle: (c) => c == null ? l10n.retoursTous : consultables.firstWhere((m) => m.code == c).nom,
-            recherche: rechercheListe(context, ref, ListeMetier.magasin),
-            onChanged: (v) => setState(() => _magasin = v),
+        if (ref.watch(plusieursMagasinsProvider))
+          DsFormRow(
+            libelle: l10n.stockColMagasin,
+            largeurLibelle: 80,
+            child: DsSelect<String?>(
+              cle: const ValueKey('stock_filtre_magasin'),
+              valeur: _magasin,
+              options: [null, for (final m in consultables) m.code],
+              libelle: (c) => c == null ? l10n.retoursTous : consultables.firstWhere((m) => m.code == c).nom,
+              recherche: rechercheListe(context, ref, ListeMetier.magasin),
+              onChanged: (v) => setState(() => _magasin = v),
+            ),
           ),
-        ),
         DsFormRow(
           libelle: l10n.produitsColCategorie,
           largeurLibelle: 80,
@@ -372,7 +371,7 @@ class _StockPageState extends ConsumerState<StockPage> {
           detail: true,
           onPressed: (choix, _) => afficherDetailStock(context, ref, choix.first.produit),
         ),
-        if (avance)
+        if (multiMagasin)
           DsActionModule(
             cle: const ValueKey('stock_distribuer'),
             libelle: l10n.stkDistribuer,
@@ -474,7 +473,6 @@ class _StockPageState extends ConsumerState<StockPage> {
       cle: (m) => m.id ?? m.hashCode,
       permissions: permissionsSession(ref),
       messageVide: l10n.stockAucunMouvement,
-      filtresOuverts: true,
       periode: _periode,
       onPeriode: (p) => setState(() => _periode = p),
       colonnesFiltres: 4,
@@ -519,17 +517,18 @@ class _StockPageState extends ConsumerState<StockPage> {
             onChanged: (v) => setState(() => _type = v),
           ),
         ),
-        DsFormRow(
-          libelle: l10n.stockColMagasin,
-          largeurLibelle: 90,
-          child: DsSelect<String?>(
-            valeur: _magasinMvt,
-            options: [null, for (final m in magasins) m.code],
-            libelle: (c) => c == null ? l10n.retoursTous : (noms[c] ?? c),
-            recherche: rechercheListe(context, ref, ListeMetier.magasin),
-            onChanged: (v) => setState(() => _magasinMvt = v),
+        if (ref.watch(plusieursMagasinsProvider))
+          DsFormRow(
+            libelle: l10n.stockColMagasin,
+            largeurLibelle: 90,
+            child: DsSelect<String?>(
+              valeur: _magasinMvt,
+              options: [null, for (final m in magasins) m.code],
+              libelle: (c) => c == null ? l10n.retoursTous : (noms[c] ?? c),
+              recherche: rechercheListe(context, ref, ListeMetier.magasin),
+              onChanged: (v) => setState(() => _magasinMvt = v),
+            ),
           ),
-        ),
         DsFormRow(
           libelle: l10n.stockColUtilisateur,
           largeurLibelle: 90,

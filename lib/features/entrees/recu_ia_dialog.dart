@@ -1,17 +1,20 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-import '../../application/catalogue_service.dart';
+import '../../app/demarrage_providers.dart';
 import '../../application/smart_scan_service.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
+import '../../core/licence/compte_bens_api.dart';
 import '../../domain/models/achat.dart';
 import '../../domain/models/caisse.dart';
+import '../../domain/models/licence.dart';
 import '../../domain/models/produit.dart';
 import '../../domain/models/stock.dart';
 import '../../domain/models/tiers.dart';
@@ -19,9 +22,10 @@ import '../caisse/caisse_dialogs.dart';
 import '../commun/doc_form.dart';
 import '../commun/selecteurs.dart';
 import '../commun/statuts.dart';
+import '../compte_bens/ecran_compte.dart' show messageErreurCompte;
 import '../gestion_caisse/gestion_caisse_providers.dart';
 import '../historique/historique_providers.dart';
-import '../produits/produit_dialogs.dart';
+import '../produits/produit_form_dialog.dart';
 import '../produits/produits_providers.dart';
 import '../stock/stock_providers.dart';
 import '../tiers/tiers_providers.dart';
@@ -29,14 +33,25 @@ import 'entree_dialogs.dart';
 import 'entrees_providers.dart';
 
 const double _lw = 112;
-const String _creer = '__creer__';
 
 /// Ligne détectée en cours de rapprochement (étape 2 du Reçu IA).
 class _LigneIa {
-  _LigneIa(this.id, this.lu, {this.produit, required this.quantite, required this.prix, this.confiance})
-    : prixVente = produit?.prixVente ?? 0;
+  _LigneIa(
+    this.id,
+    this.lu, {
+    this.produit,
+    required this.quantite,
+    required this.prix,
+    this.confiance,
+    this.codeBarres,
+    this.indexBon,
+  }) : prixVente = produit?.prixVente ?? 0;
   final int id;
+
+  /// Rang de la ligne lue dans le bon (null : ligne ajoutée à la main).
+  final int? indexBon;
   final String lu;
+  final String? codeBarres;
   Produit? produit;
   double quantite;
   double prix;
@@ -57,7 +72,7 @@ double similarite(String a, String b) {
   return 2 * x.intersection(y).length / (x.length + y.length);
 }
 
-/// `RecuIADialog` (1040 px, 3 étapes) : photo du bon → lignes détectées et rapprochées → fournisseur & paiement.
+/// `RecuIADialog` (1248 px, 3 étapes) : photo du bon → lignes détectées et rapprochées → fournisseur & paiement.
 /// Un bon reçu (file Mode IA) s'ouvre directement à l'étape 2 avec ses lignes détectées.
 Future<void> afficherRecuIA(BuildContext context, WidgetRef ref, {BonReception? bon}) async {
   if (!await exigerSessionCaisse(context, ref)) return;
@@ -125,7 +140,7 @@ class _RecuIADialogState extends ConsumerState<RecuIADialog> {
     final produits = (ref.read(produitsProvider).value ?? const <Produit>[]).where((p) => p.actif).toList();
     final fournisseurs = ref.read(fournisseursProvider).value ?? const <Fournisseur>[];
     _lignes = [
-      for (final l in detectees)
+      for (final (i, l) in detectees.indexed)
         _LigneIa(
           _id++,
           l.designation,
@@ -139,6 +154,8 @@ class _RecuIADialogState extends ConsumerState<RecuIADialog> {
           quantite: l.quantite,
           prix: l.prixAchat,
           confiance: l.confiance,
+          codeBarres: l.codeBarres,
+          indexBon: i,
         ),
     ];
     _fournisseurDetecte = fournisseur;
@@ -220,48 +237,34 @@ class _RecuIADialogState extends ConsumerState<RecuIADialog> {
     }
   }
 
-  Future<void> _rapprocher(_LigneIa l, String? choix) async {
+  void _rapprocher(_LigneIa l, String? choix) {
     if (choix == null) return;
-    if (choix != _creer) {
-      final p = (ref.read(produitsProvider).value ?? const <Produit>[]).where((p) => p.code == choix).firstOrNull;
-      setState(() {
-        l.produit = p;
-        l.prixVente = p?.prixVente ?? 0;
-      });
-      return;
-    }
-    final l10n = AppLocalizations.of(context);
-    try {
-      final p = await ref
-          .read(catalogueServiceProvider)
-          .creerProduit(
-            Produit(
-              code: '',
-              designation: l.lu,
-              categorieCode: 'CATE0000',
-              sousCategorieCode: 'SC0000',
-              prixAchat: l.prix,
-              prixVente: 0,
-            ),
-            margeDefautPct: 30,
-          );
-      rafraichirCatalogue(ref);
-      if (!mounted) return;
-      setState(() {
-        l.produit = p;
-        l.prixVente = p.prixVente;
-      });
-    } on CatalogueException catch (e) {
-      if (!mounted) return;
-      unawaited(
-        afficherResultat(
-          context,
-          type: DsResultatType.erreur,
-          titre: l10n.entCreerProduit(l.lu),
-          message: messageErreurCatalogue(l10n, e.erreur),
-        ),
-      );
-    }
+    final p = (ref.read(produitsProvider).value ?? const <Produit>[]).where((p) => p.code == choix).firstOrNull;
+    setState(() {
+      l.produit = p;
+      l.prixVente = p?.prixVente ?? 0;
+    });
+  }
+
+  /// Produit absent du catalogue : le formulaire s'ouvre avec la désignation lue, le code-barres, le fournisseur
+  /// du bon et le prix d'achat ; le produit créé est choisi pour la ligne. Le stock initial reste à 0 : la
+  /// quantité du bon entre en stock avec l'entrée elle-même (le formulaire le dit).
+  Future<void> _creerProduit(_LigneIa l) async {
+    final p = await afficherFormulaireProduit(
+      context,
+      propose: ProduitPropose(
+        designation: l.lu,
+        codeBarres: l.codeBarres,
+        fournisseurCode: _fournisseur,
+        prixAchat: l.prix,
+        quantiteEntree: l.quantite,
+      ),
+    );
+    if (p == null || !mounted) return;
+    setState(() {
+      l.produit = p;
+      l.prixVente = p.prixVente;
+    });
   }
 
   Future<void> _ajouter() async {
@@ -306,6 +309,10 @@ class _RecuIADialogState extends ConsumerState<RecuIADialog> {
             date: _date,
             source: SourcesAchat.ia,
             bonCode: _bon?.code,
+            lignesBon: {
+              for (final l in _lignes)
+                if (l.indexBon != null) l.indexBon!: l.produit!.code,
+            },
           );
     });
     if (!mounted) return;
@@ -337,8 +344,7 @@ class _RecuIADialogState extends ConsumerState<RecuIADialog> {
     return DsDialog(
       titre: l10n.entIaTitre,
       iconeData: LucideIcons.sparkles,
-      description: l10n.entIaDescription,
-      largeur: 1040,
+      largeur: 1248,
       fermable: !_occupe && !_analyse,
       piedDebut: _etape > 0
           ? DsButton(
@@ -385,7 +391,6 @@ class _RecuIADialogState extends ConsumerState<RecuIADialog> {
         children: [
           DsStepper(
             etapes: [l10n.entIaEtapePhoto, l10n.entIaEtapeLignes, l10n.entIaEtapeFournisseur],
-            descriptions: [l10n.entIaEtapePhotoDetail, l10n.entIaEtapeLignesDetail, l10n.entIaEtapeFournisseurDetail],
             courante: _etape,
             onEtape: (i) => setState(() => _etape = i),
           ),
@@ -424,23 +429,27 @@ class _RecuIADialogState extends ConsumerState<RecuIADialog> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   spacing: 10,
                   children: [
-                    if (_analyse)
+                    if (_analyse) ...[
                       SizedBox.square(
                         dimension: 30,
                         child: CircularProgressIndicator(strokeWidth: 2.5, color: c.iconActive),
-                      )
-                    else
+                      ),
+                      Text(
+                        l10n.entIaLecture,
+                        style: t.body.copyWith(fontWeight: FontWeight.w600, color: c.textPrimary),
+                        textAlign: TextAlign.center,
+                      ),
+                    ] else if (_fichier != null)
+                      // Aperçu de la photo choisie (un PDF garde son icône).
+                      _ApercuFacture(key: ValueKey('ia_apercu_${_fichier!.name}'), fichier: _fichier!)
+                    else ...[
                       Icon(LucideIcons.fileImage, size: 30, color: c.iconActive),
-                    Text(
-                      _analyse ? l10n.entIaLecture : (_fichier?.name ?? l10n.entIaAucunFichier),
-                      style: t.body.copyWith(fontWeight: FontWeight.w600, color: c.textPrimary),
-                      textAlign: TextAlign.center,
-                    ),
-                    Text(
-                      _analyse ? l10n.entIaLectureDetail : l10n.entIaFormats,
-                      style: t.bodySm.copyWith(color: c.textSecondary),
-                      textAlign: TextAlign.center,
-                    ),
+                      Text(
+                        l10n.entIaAucunFichier,
+                        style: t.body.copyWith(fontWeight: FontWeight.w600, color: c.textPrimary),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
                     if (!_analyse)
                       Row(
                         mainAxisSize: MainAxisSize.min,
@@ -551,17 +560,30 @@ class _RecuIADialogState extends ConsumerState<RecuIADialog> {
               ..sort((a, b) => similarite(b.designation, l.lu).compareTo(similarite(a.designation, l.lu)));
             return ConstrainedBox(
               constraints: const BoxConstraints(minWidth: 200),
-              child: DsSelect<String>(
-                cle: ValueKey('ia_rapprocher_${l.id}'),
-                valeur: null,
-                taille: DsTailles.controleSm,
-                placeholder: l10n.entIaRapprocher,
-                options: [for (final p in tries) p.code, _creer],
-                libelle: (code) => code == _creer
-                    ? l10n.entCreerProduit(l.lu)
-                    : produits.where((p) => p.code == code).firstOrNull?.designation ?? code,
-                recherche: rechercheListe(context, ref, ListeMetier.produit),
-                onChanged: (v) => _rapprocher(l, v),
+              child: Row(
+                spacing: DsSpacing.s1,
+                children: [
+                  Expanded(
+                    child: DsSelect<String>(
+                      cle: ValueKey('ia_rapprocher_${l.id}'),
+                      valeur: null,
+                      taille: DsTailles.controleSm,
+                      placeholder: l10n.entIaRapprocher,
+                      options: [for (final p in tries) p.code],
+                      libelle: (code) => produits.where((p) => p.code == code).firstOrNull?.designation ?? code,
+                      recherche: rechercheListe(context, ref, ListeMetier.produit),
+                      onChanged: (v) => _rapprocher(l, v),
+                    ),
+                  ),
+                  DsIconButton(
+                    key: ValueKey('ia_creer_produit_${l.id}'),
+                    icone: LucideIcons.packagePlus,
+                    tooltip: l10n.entCreerProduit(l.lu),
+                    taille: DsTailles.controleSm,
+                    contour: true,
+                    onPressed: () => unawaited(_creerProduit(l)),
+                  ),
+                ],
               ),
             );
           },
@@ -651,18 +673,19 @@ class _RecuIADialogState extends ConsumerState<RecuIADialog> {
           largeurLibelle: _lw,
           child: DsDateField(valeur: _date, onChanged: (d) => setState(() => _date = d)),
         ),
-        DsFormRow(
-          libelle: l10n.stockColMagasin,
-          obligatoire: true,
-          largeurLibelle: _lw,
-          child: DsSelect<String>(
-            valeur: _magasin,
-            options: [for (final m in magasins) m.code],
-            libelle: (c) => magasins.where((m) => m.code == c).firstOrNull?.nom ?? c,
-            recherche: rechercheListe(context, ref, ListeMetier.magasin),
-            onChanged: (v) => setState(() => _magasin = v ?? _magasin),
+        if (ref.watch(plusieursMagasinsProvider))
+          DsFormRow(
+            libelle: l10n.stockColMagasin,
+            obligatoire: true,
+            largeurLibelle: _lw,
+            child: DsSelect<String>(
+              valeur: _magasin,
+              options: [for (final m in magasins) m.code],
+              libelle: (c) => magasins.where((m) => m.code == c).firstOrNull?.nom ?? c,
+              recherche: rechercheListe(context, ref, ListeMetier.magasin),
+              onChanged: (v) => setState(() => _magasin = v ?? _magasin),
+            ),
           ),
-        ),
         ...lignesPaiement(
           context,
           etat: _paiement,
@@ -677,86 +700,117 @@ class _RecuIADialogState extends ConsumerState<RecuIADialog> {
   }
 }
 
-/// Demande d'offre Smart Scan (quota atteint).
+/// Aperçu de la facture choisie à l'étape 1 du Reçu IA : l'image elle-même (lue une fois), une icône pour un PDF
+/// ou un fichier illisible.
+class _ApercuFacture extends StatefulWidget {
+  const _ApercuFacture({super.key, required this.fichier});
+  final XFile fichier;
+
+  @override
+  State<_ApercuFacture> createState() => _ApercuFactureState();
+}
+
+class _ApercuFactureState extends State<_ApercuFacture> {
+  late final Future<Uint8List> _octets = widget.fichier.readAsBytes();
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.ds.colors;
+    final icone = Icon(LucideIcons.fileText, size: 40, color: c.iconActive);
+    if (widget.fichier.name.toLowerCase().endsWith('.pdf')) return icone;
+    return FutureBuilder<Uint8List>(
+      future: _octets,
+      builder: (context, s) => s.data == null
+          ? const SizedBox(height: 260)
+          : DsImageZoom(image: MemoryImage(s.data!), hauteur: 260, erreur: icone),
+    );
+  }
+}
+
+/// Plus de Smart Scans : un pack à demander à BENS (le compte BENS du poste), qui rappelle pour le
+/// paiement ; les scans arrivent ensuite au check-in. Packs : Petit, Boutique, Grossiste (12 mois).
 Future<void> afficherDemandeOffre(BuildContext context, WidgetRef ref) async {
   final l10n = AppLocalizations.of(context);
-  final email = TextEditingController();
-  final message = TextEditingController(text: l10n.entOffreMessage);
-  final ok = await afficherDialog<bool>(
+  final licence = ref.read(licenceProvider);
+  if (licence.compte == null) {
+    await afficherResultat(
+      context,
+      type: DsResultatType.info,
+      titre: l10n.smartScanPacksTitre,
+      message: l10n.smartScanPackCompte,
+    );
+    return;
+  }
+  final offres = await ref.read(offresBensProvider.future);
+  final packs = [
+    for (final o in offres.offres)
+      if (o.niveau == null && o.scans != null && o.requiert.contains('app')) o,
+  ];
+  if (!context.mounted) return;
+  final choisi = await afficherDialog<OffreBens>(
     context,
     builder: (ctx) => DsDialog(
-      titre: l10n.smartScanDemandeOffre,
-      iconeData: LucideIcons.mail,
+      titre: l10n.smartScanPacksTitre,
+      iconeData: LucideIcons.scanLine,
       largeur: 480,
       actions: [
         DsButton(
           libelle: l10n.communAnnuler,
           variante: DsButtonVariante.secondaire,
-          onPressed: () => Navigator.of(ctx).pop(false),
-        ),
-        DsButton(
-          key: const ValueKey('offre_envoyer'),
-          libelle: l10n.smartScanDemandeOffre,
-          icone: LucideIcons.send,
-          onPressed: () => Navigator.of(ctx).pop(true),
+          onPressed: () => Navigator.of(ctx).pop(),
         ),
       ],
       contenu: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        spacing: 12,
+        spacing: 8,
         children: [
-          DsFormRow(
-            libelle: l10n.smartScanEmail,
-            obligatoire: true,
-            largeurLibelle: 100,
-            child: DsTextField(
-              key: const ValueKey('offre_email'),
-              controller: email,
-              autofocus: true,
-              typeClavier: TextInputType.emailAddress,
+          for (final p in packs)
+            DsButton(
+              key: ValueKey('pack_${p.code}'),
+              libelle: l10n.smartScanPackLigne(
+                p.nom,
+                p.scans!,
+                p.prixDzd == null ? '' : l10n.offresPrix(formaterNombre(p.prixDzd!.toDouble())),
+              ),
+              icone: LucideIcons.package,
+              variante: p.code == 'DSK-SSP-700' ? DsButtonVariante.primaire : DsButtonVariante.secondaire,
+              pleineLargeur: true,
+              onPressed: () => Navigator.of(ctx).pop(p),
             ),
-          ),
-          DsFormRow(
-            libelle: l10n.smartScanMessage,
-            largeurLibelle: 100,
-            alignerDebut: true,
-            child: DsTextField(controller: message, multiligne: true, lignes: 3),
-          ),
         ],
       ),
     ),
   );
-  final e = email.text.trim();
-  final m = message.text.trim();
-  if (ok != true || !context.mounted) return;
+  if (choisi == null || !context.mounted) return;
   try {
-    await ref.read(smartScanServiceProvider).demanderOffre(email: e, message: m);
+    await ref.read(licenceServiceProvider).demanderOffre(choisi.code);
     if (!context.mounted) return;
-    afficherToast(
+    await afficherResultat(
       context,
-      titre: l10n.smartScanDemandeOffre,
-      description: l10n.smartScanOffreEnvoyee,
-      ton: DsToastTon.succes,
+      type: DsResultatType.succes,
+      titre: l10n.offresDemandeTitre,
+      message: l10n.offresDemandeDetail(licence.compte!.telephone, choisi.nom),
     );
-  } on SmartScanException catch (x) {
+  } on CompteBensException catch (x) {
     if (!context.mounted) return;
     unawaited(
       afficherResultat(
         context,
         type: DsResultatType.erreur,
-        titre: l10n.smartScanDemandeOffre,
-        message: messageErreurSmartScan(l10n, x),
+        titre: l10n.smartScanPacksTitre,
+        message: messageErreurCompte(l10n, x),
       ),
     );
   }
 }
 
-/// Aperçu d'un bon de réception : image (si disponible), fournisseur détecté, lignes lues, entrée liée.
+/// Aperçu d'un bon de réception : image zoomable à gauche (si disponible), lignes lues à droite, entrée liée.
 Future<void> afficherBon(BuildContext context, WidgetRef ref, BonReception b) async {
   final l10n = AppLocalizations.of(context);
   final devise = ref.read(deviseProvider);
   final utilisateurs = await ref.read(nomsUtilisateursProvider.future);
+  final produits = {for (final p in await ref.read(produitsProvider.future)) p.code: p.designation};
   if (!context.mounted) return;
   final chemin = b.chemin;
   final image =
@@ -764,7 +818,7 @@ Future<void> afficherBon(BuildContext context, WidgetRef ref, BonReception b) as
   return afficherDetailEntite(
     context,
     DsEntityDetailDialog(
-      largeur: 900,
+      largeur: 1320,
       icone: LucideIcons.image,
       titre: '${b.code} · ${b.fichier}',
       description: '${formatDateHeure.format(b.date)} · ${b.fournisseurDetecte ?? '—'}',
@@ -778,16 +832,15 @@ Future<void> afficherBon(BuildContext context, WidgetRef ref, BonReception b) as
           DsSectionDetail(
             titre: l10n.entIaApercu,
             icone: LucideIcons.image,
-            contenu: ClipRRect(
-              borderRadius: BorderRadius.circular(DsRadius.md),
-              child: Image.file(File(chemin), height: 320, fit: BoxFit.contain),
-            ),
+            flex: 5,
+            contenu: DsImageZoom(key: const ValueKey('bon_apercu'), image: FileImage(File(chemin)), hauteur: 480),
           ),
         if (b.lignes.isNotEmpty)
           DsSectionDetail(
             titre: l10n.entIaLignesLues,
             icone: LucideIcons.scanText,
             nbLignes: b.lignes.length,
+            flex: 7,
             tableau: DsDataTable<LigneDetectee>(
               dense: true,
               encadre: false,
@@ -797,6 +850,12 @@ Future<void> afficherBon(BuildContext context, WidgetRef ref, BonReception b) as
               lignes: b.lignes,
               colonnes: [
                 DsColonne(id: 'lu', libelle: l10n.entIaLu, valeur: (l) => l.designation, fort: true, flex: 3),
+                DsColonne(
+                  id: 'produit',
+                  libelle: l10n.entIaProduitCatalogue,
+                  valeur: (l) => produits[l.produitCode] ?? l.produitCode ?? '',
+                  flex: 2,
+                ),
                 DsColonne(
                   id: 'cb',
                   libelle: l10n.produitsColCodeBarres,
@@ -816,6 +875,14 @@ Future<void> afficherBon(BuildContext context, WidgetRef ref, BonReception b) as
                   numerique: true,
                   valeur: (l) => l.prixAchat,
                   cellule: (_, l) => Text(formaterMontant(l.prixAchat, devise)),
+                ),
+                DsColonne(
+                  id: 'statut',
+                  libelle: l10n.achatColStatut,
+                  valeur: (l) => l.traitee ? 1 : 0,
+                  cellule: (_, l) => l.traitee
+                      ? BadgeStatut('traite', key: ValueKey('bon_ligne_traitee_${b.lignes.indexOf(l)}'), petit: true)
+                      : const SizedBox.shrink(),
                 ),
               ],
             ),

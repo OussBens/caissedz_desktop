@@ -872,3 +872,220 @@ workflows et calculs » du projet.
   Net → Situation, Dette → Fournisseurs, Crédit → Clients) et de même hauteur ; les légendes sous les deux premiers
   chiffres sont supprimées (l'intervalle précédent passe dans l'info-bulle).
 - ✅ Barre supérieure : la recherche globale devient une icône (Ctrl K), raccourcis (favoris) limités à 5.
+
+## Formules, compte BENS et licences signées ✅ (2026-10-19)
+
+Desktop — Plans & Pricing (Trial / Basic / Advanced / Ultra) et le compte BENS du gérant. Remplace les
+hypothèses 1, 4 et 5 du lot 1 (clé SHA-256, répartition Basic/Avancé, mode démo).
+
+- **Premier écran : les formules** (`features/offres/offres_page.dart`) : Basic, Advanced, Ultra, chacune
+  commençant par 14 jours d'essai gratuit (prix et offres de bens_ds `GET /api/app/caissedz-desktop/offers`,
+  hors ligne les paliers connus). Choisir une formule → **créer le compte** (nom, commerce, téléphone, mot de
+  passe) : l'essai du palier choisi commence (une fois par numéro et par poste, côté serveur). « Se
+  connecter » pour un compte existant ; « Mot de passe oublié » : un code de récupération à envoyer à BENS sur
+  WhatsApp, puis le code de réinitialisation reçu (`features/compte_bens/`). « J'ai une clé » : la clé signée
+  collée (secours hors ligne).
+- **Licence BENS signée** (`packages/bens_license`, copie de bens_ds) : liée au code du poste `CD-XXXX-XXXX`
+  (MachineGuid), vérifiée hors ligne à chaque lancement ; palier signé 0 Basic, 1 Advanced, 2 Ultra.
+  Elle arrive par le compte (inscription, connexion, check-in au lancement en arrière-plan), et repart avec
+  lui (compte passé sur un autre poste, révocation, remboursement). `LicenceService`, stockage dans
+  `parametre_app` (`LicenceRepository`), `lib/core/licence/license_config.dart` (clé publique à coller
+  depuis le tableau de bord : vide, toute clé est refusée).
+- **Comptes locaux** inchangés (admin, caissiers) ; sur un poste neuf, l'administrateur prend le mot de passe
+  du compte BENS et s'ouvre directement après l'inscription (`AuthService.ouvrirAdminInitial`).
+- **Paliers** (`domain/modules.dart`) : devis et commandes, commandes fournisseurs et besoins à partir
+  d'Advanced ; magasins et transferts en Ultra. Écran verrouillé et barre latérale nomment le palier requis.
+- **Mode démo retiré** (migration v035 : compte demo désactivé, ancienne clé effacée) ; bandeau « Essai … :
+  N jours restants » dans le shell et la connexion, vers les formules. Paramètres › Licence : palier, fin,
+  compte BENS (déconnecter ce poste), code du poste, clé.
+- Tests : `test/application/licence_service_test.dart` (clés, compte avec un serveur simulé), activation
+  et formules, redirections, connexion, shell ; clés signées par un signataire jetable
+  (`test/helpers/licence_test_helper.dart`).
+
+- **Fin de l'essai : lecture seule** (`Licence.lectureSeule`, licence expirée gardée) : la connexion reste
+  possible et ouvre le tableau de bord ; bandeau « Essai terminé… » vers les formules ; seuls les modules de
+  consultation s'ouvrent (`modulesLectureSeule` : tableau de bord, ventes, produits, stock, tiers, historique,
+  zakat, paramètres), les autres (caisse, entrées et Smart Scan, retours, gestion de caisse…) affichent
+  « Lecture seule » ; dans les listes (`DsLectureSeule` autour des modules), ni création, ni modification,
+  ni export, seulement le détail. Les données sont gardées ; acheter une formule débloque au check-in.
+- **Limites du palier** : caissiers (comptes actifs hors administrateur) et magasins actifs, à la création et à
+  la réactivation (`UtilisateurService.maxCaissiers`, `StockService.maxMagasins`, depuis la licence) :
+  Basic et Advanced 1 magasin / 5 caissiers, Ultra 15 / 15 ; l'essai a ceux du palier choisi.
+- **Caisses du palier** (Desktop — Plans & Pricing, ligne « Cashiers ») : caisses actives hors coffre,
+  Basic 1, Advanced 5, Ultra 15 (`NiveauLicence.caisses`, `CaisseService.maxCaisses`, à la création et à la
+  réactivation). Basic, une seule caisse : ni « Nouvelle caisse », ni onglet Transferts, ni transfert entre
+  caisses (refusé par le service) ; la grille des rôles ne propose que les modules et permissions du palier.
+  Écran des formules : Basic le socle, Advanced et Ultra « Tout <palier précédent>, plus : » et leurs ajouts,
+  puis magasins, caisses et Smart Scans.
+- **Restauration d'une sauvegarde d'un autre PC** : la licence et le compte BENS de ce poste sont gardés
+  (`LicenceRepository.clesDuPoste`), le reste vient de la sauvegarde.
+
+- **Lecture seule jusque dans les dialogs** : `DsLectureSeule` est posé à la racine de l'application ; un
+  `DsEntityDetailDialog` n'y montre ni Modifier ni ses actions de pied (impression, versement).
+- **Smart Scan au vrai protocole** (`SmartScanService`, catalog-api.bensds.com/smartscan/*) : le poste
+  s'authentifie par sa licence BENS signée (`X-Device-Id` = identifiant brut, `X-License-Key`) ; OCR
+  (`/scan`, un scan compté seulement si du texte est lu) puis extraction des lignes (`/extract`, consigne de
+  CaisseDZ Mobile). Les scans sont ceux du compte BENS, comptés par bens_ds : inclus dans la formule puis
+  packs (le plus proche de l'expiration d'abord). Photos JPG, PNG, WEBP. Plus de scans : un pack demandé à
+  BENS depuis le compte (Petit, Boutique, Grossiste) ; bandeau de rappel quand des scans expirent dans les
+  30 jours.
+
+**Reste à faire** : client-serveur multi-postes (plus tard).
+
+## Application mobile CaisseDZ Scan ✅ (2026-10-19)
+
+Téléphone relié au poste sur le réseau de la boutique (projet `caissedz-scan-mobile`, design system de
+CaisseDZ mobile `cdz_ui`).
+
+- **Serveur du poste** (`application/serveur_mobile.dart`, HTTP + JSON sur `/api/v1`, port 8787 ou suivant) :
+  démarré depuis l'icône téléphone de la barre du haut (Admin seul) et relancé au démarrage s'il était activé
+  (`parametre_app.mobile_actif`). Toute écriture passe par les services du poste (`CatalogueService.creerProduit`,
+  `AchatService.enregistrer` source « Entrée rapide », `SessionCaisseService.ouvrir`, `AchatService.deposerBon`),
+  avec le contexte d'audit de l'utilisateur du téléphone (rétabli ensuite sur celui du poste) ; refusée en
+  lecture seule ; écrans du poste rafraîchis après coup.
+- **Appairage** : QR (adresses IPv4 locales, port, code valable 10 min) ; jeton d'appareil dont seule
+  l'empreinte SHA-256 est gardée (migration v036, table `appareil_mobile`) ; liste des téléphones et
+  révocation dans le dialog « Application mobile ».
+- **Connexion** : identifiant et mot de passe du poste ; seuls l'Admin et les rôles ayant la nouvelle permission
+  `utiliserMobile` (« Application mobile », Utilisateurs › Rôles) ; modules et permissions du rôle appliqués
+  (prix d'achat et marge selon `voirPrixAchat` / `voirMarge`, magasins selon `voirStockTousMagasins`) ;
+  pause de 30 s après 5 échecs ; session en mémoire (12 h glissantes).
+- **Côté téléphone** : ventes du jour et détail des tickets, stock par magasin, création de produit Rapide ou IA
+  (sources du catalogue IA du poste), entrée rapide (ouvre la session de caisse si besoin), photos de factures
+  déposées dans la file Entrées › Mode IA (lues plus tard par Smart Scan sur le poste).
+- Tests : `test/application/serveur_mobile_test.dart` (appairage, connexion et permission, produit, entrée
+  rapide avec session de caisse, facture, lecture seule, révocation).
+
+**Limites** : HTTP en clair sur le réseau local (mot de passe compris) ; Windows demande d'autoriser le pare-feu
+au premier démarrage (réseaux privés).
+
+## Allègement de l'interface ✅ (2026-10-20)
+
+- **Chiffres repliés** : les cartes de chiffres des modules (`DsModuleTable.kpis`) sont dans un bloc
+  « Chiffres clés » repliable (`DsChiffresRepliables`), fermé par défaut ; ouvert, il le reste pour ce module
+  le temps de la session. Le tableau de bord, fait de chiffres, n'est pas concerné.
+- **Filtres fermés** par défaut dans tous les modules (plus de `filtresOuverts: true`).
+- **Barre latérale** : groupes fermés par défaut sauf celui du module ouvert ; un groupe fermé montre le
+  point rouge de ses modules sur son en-tête.
+- **Barre d'actions** dans cet ordre : autres actions (export, vue, bouton secondaire, actions métier),
+  Détail, Supprimer / Annuler / Désactiver, Modifier, puis Nouveau ; Détail, suppression et modification en
+  icône seule, libellé en infobulle (`DsActionModule.place`, déduite de l'action ; `genre` pour l'imposer).
+  « Modifier » des dialogs de détail en icône seule aussi.
+- **Pas de champ Code à la création** (produit, catégorie, remise, pack, client, fournisseur, versement,
+  retour, entrée, sortie, transfert, magasin, besoins, documents, caisse, utilisateur, rôle) : le code est
+  attribué à l'enregistrement ; il reste affiché en lecture seule en modification.
+- **Entrée rapide** : ni magasin ni répartition avec un seul magasin (Basic, Advanced) ; tout va au magasin
+  principal.
+- **Après la connexion** : configuration initiale (1ʳᵉ fois), alertes, puis la Caisse directement (plus de
+  menu des modules par-dessus).
+- **Cartes cliquables** (`DsStatCard.onTap`, tableau de bord et modules) : une flèche ↗ (↖ en arabe) au lieu de
+  l'icône « info » dit qu'on part vers un autre module ; l'explication reste en infobulle sur la flèche.
+- **Menu des modules** (Ctrl+M, choix des favoris) : les modules hors formule n'y sont plus (plus de « Réservé
+  au palier … ») ; ceux que le rôle ou la lecture seule ferment restent avec leur cadenas.
+- **Alertes de rupture en Basic** : sans module Besoins, ni « Créer une liste de besoins » ni « Commander » ;
+  « Ouvrir le module » et l'action de ligne (« Voir le stock ») mènent au Stock.
+- **Favoris de la barre supérieure** : quand leurs libellés ne tiennent pas (petite fenêtre), icônes seules,
+  sans défilement ; au survol, le favori s'élargit (libellé et croix) avec une animation.
+- **CaisseDZ Scan — QR personnel par utilisateur** (migration 37, `appareil_mobile.utilisateur_code`) : l'icône
+  téléphone de la barre du haut s'affiche pour tout utilisateur ayant la permission « Application mobile »
+  (l'Admin l'a toujours), plus seulement l'Admin. Chacun y affiche **son** QR code (valable 10 min, usage
+  unique, annulé quand il se déconnecte du poste). Le téléphone qui le scanne est lié à ce compte et connecté
+  directement : plus de choix du compte ni de mot de passe sur le téléphone (aucun mot de passe sur le Wi-Fi).
+  Ensuite il rouvre seul sa session avec son jeton d'appareil (redémarrage du poste, 12 h sans usage) ; un
+  compte désactivé ou privé de la permission n'entre plus. L'Admin voit et révoque tous les téléphones (avec
+  leur propriétaire) et seul il désactive le service ; les autres voient et révoquent les leurs. API :
+  `POST /appairer` renvoie aussi la session, `POST /connexion` sans corps, `POST /oublier` (le téléphone se
+  délie lui-même) ; `GET /comptes` et la pause après 5 échecs de mot de passe sont retirés. Les téléphones
+  appairés avant la version 37 doivent scanner un nouveau QR code.
+
+## Retours utilisateur — caisse, sous-textes, Entrées et vente sur téléphone ✅ (2026-10-20)
+
+- **Connexion du téléphone** : le pare-feu Windows bloquait le port du serveur mobile (règle « Bloquer » sur le
+  profil Public pour l'exécutable de débogage). Le QR met d'abord l'adresse Wi-Fi, écarte les cartes virtuelles
+  (WSL, Hyper-V, VirtualBox, VMware, Docker) et met le partage de connexion (192.168.137.x) en dernier
+  (`ServeurMobile.ordonnerAdresses`). Le téléphone interroge toutes les adresses à la fois (`GET /info`) et
+  n'envoie le code d'appairage qu'à celle qui répond.
+- **Offre Basic** : plus de bouton « Paramètres de la caisse » (⚙, à côté de la calculatrice et des raccourcis)
+  dans l'écran Caisse ; le groupe Caisse des Paramètres reste.
+- **Panier de la Caisse** : le bouton afficher / masquer les produits est dans l'en-tête du panier, à droite.
+  Produits masqués : une seule barre — client, remise, nouveau produit, nouveau client, vider, afficher les
+  produits.
+- **Codification** : après `PRD9999` vient `PRD10000` (compteur sans limite, tri par longueur puis texte),
+  pour tous les codes (`CodeGenerator`).
+- **Dialog « Application mobile »** : sans sous-titre ni adresse IP, étapes courtes ; pastille « Connecté »
+  pour les téléphones actifs depuis moins de 5 min (`ServeurMobile.appareilsConnectes`), affichés en premier.
+- **Bande de caisse** (en-tête de la Caisse) : seulement la caisse au repos ; au survol, l'état, l'heure, le
+  solde et Mouvement / Clôturer se déplient avec une animation ; fermée, « Ouvrir » reste visible.
+- **Reçu IA** : bouton « Créer le produit » sur chaque ligne non rapprochée ; le formulaire s'ouvre rempli
+  (désignation lue, code-barres, fournisseur du bon, prix d'achat) et le produit créé est choisi pour la ligne.
+  Le stock initial reste à 0 : la quantité du bon entre en stock avec l'entrée elle-même.
+- **Sous-textes retirés** : sous-titres des modules (`DsPage`), descriptions des dialogs (`DsDialog`,
+  sélecteur, formulaires de documents), descriptions des étapes (`DsStepper`). `DsDialog.message` ne sert plus
+  qu'aux confirmations, résultats, avertissements d'action en lot et au détail d'une entité.
+- **Entrées** : onglets « Entrée » et « Smart Scan » (`/entrees?onglet=1`). Une photo de facture envoyée par le
+  téléphone affiche un pop-up avec « Ouvrir Smart Scan » (pour qui a accès à Entrées).
+- **Vente depuis le téléphone** (`application/vente_mobile_service.dart`) : `GET /caisse` (modes de paiement,
+  clients), `GET /caisse/article/<code>` (produit, colis ou pack au prix de la Caisse : TTC, remise produit),
+  `POST /ventes` (panier, client, un paiement) → `VenteService.encaisser` sur la session ouverte de
+  l'utilisateur, dans une transaction ; ni crédit ni points ; stock gardé par l'encaissement. Module `caisse`
+  requis.
+- **CaisseDZ Scan** : le bouton de scan remplit le panier (pour qui vend) puis l'ouvre ; panier comme celui de
+  la Caisse (client, quantités, suppression, total), encaissement (mode, montant reçu, monnaie), ouverture de
+  la session de caisse si besoin ; tuile « Vendre » sur l'accueil. Sous-textes retirés aussi.
+- **Smart Scan (suite)** : dialog Reçu IA élargi de 20 % (1248 px) ; à l'étape 1, aperçu de la photo choisie au
+  lieu de son nom et des formats ; « Traiter » en violet, tout à droite de la barre (`DsGenreAction.principale`).
+  Produit créé depuis une ligne du bon : stock initial à 0 (non modifiable), avec la mention « {quantité}
+  entreront en stock avec l'entrée du bon » : la quantité entre une seule fois, par l'entrée.
+  Au traitement, chaque ligne lue reprise dans l'entrée garde son produit (`produit_code` dans `lignes_json`) ;
+  le détail du bon affiche, dans « Lignes lues », le produit et le badge « Traité » de ces lignes.
+  Détail du bon élargi (1320 px) : photo à gauche, lignes lues à droite (`DsSectionDetail.flex`). Aperçus de
+  photo zoomables (`DsImageZoom`) : molette pour zoomer, clic maintenu pour faire glisser, boutons zoom avant /
+  arrière et « Image entière ».
+- **Fiche produit** : le bouton de génération du code-barres réserve un code interne `CDZ` + date + séquence
+  (`CatalogueService.reserverCodeBarresInterne`) au lieu d'un EAN-13 aléatoire. Formulaire réorganisé (1040 px) en
+  blocs sobres à libellés au-dessus des champs (`DsFormRow.empile`) : Identification + Photos côte à côte, Prix sur
+  une rangée (achat, marge, vente HT, TVA, TTC) ; Stock sur une rangée, Emballages boîte | carton ; Variantes, puis
+  Options (codes multiples, interrupteurs en cases, description et observation). Tous les champs sont conservés ;
+  textes d'aide explicatifs retirés ; étapes « Produit et prix », « Stock », « Variantes ».
+- **Panier, produits masqués** : lignes à gauche sous le titre et ses boutons (comme en mode produits affichés),
+  panneau d'encaissement à droite (420 px, fond atténué) : Client, Remise, puis montants rapides, total,
+  Enregistrer et Encaisser en bas. « Autre montant » réduit à son icône dans une colonne étroite (montants lisibles).
+- **Un magasin / une caisse** : aucun choix de magasin quand le palier n'en a qu'un (Basic, Avancé :
+  `plusieursMagasinsProvider`), aucun choix de caisse en Basic (`plusieursCaissesProvider`) : formulaires
+  (entrée, Reçu IA, sortie, produit, documents, commandes fournisseurs, utilisateur, ouverture de session,
+  mouvement, clôture Z, versement, paiement d'une entrée) et filtres (Entrées, Sorties, Stock, Gestion de caisse,
+  Ventes, Situation). Tout va au magasin principal et à la caisse principale ; l'inventaire de la Situation porte
+  alors sur le magasin principal.
+
+## Rayons du catalogue BENS à l'accueil ✅ (2026-10-20)
+
+Après la connexion d'un poste neuf (avant la configuration initiale), l'utilisateur qui a accès à Produits
+choisit des **rayons** selon son activité ; leurs produits les mieux classés entrent dans le catalogue local.
+Trois dépôts : catalog-api (rayons, tri, exclusion), bens_ds (choix de chaque client, tableau de bord), et ici.
+
+- **catalog-api.bensds.com** : les 50 517 catégories brutes (Open Food / Beauty Facts, multilingues) sont
+  rangées dans 16 rayons (`catalog_rayon`, noms FR/AR/EN, icône, mots-clés modifiables dans `admin_rayons.php`) ;
+  porc et alcool exclus (`catalog_product.exclu`, charcuterie gardée si halal / volaille / bœuf). Chaque rayon
+  propose ses **2 000 produits les mieux classés** : recherches par code-barres × 100 (comptées dès maintenant
+  sur `GET /products/barcode/{code}`), + 50 si code-barres algérien (613…), + 10 avec photo. `GET /rayons`,
+  `GET /rayons/{code}/products`. Reclassement : `admin_rayons.php` ou `php catalogue_core/reclasser.php`.
+- **Écran des rayons** (`CatalogueRayonsDialog`) : cartes à cocher (icône, nom dans la langue, nombre de
+  produits, « Déjà téléchargé »), Tout sélectionner, compteur « n rayons · N produits », Plus tard / Appliquer ;
+  progression page par page ; **bilan** : produits ajoutés et leur part (%) des rayons choisis, rayon par
+  rayon, déjà présents. Hors ligne : message et Réessayer. Rouvert depuis **Produits › Catalogue BENS**.
+- **Base locale** (`CatalogueRayonsService.telecharger`, migration v38) : produits dans `produit`
+  (source `Catalogue`, **sans prix ni stock**, photo = adresse du catalogue, codes-barres secondaires),
+  une catégorie + sous-catégorie par rayon (réutilise une catégorie du même nom), `catalogue_rayon` garde le
+  lien ; un code-barres déjà connu n'est jamais ajouté deux fois. Réception d'abord, puis UNE transaction.
+- **Alertes** : un produit du catalogue jamais entré en stock n'est pas une rupture (alertes, chiffre du
+  tableau de bord, Situation, Besoins), sinon 30 000 produits à stock 0 seraient « en rupture ».
+- **bens_ds** : `POST /api/app/{product}/catalog-choice` (session du compte) enregistre chaque Appliquer
+  (`app_catalog_choices`) ; hors ligne, le choix est gardé et renvoyé au check-in suivant
+  (`LicenceService.signalerChoixCatalogue`). Tableau de bord : Official apps › l'app › **Catalogue** (rayons les
+  plus choisis, puis chaque client : téléchargés / proposés, %) et la fiche du client.
+- Tests : `catalogue_rayons_service_test.dart` (téléchargement, doublons, hors ligne, alertes, envoi à BENS),
+  `features/produits/catalogue_rayons_test.dart` (parcours complet, Plus tard, hors ligne) ; catalog-api
+  `catalogue_core/tests/rayons_test.php` (62 vérifications) ; bens_ds `ApiTest` (catalog picks) et
+  `licenses_test.dart` (onglet Catalogue).
+- À venir (docs « Product alerts and catalogue », parties 1 et 2) : les 18 alertes produits, le nom arabe
+  (`designation_ar`) et la tendance calculée sur les scans de tous les postes.

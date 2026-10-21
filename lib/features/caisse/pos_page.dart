@@ -615,22 +615,16 @@ class _PosPageState extends ConsumerState<PosPage> {
                 contour: true,
                 onPressed: () => unawaited(afficherCalculatrice(context)),
               ),
-              DsIconButton(
-                key: const ValueKey('caisse_basculer_produits'),
-                icone: _afficherProduits ? LucideIcons.panelLeftClose : LucideIcons.panelLeftOpen,
-                tooltip: _afficherProduits ? l10n.posMasquerProduits : l10n.posAfficherProduits,
-                taille: DsTailles.controleSm,
-                contour: _afficherProduits,
-                actif: !_afficherProduits,
-                onPressed: () => setState(() => _afficherProduits = !_afficherProduits),
-              ),
-              DsIconButton(
-                icone: LucideIcons.settings2,
-                tooltip: l10n.posParametres,
-                taille: DsTailles.controleSm,
-                contour: true,
-                onPressed: () => unawaited(afficherParametresCaisse(context, ref)),
-              ),
+              // Paramètres de la caisse (caisse et magasin du poste) : pas dans l'offre Basic (une caisse, un magasin).
+              if (ref.watch(licenceProvider).couvre(NiveauLicence.avance))
+                DsIconButton(
+                  key: const ValueKey('caisse_parametres'),
+                  icone: LucideIcons.settings2,
+                  tooltip: l10n.posParametres,
+                  taille: DsTailles.controleSm,
+                  contour: true,
+                  onPressed: () => unawaited(afficherParametresCaisse(context, ref)),
+                ),
             ],
           ),
         ),
@@ -813,35 +807,39 @@ class _PosPageState extends ConsumerState<PosPage> {
     );
   }
 
-  /// Montants rapides de la vente au montant (balance, articles non codifiés) : cumulés sur une seule ligne.
+  /// Montants rapides de la vente au montant (balance, articles non codifiés) : cumulés sur une seule ligne ;
+  /// dans une colonne étroite, « Autre montant » se réduit à son icône pour que les montants restent lisibles.
   Widget _montantsRapides() {
     return Tooltip(
       message: l10n.posMontantAide,
       waitDuration: const Duration(seconds: 1),
-      child: Row(
-        spacing: DsSpacing.s2,
-        children: [
-          Icon(LucideIcons.coins, size: 16, color: context.ds.colors.textMuted),
-          for (final m in _montants)
-            Expanded(
-              child: DsButton(
-                key: ValueKey('montant_$m'),
-                libelle: '+$m',
-                taille: DsButtonTaille.sm,
-                variante: DsButtonVariante.secondaire,
-                pleineLargeur: true,
-                onPressed: () => _executer(() => ctrl.ajouterMontant(m.toDouble())),
+      child: LayoutBuilder(
+        builder: (context, contraintes) => Row(
+          spacing: DsSpacing.s2,
+          children: [
+            Icon(LucideIcons.coins, size: 16, color: context.ds.colors.textMuted),
+            for (final m in _montants)
+              Expanded(
+                child: DsButton(
+                  key: ValueKey('montant_$m'),
+                  libelle: isolerLtr('+$m'),
+                  taille: DsButtonTaille.sm,
+                  variante: DsButtonVariante.secondaire,
+                  pleineLargeur: true,
+                  onPressed: () => _executer(() => ctrl.ajouterMontant(m.toDouble())),
+                ),
               ),
+            DsButton(
+              key: const ValueKey('montant_autre'),
+              libelle: l10n.posMontantAutre,
+              icone: LucideIcons.pencil,
+              iconeSeule: contraintes.maxWidth < 440,
+              taille: DsButtonTaille.sm,
+              variante: DsButtonVariante.fantome,
+              onPressed: () => _saisirMontant(),
             ),
-          DsButton(
-            key: const ValueKey('montant_autre'),
-            libelle: l10n.posMontantAutre,
-            icone: LucideIcons.pencil,
-            taille: DsButtonTaille.sm,
-            variante: DsButtonVariante.fantome,
-            onPressed: () => _saisirMontant(),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -857,82 +855,97 @@ class _PosPageState extends ConsumerState<PosPage> {
     final clients = ref.watch(clientsProvider).value ?? const <Client>[];
     final remises = _remisesGlobales();
 
+    final titre = Text.rich(
+      TextSpan(
+        text: '${l10n.posPanierTitre} ',
+        children: [
+          TextSpan(
+            text: '· ${l10n.posVente(panier.id)}',
+            style: TextStyle(color: c.textMuted, fontWeight: FontWeight.w500),
+          ),
+        ],
+      ),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      style: t.cardTitle.copyWith(fontSize: 16),
+    );
+
+    // Nouveau produit, nouveau client, vider le panier, puis afficher / masquer les produits (à droite).
+    final boutons = [
+      DsIconButton(
+        icone: LucideIcons.packagePlus,
+        tooltip: l10n.posNouveauProduit,
+        taille: DsTailles.controleSm,
+        onPressed: () => unawaited(_nouveauProduit()),
+      ),
+      DsIconButton(
+        icone: LucideIcons.userPlus,
+        tooltip: l10n.posNouveauClient,
+        taille: DsTailles.controleSm,
+        onPressed: () => unawaited(_nouveauClient()),
+      ),
+      DsIconButton(
+        key: const ValueKey('panier_vider'),
+        icone: LucideIcons.trash2,
+        tooltip: l10n.posViderPanier,
+        taille: DsTailles.controleSm,
+        onPressed: panier.estVide ? null : _vider,
+      ),
+      DsIconButton(
+        key: const ValueKey('caisse_basculer_produits'),
+        icone: _afficherProduits ? LucideIcons.panelLeftClose : LucideIcons.panelLeftOpen,
+        tooltip: _afficherProduits ? l10n.posMasquerProduits : l10n.posAfficherProduits,
+        taille: DsTailles.controleSm,
+        contour: _afficherProduits,
+        actif: !_afficherProduits,
+        onPressed: () => setState(() => _afficherProduits = !_afficherProduits),
+      ),
+    ];
+
+    final selectClient = DsSelect<String>(
+      key: const ValueKey('panier_client'),
+      taille: DsTailles.controleSm,
+      icone: LucideIcons.user,
+      valeur: panier.clientCode,
+      options: [
+        'CLN0000',
+        // Clients inactifs masqués (le client déjà choisi reste affiché).
+        for (final cl in clients)
+          if (!cl.estDePassage && (cl.actif || cl.code == panier.clientCode)) cl.code,
+      ],
+      libelle: _nomClient,
+      onChanged: (v) => ctrl.choisirClient(v ?? 'CLN0000'),
+      onLookup: () => unawaited(_choisirClient()),
+      lookupTooltip: l10n.posChoisirClient,
+    );
+    final selectRemise = DsSelect<String?>(
+      key: const ValueKey('panier_remise'),
+      taille: DsTailles.controleSm,
+      icone: LucideIcons.percent,
+      valeur: panier.remiseCode,
+      options: [null, for (final r in remises) r.code],
+      libelle: (code) =>
+          code == null ? l10n.posAucuneRemise : _libelleRemise(remises.firstWhere((r) => r.code == code)),
+      onChanged: (code) => ctrl.appliquerRemise(remises.where((r) => r.code == code).firstOrNull),
+      onLookup: () => unawaited(_choisirRemise()),
+      lookupTooltip: l10n.posChoisirRemise,
+    );
+
+    // Titre et boutons en tête dans les deux dispositions. Produits affichés : client et remise sous le titre.
+    // Produits masqués : les lignes à gauche, le panneau d'encaissement à droite (client, remise, puis montants,
+    // total et encaissement).
     final tete = Row(
       spacing: DsSpacing.s2,
       children: [
-        Expanded(
-          child: Text.rich(
-            TextSpan(
-              text: '${l10n.posPanierTitre} ',
-              children: [
-                TextSpan(
-                  text: '· ${l10n.posVente(panier.id)}',
-                  style: TextStyle(color: c.textMuted, fontWeight: FontWeight.w500),
-                ),
-              ],
-            ),
-            style: t.cardTitle.copyWith(fontSize: 16),
-          ),
-        ),
-        DsIconButton(
-          icone: LucideIcons.packagePlus,
-          tooltip: l10n.posNouveauProduit,
-          taille: DsTailles.controleSm,
-          onPressed: () => unawaited(_nouveauProduit()),
-        ),
-        DsIconButton(
-          icone: LucideIcons.userPlus,
-          tooltip: l10n.posNouveauClient,
-          taille: DsTailles.controleSm,
-          onPressed: () => unawaited(_nouveauClient()),
-        ),
-        DsIconButton(
-          key: const ValueKey('panier_vider'),
-          icone: LucideIcons.trash2,
-          tooltip: l10n.posViderPanier,
-          taille: DsTailles.controleSm,
-          onPressed: panier.estVide ? null : _vider,
-        ),
+        Expanded(child: titre),
+        ...boutons,
       ],
     );
-
     final selects = Row(
       spacing: DsSpacing.s2,
       children: [
-        Expanded(
-          flex: 100,
-          child: DsSelect<String>(
-            key: const ValueKey('panier_client'),
-            taille: DsTailles.controleSm,
-            icone: LucideIcons.user,
-            valeur: panier.clientCode,
-            options: [
-              'CLN0000',
-              // Clients inactifs masqués (le client déjà choisi reste affiché).
-              for (final cl in clients)
-                if (!cl.estDePassage && (cl.actif || cl.code == panier.clientCode)) cl.code,
-            ],
-            libelle: _nomClient,
-            onChanged: (v) => ctrl.choisirClient(v ?? 'CLN0000'),
-            onLookup: () => unawaited(_choisirClient()),
-            lookupTooltip: l10n.posChoisirClient,
-          ),
-        ),
-        Expanded(
-          flex: 115,
-          child: DsSelect<String?>(
-            key: const ValueKey('panier_remise'),
-            taille: DsTailles.controleSm,
-            icone: LucideIcons.percent,
-            valeur: panier.remiseCode,
-            options: [null, for (final r in remises) r.code],
-            libelle: (code) =>
-                code == null ? l10n.posAucuneRemise : _libelleRemise(remises.firstWhere((r) => r.code == code)),
-            onChanged: (code) => ctrl.appliquerRemise(remises.where((r) => r.code == code).firstOrNull),
-            onLookup: () => unawaited(_choisirRemise()),
-            lookupTooltip: l10n.posChoisirRemise,
-          ),
-        ),
+        Expanded(flex: 100, child: selectClient),
+        Expanded(flex: 115, child: selectRemise),
       ],
     );
 
@@ -1067,24 +1080,32 @@ class _PosPageState extends ConsumerState<PosPage> {
       child: large
           ? Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              spacing: DsSpacing.s6,
+              spacing: DsSpacing.s4,
               children: [
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     spacing: DsSpacing.s3,
                     children: [
-                      tete,
+                      SizedBox(height: DsTailles.controleSm, child: tete),
                       Expanded(child: lignes),
                     ],
                   ),
                 ),
-                SizedBox(
-                  width: 380,
+                Container(
+                  key: const ValueKey('panier_encaissement'),
+                  width: 420,
+                  padding: const EdgeInsets.all(DsSpacing.s4),
+                  decoration: BoxDecoration(color: c.surfaceSunken, borderRadius: DsRadius.borderLg),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     spacing: DsSpacing.s3,
-                    children: [selects, const Spacer(), bas],
+                    children: [
+                      DsFormRow(libelle: l10n.posClientLabel, empile: true, child: selectClient),
+                      DsFormRow(libelle: l10n.dsPosRemise, empile: true, child: selectRemise),
+                      const Spacer(),
+                      bas,
+                    ],
                   ),
                 ),
               ],

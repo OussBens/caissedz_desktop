@@ -340,6 +340,8 @@ class _VueAnalyseState extends ConsumerState<_VueAnalyse> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final devise = ref.watch(deviseProvider);
+    // Un seul magasin : l'inventaire porte sur le principal (voir _magasinInventaire).
+    ref.watch(magasinPrincipalProvider);
     final tiers = _id == 'scli' || _id == 'sfrn';
     // Recharge après toute écriture métier (ventes, stock, caisse).
     final version =
@@ -367,13 +369,13 @@ class _VueAnalyseState extends ConsumerState<_VueAnalyse> {
       kpis: [DsStatsStrip(items: _stats(l10n, devise, lignes))],
       periode: widget.analyse.periode ? _periode : null,
       onPeriode: (p) => _maj(() => _periode = p),
-      filtresOuverts: true,
       colonnesFiltres: 3,
       nbFiltresActifs: filtresActifs.length,
       onReinitialiser: _reinitialiser,
       filtres: [
-        for (final f in widget.analyse.filtres) _filtre(l10n, f),
-        if (inventaire && _f[FiltreSituation.magasin] == null)
+        for (final f in widget.analyse.filtres)
+          if (_filtreVisible(f)) _filtre(l10n, f),
+        if (inventaire && _magasinInventaire == null)
           DsSpan(
             child: Text(
               l10n.situationInventaireMagasin,
@@ -401,7 +403,7 @@ class _VueAnalyseState extends ConsumerState<_VueAnalyse> {
               key: const ValueKey('inventaire_valider'),
               libelle: l10n.situationValiderInventaire,
               icone: LucideIcons.checkCheck,
-              onPressed: _f[FiltreSituation.magasin] == null ? null : _validerInventaire,
+              onPressed: _magasinInventaire == null ? null : _validerInventaire,
             )
           : null,
       onExport: peutExporter(ref)
@@ -420,6 +422,18 @@ class _VueAnalyseState extends ConsumerState<_VueAnalyse> {
       messageVide: !_charge && !tiers ? l10n.dsChargement : l10n.dsAucunElement,
     );
   }
+
+  /// Un seul magasin (Basic, Avancé) ou une seule caisse (Basic) : pas de filtre à choisir.
+  bool _filtreVisible(FiltreSituation f) => switch (f) {
+    FiltreSituation.magasin => ref.watch(plusieursMagasinsProvider),
+    FiltreSituation.caisse => ref.watch(plusieursCaissesProvider),
+    _ => true,
+  };
+
+  /// Magasin de l'inventaire : celui du filtre, sinon le seul magasin (le principal).
+  String? get _magasinInventaire =>
+      _f[FiltreSituation.magasin] ??
+      (ref.watch(plusieursMagasinsProvider) ? null : ref.watch(magasinPrincipalProvider).value);
 
   /// « Effacer les filtres » : période du mois, aucun filtre, regroupement par jour.
   void _reinitialiser() => _maj(() {
@@ -532,7 +546,7 @@ class _VueAnalyseState extends ConsumerState<_VueAnalyse> {
 
   Future<void> _validerInventaire() async {
     final l10n = AppLocalizations.of(context);
-    final magasin = _f[FiltreSituation.magasin]!;
+    final magasin = _magasinInventaire!;
     final comptes = <String, double>{
       for (final l in _lignes)
         if (lireNombre(_comptes[l['code']]?.text ?? '') case final q?)

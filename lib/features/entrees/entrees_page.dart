@@ -26,17 +26,20 @@ import 'entree_dialogs.dart';
 import 'entrees_providers.dart';
 import 'recu_ia_dialog.dart';
 
-/// Écran Entrées (`EntreesScreen` du DS v2.2, §9.6) : onglets Smart Scan (bons d'achat) et Mode IA (bons de
+/// Écran Entrées (`EntreesScreen` du DS v2.2, §9.6) : onglets Entrée (bons d'achat) et Smart Scan (bons de
 /// réception lus par l'IA) ; nouvelle entrée en 2 étapes, entrée rapide répartie, détail, modification, annulation.
 class EntreesPage extends ConsumerStatefulWidget {
-  const EntreesPage({super.key});
+  const EntreesPage({super.key, this.ongletInitial = 0});
+
+  /// 0 : Entrée, 1 : Smart Scan (factures lues par l'IA, photos envoyées par le téléphone).
+  final int ongletInitial;
 
   @override
   ConsumerState<EntreesPage> createState() => _EntreesPageState();
 }
 
 class _EntreesPageState extends ConsumerState<EntreesPage> {
-  int _onglet = 0;
+  late int _onglet = widget.ongletInitial;
   DsPeriode _periode = DsPeriode.calculer('month');
   String? _fournisseur;
   String? _paiement;
@@ -54,8 +57,7 @@ class _EntreesPageState extends ConsumerState<EntreesPage> {
     final bons = ref.watch(bonsReceptionProvider).value ?? const <BonReception>[];
     return PageModule(
       moduleId: 'entrees',
-      sousTitre: l10n.entDescription,
-      onglets: [l10n.sourceSmartScan, l10n.entOngletIa],
+      onglets: [l10n.entOngletEntree, l10n.sourceSmartScan],
       comptes: [achats.length, bons.length],
       ongletCourant: _onglet,
       onOnglet: (i) => setState(() => _onglet = i),
@@ -271,17 +273,18 @@ class _EntreesPageState extends ConsumerState<EntreesPage> {
             onChanged: (v) => setState(() => _paiement = v),
           ),
         ),
-        DsFormRow(
-          libelle: l10n.stockColMagasin,
-          largeurLibelle: 90,
-          child: DsSelect<String?>(
-            valeur: _magasin,
-            options: [null, for (final m in magasins) m.code],
-            libelle: (c) => c == null ? l10n.retoursTous : (nomsMag[c] ?? c),
-            recherche: rechercheListe(context, ref, ListeMetier.magasin),
-            onChanged: (v) => setState(() => _magasin = v),
+        if (ref.watch(plusieursMagasinsProvider))
+          DsFormRow(
+            libelle: l10n.stockColMagasin,
+            largeurLibelle: 90,
+            child: DsSelect<String?>(
+              valeur: _magasin,
+              options: [null, for (final m in magasins) m.code],
+              libelle: (c) => c == null ? l10n.retoursTous : (nomsMag[c] ?? c),
+              recherche: rechercheListe(context, ref, ListeMetier.magasin),
+              onChanged: (v) => setState(() => _magasin = v),
+            ),
           ),
-        ),
         filtreProduit(
           context,
           ref,
@@ -517,6 +520,8 @@ class _EntreesPageState extends ConsumerState<EntreesPage> {
               libelle: l10n.entIaTraiter,
               icone: LucideIcons.sparkles,
               regle: DsRegleSelection.une,
+              // En violet, tout à droite : l'action phare de Smart Scan.
+              genre: DsGenreAction.principale,
               desactive: (choix) => choix.isNotEmpty && choix.first.statut == StatutsBon.traite,
               onPressed: (choix, _) => afficherRecuIA(context, ref, bon: choix.first),
             ),
