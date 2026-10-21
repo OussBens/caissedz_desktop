@@ -1159,3 +1159,43 @@ téléchargés et le code-barres inconnu est cherché dans le catalogue à la ca
 - **Mise en service** : déployer catalog-api, puis `admin_rayons.php` → « Installer / mettre à jour les tables »
   et « Reclasser tout le catalogue » (reprend les noms arabes). Sans ce déploiement, l'envoi des ventes est
   refusé (rien n'est perdu, il repart au lancement suivant).
+
+## Prix HT / TVA / TTC, entrée manuelle, appairage par l'Admin, colis nommés, 20 alertes produits ✅ (2026-10-21)
+
+- **Affichage des prix** (Paramètres › Caisse et ventes › Affichage des prix, `parametre.affichage_prix` : `TTC`,
+  `TVA` ou `TVA et TTC`, défaut) : les cartes produits de la Caisse montrent le seul prix de vente (HT, sans TVA) ;
+  chaque ligne du panier détaille le prix appliqué (« HT … · TVA 19 % … · TTC … ») quand la TVA s'applique
+  (`texteDetailPrix`). Devis, proformas et commandes clients suivent le même choix : formulaire (P.U. HT, TVA
+  unitaire, P.U. TTC ; HT saisi quand le TTC n'est pas affiché), détail et impression A4 (totaux complets).
+- **Nouvelle entrée › Manuel** : un produit choisi dans la liste (recherche), quantité reçue, prix d'achat et de
+  vente proposés depuis sa fiche, nombre de pièces si le 2ᵉ stock est exigé ; un produit déjà présent reçoit la
+  quantité en plus.
+- **Appairage d'un téléphone par l'Admin** : le QR de l'Admin ouvre sur le poste « Nouveau téléphone à connecter »
+  (nom, système, modèle, adresse IP du téléphone et liste des utilisateurs actifs, ceux sans autorisation mobile
+  grisés) ; le téléphone s'ouvre avec le compte choisi (`ServeurMobile.choisirUtilisateur`, réponse attendue 2 min
+  au plus, sinon `appairageRefuse`). Le QR d'un autre utilisateur relie toujours le téléphone à son seul compte.
+  CaisseDZ Scan (dépôt `caissedz-scan-mobile`) envoie système et modèle, attend 3 min et affiche l'attente.
+- **Colis nommés** : jusqu'à 5 colis par produit (`CatalogueService.maxColis`), chacun avec son nom (boîte,
+  carton, palette…), ses pièces et son prix ; liés par leur code (renommer garde le colis, retirer le désactive) ;
+  code-barres des colis conservé à la modification de la fiche.
+- **20 alertes produits** (`AlertesProduitsService`, lecture seule ; seuils et alertes désactivées dans
+  `parametre`, `SeuilsAlertesProduits`) : 1 meilleures ventes (top N, couverture < Y j), 2 stock dormant,
+  3 candidats à une remise (remise conseillée), 4 marge faible / vente à perte, 5 retours élevés, 6 en hausse,
+  7 stock lent, 8 jamais vendus, 9 remises sans effet, 10 stock anormal (négatif, casses, écart d'inventaire),
+  11 hausse du prix fournisseur (prix conseillé), 12 achetés ensemble, 13 stock déséquilibré entre magasins
+  (transfert conseillé), 14 rupture sans commande (ou commande en retard), 15 produits de saison (an passé),
+  16 ruptures fréquentes (ventes perdues estimées), 17 fiche incomplète, 18 bonne marge peu vendu,
+  19 nouveautés du marché et 20 tendances du marché que vous n'avez pas (catalogue BENS, produits jamais entrés
+  en stock ; migration v40 `produit.tendance_le`). Ventes nettes des retours ; hors Admin, magasins de
+  l'utilisateur ; alertes 3, 4, 11 et 18 avec « Voir les prix d'achat ».
+  Écrans : carte « Alertes produits » du tableau de bord, analyse Situation › Alertes produits (filtres, export,
+  bouton d'action : besoin, remise, fiche produit, transfert, commande fournisseur, pack, retours, mouvements),
+  Paramètres › Alertes › Alertes produits, point rouge sur le Tableau de bord tant que de nouvelles alertes ne sont
+  pas consultées. Calcul à la connexion, à l'ouverture du tableau de bord ou de la Situation, après les Paramètres
+  et toutes les 15 minutes (jamais à chaque vente).
+  Écart au document de proposition : « Ajouter aux favoris caisse » (alerte 18) n'existe pas dans l'application ;
+  l'action ouvre la fiche du produit.
+- Tests : `detail_prix_test.dart`, `entrees_page_test.dart` (Manuel), `serveur_mobile_test.dart` et
+  `choix_utilisateur_mobile_test.dart` (appairage), `catalogue_service_test.dart` et `produits_page_test.dart`
+  (colis), `alertes_produits_service_test.dart` (les 20 règles, permissions, seuils),
+  `alertes_produits_test.dart` (carte, Situation, action, point rouge, Paramètres).
