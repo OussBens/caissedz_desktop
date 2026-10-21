@@ -45,6 +45,20 @@ class CatalogueRayonsRepository {
     return n;
   }
 
+  /// Produits du poste signalés tendance par le catalogue (par code-barres principal) : `tendance_le` = [le], s'ils
+  /// ne l'étaient pas déjà (alerte « Tendances du marché »).
+  Future<void> marquerProduitsTendance(Iterable<String> codesBarres, DateTime le) async {
+    final codes = codesBarres.toList();
+    for (var i = 0; i < codes.length; i += 500) {
+      final lot = codes.sublist(i, i + 500 > codes.length ? codes.length : i + 500);
+      await db.rawUpdate(
+        'UPDATE produit SET tendance_le = ? WHERE tendance_le IS NULL '
+        'AND code_barres IN (${List.filled(lot.length, '?').join(',')})',
+        [le.toUtc().toIso8601String(), ...lot],
+      );
+    }
+  }
+
   /// Les produits devenus tendance du rayon [rayonCode] ont été demandés le [le] ([ajoutes] nouveaux).
   Future<void> marquerTendance(String rayonCode, {required int ajoutes, required DateTime le}) => db.rawUpdate(
     'UPDATE catalogue_rayon SET telecharges = telecharges + ?, tendance_le = ? WHERE rayon_code = ?',

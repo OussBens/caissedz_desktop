@@ -294,6 +294,9 @@ void main() {
       ]);
       expect((await CatalogueRepository(base.db).produitParCode(hamoud.code))!.designationAr, 'حمود بوعلام');
       expect((await CatalogueRepository(base.db).produitParCode('PRD0007'))!.designationAr, isNull);
+      // Tendance retenue sur les trois produits (alerte « Tendances du marché »), hamoud déjà présent compris.
+      final tendances = await base.db.query('produit', columns: ['code'], where: 'tendance_le IS NOT NULL');
+      expect({for (final t in tendances) t['code']}, {rouiba.code, hamoud.code, 'PRD0007'});
       final ligne = (await base.db.query('catalogue_rayon')).single;
       expect(ligne['telecharges'], 3, reason: '2 au téléchargement (Cola déjà là) + Rouiba');
       expect(DateTime.parse(ligne['tendance_le']! as String).toLocal(), DateTime(2026, 10, 21, 9));

@@ -123,7 +123,10 @@ class CatalogueRayonsService {
       final depuis = r.tendanceLe ?? r.importeLe;
       final liste = await _recevoir(code, depuis: DateTime(depuis.year, depuis.month, depuis.day));
       // Seulement les produits marqués tendance : un serveur qui ignorerait `depuis` renverrait tout le rayon.
-      recus[code] = [for (final p in liste) if (p.tendance) p];
+      recus[code] = [
+        for (final p in liste)
+          if (p.tendance) p,
+      ];
     }
     final le = maintenant ?? DateTime.now();
     return db.transaction((txn) async {
@@ -159,7 +162,8 @@ class CatalogueRayonsService {
   ) async {
     final catalogue = CatalogueRepository(txn);
     // La catégorie liée, tant que sa sous-catégorie existe (elle a pu être supprimée entre-temps).
-    if (deja != null && (await catalogue.sousCategories(deja.categorieCode)).any((s) => s.code == deja.sousCategorieCode)) {
+    if (deja != null &&
+        (await catalogue.sousCategories(deja.categorieCode)).any((s) => s.code == deja.sousCategorieCode)) {
       return (categorieCode: deja.categorieCode, sousCategorieCode: deja.sousCategorieCode);
     }
     final parNom = await CatalogueRayonsRepository(txn).categorieParNom(rayon.nomFr);
@@ -232,6 +236,12 @@ class _Ajout {
     final repo = CatalogueRayonsRepository(txn);
     await repo.insererProduits(nouveaux);
     nomsAr += await repo.completerNomsArabes(nomsDeja);
+    // Tendance du catalogue : produits ajoutés comme déjà présents (alerte « Tendances du marché »).
+    final tendances = [
+      for (final p in produits)
+        if (p.tendance) ...p.codesBarres,
+    ];
+    if (tendances.isNotEmpty) await repo.marquerProduitsTendance(tendances, DateTime.now());
     return (ajoutes: nouveaux.length, deja: deja, ignores: ignores);
   }
 }
