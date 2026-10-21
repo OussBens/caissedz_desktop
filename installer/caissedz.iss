@@ -1,6 +1,6 @@
 ; Installeur Inno Setup (alternative au paquet MSIX) — à compiler sur Windows après `flutter build windows --release`.
 #define AppName "CaisseDZ Desktop"
-#define AppVersion "0.1.0"
+#define AppVersion "0.2.0"
 #define AppPublisher "CaisseDZ"
 #define AppExe "caissedz_desktop.exe"
 #define BuildDir "..\build\windows\x64\runner\Release"
