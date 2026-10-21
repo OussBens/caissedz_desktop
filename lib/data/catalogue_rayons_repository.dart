@@ -59,6 +59,17 @@ class CatalogueRayonsRepository {
     }
   }
 
+  /// Note le jour où le catalogue a confirmé nouveaux sur le marché les produits de ces codes-barres (s'il n'est
+  /// pas déjà noté).
+  Future<void> marquerProduitsNouveaux(Map<String, DateTime> parCodeBarres) async {
+    for (final MapEntry(key: cb, value: le) in parCodeBarres.entries) {
+      await db.rawUpdate('UPDATE produit SET nouveau_le = ? WHERE nouveau_le IS NULL AND code_barres = ?', [
+        le.toIso8601String().substring(0, 10),
+        cb,
+      ]);
+    }
+  }
+
   /// Les produits devenus tendance du rayon [rayonCode] ont été demandés le [le] ([ajoutes] nouveaux).
   Future<void> marquerTendance(String rayonCode, {required int ajoutes, required DateTime le}) => db.rawUpdate(
     'UPDATE catalogue_rayon SET telecharges = telecharges + ?, tendance_le = ? WHERE rayon_code = ?',

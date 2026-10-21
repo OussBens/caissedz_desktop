@@ -1523,6 +1523,8 @@
   "posRecherche": "Recherche",
   "posProduits": "Produits",
   "posPacks": "Packs",
+  "posFavoris": "Favoris",
+  "posFavorisVide": "Aucun favori. Ajoutez-en depuis Produits (Favori caisse) ou depuis l'alerte « Bonne marge, peu vendus ».",
   "posAffichageGrille": "Affichage grille",
   "posAffichageListe": "Affichage liste",
   "posVente": "Vente {n}",
@@ -1932,6 +1934,23 @@
   "prdEtiquette": "Étiquette",
   "prdEtiquettes": "Étiquettes",
   "prdAffecter": "Affecter",
+  "prdFavoriCaisse": "Favori caisse",
+  "prdFavoriAjoute": "{n} produit(s) ajouté(s) aux favoris de la caisse",
+  "@prdFavoriAjoute": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "prdFavoriRetire": "{n} produit(s) retiré(s) des favoris de la caisse",
+  "@prdFavoriRetire": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "prdImporter": "Importer",
   "prdAchatMontant": "Achat {montant}",
   "@prdAchatMontant": {
@@ -4418,8 +4437,8 @@
   "alpRegleSaisonniers": "Vendu l'an passé dans les X prochains jours plus que le stock actuel.",
   "alpRegleRupturesFrequentes": "Plus de X jours en rupture sur la période ; ventes perdues estimées.",
   "alpRegleFicheIncomplete": "Sans code-barres, sans photo, rangé dans la catégorie Divers ou sans prix de vente.",
-  "alpRegleBonneMargePeuVendus": "Dans les X % des meilleures marges, mais dans la moitié la moins vendue.",
-  "alpRegleNouveautesMarche": "Produits arrivés du catalogue BENS depuis moins de X jours, que vous n'avez jamais eus en stock.",
+  "alpRegleBonneMargePeuVendus": "Dans les X % des meilleures marges, mais dans la moitié la moins vendue (hors favoris de la caisse).",
+  "alpRegleNouveautesMarche": "Produits confirmés nouveaux sur le marché par le catalogue BENS (apportés par une boutique CaisseDZ) depuis moins de X jours, que vous n'avez jamais eus en stock.",
   "alpRegleTendancesMarche": "Produits qui se vendent dans plusieurs boutiques CaisseDZ (catalogue BENS) et que vous n'avez jamais eus en stock.",
   "alpActionBesoin": "Créer un besoin",
   "alpActionRemise": "Créer une remise",
@@ -4432,7 +4451,15 @@
   "alpActionCommande": "Commander",
   "alpActionSeuil": "Ajuster le seuil",
   "alpActionFiche": "Compléter la fiche",
-  "alpActionVoir": "Voir le produit",
+  "alpActionFavori": "Ajouter aux favoris caisse",
+  "alpFavoriAjoute": "« {produit} » est dans les favoris de la caisse",
+  "@alpFavoriAjoute": {
+    "placeholders": {
+      "produit": {
+        "type": "String"
+      }
+    }
+  },
   "alpActionCreerProduit": "Créer le produit",
   "alpSeuilPeriode": "Période d'analyse des ventes",
   "alpSeuilTopN": "Nombre de produits",

@@ -2,6 +2,7 @@ import 'package:caissedz_desktop/application/alertes_produits_service.dart';
 import 'package:caissedz_desktop/application/auth_service.dart';
 import 'package:caissedz_desktop/application/catalogue_service.dart';
 import 'package:caissedz_desktop/data/catalogue_rayons_repository.dart';
+import 'package:caissedz_desktop/data/favoris_caisse_repository.dart';
 import 'package:caissedz_desktop/domain/alertes_produits.dart';
 import 'package:caissedz_desktop/domain/models/produit.dart';
 import 'package:caissedz_desktop/domain/models/session.dart';
@@ -281,6 +282,9 @@ void main() {
     final remise = de(a, TypeAlerteProduit.remisesInefficaces, sel)!;
     expect((remise.remiseCode, remise.quantite, remise.quantite2, remise.jours), ('REM0001', 11.0, 11.0, 11.0));
     expect(de(a, TypeAlerteProduit.bonneMargePeuVendus, riz), isNotNull, reason: 'meilleure marge, aucune vente');
+    // Ajouté aux favoris de la caisse (action de l'alerte) : déjà mis en avant, plus d'alerte.
+    await FavorisCaisseRepository(db).ajouter([riz]);
+    expect(de(await calculer(), TypeAlerteProduit.bonneMargePeuVendus, riz), isNull);
 
     // Sans « Voir les prix d'achat » : les alertes sur le prix d'achat disparaissent.
     final vendeur = Session(utilisateur: admin.utilisateur, permissions: const {}, modulesAutorises: const {'stock'});
@@ -318,12 +322,17 @@ void main() {
     });
     await catalogue('PRD0901', '6130000000901', 20); // téléchargé avec le rayon
     await catalogue('PRD0902', '6130000000902', 2); // arrivé ensuite (tendance)
-    await CatalogueRayonsRepository(db).marquerProduitsTendance(['6130000000902'], _il(2));
+    await catalogue('PRD0903', '6130000000903', 2); // nouveau sur le marché, confirmé il y a 3 jours
+    await catalogue('PRD0904', '6130000000904', 20); // nouveau sur le marché, mais confirmé il y a 40 jours
+    final rayons = CatalogueRayonsRepository(db);
+    await rayons.marquerProduitsTendance(['6130000000902'], _il(2));
+    await rayons.marquerProduitsNouveaux({'6130000000903': _il(3), '6130000000904': _il(40)});
 
     final a = await calculer();
     expect(de(a, TypeAlerteProduit.ficheIncomplete, sansPrix)!.motifs, ['codeBarres', 'photo', 'categorie', 'prix']);
     expect(de(a, TypeAlerteProduit.ficheIncomplete, complet)!.motifs, ['categorie']);
-    expect(a.de(TypeAlerteProduit.nouveautesMarche).map((x) => x.produitCode), ['PRD0902']);
+    final nouveaute = a.de(TypeAlerteProduit.nouveautesMarche).single;
+    expect((nouveaute.produitCode, nouveaute.jours), ('PRD0903', 3.0), reason: 'confirmé par le catalogue < 30 jours');
     expect(a.de(TypeAlerteProduit.tendancesMarche).single.produitCode, 'PRD0902');
     expect(de(a, TypeAlerteProduit.ficheIncomplete, 'PRD0901'), isNull, reason: 'catalogue jamais entré en stock');
     // Entré en stock : le produit du catalogue n'est plus une alerte du marché.

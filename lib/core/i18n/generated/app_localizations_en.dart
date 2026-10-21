@@ -3199,6 +3199,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get posPacks => 'Packs';
 
   @override
+  String get posFavoris => 'Favourites';
+
+  @override
+  String get posFavorisVide =>
+      'No favourites. Add some from Products (Till favourite) or from the \"Good margin, few sales\" alert.';
+
+  @override
   String get posAffichageGrille => 'Grid view';
 
   @override
@@ -3753,6 +3760,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get prdAffecter => 'Assign';
+
+  @override
+  String get prdFavoriCaisse => 'Till favourite';
+
+  @override
+  String prdFavoriAjoute(int n) {
+    return '$n product(s) added to the till favourites';
+  }
+
+  @override
+  String prdFavoriRetire(int n) {
+    return '$n product(s) removed from the till favourites';
+  }
 
   @override
   String get prdImporter => 'Import';
@@ -8296,11 +8316,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get alpRegleFicheIncomplete => 'No barcode, no photo, filed under Miscellaneous or no sale price.';
 
   @override
-  String get alpRegleBonneMargePeuVendus => 'In the top X % margins, but in the less sold half.';
+  String get alpRegleBonneMargePeuVendus =>
+      'In the top X % margins, but in the less sold half (till favourites excluded).';
 
   @override
   String get alpRegleNouveautesMarche =>
-      'Products arrived from the BENS catalogue less than X days ago that you never had in stock.';
+      'Products the BENS catalogue confirmed as new on the market (brought by a CaisseDZ shop) less than X days ago that you never had in stock.';
 
   @override
   String get alpRegleTendancesMarche =>
@@ -8340,7 +8361,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get alpActionFiche => 'Complete the sheet';
 
   @override
-  String get alpActionVoir => 'See the product';
+  String get alpActionFavori => 'Add to till favourites';
+
+  @override
+  String alpFavoriAjoute(String produit) {
+    return '\"$produit\" is in the till favourites';
+  }
 
   @override
   String get alpActionCreerProduit => 'Create the product';

@@ -1,5 +1,9 @@
+import 'package:caissedz_desktop/application/catalogue_service.dart';
 import 'package:caissedz_desktop/application/favoris_service.dart';
+import 'package:caissedz_desktop/data/catalogue_repository.dart';
+import 'package:caissedz_desktop/data/favoris_caisse_repository.dart';
 import 'package:caissedz_desktop/data/favoris_repository.dart';
+import 'package:caissedz_desktop/domain/models/produit.dart';
 import 'package:caissedz_desktop/domain/modules.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -38,5 +42,24 @@ void main() {
       await service.enregistrer('admin', ['stock']);
       expect(await service.charger('admin'), ['stock']);
     });
+  });
+
+  test('FavorisCaisseRepository : ordre d’ajout, sans doublon, retrait, effacé avec le produit', () async {
+    final base = await ouvrirBaseDeTest();
+    final cat = CatalogueService(base.db, utilisateurCode: 'USR0000');
+    Future<String> produit(String nom) async => (await cat.creerProduit(
+      Produit(code: '', designation: nom, categorieCode: 'CATE0000', sousCategorieCode: 'SC0000', prixVente: 10),
+    )).code;
+    final lait = await produit('Lait');
+    final eau = await produit('Eau');
+    final pain = await produit('Pain');
+    final repo = FavorisCaisseRepository(base.db);
+    await repo.ajouter([eau, lait]);
+    await repo.ajouter([lait, pain]);
+    expect(await repo.lire(), [eau, lait, pain]);
+    await repo.retirer([lait]);
+    expect(await repo.lire(), [eau, pain]);
+    await CatalogueRepository(base.db).supprimerProduit(eau);
+    expect(await repo.lire(), [pain]);
   });
 }

@@ -55,6 +55,16 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
     _marque = null;
   });
 
+  /// Ajoute la sélection aux favoris de la caisse ; si tous y sont déjà, les retire.
+  Future<void> _basculerFavoris(List<Produit> choix, VoidCallback effacer, Set<String> favoris) async {
+    final l10n = AppLocalizations.of(context);
+    final ajouter = !choix.every((p) => favoris.contains(p.code));
+    await changerFavorisCaisse(ref, choix.map((p) => p.code), ajouter: ajouter);
+    effacer();
+    if (!mounted) return;
+    afficherToast(context, titre: ajouter ? l10n.prdFavoriAjoute(choix.length) : l10n.prdFavoriRetire(choix.length));
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -101,6 +111,7 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
     final colis = ref.watch(colisProvider).value ?? const <Colis>[];
     final nbCodes = ref.watch(nbCodesSecondairesProvider).value ?? const <String, int>{};
     final nbPhotos = ref.watch(nbPhotosProvider).value ?? const <String, int>{};
+    final favoris = (ref.watch(favorisCaisseProvider).value ?? const <String>[]).toSet();
     final nomsCat = {for (final c in categories) c.code: c.nom};
     final nomsSc = {for (final s in sous) s.code: s.nom};
     final nomsRem = {for (final r in remises) r.code: r.designation};
@@ -157,6 +168,15 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
       ),
       DsColonne(id: 'cat', libelle: l10n.produitsColCategorie, valeur: (p) => nomsCat[p.categorieCode] ?? '', flex: 2),
       DsColonne(id: 'marque', libelle: l10n.prdMarque, valeur: (p) => p.marque ?? ''),
+      DsColonne(
+        id: 'favori_caisse',
+        libelle: l10n.prdFavoriCaisse,
+        visibleParDefaut: false,
+        valeur: (p) => favoris.contains(p.code) ? 1 : 0,
+        cellule: (context, p) => favoris.contains(p.code)
+            ? Icon(LucideIcons.star, size: 16, color: context.ds.colors.warning)
+            : const SizedBox.shrink(),
+      ),
       DsColonne(
         id: 'stock',
         libelle: l10n.produitsColStock,
@@ -461,6 +481,12 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
           icone: LucideIcons.barcode,
           regle: DsRegleSelection.une,
           onPressed: (choix, _) => etiquette(choix.first),
+        ),
+        DsActionModule(
+          cle: const ValueKey('produits_favori_caisse'),
+          libelle: l10n.prdFavoriCaisse,
+          icone: LucideIcons.star,
+          onPressed: (choix, effacer) => _basculerFavoris(choix, effacer, favoris),
         ),
         DsActionModule(
           cle: const ValueKey('produits_affecter'),

@@ -40,12 +40,30 @@ class _Catalogue {
   bool enPanne = false;
 
   static const rayons = [
-    {'code': 'boissons', 'nom_fr': 'Boissons', 'nom_ar': 'المشروبات', 'nom_en': 'Drinks', 'icone': 'cup-soda', 'ordre': 80, 'produits': 3, 'tendances': 2},
-    {'code': 'laitiers', 'nom_fr': 'Produits laitiers & œufs', 'nom_ar': 'مشتقات الحليب', 'nom_en': 'Dairy', 'icone': 'milk', 'ordre': 90, 'produits': 1},
+    {
+      'code': 'boissons',
+      'nom_fr': 'Boissons',
+      'nom_ar': 'المشروبات',
+      'nom_en': 'Drinks',
+      'icone': 'cup-soda',
+      'ordre': 80,
+      'produits': 3,
+      'tendances': 2,
+    },
+    {
+      'code': 'laitiers',
+      'nom_fr': 'Produits laitiers & œufs',
+      'nom_ar': 'مشتقات الحليب',
+      'nom_en': 'Dairy',
+      'icone': 'milk',
+      'ordre': 90,
+      'produits': 1,
+    },
   ];
 
-  /// Produits devenus tendance par rayon (réponse à `?depuis=`) et les jours demandés.
+  /// Produits devenus tendance, et nouveaux sur le marché, par rayon (réponse à `?depuis=`) et les jours demandés.
   final tendances = <String, List<Map<String, Object?>>>{};
+  final nouveautes = <String, List<Map<String, Object?>>>{};
   final depuis = <String, List<String>>{};
 
   final pages = <String, List<List<Map<String, Object?>>>>{
@@ -84,7 +102,10 @@ class _Catalogue {
       }
       if (s.length == 3 && s[0] == 'rayons' && s[2] == 'products' && r.url.queryParameters['depuis'] != null) {
         (depuis[s[1]] ??= []).add(r.url.queryParameters['depuis']!);
-        final t = [for (final p in tendances[s[1]] ?? const <Map<String, Object?>>[]) {...p, 'tendance': true}];
+        final t = [
+          for (final p in tendances[s[1]] ?? const <Map<String, Object?>>[]) {...p, 'tendance': true},
+          ...?nouveautes[s[1]],
+        ];
         return _json({
           'success': true,
           'data': {'rayon': s[1], 'total': t.length, 'page': 1, 'limit': 500, 'total_pages': 1, 'products': t},
@@ -120,7 +141,10 @@ void main() {
       final s = CatalogueRayonsService(base.db, api: _Catalogue().api, utilisateurCode: 'USR0000');
       final rayons = await s.rayons();
       expect(rayons.map((r) => r.code), ['boissons', 'laitiers']);
-      expect([rayons.first.nom('ar'), rayons.first.nom('en'), rayons.first.nom('fr')], ['المشروبات', 'Drinks', 'Boissons']);
+      expect(
+        [rayons.first.nom('ar'), rayons.first.nom('en'), rayons.first.nom('fr')],
+        ['المشروبات', 'Drinks', 'Boissons'],
+      );
       expect([rayons.first.icone, rayons.first.produits, rayons.first.tendances], ['cup-soda', 3, 2]);
       expect(rayons.last.tendances, 0);
       expect(await s.estPropose(), isFalse);
@@ -142,15 +166,21 @@ void main() {
       expect(bilan.rayons.first.pourcentage, 75);
       expect(progres.last.recus, 5);
       expect(progres.last.attendus, 4, reason: 'annoncés par les rayons');
-      expect(catalogue.appels.where((u) => u.path == '/rayons/boissons/products').map((u) => u.queryParameters['page']), [
-        '1',
-        '2',
-      ]);
+      expect(
+        catalogue.appels.where((u) => u.path == '/rayons/boissons/products').map((u) => u.queryParameters['page']),
+        ['1', '2'],
+      );
 
       final produits = await _produitsCatalogue(base.db);
-      expect(produits.map((p) => p.designation), containsAll(['Selecto 1L', 'Hamoud Boualem 2L', 'Cola 33cl', 'Lben Soummam 1L']));
+      expect(
+        produits.map((p) => p.designation),
+        containsAll(['Selecto 1L', 'Hamoud Boualem 2L', 'Cola 33cl', 'Lben Soummam 1L']),
+      );
       final selecto = produits.firstWhere((p) => p.designation == 'Selecto 1L');
-      expect([selecto.prixAchat, selecto.prixVente, selecto.codeBarres, selecto.marque], [0, 0, '6130001000011', 'Hamoud']);
+      expect(
+        [selecto.prixAchat, selecto.prixVente, selecto.codeBarres, selecto.marque],
+        [0, 0, '6130001000011', 'Hamoud'],
+      );
       expect(selecto.image, 'https://catalog-api.bensds.com/uploads/photos/1.jpg');
       expect(selecto.designationAr, 'سليكتو 1 ل', reason: 'nom arabe du catalogue');
       expect(selecto.nom('ar'), 'سليكتو 1 ل');
@@ -286,12 +316,10 @@ void main() {
         'boissons': ['2026-10-20'],
       }, reason: 'depuis le téléchargement, rayon non téléchargé pas demandé');
       final rouiba = (await CatalogueRepository(base.db).produitParCodeBarres('6130005000017'))!;
-      expect([rouiba.designationAr, rouiba.source, rouiba.categorieCode, rouiba.prixVente], [
-        'رويبة برتقال',
-        Produit.sourceCatalogue,
-        hamoud.categorieCode,
-        0,
-      ]);
+      expect(
+        [rouiba.designationAr, rouiba.source, rouiba.categorieCode, rouiba.prixVente],
+        ['رويبة برتقال', Produit.sourceCatalogue, hamoud.categorieCode, 0],
+      );
       expect((await CatalogueRepository(base.db).produitParCode(hamoud.code))!.designationAr, 'حمود بوعلام');
       expect((await CatalogueRepository(base.db).produitParCode('PRD0007'))!.designationAr, isNull);
       // Tendance retenue sur les trois produits (alerte « Tendances du marché »), hamoud déjà présent compris.
@@ -301,12 +329,32 @@ void main() {
       expect(ligne['telecharges'], 3, reason: '2 au téléchargement (Cola déjà là) + Rouiba');
       expect(DateTime.parse(ligne['tendance_le']! as String).toLocal(), DateTime(2026, 10, 21, 9));
       final journal = await HistoriqueRepository(base.db).lire();
-      expect(journal.where((h) => h.action == 'Tendance catalogue').single.detail, 'Boissons : 1 produits tendance ajoutés');
+      expect(
+        journal.where((h) => h.action == 'Tendance catalogue').single.detail,
+        'Boissons : 1 produits tendance ou nouveaux ajoutés',
+      );
 
       // La fois suivante : depuis le 21 (compris) ; plus rien de neuf.
       expect(await s.actualiserTendances(maintenant: DateTime(2026, 10, 22, 9)), (ajoutes: 0, nomsAr: 0));
       expect(catalogue.depuis['boissons'], ['2026-10-20', '2026-10-21']);
       expect((await _produitsCatalogue(base.db)).length, 3);
+    });
+
+    test('nouveautés du marché : ajoutées avec le jour de leur confirmation par le catalogue', () async {
+      final base = await ouvrirBaseDeTest();
+      final catalogue = _Catalogue();
+      final s = CatalogueRayonsService(base.db, api: catalogue.api, utilisateurCode: 'USR0000');
+      await s.telecharger([(await s.rayons()).first], maintenant: DateTime(2026, 10, 20, 10));
+      // Ifri : apporté par une boutique, confirmé le 21 ; Selecto (déjà là) : le jour est noté aussi.
+      catalogue.nouveautes['boissons'] = [
+        {..._p('6130006000016', 'Ifri 1,5L'), 'nouveau_le': '2026-10-21'},
+        {..._p('6130001000011', 'Selecto 1L'), 'nouveau_le': '2026-10-19'},
+      ];
+      expect(await s.actualiserTendances(maintenant: DateTime(2026, 10, 21, 9)), (ajoutes: 1, nomsAr: 0));
+      final ifri = (await base.db.query('produit', where: 'code_barres = ?', whereArgs: ['6130006000016'])).single;
+      expect([ifri['source'], ifri['nouveau_le'], ifri['tendance_le']], [Produit.sourceCatalogue, '2026-10-21', null]);
+      final selecto = (await base.db.query('produit', where: 'code_barres = ?', whereArgs: ['6130001000011'])).single;
+      expect(selecto['nouveau_le'], '2026-10-19');
     });
 
     test('un produit non marqué tendance n’est pas ajouté (serveur qui ignorerait « depuis »)', () async {
@@ -325,7 +373,11 @@ void main() {
               'data': {
                 'total_pages': 1,
                 'products': [
-                  {'code_barres': '6130006000016', 'codes_barres': ['6130006000016'], 'nom': 'Ifri 1,5L'},
+                  {
+                    'code_barres': '6130006000016',
+                    'codes_barres': ['6130006000016'],
+                    'nom': 'Ifri 1,5L',
+                  },
                 ],
               },
             }),

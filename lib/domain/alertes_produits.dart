@@ -16,8 +16,8 @@ enum ActionAlerteProduit {
   creerCommande,
   ajusterSeuil,
   modifierProduit,
-  voirProduit,
   completerProduit,
+  ajouterFavori,
 }
 
 /// Les 20 alertes produits (document « Product alerts and catalogue », partie 1 + 2 alertes du catalogue BENS).
@@ -40,7 +40,7 @@ enum TypeAlerteProduit {
   saisonniers(15, GroupeAlerteProduit.ventes, ActionAlerteProduit.creerBesoin),
   rupturesFrequentes(16, GroupeAlerteProduit.stock, ActionAlerteProduit.ajusterSeuil),
   ficheIncomplete(17, GroupeAlerteProduit.qualite, ActionAlerteProduit.modifierProduit),
-  bonneMargePeuVendus(18, GroupeAlerteProduit.ventes, ActionAlerteProduit.voirProduit, cout: true),
+  bonneMargePeuVendus(18, GroupeAlerteProduit.ventes, ActionAlerteProduit.ajouterFavori, cout: true),
   nouveautesMarche(19, GroupeAlerteProduit.marche, ActionAlerteProduit.completerProduit),
   tendancesMarche(20, GroupeAlerteProduit.marche, ActionAlerteProduit.creerBesoin);
 

@@ -16,7 +16,7 @@ import '../domain/models/rayon_catalogue.dart';
 ///
 /// Chaque rayon a SA catégorie locale (créée à son nom FR, ou celle qui porte déjà ce nom). Un produit
 /// dont un code-barres est déjà connu n'est pas ajouté : un nouveau téléchargement ne crée aucun doublon.
-/// Ensuite, au lancement, les produits devenus tendance dans ces rayons sont ajoutés
+/// Ensuite, au lancement, les produits devenus tendance ou nouveaux sur le marché dans ces rayons sont ajoutés
 /// ([actualiserTendances]). Tout est reçu d'abord, puis écrit en UNE transaction.
 class CatalogueRayonsService {
   const CatalogueRayonsService(this.db, {required this.api, required this.utilisateurCode});
@@ -111,7 +111,8 @@ class CatalogueRayonsService {
     });
   }
 
-  /// Au lancement : ajoute aux rayons déjà téléchargés les produits devenus tendance depuis la dernière fois
+  /// Au lancement : ajoute aux rayons déjà téléchargés les produits devenus tendance ou nouveaux sur le marché
+  /// (alertes « Tendances du marché » et « Nouveautés du marché ») depuis la dernière fois
   /// (le jour de la dernière demande compris : un produit devenu tendance ce jour-là n'est pas manqué), et
   /// donne leur nom arabe aux produits du catalogue qui n'en avaient pas. Renvoie le nombre de produits
   /// ajoutés et de noms arabes repris ; lance [CatalogueRayonsException] hors ligne (rien n'est écrit).
@@ -122,10 +123,11 @@ class CatalogueRayonsService {
     for (final MapEntry(key: code, value: r) in importes.entries) {
       final depuis = r.tendanceLe ?? r.importeLe;
       final liste = await _recevoir(code, depuis: DateTime(depuis.year, depuis.month, depuis.day));
-      // Seulement les produits marqués tendance : un serveur qui ignorerait `depuis` renverrait tout le rayon.
+      // Seulement les produits marqués tendance ou nouveaux : un serveur qui ignorerait `depuis` renverrait tout le
+      // rayon.
       recus[code] = [
         for (final p in liste)
-          if (p.tendance) p,
+          if (p.tendance || p.nouveauLe != null) p,
       ];
     }
     final le = maintenant ?? DateTime.now();
@@ -144,7 +146,7 @@ class CatalogueRayonsService {
             action: 'Tendance catalogue',
             entite: 'catalogue_rayon',
             entiteCode: code,
-            detail: '${r.nom} : ${resultat.ajoutes} produits tendance ajoutés',
+            detail: '${r.nom} : ${resultat.ajoutes} produits tendance ou nouveaux ajoutés',
           );
         }
         ajoutes += resultat.ajoutes;
@@ -242,6 +244,12 @@ class _Ajout {
         if (p.tendance) ...p.codesBarres,
     ];
     if (tendances.isNotEmpty) await repo.marquerProduitsTendance(tendances, DateTime.now());
+    // Nouveautés du marché : le jour de confirmation donné par le catalogue (alerte « Nouveautés du marché »).
+    await repo.marquerProduitsNouveaux({
+      for (final p in produits)
+        if (p.nouveauLe != null)
+          for (final cb in p.codesBarres) cb: p.nouveauLe!,
+    });
     return (ajoutes: nouveaux.length, deja: deja, ignores: ignores);
   }
 }

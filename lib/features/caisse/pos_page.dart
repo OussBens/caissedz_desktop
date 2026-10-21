@@ -41,7 +41,7 @@ class PosPage extends ConsumerStatefulWidget {
   ConsumerState<PosPage> createState() => _PosPageState();
 }
 
-enum _Vue { produits, packs }
+enum _Vue { produits, favoris, packs }
 
 class _PosPageState extends ConsumerState<PosPage> {
   final _scan = TextEditingController();
@@ -729,6 +729,7 @@ class _PosPageState extends ConsumerState<PosPage> {
     final admin = ref.watch(sessionProvider)?.estAdmin ?? false;
     // Stock affiché = stock du magasin − quantités déjà mises dans les paniers ouverts (avant l'encaissement).
     final etat = ref.watch(posControllerProvider);
+    final favoris = ref.watch(favorisCaisseProvider).value ?? const <String>[];
     final r = _recherche.trim().toLowerCase();
     final liste = _disposition == DsVueModule.liste;
     final langue = Localizations.localeOf(context).languageCode;
@@ -749,9 +750,12 @@ class _PosPageState extends ConsumerState<PosPage> {
             ),
       ];
     } else {
+      // Favoris : dans l'ordre où ils ont été ajoutés, sans filtre de catégorie.
+      final parCode = {for (final p in produits) p.code: p};
+      final source = _vue == _Vue.favoris ? [for (final c in favoris) ?parCode[c]] : produits;
       tuiles = [
-        for (final p in produits)
-          if ((_categorie == null || p.categorieCode == _categorie) &&
+        for (final p in source)
+          if ((_vue == _Vue.favoris || _categorie == null || p.categorieCode == _categorie) &&
               (r.isEmpty ||
                   p.texteRecherche.toLowerCase().contains(r) ||
                   p.code.toLowerCase().contains(r) ||
@@ -780,48 +784,61 @@ class _PosPageState extends ConsumerState<PosPage> {
       spacing: DsSpacing.s3,
       children: [
         _barreRecherche(),
-        Row(
-          spacing: DsSpacing.s3,
-          children: [
-            DsSegmentedControl<_Vue>(
-              valeur: _vue,
-              onChanged: (v) => setState(() => _vue = v),
-              options: [
-                DsOption(_Vue.produits, libelle: l10n.posProduits, icone: LucideIcons.package),
-                DsOption(_Vue.packs, libelle: l10n.posPacks, icone: LucideIcons.gift),
-              ],
-            ),
-            if (_vue == _Vue.produits)
-              Expanded(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: DsSegmentedControl<String?>(
-                    valeur: _categorie,
-                    onChanged: (v) => setState(() => _categorie = v),
-                    options: [
-                      DsOption(null, libelle: l10n.posCategoriesToutes),
-                      for (final cat in categories) DsOption(cat.code, libelle: cat.nom),
-                    ],
-                  ),
+        // Colonne étroite : Produits / Favoris / Packs se réduisent à leur icône (libellé en infobulle).
+        LayoutBuilder(
+          builder: (context, contraintes) {
+            final etroit = contraintes.maxWidth < 600;
+            DsOption<_Vue> option(_Vue v, String libelle, IconData icone) =>
+                DsOption(v, libelle: etroit ? null : libelle, icone: icone, tooltip: etroit ? libelle : null);
+            return Row(
+              spacing: DsSpacing.s3,
+              children: [
+                DsSegmentedControl<_Vue>(
+                  valeur: _vue,
+                  onChanged: (v) => setState(() => _vue = v),
+                  options: [
+                    option(_Vue.produits, l10n.posProduits, LucideIcons.package),
+                    option(_Vue.favoris, l10n.posFavoris, LucideIcons.star),
+                    option(_Vue.packs, l10n.posPacks, LucideIcons.gift),
+                  ],
                 ),
-              )
-            else
-              const Spacer(),
-            DsSegmentedControl<DsVueModule>(
-              valeur: _disposition,
-              onChanged: (v) => setState(() => _disposition = v),
-              options: [
-                DsOption(DsVueModule.grille, icone: LucideIcons.layoutGrid, tooltip: l10n.posAffichageGrille),
-                DsOption(DsVueModule.liste, icone: LucideIcons.list, tooltip: l10n.posAffichageListe),
+                if (_vue == _Vue.produits)
+                  Expanded(
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: DsSegmentedControl<String?>(
+                        valeur: _categorie,
+                        onChanged: (v) => setState(() => _categorie = v),
+                        options: [
+                          DsOption(null, libelle: l10n.posCategoriesToutes),
+                          for (final cat in categories) DsOption(cat.code, libelle: cat.nom),
+                        ],
+                      ),
+                    ),
+                  )
+                else
+                  const Spacer(),
+                DsSegmentedControl<DsVueModule>(
+                  valeur: _disposition,
+                  onChanged: (v) => setState(() => _disposition = v),
+                  options: [
+                    DsOption(DsVueModule.grille, icone: LucideIcons.layoutGrid, tooltip: l10n.posAffichageGrille),
+                    DsOption(DsVueModule.liste, icone: LucideIcons.list, tooltip: l10n.posAffichageListe),
+                  ],
+                ),
               ],
-            ),
-          ],
+            );
+          },
         ),
         Expanded(
           child: tuiles.isEmpty
               ? DsVide(
-                  message: l10n.posAucunProduit,
-                  icone: _vue == _Vue.packs ? LucideIcons.gift : LucideIcons.package,
+                  message: _vue == _Vue.favoris && favoris.isEmpty ? l10n.posFavorisVide : l10n.posAucunProduit,
+                  icone: switch (_vue) {
+                    _Vue.packs => LucideIcons.gift,
+                    _Vue.favoris => LucideIcons.star,
+                    _Vue.produits => LucideIcons.package,
+                  },
                 )
               : liste
               ? Container(

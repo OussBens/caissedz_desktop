@@ -53,6 +53,7 @@ class ProduitCatalogue {
     this.marque,
     this.photo,
     this.tendance = false,
+    this.nouveauLe,
   });
 
   final String nom;
@@ -62,6 +63,10 @@ class ProduitCatalogue {
 
   /// Se vend dans plusieurs boutiques CaisseDZ.
   final bool tendance;
+
+  /// Jour où le catalogue l'a confirmé nouveau sur le marché (apporté par une boutique CaisseDZ, confirmé par les
+  /// autres) ; `null` : produit du catalogue d'origine.
+  final DateTime? nouveauLe;
 
   /// Le principal d'abord.
   final List<String> codesBarres;
@@ -85,6 +90,7 @@ class ProduitCatalogue {
       marque: texte(j['marque']),
       photo: texte(j['photo']),
       tendance: j['tendance'] == true,
+      nouveauLe: DateTime.tryParse(texte(j['nouveau_le']) ?? ''),
     );
   }
 }

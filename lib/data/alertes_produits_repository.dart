@@ -20,6 +20,12 @@ typedef ProduitAlerte = ({
   String? remiseCode,
   DateTime? tendanceLe,
 
+  /// Jour où le catalogue BENS l'a confirmé nouveau sur le marché (`null` : pas une nouveauté).
+  DateTime? nouveauLe,
+
+  /// Épinglé dans les favoris de la caisse.
+  bool favori,
+
   /// Premier mouvement de stock (`null` : jamais entré en stock).
   DateTime? premierMouvement,
 });
@@ -53,6 +59,7 @@ class AlertesProduitsRepository {
     for (final r in await db.rawQuery('''
       SELECT p.code, p.designation, COALESCE(c.nom, '') categorie, p.categorie_code, p.sous_categorie_code,
              p.prix_achat, p.prix_vente, p.seuil_stock, p.code_barres, p.cree_le, p.source, p.remise_code, p.tendance_le,
+             p.nouveau_le, EXISTS (SELECT 1 FROM favori_caisse f WHERE f.produit_code = p.code) favori,
              (COALESCE(p.image, '') <> '' OR EXISTS (SELECT 1 FROM produit_photo f WHERE f.produit_code = p.code)) photo,
              m.premier
       FROM produit p
@@ -76,6 +83,8 @@ class AlertesProduitsRepository {
         source: r['source']! as String,
         remiseCode: r['remise_code'] as String?,
         tendanceLe: _date(r['tendance_le']),
+        nouveauLe: _date(r['nouveau_le']),
+        favori: (r['favori'] as int? ?? 0) == 1,
         premierMouvement: _date(r['premier']),
       ),
   ];
@@ -268,12 +277,6 @@ class AlertesProduitsRepository {
   Future<List<String>> magasinsActifs() async => [
     for (final r in await db.rawQuery('SELECT code FROM magasin WHERE actif = 1 ORDER BY code')) r['code']! as String,
   ];
-
-  /// Jour du dernier téléchargement de chaque catégorie liée à un rayon du catalogue BENS.
-  Future<Map<String, DateTime>> importsRayons() async => {
-    for (final r in await db.rawQuery('SELECT categorie_code, MAX(importe_le) i FROM catalogue_rayon GROUP BY 1'))
-      r['categorie_code']! as String: ?_date(r['i']),
-  };
 
   /// Source des produits téléchargés du catalogue BENS.
   static const String sourceCatalogue = Produit.sourceCatalogue;

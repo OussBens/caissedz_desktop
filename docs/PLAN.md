@@ -1193,9 +1193,27 @@ téléchargés et le code-barres inconnu est cherché dans le catalogue à la ca
   Paramètres › Alertes › Alertes produits, point rouge sur le Tableau de bord tant que de nouvelles alertes ne sont
   pas consultées. Calcul à la connexion, à l'ouverture du tableau de bord ou de la Situation, après les Paramètres
   et toutes les 15 minutes (jamais à chaque vente).
-  Écart au document de proposition : « Ajouter aux favoris caisse » (alerte 18) n'existe pas dans l'application ;
-  l'action ouvre la fiche du produit.
+  Écart au document de proposition (résolu, voir ci-dessous) : l'alerte 18 ouvrait la fiche du produit.
 - Tests : `detail_prix_test.dart`, `entrees_page_test.dart` (Manuel), `serveur_mobile_test.dart` et
   `choix_utilisateur_mobile_test.dart` (appairage), `catalogue_service_test.dart` et `produits_page_test.dart`
   (colis), `alertes_produits_service_test.dart` (les 20 règles, permissions, seuils),
   `alertes_produits_test.dart` (carte, Situation, action, point rouge, Paramètres).
+
+## Favoris de la caisse et nouveautés du marché (alertes 18 et 19) ✅ (2026-10-21)
+
+- **Favoris de la caisse** (migration v41, table `favori_caisse` : code produit + ordre, communs à tous les postes) :
+  onglet « Favoris » de la Caisse (Produits · Favoris · Packs, dans l'ordre d'ajout ; réduit à des icônes dans une
+  colonne étroite) ; Produits › action « Favori caisse » (ajoute la sélection, ou la retire si tout y est déjà) et
+  colonne masquable ; l'action de l'alerte 18 « Bonne marge, peu vendus » ajoute le produit aux favoris, et un
+  favori ne déclenche plus cette alerte. Un produit supprimé quitte les favoris.
+- **Nouveautés du marché** (alerte 19) : catalog-api (`GET /rayons/{code}/products?depuis=`) renvoie aussi les
+  produits apportés par une boutique CaisseDZ puis confirmés par les autres depuis ce jour, avec `nouveau_le`
+  (jour de confirmation). Au lancement, le poste les ajoute avec les tendances et note `produit.nouveau_le`
+  (migration v41) ; l'alerte 19 = produit du catalogue jamais entré en stock, confirmé nouveau depuis moins de
+  X jours. Remplace l'ancienne approximation (produits arrivés après le téléchargement du rayon). Les postes plus
+  anciens ignorent ces produits (ils ne gardent que ceux marqués tendance).
+- Tests : `favoris_service_test.dart` (FavorisCaisseRepository), `pos_page_test.dart` (onglet Favoris, RTL),
+  `alertes_produits_service_test.dart` (alertes 18 et 19), `catalogue_rayons_service_test.dart` (nouveautés) ;
+  catalog-api : `tendance_test.php` (nouveautés et `nouveau_le`).
+- **À déployer** : catalog-api (commit « Ajoute les nouveautés du marché aux produits des rayons »). Sans ce
+  déploiement, l'alerte 19 reste vide (le reste fonctionne).

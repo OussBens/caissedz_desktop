@@ -235,6 +235,7 @@ class CatalogueRepository {
     await db.delete('produit_code_detail', where: 'produit_code = ?', whereArgs: [code]);
     await db.delete('produit_photo', where: 'produit_code = ?', whereArgs: [code]);
     await db.delete('colis', where: 'produit_code = ?', whereArgs: [code]);
+    await db.delete('favori_caisse', where: 'produit_code = ?', whereArgs: [code]);
     await db.delete('produit', where: 'code = ?', whereArgs: [code]);
   }
 

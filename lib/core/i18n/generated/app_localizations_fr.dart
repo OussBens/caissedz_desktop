@@ -3206,6 +3206,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get posPacks => 'Packs';
 
   @override
+  String get posFavoris => 'Favoris';
+
+  @override
+  String get posFavorisVide =>
+      'Aucun favori. Ajoutez-en depuis Produits (Favori caisse) ou depuis l\'alerte « Bonne marge, peu vendus ».';
+
+  @override
   String get posAffichageGrille => 'Affichage grille';
 
   @override
@@ -3760,6 +3767,19 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get prdAffecter => 'Affecter';
+
+  @override
+  String get prdFavoriCaisse => 'Favori caisse';
+
+  @override
+  String prdFavoriAjoute(int n) {
+    return '$n produit(s) ajouté(s) aux favoris de la caisse';
+  }
+
+  @override
+  String prdFavoriRetire(int n) {
+    return '$n produit(s) retiré(s) des favoris de la caisse';
+  }
 
   @override
   String get prdImporter => 'Importer';
@@ -8316,11 +8336,12 @@ class AppLocalizationsFr extends AppLocalizations {
       'Sans code-barres, sans photo, rangé dans la catégorie Divers ou sans prix de vente.';
 
   @override
-  String get alpRegleBonneMargePeuVendus => 'Dans les X % des meilleures marges, mais dans la moitié la moins vendue.';
+  String get alpRegleBonneMargePeuVendus =>
+      'Dans les X % des meilleures marges, mais dans la moitié la moins vendue (hors favoris de la caisse).';
 
   @override
   String get alpRegleNouveautesMarche =>
-      'Produits arrivés du catalogue BENS depuis moins de X jours, que vous n\'avez jamais eus en stock.';
+      'Produits confirmés nouveaux sur le marché par le catalogue BENS (apportés par une boutique CaisseDZ) depuis moins de X jours, que vous n\'avez jamais eus en stock.';
 
   @override
   String get alpRegleTendancesMarche =>
@@ -8360,7 +8381,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get alpActionFiche => 'Compléter la fiche';
 
   @override
-  String get alpActionVoir => 'Voir le produit';
+  String get alpActionFavori => 'Ajouter aux favoris caisse';
+
+  @override
+  String alpFavoriAjoute(String produit) {
+    return '« $produit » est dans les favoris de la caisse';
+  }
 
   @override
   String get alpActionCreerProduit => 'Créer le produit';

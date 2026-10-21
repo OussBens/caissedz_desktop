@@ -115,7 +115,6 @@ class AlertesProduitsService {
                 if (magasins == null || magasins.contains(m)) m,
             ]
           : const [],
-      imports: veut(TypeAlerteProduit.nouveautesMarche) ? await repo.importsRayons() : const {},
       remises: remises,
     );
     return AlertesProduits({for (final t in types) t: calcul.alertes(t)});
@@ -162,7 +161,6 @@ class _Calcul {
     required this.paires,
     required this.saison,
     required this.magasins,
-    required this.imports,
     required this.remises,
   }) : _cles = [
          for (var i = 0; i < math.max(2 * s.periodeJours, 2 * s.hausseJours); i++)
@@ -184,7 +182,6 @@ class _Calcul {
   final List<({String p1, String p2, int tickets})> paires;
   final Map<String, double> saison;
   final List<String> magasins;
-  final Map<String, DateTime> imports;
   final List<_RemiseSuivie> remises;
 
   /// Jours `AAAA-MM-JJ`, aujourd'hui d'abord.
@@ -697,7 +694,8 @@ class _Calcul {
         ),
   ], (a) => a.quantite!);
 
-  // 18 · Dans les X % des meilleures marges, mais dans la moitié la moins vendue.
+  // 18 · Dans les X % des meilleures marges, mais dans la moitié la moins vendue ; hors favoris de la caisse (déjà
+  // mis en avant). Classement sur tous les produits, favoris compris.
   List<AlerteProduit> _bonneMargePeuVendus() {
     final candidats = [
       for (final p in _suivis)
@@ -711,7 +709,7 @@ class _Calcul {
     final moitie = parVentes.take(candidats.length ~/ 2).map((c) => c.p.code).toSet();
     return [
       for (final c in meilleures)
-        if (moitie.contains(c.p.code))
+        if (moitie.contains(c.p.code) && !c.p.favori)
           _alerte(
             TypeAlerteProduit.bonneMargePeuVendus,
             c.p,
@@ -722,15 +720,12 @@ class _Calcul {
     ];
   }
 
-  // 19 · Produits arrivés du catalogue BENS après le téléchargement de leur rayon (nouveautés du marché, mises à
-  // jour au lancement), depuis moins de X jours, jamais entrés en stock.
+  // 19 · Nouveautés du marché : produits que le catalogue BENS a confirmés nouveaux (apportés par une boutique
+  // CaisseDZ, confirmés par les autres) depuis moins de X jours, jamais entrés en stock ici.
   List<AlerteProduit> _nouveautesMarche() => [
     for (final p in produits)
-      if (_catalogueAbsent(p) &&
-          _depuis(p.creeLe) < s.nouveautesJours &&
-          (imports[p.categorieCode] == null ||
-              p.creeLe.isAfter(imports[p.categorieCode]!.add(const Duration(minutes: 10)))))
-        _alerte(TypeAlerteProduit.nouveautesMarche, p, jours: _depuis(p.creeLe).toDouble()),
+      if (_catalogueAbsent(p) && p.nouveauLe != null && _depuis(p.nouveauLe!) < s.nouveautesJours)
+        _alerte(TypeAlerteProduit.nouveautesMarche, p, jours: _depuis(p.nouveauLe!).toDouble()),
   ]..sort((a, b) => a.jours!.compareTo(b.jours!));
 
   // 20 · Produits que le catalogue BENS signale tendance (vendus dans plusieurs boutiques) et jamais entrés en stock.

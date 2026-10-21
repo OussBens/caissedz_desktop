@@ -7,6 +7,7 @@ import '../../application/catalogue_service.dart';
 import '../../application/import_produits_service.dart';
 import '../../application/synchro_catalogue_service.dart';
 import '../../data/catalogue_repository.dart';
+import '../../data/favoris_caisse_repository.dart';
 import '../../data/parametre_repository.dart';
 import '../../domain/fiscalite.dart';
 import '../../domain/models/parametres_paiement.dart';
@@ -171,6 +172,19 @@ final remisesProvider = FutureProvider<List<Remise>>((ref) {
   ref.watch(catalogueVersionProvider);
   return ref.watch(catalogueRepositoryProvider).remises();
 });
+
+/// Produits favoris de la caisse (onglet « Favoris » de la caisse), dans l'ordre d'ajout.
+final favorisCaisseProvider = FutureProvider<List<String>>((ref) {
+  ref.watch(catalogueVersionProvider);
+  return FavorisCaisseRepository(ref.watch(appDatabaseProvider).db).lire();
+});
+
+/// Ajoute [codes] aux favoris de la caisse ([ajouter] faux : les retire), puis rafraîchit le catalogue.
+Future<void> changerFavorisCaisse(WidgetRef ref, Iterable<String> codes, {bool ajouter = true}) async {
+  final repo = FavorisCaisseRepository(ref.read(appDatabaseProvider).db);
+  ajouter ? await repo.ajouter(codes) : await repo.retirer(codes);
+  rafraichirCatalogue(ref);
+}
 
 /// À appeler après toute écriture dans le catalogue.
 void rafraichirCatalogue(WidgetRef ref) => ref.read(catalogueVersionProvider.notifier).incrementer();

@@ -6213,6 +6213,18 @@ abstract class AppLocalizations {
   /// **'Packs'**
   String get posPacks;
 
+  /// No description provided for @posFavoris.
+  ///
+  /// In fr, this message translates to:
+  /// **'Favoris'**
+  String get posFavoris;
+
+  /// No description provided for @posFavorisVide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun favori. Ajoutez-en depuis Produits (Favori caisse) ou depuis l\'alerte « Bonne marge, peu vendus ».'**
+  String get posFavorisVide;
+
   /// No description provided for @posAffichageGrille.
   ///
   /// In fr, this message translates to:
@@ -7196,6 +7208,24 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Affecter'**
   String get prdAffecter;
+
+  /// No description provided for @prdFavoriCaisse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Favori caisse'**
+  String get prdFavoriCaisse;
+
+  /// No description provided for @prdFavoriAjoute.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n} produit(s) ajouté(s) aux favoris de la caisse'**
+  String prdFavoriAjoute(int n);
+
+  /// No description provided for @prdFavoriRetire.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n} produit(s) retiré(s) des favoris de la caisse'**
+  String prdFavoriRetire(int n);
 
   /// No description provided for @prdImporter.
   ///
@@ -15588,13 +15618,13 @@ abstract class AppLocalizations {
   /// No description provided for @alpRegleBonneMargePeuVendus.
   ///
   /// In fr, this message translates to:
-  /// **'Dans les X % des meilleures marges, mais dans la moitié la moins vendue.'**
+  /// **'Dans les X % des meilleures marges, mais dans la moitié la moins vendue (hors favoris de la caisse).'**
   String get alpRegleBonneMargePeuVendus;
 
   /// No description provided for @alpRegleNouveautesMarche.
   ///
   /// In fr, this message translates to:
-  /// **'Produits arrivés du catalogue BENS depuis moins de X jours, que vous n\'avez jamais eus en stock.'**
+  /// **'Produits confirmés nouveaux sur le marché par le catalogue BENS (apportés par une boutique CaisseDZ) depuis moins de X jours, que vous n\'avez jamais eus en stock.'**
   String get alpRegleNouveautesMarche;
 
   /// No description provided for @alpRegleTendancesMarche.
@@ -15669,11 +15699,17 @@ abstract class AppLocalizations {
   /// **'Compléter la fiche'**
   String get alpActionFiche;
 
-  /// No description provided for @alpActionVoir.
+  /// No description provided for @alpActionFavori.
   ///
   /// In fr, this message translates to:
-  /// **'Voir le produit'**
-  String get alpActionVoir;
+  /// **'Ajouter aux favoris caisse'**
+  String get alpActionFavori;
+
+  /// No description provided for @alpFavoriAjoute.
+  ///
+  /// In fr, this message translates to:
+  /// **'« {produit} » est dans les favoris de la caisse'**
+  String alpFavoriAjoute(String produit);
 
   /// No description provided for @alpActionCreerProduit.
   ///

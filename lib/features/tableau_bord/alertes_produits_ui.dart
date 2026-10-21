@@ -8,7 +8,6 @@ import '../../core/i18n/generated/app_localizations.dart';
 import '../../domain/alertes_produits.dart';
 import '../commercial/commandes_fournisseurs_page.dart';
 import '../produits/catalogue_dialogs.dart';
-import '../produits/produit_dialogs.dart';
 import '../produits/produit_form_dialog.dart';
 import '../produits/produits_providers.dart';
 import '../stock/stock_dialogs.dart';
@@ -81,8 +80,8 @@ String libelleActionAlerte(AppLocalizations l10n, ActionAlerteProduit a) => swit
   ActionAlerteProduit.creerCommande => l10n.alpActionCommande,
   ActionAlerteProduit.ajusterSeuil => l10n.alpActionSeuil,
   ActionAlerteProduit.modifierProduit => l10n.alpActionFiche,
-  ActionAlerteProduit.voirProduit => l10n.alpActionVoir,
   ActionAlerteProduit.completerProduit => l10n.alpActionCreerProduit,
+  ActionAlerteProduit.ajouterFavori => l10n.alpActionFavori,
 };
 
 /// Libellé d'un seuil des Paramètres.
@@ -259,8 +258,11 @@ Future<void> executerActionAlerte(BuildContext context, WidgetRef ref, AlertePro
       );
     case ActionAlerteProduit.creerCommande:
       await afficherFormulaireCommandeFournisseur(context, ref, proposes: [(p, a.suggestion ?? 1)]);
-    case ActionAlerteProduit.voirProduit:
-      await afficherDetailProduit(context, ref, p);
+    case ActionAlerteProduit.ajouterFavori:
+      await changerFavorisCaisse(ref, [p.code]);
+      if (context.mounted) {
+        afficherToast(context, titre: AppLocalizations.of(context).alpFavoriAjoute(p.designation));
+      }
   }
   // Une action a pu changer le catalogue, le stock ou les remises : les alertes sont recalculées.
   await ref.read(alertesProduitsProvider.notifier).actualiser();

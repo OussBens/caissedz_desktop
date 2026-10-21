@@ -4,6 +4,7 @@ import 'package:caissedz_desktop/app/providers.dart';
 import 'package:caissedz_desktop/application/catalogue_service.dart';
 import 'package:caissedz_desktop/application/stock_service.dart';
 import 'package:caissedz_desktop/core/design_system/design_system.dart';
+import 'package:caissedz_desktop/data/favoris_caisse_repository.dart';
 import 'package:caissedz_desktop/data/parametre_repository.dart';
 import 'package:caissedz_desktop/data/stock_repository.dart';
 import 'package:caissedz_desktop/data/vente_repository.dart';
@@ -259,11 +260,10 @@ void main() {
           .widget<TextField>(find.descendant(of: find.byKey(ValueKey(cle)), matching: find.byType(TextField)).first)
           .controller!
           .text;
-      expect([texte('produit_designation'), texte('produit_designation_ar'), texte('produit_code_barres')], [
-        'Rouiba Orange 1L',
-        'رويبة برتقال',
-        '6130005000017',
-      ]);
+      expect(
+        [texte('produit_designation'), texte('produit_designation_ar'), texte('produit_code_barres')],
+        ['Rouiba Orange 1L', 'رويبة برتقال', '6130005000017'],
+      );
 
       // Absent du catalogue : le titre habituel, le formulaire avec le seul code-barres.
       await clic(tester, find.text('Annuler').last);
@@ -276,7 +276,9 @@ void main() {
       expect([texte('produit_designation'), texte('produit_code_barres')], ['', '9999999999994']);
     });
 
-    testWidgets('produit du catalogue à confirmer : « c’est bien lui » (+1) ou « ce n’est pas ça » (−1)', (tester) async {
+    testWidgets('produit du catalogue à confirmer : « c’est bien lui » (+1) ou « ce n’est pas ça » (−1)', (
+      tester,
+    ) async {
       final votes = <Object?>[];
       final client = MockClient((req) async {
         if (req.url.path.startsWith('/products/barcode/')) {
@@ -297,7 +299,13 @@ void main() {
         }
         if (req.url.path == '/tendance') {
           votes.addAll((jsonDecode(req.body) as Map)['confirmations'] as List);
-          return http.Response(jsonEncode({'success': true, 'data': {'votes': 1}}), 200);
+          return http.Response(
+            jsonEncode({
+              'success': true,
+              'data': {'votes': 1},
+            }),
+            200,
+          );
         }
         return http.Response('{"success":false}', 404);
       });
@@ -335,7 +343,11 @@ void main() {
       await clic(tester, find.byKey(const ValueKey('introuvable_refuser')));
       await tester.pump(const Duration(milliseconds: 200));
       expect(votes.last, {'code_barres': '6130007000015', 'vote': -1});
-      expect([texte('produit_designation'), texte('produit_code_barres')], ['', '6130007000015'], reason: 'formulaire vide');
+      expect(
+        [texte('produit_designation'), texte('produit_code_barres')],
+        ['', '6130007000015'],
+        reason: 'formulaire vide',
+      );
     });
 
     testWidgets('ventes en parallèle, stock insuffisant, raccourcis F1 / F9 / F10 / F11', (tester) async {
@@ -368,7 +380,11 @@ void main() {
       // Produits masqués : panneau d'encaissement à droite (client, remise, total, encaissement).
       final panneau = find.byKey(const ValueKey('panier_encaissement'));
       for (final cle in ['panier_client', 'panier_remise', 'caisse_encaisser']) {
-        expect(find.descendant(of: panneau, matching: find.byKey(ValueKey(cle))), findsOneWidget, reason: cle);
+        expect(
+          find.descendant(of: panneau, matching: find.byKey(ValueKey(cle))),
+          findsOneWidget,
+          reason: cle,
+        );
       }
       await clic(tester, find.byKey(const ValueKey('caisse_basculer_produits')));
       expect(find.byType(DsProductTile), findsWidgets);
@@ -521,6 +537,22 @@ void main() {
       expect(find.descendant(of: ligne, matching: find.text('Lait 1 L')), findsOneWidget);
       expect(find.descendant(of: ligne, matching: find.text('4')), findsWidgets);
       expect(_total(tester), contains('360'));
+    });
+
+    testWidgets('onglet Favoris : vide au départ, puis seulement les produits favoris', (tester) async {
+      final c = await pumpApp(tester, routeInitiale: '/caisse', taille: const Size(1600, 1000));
+      await _donnees(c);
+      await tester.pumpAndSettle();
+      await clic(tester, find.text('Favoris'));
+      expect(find.textContaining('Aucun favori'), findsOneWidget);
+
+      await FavorisCaisseRepository(c.read(appDatabaseProvider).db).ajouter(['PRD0002']);
+      c.read(catalogueVersionProvider.notifier).incrementer();
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('tuile_PRD0002')), findsOneWidget);
+      expect(find.byKey(const ValueKey('tuile_PRD0001')), findsNothing);
+      await clic(tester, find.text('Produits'));
+      expect(find.byKey(const ValueKey('tuile_PRD0001')), findsOneWidget);
     });
 
     testWidgets('paramètres de la caisse : bouton à côté de la calculatrice (Avancé, Ultra)', (tester) async {

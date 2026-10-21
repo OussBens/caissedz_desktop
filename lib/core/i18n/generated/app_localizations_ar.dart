@@ -3196,6 +3196,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get posPacks => 'الحزم';
 
   @override
+  String get posFavoris => 'المفضلة';
+
+  @override
+  String get posFavorisVide => 'لا توجد مفضلة. أضفها من المنتجات (مفضلة الصندوق) أو من تنبيه «هامش جيد، مبيعات قليلة».';
+
+  @override
   String get posAffichageGrille => 'عرض شبكي';
 
   @override
@@ -3750,6 +3756,19 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get prdAffecter => 'تعيين';
+
+  @override
+  String get prdFavoriCaisse => 'مفضلة الصندوق';
+
+  @override
+  String prdFavoriAjoute(int n) {
+    return 'تمت إضافة $n منتج إلى مفضلة الصندوق';
+  }
+
+  @override
+  String prdFavoriRetire(int n) {
+    return 'تمت إزالة $n منتج من مفضلة الصندوق';
+  }
 
   @override
   String get prdImporter => 'استيراد';
@@ -8271,10 +8290,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get alpRegleFicheIncomplete => 'دون رمز شريطي، أو دون صورة، أو في فئة «متنوع»، أو دون سعر بيع.';
 
   @override
-  String get alpRegleBonneMargePeuVendus => 'ضمن X % من أفضل الهوامش، لكن في النصف الأقل مبيعًا.';
+  String get alpRegleBonneMargePeuVendus =>
+      'ضمن X % من أفضل الهوامش، لكن في النصف الأقل مبيعًا (باستثناء مفضلة الصندوق).';
 
   @override
-  String get alpRegleNouveautesMarche => 'منتجات وصلت من كتالوج BENS منذ أقل من X يومًا ولم تكن لديك في المخزون أبدًا.';
+  String get alpRegleNouveautesMarche =>
+      'منتجات أكّد كتالوج BENS أنها جديدة في السوق (أضافها متجر CaisseDZ) منذ أقل من X يومًا ولم تكن لديك في المخزون أبدًا.';
 
   @override
   String get alpRegleTendancesMarche =>
@@ -8314,7 +8335,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get alpActionFiche => 'إكمال البطاقة';
 
   @override
-  String get alpActionVoir => 'عرض المنتج';
+  String get alpActionFavori => 'إضافة إلى مفضلة الصندوق';
+
+  @override
+  String alpFavoriAjoute(String produit) {
+    return '«$produit» في مفضلة الصندوق';
+  }
 
   @override
   String get alpActionCreerProduit => 'إنشاء المنتج';
