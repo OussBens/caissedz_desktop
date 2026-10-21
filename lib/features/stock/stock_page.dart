@@ -9,6 +9,7 @@ import '../../domain/models/produit.dart';
 import '../../domain/models/stock.dart';
 import '../../domain/permissions.dart';
 import '../../domain/referentiel/referentiel.dart';
+import '../commun/chargement.dart';
 import '../commun/colonnes_audit.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
@@ -257,6 +258,7 @@ class _StockPageState extends ConsumerState<StockPage> {
       key: const ValueKey('stock_produits'),
       entite: l10n.prdEntiteProduits,
       lignes: lignes,
+      chargement: enChargement(ref.watch(produitsProvider)),
       colonnes: colonnes,
       cle: (l) => l.produit.code,
       afficherTotaux: true,
@@ -469,6 +471,7 @@ class _StockPageState extends ConsumerState<StockPage> {
       key: const ValueKey('stock_mouvements'),
       entite: l10n.stkEntiteMouvements,
       lignes: lignes,
+      chargement: enChargement(ref.watch(mouvementsProvider)),
       colonnes: colonnes,
       cle: (m) => m.id ?? m.hashCode,
       permissions: permissionsSession(ref),

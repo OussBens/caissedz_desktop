@@ -11,6 +11,7 @@ import '../../domain/models/stock.dart';
 import '../../domain/models/tiers.dart';
 import '../../domain/permissions.dart';
 import '../commercial/commandes_fournisseurs_page.dart';
+import '../commun/chargement.dart';
 import '../commun/colonnes_audit.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
@@ -164,6 +165,7 @@ class _BesoinsPageState extends ConsumerState<BesoinsPage> {
       key: const ValueKey('besoins_listes'),
       entite: l10n.stkEntiteListes,
       lignes: lignes,
+      chargement: enChargement(ref.watch(besoinsProvider)),
       colonnes: colonnes,
       cle: (b) => b.code,
       afficherTotaux: true,
@@ -276,6 +278,7 @@ class _BesoinsPageState extends ConsumerState<BesoinsPage> {
       key: const ValueKey('besoins_ruptures'),
       entite: l10n.prdEntiteProduits,
       lignes: lignes,
+      chargement: enChargement(ref.watch(produitsProvider)),
       cle: (r) => r.produit.code,
       permissions: permissionsSession(ref),
       messageVide: l10n.stkAucuneRupture,
@@ -349,6 +352,7 @@ class _BesoinsPageState extends ConsumerState<BesoinsPage> {
     key: const ValueKey('besoins_expires'),
     entite: l10n.prdEntiteProduits,
     lignes: lignes,
+    chargement: enChargement(ref.watch(produitsProvider)),
     cle: (e) => e.produit.code,
     permissions: permissionsSession(ref),
     messageVide: l10n.stkAucunExpire,

@@ -5,6 +5,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
 import '../../domain/zakat.dart';
+import '../commun/chargement.dart';
 import '../commun/colonnes_audit.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
@@ -129,6 +130,7 @@ class ZakatPage extends ConsumerWidget {
         key: const ValueKey('zakat'),
         entite: l10n.zkEntite,
         lignes: calculs,
+        chargement: enChargement(ref.watch(calculsZakatProvider)),
         colonnes: colonnes,
         cle: (z) => z.code,
         afficherTotaux: true,

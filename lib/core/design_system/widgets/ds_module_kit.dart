@@ -167,7 +167,11 @@ class DsEtatCarte {
 
 /// Onglet de module standard (`ModuleTable`) :
 /// KPI → filtres + export → barre de sélection (recherche, actions, bouton principal) → tableau + totaux
-/// → pagination ; vue grille optionnelle (cartes sélectionnables).
+/// → pagination ; vue grille optionnelle (cartes sélectionnables), elle aussi par pages.
+///
+/// Grandes listes (milliers de produits, ventes…) : seules les lignes ou cartes de la page courante sont
+/// construites ; la recherche s'appuie sur un index calculé une fois par liste ; [chargement] affiche des lignes
+/// fantômes tant que les données sont lues.
 class DsModuleTable<T> extends StatefulWidget {
   const DsModuleTable({
     super.key,
@@ -200,6 +204,7 @@ class DsModuleTable<T> extends StatefulWidget {
     this.messageVide,
     this.cleTable,
     this.apresFiltres,
+    this.chargement = false,
   });
 
   /// Nom pluriel des éléments (« produits »), affiché avec le compteur des totaux.
@@ -245,6 +250,9 @@ class DsModuleTable<T> extends StatefulWidget {
   /// Bloc inséré entre le panneau de filtres et la barre de sélection (graphique d'une analyse…).
   final Widget? apresFiltres;
 
+  /// Données en cours de lecture (fournisseur Riverpod en chargement) : lignes fantômes au lieu de « aucun ».
+  final bool chargement;
+
   @override
   State<DsModuleTable<T>> createState() => _DsModuleTableState<T>();
 }
@@ -269,6 +277,34 @@ class _DsModuleTableState<T> extends State<DsModuleTable<T>> {
 
   late DsVueModule _vue = widget.carte != null ? widget.vueParDefaut : DsVueModule.liste;
 
+  /// Vue grille : page courante (à partir de 0) et nombre de cartes par page.
+  int _pageGrille = 0;
+  int _tailleGrille = taillesGrille.first;
+  static const List<int> taillesGrille = [24, 48, 96];
+
+  // Index de recherche (texte en minuscules de chaque ligne) et résultat de la dernière recherche, recalculés
+  // seulement quand la liste ou le texte changent : une frappe ne reconstruit pas le texte de milliers de lignes.
+  List<T>? _indexSource;
+  List<String> _index = const [];
+  List<T>? _resultatSource;
+  String? _resultatTexte;
+  List<T> _resultat = const [];
+
+  List<T> _filtrer(String q) {
+    if (q.isEmpty) return widget.lignes;
+    if (identical(_resultatSource, widget.lignes) && _resultatTexte == q) return _resultat;
+    if (!identical(_indexSource, widget.lignes)) {
+      _indexSource = widget.lignes;
+      _index = [for (final l in widget.lignes) _texte(l).toLowerCase()];
+    }
+    _resultatSource = widget.lignes;
+    _resultatTexte = q;
+    return _resultat = [
+      for (var i = 0; i < widget.lignes.length; i++)
+        if (_index[i].contains(q)) widget.lignes[i],
+    ];
+  }
+
   @override
   void dispose() {
     _controleur.dispose();
@@ -279,8 +315,10 @@ class _DsModuleTableState<T> extends State<DsModuleTable<T>> {
   void didUpdateWidget(covariant DsModuleTable<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     // Les lignes disparues (supprimées, filtrées) quittent la sélection.
-    final cles = widget.lignes.map(widget.cle).toSet();
-    if (_selection.any((k) => !cles.contains(k))) _selection = _selection.where(cles.contains).toSet();
+    if (_selection.isNotEmpty && !identical(widget.lignes, oldWidget.lignes)) {
+      final cles = widget.lignes.map(widget.cle).toSet();
+      if (_selection.any((k) => !cles.contains(k))) _selection = _selection.where(cles.contains).toSet();
+    }
   }
 
   String _texte(T ligne) {
@@ -294,10 +332,10 @@ class _DsModuleTableState<T> extends State<DsModuleTable<T>> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final q = _recherche.trim().toLowerCase();
-    final donnees = q.isEmpty
-        ? widget.lignes
-        : widget.lignes.where((l) => _texte(l).toLowerCase().contains(q)).toList();
-    final choisis = widget.lignes.where((l) => _selection.contains(widget.cle(l))).toList();
+    final donnees = _filtrer(q);
+    final choisis = _selection.isEmpty
+        ? <T>[]
+        : widget.lignes.where((l) => _selection.contains(widget.cle(l))).toList();
     final lectureSeule = DsLectureSeule.de(context);
     // Ordre de la barre : autres actions, Détail, Supprimer / Annuler, Modifier (chacun dans l'ordre du
     // module), puis Nouveau.
@@ -372,7 +410,10 @@ class _DsModuleTableState<T> extends State<DsModuleTable<T>> {
           largeur: 280,
           kbd: '',
           indice: widget.indiceRecherche ?? l10n.dsRechercherIndice,
-          onChanged: (v) => setState(() => _recherche = v),
+          onChanged: (v) => setState(() {
+            _recherche = v;
+            _pageGrille = 0;
+          }),
         ),
         actions: [
           for (final a in actions)
@@ -392,7 +433,15 @@ class _DsModuleTableState<T> extends State<DsModuleTable<T>> {
         avant: autres.isEmpty ? null : Row(mainAxisSize: MainAxisSize.min, spacing: DsSpacing.s2, children: autres),
         trailing: lectureSeule ? null : widget.primaire,
       ),
-      if (donnees.isEmpty && widget.lignes.isNotEmpty)
+      if (widget.chargement && widget.lignes.isEmpty)
+        DsDataTable<T>(
+          colonnes: widget.colonnes,
+          lignes: const [],
+          cle: widget.cle,
+          chargement: true,
+          permissions: widget.permissions,
+        )
+      else if (donnees.isEmpty && widget.lignes.isNotEmpty)
         DsCard(
           child: DsVide(
             icone: LucideIcons.searchX,
@@ -415,6 +464,11 @@ class _DsModuleTableState<T> extends State<DsModuleTable<T>> {
           builder: (context, c) {
             final n = ((c.maxWidth + DsSpacing.s4) / (widget.largeurMinCarte + DsSpacing.s4)).floor().clamp(1, 12);
             final largeur = (c.maxWidth - DsSpacing.s4 * (n - 1)) / n;
+            // Par pages (tranches de 24, 48 ou 96 cartes) : jamais des milliers de cartes construites d'un coup.
+            final nbPages = (donnees.length / _tailleGrille).ceil().clamp(1, 1 << 30);
+            final page = _pageGrille.clamp(0, nbPages - 1);
+            final debut = page * _tailleGrille;
+            final cartes = donnees.sublist(debut, (debut + _tailleGrille).clamp(0, donnees.length));
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               spacing: DsSpacing.s3,
@@ -423,7 +477,7 @@ class _DsModuleTableState<T> extends State<DsModuleTable<T>> {
                   spacing: DsSpacing.s4,
                   runSpacing: DsSpacing.s4,
                   children: [
-                    for (final l in donnees)
+                    for (final l in cartes)
                       SizedBox(
                         width: largeur,
                         child: Builder(
@@ -445,9 +499,19 @@ class _DsModuleTableState<T> extends State<DsModuleTable<T>> {
                       ),
                   ],
                 ),
-                Text(
-                  '${donnees.length} ${widget.entite}',
-                  style: context.ds.typo.label.copyWith(color: context.ds.colors.textSecondary),
+                DsPagination(
+                  key: const ValueKey('module_pagination_grille'),
+                  page: page + 1,
+                  nbPages: nbPages,
+                  total: donnees.length,
+                  taillePage: _tailleGrille,
+                  taillesPage: taillesGrille,
+                  nbSelection: _selection.length,
+                  onChanged: (p) => setState(() => _pageGrille = p - 1),
+                  onTaillePageChanged: (v) => setState(() {
+                    _tailleGrille = v;
+                    _pageGrille = 0;
+                  }),
                 ),
               ],
             );

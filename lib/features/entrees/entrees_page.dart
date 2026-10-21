@@ -12,6 +12,7 @@ import '../../domain/models/achat.dart';
 import '../../domain/models/stock.dart';
 import '../../domain/models/tiers.dart';
 import '../../domain/permissions.dart';
+import '../commun/chargement.dart';
 import '../commun/colonnes_audit.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
@@ -193,6 +194,7 @@ class _EntreesPageState extends ConsumerState<EntreesPage> {
     return DsModuleTable<Achat>(
       entite: l10n.entEntitePluriel,
       lignes: lignes,
+      chargement: enChargement(ref.watch(achatsProvider)),
       colonnes: colonnes,
       cle: (a) => a.code,
       afficherTotaux: true,
@@ -442,6 +444,7 @@ class _EntreesPageState extends ConsumerState<EntreesPage> {
         DsModuleTable<BonReception>(
           entite: l10n.entEntiteBons,
           lignes: lignes,
+          chargement: enChargement(ref.watch(bonsReceptionProvider)),
           cle: (b) => b.code,
           permissions: permissionsSession(ref),
           messageVide: l10n.entAucunBon,

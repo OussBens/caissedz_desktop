@@ -5,6 +5,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
 import '../../domain/historique.dart';
+import '../commun/chargement.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
 import '../commun/selecteurs.dart';
@@ -82,6 +83,7 @@ class _HistoriquePageState extends ConsumerState<HistoriquePage> {
         key: const ValueKey('historique'),
         entite: l10n.hiEntite,
         lignes: lignes,
+        chargement: enChargement(ref.watch(historiqueProvider(bornesPeriode(_periode)))),
         colonnes: colonnes,
         cle: (e) => e.id,
         colonnesFiltres: 4,

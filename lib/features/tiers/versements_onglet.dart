@@ -11,6 +11,7 @@ import '../../domain/models/caisse.dart';
 import '../../domain/models/retour.dart';
 import '../../domain/referentiel/referentiel.dart';
 import '../caisse/caisse_dialogs.dart';
+import '../commun/chargement.dart';
 import '../commun/colonnes_audit.dart';
 import '../commun/export_module.dart';
 import '../commun/referentiel_ui.dart';
@@ -127,6 +128,7 @@ class _VersementsOngletState extends ConsumerState<VersementsOnglet> {
     return DsModuleTable<Versement>(
       entite: l10n.versementEntites,
       lignes: lignes,
+      chargement: enChargement(ref.watch(versementsProvider)),
       colonnes: colonnes,
       cle: (v) => v.code,
       afficherTotaux: true,

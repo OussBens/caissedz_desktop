@@ -9,6 +9,7 @@ import '../../domain/models/document_commercial.dart';
 import '../../domain/models/produit.dart';
 import '../../domain/models/stock.dart';
 import '../../domain/models/tiers.dart';
+import '../commun/chargement.dart';
 import '../commun/colonnes_audit.dart';
 import '../commun/doc_form.dart';
 import '../commun/export_module.dart';
@@ -120,6 +121,7 @@ class _CommandesFournisseursPageState extends ConsumerState<CommandesFournisseur
         key: const ValueKey('cmdf_table'),
         entite: l10n.moduleCommandesFournisseurs,
         lignes: lignes,
+        chargement: enChargement(ref.watch(commandesFournisseursProvider(bornesPeriode(_periode)))),
         colonnes: colonnes,
         cle: (c) => c.code,
         afficherTotaux: true,

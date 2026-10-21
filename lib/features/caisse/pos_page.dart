@@ -719,6 +719,19 @@ class _PosPageState extends ConsumerState<PosPage> {
     ],
   );
 
+  // Texte de recherche en minuscules de chaque produit (nom FR/AR, code, codes-barres), calculé une fois par liste
+  // de produits et non à chaque frappe ou à chaque changement du panier.
+  List<Produit>? _indexSource;
+  Map<String, String> _index = const {};
+
+  Map<String, String> _indexRecherche(List<Produit> produits) {
+    if (identical(_indexSource, produits)) return _index;
+    _indexSource = produits;
+    return _index = {
+      for (final p in produits) p.code: '${p.texteRecherche} ${p.code} ${p.codeBarres ?? ''}'.toLowerCase(),
+    };
+  }
+
   Widget _colonneProduits() {
     final produits = ref.watch(produitsPosProvider).value ?? const <Produit>[];
     final packs = (ref.watch(packsProvider).value ?? const <Pack>[]).where((p) => p.actif).toList();
@@ -733,51 +746,68 @@ class _PosPageState extends ConsumerState<PosPage> {
     final r = _recherche.trim().toLowerCase();
     final liste = _disposition == DsVueModule.liste;
     final langue = Localizations.localeOf(context).languageCode;
-    final List<Widget> tuiles;
+    // Seuls les éléments filtrés sont calculés ici ; les tuiles sont construites à l'affichage (grille et liste
+    // paresseuses) : des milliers de produits ne ralentissent ni la frappe ni le panier.
+    final List<Pack> packsVisibles;
+    final List<Produit> produitsVisibles;
     if (_vue == _Vue.packs) {
-      tuiles = [
+      produitsVisibles = const [];
+      packsVisibles = [
         for (final k in packs)
-          if (r.isEmpty || '${k.designation} ${k.code}'.toLowerCase().contains(r))
-            DsProductTile(
-              key: ValueKey('tuile_${k.code}'),
-              nom: k.designation,
-              code: k.code,
-              prix: k.prixVente,
-              categorie: l10n.posPack,
-              devise: devise,
-              enLigne: liste,
-              onAjouter: () => unawaited(_ajouterPack(k)),
-            ),
+          if (r.isEmpty || '${k.designation} ${k.code}'.toLowerCase().contains(r)) k,
       ];
     } else {
+      packsVisibles = const [];
       // Favoris : dans l'ordre où ils ont été ajoutés, sans filtre de catégorie.
-      final parCode = {for (final p in produits) p.code: p};
-      final source = _vue == _Vue.favoris ? [for (final c in favoris) ?parCode[c]] : produits;
-      tuiles = [
+      final List<Produit> source;
+      if (_vue == _Vue.favoris) {
+        final parCode = {for (final p in produits) p.code: p};
+        source = [for (final c in favoris) ?parCode[c]];
+      } else {
+        source = produits;
+      }
+      final index = _indexRecherche(produits);
+      produitsVisibles = [
         for (final p in source)
           if ((_vue == _Vue.favoris || _categorie == null || p.categorieCode == _categorie) &&
-              (r.isEmpty ||
-                  p.texteRecherche.toLowerCase().contains(r) ||
-                  p.code.toLowerCase().contains(r) ||
-                  (p.codeBarres?.contains(r) ?? false)))
-            DsProductTile(
-              key: ValueKey('tuile_${p.code}'),
-              nom: p.nom(langue),
-              code: p.code,
-              // Tuile : le prix de vente seul (HT), sans TVA ni TTC ; le panier détaille le prix appliqué.
-              prix: p.prixVente,
-              stock: (stocks[p.code] ?? 0) - etat.unitesReservees(p.code),
-              categorie: nomsCategories[p.categorieCode],
-              image: imageProduit(p.image),
-              seuilBas: (p.seuilStock ?? 5).toDouble(),
-              devise: devise,
-              enLigne: liste,
-              ruptureCliquable: admin,
-              onAjouter: () => unawaited(_choisirProduit(p)),
-              onEntree: () => unawaited(_entreeRapide(p)),
-            ),
+              (r.isEmpty || (index[p.code]?.contains(r) ?? false)))
+            p,
       ];
     }
+    final nbTuiles = _vue == _Vue.packs ? packsVisibles.length : produitsVisibles.length;
+    Widget tuile(BuildContext context, int i) {
+      if (_vue == _Vue.packs) {
+        final k = packsVisibles[i];
+        return DsProductTile(
+          key: ValueKey('tuile_${k.code}'),
+          nom: k.designation,
+          code: k.code,
+          prix: k.prixVente,
+          categorie: l10n.posPack,
+          devise: devise,
+          enLigne: liste,
+          onAjouter: () => unawaited(_ajouterPack(k)),
+        );
+      }
+      final p = produitsVisibles[i];
+      return DsProductTile(
+        key: ValueKey('tuile_${p.code}'),
+        nom: p.nom(langue),
+        code: p.code,
+        // Tuile : le prix de vente seul (HT), sans TVA ni TTC ; le panier détaille le prix appliqué.
+        prix: p.prixVente,
+        stock: (stocks[p.code] ?? 0) - etat.unitesReservees(p.code),
+        categorie: nomsCategories[p.categorieCode],
+        image: imageProduit(p.image),
+        seuilBas: (p.seuilStock ?? 5).toDouble(),
+        devise: devise,
+        enLigne: liste,
+        ruptureCliquable: admin,
+        onAjouter: () => unawaited(_choisirProduit(p)),
+        onEntree: () => unawaited(_entreeRapide(p)),
+      );
+    }
+
     final c = context.ds.colors;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -831,7 +861,7 @@ class _PosPageState extends ConsumerState<PosPage> {
           },
         ),
         Expanded(
-          child: tuiles.isEmpty
+          child: nbTuiles == 0
               ? DsVide(
                   message: _vue == _Vue.favoris && favoris.isEmpty ? l10n.posFavorisVide : l10n.posAucunProduit,
                   icone: switch (_vue) {
@@ -848,9 +878,9 @@ class _PosPageState extends ConsumerState<PosPage> {
                     borderRadius: DsRadius.borderLg,
                     border: Border.all(color: c.borderDefault),
                   ),
-                  child: ListView(padding: const EdgeInsets.all(6), children: tuiles),
+                  child: ListView.builder(padding: const EdgeInsets.all(6), itemCount: nbTuiles, itemBuilder: tuile),
                 )
-              : GridView(
+              : GridView.builder(
                   padding: const EdgeInsets.fromLTRB(2, 2, 2, 48),
                   gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                     maxCrossAxisExtent: 200,
@@ -858,7 +888,8 @@ class _PosPageState extends ConsumerState<PosPage> {
                     crossAxisSpacing: DsSpacing.s3,
                     mainAxisSpacing: DsSpacing.s3,
                   ),
-                  children: tuiles,
+                  itemCount: nbTuiles,
+                  itemBuilder: tuile,
                 ),
         ),
       ],

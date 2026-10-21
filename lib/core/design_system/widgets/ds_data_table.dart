@@ -108,7 +108,10 @@ double hauteurListeDialog(BuildContext context, {double reserve = 260, double mi
 ///
 /// Fonctions : tri par colonne, sélection multiple (case à cocher), colonnes masquables
 /// (dialog « Afficher / masquer les colonnes »), pagination DS, menu contextuel (clic droit),
-/// ligne de totaux, double-clic, mode dense (40 px).
+/// ligne de totaux, double-clic, mode dense (40 px), chargement (lignes fantômes).
+///
+/// Grandes listes : seule la page courante est construite ; le tri et les totaux sont calculés une fois par liste
+/// (pas à chaque survol ou sélection) et le survol d'une ligne ne reconstruit que son fond.
 class DsDataTable<T> extends StatefulWidget {
   const DsDataTable({
     super.key,
@@ -137,6 +140,7 @@ class DsDataTable<T> extends StatefulWidget {
     this.hauteurMax,
     this.hauteurFixe = false,
     this.reserveEcran,
+    this.chargement = false,
   });
 
   final List<DsColonne<T>> colonnes;
@@ -184,6 +188,10 @@ class DsDataTable<T> extends StatefulWidget {
   /// pied) — voir [hauteurListeDialog]. Prioritaire sur [hauteurMax].
   final double? reserveEcran;
 
+  /// Données en cours de lecture : sans ligne encore, des lignes fantômes et « Chargement… » remplacent le
+  /// message « aucun élément ».
+  final bool chargement;
+
   /// Colonnes que l'utilisateur a le droit de voir.
   List<DsColonne<T>> get colonnesAutorisees =>
       colonnes.where((c) => c.permission == null || permissions.contains(c.permission)).toList();
@@ -211,11 +219,24 @@ class DsDataTableState<T> extends State<DsDataTable<T>> {
   late int _taillePage;
   late Set<Object> _selection;
   late Set<String> _masquees;
-  Object? _survol;
+
+  /// Ligne survolée : écoutée par chaque ligne, sans reconstruire le tableau.
+  final _survol = ValueNotifier<Object?>(null);
   final _defilementH = ScrollController();
+
+  // Tri et totaux de la dernière liste reçue, recalculés seulement quand la liste, les colonnes (page reconstruite :
+  // leurs valeurs peuvent dépendre d'autres données) ou le tri changent.
+  List<DsColonne<T>>? _triColonnes;
+  List<DsColonne<T>>? _totauxColonnes;
+  List<T>? _triSource;
+  DsTri? _triCle;
+  List<T> _triCache = const [];
+  List<T>? _totauxSource;
+  final Map<String, String> _totauxCache = {};
 
   @override
   void dispose() {
+    _survol.dispose();
     _defilementH.dispose();
     super.dispose();
   }
@@ -260,6 +281,9 @@ class DsDataTableState<T> extends State<DsDataTable<T>> {
   List<T> get _triees {
     final tri = _tri;
     if (tri == null) return widget.lignes;
+    if (identical(_triSource, widget.lignes) && identical(_triColonnes, widget.colonnes) && _triCle == tri) {
+      return _triCache;
+    }
     final colonne = widget.colonnes.where((c) => c.id == tri.colonneId).firstOrNull;
     if (colonne == null) return widget.lignes;
     final copie = [...widget.lignes];
@@ -278,7 +302,20 @@ class DsDataTableState<T> extends State<DsDataTable<T>> {
       }
       return tri.ascendant ? r : -r;
     });
-    return copie;
+    _triSource = widget.lignes;
+    _triColonnes = widget.colonnes;
+    _triCle = tri;
+    return _triCache = copie;
+  }
+
+  /// Total d'une colonne sur toutes les lignes, gardé tant que la liste ne change pas.
+  String _total(DsColonne<T> col) {
+    if (!identical(_totauxSource, widget.lignes) || !identical(_totauxColonnes, widget.colonnes)) {
+      _totauxSource = widget.lignes;
+      _totauxColonnes = widget.colonnes;
+      _totauxCache.clear();
+    }
+    return _totauxCache[col.id] ??= col.total!(widget.lignes);
   }
 
   List<T> get _pageCourante {
@@ -346,6 +383,57 @@ class DsDataTableState<T> extends State<DsDataTable<T>> {
     if (resultat == null || !mounted) return;
     setState(() => _masquees = resultat.masquees);
     widget.onColonnesMasqueesChanged?.call({..._masquees});
+  }
+
+  /// Chargement : « Chargement… » puis des lignes fantômes (barres pâles à la place des cellules), sans
+  /// animation continue.
+  Widget _fantomes(
+    List<DsColonne<T>> visibles,
+    double hauteurLigne, {
+    required bool selectionnable,
+    required bool reglage,
+    required Widget Function(DsColonne<T>, Widget) cellule,
+  }) {
+    final c = context.ds.colors;
+    const largeurs = [.8, .55, .7, .45, .65, .5];
+    return Column(
+      key: const ValueKey('table_chargement'),
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (var i = 0; i < 6; i++)
+          Container(
+            height: hauteurLigne,
+            decoration: BoxDecoration(
+              border: Border(bottom: BorderSide(color: c.borderSubtle)),
+            ),
+            child: Row(
+              children: [
+                if (selectionnable) const SizedBox(width: 48),
+                if (reglage) const SizedBox(width: 44),
+                for (final (j, col) in visibles.indexed)
+                  cellule(
+                    col,
+                    i == 0 && j == 0
+                        ? Text(
+                            AppLocalizations.of(context).dsChargement,
+                            style: context.ds.typo.bodySm.copyWith(color: c.textMuted),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          )
+                        : FractionallySizedBox(
+                            widthFactor: largeurs[(i + j) % largeurs.length],
+                            child: Container(
+                              height: 10,
+                              decoration: BoxDecoration(color: c.surfaceSunken, borderRadius: DsRadius.borderSm),
+                            ),
+                          ),
+                  ),
+              ],
+            ),
+          ),
+      ],
+    );
   }
 
   @override
@@ -497,61 +585,68 @@ class DsDataTableState<T> extends State<DsDataTable<T>> {
     Widget ligneWidget(T ligne) {
       final cle = widget.cle(ligne);
       final selectionnee = _selection.contains(cle);
-      final survolee = _survol == cle;
       final cliquable = widget.onDoubleClic != null || widget.onClic != null || selectionnable;
-      final contenu = Container(
-        height: hauteurLigne,
-        decoration: BoxDecoration(
-          color: selectionnee ? c.surfaceActive : (survolee ? c.surfaceHover : DsColors.transparent),
-          border: Border(bottom: BorderSide(color: c.borderSubtle)),
-        ),
-        child: Row(
-          children: [
-            if (selectionnable)
-              SizedBox(
-                width: 48,
-                child: Center(
-                  child: DsCheckbox(
-                    valeur: selectionnee,
-                    onChanged: (_) {
-                      final nouvelle = {..._selection};
-                      selectionnee ? nouvelle.remove(cle) : nouvelle.add(cle);
-                      _changerSelection(nouvelle);
-                    },
-                  ),
+      final rangee = Row(
+        children: [
+          if (selectionnable)
+            SizedBox(
+              width: 48,
+              child: Center(
+                child: DsCheckbox(
+                  valeur: selectionnee,
+                  onChanged: (_) {
+                    final nouvelle = {..._selection};
+                    selectionnee ? nouvelle.remove(cle) : nouvelle.add(cle);
+                    _changerSelection(nouvelle);
+                  },
                 ),
               ),
-            if (afficherReglage) const SizedBox(width: 44),
-            for (final col in visibles)
-              cellule(
-                col,
-                col.cellule != null
-                    ? col.cellule!(context, ligne)
-                    : Builder(
-                        builder: (context) {
-                          final v = col.valeur(ligne);
-                          final texte = v == null || v.toString().isEmpty ? '—' : v.toString();
-                          final vide = texte == '—';
-                          return Text(
-                            texte,
-                            style: (col.mono ? t.mono : t.bodySm).copyWith(
-                              fontWeight: col.fort ? FontWeight.w600 : FontWeight.w400,
-                              color: vide || col.attenue ? c.textMuted : (col.fort ? c.textPrimary : c.textBody),
-                              fontFeatures: DsTypography.tabular,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          );
-                        },
-                      ),
-              ),
-          ],
+            ),
+          if (afficherReglage) const SizedBox(width: 44),
+          for (final col in visibles)
+            cellule(
+              col,
+              col.cellule != null
+                  ? col.cellule!(context, ligne)
+                  : Builder(
+                      builder: (context) {
+                        final v = col.valeur(ligne);
+                        final texte = v == null || v.toString().isEmpty ? '—' : v.toString();
+                        final vide = texte == '—';
+                        return Text(
+                          texte,
+                          style: (col.mono ? t.mono : t.bodySm).copyWith(
+                            fontWeight: col.fort ? FontWeight.w600 : FontWeight.w400,
+                            color: vide || col.attenue ? c.textMuted : (col.fort ? c.textPrimary : c.textBody),
+                            fontFeatures: DsTypography.tabular,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        );
+                      },
+                    ),
+            ),
+        ],
+      );
+      // Seul le fond suit le survol : les cellules ne sont pas reconstruites.
+      final contenu = ValueListenableBuilder<Object?>(
+        valueListenable: _survol,
+        child: rangee,
+        builder: (context, survol, enfant) => Container(
+          height: hauteurLigne,
+          decoration: BoxDecoration(
+            color: selectionnee ? c.surfaceActive : (survol == cle ? c.surfaceHover : DsColors.transparent),
+            border: Border(bottom: BorderSide(color: c.borderSubtle)),
+          ),
+          child: enfant,
         ),
       );
       return MouseRegion(
         cursor: cliquable ? SystemMouseCursors.click : SystemMouseCursors.basic,
-        onEnter: (_) => setState(() => _survol = cle),
-        onExit: (_) => setState(() => _survol = null),
+        onEnter: (_) => _survol.value = cle,
+        onExit: (_) {
+          if (_survol.value == cle) _survol.value = null;
+        },
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onDoubleTap: widget.onDoubleClic == null ? null : () => widget.onDoubleClic!(ligne),
@@ -587,7 +682,7 @@ class DsDataTableState<T> extends State<DsDataTable<T>> {
                   cellule(
                     visibles[i],
                     Text(
-                      visibles[i].total != null ? visibles[i].total!(widget.lignes) : (i == 0 ? l10n.communTotal : ''),
+                      visibles[i].total != null ? _total(visibles[i]) : (i == 0 ? l10n.communTotal : ''),
                       style: t.bodySmStrong.copyWith(color: c.textPrimary, fontFeatures: DsTypography.tabular),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -600,7 +695,9 @@ class DsDataTableState<T> extends State<DsDataTable<T>> {
 
     final nbPages = _nbPages(total);
 
-    final Widget corps = lignesPage.isEmpty
+    final Widget corps = lignesPage.isEmpty && widget.chargement
+        ? _fantomes(visibles, hauteurLigne, selectionnable: selectionnable, reglage: afficherReglage, cellule: cellule)
+        : lignesPage.isEmpty
         ? Padding(
             padding: const EdgeInsets.symmetric(horizontal: DsSpacing.s4, vertical: DsSpacing.s12),
             child: Column(

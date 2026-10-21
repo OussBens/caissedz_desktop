@@ -8,6 +8,7 @@ import '../../domain/models/retour.dart';
 import '../../domain/models/tiers.dart';
 import '../../domain/referentiel/referentiel.dart';
 import '../../domain/referentiel/wilayas.dart';
+import '../commun/chargement.dart';
 import '../commun/colonnes_audit.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
@@ -237,6 +238,7 @@ class _TiersPageState extends ConsumerState<TiersPage> {
       key: ValueKey('tiers_${widget.type}'),
       entite: _client ? l10n.tiersEntiteClients : l10n.tiersEntiteFournisseurs,
       lignes: lignes,
+      chargement: enChargement(ref.watch(_client ? clientsProvider : fournisseursProvider)),
       colonnes: colonnes,
       cle: (t) => t.code,
       afficherTotaux: true,

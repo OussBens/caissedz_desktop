@@ -8,6 +8,7 @@ import '../../domain/models/produit.dart';
 import '../../domain/models/retour.dart';
 import '../../domain/models/tiers.dart';
 import '../../domain/permissions.dart';
+import '../commun/chargement.dart';
 import '../commun/colonnes_audit.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
@@ -188,6 +189,7 @@ class _RetoursPageState extends ConsumerState<RetoursPage> {
         key: ValueKey('retours_$_type'),
         entite: l10n.retoursEntitePluriel,
         lignes: lignes,
+        chargement: enChargement(ref.watch(retoursProvider)),
         colonnes: colonnes,
         cle: (r) => r.code,
         afficherTotaux: true,

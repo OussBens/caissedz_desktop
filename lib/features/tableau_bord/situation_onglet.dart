@@ -472,6 +472,7 @@ class _VueAnalyseState extends ConsumerState<_VueAnalyse> {
       cleTable: ValueKey('situation_table_$_id'),
       entite: libelleAnalyse(l10n, _id).toLowerCase(),
       lignes: lignes,
+      chargement: !_charge && !tiers,
       colonnes: colonnes,
       cle: (r) => r['cle'] ?? r['code'] ?? r['periode'] ?? '${r['date']}|${r['caisse']}|${r['type']}',
       kpis: [DsStatsStrip(items: _stats(l10n, devise, lignes))],

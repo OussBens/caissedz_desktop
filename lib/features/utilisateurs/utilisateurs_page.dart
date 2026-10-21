@@ -8,6 +8,7 @@ import '../../core/i18n/generated/app_localizations.dart';
 import '../../domain/models/audit.dart';
 import '../../domain/models/utilisateur.dart';
 import '../commun/carte_entite.dart';
+import '../commun/chargement.dart';
 import '../commun/colonnes_audit.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
@@ -139,6 +140,7 @@ class _UtilisateursPageState extends ConsumerState<UtilisateursPage> {
       key: const ValueKey('utilisateurs'),
       entite: l10n.usrEntiteUtilisateurs,
       lignes: lignes,
+      chargement: enChargement(ref.watch(lignesUtilisateursProvider)),
       colonnes: colonnes,
       cle: (l) => l.u.code,
       permissions: permissionsSession(ref),
@@ -317,6 +319,7 @@ class _UtilisateursPageState extends ConsumerState<UtilisateursPage> {
       key: const ValueKey('roles'),
       entite: l10n.usrEntiteRoles,
       lignes: roles,
+      chargement: enChargement(ref.watch(rolesProvider)),
       colonnes: colonnes,
       cle: (r) => r.code,
       permissions: permissionsSession(ref),

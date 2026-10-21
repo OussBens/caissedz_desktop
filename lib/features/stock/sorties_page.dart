@@ -7,6 +7,7 @@ import '../../core/i18n/generated/app_localizations.dart';
 import '../../domain/models/stock.dart';
 import '../../domain/permissions.dart';
 import '../../domain/referentiel/referentiel.dart';
+import '../commun/chargement.dart';
 import '../commun/colonnes_audit.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
@@ -121,6 +122,7 @@ class _SortiesPageState extends ConsumerState<SortiesPage> {
       child: DsModuleTable<SortieStock>(
         entite: l10n.stkEntiteSorties,
         lignes: lignes,
+        chargement: enChargement(ref.watch(sortiesProvider)),
         colonnes: colonnes,
         cle: (s) => s.code,
         afficherTotaux: true,

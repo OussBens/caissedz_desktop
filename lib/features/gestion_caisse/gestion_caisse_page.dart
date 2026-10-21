@@ -9,6 +9,7 @@ import '../../domain/models/caisse.dart';
 import '../../domain/models/vente.dart';
 import '../../domain/permissions.dart';
 import '../caisse/caisse_dialogs.dart';
+import '../commun/chargement.dart';
 import '../commun/colonnes_audit.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
@@ -150,6 +151,7 @@ class _GestionCaissePageState extends ConsumerState<GestionCaissePage> {
           key: const ValueKey('gc_caisses'),
           entite: l10n.gcEntiteCaisses,
           lignes: caisses,
+          chargement: enChargement(ref.watch(caissesListeProvider)),
           cle: (c) => c.code,
           afficherTotaux: true,
           permissions: permissionsSession(ref),
@@ -263,6 +265,7 @@ class _GestionCaissePageState extends ConsumerState<GestionCaissePage> {
       key: const ValueKey('gc_transferts'),
       entite: l10n.gcEntiteTransferts,
       lignes: lignes,
+      chargement: enChargement(ref.watch(transfertsCaisseProvider)),
       cle: (t) => t.code,
       afficherTotaux: true,
       permissions: permissionsSession(ref),
@@ -365,6 +368,7 @@ class _GestionCaissePageState extends ConsumerState<GestionCaissePage> {
       key: const ValueKey('gc_clotures'),
       entite: l10n.gcEntiteClotures,
       lignes: lignes,
+      chargement: enChargement(ref.watch(cloturesProvider)),
       cle: (z) => z.code,
       afficherTotaux: true,
       permissions: permissionsSession(ref),
@@ -465,6 +469,7 @@ class _GestionCaissePageState extends ConsumerState<GestionCaissePage> {
       key: const ValueKey('gc_mouvements'),
       entite: l10n.gcEntiteMouvements,
       lignes: lignes,
+      chargement: enChargement(ref.watch(mouvementsCaisseProvider)),
       cle: (m) => m.id ?? m.hashCode,
       afficherTotaux: true,
       permissions: permissionsSession(ref),
@@ -559,6 +564,7 @@ class _GestionCaissePageState extends ConsumerState<GestionCaissePage> {
       key: const ValueKey('gc_sessions'),
       entite: l10n.gcEntiteSessions,
       lignes: lignes,
+      chargement: enChargement(ref.watch(sessionsCaisseProvider)),
       cle: (s) => s.code,
       permissions: permissionsSession(ref),
       messageVide: l10n.gcAucuneSession,

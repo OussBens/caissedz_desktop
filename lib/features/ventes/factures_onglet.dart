@@ -10,6 +10,7 @@ import '../../domain/models/facture.dart';
 import '../../domain/models/tiers.dart';
 import '../caisse/pos_controller.dart';
 import '../caisse/pos_dialogs.dart';
+import '../commun/chargement.dart';
 import '../commun/export_module.dart';
 import '../commun/selecteurs.dart';
 import '../commun/statuts.dart';
@@ -116,6 +117,7 @@ class _FacturesOngletState extends ConsumerState<FacturesOnglet> {
       key: const ValueKey('ventes_factures'),
       entite: l10n.factureEntites,
       lignes: lignes,
+      chargement: enChargement(ref.watch(facturesProvider(bornesPeriode(_periode)))),
       colonnes: colonnes,
       cle: (f) => f.code,
       afficherTotaux: true,

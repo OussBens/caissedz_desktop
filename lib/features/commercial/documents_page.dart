@@ -16,6 +16,7 @@ import '../../domain/models/tiers.dart';
 import '../../domain/referentiel/referentiel.dart';
 import '../caisse/caisse_dialogs.dart';
 import '../caisse/pos_controller.dart';
+import '../commun/chargement.dart';
 import '../commun/colonnes_audit.dart';
 import '../commun/doc_form.dart';
 import '../commun/export_module.dart';
@@ -170,6 +171,7 @@ class _OngletDocumentsState extends ConsumerState<_OngletDocuments> {
       key: ValueKey('docs_table_${widget.type}'),
       entite: libelleTypeDocument(l10n, widget.type),
       lignes: lignes,
+      chargement: enChargement(ref.watch(documentsClientsProvider((widget.type, debut, fin)))),
       colonnes: colonnes,
       cle: (d) => d.code,
       afficherTotaux: true,
@@ -1073,6 +1075,7 @@ class _OngletLivraisonsState extends ConsumerState<_OngletLivraisons> {
       key: const ValueKey('docs_livraisons'),
       entite: l10n.docOngletLivraisons,
       lignes: lignes,
+      chargement: enChargement(ref.watch(livraisonsProvider(bornesPeriode(_periode)))),
       colonnes: colonnes,
       cle: (b) => b.code,
       afficherTotaux: true,

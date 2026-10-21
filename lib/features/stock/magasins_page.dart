@@ -7,6 +7,7 @@ import '../../core/i18n/generated/app_localizations.dart';
 import '../../domain/models/produit.dart';
 import '../../domain/models/stock.dart';
 import '../../domain/permissions.dart';
+import '../commun/chargement.dart';
 import '../commun/colonnes_audit.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
@@ -110,6 +111,7 @@ class _MagasinsPageState extends ConsumerState<MagasinsPage> {
       key: const ValueKey('magasins'),
       entite: l10n.stkEntiteMagasins,
       lignes: magasins,
+      chargement: enChargement(ref.watch(magasinsProvider)),
       colonnes: colonnes,
       cle: (m) => m.code,
       permissions: permissionsSession(ref),
@@ -238,6 +240,7 @@ class _MagasinsPageState extends ConsumerState<MagasinsPage> {
       key: const ValueKey('transferts'),
       entite: l10n.stkEntiteTransferts,
       lignes: lignes,
+      chargement: enChargement(ref.watch(transfertsProvider)),
       colonnes: colonnes,
       cle: (t) => t.code,
       afficherTotaux: true,

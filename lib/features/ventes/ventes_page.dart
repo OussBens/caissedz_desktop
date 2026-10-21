@@ -16,6 +16,7 @@ import '../caisse/pos_controller.dart';
 import '../caisse/pos_dialogs.dart';
 import '../commercial/commercial_providers.dart';
 import '../commun/carte_entite.dart';
+import '../commun/chargement.dart';
 import '../commun/colonnes_audit.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
@@ -239,6 +240,7 @@ class _VentesPageState extends ConsumerState<VentesPage> {
           : DsModuleTable<PanierResume>(
               entite: l10n.ventesEntitePluriel,
               lignes: lignes,
+              chargement: enChargement(ref.watch(paniersProvider(bornesPeriode(_periode)))),
               colonnes: colonnes,
               cle: (p) => p.code,
               afficherTotaux: true,

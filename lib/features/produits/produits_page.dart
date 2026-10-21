@@ -8,6 +8,7 @@ import '../../domain/models/produit.dart';
 import '../../domain/permissions.dart';
 import '../../domain/referentiel/referentiel.dart';
 import '../catalogue_rayons/catalogue_rayons_dialog.dart';
+import '../commun/chargement.dart';
 import '../commun/colonnes_audit.dart';
 import '../commun/export_module.dart';
 import '../commun/page_module.dart';
@@ -334,6 +335,7 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
       key: const ValueKey('produits_produits'),
       entite: l10n.prdEntiteProduits,
       lignes: lignes,
+      chargement: enChargement(ref.watch(produitsProvider)),
       colonnes: colonnes,
       cle: (p) => p.code,
       afficherTotaux: true,
@@ -567,6 +569,7 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
       key: const ValueKey('produits_categories'),
       entite: l10n.prdEntiteCategories,
       lignes: categories,
+      chargement: enChargement(ref.watch(categoriesProvider)),
       colonnes: colonnes,
       cle: (c) => c.code,
       permissions: permissionsSession(ref),
@@ -647,6 +650,7 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
       key: const ValueKey('produits_sous'),
       entite: l10n.prdEntiteSousCategories,
       lignes: lignes,
+      chargement: enChargement(ref.watch(sousCategoriesProvider)),
       colonnes: colonnes,
       cle: (s) => s.code,
       permissions: permissionsSession(ref),
@@ -767,6 +771,7 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
       key: const ValueKey('produits_remises'),
       entite: l10n.prdEntiteRemises,
       lignes: remises,
+      chargement: enChargement(ref.watch(remisesProvider)),
       colonnes: colonnes,
       cle: (r) => r.code,
       permissions: permissionsSession(ref),
@@ -863,6 +868,7 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
       key: const ValueKey('produits_packs'),
       entite: l10n.prdEntitePacks,
       lignes: packs,
+      chargement: enChargement(ref.watch(packsProvider)),
       colonnes: colonnes,
       cle: (k) => k.code,
       permissions: permissionsSession(ref),

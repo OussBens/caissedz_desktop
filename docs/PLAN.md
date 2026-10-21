@@ -1217,3 +1217,21 @@ téléchargés et le code-barres inconnu est cherché dans le catalogue à la ca
   catalog-api : `tendance_test.php` (nouveautés et `nouveau_le`).
 - **À déployer** : catalog-api (commit « Ajoute les nouveautés du marché aux produits des rayons »). Sans ce
   déploiement, l'alerte 19 reste vide (le reste fonctionne).
+
+## Grandes listes : chargement et affichage par tranches ✅ (2026-10-22)
+
+- Constat (20 000 produits du catalogue BENS) : la vue grille de Produits construisait toutes les cartes d'un coup
+  (gel : 3 frappes de recherche = 9 s avec 2 000 produits) ; chaque survol de ligne retriait la liste et recalculait
+  les totaux ; la Caisse reconstruisait toutes ses tuiles à chaque frappe ; « Aucun produit » s'affichait pendant la
+  lecture.
+- `DsModuleTable` (tous les modules : produits, clients, fournisseurs, ventes, entrées, stock, caisse…) : vue grille
+  par pages (24 / 48 / 96 cartes, `DsPagination`), recherche sur un index calculé une fois par liste (résultat
+  gardé), `chargement` : lignes fantômes et « Chargement… » tant que la liste n'est pas lue (`enChargement`,
+  `features/commun/chargement.dart`, branché sur les 33 tableaux de module).
+- `DsDataTable` : tri et totaux gardés tant que la liste et les colonnes ne changent pas ; le survol ne repeint que
+  le fond de la ligne (`ValueNotifier`) ; `chargement`.
+- Caisse : grille et liste paresseuses (`GridView.builder`), index de recherche des produits calculé une fois.
+- La base reste lue en entier (SQLCipher dans un isolate, rapide) : c'est l'affichage qui est découpé en tranches.
+- Mesure (tests, mode debug) avec 20 000 produits : ouverture 0,4 s, 3 frappes 0,7 s, survol de 10 lignes 90 ms.
+- Tests : `ds_module_table_test.dart` (grille par pages, recherche après mise à jour, chargement, tri en cache).
+
