@@ -8097,4 +8097,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get docTotalHt => 'Total excl. VAT';
+
+  @override
+  String get entManuel => 'Manual';
+
+  @override
+  String get entManuelTitre => 'Add a product';
+
+  @override
+  String get entManuelAjouter => 'Add to the receipt';
 }

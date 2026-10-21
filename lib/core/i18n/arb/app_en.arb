@@ -2709,5 +2709,8 @@
   "pmAffichageTva": "Excl. VAT and VAT",
   "pmAffichageTous": "Excl. VAT, VAT and incl. VAT",
   "docTvaUnitaire": "Unit VAT",
-  "docTotalHt": "Total excl. VAT"
+  "docTotalHt": "Total excl. VAT",
+  "entManuel": "Manual",
+  "entManuelTitre": "Add a product",
+  "entManuelAjouter": "Add to the receipt"
 }

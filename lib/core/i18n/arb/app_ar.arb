@@ -2709,5 +2709,8 @@
   "pmAffichageTva": "دون رسوم والرسم",
   "pmAffichageTous": "دون رسوم، الرسم وبكل الرسوم",
   "docTvaUnitaire": "الرسم للوحدة",
-  "docTotalHt": "المجموع دون رسوم"
+  "docTotalHt": "المجموع دون رسوم",
+  "entManuel": "يدوي",
+  "entManuelTitre": "إضافة منتج",
+  "entManuelAjouter": "إضافة إلى الإدخال"
 }

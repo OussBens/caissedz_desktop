@@ -350,6 +350,27 @@ class _EntreeFormState extends ConsumerState<_EntreeForm> {
     setState(() => _lignes = [..._lignes, ...nouvelles]);
   }
 
+  /// « Manuel » : un produit choisi dans la liste, avec sa quantité reçue et ses prix ; un produit déjà présent
+  /// reçoit la quantité en plus et les prix saisis.
+  Future<void> _manuel() async {
+    final l = await afficherDialog<LigneEntree>(context, builder: (_) => const _AjoutManuelDialog());
+    if (l == null || !mounted) return;
+    final existante = _lignes.where((x) => x.produit.code == l.produit.code).firstOrNull;
+    setState(() {
+      if (existante != null) {
+        existante
+          ..quantite += l.quantite
+          ..nombre += l.nombre
+          ..prix = l.prix
+          ..prixVente = l.prixVente;
+        _lignes = [..._lignes];
+      } else {
+        _lignes = [..._lignes, l];
+      }
+    });
+    _focusScan.requestFocus();
+  }
+
   Future<void> _enregistrer() async {
     final l10n = AppLocalizations.of(context);
     setState(() => _occupe = true);
@@ -569,6 +590,14 @@ class _EntreeFormState extends ConsumerState<_EntreeForm> {
                   ),
                 ),
                 DsButton(
+                  key: const ValueKey('entree_manuel'),
+                  libelle: l10n.entManuel,
+                  icone: LucideIcons.squarePlus,
+                  variante: DsButtonVariante.secondaire,
+                  taille: DsButtonTaille.lg,
+                  onPressed: _manuel,
+                ),
+                DsButton(
                   key: const ValueKey('entree_liste'),
                   libelle: l10n.entListe,
                   icone: LucideIcons.list,
@@ -659,6 +688,154 @@ class _EntreeFormState extends ConsumerState<_EntreeForm> {
               ),
             ),
           ],
+        ],
+      ),
+    );
+  }
+}
+
+/// « Ajouter un produit » (560 px) de la nouvelle entrée : produit choisi dans la liste (recherche), quantité reçue,
+/// prix d'achat et prix de vente proposés depuis sa fiche, nombre de pièces quand le 2ᵉ stock est exigé.
+class _AjoutManuelDialog extends ConsumerStatefulWidget {
+  const _AjoutManuelDialog();
+
+  @override
+  ConsumerState<_AjoutManuelDialog> createState() => _AjoutManuelDialogState();
+}
+
+class _AjoutManuelDialogState extends ConsumerState<_AjoutManuelDialog> {
+  String? _produit;
+  final _quantite = TextEditingController(text: '1');
+  final _prix = TextEditingController();
+  final _vente = TextEditingController();
+  final _nombre = TextEditingController();
+
+  @override
+  void dispose() {
+    for (final c in [_quantite, _prix, _vente, _nombre]) {
+      c.dispose();
+    }
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final devise = ref.watch(deviseProvider);
+    final produits = (ref.watch(produitsProvider).value ?? const <Produit>[])
+        .where((p) => p.actif && !p.service)
+        .toList();
+    final choisi = produits.where((p) => p.code == _produit).firstOrNull;
+    final exigeNombre =
+        choisi?.exigeNombre(global: ref.watch(parametresVenteProvider).value?.nombreActif ?? false) ?? false;
+    final quantite = lireNombre(_quantite.text) ?? 0;
+    final nombre = lireNombre(_nombre.text) ?? 0;
+    final prix = lireNombre(_prix.text);
+    final vente = lireNombre(_vente.text);
+    final ok =
+        choisi != null &&
+        (quantite > 0 || (exigeNombre && nombre > 0)) &&
+        (!exigeNombre || nombre > 0) &&
+        prix != null &&
+        prix >= 0 &&
+        vente != null &&
+        vente >= 0;
+    return DsDialog(
+      titre: l10n.entManuelTitre,
+      iconeData: LucideIcons.squarePlus,
+      largeur: 560,
+      actions: [
+        DsButton(
+          libelle: l10n.communAnnuler,
+          variante: DsButtonVariante.secondaire,
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        DsButton(
+          key: const ValueKey('manuel_ajouter'),
+          libelle: l10n.entManuelAjouter,
+          icone: LucideIcons.plus,
+          onPressed: ok
+              ? () => Navigator.of(context)
+                    .pop(LigneEntree(produit: choisi, quantite: quantite, prix: prix, nombre: nombre, prixVente: vente))
+              : null,
+        ),
+      ],
+      contenu: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        spacing: 12,
+        children: [
+          DsFormRow(
+            libelle: l10n.dsPosProduit,
+            obligatoire: true,
+            child: DsSelect<String>(
+              cle: const ValueKey('manuel_produit'),
+              valeur: _produit,
+              placeholder: l10n.entChoisirProduit,
+              options: [for (final p in produits) p.code],
+              libelle: (c) => produits.where((p) => p.code == c).firstOrNull?.designation ?? c,
+              recherche: rechercheListe(context, ref, ListeMetier.produit),
+              onChanged: (v) => setState(() {
+                _produit = v;
+                final p = produits.where((p) => p.code == v).firstOrNull;
+                if (p != null) {
+                  _prix.text = texteQuantite(p.prixAchat);
+                  _vente.text = texteQuantite(p.prixVente);
+                }
+              }),
+            ),
+          ),
+          DsGrilleFormulaire(
+            espaceX: 20,
+            children: [
+              DsFormRow(
+                libelle: l10n.entQteRecue,
+                obligatoire: true,
+                child: DsTextField(
+                  key: const ValueKey('manuel_quantite'),
+                  controller: _quantite,
+                  numerique: true,
+                  suffixeTexte: l10n.stkPcs,
+                  onChanged: (_) => setState(() {}),
+                ),
+              ),
+              if (exigeNombre)
+                DsFormRow(
+                  libelle: l10n.stkNombre,
+                  obligatoire: true,
+                  child: DsTextField(
+                    key: const ValueKey('manuel_nombre'),
+                    controller: _nombre,
+                    numerique: true,
+                    erreur: nombre > 0 ? null : l10n.stkNombreObligatoire,
+                    onChanged: (_) => setState(() {}),
+                  ),
+                )
+              else
+                const SizedBox(),
+              DsFormRow(
+                libelle: l10n.produitsColPrixAchat,
+                obligatoire: true,
+                child: DsTextField(
+                  key: const ValueKey('manuel_prix'),
+                  controller: _prix,
+                  numerique: true,
+                  suffixeTexte: devise,
+                  onChanged: (_) => setState(() {}),
+                ),
+              ),
+              DsFormRow(
+                libelle: l10n.produitsColPrixVente,
+                obligatoire: true,
+                child: DsTextField(
+                  key: const ValueKey('manuel_vente'),
+                  controller: _vente,
+                  numerique: true,
+                  suffixeTexte: devise,
+                  onChanged: (_) => setState(() {}),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );

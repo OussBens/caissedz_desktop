@@ -142,6 +142,38 @@ void main() {
       await tester.pump(const Duration(seconds: 5));
     });
 
+    testWidgets('nouvelle entrée : « Manuel » ajoute un produit choisi avec sa quantité et ses prix', (tester) async {
+      final c = await pumpApp(tester, routeInitiale: '/entrees', taille: _taille);
+      await _donnees(tester, c);
+      await clic(tester, _cle('entree_nouvelle'));
+      await _choisir(tester, 'entree_fournisseur', 'Grossiste');
+      await clic(tester, _cle('entree_suivant'));
+      await clic(tester, _cle('entree_manuel'));
+      expect(find.text('Ajouter un produit'), findsOneWidget);
+      expect(tester.widget<DsButton>(_cle('manuel_ajouter')).onPressed, isNull, reason: 'produit obligatoire');
+      await _choisir(tester, 'manuel_produit', 'Lait 1 L');
+      expect(tester.widget<TextField>(_champ('manuel_prix')).controller!.text, '80', reason: 'prix de la fiche');
+      await tester.enterText(_champ('manuel_quantite'), '12');
+      await tester.enterText(_champ('manuel_prix'), '85');
+      await tester.enterText(_champ('manuel_vente'), '110');
+      await tester.pump();
+      await clic(tester, _cle('manuel_ajouter'));
+      final ligne = find.byKey(const ValueKey<Object>('PRD0001'));
+      expect(find.descendant(of: ligne, matching: find.text('12')), findsOneWidget);
+      // Le même produit une 2ᵉ fois : quantité ajoutée à la ligne existante.
+      await clic(tester, _cle('entree_manuel'));
+      await _choisir(tester, 'manuel_produit', 'Lait 1 L');
+      await tester.enterText(_champ('manuel_quantite'), '3');
+      await tester.pump();
+      await clic(tester, _cle('manuel_ajouter'));
+      expect(find.descendant(of: ligne, matching: find.text('15')), findsOneWidget);
+      await clic(tester, _cle('entree_valider'));
+      final a = (await c.read(achatServiceProvider).achats()).single;
+      expect(a.lignes.single.quantite, 15);
+      expect((await StockRepository(c.read(appDatabaseProvider).db).niveau('PRD0001', 'MAG0000')).quantite, 15);
+      await tester.pump(const Duration(seconds: 5));
+    });
+
     testWidgets('entrée rapide : un produit payé intégralement, au magasin principal', (tester) async {
       final c = await pumpApp(tester, routeInitiale: '/entrees', taille: _taille);
       await _donnees(tester, c);

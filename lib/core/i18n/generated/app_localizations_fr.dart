@@ -8116,4 +8116,13 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get docTotalHt => 'Total HT';
+
+  @override
+  String get entManuel => 'Manuel';
+
+  @override
+  String get entManuelTitre => 'Ajouter un produit';
+
+  @override
+  String get entManuelAjouter => 'Ajouter à l\'entrée';
 }

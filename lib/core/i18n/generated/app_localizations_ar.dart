@@ -8078,4 +8078,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get docTotalHt => 'المجموع دون رسوم';
+
+  @override
+  String get entManuel => 'يدوي';
+
+  @override
+  String get entManuelTitre => 'إضافة منتج';
+
+  @override
+  String get entManuelAjouter => 'إضافة إلى الإدخال';
 }

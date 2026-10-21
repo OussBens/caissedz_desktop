@@ -15224,6 +15224,24 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Total HT'**
   String get docTotalHt;
+
+  /// No description provided for @entManuel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Manuel'**
+  String get entManuel;
+
+  /// No description provided for @entManuelTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter un produit'**
+  String get entManuelTitre;
+
+  /// No description provided for @entManuelAjouter.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter à l\'entrée'**
+  String get entManuelAjouter;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

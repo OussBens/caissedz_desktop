@@ -4336,5 +4336,8 @@
   "pmAffichageTva": "HT et TVA",
   "pmAffichageTous": "HT, TVA et TTC",
   "docTvaUnitaire": "TVA unitaire",
-  "docTotalHt": "Total HT"
+  "docTotalHt": "Total HT",
+  "entManuel": "Manuel",
+  "entManuelTitre": "Ajouter un produit",
+  "entManuelAjouter": "Ajouter à l'entrée"
 }
