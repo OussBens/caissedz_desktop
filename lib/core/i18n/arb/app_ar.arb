@@ -2695,5 +2695,9 @@
   "posCatalogueTrouveTitre": "موجود في كتالوج BENS",
   "posCatalogueCreer": "إنشاء من الكتالوج",
   "posCatalogueRecherche": "جارٍ البحث في كتالوج BENS…",
-  "catalogueRayonsNbTendances": "{nombre} رائج"
+  "catalogueRayonsNbTendances": "{nombre} رائج",
+  "posCatalogueAConfirmerTitre": "منتج اقترحه متجر",
+  "posCatalogueAConfirmerQuestion": "هل هذا هو المنتج فعلاً؟ إجابتك تساعد على تأكيد الكتالوج ({score} من {seuil}).",
+  "posCatalogueOui": "نعم، هذا هو المنتج",
+  "posCatalogueNon": "ليس هذا المنتج"
 }

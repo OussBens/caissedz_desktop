@@ -4288,5 +4288,19 @@
         "type": "String"
       }
     }
-  }
+  },
+  "posCatalogueAConfirmerTitre": "Produit proposé par une boutique",
+  "posCatalogueAConfirmerQuestion": "Est-ce bien ce produit ? Votre réponse aide à confirmer le catalogue ({score} sur {seuil}).",
+  "@posCatalogueAConfirmerQuestion": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      },
+      "seuil": {
+        "type": "int"
+      }
+    }
+  },
+  "posCatalogueOui": "Oui, c'est ce produit",
+  "posCatalogueNon": "Ce n'est pas ce produit"
 }

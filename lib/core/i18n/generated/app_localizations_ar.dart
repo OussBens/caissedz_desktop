@@ -8027,4 +8027,18 @@ class AppLocalizationsAr extends AppLocalizations {
   String catalogueRayonsNbTendances(String nombre) {
     return '$nombre رائج';
   }
+
+  @override
+  String get posCatalogueAConfirmerTitre => 'منتج اقترحه متجر';
+
+  @override
+  String posCatalogueAConfirmerQuestion(int score, int seuil) {
+    return 'هل هذا هو المنتج فعلاً؟ إجابتك تساعد على تأكيد الكتالوج ($score من $seuil).';
+  }
+
+  @override
+  String get posCatalogueOui => 'نعم، هذا هو المنتج';
+
+  @override
+  String get posCatalogueNon => 'ليس هذا المنتج';
 }

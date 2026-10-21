@@ -15140,6 +15140,30 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'{nombre} en tendance'**
   String catalogueRayonsNbTendances(String nombre);
+
+  /// No description provided for @posCatalogueAConfirmerTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produit proposé par une boutique'**
+  String get posCatalogueAConfirmerTitre;
+
+  /// No description provided for @posCatalogueAConfirmerQuestion.
+  ///
+  /// In fr, this message translates to:
+  /// **'Est-ce bien ce produit ? Votre réponse aide à confirmer le catalogue ({score} sur {seuil}).'**
+  String posCatalogueAConfirmerQuestion(int score, int seuil);
+
+  /// No description provided for @posCatalogueOui.
+  ///
+  /// In fr, this message translates to:
+  /// **'Oui, c\'est ce produit'**
+  String get posCatalogueOui;
+
+  /// No description provided for @posCatalogueNon.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce n\'est pas ce produit'**
+  String get posCatalogueNon;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

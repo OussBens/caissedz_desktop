@@ -1123,6 +1123,20 @@ téléchargés et le code-barres inconnu est cherché dans le catalogue à la ca
   y devient aussitôt un produit (d'une seule boutique, `contribue_par`), rangé dans son rayon ; un produit
   connu ne reçoit que ses champs vides (nom, nom arabe, marque, catégorie, codes-barres en plus), jamais
   remplacés ; chaque création ou complément est noté par poste (`catalog_contribution`).
+- **Confirmation des produits ajoutés par une boutique** (`catalogue_core/Confirmations.php`) : score de départ 2 ;
+  à la Caisse, un code inconnu du poste trouvé dans le catalogue BENS « à confirmer » ouvre « Produit proposé par
+  une boutique » : « Oui, c'est ce produit » (+1, fiche remplie) ou « Ce n'est pas ce produit » (−1, fiche avec le
+  seul code-barres) ; `TendanceService.voter` l'envoie tout de suite, hors ligne il part avec l'envoi suivant
+  (`parametre_app.tendance_votes_attente`). Un vote par poste et par produit, pas celui du créateur ; à 5 :
+  confirmé et proposé dans les rayons ; à 0 : supprimé du catalogue (`.env` `CONFIRMATION_*`). Tableau de bord BENS :
+  à confirmer, confirmés, supprimés, et l'état de chaque contribution.
+- **Administration du catalogue dans le tableau de bord BENS** (admin.bensds.com → Catalogue, remplace
+  `admin_rayons.php`) : vue d'ensemble (chiffres, graphiques par jour sur 90 jours, rayons, qualité du catalogue),
+  rayons (noms FR/AR/EN, icône, ordre, type, mots-clés, aperçu des 50 premiers, ajout), tendances, produits à
+  confirmer (confirmer / supprimer à la main), maintenance (tables, reclassement par lots avec progression,
+  recalcul forcé des tendances). catalog-api `catalogue_core/Admin.php` (`/admin/*`, jeton `REV_SERVER_TOKEN`),
+  bens_ds `CatalogAdmin` (`/api/admin/catalog/*`, historique). Documentation HTML : `docs/workflow/index.html`
+  (architecture, formules et licences, catalogue et tendances, Smart Scan, CaisseDZ Scan, tableau de bord).
 - **Tableau de bord BENS** : Official apps → CaisseDZ → **Trending** (bens_ds `GET /api/admin/rev/catalog-trends`,
   qui lit `GET /tendance/stats` de catalog-api avec `REV_SERVER_TOKEN`) : chiffres, tendances par rayon, plus
   vendus, chaque boutique avec son client (code du poste → `app_accounts.device`), produits ajoutés et fiches

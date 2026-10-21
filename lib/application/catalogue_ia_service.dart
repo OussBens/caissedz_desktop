@@ -13,6 +13,9 @@ class FicheProduitIa {
     this.image,
     this.prixVente,
     required this.source,
+    this.aConfirmer = false,
+    this.confirmation,
+    this.seuilConfirmation,
   });
   final String codeBarres;
   final String designation;
@@ -24,6 +27,12 @@ class FicheProduitIa {
   final String? image;
   final double? prixVente;
   final String source;
+
+  /// Produit ajouté au catalogue BENS par une boutique, pas encore confirmé par les autres : la caisse demande
+  /// « est-ce bien ce produit ? » ([confirmation] sur [seuilConfirmation]).
+  final bool aConfirmer;
+  final int? confirmation;
+  final int? seuilConfirmation;
 }
 
 /// Une source de la cascade.
@@ -99,6 +108,9 @@ class SourceBens implements SourceCatalogue {
       marque: texte(p['brand']),
       image: texte(p['photo']),
       source: nomSource,
+      aConfirmer: p['a_confirmer'] == true || p['a_confirmer'] == 1,
+      confirmation: (p['confirmation'] as num?)?.toInt(),
+      seuilConfirmation: (p['confirmation_seuil'] as num?)?.toInt(),
     );
   }
 }

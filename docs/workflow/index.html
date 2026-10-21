@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en" data-title-en="CaisseDZ Documentation" data-title-fr="Documentation CaisseDZ">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CaisseDZ Documentation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="docs.css">
+</head>
+<body>
+<nav class="docs-nav" aria-label="Documentation"><div class="in"><span class="marque">CaisseDZ docs</span><a href="index.html" aria-current="page"><span class="l-en">Home</span><span class="l-fr">Accueil</span></a><a href="architecture.html"><span class="l-en">Architecture & deploy</span><span class="l-fr">Architecture et déploiement</span></a><a href="licences.html"><span class="l-en">Plans, accounts & licences</span><span class="l-fr">Formules, comptes et licences</span></a><a href="tendance_catalogue.html"><span class="l-en">Catalogue & trends</span><span class="l-fr">Catalogue et tendances</span></a><a href="smart_scan.html"><span class="l-en">Smart Scan</span><span class="l-fr">Smart Scan</span></a><a href="mobile.html"><span class="l-en">CaisseDZ Scan (phone)</span><span class="l-fr">CaisseDZ Scan (téléphone)</span></a><a href="dashboard.html"><span class="l-en">BENS dashboard</span><span class="l-fr">Tableau de bord BENS</span></a><a href="workflow.html"><span class="l-en">Desktop modules</span><span class="l-fr">Modules du desktop</span></a></div></nav>
+<header><div class="in">
+  <div class="langue" role="group" aria-label="Language / Langue"><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="fr" aria-pressed="false">FR</button></div>
+  <div class="l-en" lang="en">
+    <h1>CaisseDZ — documentation</h1>
+    <p>CaisseDZ Desktop, its phone app, the product catalogue and the BENS dashboard: how they work together, with diagrams for every scenario.</p>
+    <div class="meta">State on 21 Oct 2026<span class="hors-ligne-msg l-en"> · The diagrams need internet (Mermaid): showing their source instead.</span><span class="hors-ligne-msg l-fr"> · Les schémas ont besoin d'internet (Mermaid) : leur source est affichée.</span></div>
+    <nav class="toc"><a href="#vue">Overview</a><a href="#pages">Pages</a><a href="#depots">Repositories</a></nav>
+  </div>
+  <div class="l-fr" lang="fr">
+    <h1>CaisseDZ — documentation</h1>
+    <p>CaisseDZ Desktop, son application téléphone, le catalogue produits et le tableau de bord BENS : comment ils marchent ensemble, avec un schéma par scénario.</p>
+    <div class="meta">État au 21 octobre 2026</div>
+    <nav class="toc"><a href="#fr-vue">Vue d'ensemble</a><a href="#fr-pages">Pages</a><a href="#fr-depots">Dépôts</a></nav>
+  </div>
+</div></header>
+<main class="l-en" lang="en">
+<section id="vue">
+  <h2><span class="n">0</span>The whole system</h2>
+  <p class="sub">Who talks to whom. The shop keeps working offline: every exchange that fails is retried later.</p>
+  <div class="diag"><pre class="mermaid">
+flowchart LR
+  subgraph SHOP["A shop"]
+    PC["CaisseDZ Desktop<br/>Windows, SQLite encrypted<br/>works offline"]
+    TEL["CaisseDZ Scan<br/>phone on the shop Wi-Fi"]
+  end
+  subgraph HOST["bensds.com cPanel hosting"]
+    SITE["bensds.com<br/>website"]
+    DASH["admin.bensds.com<br/>BENS dashboard"]
+    API["bensds.com/api<br/>bens_ds, Laravel + PostgreSQL"]
+    CAT["catalog-api.bensds.com<br/>PHP + MySQL"]
+  end
+  TEL -- "HTTP JSON, port 8787" --> PC
+  PC -- "account, licence, check-in" --> API
+  PC -- "sections, barcode lookup,<br/>reports, Smart Scan" --> CAT
+  CAT -- "Smart Scans counted" --> API
+  DASH --> API
+  API -- "catalogue admin and stats<br/>REV_SERVER_TOKEN" --> CAT
+  SITE --> API
+  </pre></div>
+
+</section>
+<section id="pages">
+  <h2><span class="n">★</span>The pages</h2>
+  <p class="sub">Each page: its rules in numbers, its scenarios as diagrams, its data.</p>
+  <div class="cartes"><a class="carte" href="architecture.html"><b>Architecture & deploy</b><span>The 4 sites, where data lives, who authenticates how, deploying each repo.</span></a><a class="carte" href="licences.html"><b>Plans, accounts & licences</b><span>Trial, sign-up, sign-in, signed licence checked offline, read-only, tier limits.</span></a><a class="carte" href="tendance_catalogue.html"><b>Catalogue & trends</b><span>Sections download, shops’ reports, trending, shop-added products and their confirmation.</span></a><a class="carte" href="smart_scan.html"><b>Smart Scan</b><span>Receipt photo → OCR → lines → stock entry; scans counted by bens_ds.</span></a><a class="carte" href="mobile.html"><b>CaisseDZ Scan</b><span>The phone paired by QR: sales, stock, products, receipts.</span></a><a class="carte" href="dashboard.html"><b>BENS dashboard</b><span>Clients, licences, Smart Scan, catalogue administration and analytics.</span></a><a class="carte" href="workflow.html"><b>Desktop modules</b><span>Every module of CaisseDZ Desktop, screen by screen (French).</span></a></div>
+
+</section>
+<section id="depots">
+  <h2><span class="n">⌂</span>The three repositories</h2>
+  <p class="sub">Where each part lives.</p>
+  <table><tr><th>Repository</th><th>What</th><th>Deploy</th></tr><tr><td><code>caissedz_desktop</code></td><td>CaisseDZ Desktop (Flutter, Windows) and this documentation</td><td>Windows build (installer)</td></tr><tr><td><code>bens_ds</code></td><td>Website, dashboard (Flutter web) and the API (Laravel, PostgreSQL)</td><td><code>mise run depwin</code></td></tr><tr><td><code>catalog-api.bensds.com</code></td><td>Product catalogue, sections, trends, Smart Scan (PHP, MySQL)</td><td><code>mise run depwin</code> (committed files only)</td></tr></table>
+
+</section>
+
+</main>
+<main class="l-fr" lang="fr">
+<section id="fr-vue">
+  <h2><span class="n">0</span>Tout le système</h2>
+  <p class="sub">Qui parle à qui. La boutique continue de marcher hors ligne : chaque échange qui échoue est retenté plus tard.</p>
+  <div class="diag"><pre class="mermaid">
+flowchart LR
+  subgraph SHOP["Une boutique"]
+    PC["CaisseDZ Desktop<br/>Windows, SQLite chiffré<br/>marche hors ligne"]
+    TEL["CaisseDZ Scan<br/>téléphone sur le Wi-Fi"]
+  end
+  subgraph HOST["Hébergement cPanel bensds.com"]
+    SITE["bensds.com<br/>site web"]
+    DASH["admin.bensds.com<br/>tableau de bord BENS"]
+    API["bensds.com/api<br/>bens_ds, Laravel + PostgreSQL"]
+    CAT["catalog-api.bensds.com<br/>PHP + MySQL"]
+  end
+  TEL -- "HTTP JSON, port 8787" --> PC
+  PC -- "compte, licence, check-in" --> API
+  PC -- "rayons, recherche par code-barres,<br/>envois, Smart Scan" --> CAT
+  CAT -- "Smart Scans comptés" --> API
+  DASH --> API
+  API -- "administration et statistiques<br/>du catalogue, REV_SERVER_TOKEN" --> CAT
+  SITE --> API
+  </pre></div>
+
+</section>
+<section id="fr-pages">
+  <h2><span class="n">★</span>Les pages</h2>
+  <p class="sub">Chaque page : ses règles en chiffres, ses scénarios en schémas, ses données.</p>
+  <div class="cartes"><a class="carte" href="architecture.html"><b>Architecture et déploiement</b><span>Les 4 sites, où sont les données, qui s'authentifie comment, déployer chaque dépôt.</span></a><a class="carte" href="licences.html"><b>Formules, comptes et licences</b><span>Essai, inscription, connexion, licence signée vérifiée hors ligne, lecture seule, limites.</span></a><a class="carte" href="tendance_catalogue.html"><b>Catalogue et tendances</b><span>Téléchargement des rayons, envois des boutiques, tendances, produits ajoutés et leur confirmation.</span></a><a class="carte" href="smart_scan.html"><b>Smart Scan</b><span>Photo de facture → OCR → lignes → entrée en stock ; scans comptés par bens_ds.</span></a><a class="carte" href="mobile.html"><b>CaisseDZ Scan</b><span>Le téléphone appairé par QR : ventes, stock, produits, factures.</span></a><a class="carte" href="dashboard.html"><b>Tableau de bord BENS</b><span>Clients, licences, Smart Scan, administration et analyses du catalogue.</span></a><a class="carte" href="workflow.html"><b>Modules du desktop</b><span>Chaque module de CaisseDZ Desktop, écran par écran.</span></a></div>
+
+</section>
+<section id="fr-depots">
+  <h2><span class="n">⌂</span>Les trois dépôts</h2>
+  <p class="sub">Où vit chaque partie.</p>
+  <table><tr><th>Dépôt</th><th>Quoi</th><th>Déploiement</th></tr><tr><td><code>caissedz_desktop</code></td><td>CaisseDZ Desktop (Flutter, Windows) et cette documentation</td><td>Build Windows (installeur)</td></tr><tr><td><code>bens_ds</code></td><td>Site, tableau de bord (Flutter web) et l'API (Laravel, PostgreSQL)</td><td><code>mise run depwin</code></td></tr><tr><td><code>catalog-api.bensds.com</code></td><td>Catalogue produits, rayons, tendances, Smart Scan (PHP, MySQL)</td><td><code>mise run depwin</code> (fichiers commités seulement)</td></tr></table>
+
+</section>
+
+</main>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script src="docs.js"></script>
+</body>
+</html>

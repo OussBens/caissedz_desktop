@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en" data-title-en="Architecture and Deploy" data-title-fr="Architecture et déploiement">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Architecture and Deploy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="docs.css">
+</head>
+<body>
+<nav class="docs-nav" aria-label="Documentation"><div class="in"><span class="marque">CaisseDZ docs</span><a href="index.html"><span class="l-en">Home</span><span class="l-fr">Accueil</span></a><a href="architecture.html" aria-current="page"><span class="l-en">Architecture & deploy</span><span class="l-fr">Architecture et déploiement</span></a><a href="licences.html"><span class="l-en">Plans, accounts & licences</span><span class="l-fr">Formules, comptes et licences</span></a><a href="tendance_catalogue.html"><span class="l-en">Catalogue & trends</span><span class="l-fr">Catalogue et tendances</span></a><a href="smart_scan.html"><span class="l-en">Smart Scan</span><span class="l-fr">Smart Scan</span></a><a href="mobile.html"><span class="l-en">CaisseDZ Scan (phone)</span><span class="l-fr">CaisseDZ Scan (téléphone)</span></a><a href="dashboard.html"><span class="l-en">BENS dashboard</span><span class="l-fr">Tableau de bord BENS</span></a><a href="workflow.html"><span class="l-en">Desktop modules</span><span class="l-fr">Modules du desktop</span></a></div></nav>
+<header><div class="in">
+  <div class="langue" role="group" aria-label="Language / Langue"><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="fr" aria-pressed="false">FR</button></div>
+  <div class="l-en" lang="en">
+    <h1>Architecture &amp; deploy</h1>
+    <p>The sites, the data, the secrets and the order of deployment.</p>
+    <div class="meta">State on 21 Oct 2026<span class="hors-ligne-msg l-en"> · The diagrams need internet (Mermaid): showing their source instead.</span><span class="hors-ligne-msg l-fr"> · Les schémas ont besoin d'internet (Mermaid) : leur source est affichée.</span></div>
+    <nav class="toc"><a href="#vue">Where it runs</a><a href="#donnees">Data</a><a href="#auth">Authentication</a><a href="#deploy">Deploying</a></nav>
+  </div>
+  <div class="l-fr" lang="fr">
+    <h1>Architecture et déploiement</h1>
+    <p>Les sites, les données, les secrets et l'ordre des déploiements.</p>
+    <div class="meta">État au 21 octobre 2026</div>
+    <nav class="toc"><a href="#fr-vue">Où ça tourne</a><a href="#fr-donnees">Données</a><a href="#fr-auth">Authentification</a><a href="#fr-deploy">Déployer</a></nav>
+  </div>
+</div></header>
+<main class="l-en" lang="en">
+<section id="vue">
+  <h2><span class="n">0</span>Where everything runs</h2>
+  <p class="sub">One cPanel account hosts the website, the dashboard, the API and the catalogue; each shop runs the desktop app.</p>
+  <div class="diag"><pre class="mermaid">
+flowchart LR
+  subgraph SHOP["A shop"]
+    PC["CaisseDZ Desktop<br/>Windows, SQLite encrypted<br/>works offline"]
+    TEL["CaisseDZ Scan<br/>phone on the shop Wi-Fi"]
+  end
+  subgraph HOST["bensds.com cPanel hosting"]
+    SITE["bensds.com<br/>website"]
+    DASH["admin.bensds.com<br/>BENS dashboard"]
+    API["bensds.com/api<br/>bens_ds, Laravel + PostgreSQL"]
+    CAT["catalog-api.bensds.com<br/>PHP + MySQL"]
+  end
+  TEL -- "HTTP JSON, port 8787" --> PC
+  PC -- "account, licence, check-in" --> API
+  PC -- "sections, barcode lookup,<br/>reports, Smart Scan" --> CAT
+  CAT -- "Smart Scans counted" --> API
+  DASH --> API
+  API -- "catalogue admin and stats<br/>REV_SERVER_TOKEN" --> CAT
+  SITE --> API
+  </pre></div>
+
+</section>
+<section id="donnees">
+  <h2><span class="n">⛁</span>Where the data lives</h2>
+  <p class="sub">Each system owns its data; they exchange codes (PC code, barcodes), never copies of each other’s tables.</p>
+  <table><tr><th>Store</th><th>Holds</th></tr><tr><td>Desktop SQLite (SQLCipher, key from the machine)</td><td>Everything the shop does: products, stock journal, sales, cash, customers, suppliers, documents, licence key</td></tr><tr><td>bens_ds PostgreSQL</td><td>Website content, admins, licences, BENS accounts (phone + password), plans and grants, Smart Scan buckets, catalogue picks</td></tr><tr><td>catalog-api MySQL</td><td>~615 000 products, sections, sales per shop and day, contributions, confirmation votes, Smart Scan scans</td></tr><tr><td>Files</td><td>bens_ds media (outside the web folders), catalog-api photos (<code>uploads/</code>), desktop backups</td></tr></table>
+
+</section>
+<section id="auth">
+  <h2><span class="n">🔑</span>Who authenticates how</h2>
+  <p class="sub">No secret is ever in a repository: they live in each server’s <code>.env</code>.</p>
+  <table><tr><th>Who calls</th><th>What</th><th>How it authenticates</th></tr><tr><td>Desktop</td><td>bens_ds <code>/api/app/caissedz-desktop/*</code></td><td>Account session token (after sign-up / sign-in), <code>Authorization: Bearer</code></td></tr><tr><td>Desktop</td><td>catalog-api <code>/tendance</code>, <code>/smartscan/*</code></td><td>Its signed BENS licence: <code>X-Device-Id</code> + <code>X-License-Key</code></td></tr><tr><td>Desktop</td><td>catalog-api <code>/rayons</code>, <code>/products/barcode</code></td><td>None (public, read only)</td></tr><tr><td>Phone</td><td>Desktop <code>/api/v1/*</code> (port 8787)</td><td>Device token from the QR pairing (only its SHA-256 is kept)</td></tr><tr><td>catalog-api</td><td>bens_ds <code>/api/rev/*</code> (Smart Scans)</td><td><code>REV_SERVER_TOKEN</code></td></tr><tr><td>bens_ds</td><td>catalog-api <code>/tendance/stats</code>, <code>/admin/*</code></td><td><code>X-Server-Token</code> = <code>REV_SERVER_TOKEN</code></td></tr><tr><td>Dashboard</td><td>bens_ds <code>/api/admin/*</code></td><td>Admin session cookie; licences and catalogue: Owner with two-factor</td></tr><tr><td>Catalogue writes</td><td>catalog-api <code>POST/PUT/DELETE /products…</code></td><td><code>X-API-Key</code> = <code>API_KEY</code></td></tr></table>
+
+</section>
+<section id="deploy">
+  <h2><span class="n">⇪</span>Deploying</h2>
+  <p class="sub">The order that keeps everything working: the servers first, then the PCs.</p>
+  <div class="diag"><pre class="mermaid">
+flowchart TD
+  subgraph D1["catalog-api"]
+    A1[Commit and push] --> A2["mise run depwin<br/>only committed files that changed"]
+    A2 --> A3["Open the dashboard → Catalogue → Maintenance<br/>or admin_rayons.php"]
+    A3 --> A4[Update the tables, then re-sort]
+  end
+  subgraph D2["bens_ds"]
+    B1["mise run depwin<br/>builds site + dashboard, uploads"] --> B2[Migrations run on the host]
+  end
+  subgraph D3["CaisseDZ Desktop"]
+    C1[flutter analyze + flutter test] --> C2["flutter build windows --release<br/>installer"]
+    C2 --> C3[Shops install the new version]
+  end
+  A4 --> B1
+  B2 --> C1
+  </pre></div>
+  <ul class="points"><li>FTP passwords are saved once per repository (encrypted for your Windows user): <code>%USERPROFILE%\.bens\ftp-pass</code> (bens_ds) and <code>catalog-ftp-pass</code> (catalog-api). Run <code>mise run depwin-pass</code> from the matching folder.</li><li>catalog-api only sends committed files; a deploy that adds tables needs “Update the tables” (dashboard → Catalogue → Maintenance).</li><li>A new desktop version that uses a new server feature ships <b>after</b> that server is deployed.</li></ul>
+
+</section>
+
+</main>
+<main class="l-fr" lang="fr">
+<section id="fr-vue">
+  <h2><span class="n">0</span>Où tout tourne</h2>
+  <p class="sub">Un seul compte cPanel héberge le site, le tableau de bord, l'API et le catalogue ; chaque boutique fait tourner le desktop.</p>
+  <div class="diag"><pre class="mermaid">
+flowchart LR
+  subgraph SHOP["Une boutique"]
+    PC["CaisseDZ Desktop<br/>Windows, SQLite chiffré<br/>marche hors ligne"]
+    TEL["CaisseDZ Scan<br/>téléphone sur le Wi-Fi"]
+  end
+  subgraph HOST["Hébergement cPanel bensds.com"]
+    SITE["bensds.com<br/>site web"]
+    DASH["admin.bensds.com<br/>tableau de bord BENS"]
+    API["bensds.com/api<br/>bens_ds, Laravel + PostgreSQL"]
+    CAT["catalog-api.bensds.com<br/>PHP + MySQL"]
+  end
+  TEL -- "HTTP JSON, port 8787" --> PC
+  PC -- "compte, licence, check-in" --> API
+  PC -- "rayons, recherche par code-barres,<br/>envois, Smart Scan" --> CAT
+  CAT -- "Smart Scans comptés" --> API
+  DASH --> API
+  API -- "administration et statistiques<br/>du catalogue, REV_SERVER_TOKEN" --> CAT
+  SITE --> API
+  </pre></div>
+
+</section>
+<section id="fr-donnees">
+  <h2><span class="n">⛁</span>Où sont les données</h2>
+  <p class="sub">Chaque système garde ses données ; ils échangent des codes (code du poste, codes-barres), jamais des copies de tables.</p>
+  <table><tr><th>Stockage</th><th>Contient</th></tr><tr><td>SQLite du desktop (SQLCipher, clé tirée de la machine)</td><td>Tout ce que fait la boutique : produits, journal du stock, ventes, caisse, clients, fournisseurs, documents, clé de licence</td></tr><tr><td>PostgreSQL de bens_ds</td><td>Contenu du site, admins, licences, comptes BENS (téléphone + mot de passe), formules, Smart Scans, choix de rayons</td></tr><tr><td>MySQL de catalog-api</td><td>~615 000 produits, rayons, ventes par boutique et par jour, contributions, votes de confirmation, scans Smart Scan</td></tr><tr><td>Fichiers</td><td>Médias de bens_ds (hors dossiers web), photos de catalog-api (<code>uploads/</code>), sauvegardes du desktop</td></tr></table>
+
+</section>
+<section id="fr-auth">
+  <h2><span class="n">🔑</span>Qui s'authentifie comment</h2>
+  <p class="sub">Aucun secret dans les dépôts : ils sont dans le <code>.env</code> de chaque serveur.</p>
+  <table><tr><th>Qui appelle</th><th>Quoi</th><th>Comment il s'authentifie</th></tr><tr><td>Desktop</td><td>bens_ds <code>/api/app/caissedz-desktop/*</code></td><td>Jeton de session du compte (après inscription / connexion), <code>Authorization: Bearer</code></td></tr><tr><td>Desktop</td><td>catalog-api <code>/tendance</code>, <code>/smartscan/*</code></td><td>Sa licence BENS signée : <code>X-Device-Id</code> + <code>X-License-Key</code></td></tr><tr><td>Desktop</td><td>catalog-api <code>/rayons</code>, <code>/products/barcode</code></td><td>Aucune (public, lecture seule)</td></tr><tr><td>Téléphone</td><td>Desktop <code>/api/v1/*</code> (port 8787)</td><td>Jeton d'appareil de l'appairage QR (seule son empreinte SHA-256 est gardée)</td></tr><tr><td>catalog-api</td><td>bens_ds <code>/api/rev/*</code> (Smart Scans)</td><td><code>REV_SERVER_TOKEN</code></td></tr><tr><td>bens_ds</td><td>catalog-api <code>/tendance/stats</code>, <code>/admin/*</code></td><td><code>X-Server-Token</code> = <code>REV_SERVER_TOKEN</code></td></tr><tr><td>Tableau de bord</td><td>bens_ds <code>/api/admin/*</code></td><td>Cookie de session admin ; licences et catalogue : Owner avec double authentification</td></tr><tr><td>Écritures catalogue</td><td>catalog-api <code>POST/PUT/DELETE /products…</code></td><td><code>X-API-Key</code> = <code>API_KEY</code></td></tr></table>
+
+</section>
+<section id="fr-deploy">
+  <h2><span class="n">⇪</span>Déployer</h2>
+  <p class="sub">L'ordre qui garde tout en marche : les serveurs d'abord, les postes ensuite.</p>
+  <div class="diag"><pre class="mermaid">
+flowchart TD
+  subgraph D1["catalog-api"]
+    A1[Commit et push] --> A2["mise run depwin<br/>seulement les fichiers commités modifiés"]
+    A2 --> A3["Tableau de bord → Catalogue → Maintenance<br/>ou admin_rayons.php"]
+    A3 --> A4[Mettre à jour les tables, puis reclasser]
+  end
+  subgraph D2["bens_ds"]
+    B1["mise run depwin<br/>compile site + tableau de bord, envoie"] --> B2[Migrations sur l'hébergement]
+  end
+  subgraph D3["CaisseDZ Desktop"]
+    C1[flutter analyze + flutter test] --> C2["flutter build windows --release<br/>installeur"]
+    C2 --> C3[Les boutiques installent la nouvelle version]
+  end
+  A4 --> B1
+  B2 --> C1
+  </pre></div>
+  <ul class="points"><li>Les mots de passe FTP sont enregistrés une fois par dépôt (chiffrés pour ton utilisateur Windows) : <code>%USERPROFILE%\.bens\ftp-pass</code> (bens_ds) et <code>catalog-ftp-pass</code> (catalog-api). Lancer <code>mise run depwin-pass</code> depuis le bon dossier.</li><li>catalog-api n'envoie que les fichiers commités ; un déploiement qui ajoute des tables demande « Mettre à jour les tables » (tableau de bord → Catalogue → Maintenance).</li><li>Une version du desktop qui utilise une nouveauté d'un serveur sort <b>après</b> le déploiement de ce serveur.</li></ul>
+
+</section>
+
+</main>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script src="docs.js"></script>
+</body>
+</html>

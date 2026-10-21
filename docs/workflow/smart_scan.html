@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en" data-title-en="Smart Scan" data-title-fr="Smart Scan">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Smart Scan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="docs.css">
+</head>
+<body>
+<nav class="docs-nav" aria-label="Documentation"><div class="in"><span class="marque">CaisseDZ docs</span><a href="index.html"><span class="l-en">Home</span><span class="l-fr">Accueil</span></a><a href="architecture.html"><span class="l-en">Architecture & deploy</span><span class="l-fr">Architecture et déploiement</span></a><a href="licences.html"><span class="l-en">Plans, accounts & licences</span><span class="l-fr">Formules, comptes et licences</span></a><a href="tendance_catalogue.html"><span class="l-en">Catalogue & trends</span><span class="l-fr">Catalogue et tendances</span></a><a href="smart_scan.html" aria-current="page"><span class="l-en">Smart Scan</span><span class="l-fr">Smart Scan</span></a><a href="mobile.html"><span class="l-en">CaisseDZ Scan (phone)</span><span class="l-fr">CaisseDZ Scan (téléphone)</span></a><a href="dashboard.html"><span class="l-en">BENS dashboard</span><span class="l-fr">Tableau de bord BENS</span></a><a href="workflow.html"><span class="l-en">Desktop modules</span><span class="l-fr">Modules du desktop</span></a></div></nav>
+<header><div class="in">
+  <div class="langue" role="group" aria-label="Language / Langue"><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="fr" aria-pressed="false">FR</button></div>
+  <div class="l-en" lang="en">
+    <h1>Smart Scan</h1>
+    <p>Reading a supplier’s receipt with AI and turning it into a stock entry.</p>
+    <div class="meta">State on 21 Oct 2026<span class="hors-ligne-msg l-en"> · The diagrams need internet (Mermaid): showing their source instead.</span><span class="hors-ligne-msg l-fr"> · Les schémas ont besoin d'internet (Mermaid) : leur source est affichée.</span></div>
+    <nav class="toc"><a href="#flux">A · Receipt</a><a href="#seaux">B · Scans</a></nav>
+  </div>
+  <div class="l-fr" lang="fr">
+    <h1>Smart Scan</h1>
+    <p>Lire la facture d'un fournisseur par l'IA et en faire une entrée en stock.</p>
+    <div class="meta">État au 21 octobre 2026</div>
+    <nav class="toc"><a href="#fr-flux">A · Facture</a><a href="#fr-seaux">B · Scans</a></nav>
+  </div>
+</div></header>
+<main class="l-en" lang="en">
+<section id="flux">
+  <h2><span class="n">A</span>A receipt, from photo to stock</h2>
+  <p class="sub">Scans are counted per BENS account by bens_ds; a scan counts only when text was read.</p>
+  <div class="diag"><pre class="mermaid">
+sequenceDiagram
+  autonumber
+  actor U as Cashier
+  participant D as Desktop
+  participant C as catalog-api
+  participant B as bens_ds
+  participant M as Mistral OCR
+  U->>D: Entries → Smart Scan: a receipt photo (JPG, PNG, WEBP)
+  D->>C: POST /smartscan/scan {image}<br/>X-Device-Id + X-License-Key
+  C->>B: reserve one scan for this PC's account
+  alt no scan left
+    B-->>C: 409 no_scans
+    C-->>D: SCAN_QUOTA_EXCEEDED → buy a pack
+  else scan reserved
+    C->>M: OCR
+    alt text read
+      C->>B: commit (counted)
+    else nothing read
+      C->>B: release (not counted)
+    end
+    C-->>D: the text read
+    D->>C: POST /smartscan/extract (free: the scan is counted)
+    C-->>D: lines: name, quantity, price
+  end
+  D->>U: Reçu IA: each line matched to a product,<br/>'Créer le produit' for an unknown one
+  U->>D: Traiter → a stock entry from the receipt
+  </pre></div>
+
+</section>
+<section id="seaux">
+  <h2><span class="n">B</span>Which scans are spent</h2>
+  <p class="sub">Included scans (plan: 3 months, trial: 14 days), then packs (12 months), the soonest to expire first.</p>
+  <div class="diag"><pre class="mermaid">
+flowchart LR
+  S([A scan to spend]) --> I{Included scans left?<br/>plan or trial}
+  I -- yes --> U1[Spend one included]
+  I -- no --> P{A pack with scans left?}
+  P -- yes --> U2[Spend from the pack<br/>that expires first]
+  P -- no --> N[Refused: buy a pack<br/>Small, Shop, Wholesaler]
+  </pre></div>
+  <ul class="points"><li>A reservation never closed stops counting after 10 minutes.</li><li>The app shows a reminder while scans expire within 30 days; the dashboard counts those clients (to call).</li><li>Photos sent from the phone (CaisseDZ Scan) wait in Entries → Smart Scan, read later on the PC.</li></ul>
+
+</section>
+
+</main>
+<main class="l-fr" lang="fr">
+<section id="fr-flux">
+  <h2><span class="n">A</span>Une facture, de la photo au stock</h2>
+  <p class="sub">Les scans sont comptés par compte BENS dans bens_ds ; un scan ne compte que si du texte est lu.</p>
+  <div class="diag"><pre class="mermaid">
+sequenceDiagram
+  autonumber
+  actor U as Caissier
+  participant D as Desktop
+  participant C as catalog-api
+  participant B as bens_ds
+  participant M as OCR Mistral
+  U->>D: Entrées → Smart Scan : photo de facture (JPG, PNG, WEBP)
+  D->>C: POST /smartscan/scan {image}<br/>X-Device-Id + X-License-Key
+  C->>B: réserve un scan sur le compte de ce poste
+  alt plus de scan
+    B-->>C: 409 no_scans
+    C-->>D: SCAN_QUOTA_EXCEEDED → acheter un pack
+  else scan réservé
+    C->>M: OCR
+    alt du texte lu
+      C->>B: confirme (compté)
+    else rien de lu
+      C->>B: libère (pas compté)
+    end
+    C-->>D: le texte lu
+    D->>C: POST /smartscan/extract (gratuit : le scan est déjà compté)
+    C-->>D: lignes : nom, quantité, prix
+  end
+  D->>U: Reçu IA : chaque ligne rapprochée d'un produit,<br/>'Créer le produit' pour un inconnu
+  U->>D: Traiter → une entrée en stock à partir de la facture
+  </pre></div>
+
+</section>
+<section id="fr-seaux">
+  <h2><span class="n">B</span>Quels scans sont dépensés</h2>
+  <p class="sub">Les scans inclus (formule : 3 mois, essai : 14 jours), puis les packs (12 mois), le plus proche de l'expiration d'abord.</p>
+  <div class="diag"><pre class="mermaid">
+flowchart LR
+  S([Un scan à dépenser]) --> I{Des scans inclus ?<br/>formule ou essai}
+  I -- oui --> U1[Un scan inclus]
+  I -- non --> P{Un pack avec des scans ?}
+  P -- oui --> U2[Le pack qui expire<br/>le plus tôt]
+  P -- non --> N[Refusé : acheter un pack<br/>Petit, Boutique, Grossiste]
+  </pre></div>
+  <ul class="points"><li>Une réservation jamais fermée ne compte plus après 10 minutes.</li><li>L'application affiche un rappel quand des scans expirent dans les 30 jours ; le tableau de bord compte ces clients (à appeler).</li><li>Les photos envoyées par le téléphone (CaisseDZ Scan) attendent dans Entrées → Smart Scan, lues plus tard sur le poste.</li></ul>
+
+</section>
+
+</main>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script src="docs.js"></script>
+</body>
+</html>

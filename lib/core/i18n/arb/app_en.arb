@@ -2695,5 +2695,9 @@
   "posCatalogueTrouveTitre": "Found in the BENS catalogue",
   "posCatalogueCreer": "Create from catalogue",
   "posCatalogueRecherche": "Searching the BENS catalogue…",
-  "catalogueRayonsNbTendances": "{nombre} trending"
+  "catalogueRayonsNbTendances": "{nombre} trending",
+  "posCatalogueAConfirmerTitre": "Product suggested by a shop",
+  "posCatalogueAConfirmerQuestion": "Is this the right product? Your answer helps confirm the catalogue ({score} of {seuil}).",
+  "posCatalogueOui": "Yes, that's it",
+  "posCatalogueNon": "That's not it"
 }

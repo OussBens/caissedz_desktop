@@ -245,8 +245,22 @@ class _PosPageState extends ConsumerState<PosPage> {
         );
         final suite = await afficherProduitIntrouvable(context, code, catalogue: catalogue);
         if (!mounted) return;
-        if (suite == true) await _rechercheAvancee();
-        if (suite == false) await _creerProduitScanne(code, fiche);
+        // Un vote sur un produit du catalogue à confirmer part tout de suite (gardé hors ligne).
+        final tendance = ref.read(tendanceServiceProvider);
+        switch (suite) {
+          case SuiteIntrouvable.rechercher:
+            await _rechercheAvancee();
+          case SuiteIntrouvable.creer:
+            await _creerProduitScanne(code, fiche);
+          case SuiteIntrouvable.confirmer:
+            unawaited(tendance.voter(code, 1));
+            await _creerProduitScanne(code, fiche);
+          case SuiteIntrouvable.refuser:
+            unawaited(tendance.voter(code, -1));
+            await _creerProduitScanne(code, null);
+          case null:
+            break;
+        }
       }
       return;
     }

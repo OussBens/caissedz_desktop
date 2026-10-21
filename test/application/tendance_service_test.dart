@@ -123,7 +123,8 @@ void main() {
           'nom_ar': 'حليب',
         },
       ]);
-      expect(corps.keys, {'produits', 'ventes'});
+      expect(corps.keys, {'produits', 'confirmations', 'ventes'});
+      expect(corps['confirmations'], isEmpty);
       for (final v in corps['ventes']! as List) {
         expect((v as Map).keys, {'jour', 'code_barres', 'tickets'}, reason: 'ni prix, ni quantités, ni clients');
       }
@@ -225,6 +226,35 @@ void main() {
       final serveur = _Serveur();
       expect(await _service(base.db, serveur).envoyer(maintenant: DateTime(2026, 10, 21)), isNotNull);
       expect(serveur.envois, isEmpty);
+    });
+
+    test('vote de confirmation : envoyé tout de suite ; hors ligne, gardé puis envoyé avec le rapport', () async {
+      final base = await ouvrirBaseDeTest();
+      final serveur = _Serveur();
+      final s = _service(base.db, serveur);
+      expect(await s.voter('6130007000015', 1), isTrue);
+      expect(serveur.corps(0).single['confirmations'], [
+        {'code_barres': '6130007000015', 'vote': 1},
+      ]);
+      expect(await ParametreRepository(base.db).lire(TendanceService.cleVotes), isNull, reason: 'reçu : plus en attente');
+      expect(await s.voter('CDZ2610210001', 1), isFalse, reason: 'code interne');
+      expect(await s.voter('6130007000015', 2), isFalse);
+      expect(serveur.envois, hasLength(1));
+
+      // Hors ligne : gardés (le dernier vote d'un code remplace le précédent).
+      serveur.code = 503;
+      expect(await s.voter('6130008000014', 1), isFalse);
+      expect(await s.voter('6130008000014', -1), isFalse);
+      expect(await s.voter('6130009000013', 1), isFalse);
+      serveur.code = 200;
+      await s.envoyer(maintenant: DateTime(2026, 10, 21));
+      expect(serveur.corps(serveur.envois.length - 1).single['confirmations'], [
+        {'code_barres': '6130008000014', 'vote': -1},
+        {'code_barres': '6130009000013', 'vote': 1},
+      ]);
+      expect(await ParametreRepository(base.db).lire(TendanceService.cleVotes), isNull);
+      expect(await _service(base.db, serveur, cle: null).voter('6130007000015', 1), isFalse, reason: 'sans licence : gardé');
+      expect(await ParametreRepository(base.db).lire(TendanceService.cleVotes), isNotNull);
     });
 
     test('sans licence, refusé ou hors ligne : rien de marqué envoyé, tout repart la fois suivante', () async {

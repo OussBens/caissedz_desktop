@@ -105,7 +105,7 @@ nécessitent Windows + Visual Studio (Desktop development with C++).
 - Codes : préfixes du §8.10 (`MAG`, `CIS`, `CLN`, `FOR`, `CATE`, `SC`, `TRM`, `TRF`…) via `CodeGenerator`.
 - Clés ARB : `camelCase`, préfixées par module (`shellNavGeneral`, `posPayButton`…).
 - Commits : un commit par étape logique, message en français, à l'impératif (« Ajoute… », « Corrige… »).
-- Branche de travail : `claude/fervent-curie-fg6apc`.
+- Branche de travail : `main`.
 
 ## Façon de travailler par lot
 

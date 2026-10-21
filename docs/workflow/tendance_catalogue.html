@@ -1,0 +1,996 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Catalogue Trending Workflow</title>
+<meta name="description" content="CaisseDZ: how the catalogue download, the shops' reports, trending and the BENS dashboard work, scenario by scenario.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="docs.css">
+<style>
+:root{
+  --violet:#6c5ce7; --violet-2:#8f7cf0; --violet-fonce:#4b2f63; --rose:#ff6b81; --vert:#1f9d6b; --orange:#d98a1c;
+  --fond:#f4f2fb; --page:#ffffff; --carte:#f6f4ff; --texte:#1b1830; --doux:#6b6880; --trait:#e6e2f3;
+  --code:#f1eefc; --ombre:0 10px 30px rgba(76,56,160,.10);
+  --police:'Poppins',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --fond:#14121f; --page:#1c1a2b; --carte:#262338; --texte:#ecebf5; --doux:#a9a6c0; --trait:#353149;
+  --violet-fonce:#c9b8ff; --code:#24213a; --ombre:0 10px 30px rgba(0,0,0,.35); color-scheme:dark}}
+:root[data-theme="dark"]{--fond:#14121f; --page:#1c1a2b; --carte:#262338; --texte:#ecebf5; --doux:#a9a6c0;
+  --trait:#353149; --violet-fonce:#c9b8ff; --code:#24213a; --ombre:0 10px 30px rgba(0,0,0,.35); color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fond);color:var(--texte);font-family:var(--police);font-size:15px;line-height:1.6}
+header{background:linear-gradient(135deg,var(--violet),var(--violet-2));color:#fff;padding:40px 16px 34px}
+header .in,main{max-width:1120px;margin:0 auto}
+header h1{margin:0 0 6px;font-size:30px;line-height:1.2}
+header p{margin:0;opacity:.92;max-width:820px}
+header .meta{margin-top:14px;font-size:13px;opacity:.85}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+nav.toc a{color:#fff;text-decoration:none;font-size:13px;background:rgba(255,255,255,.16);padding:5px 11px;border-radius:999px}
+nav.toc a:hover{background:rgba(255,255,255,.3)}
+main{padding:24px 16px 60px}
+section{background:var(--page);border:1px solid var(--trait);border-radius:16px;box-shadow:var(--ombre);padding:22px 24px;margin:0 0 22px}
+section h2{margin:0 0 4px;font-size:21px;color:var(--violet-fonce)}
+section h2 .n{display:inline-block;min-width:30px;height:30px;line-height:30px;text-align:center;border-radius:9px;background:var(--violet);color:#fff;font-size:14px;margin-right:10px;vertical-align:2px}
+section .sub{color:var(--doux);margin:0 0 14px}
+h3{font-size:16px;margin:18px 0 6px}
+.cartes{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+.carte{background:var(--carte);border-radius:12px;padding:14px 16px}
+.carte b{display:block;font-size:22px;color:var(--violet)}
+.carte span{font-size:13px;color:var(--doux)}
+.diag{background:var(--carte);border-radius:12px;padding:14px;overflow-x:auto;margin:8px 0 4px}
+.diag .mermaid{min-width:640px}
+.diag .mermaid:not([data-processed]){white-space:pre;font-size:12px;color:var(--doux)}
+ul.points{margin:8px 0 0;padding-left:20px}
+ul.points li{margin:3px 0}
+code{background:var(--code);padding:1px 6px;border-radius:5px;font-size:13px}
+pre{background:var(--code);padding:12px 14px;border-radius:10px;overflow-x:auto;font-size:12.5px;line-height:1.5;margin:8px 0}
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin:6px 0}
+th,td{text-align:left;padding:7px 9px;border-bottom:1px solid var(--trait);vertical-align:top}
+th{color:var(--doux);font-weight:600}
+.badge{display:inline-block;font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:999px;margin-right:4px}
+.ok{background:rgba(31,157,107,.14);color:var(--vert)}
+.wait{background:rgba(217,138,28,.15);color:var(--orange)}
+.todo{background:rgba(108,92,231,.14);color:var(--violet)}
+.deux{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px}
+.note{border-left:4px solid var(--violet);background:var(--carte);padding:10px 14px;border-radius:0 10px 10px 0;margin:10px 0}
+.legende{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--doux);margin-top:6px}
+.legende i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.hors-ligne-msg{display:none;color:var(--rose);font-weight:600}
+header .in{position:relative}
+.langue{position:absolute;top:-22px;right:0;display:inline-flex;background:rgba(255,255,255,.18);border-radius:999px;padding:3px;gap:2px}
+.langue button{font:600 13px var(--police);color:#fff;background:transparent;border:0;border-radius:999px;padding:5px 14px;cursor:pointer;letter-spacing:.04em}
+.langue button[aria-pressed="true"]{background:#fff;color:var(--violet)}
+.langue button:focus-visible{outline:2px solid #fff;outline-offset:2px}
+html[lang="en"] .l-fr, html[lang="fr"] .l-en{display:none}
+@media (max-width:640px){.langue{position:static;margin-bottom:14px}}
+@media (max-width:640px){header h1{font-size:24px}section{padding:18px 16px}}
+@media print{header{background:var(--violet)}section{break-inside:avoid;box-shadow:none}}
+</style>
+</head>
+<body>
+<nav class="docs-nav" aria-label="Documentation"><div class="in"><span class="marque">CaisseDZ docs</span><a href="index.html"><span class="l-en">Home</span><span class="l-fr">Accueil</span></a><a href="architecture.html"><span class="l-en">Architecture & deploy</span><span class="l-fr">Architecture et déploiement</span></a><a href="licences.html"><span class="l-en">Plans, accounts & licences</span><span class="l-fr">Formules, comptes et licences</span></a><a href="tendance_catalogue.html" aria-current="page"><span class="l-en">Catalogue & trends</span><span class="l-fr">Catalogue et tendances</span></a><a href="smart_scan.html"><span class="l-en">Smart Scan</span><span class="l-fr">Smart Scan</span></a><a href="mobile.html"><span class="l-en">CaisseDZ Scan (phone)</span><span class="l-fr">CaisseDZ Scan (téléphone)</span></a><a href="dashboard.html"><span class="l-en">BENS dashboard</span><span class="l-fr">Tableau de bord BENS</span></a><a href="workflow.html"><span class="l-en">Desktop modules</span><span class="l-fr">Modules du desktop</span></a></div></nav>
+<header><div class="in">
+  <div class="langue" role="group" aria-label="Language / Langue"><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="fr" aria-pressed="false">FR</button></div>
+  <div class="l-en" lang="en">
+  <h1>Catalogue, trending &amp; shop contributions</h1>
+  <p>How CaisseDZ Desktop downloads products, reports what it sells, adds what the catalogue doesn't know,
+  and how the catalogue server and the BENS dashboard turn it into trending products — every scenario, online and offline.</p>
+  <div class="meta">State on 21 Oct 2026 · repos: <code style="color:#fff;background:rgba(255,255,255,.18)">caissedz_desktop</code>
+    <code style="color:#fff;background:rgba(255,255,255,.18)">catalog-api.bensds.com</code>
+    <code style="color:#fff;background:rgba(255,255,255,.18)">bens_ds</code>
+    <span class="hors-ligne-msg"> · The diagrams need internet (Mermaid): showing their source instead.</span></div>
+  <nav class="toc">
+    <a href="#regles">Rules</a><a href="#vue">Overview</a><a href="#a">A · First download</a><a href="#b">B · Launch</a>
+    <a href="#c">C · Offline</a><a href="#d">D · Unknown barcode</a><a href="#e">E · Shop sheets</a>
+    <a href="#i">I · Confirmation</a><a href="#f">F · Life of a trend</a><a href="#g">G · Dashboard</a><a href="#h">H · Deploy</a>
+    <a href="#schema">Data schema</a><a href="#reste">What's left</a>
+  </nav>
+</div>
+  <div class="l-fr" lang="fr">
+  <h1>Catalogue, tendances et contributions des boutiques</h1>
+  <p>Comment CaisseDZ Desktop télécharge des produits, envoie ce qu'il vend, ajoute ce que le catalogue ne connaît pas,
+  et comment le serveur du catalogue et le tableau de bord BENS en tirent les produits en tendance — chaque scénario, en ligne et hors ligne.</p>
+  <div class="meta">État au 21 octobre 2026 · dépôts : <code style="color:#fff;background:rgba(255,255,255,.18)">caissedz_desktop</code>
+    <code style="color:#fff;background:rgba(255,255,255,.18)">catalog-api.bensds.com</code>
+    <code style="color:#fff;background:rgba(255,255,255,.18)">bens_ds</code>
+    <span class="hors-ligne-msg"> · Les schémas ont besoin d'internet (Mermaid) : leur source est affichée à la place.</span></div>
+  <nav class="toc">
+    <a href="#fr-regles">Règles</a><a href="#fr-vue">Vue d'ensemble</a><a href="#fr-a">A · Premier téléchargement</a><a href="#fr-b">B · Lancement</a>
+    <a href="#fr-c">C · Hors ligne</a><a href="#fr-d">D · Code-barres inconnu</a><a href="#fr-e">E · Fiches des boutiques</a>
+    <a href="#fr-i">I · Confirmation</a><a href="#fr-f">F · Vie d'une tendance</a><a href="#fr-g">G · Tableau de bord</a><a href="#fr-h">H · Déploiement</a>
+    <a href="#fr-schema">Schéma des données</a><a href="#fr-reste">Ce qui reste</a>
+  </nav>
+  </div>
+</div></header>
+
+<main class="l-en" lang="en">
+
+<section id="regles">
+  <h2><span class="n">★</span>The rules in numbers</h2>
+  <p class="sub">All server-side numbers live in catalog-api; the two thresholds can change in its <code>.env</code> without updating any PC.</p>
+  <div class="cartes">
+    <div class="carte"><b>3 shops + 20 tickets</b><span>over 90 days ⇒ the product is <em>trending</em><br><code>TENDANCE_POSTES_MIN</code>, <code>TENDANCE_TICKETS_MIN</code></span></div>
+    <div class="carte"><b>1 000 + 10</b><span>ranking points per shop that sold it + per ticket (1 000 tickets counted at most)</span></div>
+    <div class="carte"><b>50 / day</b><span>tickets counted at most per shop, product and day: one shop can't make a trend alone</span></div>
+    <div class="carte"><b>5 000</b><span>best-ranked products offered per section (rayon), pork &amp; alcohol excluded</span></div>
+    <div class="carte"><b>30 days</b><span>of sales a PC sends after a long time offline (the server keeps a 90-day window)</span></div>
+    <div class="carte"><b>1 shop</b><span>is enough to add an unknown barcode to the catalogue; known products only get their <em>empty</em> fields filled</span></div>
+    <div class="carte"><b>2 → 5 · 0</b><span>a shop-added product starts at 2; +1 / −1 per shop that scans it; confirmed at 5, deleted at 0<br><code>CONFIRMATION_*</code></span></div>
+  </div>
+  <p class="sub" style="margin-top:12px">Rank in a section = barcode lookups × 100 + 50 if Algerian (613…) + 10 with a photo + trending points.
+  Never sent by a PC: prices, quantities, stock, customers.</p>
+</section>
+
+<section id="vue">
+  <h2><span class="n">0</span>Overview — who talks to whom</h2>
+  <p class="sub">Three systems. The PC works offline; every arrow is retried at the next launch when it fails.</p>
+  <div class="diag"><pre class="mermaid">
+flowchart LR
+  subgraph PC["CaisseDZ Desktop (each shop's PC, SQLite)"]
+    POS["Till & product sheets"]
+    SYNC["Launch sync<br/>TendanceService<br/>CatalogueRayonsService"]
+  end
+  subgraph CAT["catalog-api.bensds.com (PHP + MySQL)"]
+    RAY["GET /rayons<br/>GET /rayons/code/products"]
+    BAR["GET /products/barcode/code"]
+    TEN["POST /tendance<br/>Contributions + sales"]
+    STA["GET /tendance/stats"]
+    ADM["admin_rayons.php<br/>Rayons, Tendance"]
+  end
+  subgraph BENS["bensds.com (bens_ds: Laravel + PostgreSQL)"]
+    API["API: accounts, licences,<br/>catalogue picks"]
+    TRD["GET /api/admin/rev/catalog-trends"]
+    DASH["Dashboard<br/>Official apps → CaisseDZ → Trending"]
+  end
+  POS -- "unknown barcode (5 s)" --> BAR
+  SYNC -- "1 · check-in, licence" --> API
+  SYNC -- "2 · sales + sheets (licence-signed)" --> TEN
+  SYNC -- "3 · new trending per section" --> RAY
+  POS -. "first sign-in: sections" .-> RAY
+  POS -. "the sections picked" .-> API
+  DASH --> TRD
+  TRD -- "X-Server-Token = REV_SERVER_TOKEN" --> STA
+  TRD -- "PC code → client" --> API
+  </pre></div>
+  <div class="legende"><span><i style="background:var(--violet)"></i>solid: at each launch / on demand</span><span><i style="background:var(--doux)"></i>dotted: once, at the first sign-in (and Produits › Catalogue BENS)</span></div>
+</section>
+
+<section id="a">
+  <h2><span class="n">A</span>First sign-in — choosing and downloading sections</h2>
+  <p class="sub">On a new PC, after the login and before the setup wizard, for a user who can open Produits.</p>
+  <div class="diag"><pre class="mermaid">
+sequenceDiagram
+  autonumber
+  actor U as Shop owner
+  participant D as Desktop
+  participant C as catalog-api
+  participant B as bens_ds
+  U->>D: logs in on a new PC
+  D->>C: GET /rayons
+  C-->>D: 16 sections: names FR/AR/EN, products offered (≤ 5 000), trending count
+  U->>D: picks sections, Apply
+  loop each section, page by page (500)
+    D->>C: GET /rayons/code/products?page=n
+    C-->>D: products: barcodes, name, Arabic name, brand, photo, trending
+  end
+  Note over D: ONE transaction: a local category per section,<br/>products with no price and no stock (source Catalogue),<br/>a barcode already known is never added twice
+  D-->>U: summary: added, % of offered, already there
+  D->>B: POST /api/app/caissedz-desktop/catalog-choice
+  alt offline
+    D->>D: kept, sent at the next check-in
+  end
+  </pre></div>
+  <ul class="points">
+    <li><b>Later</b>: nothing downloaded; the screen reopens from Produits › Catalogue BENS.</li>
+    <li><b>Offline</b> while downloading: message and Retry; nothing is written until everything arrived.</li>
+    <li>A downloaded product never stocked is <b>not</b> an out-of-stock alert.</li>
+  </ul>
+</section>
+
+<section id="b">
+  <h2><span class="n">B</span>Every launch, online — report, then pull what's new</h2>
+  <p class="sub">In the background, without slowing the opening of the app. Only with an active licence.</p>
+  <div class="diag"><pre class="mermaid">
+sequenceDiagram
+  autonumber
+  participant D as Desktop
+  participant B as bens_ds
+  participant C as catalog-api
+  D->>B: check-in (licence, plan, Smart Scans)
+  B-->>D: licence up to date
+  Note over D: Sheets edited since the last one sent,<br/>tickets per day per EAN barcode since the last day sent (included)
+  loop chunks of 4 000 lines, sheets first
+    D->>C: POST /tendance {produits, ventes}<br/>X-Device-Id + X-License-Key
+    Note over C: licence checked → PC code CD-XXXX-XXXX
+    C->>C: sheets: unknown barcode → new product,<br/>known → empty fields filled, logged per PC
+    C->>C: sales: per product and day, max 50 a day,<br/>re-sent day REPLACES the old one
+    C->>C: recompute 90-day shops, tickets, points, trending flag<br/>+ 300 stale products, purge > 120 days
+    C-->>D: {ventes, inconnus, crees, completes}
+  end
+  Note over D: success → remembers today's date and the last sheet sent
+  loop each section downloaded
+    D->>C: GET /rayons/code/products?depuis=last check
+    C-->>D: products that became trending since then
+  end
+  Note over D: ONE transaction: adds only those marked trending,<br/>fills missing Arabic names, refreshes the lists
+  </pre></div>
+  <div class="note">Idempotent: if a report fails midway, everything is sent again next time. Sales of a day replace the earlier count;
+  sheets can only fill empty fields, so nothing is counted twice or overwritten.</div>
+</section>
+
+<section id="c">
+  <h2><span class="n">C</span>Offline, refused, no licence, long absence</h2>
+  <p class="sub">The PC never loses data: nothing is marked sent until the server says OK.</p>
+  <div class="diag"><pre class="mermaid">
+flowchart TD
+  S([App starts]) --> L{Licence active?}
+  L -- "no: none, expired, read-only" --> X1[Nothing sent<br/>till works locally]
+  L -- yes --> N{Internet?}
+  N -- no --> X2[Nothing marked sent<br/>retry at next launch]
+  N -- yes --> R[POST /tendance]
+  R --> A{Answer}
+  A -- "200 OK" --> M[Mark sent:<br/>today + last sheet]
+  A -- "401 licence refused" --> X3[Nothing marked sent]
+  A -- "timeout / 500" --> X3
+  M --> P[Pull new trending per section]
+  P --> Q{Answer}
+  Q -- OK --> W[Add trending only<br/>refresh lists]
+  Q -- offline --> X4[Next launch, same 'since' day]
+  X2 --> G{Offline more than 30 days?}
+  G -- yes --> T[Next report: only the last 30 days of sales<br/>all edited sheets still go]
+  G -- no --> U[Next report: every day since the last one]
+  </pre></div>
+  <ul class="points">
+    <li><b>Sales are dated by the day they happened</b>, not the day they arrive: late sales still count in the 90-day window.</li>
+    <li>While offline the PC misses nothing about trending: the next pull asks “since my last successful check”.</li>
+    <li>A product that trended and stopped while the PC was offline is skipped (it's no longer trending).</li>
+  </ul>
+</section>
+
+<section id="d">
+  <h2><span class="n">D</span>Unknown barcode at the till</h2>
+  <p class="sub">The cashier scans a code the PC doesn't know.</p>
+  <div class="diag"><pre class="mermaid">
+flowchart TD
+  S([Scan]) --> L{Known locally?<br/>product, box, pack}
+  L -- yes --> V[Into the cart]
+  L -- no --> DLG["'Produit introuvable' opens at once<br/>+ looks the code up in the BENS catalogue (5 s)"]
+  DLG --> F{Found?}
+  F -- "yes, confirmed" --> T["'Trouvé dans le catalogue BENS'<br/>photo, name, Arabic name, brand"]
+  T --> CR["'Créer depuis le catalogue'<br/>form filled in"]
+  F -- "yes, to confirm" --> Q["'Produit proposé par une boutique'<br/>Is this the right product? 3 of 5"]
+  Q -- "'Oui, c'est ce produit'" --> VP[vote +1 sent] --> CR
+  Q -- "'Ce n'est pas ce produit'" --> VM[vote −1 sent] --> CR2
+  F -- "no / offline" --> CR2[Create: form with the barcode only]
+  DLG -. "F3 search" .-> SR[Advanced search]
+  CR --> P[Cashier sets the price, saves]
+  CR2 --> P
+  P --> K[Product goes into the cart]
+  K --> NX[[Next launch: its sheet is sent → scenario E]]
+  </pre></div>
+  <ul class="points">
+    <li>Each lookup also adds +100 ranking points to that product on the server.</li>
+    <li>Internal codes (<code>CDZ…</code>, generated by the PC) are never looked up or sent.</li>
+    <li>A vote goes to the server at once; offline it waits on the PC and leaves with the next launch report.</li>
+  </ul>
+</section>
+
+<section id="e">
+  <h2><span class="n">E</span>A shop's product sheet reaching the catalogue</h2>
+  <p class="sub">Products created or edited in the shop (form, import, till, phone), sent at the next launch.</p>
+  <div class="diag"><pre class="mermaid">
+flowchart TD
+  S([Sheet received:<br/>barcode + extra barcodes, name,<br/>Arabic name, brand, category]) --> V{Valid?<br/>EAN 8-14 digits}
+  V -- "no: internal code, service" --> I[Ignored]
+  V -- yes --> K{Barcode known<br/>in the catalogue?}
+  K -- no --> N{Has a name?}
+  N -- no --> I
+  N -- yes --> C[NEW catalogue product<br/>contribue_par = this PC]
+  C --> R[Sorted into its section now<br/>pork / alcohol → kept but excluded]
+  R --> LG[(catalog_contribution:<br/>created, fields)]
+  K -- yes --> E{Any EMPTY field<br/>the sheet can fill?}
+  E -- no --> NOP[Nothing changes]
+  E -- yes --> FILL[Fill only empty fields:<br/>name, Arabic name, brand,<br/>category, extra barcodes]
+  FILL --> R2{Had no section?}
+  R2 -- yes --> R3[Sorted now] --> LG2
+  R2 -- no --> LG2[(catalog_contribution:<br/>completed, fields)]
+  </pre></div>
+  <div class="deux">
+    <div class="note"><b>Never overwritten</b>: the first shop to fill a field wins; a second shop's different name or brand is ignored.
+      Mistakes are fixed by an admin (every change is logged with its PC).</div>
+    <div class="note"><b>Sent sheets</b>: products of the shop with an EAN barcode, not services, not catalogue products the shop never edited.
+      Category “Divers” (system) isn't sent.</div>
+  </div>
+</section>
+
+<section id="i">
+  <h2><span class="n">I</span>Confirming a product a shop added</h2>
+  <p class="sub">Only products created because the catalogue didn't know their barcode. Imported products and filled-in sheets don't need it.</p>
+  <div class="diag"><pre class="mermaid">
+flowchart TD
+  S([Shop A creates a product<br/>the catalogue didn't know]) --> P[Catalogue product, TO CONFIRM<br/>score 2, not offered in sections]
+  P --> SC{Another shop scans<br/>this barcode at the till}
+  SC -- "'Oui, c'est ce produit'" --> UP[+1]
+  SC -- "'Ce n'est pas ce produit'" --> DN[−1]
+  SC -- "closes the dialog" --> P
+  UP --> CALC[score = 2 + all votes<br/>one vote per shop, the last one counts<br/>shop A's own vote ignored]
+  DN --> CALC
+  CALC --> T{Score}
+  T -- "5 or more" --> OK[CONFIRMED for good<br/>offered in its section, can trend<br/>no more votes]
+  T -- "0 or less" --> DEL[DELETED from the catalogue<br/>barcodes, sales and votes too]
+  T -- "1 to 4" --> P
+  OK --> LOG[(catalog_contribution:<br/>confirme / supprime)]
+  DEL --> LOG
+  </pre></div>
+  <ul class="points">
+    <li>The local product of shop A (and of every shop that created it) is never touched: only the shared catalogue changes.</li>
+    <li>While waiting, the product still answers barcode lookups: that's where the other shops vote.</li>
+    <li>Thresholds in catalog-api's <code>.env</code>: <code>CONFIRMATION_DEPART</code> (2), <code>CONFIRMATION_SEUIL</code> (5), <code>CONFIRMATION_SUPPRESSION</code> (0).</li>
+  </ul>
+</section>
+
+<section id="f">
+  <h2><span class="n">F</span>Life of a trending product</h2>
+  <p class="sub">The flag is recomputed when a report touches the product, and day by day for the others (the window slides).</p>
+  <div class="diag"><pre class="mermaid">
+stateDiagram-v2
+  [*] --> InCatalogue: imported or added by a shop
+  InCatalogue --> Selling: first ticket reported (points added)
+  Selling --> Trending: 3+ shops AND 20+ tickets in 90 days
+  Trending --> Trending: more sales (same 'since' date)
+  Trending --> Selling: window slides below a threshold
+  Selling --> InCatalogue: no sale left in 90 days (points back to 0)
+  Trending --> OnPCs: PCs with its section pull it (since date)
+  OnPCs --> OnPCs: kept forever on the PC
+  </pre></div>
+  <ul class="points">
+    <li>Leaving the trending list never deletes a product from a PC: sales, stock and invoices point to it.</li>
+    <li>“Trending since” is the day it became trending; it resets only if it drops and trends again.</li>
+  </ul>
+</section>
+
+<section id="g">
+  <h2><span class="n">G</span>The BENS dashboard — Trending tab</h2>
+  <p class="sub">Official apps → CaisseDZ → Trending (Owner, two-factor).</p>
+  <div class="diag"><pre class="mermaid">
+sequenceDiagram
+  autonumber
+  actor A as Admin
+  participant W as Dashboard
+  participant B as bens_ds API
+  participant C as catalog-api
+  A->>W: opens the Trending tab
+  W->>B: GET /api/admin/rev/catalog-trends
+  B->>C: GET /tendance/stats<br/>X-Server-Token: REV_SERVER_TOKEN
+  C-->>B: rule, totals, sections, best sellers, PCs, contributions
+  B->>B: each PC code → the client who signed in on it last (app_accounts)
+  B-->>W: same, with phone and business name
+  W-->>A: numbers, trending per section, best sellers,<br/>shops, what shops added
+  A->>W: clicks a shop → that client's page
+  alt token or URL missing
+    B-->>W: 503 not_configured
+  else catalog-api down
+    B-->>W: 502 catalog_unreachable → 'Try again'
+  end
+  </pre></div>
+</section>
+
+<section id="h">
+  <h2><span class="n">H</span>Deploying and maintaining</h2>
+  <p class="sub">What to do when catalog-api changes. Each repo keeps its own FTP password (saved once).</p>
+  <div class="diag"><pre class="mermaid">
+flowchart LR
+  A[Commit + push] --> B["mise run depwin<br/>(only committed files)"]
+  B --> C["Dashboard → Catalogue → Maintenance<br/>(or admin_rayons.php)"]
+  C --> D{Tables up to date?}
+  D -- no --> E[Installed automatically<br/>one ALTER for all columns]
+  D -- yes --> F
+  E --> F["'Reclasser tout le catalogue'<br/>20 s batches, keep the page open"]
+  F --> G[Check /rayons]
+  </pre></div>
+  <ul class="points">
+    <li>Passwords: <code>%USERPROFILE%\.bens\ftp-pass</code> (bens_ds) and <code>catalog-ftp-pass</code> (catalog-api); run <code>mise run depwin-pass</code> from the matching folder.</li>
+    <li>Everything admin_rayons.php did is now in the BENS dashboard → <b>Catalogue</b> (overview, sections, trending, to confirm, maintenance): see <a href="dashboard.html">BENS dashboard</a>.</li>
+    <li>Maintenance → “Recompute trends” recomputes every sold product at once, even those already done today (after changing the rule).</li>
+  </ul>
+</section>
+
+<section id="schema">
+  <h2><span class="n">⛁</span>Data schema</h2>
+  <p class="sub">Only what this system adds or uses.</p>
+  <h3>catalog-api (MySQL)</h3>
+  <div class="diag"><pre class="mermaid">
+erDiagram
+  catalog_rayon ||--o{ catalog_product : "rayon_code"
+  catalog_product ||--o{ catalog_product_barcode : "barcodes"
+  catalog_product ||--o{ catalog_vente_jour : "tickets per PC per day"
+  catalog_product ||--o{ catalog_contribution : "created / completed"
+  catalog_poste ||--o{ catalog_vente_jour : "poste"
+  catalog_poste ||--o{ catalog_contribution : "poste"
+  catalog_product ||--o{ catalog_confirmation : "votes"
+  catalog_rayon {
+    string code PK
+    string nom_fr
+    string nom_ar
+    string mots_cles
+  }
+  catalog_product {
+    int id PK
+    string nom
+    string nom_ar "Arabic name"
+    string rayon_code FK
+    int exclu "pork or alcohol"
+    int score "rank in section"
+    int consultations "barcode lookups"
+    int postes_90j "shops"
+    int ventes_90j "tickets"
+    int points_tendance
+    int tendance "flag"
+    datetime tendance_le "since"
+    string contribue_par "PC that added it"
+    int a_confirmer "waiting for votes"
+    int confirmation "score, 2 to 5"
+  }
+  catalog_confirmation {
+    int product_id PK
+    string poste PK
+    int vote "+1 or -1"
+    datetime le
+  }
+  catalog_vente_jour {
+    int product_id PK
+    string poste PK
+    date jour PK
+    int tickets "max 50"
+  }
+  catalog_contribution {
+    int id PK
+    int product_id
+    string poste
+    string action "cree or complete"
+    string champs
+    datetime cree_le
+  }
+  catalog_poste {
+    string poste PK "CD-XXXX-XXXX"
+    datetime premier_le
+    datetime dernier_le
+    int envois
+  }
+  </pre></div>
+  <div class="deux">
+    <div>
+      <h3>CaisseDZ Desktop (SQLite, migration v39)</h3>
+      <table>
+        <tr><th>Where</th><th>What</th></tr>
+        <tr><td><code>produit.designation_ar</code></td><td>Arabic name (search, Arabic tickets and documents)</td></tr>
+        <tr><td><code>produit.source</code></td><td><code>Catalogue</code> for downloaded products</td></tr>
+        <tr><td><code>catalogue_rayon</code></td><td>sections downloaded, their local category, <code>tendance_le</code> (last pull)</td></tr>
+        <tr><td><code>parametre_app</code></td><td><code>tendance_jour_envoye</code> (last day sent), <code>tendance_fiches_le</code> (last sheet sent)</td></tr>
+      </table>
+    </div>
+    <div>
+      <h3>bens_ds (PostgreSQL)</h3>
+      <table>
+        <tr><th>Where</th><th>What</th></tr>
+        <tr><td><code>app_catalog_choices</code></td><td>each “Apply” of the sections screen</td></tr>
+        <tr><td><code>app_accounts.device</code></td><td>PC code → the client (Trending tab)</td></tr>
+        <tr><td>config <code>catalog_api_url</code></td><td>where the stats come from (default catalog-api.bensds.com)</td></tr>
+        <tr><td><code>REV_SERVER_TOKEN</code></td><td>shared with catalog-api (Smart Scan, stats)</td></tr>
+      </table>
+    </div>
+  </div>
+  <h3>What a PC sends — <code>POST /tendance</code></h3>
+<pre>{
+  "produits": [
+    {"code_barres": "6130007000015", "codes_barres": ["6130007000015", "6130007000022"],
+     "nom": "Couscous Mama 1kg", "nom_ar": "كسكس ماما", "marque": "Mama", "categorie": "Épicerie"}
+  ],
+  "confirmations": [
+    {"code_barres": "6130008000014", "vote": 1}
+  ],
+  "ventes": [
+    {"jour": "2026-10-21", "code_barres": "6130007000015", "tickets": 3}
+  ]
+}
+→ {"success": true, "data": {"ventes": 1, "inconnus": 0, "crees": 1, "completes": 0,
+                             "votes": 1, "confirmes": 0, "supprimes": 0}}</pre>
+</section>
+
+<section id="reste">
+  <h2><span class="n">✓</span>What's done, what's left</h2>
+  <p class="sub">State on 21 Oct 2026.</p>
+  <table>
+    <tr><th style="width:120px">State</th><th>Item</th></tr>
+    <tr><td><span class="badge ok">done</span></td><td>catalog-api live with trending and the 5 000 cap; tables installed; catalogue re-sorted (<code>/rayons</code> answers).</td></tr>
+    <tr><td><span class="badge ok">done</span></td><td>Built, not yet deployed: product <b>confirmation</b> (2 → 5 / 0), the <b>Catalogue</b> page in the BENS dashboard (analytics, sections, trending, to confirm, maintenance) and its API, this documentation.</td></tr>
+    <tr><td><span class="badge wait">to do</span></td><td><b>1 · Commit and deploy catalog-api</b> (<code>mise run depwin</code>), then dashboard → Catalogue → Maintenance → Update the tables (or open admin_rayons.php).</td></tr>
+    <tr><td><span class="badge wait">to do</span></td><td><b>2 · Commit and deploy bens_ds</b> (<code>mise run depwin</code>): Trending tab, Catalogue page, their API.</td></tr>
+    <tr><td><span class="badge wait">to do</span></td><td><b>3 · Check <code>REV_SERVER_TOKEN</code></b> is the same in both <code>.env</code> files (else the Catalogue page says catalog_unreachable).</td></tr>
+    <tr><td><span class="badge wait">to do</span></td><td><b>4 · Desktop</b>: full <code>flutter test</code>, commit, build and ship — <b>after</b> 1 (the votes need the new catalog-api).</td></tr>
+    <tr><td><span class="badge wait">to do</span></td><td><b>5 · Commit the docs</b> (the 3 READMEs, <code>docs/workflow/*.html</code>) and set the working branch in <code>CLAUDE.md</code> to <code>main</code>.</td></tr>
+    <tr><td><span class="badge wait">to do</span></td><td><b>6 · Delete the merged branches</b> <code>claude/fervent-curie-fg6apc</code> and <code>claude/funny-franklin-plcl6q</code> (commands in the chat).</td></tr>
+    <tr><td><span class="badge wait">to do</span></td><td><b>7 · Server clean-up</b>: old helper scripts, the Open Beauty Facts CSV, <code>.composer/</code> (catalog-api README → Security).</td></tr>
+    <tr><td><span class="badge wait">to check</span></td><td>bens_ds <code>ApiTest</code> (trends, catalogue administration) never run here (no PostgreSQL); one older dashboard test (client page) was already failing.</td></tr>
+    <tr><td><span class="badge todo">later</span></td><td>Nightly cron to slide the 90-day window; a report every 6 h while the desktop stays open; tune the confirmation thresholds if needed.</td></tr>
+    <tr><td><span class="badge todo">next</span></td><td><b>Part 1: the 18 product alerts</b> (best sellers, sleeping stock, low margin, out of stock with nothing ordered, incomplete sheets…).</td></tr>
+  </table>
+</section>
+
+</main>
+
+<main class="l-fr" lang="fr">
+
+<section id="fr-regles">
+  <h2><span class="n">★</span>Les règles en chiffres</h2>
+  <p class="sub">Tous les chiffres côté serveur sont dans catalog-api ; les deux seuils se changent dans son <code>.env</code> sans mettre à jour aucun poste.</p>
+  <div class="cartes">
+    <div class="carte"><b>3 boutiques + 20 tickets</b><span>sur 90 jours ⇒ le produit est <em>en tendance</em><br><code>TENDANCE_POSTES_MIN</code>, <code>TENDANCE_TICKETS_MIN</code></span></div>
+    <div class="carte"><b>1 000 + 10</b><span>points de classement par boutique qui l'a vendu + par ticket (1 000 tickets comptés au plus)</span></div>
+    <div class="carte"><b>50 / jour</b><span>tickets comptés au plus par boutique, produit et jour : une boutique seule ne fait pas une tendance</span></div>
+    <div class="carte"><b>5 000</b><span>meilleurs produits proposés par rayon, porc et alcool exclus</span></div>
+    <div class="carte"><b>30 jours</b><span>de ventes envoyés par un poste après une longue absence (le serveur garde une fenêtre de 90 jours)</span></div>
+    <div class="carte"><b>1 boutique</b><span>suffit pour ajouter un code-barres inconnu au catalogue ; un produit connu ne reçoit que ses champs <em>vides</em></span></div>
+    <div class="carte"><b>2 → 5 · 0</b><span>un produit ajouté par une boutique commence à 2 ; +1 / −1 par boutique qui le scanne ; confirmé à 5, supprimé à 0<br><code>CONFIRMATION_*</code></span></div>
+  </div>
+  <p class="sub" style="margin-top:12px">Classement dans un rayon = recherches par code-barres × 100 + 50 si algérien (613…) + 10 avec photo + points de tendance.
+  Jamais envoyé par un poste : prix, quantités, stock, clients.</p>
+</section>
+
+<section id="fr-vue">
+  <h2><span class="n">0</span>Vue d'ensemble — qui parle à qui</h2>
+  <p class="sub">Trois systèmes. Le poste fonctionne hors ligne ; chaque échange qui échoue est retenté au lancement suivant.</p>
+  <div class="diag"><pre class="mermaid">
+flowchart LR
+  subgraph PC["CaisseDZ Desktop (le poste de chaque boutique, SQLite)"]
+    POS["Caisse et fiches produits"]
+    SYNC["Synchro au lancement<br/>TendanceService<br/>CatalogueRayonsService"]
+  end
+  subgraph CAT["catalog-api.bensds.com (PHP + MySQL)"]
+    RAY["GET /rayons<br/>GET /rayons/code/products"]
+    BAR["GET /products/barcode/code"]
+    TEN["POST /tendance<br/>Contributions + ventes"]
+    STA["GET /tendance/stats"]
+    ADM["admin_rayons.php<br/>Rayons, Tendance"]
+  end
+  subgraph BENS["bensds.com (bens_ds : Laravel + PostgreSQL)"]
+    API["API : comptes, licences,<br/>choix de rayons"]
+    TRD["GET /api/admin/rev/catalog-trends"]
+    DASH["Tableau de bord<br/>Official apps → CaisseDZ → Trending"]
+  end
+  POS -- "code-barres inconnu (5 s)" --> BAR
+  SYNC -- "1 · check-in, licence" --> API
+  SYNC -- "2 · ventes + fiches (signé par la licence)" --> TEN
+  SYNC -- "3 · nouveaux produits tendance par rayon" --> RAY
+  POS -. "1re connexion : rayons" .-> RAY
+  POS -. "les rayons choisis" .-> API
+  DASH --> TRD
+  TRD -- "X-Server-Token = REV_SERVER_TOKEN" --> STA
+  TRD -- "code du poste → client" --> API
+  </pre></div>
+  <div class="legende"><span><i style="background:var(--violet)"></i>trait plein : à chaque lancement / à la demande</span><span><i style="background:var(--doux)"></i>pointillé : une fois, à la 1re connexion (et Produits › Catalogue BENS)</span></div>
+</section>
+
+<section id="fr-a">
+  <h2><span class="n">A</span>Première connexion — choisir et télécharger des rayons</h2>
+  <p class="sub">Sur un poste neuf, après la connexion et avant la configuration initiale, pour un utilisateur qui a accès à Produits.</p>
+  <div class="diag"><pre class="mermaid">
+sequenceDiagram
+  autonumber
+  actor U as Gérant
+  participant D as Desktop
+  participant C as catalog-api
+  participant B as bens_ds
+  U->>D: se connecte sur un poste neuf
+  D->>C: GET /rayons
+  C-->>D: 16 rayons : noms FR/AR/EN, produits proposés (≤ 5 000), nombre en tendance
+  U->>D: choisit des rayons, Appliquer
+  loop chaque rayon, page par page (500)
+    D->>C: GET /rayons/code/products?page=n
+    C-->>D: produits : codes-barres, nom, nom arabe, marque, photo, tendance
+  end
+  Note over D: UNE transaction : une catégorie locale par rayon,<br/>produits sans prix ni stock (source Catalogue),<br/>un code-barres déjà connu n'est jamais ajouté deux fois
+  D-->>U: bilan : ajoutés, % des proposés, déjà présents
+  D->>B: POST /api/app/caissedz-desktop/catalog-choice
+  alt hors ligne
+    D->>D: gardé, envoyé au prochain check-in
+  end
+  </pre></div>
+  <ul class="points">
+    <li><b>Plus tard</b> : rien n'est téléchargé ; l'écran se rouvre depuis Produits › Catalogue BENS.</li>
+    <li><b>Hors ligne</b> pendant le téléchargement : message et Réessayer ; rien n'est écrit avant que tout soit reçu.</li>
+    <li>Un produit téléchargé jamais entré en stock n'est <b>pas</b> une alerte de rupture.</li>
+  </ul>
+</section>
+
+<section id="fr-b">
+  <h2><span class="n">B</span>À chaque lancement, en ligne — envoyer, puis récupérer les nouveautés</h2>
+  <p class="sub">En arrière-plan, sans ralentir l'ouverture de l'application. Seulement avec une licence active.</p>
+  <div class="diag"><pre class="mermaid">
+sequenceDiagram
+  autonumber
+  participant D as Desktop
+  participant B as bens_ds
+  participant C as catalog-api
+  D->>B: check-in (licence, formule, Smart Scans)
+  B-->>D: licence à jour
+  Note over D: Fiches modifiées depuis la dernière envoyée,<br/>tickets par jour et par code EAN depuis le dernier jour envoyé (compris)
+  loop lots de 4 000 lignes, les fiches d'abord
+    D->>C: POST /tendance {produits, ventes}<br/>X-Device-Id + X-License-Key
+    Note over C: licence vérifiée → code du poste CD-XXXX-XXXX
+    C->>C: fiches : code inconnu → nouveau produit,<br/>connu → champs vides complétés, noté par poste
+    C->>C: ventes : par produit et par jour, 50 au plus par jour,<br/>un jour renvoyé REMPLACE l'ancien
+    C->>C: recalcul sur 90 jours : boutiques, tickets, points, drapeau tendance<br/>+ 300 produits en retard, purge au-delà de 120 jours
+    C-->>D: {ventes, inconnus, crees, completes}
+  end
+  Note over D: succès → retient la date du jour et la dernière fiche envoyée
+  loop chaque rayon téléchargé
+    D->>C: GET /rayons/code/products?depuis=dernière demande
+    C-->>D: produits devenus tendance depuis
+  end
+  Note over D: UNE transaction : ajoute seulement ceux marqués tendance,<br/>complète les noms arabes manquants, rafraîchit les listes
+  </pre></div>
+  <div class="note">Rejouable : si un envoi échoue en cours de route, tout repart la fois suivante. Les ventes d'un jour remplacent l'ancien compte ;
+  les fiches ne font que compléter des champs vides : rien n'est compté deux fois ni écrasé.</div>
+</section>
+
+<section id="fr-c">
+  <h2><span class="n">C</span>Hors ligne, refusé, sans licence, longue absence</h2>
+  <p class="sub">Le poste ne perd jamais rien : rien n'est marqué envoyé tant que le serveur n'a pas répondu OK.</p>
+  <div class="diag"><pre class="mermaid">
+flowchart TD
+  S([Lancement]) --> L{Licence active ?}
+  L -- "non : aucune, expirée, lecture seule" --> X1[Rien n'est envoyé<br/>la caisse marche en local]
+  L -- oui --> N{Internet ?}
+  N -- non --> X2[Rien n'est marqué envoyé<br/>nouvel essai au prochain lancement]
+  N -- oui --> R[POST /tendance]
+  R --> A{Réponse}
+  A -- "200 OK" --> M[Marqué envoyé :<br/>aujourd'hui + dernière fiche]
+  A -- "401 licence refusée" --> X3[Rien n'est marqué envoyé]
+  A -- "délai dépassé / 500" --> X3
+  M --> P[Récupère les nouveaux produits tendance par rayon]
+  P --> Q{Réponse}
+  Q -- OK --> W[Ajoute seulement les tendances<br/>rafraîchit les listes]
+  Q -- "hors ligne" --> X4[Prochain lancement, même jour 'depuis']
+  X2 --> G{Hors ligne plus de 30 jours ?}
+  G -- oui --> T[Envoi suivant : seulement les 30 derniers jours de ventes<br/>toutes les fiches modifiées partent quand même]
+  G -- non --> U[Envoi suivant : chaque jour depuis le dernier envoi]
+  </pre></div>
+  <ul class="points">
+    <li><b>Les ventes sont datées du jour où elles ont eu lieu</b>, pas du jour où elles arrivent : des ventes en retard comptent quand même dans la fenêtre de 90 jours.</li>
+    <li>Hors ligne, le poste ne rate aucune tendance : la récupération suivante demande « depuis ma dernière demande réussie ».</li>
+    <li>Un produit devenu tendance puis retombé pendant l'absence est ignoré (il n'est plus en tendance).</li>
+  </ul>
+</section>
+
+<section id="fr-d">
+  <h2><span class="n">D</span>Code-barres inconnu à la caisse</h2>
+  <p class="sub">Le caissier scanne un code que le poste ne connaît pas.</p>
+  <div class="diag"><pre class="mermaid">
+flowchart TD
+  S([Scan]) --> L{Connu en local ?<br/>produit, colis, pack}
+  L -- oui --> V[Au panier]
+  L -- non --> DLG["'Produit introuvable' s'ouvre aussitôt<br/>+ cherche le code dans le catalogue BENS (5 s)"]
+  DLG --> F{Trouvé ?}
+  F -- "oui, confirmé" --> T["'Trouvé dans le catalogue BENS'<br/>photo, nom, nom arabe, marque"]
+  T --> CR["'Créer depuis le catalogue'<br/>formulaire rempli"]
+  F -- "oui, à confirmer" --> Q["'Produit proposé par une boutique'<br/>Est-ce bien ce produit ? 3 sur 5"]
+  Q -- "'Oui, c'est ce produit'" --> VP[vote +1 envoyé] --> CR
+  Q -- "'Ce n'est pas ce produit'" --> VM[vote −1 envoyé] --> CR2
+  F -- "non / hors ligne" --> CR2[Créer : formulaire avec le seul code-barres]
+  DLG -. "recherche F3" .-> SR[Recherche avancée]
+  CR --> P[Le caissier met le prix, enregistre]
+  CR2 --> P
+  P --> K[Le produit passe au panier]
+  K --> NX[[Prochain lancement : sa fiche est envoyée → scénario E]]
+  </pre></div>
+  <ul class="points">
+    <li>Chaque recherche ajoute aussi +100 points de classement à ce produit sur le serveur.</li>
+    <li>Les codes internes (<code>CDZ…</code>, générés par le poste) ne sont jamais cherchés ni envoyés.</li>
+    <li>Un vote part tout de suite au serveur ; hors ligne il attend sur le poste et part avec l'envoi du prochain lancement.</li>
+  </ul>
+</section>
+
+<section id="fr-e">
+  <h2><span class="n">E</span>La fiche d'une boutique arrive au catalogue</h2>
+  <p class="sub">Produits créés ou modifiés dans la boutique (formulaire, import, caisse, téléphone), envoyés au lancement suivant.</p>
+  <div class="diag"><pre class="mermaid">
+flowchart TD
+  S([Fiche reçue :<br/>code-barres + codes secondaires, nom,<br/>nom arabe, marque, catégorie]) --> V{Valable ?<br/>EAN de 8 à 14 chiffres}
+  V -- "non : code interne, service" --> I[Ignorée]
+  V -- oui --> K{Code-barres connu<br/>du catalogue ?}
+  K -- non --> N{A un nom ?}
+  N -- non --> I
+  N -- oui --> C[NOUVEAU produit du catalogue<br/>contribue_par = ce poste]
+  C --> R[Rangé dans son rayon tout de suite<br/>porc / alcool → gardé mais exclu]
+  R --> LG[(catalog_contribution :<br/>créé, champs)]
+  K -- oui --> E{Un champ VIDE<br/>que la fiche peut remplir ?}
+  E -- non --> NOP[Rien ne change]
+  E -- oui --> FILL[Seulement les champs vides :<br/>nom, nom arabe, marque,<br/>catégorie, codes-barres en plus]
+  FILL --> R2{Sans rayon jusque-là ?}
+  R2 -- oui --> R3[Rangé maintenant] --> LG2
+  R2 -- non --> LG2[(catalog_contribution :<br/>complété, champs)]
+  </pre></div>
+  <div class="deux">
+    <div class="note"><b>Jamais écrasé</b> : la première boutique qui remplit un champ l'emporte ; un autre nom ou une autre marque envoyés ensuite sont ignorés.
+      Les erreurs se corrigent dans l'administration (chaque changement est noté avec son poste).</div>
+    <div class="note"><b>Fiches envoyées</b> : les produits de la boutique à code EAN, hors services et hors produits du catalogue jamais modifiés.
+      La catégorie « Divers » (système) n'est pas envoyée.</div>
+  </div>
+</section>
+
+<section id="fr-i">
+  <h2><span class="n">I</span>Confirmer un produit ajouté par une boutique</h2>
+  <p class="sub">Seulement les produits créés parce que le catalogue ne connaissait pas leur code-barres. Les produits importés et les fiches complétées n'en ont pas besoin.</p>
+  <div class="diag"><pre class="mermaid">
+flowchart TD
+  S([La boutique A crée un produit<br/>que le catalogue ne connaissait pas]) --> P[Produit du catalogue À CONFIRMER<br/>score 2, pas proposé dans les rayons]
+  P --> SC{Une autre boutique scanne<br/>ce code-barres à la caisse}
+  SC -- "'Oui, c'est ce produit'" --> UP[+1]
+  SC -- "'Ce n'est pas ce produit'" --> DN[−1]
+  SC -- "ferme le dialog" --> P
+  UP --> CALC[score = 2 + tous les votes<br/>un vote par boutique, le dernier compte<br/>le vote de la boutique A est ignoré]
+  DN --> CALC
+  CALC --> T{Score}
+  T -- "5 ou plus" --> OK[CONFIRMÉ pour de bon<br/>proposé dans son rayon, peut être tendance<br/>plus de vote]
+  T -- "0 ou moins" --> DEL[SUPPRIMÉ du catalogue<br/>codes-barres, ventes et votes avec]
+  T -- "de 1 à 4" --> P
+  OK --> LOG[(catalog_contribution :<br/>confirme / supprime)]
+  DEL --> LOG
+  </pre></div>
+  <ul class="points">
+    <li>Le produit local de la boutique A (et de chaque boutique qui l'a créé) n'est jamais touché : seul le catalogue partagé change.</li>
+    <li>En attente, le produit répond toujours à la recherche par code-barres : c'est là que les autres boutiques votent.</li>
+    <li>Seuils dans le <code>.env</code> de catalog-api : <code>CONFIRMATION_DEPART</code> (2), <code>CONFIRMATION_SEUIL</code> (5), <code>CONFIRMATION_SUPPRESSION</code> (0).</li>
+  </ul>
+</section>
+
+<section id="fr-f">
+  <h2><span class="n">F</span>La vie d'un produit en tendance</h2>
+  <p class="sub">Le drapeau est recalculé quand un envoi touche le produit, et jour après jour pour les autres (la fenêtre glisse).</p>
+  <div class="diag"><pre class="mermaid">
+stateDiagram-v2
+  [*] --> AuCatalogue: importé ou ajouté par une boutique
+  AuCatalogue --> SeVend: premier ticket reçu (points ajoutés)
+  SeVend --> EnTendance: 3 boutiques et plus ET 20 tickets et plus en 90 jours
+  EnTendance --> EnTendance: d'autres ventes (même date 'depuis')
+  EnTendance --> SeVend: la fenêtre glisse sous un seuil
+  SeVend --> AuCatalogue: plus aucune vente en 90 jours (points à 0)
+  EnTendance --> SurLesPostes: les postes qui ont son rayon le récupèrent (depuis)
+  SurLesPostes --> SurLesPostes: gardé pour toujours sur le poste
+  </pre></div>
+  <ul class="points">
+    <li>Sortir des tendances ne supprime jamais un produit d'un poste : ventes, stock et factures y renvoient.</li>
+    <li>« En tendance depuis » est le jour où il l'est devenu ; il ne change que s'il retombe puis redevient tendance.</li>
+  </ul>
+</section>
+
+<section id="fr-g">
+  <h2><span class="n">G</span>Le tableau de bord BENS — onglet Trending</h2>
+  <p class="sub">Official apps → CaisseDZ → Trending (Owner, double authentification).</p>
+  <div class="diag"><pre class="mermaid">
+sequenceDiagram
+  autonumber
+  actor A as Admin
+  participant W as Tableau de bord
+  participant B as API bens_ds
+  participant C as catalog-api
+  A->>W: ouvre l'onglet Trending
+  W->>B: GET /api/admin/rev/catalog-trends
+  B->>C: GET /tendance/stats<br/>X-Server-Token: REV_SERVER_TOKEN
+  C-->>B: règle, totaux, rayons, plus vendus, postes, contributions
+  B->>B: chaque code de poste → le client connecté dessus en dernier (app_accounts)
+  B-->>W: idem, avec téléphone et nom du commerce
+  W-->>A: chiffres, tendances par rayon, plus vendus,<br/>boutiques, ce que les boutiques ont ajouté
+  A->>W: clique une boutique → la fiche du client
+  alt jeton ou adresse absents
+    B-->>W: 503 not_configured
+  else catalog-api injoignable
+    B-->>W: 502 catalog_unreachable → 'Try again'
+  end
+  </pre></div>
+</section>
+
+<section id="fr-h">
+  <h2><span class="n">H</span>Déployer et entretenir</h2>
+  <p class="sub">Quoi faire quand catalog-api change. Chaque dépôt garde son propre mot de passe FTP (enregistré une fois).</p>
+  <div class="diag"><pre class="mermaid">
+flowchart LR
+  A[Commit + push] --> B["mise run depwin<br/>(seulement les fichiers commités)"]
+  B --> C["Tableau de bord → Catalogue → Maintenance<br/>(ou admin_rayons.php)"]
+  C --> D{Tables à jour ?}
+  D -- non --> E[Installées toutes seules<br/>un seul ALTER pour toutes les colonnes]
+  D -- oui --> F
+  E --> F["'Reclasser tout le catalogue'<br/>lots de 20 s, garder la page ouverte"]
+  F --> G[Vérifier /rayons]
+  </pre></div>
+  <ul class="points">
+    <li>Mots de passe : <code>%USERPROFILE%\.bens\ftp-pass</code> (bens_ds) et <code>catalog-ftp-pass</code> (catalog-api) ; lancer <code>mise run depwin-pass</code> depuis le bon dossier.</li>
+    <li>Tout ce que faisait admin_rayons.php est maintenant dans le tableau de bord BENS → <b>Catalogue</b> (vue d'ensemble, rayons, tendances, à confirmer, maintenance) : voir <a href="dashboard.html">Tableau de bord BENS</a>.</li>
+    <li>Maintenance → « Recompute trends » recalcule tous les produits vendus d'un coup, même ceux déjà faits aujourd'hui (après un changement de règle).</li>
+  </ul>
+</section>
+
+<section id="fr-schema">
+  <h2><span class="n">⛁</span>Schéma des données</h2>
+  <p class="sub">Seulement ce que ce système ajoute ou utilise.</p>
+  <h3>catalog-api (MySQL)</h3>
+  <div class="diag"><pre class="mermaid">
+erDiagram
+  catalog_rayon ||--o{ catalog_product : "rayon_code"
+  catalog_product ||--o{ catalog_product_barcode : "codes-barres"
+  catalog_product ||--o{ catalog_vente_jour : "tickets par poste et par jour"
+  catalog_product ||--o{ catalog_contribution : "créé / complété"
+  catalog_poste ||--o{ catalog_vente_jour : "poste"
+  catalog_poste ||--o{ catalog_contribution : "poste"
+  catalog_product ||--o{ catalog_confirmation : "votes"
+  catalog_rayon {
+    string code PK
+    string nom_fr
+    string nom_ar
+    string mots_cles
+  }
+  catalog_product {
+    int id PK
+    string nom
+    string nom_ar "nom arabe"
+    string rayon_code FK
+    int exclu "porc ou alcool"
+    int score "classement dans le rayon"
+    int consultations "recherches par code-barres"
+    int postes_90j "boutiques"
+    int ventes_90j "tickets"
+    int points_tendance
+    int tendance "drapeau"
+    datetime tendance_le "depuis"
+    string contribue_par "poste qui l'a ajouté"
+    int a_confirmer "en attente de votes"
+    int confirmation "score, de 2 à 5"
+  }
+  catalog_confirmation {
+    int product_id PK
+    string poste PK
+    int vote "+1 ou -1"
+    datetime le
+  }
+  catalog_vente_jour {
+    int product_id PK
+    string poste PK
+    date jour PK
+    int tickets "50 au plus"
+  }
+  catalog_contribution {
+    int id PK
+    int product_id
+    string poste
+    string action "cree ou complete"
+    string champs
+    datetime cree_le
+  }
+  catalog_poste {
+    string poste PK "CD-XXXX-XXXX"
+    datetime premier_le
+    datetime dernier_le
+    int envois
+  }
+  </pre></div>
+  <div class="deux">
+    <div>
+      <h3>CaisseDZ Desktop (SQLite, migration v39)</h3>
+      <table>
+        <tr><th>Où</th><th>Quoi</th></tr>
+        <tr><td><code>produit.designation_ar</code></td><td>nom arabe (recherche, tickets et documents en arabe)</td></tr>
+        <tr><td><code>produit.source</code></td><td><code>Catalogue</code> pour les produits téléchargés</td></tr>
+        <tr><td><code>catalogue_rayon</code></td><td>rayons téléchargés, leur catégorie locale, <code>tendance_le</code> (dernière demande)</td></tr>
+        <tr><td><code>parametre_app</code></td><td><code>tendance_jour_envoye</code> (dernier jour envoyé), <code>tendance_fiches_le</code> (dernière fiche envoyée)</td></tr>
+      </table>
+    </div>
+    <div>
+      <h3>bens_ds (PostgreSQL)</h3>
+      <table>
+        <tr><th>Où</th><th>Quoi</th></tr>
+        <tr><td><code>app_catalog_choices</code></td><td>chaque « Appliquer » de l'écran des rayons</td></tr>
+        <tr><td><code>app_accounts.device</code></td><td>code du poste → le client (onglet Trending)</td></tr>
+        <tr><td>config <code>catalog_api_url</code></td><td>d'où viennent les statistiques (catalog-api.bensds.com par défaut)</td></tr>
+        <tr><td><code>REV_SERVER_TOKEN</code></td><td>partagé avec catalog-api (Smart Scan, statistiques)</td></tr>
+      </table>
+    </div>
+  </div>
+  <h3>Ce qu'un poste envoie — <code>POST /tendance</code></h3>
+<pre>{
+  "produits": [
+    {"code_barres": "6130007000015", "codes_barres": ["6130007000015", "6130007000022"],
+     "nom": "Couscous Mama 1kg", "nom_ar": "كسكس ماما", "marque": "Mama", "categorie": "Épicerie"}
+  ],
+  "confirmations": [
+    {"code_barres": "6130008000014", "vote": 1}
+  ],
+  "ventes": [
+    {"jour": "2026-10-21", "code_barres": "6130007000015", "tickets": 3}
+  ]
+}
+→ {"success": true, "data": {"ventes": 1, "inconnus": 0, "crees": 1, "completes": 0,
+                             "votes": 1, "confirmes": 0, "supprimes": 0}}</pre>
+</section>
+
+<section id="fr-reste">
+  <h2><span class="n">✓</span>Ce qui est fait, ce qui reste</h2>
+  <p class="sub">État au 21 octobre 2026.</p>
+  <table>
+    <tr><th style="width:120px">État</th><th>Élément</th></tr>
+    <tr><td><span class="badge ok">fait</span></td><td>catalog-api en ligne avec les tendances et le plafond de 5 000 ; tables installées ; catalogue reclassé (<code>/rayons</code> répond).</td></tr>
+    <tr><td><span class="badge ok">fait</span></td><td>Construit, pas encore déployé : la <b>confirmation</b> des produits (2 → 5 / 0), la page <b>Catalogue</b> du tableau de bord BENS (analyses, rayons, tendances, à confirmer, maintenance) et son API, cette documentation.</td></tr>
+    <tr><td><span class="badge wait">à faire</span></td><td><b>1 · Commiter et déployer catalog-api</b> (<code>mise run depwin</code>), puis tableau de bord → Catalogue → Maintenance → Update the tables (ou ouvrir admin_rayons.php).</td></tr>
+    <tr><td><span class="badge wait">à faire</span></td><td><b>2 · Commiter et déployer bens_ds</b> (<code>mise run depwin</code>) : onglet Trending, page Catalogue, leur API.</td></tr>
+    <tr><td><span class="badge wait">à faire</span></td><td><b>3 · Vérifier <code>REV_SERVER_TOKEN</code></b> : le même dans les deux <code>.env</code> (sinon la page Catalogue affiche catalog_unreachable).</td></tr>
+    <tr><td><span class="badge wait">à faire</span></td><td><b>4 · Desktop</b> : tout <code>flutter test</code>, commit, compiler et distribuer — <b>après</b> 1 (les votes ont besoin du nouveau catalog-api).</td></tr>
+    <tr><td><span class="badge wait">à faire</span></td><td><b>5 · Commiter la documentation</b> (les 3 README, <code>docs/workflow/*.html</code>) et passer la branche de travail de <code>CLAUDE.md</code> à <code>main</code>.</td></tr>
+    <tr><td><span class="badge wait">à faire</span></td><td><b>6 · Supprimer les branches fusionnées</b> <code>claude/fervent-curie-fg6apc</code> et <code>claude/funny-franklin-plcl6q</code> (commandes dans la conversation).</td></tr>
+    <tr><td><span class="badge wait">à faire</span></td><td><b>7 · Nettoyage du serveur</b> : anciens scripts, CSV Open Beauty Facts, <code>.composer/</code> (README de catalog-api → Security).</td></tr>
+    <tr><td><span class="badge wait">à vérifier</span></td><td><code>ApiTest</code> de bens_ds (tendances, administration du catalogue) jamais lancé ici (pas de PostgreSQL) ; un ancien test du tableau de bord (fiche client) échouait déjà.</td></tr>
+    <tr><td><span class="badge todo">plus tard</span></td><td>Tâche cron chaque nuit pour faire glisser la fenêtre de 90 jours ; un envoi toutes les 6 h tant que le desktop reste ouvert ; ajuster les seuils de confirmation si besoin.</td></tr>
+    <tr><td><span class="badge todo">ensuite</span></td><td><b>Partie 1 : les 18 alertes produits</b> (meilleures ventes, stock dormant, marge faible, rupture sans commande, fiches incomplètes…).</td></tr>
+  </table>
+</section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+(function () {
+  var racine = document.documentElement;
+  var titres = { en: 'Catalogue Trending Workflow', fr: 'Workflow des tendances du catalogue' };
+  var sombre = racine.dataset.theme === 'dark' ||
+    (racine.dataset.theme !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  var pret = !!window.mermaid;
+  if (pret) {
+    mermaid.initialize({
+      startOnLoad: false,
+      securityLevel: 'strict',
+      theme: 'base',
+      fontFamily: 'Poppins, system-ui, sans-serif',
+      themeVariables: sombre ? {
+        primaryColor: '#2d2950', primaryTextColor: '#ecebf5', primaryBorderColor: '#8f7cf0', lineColor: '#a9a6c0',
+        secondaryColor: '#262338', tertiaryColor: '#1c1a2b', noteBkgColor: '#3a3160', noteTextColor: '#ecebf5',
+        actorBkg: '#2d2950', actorTextColor: '#ecebf5', signalColor: '#c9b8ff', signalTextColor: '#ecebf5',
+        labelBoxBkgColor: '#2d2950', labelTextColor: '#ecebf5', clusterBkg: '#1c1a2b', clusterBorder: '#353149'
+      } : {
+        primaryColor: '#ece8ff', primaryTextColor: '#1b1830', primaryBorderColor: '#6c5ce7', lineColor: '#6b6880',
+        secondaryColor: '#fff3f5', tertiaryColor: '#ffffff', noteBkgColor: '#fff6dc', noteTextColor: '#1b1830',
+        actorBkg: '#ece8ff', actorTextColor: '#1b1830', signalColor: '#4b2f63', signalTextColor: '#1b1830',
+        clusterBkg: '#ffffff', clusterBorder: '#e6e2f3'
+      },
+      flowchart: { curve: 'basis', htmlLabels: true },
+      sequence: { mirrorActors: false, wrap: true }
+    });
+  } else {
+    document.querySelectorAll('.hors-ligne-msg').forEach(function (e) { e.style.display = 'inline'; });
+  }
+
+  // Mermaid can't measure hidden diagrams: each language's are drawn when it is first shown.
+  function afficher(langue) {
+    racine.lang = langue;
+    document.title = titres[langue];
+    document.querySelectorAll('.langue button').forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.dataset.lang === langue));
+    });
+    try { localStorage.setItem('caissedz-docs-langue', langue); } catch (e) {}
+    if (pret) {
+      var aDessiner = document.querySelectorAll('main.l-' + langue + ' pre.mermaid:not([data-processed])');
+      if (aDessiner.length) mermaid.run({ nodes: aDessiner });
+    }
+  }
+
+  document.querySelectorAll('.langue button').forEach(function (b) {
+    b.addEventListener('click', function () { afficher(b.dataset.lang); });
+  });
+  var choix = null;
+  try { choix = localStorage.getItem('caissedz-docs-langue'); } catch (e) {}
+  afficher(choix === 'fr' || choix === 'en' ? choix : 'en');
+})();
+</script>
+</body>
+</html>

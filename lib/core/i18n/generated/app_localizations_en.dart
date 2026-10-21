@@ -8046,4 +8046,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String catalogueRayonsNbTendances(String nombre) {
     return '$nombre trending';
   }
+
+  @override
+  String get posCatalogueAConfirmerTitre => 'Product suggested by a shop';
+
+  @override
+  String posCatalogueAConfirmerQuestion(int score, int seuil) {
+    return 'Is this the right product? Your answer helps confirm the catalogue ($score of $seuil).';
+  }
+
+  @override
+  String get posCatalogueOui => 'Yes, that\'s it';
+
+  @override
+  String get posCatalogueNon => 'That\'s not it';
 }

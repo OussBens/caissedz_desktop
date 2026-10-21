@@ -1106,25 +1106,48 @@ class _RechercheProduitDialogState extends ConsumerState<_RechercheProduitDialog
 // 5 · Produit introuvable / caisse fermée.
 // ---------------------------------------------------------------------------------------------------------------
 
-/// `true` = rechercher, `false` = créer le produit, `null` = fermer.
-/// Code-barres inconnu à la caisse : `true` pour la recherche avancée, `false` pour créer le produit.
+/// Ce que le caissier choisit devant un code-barres inconnu du poste.
+enum SuiteIntrouvable {
+  /// Recherche avancée (F3).
+  rechercher,
+
+  /// Créer le produit (rempli par le catalogue BENS s'il l'a trouvé).
+  creer,
+
+  /// Produit du catalogue à confirmer : « c'est bien ce produit » (+1), puis le créer rempli.
+  confirmer,
+
+  /// Produit du catalogue à confirmer : « ce n'est pas ce produit » (−1), puis le créer avec le seul code-barres.
+  refuser,
+}
+
+/// Code-barres inconnu à la caisse ; `null` : fermé.
 ///
 /// [catalogue] : la recherche du code dans le catalogue BENS, lancée par l'appelant ; pendant qu'elle tourne,
-/// le dialog l'indique, puis montre le produit trouvé (le formulaire s'ouvrira rempli).
-Future<bool?> afficherProduitIntrouvable(BuildContext context, String code, {Future<FicheProduitIa?>? catalogue}) {
+/// le dialog l'indique, puis montre le produit trouvé (le formulaire s'ouvrira rempli). Un produit ajouté au
+/// catalogue par une autre boutique, pas encore confirmé, est présenté avec la question « est-ce bien ce
+/// produit ? » : la réponse compte dans sa confirmation.
+Future<SuiteIntrouvable?> afficherProduitIntrouvable(
+  BuildContext context,
+  String code, {
+  Future<FicheProduitIa?>? catalogue,
+}) {
   final l10n = AppLocalizations.of(context);
-  return afficherDialog<bool>(
+  return afficherDialog<SuiteIntrouvable>(
     context,
     builder: (ctx) => FutureBuilder<FicheProduitIa?>(
       future: catalogue,
       builder: (ctx, etat) {
         final fiche = etat.data;
         final cherche = catalogue != null && etat.connectionState != ConnectionState.done;
+        final aConfirmer = fiche?.aConfirmer ?? false;
         return DsDialog(
-          titre: fiche == null ? l10n.posIntrouvableTitre : l10n.posCatalogueTrouveTitre,
+          titre: fiche == null
+              ? l10n.posIntrouvableTitre
+              : (aConfirmer ? l10n.posCatalogueAConfirmerTitre : l10n.posCatalogueTrouveTitre),
           iconeData: fiche == null ? LucideIcons.searchX : LucideIcons.packageSearch,
           ton: fiche == null ? DsDialogTon.avertissement : DsDialogTon.info,
-          largeur: 520,
+          largeur: 560,
           actions: [
             DsButton(
               libelle: l10n.communFermer,
@@ -1135,14 +1158,29 @@ Future<bool?> afficherProduitIntrouvable(BuildContext context, String code, {Fut
               libelle: l10n.posRecherche,
               icone: LucideIcons.search,
               variante: DsButtonVariante.secondaire,
-              onPressed: () => Navigator.of(ctx).pop(true),
+              onPressed: () => Navigator.of(ctx).pop(SuiteIntrouvable.rechercher),
             ),
-            DsButton(
-              key: const ValueKey('introuvable_creer'),
-              libelle: fiche == null ? l10n.posIntrouvableCreer : l10n.posCatalogueCreer,
-              icone: LucideIcons.packagePlus,
-              onPressed: () => Navigator.of(ctx).pop(false),
-            ),
+            if (aConfirmer) ...[
+              DsButton(
+                key: const ValueKey('introuvable_refuser'),
+                libelle: l10n.posCatalogueNon,
+                icone: LucideIcons.thumbsDown,
+                variante: DsButtonVariante.secondaire,
+                onPressed: () => Navigator.of(ctx).pop(SuiteIntrouvable.refuser),
+              ),
+              DsButton(
+                key: const ValueKey('introuvable_confirmer'),
+                libelle: l10n.posCatalogueOui,
+                icone: LucideIcons.thumbsUp,
+                onPressed: () => Navigator.of(ctx).pop(SuiteIntrouvable.confirmer),
+              ),
+            ] else
+              DsButton(
+                key: const ValueKey('introuvable_creer'),
+                libelle: fiche == null ? l10n.posIntrouvableCreer : l10n.posCatalogueCreer,
+                icone: LucideIcons.packagePlus,
+                onPressed: () => Navigator.of(ctx).pop(SuiteIntrouvable.creer),
+              ),
           ],
           contenu: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -1161,8 +1199,15 @@ Future<bool?> afficherProduitIntrouvable(BuildContext context, String code, {Fut
                     Text(l10n.posCatalogueRecherche, style: ctx.ds.typo.bodySm.copyWith(color: ctx.ds.colors.textSecondary)),
                   ],
                 )
-              else if (fiche != null)
+              else if (fiche != null) ...[
                 _FicheCatalogue(fiche),
+                if (aConfirmer)
+                  Text(
+                    l10n.posCatalogueAConfirmerQuestion(fiche.confirmation ?? 0, fiche.seuilConfirmation ?? 5),
+                    key: const ValueKey('introuvable_question'),
+                    style: ctx.ds.typo.body,
+                  ),
+              ],
             ],
           ),
         );

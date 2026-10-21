@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en" data-title-en="CaisseDZ Scan" data-title-fr="CaisseDZ Scan">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CaisseDZ Scan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="docs.css">
+</head>
+<body>
+<nav class="docs-nav" aria-label="Documentation"><div class="in"><span class="marque">CaisseDZ docs</span><a href="index.html"><span class="l-en">Home</span><span class="l-fr">Accueil</span></a><a href="architecture.html"><span class="l-en">Architecture & deploy</span><span class="l-fr">Architecture et déploiement</span></a><a href="licences.html"><span class="l-en">Plans, accounts & licences</span><span class="l-fr">Formules, comptes et licences</span></a><a href="tendance_catalogue.html"><span class="l-en">Catalogue & trends</span><span class="l-fr">Catalogue et tendances</span></a><a href="smart_scan.html"><span class="l-en">Smart Scan</span><span class="l-fr">Smart Scan</span></a><a href="mobile.html" aria-current="page"><span class="l-en">CaisseDZ Scan (phone)</span><span class="l-fr">CaisseDZ Scan (téléphone)</span></a><a href="dashboard.html"><span class="l-en">BENS dashboard</span><span class="l-fr">Tableau de bord BENS</span></a><a href="workflow.html"><span class="l-en">Desktop modules</span><span class="l-fr">Modules du desktop</span></a></div></nav>
+<header><div class="in">
+  <div class="langue" role="group" aria-label="Language / Langue"><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="fr" aria-pressed="false">FR</button></div>
+  <div class="l-en" lang="en">
+    <h1>CaisseDZ Scan — the phone</h1>
+    <p>A phone on the shop’s Wi-Fi, paired to the PC by QR: it sells, checks stock and sends receipts.</p>
+    <div class="meta">State on 21 Oct 2026<span class="hors-ligne-msg l-en"> · The diagrams need internet (Mermaid): showing their source instead.</span><span class="hors-ligne-msg l-fr"> · Les schémas ont besoin d'internet (Mermaid) : leur source est affichée.</span></div>
+    <nav class="toc"><a href="#appairage">A · Pairing</a><a href="#vente">B · Sale</a></nav>
+  </div>
+  <div class="l-fr" lang="fr">
+    <h1>CaisseDZ Scan — le téléphone</h1>
+    <p>Un téléphone sur le Wi-Fi de la boutique, appairé au poste par QR : il vend, consulte le stock et envoie des factures.</p>
+    <div class="meta">État au 21 octobre 2026</div>
+    <nav class="toc"><a href="#fr-appairage">A · Appairage</a><a href="#fr-vente">B · Vente</a></nav>
+  </div>
+</div></header>
+<main class="l-en" lang="en">
+<section id="appairage">
+  <h2><span class="n">A</span>Pairing by QR</h2>
+  <p class="sub">Each allowed user shows his own QR: the phone signed in with it never sends a password on the Wi-Fi.</p>
+  <div class="diag"><pre class="mermaid">
+sequenceDiagram
+  autonumber
+  actor U as User on the PC
+  participant D as Desktop server (port 8787)
+  participant T as Phone CaisseDZ Scan
+  U->>D: phone icon → shows HIS QR code<br/>local addresses, port, code valid 10 min, single use
+  T->>D: GET /info on every address at once
+  D-->>T: the one that answers
+  T->>D: POST /appairer {code}
+  Note over D: device token created, only its SHA-256 kept,<br/>bound to this user
+  D-->>T: device token + session (12 h, sliding)
+  loop later
+    T->>D: POST /connexion with the device token
+    D-->>T: session again (account still active, permission kept)
+  end
+  </pre></div>
+  <ul class="points"><li>Allowed: the Admin, and roles with the “Mobile app” permission; the role’s modules and permissions apply (purchase price, margin, stores).</li><li>The Admin sees and revokes every phone; the others only theirs. A phone connected within 5 minutes shows “Connected”.</li><li>Windows asks to allow the firewall the first time (private networks).</li></ul>
+
+</section>
+<section id="vente">
+  <h2><span class="n">B</span>A sale from the phone</h2>
+  <p class="sub">Every write goes through the PC’s own services, with the phone user’s audit context.</p>
+  <div class="diag"><pre class="mermaid">
+flowchart TD
+  S([Scan button on the phone]) --> A[GET /caisse/article/code<br/>product, box or pack at the till price]
+  A --> P[Phone cart: customer, quantities]
+  P --> E{Till session open<br/>for this user?}
+  E -- no --> O[Open it from the phone]
+  E -- yes --> V
+  O --> V["POST /ventes → VenteService.encaisser<br/>ONE transaction on the PC: sale, stock, cash"]
+  V --> R[Receipt on the phone<br/>PC screens refreshed]
+  </pre></div>
+  <ul class="points"><li>Also from the phone: today’s sales and tickets, stock per store, product creation (quick or AI), quick entry, receipt photos for Smart Scan.</li><li>No credit and no loyalty points from the phone; refused in read-only.</li></ul>
+
+</section>
+
+</main>
+<main class="l-fr" lang="fr">
+<section id="fr-appairage">
+  <h2><span class="n">A</span>Appairage par QR</h2>
+  <p class="sub">Chaque utilisateur autorisé affiche son propre QR : le téléphone connecté ainsi n'envoie jamais de mot de passe sur le Wi-Fi.</p>
+  <div class="diag"><pre class="mermaid">
+sequenceDiagram
+  autonumber
+  actor U as Utilisateur sur le poste
+  participant D as Serveur du poste (port 8787)
+  participant T as Téléphone CaisseDZ Scan
+  U->>D: icône téléphone → affiche SON QR code<br/>adresses locales, port, code valable 10 min, usage unique
+  T->>D: GET /info sur toutes les adresses à la fois
+  D-->>T: celle qui répond
+  T->>D: POST /appairer {code}
+  Note over D: jeton d'appareil créé, seule son empreinte SHA-256 gardée,<br/>lié à cet utilisateur
+  D-->>T: jeton d'appareil + session (12 h glissantes)
+  loop ensuite
+    T->>D: POST /connexion avec le jeton d'appareil
+    D-->>T: nouvelle session (compte actif, permission gardée)
+  end
+  </pre></div>
+  <ul class="points"><li>Autorisés : l'Admin, et les rôles qui ont la permission « Application mobile » ; les modules et permissions du rôle s'appliquent (prix d'achat, marge, magasins).</li><li>L'Admin voit et révoque tous les téléphones ; les autres seulement les leurs. Un téléphone actif depuis moins de 5 minutes affiche « Connecté ».</li><li>Windows demande d'autoriser le pare-feu la première fois (réseaux privés).</li></ul>
+
+</section>
+<section id="fr-vente">
+  <h2><span class="n">B</span>Une vente depuis le téléphone</h2>
+  <p class="sub">Toute écriture passe par les services du poste, avec le contexte d'audit de l'utilisateur du téléphone.</p>
+  <div class="diag"><pre class="mermaid">
+flowchart TD
+  S([Bouton scan sur le téléphone]) --> A[GET /caisse/article/code<br/>produit, colis ou pack au prix de la caisse]
+  A --> P[Panier du téléphone : client, quantités]
+  P --> E{Session de caisse ouverte<br/>pour cet utilisateur ?}
+  E -- non --> O[L'ouvrir depuis le téléphone]
+  E -- oui --> V
+  O --> V["POST /ventes → VenteService.encaisser<br/>UNE transaction sur le poste : vente, stock, caisse"]
+  V --> R[Ticket sur le téléphone<br/>écrans du poste rafraîchis]
+  </pre></div>
+  <ul class="points"><li>Aussi depuis le téléphone : ventes et tickets du jour, stock par magasin, création de produit (rapide ou IA), entrée rapide, photos de factures pour Smart Scan.</li><li>Ni crédit ni points de fidélité depuis le téléphone ; refusé en lecture seule.</li></ul>
+
+</section>
+
+</main>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script src="docs.js"></script>
+</body>
+</html>

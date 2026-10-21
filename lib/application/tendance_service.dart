@@ -39,6 +39,9 @@ class TendanceService {
   static const String cleJour = 'tendance_jour_envoye';
   static const String cleFiches = 'tendance_fiches_le';
 
+  /// Votes de confirmation pas encore reçus par le serveur (JSON `[{code_barres, vote}]`).
+  static const String cleVotes = 'tendance_votes_attente';
+
   static final RegExp _codeBarres = RegExp(r'^\d{8,14}$');
 
   final Database db;
@@ -125,6 +128,44 @@ class TendanceService {
     return (fiches: fiches, dernier: dernier);
   }
 
+  Future<List<Map<String, Object>>> _votesEnAttente() async {
+    try {
+      final j = jsonDecode(await ParametreRepository(db).lire(cleVotes) ?? '[]') as List;
+      return [
+        for (final v in j)
+          if (v is Map && v['code_barres'] is String && (v['vote'] == 1 || v['vote'] == -1))
+            {'code_barres': v['code_barres'] as String, 'vote': v['vote'] as int},
+      ];
+    } on Object {
+      return [];
+    }
+  }
+
+  /// Vote de confirmation sur un produit du catalogue BENS ajouté par une autre boutique (scanné à la caisse) :
+  /// +1 « c'est bien ce produit », −1 « ce n'est pas ça ». Gardé sur le poste puis envoyé tout de suite ; hors
+  /// ligne ou refusé, il part avec le prochain envoi. Ne lance jamais d'exception. Vrai si le serveur l'a reçu.
+  Future<bool> voter(String codeBarres, int vote) async {
+    if (!_codeBarres.hasMatch(codeBarres) || (vote != 1 && vote != -1)) return false;
+    final parametres = ParametreRepository(db);
+    final attente = [
+      for (final v in await _votesEnAttente())
+        if (v['code_barres'] != codeBarres) v,
+      {'code_barres': codeBarres, 'vote': vote},
+    ];
+    await parametres.ecrire(cleVotes, jsonEncode(attente));
+    try {
+      final id = await identite();
+      final cle = id.cle;
+      if (cle == null || cle.isEmpty || id.machine.isEmpty) return false;
+      final r = await _poster(id.machine, cle, {'produits': const [], 'confirmations': attente, 'ventes': const []});
+      if (r == null) return false;
+      await parametres.ecrire(cleVotes, null);
+      return true;
+    } on Object {
+      return false;
+    }
+  }
+
   /// Envoie ce qui ne l'a pas encore été. `null` : rien d'envoyé (pas de licence, hors ligne, refusé).
   Future<ResultatTendance?> envoyer({DateTime? maintenant}) async {
     final id = await identite();
@@ -138,19 +179,27 @@ class TendanceService {
     final ventes = await ventesDepuis(depuis);
     final lues = await fichesApres(await parametres.lire(cleFiches));
     final fiches = lues.fiches;
+    final votes = await _votesEnAttente();
     var total = (ventes: 0, inconnus: 0, crees: 0, completes: 0);
-    if (ventes.isEmpty && fiches.isEmpty) return total;
+    if (ventes.isEmpty && fiches.isEmpty && votes.isEmpty) return total;
     try {
       // Les fiches d'abord : un produit inconnu du catalogue y est créé avant que ses ventes ne soient comptées.
       var iv = 0, ifi = 0;
+      var premier = true;
       do {
         final lotFiches = fiches.sublist(ifi, (ifi + parEnvoi).clamp(0, fiches.length));
         ifi += lotFiches.length;
         final place = parEnvoi - lotFiches.length;
         final lotVentes = ventes.sublist(iv, (iv + place).clamp(0, ventes.length));
         iv += lotVentes.length;
-        final r = await _poster(id.machine, cle, {'produits': lotFiches, 'ventes': lotVentes});
+        // Les votes en attente partent avec le premier lot.
+        final r = await _poster(id.machine, cle, {
+          'produits': lotFiches,
+          'confirmations': premier ? votes : const <Object>[],
+          'ventes': lotVentes,
+        });
         if (r == null) return null;
+        premier = false;
         total = (
           ventes: total.ventes + r.ventes,
           inconnus: total.inconnus + r.inconnus,
@@ -163,6 +212,7 @@ class TendanceService {
     }
     await parametres.ecrire(cleJour, _jour(aujourdhui));
     if (lues.dernier != null) await parametres.ecrire(cleFiches, lues.dernier);
+    if (votes.isNotEmpty) await parametres.ecrire(cleVotes, null);
     return total;
   }
 

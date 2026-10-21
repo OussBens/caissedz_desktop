@@ -276,6 +276,68 @@ void main() {
       expect([texte('produit_designation'), texte('produit_code_barres')], ['', '9999999999994']);
     });
 
+    testWidgets('produit du catalogue à confirmer : « c’est bien lui » (+1) ou « ce n’est pas ça » (−1)', (tester) async {
+      final votes = <Object?>[];
+      final client = MockClient((req) async {
+        if (req.url.path.startsWith('/products/barcode/')) {
+          return http.Response(
+            jsonEncode({
+              'success': true,
+              'data': {
+                'nom': 'Couscous Mama 1kg',
+                'nom_ar': 'كسكس ماما',
+                'a_confirmer': true,
+                'confirmation': 3,
+                'confirmation_seuil': 5,
+              },
+            }),
+            200,
+            headers: {'content-type': 'application/json; charset=utf-8'},
+          );
+        }
+        if (req.url.path == '/tendance') {
+          votes.addAll((jsonDecode(req.body) as Map)['confirmations'] as List);
+          return http.Response(jsonEncode({'success': true, 'data': {'votes': 1}}), 200);
+        }
+        return http.Response('{"success":false}', 404);
+      });
+      final c = await pumpApp(
+        tester,
+        routeInitiale: '/caisse',
+        taille: const Size(1600, 1000),
+        overrides: [httpClientProvider.overrideWithValue(client)],
+      );
+      await _donnees(c);
+      await tester.pumpAndSettle();
+      final champ = find.descendant(of: find.byType(DsSearchField), matching: find.byType(TextField)).first;
+      String texte(String cle) => tester
+          .widget<TextField>(find.descendant(of: find.byKey(ValueKey(cle)), matching: find.byType(TextField)).first)
+          .controller!
+          .text;
+
+      await tester.enterText(champ, '6130007000015');
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.pumpAndSettle();
+      expect(find.text('Produit proposé par une boutique'), findsOneWidget);
+      expect(find.textContaining('(3 sur 5)'), findsOneWidget);
+      expect(find.byKey(const ValueKey('introuvable_creer')), findsNothing, reason: 'oui ou non à la place');
+      await clic(tester, find.byKey(const ValueKey('introuvable_confirmer')));
+      await tester.pump(const Duration(milliseconds: 200));
+      expect(votes, [
+        {'code_barres': '6130007000015', 'vote': 1},
+      ]);
+      expect(texte('produit_designation'), 'Couscous Mama 1kg', reason: 'formulaire rempli');
+      await clic(tester, find.text('Annuler').last);
+
+      await tester.enterText(champ, '6130007000015');
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.pumpAndSettle();
+      await clic(tester, find.byKey(const ValueKey('introuvable_refuser')));
+      await tester.pump(const Duration(milliseconds: 200));
+      expect(votes.last, {'code_barres': '6130007000015', 'vote': -1});
+      expect([texte('produit_designation'), texte('produit_code_barres')], ['', '6130007000015'], reason: 'formulaire vide');
+    });
+
     testWidgets('ventes en parallèle, stock insuffisant, raccourcis F1 / F9 / F10 / F11', (tester) async {
       final c = await pumpApp(tester, routeInitiale: '/caisse', taille: const Size(1600, 1000));
       await _donnees(c);
