@@ -1242,3 +1242,19 @@ téléchargés et le code-barres inconnu est cherché dans le catalogue à la ca
 - Mesure (tests, mode debug) avec 20 000 produits : ouverture 0,4 s, 3 frappes 0,7 s, survol de 10 lignes 90 ms.
 - Tests : `ds_module_table_test.dart` (grille par pages, recherche après mise à jour, chargement, tri en cache).
 
+
+## Retours utilisateur — caisse et alertes ✅ (2026-10-22)
+
+- Caisse : produits par pages (24, 48 ou 96) en grille et en liste ; tuile en rupture à opacité normale, un clic la
+  fait clignoter en rouge (rien n'est ajouté ; l'admin garde la proposition de transfert).
+- Quantité disponible 0 (clic admin, scan) : dialog « Produit en rupture » (quantité 0, entrée rapide ; admin :
+  « Transférer » si un autre magasin en a, puis quantité et transfert du manque) au lieu de « Quantité et colis »,
+  qui ajoutait seul au bout de 3 s.
+- Dialog Alertes (cloche) : anciennes et nouvelles alertes réunies, sans doublon. « Urgent » (expirés, sessions
+  ouvertes), puis les 20 alertes produits par groupe (Ventes, Stock, Prix, Qualité, Marché ; types qui ont des
+  alertes), puis « À surveiller » (bientôt expirés, crédits clients, dettes fournisseurs). L'ancienne famille
+  « Ruptures et seuils » est retirée : l'alerte #14 « Rupture sans commande » les signale. Chaque ligne produit
+  propose son action (besoin, remise, fiche, transfert, commande…), « Voir l'analyse » ouvre Situation › Alertes
+  produits sur ce type ; un type consulté éteint le point rouge du tableau de bord. La cloche compte les deux
+  (« 99+ » au-delà de 99) ; à la connexion, le dialog s'ouvre s'il y a des alertes de l'un ou l'autre type.
+- Téléphones appairés : un seul enregistrement par téléphone (v42, voir « Application mobile »).

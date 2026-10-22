@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 
-/// Familles d'alertes du shell (§5.3, `AlertesDialog` du DS v2.2).
+/// Familles d'alertes du shell (§5.3, `AlertesDialog` du DS v2.2). Les ruptures n'en font plus partie : l'alerte
+/// produit « Rupture sans commande » (#14) les couvre, le dialog ne les montre qu'une fois.
 enum FamilleAlerte {
-  rupture(urgente: true, moduleId: 'besoins'),
   expire(urgente: true, moduleId: 'sorties'),
   sessions(urgente: true, moduleId: 'gestion_caisse'),
   bientot(urgente: false, moduleId: 'produits'),

@@ -687,6 +687,25 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get posRuptureTitre => 'Out of stock';
+
+  @override
+  String posRuptureMessage(String nom) {
+    return '“$nom” is no longer available in this store: it can’t be added to the cart.';
+  }
+
+  @override
+  String get posRuptureQuantite => 'Available quantity';
+
+  @override
+  String posRuptureAilleurs(String magasin, String quantite) {
+    return 'Available in “$magasin”: $quantite';
+  }
+
+  @override
+  String get posRuptureTransferer => 'Transfer';
+
+  @override
   String posErreurProduitInconnu(String code) {
     return 'Unknown code: $code';
   }
@@ -1883,6 +1902,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get alertesOuvrirModule => 'Open module';
 
   @override
+  String get alertesVoirAnalyse => 'View analysis';
+
+  @override
   String get alertesMarquerTraite => 'Mark as handled';
 
   @override
@@ -1890,9 +1912,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get alertesRienDetail => 'This alert family is handled.';
-
-  @override
-  String get alertesMesureRupture => 'Out of stock';
 
   @override
   String alertesOuverteDepuis(String date) {
@@ -1908,18 +1927,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String alertesDernierDocument(String code, String date) {
     return '$code · last document on $date';
   }
-
-  @override
-  String get alertesRupture => 'Stock-outs and thresholds';
-
-  @override
-  String get alertesRuptureAide => 'Products out of stock or below their alert threshold.';
-
-  @override
-  String get alertesRuptureAction => 'Create a needs list';
-
-  @override
-  String get alertesRuptureLigne => 'Order';
 
   @override
   String get alertesVoirStock => 'View stock';

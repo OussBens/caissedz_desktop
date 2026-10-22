@@ -688,6 +688,25 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get posRuptureTitre => 'Produit en rupture';
+
+  @override
+  String posRuptureMessage(String nom) {
+    return '« $nom » n\'est plus disponible dans ce magasin : il ne peut pas être ajouté au panier.';
+  }
+
+  @override
+  String get posRuptureQuantite => 'Quantité disponible';
+
+  @override
+  String posRuptureAilleurs(String magasin, String quantite) {
+    return 'Disponible dans « $magasin » : $quantite';
+  }
+
+  @override
+  String get posRuptureTransferer => 'Transférer';
+
+  @override
   String posErreurProduitInconnu(String code) {
     return 'Code inconnu : $code';
   }
@@ -1889,6 +1908,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get alertesOuvrirModule => 'Ouvrir le module';
 
   @override
+  String get alertesVoirAnalyse => 'Voir l\'analyse';
+
+  @override
   String get alertesMarquerTraite => 'Marquer comme traité';
 
   @override
@@ -1896,9 +1918,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get alertesRienDetail => 'Cette famille d\'alertes est traitée.';
-
-  @override
-  String get alertesMesureRupture => 'Rupture';
 
   @override
   String alertesOuverteDepuis(String date) {
@@ -1914,18 +1933,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String alertesDernierDocument(String code, String date) {
     return '$code · dernier document le $date';
   }
-
-  @override
-  String get alertesRupture => 'Ruptures et seuils';
-
-  @override
-  String get alertesRuptureAide => 'Produits épuisés ou sous leur seuil d\'alerte.';
-
-  @override
-  String get alertesRuptureAction => 'Créer une liste de besoins';
-
-  @override
-  String get alertesRuptureLigne => 'Commander';
 
   @override
   String get alertesVoirStock => 'Voir le stock';

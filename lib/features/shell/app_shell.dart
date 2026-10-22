@@ -99,13 +99,16 @@ class _AppShellState extends ConsumerState<AppShell> {
         await afficherConfigurationInitiale(context);
         if (!mounted) return;
       }
+      // Les alertes produits (calculées en arrière-plan depuis la connexion) comptent aussi.
+      final produits = await ref.read(alertesProduitsProvider.notifier).actualiser();
+      if (!mounted) return;
       final alertes = ref.read(alertesProvider);
       final service = ref.read(alertesServiceProvider);
       final masquees =
           !await service.afficherALaConnexion() || await service.estMasqueAujourdhui(session.utilisateur.code);
       if (!mounted) return;
       // Puis l'écran d'accueil lui-même (la Caisse) : plus de menu des modules par-dessus.
-      if (alertes.total > 0 && !masquees) await afficherAlertes(context);
+      if (alertes.total + produits.total > 0 && !masquees) await afficherAlertes(context);
     } finally {
       _sequenceEnCours = false;
     }
@@ -163,7 +166,8 @@ class _AppShellState extends ConsumerState<AppShell> {
     final licence = ref.watch(licenceProvider);
     final locale = ref.watch(localeProvider);
     final favoris = ref.watch(favorisModulesProvider);
-    final alertes = ref.watch(alertesProvider);
+    // Cloche : alertes du jour et alertes produits, réunies dans le même dialog.
+    final alertes = ref.watch(alertesProvider).total + ref.watch(alertesProduitsProvider).total;
     final routeActive = module == null ? route : (Modules.parId(module.idAcces) ?? module).route;
     final pastilles = ref.watch(pastillesProvider);
     // Nouvelles alertes produits : point rouge sur le Tableau de bord (Situation › Alertes produits).
@@ -278,10 +282,12 @@ class _AppShellState extends ConsumerState<AppShell> {
                             : Referentiel.roles.libelle(session.utilisateur.roleNom ?? '', locale),
                         enLigne: ref.watch(internetProvider),
                         rechercheGlobale: const ChampRechercheGlobale(),
-                        alertes: alertes.total,
+                        alertes: alertes,
                         onMenu: () => afficherMenuModules(context),
                         onAlertes: () async {
                           await ref.read(alertesProvider.notifier).charger();
+                          // Alertes produits recalculées pendant que le dialog est ouvert (il les suit).
+                          unawaited(ref.read(alertesProduitsProvider.notifier).actualiser());
                           if (context.mounted) await afficherAlertes(context);
                         },
                         onUtilisateur: () => afficherMonCompte(context),

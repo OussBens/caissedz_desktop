@@ -235,7 +235,7 @@ class DsIconButton extends StatefulWidget {
   /// Variante `outline` : fond carte, bordure et ombre xs.
   final bool contour;
 
-  /// Compteur affiché en pastille rouge (ex. alertes). `0` ou `null` : rien.
+  /// Compteur affiché en pastille rouge (ex. alertes), « 99+ » au-delà de 99. `0` ou `null` : rien.
   final int? badge;
 
   /// Point rouge sans compteur.
@@ -307,7 +307,7 @@ class _DsIconButtonState extends State<DsIconButton> {
                             border: Border.all(color: c.surfaceCard, width: 2),
                           ),
                           child: Text(
-                            '$badge',
+                            badge > 99 ? '99+' : '$badge',
                             style: t.caption.copyWith(
                               fontSize: 9,
                               fontWeight: FontWeight.w700,

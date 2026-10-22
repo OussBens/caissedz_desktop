@@ -5,12 +5,12 @@ import '../data/parametre_repository.dart';
 import '../data/parametres_repository.dart';
 import '../data/stock_repository.dart';
 import '../domain/models/alerte.dart';
-import '../domain/models/parametres_vente.dart';
 import '../domain/models/session.dart';
 
 /// Alertes du jour (§5.3, `AlertesServices.getAlertes`) : chaque famille n'est visible que si le rôle
 /// a accès au module concerné. Expirés : date d'expiration passée ; bientôt expirés : dans au plus
-/// [joursExpiration] jours (produits encore en stock).
+/// [joursExpiration] jours (produits encore en stock). Les ruptures ne sont plus une famille : l'alerte produit
+/// « Rupture sans commande » (#14, `AlertesProduitsService`) les signale dans le même dialog.
 class AlertesService {
   const AlertesService(this.db);
 
@@ -30,23 +30,9 @@ class AlertesService {
     final parFamille = <FamilleAlerte, List<Alerte>>{};
 
     if (['produits', 'stock', 'besoins'].any(session.peutAcceder)) {
-      final seuil = ParametresVente.depuisCles(await ParametreRepository(db).lirePlusieurs([ParametresVente.cleSeuil]))
-          .seuilStockGlobal;
       final magasins = session.estAdmin
           ? null
           : await StockRepository(db).magasinsUtilisateur(session.utilisateur.code);
-      parFamille[FamilleAlerte.rupture] = [
-        for (final r in await repo.ruptures(seuilGlobal: seuil, magasins: magasins))
-          Alerte(
-            famille: FamilleAlerte.rupture,
-            cle: r['code']! as String,
-            titre: r['designation']! as String,
-            detail: [r['code'], r['categorie']].where((e) => '$e'.isNotEmpty).join(' · '),
-            valeur: (r['stock']! as num).toDouble(),
-            max: (r['seuil']! as num).toDouble(),
-            critique: (r['stock']! as num) <= 0,
-          ),
-      ];
       final jour = DateTime(now.year, now.month, now.day);
       final limite = jour.add(const Duration(days: joursExpiration));
       parFamille[FamilleAlerte.expire] = [];

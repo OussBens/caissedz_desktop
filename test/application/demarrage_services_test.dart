@@ -250,7 +250,7 @@ void main() {
   });
 
   group('AlertesService', () {
-    test('ruptures visibles selon l’accès au module, masquage du jour', () async {
+    test('rupture : plus une famille du jour (alerte produit #14), familles selon l’accès, masquage du jour', () async {
       final base = await ouvrirBaseDeTest();
       await _activer(base);
       await CatalogueService(base.db, utilisateurCode: _admin).creerProduit(
@@ -266,15 +266,16 @@ void main() {
       final auth = AuthService(base.db, hachage: _hachage);
       final alertes = AlertesService(base.db);
       final admin = await alertes.calculer(await auth.connecter('admin', 'admin'));
-      expect(admin.de(FamilleAlerte.rupture).single.titre, 'Lait');
-      expect(admin.total, 1);
+      // Lait en rupture : signalé une seule fois, par l'alerte produit « Rupture sans commande ».
+      expect(admin.total, 0);
+      expect(admin.familles, containsAll([FamilleAlerte.expire, FamilleAlerte.sessions, FamilleAlerte.clients]));
 
       await UtilisateurRepository(base.db).inserer(
         const Utilisateur(code: 'USR0002', identifiant: 'amina', nom: 'Amina', roleCode: Roles.caissier),
         _hachage.hacher('1234'),
       );
       final caissier = await alertes.calculer(await auth.connecter('amina', '1234'));
-      expect(caissier.de(FamilleAlerte.rupture), isEmpty); // pas d'accès au module Besoins
+      expect(caissier.familles, isNot(contains(FamilleAlerte.fournisseurs))); // pas d'accès aux Fournisseurs
 
       final jour = DateTime(2026, 10, 15, 9);
       expect(await alertes.estMasqueAujourdhui(_admin, maintenant: jour), isFalse);

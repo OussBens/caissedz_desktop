@@ -300,6 +300,11 @@
       }
     }
   },
+  "posRuptureTitre": "Out of stock",
+  "posRuptureMessage": "“{nom}” is no longer available in this store: it can’t be added to the cart.",
+  "posRuptureQuantite": "Available quantity",
+  "posRuptureAilleurs": "Available in “{magasin}”: {quantite}",
+  "posRuptureTransferer": "Transfer",
   "posErreurProduitInconnu": "Unknown code: {code}",
   "@posErreurProduitInconnu": {
     "placeholders": {
@@ -782,17 +787,13 @@
   "alertesNePlusAfficher": "Don't show again today",
   "alertesLienParametres": "Settings › Alerts",
   "alertesOuvrirModule": "Open module",
+  "alertesVoirAnalyse": "View analysis",
   "alertesMarquerTraite": "Mark as handled",
   "alertesRienTitre": "Nothing to report",
   "alertesRienDetail": "This alert family is handled.",
-  "alertesMesureRupture": "Out of stock",
   "alertesOuverteDepuis": "Open since {date}",
   "alertesJours": "D−{n}",
   "alertesDernierDocument": "{code} · last document on {date}",
-  "alertesRupture": "Stock-outs and thresholds",
-  "alertesRuptureAide": "Products out of stock or below their alert threshold.",
-  "alertesRuptureAction": "Create a needs list",
-  "alertesRuptureLigne": "Order",
   "alertesVoirStock": "View stock",
   "alertesExpire": "Expired products",
   "alertesExpireAide": "Expired batches still in stock — remove before selling.",

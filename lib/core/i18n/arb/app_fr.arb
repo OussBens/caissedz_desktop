@@ -300,6 +300,28 @@
       }
     }
   },
+  "posRuptureTitre": "Produit en rupture",
+  "posRuptureMessage": "« {nom} » n'est plus disponible dans ce magasin : il ne peut pas être ajouté au panier.",
+  "@posRuptureMessage": {
+    "placeholders": {
+      "nom": {
+        "type": "String"
+      }
+    }
+  },
+  "posRuptureQuantite": "Quantité disponible",
+  "posRuptureAilleurs": "Disponible dans « {magasin} » : {quantite}",
+  "@posRuptureAilleurs": {
+    "placeholders": {
+      "magasin": {
+        "type": "String"
+      },
+      "quantite": {
+        "type": "String"
+      }
+    }
+  },
+  "posRuptureTransferer": "Transférer",
   "posErreurProduitInconnu": "Code inconnu : {code}",
   "@posErreurProduitInconnu": {
     "placeholders": {
@@ -946,10 +968,10 @@
   "alertesNePlusAfficher": "Ne plus afficher aujourd'hui",
   "alertesLienParametres": "Paramètres › Alertes",
   "alertesOuvrirModule": "Ouvrir le module",
+  "alertesVoirAnalyse": "Voir l'analyse",
   "alertesMarquerTraite": "Marquer comme traité",
   "alertesRienTitre": "Rien à signaler",
   "alertesRienDetail": "Cette famille d'alertes est traitée.",
-  "alertesMesureRupture": "Rupture",
   "alertesOuverteDepuis": "Ouverte depuis le {date}",
   "@alertesOuverteDepuis": {
     "placeholders": {
@@ -977,10 +999,6 @@
       }
     }
   },
-  "alertesRupture": "Ruptures et seuils",
-  "alertesRuptureAide": "Produits épuisés ou sous leur seuil d'alerte.",
-  "alertesRuptureAction": "Créer une liste de besoins",
-  "alertesRuptureLigne": "Commander",
   "alertesVoirStock": "Voir le stock",
   "alertesExpire": "Produits expirés",
   "alertesExpireAide": "Lots périmés encore en stock — à sortir avant la vente.",

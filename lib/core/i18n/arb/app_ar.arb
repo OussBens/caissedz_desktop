@@ -300,6 +300,11 @@
       }
     }
   },
+  "posRuptureTitre": "منتج نفد من المخزون",
+  "posRuptureMessage": "«{nom}» لم يعد متوفرًا في هذا المخزن: لا يمكن إضافته إلى السلة.",
+  "posRuptureQuantite": "الكمية المتوفرة",
+  "posRuptureAilleurs": "متوفر في «{magasin}»: {quantite}",
+  "posRuptureTransferer": "تحويل",
   "posErreurProduitInconnu": "رمز غير معروف: {code}",
   "@posErreurProduitInconnu": {
     "placeholders": {
@@ -782,17 +787,13 @@
   "alertesNePlusAfficher": "عدم الإظهار مجددًا اليوم",
   "alertesLienParametres": "الإعدادات › التنبيهات",
   "alertesOuvrirModule": "فتح الوحدة",
+  "alertesVoirAnalyse": "عرض التحليل",
   "alertesMarquerTraite": "تعليم كمعالج",
   "alertesRienTitre": "لا شيء للإبلاغ",
   "alertesRienDetail": "تمت معالجة هذه الفئة من التنبيهات.",
-  "alertesMesureRupture": "نفاد",
   "alertesOuverteDepuis": "مفتوحة منذ {date}",
   "alertesJours": "ي−{n}",
   "alertesDernierDocument": "{code} · آخر مستند في {date}",
-  "alertesRupture": "النفاد والحدود",
-  "alertesRuptureAide": "منتجات نافدة أو تحت حد التنبيه.",
-  "alertesRuptureAction": "إنشاء قائمة احتياجات",
-  "alertesRuptureLigne": "طلب",
   "alertesVoirStock": "عرض المخزون",
   "alertesExpire": "منتجات منتهية الصلاحية",
   "alertesExpireAide": "دفعات منتهية ما زالت في المخزون — يجب إخراجها قبل البيع.",

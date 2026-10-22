@@ -1401,6 +1401,36 @@ abstract class AppLocalizations {
   /// **'Stock insuffisant (réservé par les paniers ouverts) : {detail}'**
   String posErreurStock(String detail);
 
+  /// No description provided for @posRuptureTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produit en rupture'**
+  String get posRuptureTitre;
+
+  /// No description provided for @posRuptureMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'« {nom} » n\'est plus disponible dans ce magasin : il ne peut pas être ajouté au panier.'**
+  String posRuptureMessage(String nom);
+
+  /// No description provided for @posRuptureQuantite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quantité disponible'**
+  String get posRuptureQuantite;
+
+  /// No description provided for @posRuptureAilleurs.
+  ///
+  /// In fr, this message translates to:
+  /// **'Disponible dans « {magasin} » : {quantite}'**
+  String posRuptureAilleurs(String magasin, String quantite);
+
+  /// No description provided for @posRuptureTransferer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Transférer'**
+  String get posRuptureTransferer;
+
   /// No description provided for @posErreurProduitInconnu.
   ///
   /// In fr, this message translates to:
@@ -3657,6 +3687,12 @@ abstract class AppLocalizations {
   /// **'Ouvrir le module'**
   String get alertesOuvrirModule;
 
+  /// No description provided for @alertesVoirAnalyse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir l\'analyse'**
+  String get alertesVoirAnalyse;
+
   /// No description provided for @alertesMarquerTraite.
   ///
   /// In fr, this message translates to:
@@ -3675,12 +3711,6 @@ abstract class AppLocalizations {
   /// **'Cette famille d\'alertes est traitée.'**
   String get alertesRienDetail;
 
-  /// No description provided for @alertesMesureRupture.
-  ///
-  /// In fr, this message translates to:
-  /// **'Rupture'**
-  String get alertesMesureRupture;
-
   /// No description provided for @alertesOuverteDepuis.
   ///
   /// In fr, this message translates to:
@@ -3698,30 +3728,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'{code} · dernier document le {date}'**
   String alertesDernierDocument(String code, String date);
-
-  /// No description provided for @alertesRupture.
-  ///
-  /// In fr, this message translates to:
-  /// **'Ruptures et seuils'**
-  String get alertesRupture;
-
-  /// No description provided for @alertesRuptureAide.
-  ///
-  /// In fr, this message translates to:
-  /// **'Produits épuisés ou sous leur seuil d\'alerte.'**
-  String get alertesRuptureAide;
-
-  /// No description provided for @alertesRuptureAction.
-  ///
-  /// In fr, this message translates to:
-  /// **'Créer une liste de besoins'**
-  String get alertesRuptureAction;
-
-  /// No description provided for @alertesRuptureLigne.
-  ///
-  /// In fr, this message translates to:
-  /// **'Commander'**
-  String get alertesRuptureLigne;
 
   /// No description provided for @alertesVoirStock.
   ///

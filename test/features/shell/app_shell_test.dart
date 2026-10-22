@@ -4,11 +4,14 @@ import 'package:caissedz_desktop/app/router.dart';
 import 'package:caissedz_desktop/application/catalogue_service.dart';
 import 'package:caissedz_desktop/core/design_system/design_system.dart';
 import 'package:caissedz_desktop/data/licence_repository.dart';
+import 'package:caissedz_desktop/domain/alertes_produits.dart';
 import 'package:caissedz_desktop/domain/models/produit.dart';
 import 'package:caissedz_desktop/features/shell/app_shell.dart';
+import 'package:caissedz_desktop/features/tableau_bord/alertes_produits_providers.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../helpers/app_test_helper.dart';
@@ -152,8 +155,8 @@ void main() {
       expect(await service.charger('USR0000'), ids.where((i) => i != 'caisse').toList());
     });
 
-    testWidgets('alertes : badge sur la cloche et dialogue des alertes du jour', (tester) async {
-      final container = await pumpApp(tester);
+    /// Lait en sachet : en rupture (stock 0, sous le seuil), sans commande, fiche incomplète.
+    Future<void> laitEnRupture(ProviderContainer container, WidgetTester tester) async {
       await CatalogueService(container.read(appDatabaseProvider).db, utilisateurCode: 'USR0000').creerProduit(
         const Produit(
           code: '',
@@ -165,48 +168,52 @@ void main() {
         ),
       );
       await container.read(alertesProvider.notifier).charger();
+      await container.read(alertesProduitsProvider.notifier).actualiser();
       await tester.pumpAndSettle();
-      expect(container.read(alertesProvider).total, 1);
+    }
+
+    testWidgets('alertes : la cloche compte et montre anciennes et nouvelles alertes, rupture une seule fois', (
+      tester,
+    ) async {
+      final container = await pumpApp(tester);
+      await laitEnRupture(container, tester);
+      final produits = container.read(alertesProduitsProvider);
+      expect(produits.de(TypeAlerteProduit.ruptureSansCommande).map((a) => a.designation), ['Lait en sachet']);
+      final total = container.read(alertesProvider).total + produits.total;
       final cloche = find.byKey(const ValueKey('topbar_alertes'));
-      expect(find.descendant(of: cloche, matching: find.text('1')), findsOneWidget);
+      expect(find.descendant(of: cloche, matching: find.text('$total')), findsOneWidget);
+
       await clic(tester, cloche);
-      expect(find.byKey(const ValueKey('dialog_alertes')), findsOneWidget);
+      final dialog = find.byKey(const ValueKey('dialog_alertes'));
+      expect(dialog, findsOneWidget);
       expect(find.text('Alertes du jour'), findsOneWidget);
-      expect(find.text('Lait en sachet'), findsOneWidget);
+      // Familles du jour (crédits, dettes…) et groupes des alertes produits ; plus de famille « Ruptures et seuils ».
+      expect(find.byKey(const ValueKey('famille_clients')), findsOneWidget);
+      expect(find.descendant(of: dialog, matching: find.text('Ruptures et seuils')), findsNothing);
+      expect(find.descendant(of: dialog, matching: find.text('STOCK')), findsOneWidget);
+      await clic(tester, find.byKey(const ValueKey('alerte_produit_ruptureSansCommande')));
+      expect(find.descendant(of: dialog, matching: find.text('Lait en sachet')), findsOneWidget);
+      // Le point rouge du tableau de bord s'éteint pour ce type : il a été consulté.
+      expect(container.read(alertesProduitsNouvellesProvider), isNot(contains(TypeAlerteProduit.ruptureSansCommande)));
     });
 
-    for (final (etat, besoins) in [(EtatApp.connecteeAdmin, true), (EtatApp.connecteeAdminBasic, false)]) {
-      testWidgets('alertes de rupture : listes de besoins ${besoins ? 'proposées' : 'absentes en Basic'}', (
-        tester,
-      ) async {
-        final container = await pumpApp(tester, etat: etat);
-        await CatalogueService(container.read(appDatabaseProvider).db, utilisateurCode: 'USR0000').creerProduit(
-          const Produit(
-            code: '',
-            designation: 'Lait en sachet',
-            categorieCode: 'CATE0000',
-            sousCategorieCode: 'SC0000',
-            prixAchat: 80,
-            prixVente: 100,
-          ),
-        );
-        await container.read(alertesProvider.notifier).charger();
-        await tester.pumpAndSettle();
-        await clic(tester, find.byKey(const ValueKey('topbar_alertes')));
-        expect(find.text('Créer une liste de besoins'), besoins ? findsOneWidget : findsNothing);
-        // L'action de la ligne paraît au survol.
-        final souris = await tester.createGesture(kind: PointerDeviceKind.mouse);
-        addTearDown(souris.removePointer);
-        await souris.moveTo(tester.getCenter(find.text('Lait en sachet')));
-        await tester.pumpAndSettle();
-        expect(find.text('Commander'), besoins ? findsOneWidget : findsNothing);
-        expect(find.text('Voir le stock'), besoins ? findsNothing : findsOneWidget);
-        if (!besoins) {
-          await clic(tester, find.text('Voir le stock'));
-          expect(routeCourante(container), '/stock');
-        }
-      });
-    }
+    testWidgets('alerte produit dans le dialog : action au survol, « Voir l’analyse » ouvre la Situation', (
+      tester,
+    ) async {
+      final container = await pumpApp(tester);
+      await laitEnRupture(container, tester);
+      await clic(tester, find.byKey(const ValueKey('topbar_alertes')));
+      await clic(tester, find.byKey(const ValueKey('alerte_produit_ruptureSansCommande')));
+      final souris = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      addTearDown(souris.removePointer);
+      await souris.moveTo(tester.getCenter(find.text('Lait en sachet')));
+      await tester.pumpAndSettle();
+      expect(find.text('Commander'), findsOneWidget);
+
+      await clic(tester, find.byKey(const ValueKey('alertes_voir_analyse')));
+      expect(find.byKey(const ValueKey('dialog_alertes')), findsNothing);
+      expect(routeCourante(container), '/situation');
+    });
 
     testWidgets('menu des modules en Basic : pas de module hors formule ni « Réservé au palier »', (tester) async {
       await pumpApp(tester, etat: EtatApp.connecteeAdminBasic);

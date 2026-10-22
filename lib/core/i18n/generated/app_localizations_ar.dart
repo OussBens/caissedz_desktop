@@ -685,6 +685,25 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String get posRuptureTitre => 'منتج نفد من المخزون';
+
+  @override
+  String posRuptureMessage(String nom) {
+    return '«$nom» لم يعد متوفرًا في هذا المخزن: لا يمكن إضافته إلى السلة.';
+  }
+
+  @override
+  String get posRuptureQuantite => 'الكمية المتوفرة';
+
+  @override
+  String posRuptureAilleurs(String magasin, String quantite) {
+    return 'متوفر في «$magasin»: $quantite';
+  }
+
+  @override
+  String get posRuptureTransferer => 'تحويل';
+
+  @override
   String posErreurProduitInconnu(String code) {
     return 'رمز غير معروف: $code';
   }
@@ -1880,6 +1899,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get alertesOuvrirModule => 'فتح الوحدة';
 
   @override
+  String get alertesVoirAnalyse => 'عرض التحليل';
+
+  @override
   String get alertesMarquerTraite => 'تعليم كمعالج';
 
   @override
@@ -1887,9 +1909,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get alertesRienDetail => 'تمت معالجة هذه الفئة من التنبيهات.';
-
-  @override
-  String get alertesMesureRupture => 'نفاد';
 
   @override
   String alertesOuverteDepuis(String date) {
@@ -1905,18 +1924,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String alertesDernierDocument(String code, String date) {
     return '$code · آخر مستند في $date';
   }
-
-  @override
-  String get alertesRupture => 'النفاد والحدود';
-
-  @override
-  String get alertesRuptureAide => 'منتجات نافدة أو تحت حد التنبيه.';
-
-  @override
-  String get alertesRuptureAction => 'إنشاء قائمة احتياجات';
-
-  @override
-  String get alertesRuptureLigne => 'طلب';
 
   @override
   String get alertesVoirStock => 'عرض المخزون';
