@@ -522,6 +522,116 @@ class _SelectionProduitDialogState extends ConsumerState<_SelectionProduitDialog
 }
 
 // ---------------------------------------------------------------------------------------------------------------
+// 1 bis · Produit en rupture (560 px) : à la place de « Quantité et colis » quand il n'en reste plus.
+// ---------------------------------------------------------------------------------------------------------------
+
+/// Suite choisie devant un produit en rupture ; `null` : fermé.
+enum SuiteRupture { entreeRapide, transferer }
+
+/// Produit dont la quantité disponible dans le magasin de la caisse est 0 : rien n'est ajouté. Propose l'entrée
+/// rapide et, quand [ailleurs] est donné (admin, un autre magasin en a), le transfert.
+Future<SuiteRupture?> afficherProduitEnRupture(
+  BuildContext context, {
+  required Produit produit,
+  ({String magasin, double quantite})? ailleurs,
+}) {
+  final l10n = AppLocalizations.of(context);
+  final langue = Localizations.localeOf(context).languageCode;
+  return afficherDialog<SuiteRupture>(
+    context,
+    builder: (ctx) {
+      final c = ctx.ds.colors;
+      final t = ctx.ds.typo;
+      return DsDialog(
+        key: const ValueKey('dialog_rupture'),
+        titre: l10n.posRuptureTitre,
+        iconeData: LucideIcons.packageX,
+        ton: DsDialogTon.danger,
+        largeur: 560,
+        message: l10n.posRuptureMessage(produit.nom(langue)),
+        actions: [
+          DsButton(
+            libelle: l10n.communFermer,
+            variante: DsButtonVariante.secondaire,
+            onPressed: () => Navigator.of(ctx).pop(),
+          ),
+          DsButton(
+            key: const ValueKey('rupture_entree'),
+            libelle: l10n.entRapideTitre,
+            icone: LucideIcons.packagePlus,
+            variante: ailleurs == null ? DsButtonVariante.primaire : DsButtonVariante.secondaire,
+            onPressed: () => Navigator.of(ctx).pop(SuiteRupture.entreeRapide),
+          ),
+          if (ailleurs != null)
+            DsButton(
+              key: const ValueKey('rupture_transferer'),
+              libelle: l10n.posRuptureTransferer,
+              icone: LucideIcons.arrowLeftRight,
+              onPressed: () => Navigator.of(ctx).pop(SuiteRupture.transferer),
+            ),
+        ],
+        contenu: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: DsSpacing.s3,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(DsSpacing.s4),
+              decoration: BoxDecoration(
+                color: c.dangerTint,
+                borderRadius: DsRadius.borderLg,
+              ),
+              child: Row(
+                spacing: DsSpacing.s3,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(produit.nom(langue), style: t.bodyStrong, maxLines: 2, overflow: TextOverflow.ellipsis),
+                        Text(produit.code, style: t.caption.copyWith(color: c.textMuted)),
+                      ],
+                    ),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(l10n.posRuptureQuantite, style: t.caption.copyWith(color: c.dangerFg)),
+                      Text(
+                        '0',
+                        key: const ValueKey('rupture_quantite'),
+                        style: t.bodyStrong.copyWith(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w700,
+                          color: c.dangerFg,
+                          fontFeatures: DsTypography.tabular,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            if (ailleurs != null)
+              Row(
+                spacing: DsSpacing.s2,
+                children: [
+                  Icon(LucideIcons.warehouse, size: 16, color: c.textSecondary),
+                  Expanded(
+                    child: Text(
+                      l10n.posRuptureAilleurs(ailleurs.magasin, _qte(ailleurs.quantite)),
+                      style: t.bodySm.copyWith(color: c.textSecondary),
+                    ),
+                  ),
+                ],
+              ),
+          ],
+        ),
+      );
+    },
+  );
+}
+
+// ---------------------------------------------------------------------------------------------------------------
 // 2 · Encaisser / Enregistrer (EncaisserDialog, 860 px).
 // ---------------------------------------------------------------------------------------------------------------
 

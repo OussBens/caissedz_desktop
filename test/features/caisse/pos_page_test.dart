@@ -398,6 +398,27 @@ void main() {
       await tester.pumpAndSettle();
     });
 
+    testWidgets('quantité 0 : « Produit en rupture » au lieu de « Quantité et colis », rien n’est ajouté', (
+      tester,
+    ) async {
+      final c = await pumpApp(tester, routeInitiale: '/caisse', taille: const Size(1600, 1000));
+      await _donnees(c);
+      await tester.pumpAndSettle();
+      // Eau : aucun stock, aucun autre magasin.
+      await clic(tester, find.byKey(const ValueKey('tuile_PRD0002')));
+      final rupture = find.byKey(const ValueKey('dialog_rupture'));
+      expect(rupture, findsOneWidget);
+      expect(find.descendant(of: rupture, matching: find.text('Produit en rupture')), findsOneWidget);
+      expect(find.byKey(const ValueKey('rupture_quantite')), findsOneWidget);
+      expect(find.byKey(const ValueKey('selection_valider')), findsNothing);
+      expect(find.byKey(const ValueKey('rupture_transferer')), findsNothing, reason: 'aucun autre magasin n’en a');
+      expect(find.byKey(const ValueKey('rupture_entree')), findsOneWidget);
+      await clic(tester, find.descendant(of: rupture, matching: find.text('Fermer')));
+      await tester.pump(const Duration(seconds: 4));
+      expect(find.byKey(const ValueKey('dialog_rupture')), findsNothing);
+      expect(find.text('Panier vide'), findsOneWidget);
+    });
+
     testWidgets('admin : stock insuffisant ici mais disponible ailleurs → transfert proposé puis ajout', (
       tester,
     ) async {
@@ -411,7 +432,12 @@ void main() {
       c.read(stockVersionProvider.notifier).incrementer();
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(const ValueKey('tuile_PRD0002')));
+      // Rien ici : « Produit en rupture » (quantité 0) au lieu de « Quantité et colis », le dépôt est indiqué.
+      await clic(tester, find.byKey(const ValueKey('tuile_PRD0002')));
+      final rupture = find.byKey(const ValueKey('dialog_rupture'));
+      expect(rupture, findsOneWidget);
+      expect(find.descendant(of: rupture, matching: find.text('Disponible dans « Dépôt » : 20')), findsOneWidget);
+      await tester.tap(find.byKey(const ValueKey('rupture_transferer')));
       await tester.pump(const Duration(milliseconds: 300));
       await tester.tap(find.descendant(of: find.byType(DsNumpad), matching: find.text('3')));
       await tester.pumpAndSettle();

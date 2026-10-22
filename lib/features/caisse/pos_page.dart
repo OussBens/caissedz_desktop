@@ -173,7 +173,29 @@ class _PosPageState extends ConsumerState<PosPage> {
 
   // ------------------------------------------------------------------ Produits
 
+  /// Produit épuisé dans ce magasin : « Produit en rupture » (entrée rapide ; pour l'admin, transfert si un autre
+  /// magasin en a). `true` : l'admin transfère, la quantité se choisit ensuite et le transfert du manque suit.
+  Future<bool> _rupture(Produit p) async {
+    final admin = ref.read(sessionProvider)?.estAdmin ?? false;
+    final source = admin ? await ctrl.sourceTransfert((produit: p, unites: 1, nombre: 0)) : null;
+    if (!mounted) return false;
+    final suite = await afficherProduitEnRupture(
+      context,
+      produit: p,
+      ailleurs: source == null ? null : (magasin: source.magasin.nom, quantite: source.quantite),
+    );
+    if (!mounted) return false;
+    if (suite == SuiteRupture.entreeRapide) await _entreeRapide(p);
+    return suite == SuiteRupture.transferer;
+  }
+
   Future<void> _choisirProduit(Produit p, {bool scanne = false}) async {
+    // Plus rien de disponible : pas de « Quantité et colis » (qui ajouterait seul au bout de 3 s).
+    if (_disponible(p) <= 0 && !await _rupture(p)) {
+      if (mounted) _scanFocus.requestFocus();
+      return;
+    }
+    if (!mounted) return;
     String? scanSuivant;
     final choix = await afficherSelectionProduit(
       context,
