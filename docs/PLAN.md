@@ -997,6 +997,11 @@ au premier démarrage (réseaux privés).
   `POST /appairer` renvoie aussi la session, `POST /connexion` sans corps, `POST /oublier` (le téléphone se
   délie lui-même) ; `GET /comptes` et la pause après 5 échecs de mot de passe sont retirés. Les téléphones
   appairés avant la version 37 doivent scanner un nouveau QR code.
+- Téléphone unique dans la liste (v42, 2026-10-22) : CaisseDZ Scan envoie à l'appairage un `identifiant`
+  d'installation (créé une fois, gardé tant que l'application n'est pas réinstallée) ; rescanner un QR depuis
+  le même téléphone remplace son ancien appairage (ancien jeton et sessions fermés) au lieu d'ajouter une ligne.
+  Sans identifiant (ancienne version de l'app) : même utilisateur, nom et plateforme. La migration garde le
+  plus récent des doublons existants et ajoute `modele`.
 
 ## Retours utilisateur — caisse, sous-textes, Entrées et vente sur téléphone ✅ (2026-10-20)
 

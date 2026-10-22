@@ -493,6 +493,37 @@ void main() {
     });
   });
 
+  group('Migration v42 (téléphone appairé unique)', () {
+    test('doublons d’un même téléphone : seul le plus récent reste', () async {
+      final base = await AppDatabase.ouvrirEnMemoire(
+        cleHex: cleTestHex,
+        migrations: toutesLesMigrations.sublist(0, 41),
+      );
+      addTearDown(base.fermer);
+      final db = base.db;
+      Future<void> appareil(String code, String nom, String creeLe, {String? acces, String plateforme = 'android'}) =>
+          db.insert('appareil_mobile', {
+            'code': code,
+            'nom': nom,
+            'plateforme': plateforme,
+            'jeton_hash': 'x',
+            'cree_le': creeLe,
+            'dernier_acces': acces,
+            'utilisateur_code': 'USR0000',
+          });
+      await appareil('APPA', 'Samsung', '2026-10-01T08:00:00Z', acces: '2026-10-20T08:00:00Z');
+      await appareil('APPB', 'Samsung', '2026-10-10T08:00:00Z');
+      await appareil('APPC', 'Samsung', '2026-10-21T08:00:00Z', acces: '2026-10-21T09:00:00Z');
+      await appareil('APPD', 'Samsung', '2026-10-05T08:00:00Z', plateforme: 'ios');
+      await appareil('APPE', 'Pixel', '2026-10-02T08:00:00Z');
+      expect(await const MigrationRunner(toutesLesMigrations).executer(db), _depuis(42));
+      final codes = [for (final r in await db.query('appareil_mobile', orderBy: 'code')) r['code']];
+      expect(codes, ['APPC', 'APPD', 'APPE']);
+      final cols = (await db.rawQuery('PRAGMA table_info(appareil_mobile)')).map((r) => r['name']).toSet();
+      expect(cols, containsAll(['identifiant', 'modele']));
+    });
+  });
+
   group('MigrationRunner', () {
     test('refuse des versions non contiguës', () {
       const runner = MigrationRunner([_MigrationFausse(2)]);

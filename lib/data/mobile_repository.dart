@@ -39,12 +39,16 @@ class MobileRepository {
     required String nom,
     required String plateforme,
     required String jetonHash,
+    String? identifiant,
+    String modele = '',
     String? creePar,
   }) => db.insert('appareil_mobile', {
     'code': code,
     'utilisateur_code': utilisateurCode,
     'nom': nom,
     'plateforme': plateforme,
+    'identifiant': identifiant,
+    'modele': modele,
     'jeton_hash': jetonHash,
     'cree_le': DateTime.now().toUtc().toIso8601String(),
     'cree_par': creePar,
@@ -57,6 +61,25 @@ class MobileRepository {
     where: 'code = ?',
     whereArgs: [code],
   );
+
+  /// Appairages précédents du même téléphone, que son nouvel appairage remplace : même [identifiant]
+  /// d'installation ; sans identifiant (application plus ancienne), même utilisateur, nom et plateforme.
+  Future<List<String>> precedents({
+    required String? identifiant,
+    required String utilisateurCode,
+    required String nom,
+    required String plateforme,
+  }) async => [
+    for (final r in identifiant != null
+        ? await db.query('appareil_mobile', columns: ['code'], where: 'identifiant = ?', whereArgs: [identifiant])
+        : await db.query(
+            'appareil_mobile',
+            columns: ['code'],
+            where: 'identifiant IS NULL AND utilisateur_code = ? AND nom = ? AND plateforme = ?',
+            whereArgs: [utilisateurCode, nom, plateforme],
+          ))
+      r['code']! as String,
+  ];
 
   Future<void> revoquer(String code) => db.delete('appareil_mobile', where: 'code = ?', whereArgs: [code]);
 

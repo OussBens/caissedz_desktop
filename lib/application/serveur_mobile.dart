@@ -111,7 +111,8 @@ class _SessionMobile {
 ///    personnel (adresses, port, code d'appairage à usage unique). Le téléphone qui le scanne reçoit un jeton
 ///    d'appareil (`X-CaisseDZ-Appareil: <code>.<jeton>`) lié à cet utilisateur, et sa première session. Le QR de
 ///    l'Admin ouvre sur le poste le choix de l'utilisateur du téléphone ([choisirUtilisateur]) : la réponse
-///    attend ce choix ([dureeChoixUtilisateur] au plus).
+///    attend ce choix ([dureeChoixUtilisateur] au plus). Le même téléphone appairé de nouveau (même
+///    `identifiant` d'installation, ou à défaut même utilisateur, nom et plateforme) remplace son ancien appairage.
 /// 2. Connexion : le téléphone rouvre une session (`Authorization: Bearer`, en mémoire) pour son utilisateur
 ///    avec le seul jeton d'appareil — aucun mot de passe ne passe sur le réseau. L'Admin, ou l'utilisateur
 ///    lui-même, révoque le téléphone ; un compte désactivé ou privé de la permission n'entre plus.
@@ -532,14 +533,35 @@ class ServeurMobile {
     }
     final appareil = 'APP${_jeton(6).toUpperCase().replaceAll(RegExp('[^A-Z0-9]'), '')}';
     final jeton = _jeton(32);
-    await _repo.insererAppareil(
-      code: appareil,
-      utilisateurCode: utilisateur,
-      nom: nom.isEmpty ? 'Téléphone' : nom,
-      plateforme: texte('plateforme', 20),
-      jetonHash: _empreinte(jeton),
-      creePar: code.utilisateurCode,
-    );
+    final identifiant = texte('identifiant', 64);
+    final nomAppareil = nom.isEmpty ? 'Téléphone' : nom;
+    final plateforme = texte('plateforme', 20);
+    // Le même téléphone appairé de nouveau (QR rescanné, autre utilisateur) : son ancien appairage est remplacé,
+    // il n'apparaît qu'une fois dans la liste du poste.
+    final remplaces = await db.transaction((txn) async {
+      final repo = MobileRepository(txn);
+      final anciens = await repo.precedents(
+        identifiant: identifiant.isEmpty ? null : identifiant,
+        utilisateurCode: utilisateur,
+        nom: nomAppareil,
+        plateforme: plateforme,
+      );
+      for (final a in anciens) {
+        await repo.revoquer(a);
+      }
+      await repo.insererAppareil(
+        code: appareil,
+        utilisateurCode: utilisateur,
+        nom: nomAppareil,
+        plateforme: plateforme,
+        identifiant: identifiant.isEmpty ? null : identifiant,
+        modele: texte('modele'),
+        jetonHash: _empreinte(jeton),
+        creePar: code.utilisateurCode,
+      );
+      return anciens;
+    });
+    remplaces.forEach(fermerSessionsAppareil);
     return {
       'appareil': appareil,
       'jeton': jeton,

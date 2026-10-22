@@ -40,6 +40,7 @@ import 'v038_catalogue_rayons.dart';
 import 'v039_nom_arabe_tendance.dart';
 import 'v040_alertes_produits.dart';
 import 'v041_favoris_caisse_nouveautes.dart';
+import 'v042_appareil_identifiant.dart';
 
 export 'migration.dart';
 
@@ -86,4 +87,5 @@ const List<Migration> toutesLesMigrations = [
   MigrationV039NomArabeTendance(),
   MigrationV040AlertesProduits(),
   MigrationV041FavorisCaisseNouveautes(),
+  MigrationV042AppareilIdentifiant(),
 ];

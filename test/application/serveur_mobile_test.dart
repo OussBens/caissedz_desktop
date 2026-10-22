@@ -196,6 +196,41 @@ void main() {
     expect(demandes, hasLength(2));
   });
 
+  test('le même téléphone appairé de nouveau remplace son ancien appairage (une ligne par téléphone)', () async {
+    final karim = await creerKarim(permissions: {Permission.utiliserMobile});
+    Future<(_Telephone, String)> scanner(String utilisateur, Map<String, Object?> telephone) async {
+      final t = _Telephone(serveur.port!);
+      final (statut, r) = await t.post('appairer', {
+        'code': serveur.nouveauCodeAppairage(utilisateur).code,
+        ...telephone,
+      });
+      expect(statut, 200, reason: '$r');
+      t.appareil = '${r['appareil']}.${r['jeton']}';
+      t.jeton = (r['session'] as Map<String, dynamic>)['jeton'] as String;
+      return (t, r['appareil'] as String);
+    }
+
+    // Avec l'identifiant d'installation : remplacé même s'il passe à un autre utilisateur.
+    const samsung = {'nom': 'Samsung SM-A515F', 'plateforme': 'android', 'identifiant': 'inst-1', 'modele': 'A515F'};
+    final (ancien, _) = await scanner('USR0000', samsung);
+    final (_, nouveau) = await scanner(karim, samsung);
+    final lignes = await base.db.query('appareil_mobile');
+    expect(lignes.map((l) => l['code']), [nouveau]);
+    expect((lignes.single['utilisateur_code'], lignes.single['modele']), (karim, 'A515F'));
+    // L'ancien jeton n'ouvre plus rien.
+    expect((await ancien.get('moi')).$1, 401);
+
+    // Un autre téléphone du même modèle (autre identifiant) s'ajoute.
+    await scanner(karim, {...samsung, 'identifiant': 'inst-2'});
+    expect(await base.db.query('appareil_mobile'), hasLength(2));
+
+    // Sans identifiant (application plus ancienne) : même utilisateur, nom et plateforme.
+    await scanner('USR0000', {'nom': 'Pixel', 'plateforme': 'android'});
+    await scanner('USR0000', {'nom': 'Pixel', 'plateforme': 'android'});
+    await scanner('USR0000', {'nom': 'Pixel', 'plateforme': 'ios'});
+    expect(await base.db.query('appareil_mobile', where: "nom = 'Pixel'"), hasLength(2));
+  });
+
   test('reconnexion sans mot de passe : le jeton d’appareil rouvre la session de son utilisateur', () async {
     final t = await appairer();
     final ancien = t.jeton;
