@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -1168,7 +1169,8 @@ class _LignePaiement extends StatelessWidget {
 }
 
 /// Tuile produit (`ProductTile`) : vignette teintée 72 px, nom, prix, stock ; bouton « Entrée »
-/// au survol. [enLigne] : rendu en rangée (liste).
+/// au survol. [enLigne] : rendu en rangée (liste). En rupture, la tuile garde son apparence normale (seul
+/// « Rupture » est en rouge) ; un clic la fait clignoter deux fois en rouge, doucement.
 class DsProductTile extends StatefulWidget {
   const DsProductTile({
     super.key,
@@ -1204,9 +1206,45 @@ class DsProductTile extends StatefulWidget {
   State<DsProductTile> createState() => _DsProductTileState();
 }
 
-class _DsProductTileState extends State<DsProductTile> {
+class _DsProductTileState extends State<DsProductTile> with SingleTickerProviderStateMixin {
   bool _survol = false;
   bool _presse = false;
+
+  /// Clignotement rouge d'une tuile en rupture cliquée : deux pulsations douces (sin², départ et fin à zéro).
+  late final AnimationController _alerte = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 900),
+  );
+
+  bool get _rupture => widget.stock != null && widget.stock! <= 0;
+
+  void _toucher() {
+    if (_rupture) unawaited(_alerte.forward(from: 0));
+    if (!_rupture || widget.ruptureCliquable) widget.onAjouter?.call();
+  }
+
+  /// Voile et bordure rouges par-dessus la tuile pendant le clignotement (toujours le même `DecoratedBox`,
+  /// vide au repos : la tuile n'est pas reconstruite au début ni à la fin).
+  Widget _clignotement({required BorderRadius rayon, required Widget child}) => AnimatedBuilder(
+    animation: _alerte,
+    child: child,
+    builder: (context, child) {
+      final v = _alerte.isAnimating ? math.pow(math.sin(2 * math.pi * _alerte.value), 2).toDouble() : 0.0;
+      final danger = context.ds.colors.danger;
+      return DecoratedBox(
+        key: const ValueKey('tuile_clignotement'),
+        position: DecorationPosition.foreground,
+        decoration: v < .001
+            ? const BoxDecoration()
+            : BoxDecoration(
+                color: danger.withValues(alpha: .12 * v),
+                borderRadius: rayon,
+                border: Border.all(color: danger.withValues(alpha: .85 * v), width: 1.5),
+              ),
+        child: child,
+      );
+    },
+  );
 
   /// Bouton « Entrée » flottant au-dessus de la carte (grille) : il reste affiché un court instant après la
   /// sortie du pointeur pour pouvoir l'atteindre.
@@ -1220,6 +1258,7 @@ class _DsProductTileState extends State<DsProductTile> {
   @override
   void dispose() {
     _delai?.cancel();
+    _alerte.dispose();
     super.dispose();
   }
 
@@ -1253,7 +1292,7 @@ class _DsProductTileState extends State<DsProductTile> {
     final l10n = AppLocalizations.of(context);
     final w = widget;
     final teinte = teintePour(w.categorie ?? w.nom);
-    final rupture = w.stock != null && w.stock! <= 0;
+    final rupture = _rupture;
     final stockTexte = w.stock == null
         ? null
         : DsStockAnime(
@@ -1311,13 +1350,13 @@ class _DsProductTileState extends State<DsProductTile> {
 
     if (w.enLigne) {
       return MouseRegion(
-        cursor: rupture && !w.ruptureCliquable ? SystemMouseCursors.forbidden : SystemMouseCursors.click,
+        cursor: SystemMouseCursors.click,
         onEnter: (_) => setState(() => _survol = true),
         onExit: (_) => setState(() => _survol = false),
         child: GestureDetector(
-          onTap: rupture && !w.ruptureCliquable ? null : w.onAjouter,
-          child: Opacity(
-            opacity: rupture ? .55 : 1,
+          onTap: w.onAjouter == null ? null : _toucher,
+          child: _clignotement(
+            rayon: BorderRadius.circular(10),
             child: AnimatedContainer(
               duration: DsMotion.fast,
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -1376,19 +1415,19 @@ class _DsProductTileState extends State<DsProductTile> {
     final rtl = Directionality.of(context) == TextDirection.rtl;
     final actif = _survol && !rupture;
     final carte = MouseRegion(
-      cursor: rupture && !w.ruptureCliquable ? SystemMouseCursors.forbidden : SystemMouseCursors.click,
+      cursor: SystemMouseCursors.click,
       onEnter: (_) => _entrerCarte(),
       onExit: (_) => _quitterCarte(),
       child: GestureDetector(
         onTapDown: (_) => setState(() => _presse = true),
         onTapUp: (_) => setState(() => _presse = false),
         onTapCancel: () => setState(() => _presse = false),
-        onTap: rupture && !w.ruptureCliquable ? null : w.onAjouter,
+        onTap: w.onAjouter == null ? null : _toucher,
         child: AnimatedScale(
           scale: _presse ? .98 : 1,
           duration: DsMotion.fast,
-          child: Opacity(
-            opacity: rupture ? .55 : 1,
+          child: _clignotement(
+            rayon: DsRadius.borderLg,
             child: AnimatedContainer(
               duration: DsMotion.base,
               curve: DsMotion.standard,
