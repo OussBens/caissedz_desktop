@@ -50,6 +50,10 @@ class _PosPageState extends ConsumerState<PosPage> {
   String? _categorie;
   _Vue _vue = _Vue.produits;
   DsVueModule _disposition = DsVueModule.grille;
+  // Produits par pages (comme la grille du module Produits) : jamais des milliers de tuiles d'un coup.
+  int _page = 0;
+  int _taillePage = _taillesPage.first;
+  static const List<int> _taillesPage = [24, 48, 96];
   bool _afficherProduits = true;
   int? _ligneSelectionnee;
 
@@ -704,7 +708,10 @@ class _PosPageState extends ConsumerState<PosPage> {
           kbd: 'F2',
           autofocus: true,
           indice: l10n.posScanIndice,
-          onChanged: (v) => setState(() => _recherche = v),
+          onChanged: (v) => setState(() {
+            _recherche = v;
+            _page = 0;
+          }),
           onSubmitted: (_) => unawaited(_scanner()),
         ),
       ),
@@ -774,8 +781,13 @@ class _PosPageState extends ConsumerState<PosPage> {
             p,
       ];
     }
-    final nbTuiles = _vue == _Vue.packs ? packsVisibles.length : produitsVisibles.length;
-    Widget tuile(BuildContext context, int i) {
+    final total = _vue == _Vue.packs ? packsVisibles.length : produitsVisibles.length;
+    final nbPages = (total / _taillePage).ceil().clamp(1, 1 << 30);
+    final page = _page.clamp(0, nbPages - 1);
+    final debut = page * _taillePage;
+    final nbTuiles = (total - debut).clamp(0, _taillePage);
+    Widget tuile(BuildContext context, int j) {
+      final i = debut + j;
       if (_vue == _Vue.packs) {
         final k = packsVisibles[i];
         return DsProductTile(
@@ -825,7 +837,10 @@ class _PosPageState extends ConsumerState<PosPage> {
               children: [
                 DsSegmentedControl<_Vue>(
                   valeur: _vue,
-                  onChanged: (v) => setState(() => _vue = v),
+                  onChanged: (v) => setState(() {
+                    _vue = v;
+                    _page = 0;
+                  }),
                   options: [
                     option(_Vue.produits, l10n.posProduits, LucideIcons.package),
                     option(_Vue.favoris, l10n.posFavoris, LucideIcons.star),
@@ -838,7 +853,10 @@ class _PosPageState extends ConsumerState<PosPage> {
                       scrollDirection: Axis.horizontal,
                       child: DsSegmentedControl<String?>(
                         valeur: _categorie,
-                        onChanged: (v) => setState(() => _categorie = v),
+                        onChanged: (v) => setState(() {
+                          _categorie = v;
+                          _page = 0;
+                        }),
                         options: [
                           DsOption(null, libelle: l10n.posCategoriesToutes),
                           for (final cat in categories) DsOption(cat.code, libelle: cat.nom),
@@ -861,7 +879,7 @@ class _PosPageState extends ConsumerState<PosPage> {
           },
         ),
         Expanded(
-          child: nbTuiles == 0
+          child: total == 0
               ? DsVide(
                   message: _vue == _Vue.favoris && favoris.isEmpty ? l10n.posFavorisVide : l10n.posAucunProduit,
                   icone: switch (_vue) {
@@ -872,16 +890,21 @@ class _PosPageState extends ConsumerState<PosPage> {
                 )
               : liste
               ? Container(
-                  margin: const EdgeInsets.only(bottom: DsSpacing.s4),
                   decoration: BoxDecoration(
                     color: c.surfaceCard,
                     borderRadius: DsRadius.borderLg,
                     border: Border.all(color: c.borderDefault),
                   ),
-                  child: ListView.builder(padding: const EdgeInsets.all(6), itemCount: nbTuiles, itemBuilder: tuile),
+                  child: ListView.builder(
+                    key: ValueKey('pos_liste_$page'),
+                    padding: const EdgeInsets.all(6),
+                    itemCount: nbTuiles,
+                    itemBuilder: tuile,
+                  ),
                 )
               : GridView.builder(
-                  padding: const EdgeInsets.fromLTRB(2, 2, 2, 48),
+                  key: ValueKey('pos_grille_$page'),
+                  padding: const EdgeInsets.fromLTRB(2, 2, 2, DsSpacing.s4),
                   gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                     maxCrossAxisExtent: 200,
                     mainAxisExtent: 172,
@@ -892,6 +915,23 @@ class _PosPageState extends ConsumerState<PosPage> {
                   itemBuilder: tuile,
                 ),
         ),
+        if (total > 0)
+          Padding(
+            padding: const EdgeInsets.only(bottom: DsSpacing.s4),
+            child: DsPagination(
+              key: const ValueKey('pos_pagination'),
+              page: page + 1,
+              nbPages: nbPages,
+              total: total,
+              taillePage: _taillePage,
+              taillesPage: _taillesPage,
+              onChanged: (p) => setState(() => _page = p - 1),
+              onTaillePageChanged: (v) => setState(() {
+                _taillePage = v;
+                _page = 0;
+              }),
+            ),
+          ),
       ],
     );
   }

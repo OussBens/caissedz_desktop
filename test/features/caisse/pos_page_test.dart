@@ -555,6 +555,34 @@ void main() {
       expect(find.byKey(const ValueKey('tuile_PRD0001')), findsOneWidget);
     });
 
+    testWidgets('produits par pages (24 par défaut), la recherche revient à la page 1', (tester) async {
+      final c = await pumpApp(tester, routeInitiale: '/caisse', taille: const Size(1600, 1000));
+      final cat = CatalogueService(c.read(appDatabaseProvider).db, utilisateurCode: 'USR0000');
+      for (var i = 1; i <= 30; i++) {
+        await cat.creerProduit(
+          Produit(
+            code: '',
+            designation: 'Article $i',
+            categorieCode: 'CATE0000',
+            sousCategorieCode: 'SC0000',
+            prixAchat: 10,
+            prixVente: 20,
+          ),
+        );
+      }
+      c.read(catalogueVersionProvider.notifier).incrementer();
+      await tester.pumpAndSettle();
+      final pagination = find.byKey(const ValueKey('pos_pagination'));
+      expect(find.descendant(of: pagination, matching: find.textContaining('1–24')), findsOneWidget);
+
+      await clic(tester, find.descendant(of: pagination, matching: find.text('2')));
+      expect(find.descendant(of: pagination, matching: find.textContaining('25–30')), findsOneWidget);
+
+      await tester.enterText(find.byType(EditableText).first, 'Article');
+      await tester.pumpAndSettle();
+      expect(find.descendant(of: pagination, matching: find.textContaining('1–24')), findsOneWidget);
+    });
+
     testWidgets('paramètres de la caisse : bouton à côté de la calculatrice (Avancé, Ultra)', (tester) async {
       await pumpApp(tester, routeInitiale: '/caisse', taille: const Size(1600, 1000));
       expect(find.byKey(const ValueKey('caisse_parametres')), findsOneWidget);

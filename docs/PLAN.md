@@ -1230,7 +1230,9 @@ téléchargés et le code-barres inconnu est cherché dans le catalogue à la ca
   `features/commun/chargement.dart`, branché sur les 33 tableaux de module).
 - `DsDataTable` : tri et totaux gardés tant que la liste et les colonnes ne changent pas ; le survol ne repeint que
   le fond de la ligne (`ValueNotifier`) ; `chargement`.
-- Caisse : grille et liste paresseuses (`GridView.builder`), index de recherche des produits calculé une fois.
+- Caisse : grille et liste paresseuses (`GridView.builder`), index de recherche des produits calculé une fois ;
+  tuiles par pages (24, 48 ou 96, comme la grille du module Produits), retour à la page 1 à chaque recherche,
+  catégorie ou onglet.
 - La base reste lue en entier (SQLCipher dans un isolate, rapide) : c'est l'affichage qui est découpé en tranches.
 - Mesure (tests, mode debug) avec 20 000 produits : ouverture 0,4 s, 3 frappes 0,7 s, survol de 10 lignes 90 ms.
 - Tests : `ds_module_table_test.dart` (grille par pages, recherche après mise à jour, chargement, tri en cache).
