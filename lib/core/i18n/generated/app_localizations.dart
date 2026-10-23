@@ -11943,6 +11943,18 @@ abstract class AppLocalizations {
   /// **'URL Mantouj'**
   String get pmMantouj;
 
+  /// No description provided for @pmCatalogueRayonsDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Téléchargez les produits les plus demandés de vos rayons : code-barres, nom et photo.'**
+  String get pmCatalogueRayonsDesc;
+
+  /// No description provided for @pmCatalogueRayonsBouton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir les rayons'**
+  String get pmCatalogueRayonsBouton;
+
   /// No description provided for @pmSynchro.
   ///
   /// In fr, this message translates to:
@@ -15012,7 +15024,7 @@ abstract class AppLocalizations {
   /// No description provided for @catalogueRayonsSousTitre.
   ///
   /// In fr, this message translates to:
-  /// **'Selon votre activité, téléchargez les produits les plus demandés de chaque rayon : code-barres, nom et photo, sans prix ni stock. Vous pourrez en ajouter d\'autres plus tard depuis Produits.'**
+  /// **'Selon votre activité, téléchargez les produits les plus demandés de chaque rayon : code-barres, nom et photo, sans prix ni stock. Vous pourrez en ajouter d\'autres plus tard depuis Paramètres.'**
   String get catalogueRayonsSousTitre;
 
   /// No description provided for @catalogueRayonsNbProduits.

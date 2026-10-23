@@ -6272,6 +6272,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get pmMantouj => 'URL Mantouj';
 
   @override
+  String get pmCatalogueRayonsDesc =>
+      'Téléchargez les produits les plus demandés de vos rayons : code-barres, nom et photo.';
+
+  @override
+  String get pmCatalogueRayonsBouton => 'Choisir les rayons';
+
+  @override
   String get pmSynchro => 'Synchroniser le catalogue';
 
   @override
@@ -7984,7 +7991,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get catalogueRayonsSousTitre =>
-      'Selon votre activité, téléchargez les produits les plus demandés de chaque rayon : code-barres, nom et photo, sans prix ni stock. Vous pourrez en ajouter d\'autres plus tard depuis Produits.';
+      'Selon votre activité, téléchargez les produits les plus demandés de chaque rayon : code-barres, nom et photo, sans prix ni stock. Vous pourrez en ajouter d\'autres plus tard depuis Paramètres.';
 
   @override
   String catalogueRayonsNbProduits(String nombre) {

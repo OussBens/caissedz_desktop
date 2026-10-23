@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:caissedz_desktop/app/providers.dart';
+import 'package:caissedz_desktop/app/router.dart';
 import 'package:caissedz_desktop/application/catalogue_rayons_service.dart';
 import 'package:caissedz_desktop/core/catalogue/catalogue_rayons_api.dart';
 import 'package:caissedz_desktop/core/design_system/design_system.dart';
@@ -17,7 +18,11 @@ import '../../helpers/app_test_helper.dart';
 http.Response _json(Object corps) =>
     http.Response(jsonEncode(corps), 200, headers: {'content-type': 'application/json; charset=utf-8'});
 
-Map<String, Object?> _p(String cb, String nom) => {'code_barres': cb, 'codes_barres': [cb], 'nom': nom};
+Map<String, Object?> _p(String cb, String nom) => {
+  'code_barres': cb,
+  'codes_barres': [cb],
+  'nom': nom,
+};
 
 /// Boissons : 4 proposés, 3 avec code-barres ; Laitiers : 1 ; Papeterie : aucun (« Bientôt »).
 CatalogueRayonsApi _api({bool enPanne = false}) => CatalogueRayonsApi(
@@ -92,10 +97,7 @@ void main() {
 
       await clic(tester, find.byKey(appliquer));
       expect(find.byKey(const ValueKey('dialog_catalogue_rayons_bilan')), findsOneWidget);
-      expect(
-        find.text('4 produits ajoutés à votre catalogue : 80 % des produits des rayons choisis.'),
-        findsOneWidget,
-      );
+      expect(find.text('4 produits ajoutés à votre catalogue : 80 % des produits des rayons choisis.'), findsOneWidget);
       expect(find.text('3 / 4 · 75 %'), findsOneWidget);
       expect(find.text('1 / 1 · 100 %'), findsOneWidget);
 
@@ -139,5 +141,24 @@ void main() {
       expect(find.textContaining('Le catalogue BENS est injoignable'), findsOneWidget);
       expect(find.byKey(const ValueKey('rayons_reessayer')), findsOneWidget);
     });
+  });
+
+  testWidgets('plus tard : le catalogue BENS s’ouvre depuis Paramètres, plus depuis Produits', (tester) async {
+    final c = await pumpApp(
+      tester,
+      routeInitiale: '/produits',
+      taille: const Size(1600, 1000),
+      overrides: [catalogueRayonsApiProvider.overrideWithValue(_api())],
+    );
+    expect(find.byKey(const ValueKey('produits_catalogue_bens')), findsNothing);
+    expect(find.byKey(const ValueKey('produits_importer')), findsNothing);
+
+    c.read(routerProvider).go('/parametres');
+    await tester.pumpAndSettle();
+    final bouton = find.byKey(const ValueKey('param_catalogue_bens'));
+    await tester.ensureVisible(bouton);
+    await clic(tester, bouton);
+    expect(find.byKey(dialog), findsOneWidget);
+    expect(find.text('Choisissez vos rayons'), findsOneWidget);
   });
 }

@@ -7,7 +7,6 @@ import '../../core/i18n/generated/app_localizations.dart';
 import '../../domain/models/produit.dart';
 import '../../domain/permissions.dart';
 import '../../domain/referentiel/referentiel.dart';
-import '../catalogue_rayons/catalogue_rayons_dialog.dart';
 import '../commun/chargement.dart';
 import '../commun/colonnes_audit.dart';
 import '../commun/export_module.dart';
@@ -504,26 +503,6 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
           onPressed: (choix, effacer) => supprimerProduits(context, ref, choix, effacer, stocks: stocks),
         ),
       ],
-      secondaire: Row(
-        mainAxisSize: MainAxisSize.min,
-        spacing: DsSpacing.s2,
-        children: [
-          DsButton(
-            key: const ValueKey('produits_catalogue_bens'),
-            libelle: l10n.catalogueRayonsBouton,
-            icone: LucideIcons.store,
-            variante: DsButtonVariante.secondaire,
-            onPressed: () => afficherCatalogueRayons(context),
-          ),
-          DsButton(
-            key: const ValueKey('produits_importer'),
-            libelle: l10n.prdImporter,
-            icone: LucideIcons.fileSpreadsheet,
-            variante: DsButtonVariante.secondaire,
-            onPressed: () => afficherImportProduits(context),
-          ),
-        ],
-      ),
       primaire: DsButton(
         key: const ValueKey('produit_nouveau'),
         libelle: l10n.produitsNouveau,

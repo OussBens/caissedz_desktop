@@ -6258,6 +6258,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get pmMantouj => 'رابط Mantouj';
 
   @override
+  String get pmCatalogueRayonsDesc => 'حمّل المنتجات الأكثر طلبًا في أقسامك: الرمز الشريطي والاسم والصورة.';
+
+  @override
+  String get pmCatalogueRayonsBouton => 'اختيار الأقسام';
+
+  @override
   String get pmSynchro => 'مزامنة الكتالوج';
 
   @override
@@ -7947,7 +7953,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get catalogueRayonsSousTitre =>
-      'حسب نشاطك، حمّل المنتجات الأكثر طلبًا في كل قسم: الرمز الشريطي والاسم والصورة، دون سعر ولا مخزون. يمكنك إضافة المزيد لاحقًا من «المنتجات».';
+      'حسب نشاطك، حمّل المنتجات الأكثر طلبًا في كل قسم: الرمز الشريطي والاسم والصورة، دون سعر ولا مخزون. يمكنك إضافة المزيد لاحقًا من «الإعدادات».';
 
   @override
   String catalogueRayonsNbProduits(String nombre) {

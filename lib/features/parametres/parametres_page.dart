@@ -26,6 +26,7 @@ import '../../domain/permissions.dart';
 import '../../domain/referentiel/referentiel.dart';
 import '../activation/activation_page.dart';
 import '../caisse/pos_dialogs.dart';
+import '../catalogue_rayons/catalogue_rayons_dialog.dart';
 import '../commun/page_module.dart';
 import '../commun/referentiel_ui.dart';
 import '../compte_bens/compte_bens_pages.dart';
@@ -799,6 +800,18 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
           controller: _mantouj,
           libelle: l10n.pmMantouj,
           indice: 'https://mantouj.dz/api',
+        ),
+        _ligne(
+          l10n.catalogueRayonsBouton,
+          description: l10n.pmCatalogueRayonsDesc,
+          child: DsButton(
+            key: const ValueKey('param_catalogue_bens'),
+            libelle: l10n.pmCatalogueRayonsBouton,
+            icone: LucideIcons.store,
+            variante: DsButtonVariante.secondaire,
+            taille: DsButtonTaille.sm,
+            onPressed: () => afficherCatalogueRayons(context),
+          ),
         ),
         _ligne(
           l10n.pmSynchro,

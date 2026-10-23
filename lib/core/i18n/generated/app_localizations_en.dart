@@ -6263,6 +6263,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pmMantouj => 'Mantouj URL';
 
   @override
+  String get pmCatalogueRayonsDesc => 'Download the most popular products of your sections: barcode, name and photo.';
+
+  @override
+  String get pmCatalogueRayonsBouton => 'Choose sections';
+
+  @override
   String get pmSynchro => 'Sync the catalogue';
 
   @override
@@ -7965,7 +7971,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get catalogueRayonsSousTitre =>
-      'Based on your business, download the most popular products of each section: barcode, name and photo, without price or stock. You can add more later from Products.';
+      'Based on your business, download the most popular products of each section: barcode, name and photo, without price or stock. You can add more later from Settings.';
 
   @override
   String catalogueRayonsNbProduits(String nombre) {

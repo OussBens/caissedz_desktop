@@ -3215,6 +3215,8 @@
   "pmServeurUrl": "URL du serveur CaisseDZ",
   "pmServeurCle": "Clé d'API",
   "pmMantouj": "URL Mantouj",
+  "pmCatalogueRayonsDesc": "Téléchargez les produits les plus demandés de vos rayons : code-barres, nom et photo.",
+  "pmCatalogueRayonsBouton": "Choisir les rayons",
   "pmSynchro": "Synchroniser le catalogue",
   "pmSynchroDesc": "Envoie vos fiches et récupère les fiches enrichies du catalogue partagé.",
   "pmSynchroBouton": "Synchroniser",
@@ -4227,7 +4229,7 @@
   },
   "mobileRevoquerMessage": "Ce téléphone ne pourra plus se connecter à ce poste tant qu'il n'aura pas scanné un nouveau QR code.",
   "catalogueRayonsTitre": "Choisissez vos rayons",
-  "catalogueRayonsSousTitre": "Selon votre activité, téléchargez les produits les plus demandés de chaque rayon : code-barres, nom et photo, sans prix ni stock. Vous pourrez en ajouter d'autres plus tard depuis Produits.",
+  "catalogueRayonsSousTitre": "Selon votre activité, téléchargez les produits les plus demandés de chaque rayon : code-barres, nom et photo, sans prix ni stock. Vous pourrez en ajouter d'autres plus tard depuis Paramètres.",
   "catalogueRayonsNbProduits": "{nombre} produits",
   "@catalogueRayonsNbProduits": {
     "placeholders": {
