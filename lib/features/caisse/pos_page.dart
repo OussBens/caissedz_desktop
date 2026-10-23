@@ -828,6 +828,7 @@ class _PosPageState extends ConsumerState<PosPage> {
         key: ValueKey('tuile_${p.code}'),
         nom: p.nom(langue),
         code: p.code,
+        sousTitre: p.marqueTaille,
         // Tuile : le prix de vente seul (HT), sans TVA ni TTC ; le panier détaille le prix appliqué.
         prix: p.prixVente,
         stock: (stocks[p.code] ?? 0) - etat.unitesReservees(p.code),
@@ -929,7 +930,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                   padding: const EdgeInsets.fromLTRB(2, 2, 2, DsSpacing.s4),
                   gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                     maxCrossAxisExtent: 200,
-                    mainAxisExtent: 172,
+                    mainAxisExtent: 188,
                     crossAxisSpacing: DsSpacing.s3,
                     mainAxisSpacing: DsSpacing.s3,
                   ),

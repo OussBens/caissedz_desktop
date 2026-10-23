@@ -52,6 +52,12 @@ class Produit {
   String nom(String langue) =>
       langue == 'ar' && designationAr != null && designationAr!.trim().isNotEmpty ? designationAr!.trim() : designation;
 
+  /// Marque et taille renseignées, séparées par « · » (affichées sous le nom des cartes) ; null si aucune.
+  String? get marqueTaille {
+    final parts = [marque, taille].map((s) => s?.trim() ?? '').where((s) => s.isNotEmpty);
+    return parts.isEmpty ? null : parts.join(' · ');
+  }
+
   /// Ce qu'une recherche par nom compare : la désignation et le nom arabe.
   String get texteRecherche => designationAr == null ? designation : '$designation $designationAr';
   final String? codeBarres;

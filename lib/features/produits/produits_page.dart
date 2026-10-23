@@ -893,7 +893,8 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
       : null;
 }
 
-/// Carte produit de la vue grille (`ProduitCard`) : vignette teintée ou photo, état, prix, stock, marge.
+/// Carte produit de la vue grille (`ProduitCard`) : vignette teintée ou photo, état, code · catégorie,
+/// marque · taille, prix, stock, marge.
 class _CarteProduit extends StatelessWidget {
   const _CarteProduit({
     required this.produit,
@@ -965,6 +966,14 @@ class _CarteProduit extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: t.caption.copyWith(color: c.textMuted),
+                    ),
+                    // Ligne toujours réservée : les cartes d'une même rangée gardent la même hauteur.
+                    Text(
+                      produit.marqueTaille ?? '',
+                      key: const ValueKey('carte_produit_marque_taille'),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: t.caption.copyWith(color: c.textSecondary),
                     ),
                   ],
                 ),

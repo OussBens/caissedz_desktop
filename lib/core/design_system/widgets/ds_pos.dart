@@ -1168,7 +1168,7 @@ class _LignePaiement extends StatelessWidget {
   }
 }
 
-/// Tuile produit (`ProductTile`) : vignette teintée 72 px, nom, prix, stock ; bouton « Entrée »
+/// Tuile produit (`ProductTile`) : vignette teintée 72 px, nom, marque · taille, prix, stock ; bouton « Entrée »
 /// au survol. [enLigne] : rendu en rangée (liste). En rupture, la tuile garde son apparence normale (seul
 /// « Rupture » est en rouge) ; un clic la fait clignoter deux fois en rouge, doucement.
 class DsProductTile extends StatefulWidget {
@@ -1177,6 +1177,7 @@ class DsProductTile extends StatefulWidget {
     required this.nom,
     required this.prix,
     this.code,
+    this.sousTitre,
     this.stock,
     this.categorie,
     this.image,
@@ -1189,6 +1190,9 @@ class DsProductTile extends StatefulWidget {
   });
   final String nom;
   final String? code;
+
+  /// Ligne sous le nom (marque · taille), affichée seulement si renseignée.
+  final String? sousTitre;
   final double prix;
   final double? stock;
   final String? categorie;
@@ -1293,6 +1297,7 @@ class _DsProductTileState extends State<DsProductTile> with SingleTickerProvider
     final w = widget;
     final teinte = teintePour(w.categorie ?? w.nom);
     final rupture = _rupture;
+    final sousTitreStyle = t.caption.copyWith(fontSize: 11.5, color: c.textSecondary, height: 1.3);
     final stockTexte = w.stock == null
         ? null
         : DsStockAnime(
@@ -1378,6 +1383,14 @@ class _DsProductTileState extends State<DsProductTile> with SingleTickerProvider
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
+                        if (w.sousTitre != null)
+                          Text(
+                            w.sousTitre!,
+                            key: const ValueKey('tuile_sous_titre'),
+                            style: sousTitreStyle,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         if (w.code != null)
                           Text(w.code!, style: t.caption.copyWith(fontSize: 11.5, color: c.textMuted)),
                       ],
@@ -1445,11 +1458,25 @@ class _DsProductTileState extends State<DsProductTile> with SingleTickerProvider
                 spacing: 6,
                 children: [
                   vignette(104),
-                  Text(
-                    w.nom,
-                    style: t.bodySmStrong.copyWith(height: 1.25),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        w.nom,
+                        style: t.bodySmStrong.copyWith(height: 1.25),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      // Ligne toujours réservée : les prix restent alignés d'une tuile à l'autre.
+                      Text(
+                        w.sousTitre ?? '',
+                        key: const ValueKey('tuile_sous_titre'),
+                        style: sousTitreStyle,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
                   ),
                   Row(
                     spacing: 6,

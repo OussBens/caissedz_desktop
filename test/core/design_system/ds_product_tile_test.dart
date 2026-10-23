@@ -61,6 +61,40 @@ void main() {
     await tester.pumpAndSettle();
   });
 
+  for (final enLigne in [false, true]) {
+    testWidgets('marque · taille sous le nom (${enLigne ? 'liste' : 'grille'}), sans débordement', (tester) async {
+      await pumpDs(
+        tester,
+        SizedBox(
+          width: enLigne ? 700 : 200,
+          // Hauteur d'une cellule de la grille de la caisse (mainAxisExtent).
+          height: enLigne ? null : 188,
+          child: DsProductTile(
+            nom: 'Lait 1 L',
+            code: 'PRD0001',
+            sousTitre: 'Candia · 1 L',
+            prix: 100,
+            stock: 4,
+            enLigne: enLigne,
+          ),
+        ),
+      );
+      expect(find.text('Candia · 1 L'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
+  }
+
+  testWidgets('sans marque ni taille : aucune ligne en liste', (tester) async {
+    await pumpDs(
+      tester,
+      const SizedBox(
+        width: 700,
+        child: DsProductTile(nom: 'Lait 1 L', prix: 100, stock: 4, enLigne: true),
+      ),
+    );
+    expect(find.byKey(const ValueKey('tuile_sous_titre')), findsNothing);
+  });
+
   testWidgets('produit en stock : ajouté sans clignotement', (tester) async {
     var ajouts = 0;
     await pumpDs(
