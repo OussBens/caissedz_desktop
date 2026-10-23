@@ -15,6 +15,7 @@ import '../../domain/models/parametres_vente.dart';
 import '../../domain/models/produit.dart';
 import '../../domain/models/stock.dart';
 import '../../domain/models/tiers.dart';
+import '../../domain/quantite_produit.dart';
 import '../../domain/referentiel/referentiel.dart';
 import '../commun/referentiel_ui.dart';
 import '../commun/selecteurs.dart';
@@ -227,7 +228,8 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
       _couleurs = _liste(p.couleur).toSet();
       _typeTaille = _tailles.isEmpty
           ? null
-          : taillesParType.entries.where((e) => _tailles.every(e.value.contains)).firstOrNull?.key;
+          : taillesParType.entries.where((e) => _tailles.every(e.value.contains)).firstOrNull?.key ??
+                QuantiteProduit.typeCommun(_tailles);
       _chargerFiche(p.code);
     } else {
       // Marge par défaut des Paramètres : en pourcentage ou en montant fixe.
@@ -284,6 +286,11 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
     _fiche = f;
     if (f.designation.isNotEmpty) _designation.text = f.designation;
     if (f.designationAr != null && _designationAr.text.trim().isEmpty) _designationAr.text = f.designationAr!;
+    // La quantité du catalogue, séparée du nom, devient la taille (contenance ou poids) du produit.
+    if (f.quantite != null && f.typeQuantite != null) {
+      _typeTaille = f.typeQuantite;
+      _tailles = {f.quantite!};
+    }
     _codeBarres.text = f.codeBarres;
     _marque.text = f.marque ?? _marque.text;
     final nomCat = f.categorie?.toLowerCase();
@@ -1137,7 +1144,9 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
   List<Widget> _etape3(AppLocalizations l10n) {
     final c = context.ds.colors;
     final t = context.ds.typo;
-    final tailles = _typeTaille == null ? const <String>[] : taillesParType[_typeTaille]!;
+    // Les tailles du type, plus celles du produit hors liste (« 750 ml » venu du catalogue).
+    final base = _typeTaille == null ? const <String>[] : taillesParType[_typeTaille]!;
+    final tailles = [...base, ..._tailles.where((x) => base.isNotEmpty && !base.contains(x))];
     return [
       _bloc(l10n.prdVariantes, [
         ..._grille(colonnes: 3, [

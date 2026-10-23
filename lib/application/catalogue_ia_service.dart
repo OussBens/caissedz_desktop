@@ -2,12 +2,16 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
+import '../domain/quantite_produit.dart';
+
 /// Fiche produit renvoyée par une source du catalogue IA.
 class FicheProduitIa {
   const FicheProduitIa({
     required this.codeBarres,
     required this.designation,
     this.designationAr,
+    this.quantite,
+    this.typeQuantite,
     this.marque,
     this.categorie,
     this.image,
@@ -22,6 +26,12 @@ class FicheProduitIa {
 
   /// Nom arabe (catalogue BENS), s'il est connu.
   final String? designationAr;
+
+  /// Contenance ou poids (« 500 ml », « 1 kg »), séparé du nom ([QuantiteProduit]).
+  final String? quantite;
+
+  /// Type de [quantite] (« Contenance », « Poids »), `null` si elle n'a pas d'unité.
+  final String? typeQuantite;
   final String? marque;
   final String? categorie;
   final String? image;
@@ -75,7 +85,8 @@ class SourceHttpJson implements SourceCatalogue {
 }
 
 /// Catalogue BENS (catalog-api.bensds.com, `GET /products/barcode/<ean>`, lecture publique) : nom, nom arabe,
-/// marque, photo. Chaque recherche fait monter le produit dans le classement de son rayon.
+/// quantité, marque, photo. Le nom du catalogue contient souvent la quantité (« Eau Hayat 50cl ») : la fiche
+/// garde le nom seul, la quantité vient à part (`taille` du catalogue, sinon celle lue dans le nom). Chaque recherche fait monter le produit dans le classement de son rayon.
 class SourceBens implements SourceCatalogue {
   const SourceBens({required this.client, this.baseUrl = urlParDefaut, this.delai = const Duration(seconds: 5)});
 
@@ -101,10 +112,13 @@ class SourceBens implements SourceCatalogue {
     String? texte(Object? v) => v is String && v.trim().isNotEmpty ? v.trim() : null;
     final nom = texte(p['nom']);
     if (nom == null) return null;
+    final s = QuantiteProduit.separer(nom, quantite: texte(p['taille']));
     return FicheProduitIa(
       codeBarres: codeBarres,
-      designation: nom,
+      designation: s.nom,
       designationAr: texte(p['nom_ar']),
+      quantite: s.quantite,
+      typeQuantite: s.type,
       marque: texte(p['brand']),
       image: texte(p['photo']),
       source: nomSource,
@@ -126,7 +140,7 @@ class SourceOpenFacts implements SourceCatalogue {
   @override
   Future<FicheProduitIa?> rechercher(String codeBarres) async {
     final uri = Uri.https(hote, '/api/v2/product/$codeBarres.json', {
-      'fields': 'product_name,product_name_fr,brands,categories,image_front_url',
+      'fields': 'product_name,product_name_fr,quantity,brands,categories,image_front_url',
     });
     final r = await client.get(uri, headers: {'User-Agent': 'CaisseDZ Desktop'}).timeout(const Duration(seconds: 8));
     if (r.statusCode != 200) return null;
@@ -135,9 +149,12 @@ class SourceOpenFacts implements SourceCatalogue {
     final p = j['product'] as Map;
     final nom = (p['product_name_fr'] ?? p['product_name'] ?? '').toString().trim();
     if (nom.isEmpty) return null;
+    final s = QuantiteProduit.separer(nom, quantite: p['quantity']?.toString());
     return FicheProduitIa(
       codeBarres: codeBarres,
-      designation: nom,
+      designation: s.nom,
+      quantite: s.quantite,
+      typeQuantite: s.type,
       marque: p['brands']?.toString(),
       categorie: (p['categories']?.toString() ?? '').split(',').last.trim().isEmpty
           ? null

@@ -98,13 +98,13 @@ void main() {
       );
       await tester.enterText(_champ('produit_ia_code'), '6130000000015');
       await clic(tester, _cle('produit_ia_rechercher'));
-      expect(tester.widget<TextField>(_champ('produit_designation')).controller!.text, 'Eau minérale 1,5 L');
+      expect(tester.widget<TextField>(_champ('produit_designation')).controller!.text, 'Eau minérale');
       await tester.enterText(_champ('produit_achat'), '50');
       await tester.enterText(_champ('produit_marge'), '20');
       await tester.pump();
       await clic(tester, _cle('produit_enregistrer'));
       final p = await CatalogueRepository(c.read(appDatabaseProvider).db).produitParCodeBarres('6130000000015');
-      expect(p!.designation, 'Eau minérale 1,5 L');
+      expect([p!.designation, p.taille], ['Eau minérale', '1,5 L'], reason: 'nom et quantité séparés');
       await tester.pump(const Duration(seconds: 5)); // fin du toast
     });
 
@@ -135,7 +135,13 @@ void main() {
           return http.Response(
             jsonEncode({
               'success': true,
-              'data': {'nom': 'Rouiba Orange 1L', 'nom_ar': 'رويبة برتقال', 'brand': 'Rouiba', 'photo': null},
+              'data': {
+                'nom': 'Rouiba Orange 1L',
+                'nom_ar': 'رويبة برتقال',
+                'brand': 'Rouiba',
+                'photo': null,
+                'taille': '100 cl',
+              },
             }),
             200,
             headers: {'content-type': 'application/json; charset=utf-8'},
@@ -159,13 +165,13 @@ void main() {
       expect(appels.map((u) => u.host), [
         'catalog-api.bensds.com',
       ], reason: 'trouvé : les autres sources ne sont pas appelées');
-      expect(tester.widget<TextField>(_champ('produit_designation')).controller!.text, 'Rouiba Orange 1L');
+      expect(tester.widget<TextField>(_champ('produit_designation')).controller!.text, 'Rouiba Orange');
       expect(tester.widget<TextField>(_champ('produit_designation_ar')).controller!.text, 'رويبة برتقال');
       await tester.enterText(_champ('produit_achat'), '90');
       await tester.pump();
       await clic(tester, _cle('produit_enregistrer'));
       final p = await CatalogueRepository(c.read(appDatabaseProvider).db).produitParCodeBarres('6130005000017');
-      expect([p!.designationAr, p.marque], ['رويبة برتقال', 'Rouiba']);
+      expect([p!.designation, p.taille, p.designationAr, p.marque], ['Rouiba Orange', '1 L', 'رويبة برتقال', 'Rouiba']);
       await tester.pump(const Duration(seconds: 5)); // fin du toast
     });
 

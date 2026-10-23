@@ -849,6 +849,7 @@ class ServeurMobile {
       'fiche': {
         'codeBarres': f.codeBarres,
         'designation': f.designation,
+        'quantite': f.quantite,
         'marque': f.marque,
         'categorie': f.categorie,
         'image': f.image,

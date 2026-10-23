@@ -576,10 +576,7 @@ Future<SuiteRupture?> afficherProduitEnRupture(
           children: [
             Container(
               padding: const EdgeInsets.all(DsSpacing.s4),
-              decoration: BoxDecoration(
-                color: c.dangerTint,
-                borderRadius: DsRadius.borderLg,
-              ),
+              decoration: BoxDecoration(color: c.dangerTint, borderRadius: DsRadius.borderLg),
               child: Row(
                 spacing: DsSpacing.s3,
                 children: [
@@ -1306,7 +1303,10 @@ Future<SuiteIntrouvable?> afficherProduitIntrouvable(
                   spacing: DsSpacing.s2,
                   children: [
                     const DsSpinner(),
-                    Text(l10n.posCatalogueRecherche, style: ctx.ds.typo.bodySm.copyWith(color: ctx.ds.colors.textSecondary)),
+                    Text(
+                      l10n.posCatalogueRecherche,
+                      style: ctx.ds.typo.bodySm.copyWith(color: ctx.ds.colors.textSecondary),
+                    ),
                   ],
                 )
               else if (fiche != null) ...[
@@ -1326,7 +1326,7 @@ Future<SuiteIntrouvable?> afficherProduitIntrouvable(
   );
 }
 
-/// Produit trouvé dans le catalogue BENS : photo, désignation, nom arabe, marque.
+/// Produit trouvé dans le catalogue BENS : photo, désignation, quantité (à part du nom), nom arabe, marque.
 class _FicheCatalogue extends StatelessWidget {
   const _FicheCatalogue(this.fiche);
   final FicheProduitIa fiche;
@@ -1355,6 +1355,14 @@ class _FicheCatalogue extends StatelessWidget {
               spacing: DsSpacing.s1,
               children: [
                 Text(fiche.designation, style: t.bodyStrong),
+                if (fiche.quantite != null)
+                  Text(
+                    fiche.typeQuantite == null
+                        ? fiche.quantite!
+                        : '${libelleRef(context, Referentiel.typesTaille, fiche.typeQuantite!)} : ${fiche.quantite}',
+                    key: const ValueKey('introuvable_quantite'),
+                    style: t.bodySm,
+                  ),
                 if (fiche.designationAr != null)
                   Text(fiche.designationAr!, textDirection: TextDirection.rtl, style: t.body),
                 if (fiche.marque != null) Text(fiche.marque!, style: t.bodySm.copyWith(color: c.textSecondary)),

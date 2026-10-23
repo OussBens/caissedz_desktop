@@ -255,6 +255,8 @@ void main() {
       expect(find.text('Trouvé dans le catalogue BENS'), findsOneWidget);
       expect(find.byKey(const ValueKey('introuvable_fiche_bens')), findsOneWidget);
       expect(find.text('رويبة برتقال'), findsOneWidget);
+      expect(find.text('Rouiba Orange'), findsOneWidget, reason: 'nom sans la quantité');
+      expect(find.text('Contenance : 1 L'), findsOneWidget, reason: 'quantité à part');
       await clic(tester, find.text('Créer depuis le catalogue'));
       String texte(String cle) => tester
           .widget<TextField>(find.descendant(of: find.byKey(ValueKey(cle)), matching: find.byType(TextField)).first)
@@ -262,7 +264,7 @@ void main() {
           .text;
       expect(
         [texte('produit_designation'), texte('produit_designation_ar'), texte('produit_code_barres')],
-        ['Rouiba Orange 1L', 'رويبة برتقال', '6130005000017'],
+        ['Rouiba Orange', 'رويبة برتقال', '6130005000017'],
       );
 
       // Absent du catalogue : le titre habituel, le formulaire avec le seul code-barres.
@@ -334,7 +336,7 @@ void main() {
       expect(votes, [
         {'code_barres': '6130007000015', 'vote': 1},
       ]);
-      expect(texte('produit_designation'), 'Couscous Mama 1kg', reason: 'formulaire rempli');
+      expect(texte('produit_designation'), 'Couscous Mama', reason: 'formulaire rempli, sans la quantité');
       await clic(tester, find.text('Annuler').last);
 
       await tester.enterText(champ, '6130007000015');
