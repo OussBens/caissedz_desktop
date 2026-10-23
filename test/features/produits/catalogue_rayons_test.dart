@@ -143,7 +143,7 @@ void main() {
     });
   });
 
-  testWidgets('plus tard : le catalogue BENS s’ouvre depuis Paramètres, plus depuis Produits', (tester) async {
+  testWidgets('le catalogue BENS s’ouvre depuis Paramètres, plus depuis Produits', (tester) async {
     final c = await pumpApp(
       tester,
       routeInitiale: '/produits',
@@ -160,5 +160,13 @@ void main() {
     await clic(tester, bouton);
     expect(find.byKey(dialog), findsOneWidget);
     expect(find.text('Choisissez vos rayons'), findsOneWidget);
+  });
+
+  testWidgets('import Excel des produits : depuis Paramètres, à côté du catalogue BENS', (tester) async {
+    await pumpApp(tester, routeInitiale: '/parametres', taille: const Size(1600, 1000));
+    final bouton = find.byKey(const ValueKey('param_importer_produits'));
+    await tester.ensureVisible(bouton);
+    await clic(tester, bouton);
+    expect(find.byKey(const ValueKey('import_choisir')), findsOneWidget);
   });
 }

@@ -2165,6 +2165,8 @@
   "pmMantouj": "رابط Mantouj",
   "pmCatalogueRayonsDesc": "حمّل المنتجات الأكثر طلبًا في أقسامك: الرمز الشريطي والاسم والصورة.",
   "pmCatalogueRayonsBouton": "اختيار الأقسام",
+  "pmImportProduits": "استيراد المنتجات",
+  "pmImportProduitsDesc": "أضف منتجاتك من ملف Excel (.xlsx): الاسم والرمز الشريطي والسعر…",
   "pmSynchro": "مزامنة الكتالوج",
   "pmSynchroDesc": "يرسل بطاقاتك ويسترجع البطاقات المحسنة من الكتالوج المشترك.",
   "pmSynchroBouton": "مزامنة",

@@ -31,6 +31,7 @@ import '../commun/page_module.dart';
 import '../commun/referentiel_ui.dart';
 import '../compte_bens/compte_bens_pages.dart';
 import '../offres/offres_page.dart';
+import '../produits/produit_dialogs.dart';
 import '../produits/produits_providers.dart';
 import '../rapports/rapports_providers.dart';
 import '../tableau_bord/alertes_produits_providers.dart';
@@ -811,6 +812,18 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
             variante: DsButtonVariante.secondaire,
             taille: DsButtonTaille.sm,
             onPressed: () => afficherCatalogueRayons(context),
+          ),
+        ),
+        _ligne(
+          l10n.pmImportProduits,
+          description: l10n.pmImportProduitsDesc,
+          child: DsButton(
+            key: const ValueKey('param_importer_produits'),
+            libelle: l10n.prdImporter,
+            icone: LucideIcons.fileSpreadsheet,
+            variante: DsButtonVariante.secondaire,
+            taille: DsButtonTaille.sm,
+            onPressed: () => afficherImportProduits(context),
           ),
         ),
         _ligne(

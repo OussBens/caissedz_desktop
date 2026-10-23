@@ -6269,6 +6269,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pmCatalogueRayonsBouton => 'Choose sections';
 
   @override
+  String get pmImportProduits => 'Import products';
+
+  @override
+  String get pmImportProduitsDesc => 'Add your products from an Excel file (.xlsx): name, barcode, price…';
+
+  @override
   String get pmSynchro => 'Sync the catalogue';
 
   @override

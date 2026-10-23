@@ -2165,6 +2165,8 @@
   "pmMantouj": "Mantouj URL",
   "pmCatalogueRayonsDesc": "Download the most popular products of your sections: barcode, name and photo.",
   "pmCatalogueRayonsBouton": "Choose sections",
+  "pmImportProduits": "Import products",
+  "pmImportProduitsDesc": "Add your products from an Excel file (.xlsx): name, barcode, price…",
   "pmSynchro": "Sync the catalogue",
   "pmSynchroDesc": "Sends your product sheets and fetches enriched ones from the shared catalogue.",
   "pmSynchroBouton": "Sync",

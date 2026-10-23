@@ -3217,6 +3217,8 @@
   "pmMantouj": "URL Mantouj",
   "pmCatalogueRayonsDesc": "Téléchargez les produits les plus demandés de vos rayons : code-barres, nom et photo.",
   "pmCatalogueRayonsBouton": "Choisir les rayons",
+  "pmImportProduits": "Importer des produits",
+  "pmImportProduitsDesc": "Ajoutez vos produits depuis un fichier Excel (.xlsx) : désignation, code-barres, prix…",
   "pmSynchro": "Synchroniser le catalogue",
   "pmSynchroDesc": "Envoie vos fiches et récupère les fiches enrichies du catalogue partagé.",
   "pmSynchroBouton": "Synchroniser",

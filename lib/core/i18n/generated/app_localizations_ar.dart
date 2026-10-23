@@ -6264,6 +6264,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get pmCatalogueRayonsBouton => 'اختيار الأقسام';
 
   @override
+  String get pmImportProduits => 'استيراد المنتجات';
+
+  @override
+  String get pmImportProduitsDesc => 'أضف منتجاتك من ملف Excel (.xlsx): الاسم والرمز الشريطي والسعر…';
+
+  @override
   String get pmSynchro => 'مزامنة الكتالوج';
 
   @override

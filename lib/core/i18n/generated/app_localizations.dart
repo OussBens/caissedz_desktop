@@ -11955,6 +11955,18 @@ abstract class AppLocalizations {
   /// **'Choisir les rayons'**
   String get pmCatalogueRayonsBouton;
 
+  /// No description provided for @pmImportProduits.
+  ///
+  /// In fr, this message translates to:
+  /// **'Importer des produits'**
+  String get pmImportProduits;
+
+  /// No description provided for @pmImportProduitsDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajoutez vos produits depuis un fichier Excel (.xlsx) : désignation, code-barres, prix…'**
+  String get pmImportProduitsDesc;
+
   /// No description provided for @pmSynchro.
   ///
   /// In fr, this message translates to:
