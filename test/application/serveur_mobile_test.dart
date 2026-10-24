@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:caissedz_desktop/application/auth_service.dart';
 import 'package:caissedz_desktop/application/role_service.dart';
 import 'package:caissedz_desktop/application/serveur_mobile.dart';
 import 'package:caissedz_desktop/application/utilisateur_service.dart';
 import 'package:caissedz_desktop/core/db/app_database.dart';
+import 'package:caissedz_desktop/core/securite/mot_de_passe.dart';
 import 'package:caissedz_desktop/domain/models/licence.dart';
 import 'package:caissedz_desktop/domain/permissions.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -52,6 +54,9 @@ void main() {
 
   setUp(() async {
     base = await ouvrirBaseDeTest();
+    // Le compte BENS a été créé : l'administrateur a un mot de passe (sans quoi il n'est pas autorisé sur mobile).
+    await AuthService(base.db, hachage: const MotDePasse(iterations: 300))
+        .adminPrendCompteBens(nom: '', motDePasse: 'secret pass 1');
     factures = Directory.systemTemp.createTempSync('caissedz_factures_');
     addTearDown(() => factures.deleteSync(recursive: true));
     licence = const Licence(niveau: NiveauLicence.basic);

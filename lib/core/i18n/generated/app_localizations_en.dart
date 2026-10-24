@@ -210,7 +210,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get connexionErreurInactif => 'This account is disabled.';
 
   @override
-  String get connexionErreurNonConfigure => 'This account has no password yet: complete the initial setup.';
+  String get connexionErreurNonConfigure =>
+      'This account has no password yet: sign in to this computer\'s BENS account.';
 
   @override
   String get connexionErreurDemo => 'The demo/demo account is only available in demo mode.';
@@ -1711,6 +1712,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String connexionCompteBens(String telephone) {
     return 'BENS account $telephone';
   }
+
+  @override
+  String get connexionSansAdmin =>
+      'The administrator signs in with this computer\'s BENS account: create it, or sign in if it already exists. Its password becomes the administrator\'s.';
 
   @override
   String get connexionMotDePasseBens => 'By default: your BENS account password.';

@@ -1,8 +1,10 @@
 import 'package:caissedz_desktop/app/demarrage_providers.dart';
 import 'package:caissedz_desktop/app/providers.dart';
+import 'package:caissedz_desktop/app/router.dart';
 import 'package:caissedz_desktop/application/auth_service.dart';
 import 'package:caissedz_desktop/data/licence_repository.dart';
 import 'package:caissedz_desktop/domain/models/licence.dart';
+import 'package:caissedz_desktop/domain/permissions.dart';
 import 'package:caissedz_desktop/features/compte_bens/compte_bens_pages.dart';
 import 'package:caissedz_desktop/features/connexion/connexion_page.dart';
 import 'package:caissedz_desktop/features/offres/offres_page.dart';
@@ -14,7 +16,7 @@ import '../../helpers/app_test_helper.dart';
 
 void main() {
   group('Connexion', () {
-    testWidgets('mauvais mot de passe, connexion admin/admin (Rester connecté), puis déconnexion', (tester) async {
+    testWidgets('mauvais mot de passe, connexion de l’administrateur (Rester connecté), puis déconnexion', (tester) async {
       final c = await pumpApp(tester, etat: EtatApp.configuree);
       expect(find.byType(ConnexionPage), findsOneWidget);
       expect(find.text('Choisissez votre compte'), findsOneWidget);
@@ -147,5 +149,56 @@ void main() {
       final saisie = tester.widget<TextField>(find.descendant(of: champ, matching: find.byType(TextField)));
       expect(saisie.controller!.text, '0555112233');
     });
-  });
+    });
+
+  group('Compte BENS : l’administrateur prend son mot de passe (pas de admin / admin)', () {
+    testWidgets('essai refusé, formule payée ensuite : l’administrateur a déjà le mot de passe du compte', (
+      tester,
+    ) async {
+      final c = await pumpApp(tester, etat: EtatApp.vierge);
+      final auth = c.read(authServiceProvider);
+      await expectLater(auth.connecter(identifiantAdmin, 'admin'), throwsA(isA<ConnexionException>()));
+
+      // Inscription sans essai (déjà utilisé sur ce poste) : pas de licence, les formules suivent.
+      expect(await c.read(sessionProvider.notifier).apresCompteBens(nom: 'Karim', motDePasse: 'secret BENS 1'), isFalse);
+      expect(c.read(sessionProvider), isNull);
+
+      // Payé auprès de BENS : la licence arrive (Actualiser), puis la connexion avec le compte.
+      await c.read(licenceProvider.notifier).activer(await cleTest(NiveauLicence.basic));
+      await expectLater(
+        c.read(sessionProvider.notifier).connecter(identifiantAdmin, 'admin'),
+        throwsA(isA<ConnexionException>()),
+      );
+      final s = await c.read(sessionProvider.notifier).connecter(identifiantAdmin, 'secret BENS 1');
+      expect((s.estAdmin, s.utilisateur.nom), (true, 'Karim'));
+      await tester.pumpAndSettle();
+    });
+
+    testWidgets('licence valable : la session de l’administrateur s’ouvre tout de suite', (tester) async {
+      final c = await pumpApp(tester, etat: EtatApp.vierge);
+      await c.read(licenceProvider.notifier).activer(await cleTest(NiveauLicence.basic));
+      expect(await c.read(sessionProvider.notifier).apresCompteBens(nom: '', motDePasse: 'secret BENS 1'), isTrue);
+      expect(c.read(sessionProvider)!.estAdmin, isTrue);
+      await tester.pumpAndSettle();
+    });
+
+    testWidgets('aucun administrateur avec mot de passe : la connexion propose de créer le compte BENS', (
+      tester,
+    ) async {
+      final c = await pumpApp(tester, etat: EtatApp.vierge, taille: const Size(1440, 900));
+      await c.read(licenceProvider.notifier).activer(await cleTest(NiveauLicence.basic));
+      c.read(routerProvider).go(ConnexionPage.route);
+      await tester.pumpAndSettle();
+      expect(find.byType(ConnexionPage), findsOneWidget);
+      expect(find.byKey(const ValueKey('compte_$identifiantAdmin')), findsNothing);
+      expect(find.byKey(const ValueKey('encart_sans_admin')), findsOneWidget);
+      await clic(tester, find.byKey(const ValueKey('connexion_creer_compte')));
+      expect(find.byType(InscriptionPage), findsOneWidget);
+    });
+
+    testWidgets('administrateur configuré : pas d’encart', (tester) async {
+      await pumpApp(tester, etat: EtatApp.configuree);
+      expect(find.byKey(const ValueKey('encart_sans_admin')), findsNothing);
+    });
+});
 }

@@ -9,6 +9,7 @@ import 'package:caissedz_desktop/application/vente_service.dart';
 import 'package:caissedz_desktop/core/db/app_database.dart';
 import 'package:caissedz_desktop/core/db/migrations/v002_demarrage.dart';
 import 'package:caissedz_desktop/core/db/migrations/v008_shell_ds.dart';
+import 'package:caissedz_desktop/core/db/migrations/v044_admin_sans_mot_de_passe.dart';
 import 'package:caissedz_desktop/core/securite/mot_de_passe.dart';
 import 'package:caissedz_desktop/data/boutique_repository.dart';
 import 'package:caissedz_desktop/data/parametre_repository.dart';
@@ -38,13 +39,19 @@ ConfigurationInitiale _config({String nom = 'Superette El Baraka', double marge 
   parametres: ParametresVente(margeDefautPct: marge, seuilStockGlobal: 10, decimalesQuantite: 3),
 );
 
-/// Licence Basic sur le poste des tests (l'application la vérifie avant la connexion, SessionNotifier).
-Future<void> _activer(AppDatabase base) async =>
-    (await licenceServiceTest(base)).activer(await cleTest(NiveauLicence.basic));
+/// Le mot de passe du compte BENS des tests, pris par l'administrateur.
+const _mdp = 'secret pass 1';
+
+/// Licence Basic sur le poste des tests (l'application la vérifie avant la connexion, SessionNotifier), et
+/// le compte BENS créé : l'administrateur a pris son mot de passe.
+Future<void> _activer(AppDatabase base) async {
+  await (await licenceServiceTest(base)).activer(await cleTest(NiveauLicence.basic));
+  await AuthService(base.db, hachage: _hachage).adminPrendCompteBens(nom: '', motDePasse: _mdp);
+}
 
 void main() {
   group('Seed de la migration v2', () {
-    test('éléments système, admin / admin, démo, rôles', () async {
+    test('éléments système, administrateur sans mot de passe, démo, rôles', () async {
       final base = await ouvrirBaseDeTest();
       for (final (table, code) in [
         ('magasin', 'MAG0000'),
@@ -61,9 +68,8 @@ void main() {
       expect(admin!.roleCode, Roles.admin);
       expect(admin.roleNom, 'Admin');
       expect(admin.identifiant, MigrationV008ShellDs.identifiantAdmin);
-      // v008 : compte admin / admin provisoire.
-      final empreinte = await UtilisateurRepository(base.db).empreinte(admin.code);
-      expect(MotDePasse.verifier(MigrationV008ShellDs.motDePasseAdmin, empreinte!), isTrue);
+      // Pas de compte admin / admin : l'administrateur prendra le mot de passe du compte BENS.
+      expect(await UtilisateurRepository(base.db).empreinte(admin.code), isNull);
       final caisse = (await base.db.query('caisse', where: 'code = ?', whereArgs: ['CIS0000'])).first;
       expect(caisse['magasin_code'], 'MAG0000');
       final roles = {for (final r in await PermissionsRepository(base.db).roles()) r.code: r};
@@ -114,11 +120,11 @@ void main() {
   });
 
   group('AuthService', () {
-    test('connexion admin / admin, session avec tous les droits, journal et dernier accès', () async {
+    test('connexion de l’administrateur, session avec tous les droits, journal et dernier accès', () async {
       final base = await ouvrirBaseDeTest();
       await _activer(base);
       final auth = AuthService(base.db, hachage: _hachage);
-      final session = await auth.connecter('ADMIN', 'admin');
+      final session = await auth.connecter('ADMIN', _mdp);
       expect(session.utilisateur.identifiant, 'admin');
       expect(session.estAdmin, isTrue);
       expect(session.modulesAutorises, isNull);
@@ -147,32 +153,58 @@ void main() {
 
     test('poste neuf : l’administrateur prend le mot de passe du compte BENS, une seule fois', () async {
       final base = await ouvrirBaseDeTest();
+      await (await licenceServiceTest(base)).activer(await cleTest(NiveauLicence.basic));
       final auth = AuthService(base.db, hachage: _hachage);
-      final s = await auth.ouvrirAdminInitial(nom: 'Karim Haddad', motDePasse: 'secret pass 1');
-      expect(s!.utilisateur.code, _admin);
-      expect(s.utilisateur.nom, 'Karim Haddad');
+      await expectLater(
+        auth.connecter('admin', 'admin'),
+        throwsA(isA<ConnexionException>().having((e) => e.erreur, 'erreur', ErreurConnexion.motDePasseNonDefini)),
+        reason: 'pas de compte admin / admin',
+      );
+      final u = await auth.adminPrendCompteBens(nom: 'Karim Haddad', motDePasse: 'secret pass 1');
+      expect((u!.code, u.nom), (_admin, 'Karim Haddad'));
       await expectLater(auth.connecter('admin', 'admin'), throwsA(isA<ConnexionException>()));
       expect((await auth.connecter('admin', 'secret pass 1')).estAdmin, isTrue);
       expect(
-        await auth.ouvrirAdminInitial(nom: 'Autre', motDePasse: 'autre pass 2'),
+        await auth.adminPrendCompteBens(nom: 'Autre', motDePasse: 'autre pass 2'),
         isNull,
         reason: 'déjà configuré',
       );
+      expect((await auth.connecter('admin', 'secret pass 1')).utilisateur.nom, 'Karim Haddad');
     });
 
     test('mot de passe du compte BENS réinitialisé : l’administrateur le prend, même déjà configuré', () async {
       final base = await ouvrirBaseDeTest();
+      await (await licenceServiceTest(base)).activer(await cleTest(NiveauLicence.basic));
       final auth = AuthService(base.db, hachage: _hachage);
-      await auth.ouvrirAdminInitial(nom: 'Karim Haddad', motDePasse: 'ancien pass 1');
-      final s = await auth.ouvrirAdminReinitialise('nouveau pass 2');
-      expect(s!.utilisateur.code, _admin);
-      expect(s.utilisateur.nom, 'Karim Haddad', reason: 'le nom ne change pas');
+      await auth.adminPrendCompteBens(nom: 'Karim Haddad', motDePasse: 'ancien pass 1');
+      final u = await auth.adminPrendMotDePasseReinitialise('nouveau pass 2');
+      expect((u!.code, u.nom), (_admin, 'Karim Haddad'), reason: 'le nom ne change pas');
       await expectLater(auth.connecter('admin', 'ancien pass 1'), throwsA(isA<ConnexionException>()));
       expect((await auth.connecter('admin', 'nouveau pass 2')).estAdmin, isTrue);
 
-      // Aucun administrateur actif : rien à ouvrir.
+      // Aucun administrateur actif : rien à prendre.
       await UtilisateurRepository(base.db).mettreAJour(_admin, {'actif': 0});
-      expect(await auth.ouvrirAdminReinitialise('autre pass 3'), isNull);
+      expect(await auth.adminPrendMotDePasseReinitialise('autre pass 3'), isNull);
+    });
+
+    test('migration v44 : le mot de passe admin d’origine est effacé, un autre est gardé', () async {
+      final base = await ouvrirBaseDeTest();
+      final db = base.db;
+      Future<String?> apres(String? motDePasse) async {
+        await db.update(
+          'utilisateur',
+          {'mot_de_passe': motDePasse == null ? null : _hachage.hacher(motDePasse)},
+          where: 'code = ?',
+          whereArgs: [_admin],
+        );
+        await db.transaction((txn) => const MigrationV044AdminSansMotDePasse().appliquer(txn));
+        return UtilisateurRepository(db).empreinte(_admin);
+      }
+
+      expect(await apres('admin'), isNull);
+      expect(await apres(null), isNull);
+      final garde = await apres('secret pass 1');
+      expect(MotDePasse.verifier('secret pass 1', garde!), isTrue);
     });
 
     test('reprise de session (Rester connecté)', () async {
@@ -189,7 +221,7 @@ void main() {
       final base = await ouvrirBaseDeTest();
       await _activer(base);
       final auth = AuthService(base.db, hachage: _hachage);
-      await auth.connecter('admin', 'admin');
+      await auth.connecter('admin', _mdp);
       final tiers = TiersService(base.db, utilisateurCode: _admin);
       final c = await tiers.creerClient(const Client(code: '', nom: 'Amina'));
       var ligne = (await base.db.query('client', where: 'code = ?', whereArgs: [c.code])).single;
@@ -233,18 +265,18 @@ void main() {
         throwsA(isA<CompteException>().having((e) => e.erreur, 'erreur', ErreurCompte.motDePasseActuelIncorrect)),
       );
       await expectLater(
-        auth.changerIdentifiant(code, 'DEMO', 'admin'),
+        auth.changerIdentifiant(code, 'DEMO', _mdp),
         throwsA(isA<CompteException>().having((e) => e.erreur, 'erreur', ErreurCompte.identifiantPris)),
       );
       await expectLater(
-        auth.changerIdentifiant(code, 'k', 'admin'),
+        auth.changerIdentifiant(code, 'k', _mdp),
         throwsA(isA<CompteException>().having((e) => e.erreur, 'erreur', ErreurCompte.identifiantInvalide)),
       );
-      final u = await auth.changerIdentifiant(code, 'karim.b', 'admin');
+      final u = await auth.changerIdentifiant(code, 'karim.b', _mdp);
       expect(u.identifiant, 'karim.b');
-      await auth.changerIdentifiant(code, 'Karim.B', 'admin');
-      await auth.changerMotDePasse(code, 'admin', 'nouveau1');
-      await expectLater(auth.changerMotDePasse(code, 'admin', 'x'), throwsA(isA<CompteException>()));
+      await auth.changerIdentifiant(code, 'Karim.B', _mdp);
+      await auth.changerMotDePasse(code, _mdp, 'nouveau1');
+      await expectLater(auth.changerMotDePasse(code, _mdp, 'x'), throwsA(isA<CompteException>()));
       expect((await auth.connecter('karim.b', 'nouveau1')).utilisateur.code, code);
     });
   });
@@ -265,7 +297,7 @@ void main() {
       );
       final auth = AuthService(base.db, hachage: _hachage);
       final alertes = AlertesService(base.db);
-      final admin = await alertes.calculer(await auth.connecter('admin', 'admin'));
+      final admin = await alertes.calculer(await auth.connecter('admin', _mdp));
       // Lait en rupture : signalé une seule fois, par l'alerte produit « Rupture sans commande ».
       expect(admin.total, 0);
       expect(admin.familles, containsAll([FamilleAlerte.expire, FamilleAlerte.sessions, FamilleAlerte.clients]));
@@ -311,7 +343,7 @@ void main() {
       await produit('Conserve', DateTime(2027, 6, 1));
       await produit('Lait vide', DateTime(2026, 10, 1), quantite: 0);
       await produit('Riz', null);
-      final admin = await AuthService(db, hachage: _hachage).connecter('admin', 'admin');
+      final admin = await AuthService(db, hachage: _hachage).connecter('admin', _mdp);
       final alertes = await AlertesService(db).calculer(admin, maintenant: maintenant);
       final expire = alertes.de(FamilleAlerte.expire).single;
       expect((expire.titre, expire.valeur, expire.critique), ('Yaourt', -3, true));
@@ -355,7 +387,7 @@ void main() {
         magasinCode: 'MAG0000',
         creditAutorise: true,
       );
-      final admin = await AuthService(db, hachage: _hachage).connecter('admin', 'admin');
+      final admin = await AuthService(db, hachage: _hachage).connecter('admin', _mdp);
       expect((await alertes.calculer(admin)).de(FamilleAlerte.clients).single.valeur, 300);
       await ParametreRepository(db).ecrire(AlertesService.cleSeuilCredit, '500');
       expect((await alertes.calculer(admin)).de(FamilleAlerte.clients), isEmpty, reason: '300 DA < seuil 500 DA');
@@ -366,7 +398,7 @@ void main() {
     test('l’Admin a toutes les permissions et tous les modules', () async {
       final base = await ouvrirBaseDeTest();
       await _activer(base);
-      final s = await AuthService(base.db, hachage: _hachage).connecter('admin', 'admin');
+      final s = await AuthService(base.db, hachage: _hachage).connecter('admin', _mdp);
       expect(s.estAdmin, isTrue);
       expect(s.permissions, Permission.values.toSet());
       expect(s.peutAcceder('utilisateurs'), isTrue);

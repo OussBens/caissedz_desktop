@@ -208,7 +208,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get connexionErreurInactif => 'هذا الحساب معطّل.';
 
   @override
-  String get connexionErreurNonConfigure => 'ليس لهذا الحساب كلمة مرور بعد: أكمل الإعداد الأولي.';
+  String get connexionErreurNonConfigure => 'ليس لهذا الحساب كلمة مرور بعد: سجّل الدخول إلى حساب BENS لهذا الجهاز.';
 
   @override
   String get connexionErreurDemo => 'الحساب demo/demo متاح فقط في الوضع التجريبي.';
@@ -1709,6 +1709,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String connexionCompteBens(String telephone) {
     return 'حساب BENS $telephone';
   }
+
+  @override
+  String get connexionSansAdmin =>
+      'يسجّل المسؤول الدخول بحساب BENS لهذا الجهاز: أنشئه، أو سجّل الدخول إن كان موجودًا. تصبح كلمة مروره كلمة مرور المسؤول.';
 
   @override
   String get connexionMotDePasseBens => 'افتراضيًا: كلمة مرور حساب BENS الخاص بك.';

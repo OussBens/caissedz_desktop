@@ -42,6 +42,7 @@ import 'v040_alertes_produits.dart';
 import 'v041_favoris_caisse_nouveautes.dart';
 import 'v042_appareil_identifiant.dart';
 import 'v043_archivage.dart';
+import 'v044_admin_sans_mot_de_passe.dart';
 
 export 'migration.dart';
 
@@ -90,4 +91,5 @@ const List<Migration> toutesLesMigrations = [
   MigrationV041FavorisCaisseNouveautes(),
   MigrationV042AppareilIdentifiant(),
   MigrationV043Archivage(),
+  MigrationV044AdminSansMotDePasse(),
 ];

@@ -75,8 +75,12 @@ class _ActivationPageState extends ConsumerState<ActivationPage> {
         libelleAction: l10n.activationContinuer,
       );
       if (!mounted) return;
-      // Avant la connexion : la connexion locale suit ; depuis l'application (Paramètres) : retour.
-      if (ref.read(sessionProvider) == null || !context.canPop()) {
+      // Avant la connexion : sans compte BENS sur ce poste, on le crée (l'administrateur prend son mot de
+      // passe), sinon la connexion locale suit ; depuis l'application (Paramètres) : retour.
+      if (ref.read(sessionProvider) == null && licence.compte == null) {
+        final offre = ref.read(offresBensProvider).value?.paliers.where((o) => o.niveau == licence.niveau).firstOrNull;
+        context.go(offre == null ? InscriptionPage.route : '${InscriptionPage.route}?offre=${offre.code}');
+      } else if (ref.read(sessionProvider) == null || !context.canPop()) {
         context.go(ConnexionPage.route);
       } else {
         context.pop();

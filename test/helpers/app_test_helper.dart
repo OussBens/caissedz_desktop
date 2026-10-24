@@ -133,6 +133,9 @@ Future<ProviderContainer> pumpApp(
   addTearDown(container.dispose);
   await container.read(localeProvider.notifier).changer(locale);
 
+  // Hors poste vierge : le compte BENS a été créé, l'administrateur a pris son mot de passe.
+  if (etat != EtatApp.vierge) await donnerMotDePasseAdmin(base);
+
   final licence = container.read(licenceProvider.notifier);
   final config = container.read(configurationTermineeProvider.notifier);
   final session = container.read(sessionProvider.notifier);
@@ -200,7 +203,6 @@ Future<void> ouvrirChiffres(WidgetTester tester) => clic(tester, find.byKey(cons
 /// Ouvre le panneau de filtres du module affiché (fermé par défaut).
 Future<void> ouvrirFiltres(WidgetTester tester) => clic(tester, find.byKey(const ValueKey('panneau_filtres')).first);
 
-/// Administrateur système provisoire (migration v008).
 /// À l'écran de connexion : clique le compte [identifiant] puis tape [motDePasse] (sans valider).
 Future<void> choisirCompte(WidgetTester tester, String motDePasse, {String identifiant = identifiantAdmin}) async {
   await clic(tester, find.byKey(ValueKey('compte_$identifiant')));
@@ -208,7 +210,12 @@ Future<void> choisirCompte(WidgetTester tester, String motDePasse, {String ident
 }
 
 const String identifiantAdmin = MigrationV008ShellDs.identifiantAdmin;
-const String motDePasseAdmin = MigrationV008ShellDs.motDePasseAdmin;
+/// Le mot de passe du compte BENS des tests, pris par l'administrateur (AuthService.adminPrendCompteBens).
+const String motDePasseAdmin = 'secret pass 1';
+
+/// Comme après la création du compte BENS : l'administrateur prend [motDePasseAdmin].
+Future<void> donnerMotDePasseAdmin(AppDatabase base) =>
+    AuthService(base.db, hachage: hachageTest).adminPrendCompteBens(nom: '', motDePasse: motDePasseAdmin);
 
 ConfigurationInitiale configurationTest() => const ConfigurationInitiale(
   boutique: Boutique(nom: 'Superette El Baraka', rc: '16/00-123456'),

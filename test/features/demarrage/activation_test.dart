@@ -172,7 +172,7 @@ void main() {
       expect(find.text("Clé invalide. Vérifiez qu'elle a été copiée en entier."), findsOneWidget);
     });
 
-    testWidgets('clé Avancé valable : activée, puis la connexion locale', (tester) async {
+    testWidgets('clé Avancé valable sans compte BENS : activée, puis la création du compte', (tester) async {
       final c = await pumpApp(tester, etat: EtatApp.vierge, taille: grand);
       await clic(tester, find.byKey(const ValueKey('offres_cle')));
       await saisirCle(tester, await cleTest(NiveauLicence.avance));
@@ -182,7 +182,10 @@ void main() {
       expect(c.read(licenceProvider).niveau, NiveauLicence.avance);
       expect(c.read(licenceProvider).essai, isFalse);
       expect(c.read(licenceProvider).expireLe, isNull);
-      expect(find.byType(ConnexionPage), findsOneWidget);
+      // Pas de compte admin / admin : l'administrateur prendra le mot de passe du compte créé.
+      expect(find.byType(InscriptionPage), findsOneWidget);
+      final formule = find.byKey(const ValueKey('inscription_formule'));
+      expect(find.descendant(of: formule, matching: find.text('Formule Avancé')), findsOneWidget);
     });
 
     testWidgets('clé expirée : refusée avec sa date', (tester) async {

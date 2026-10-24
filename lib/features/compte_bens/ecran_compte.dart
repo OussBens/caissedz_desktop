@@ -145,10 +145,9 @@ class ChampTelephone extends StatelessWidget {
   );
 }
 
-/// Après l'inscription, la connexion ou la réinitialisation du compte BENS : sans formule valable, les
-/// offres ; sur un poste neuf, la session de l'administrateur (son mot de passe devient celui du
-/// compte) ; sinon la connexion habituelle. [reinitialisation] : le mot de passe vient d'être changé
-/// par le code de BENS, l'administrateur du compte le prend aussi et sa session s'ouvre.
+/// Après l'inscription, la connexion ou la réinitialisation du compte BENS : l'administrateur prend le
+/// mot de passe du compte (poste neuf ; toujours après une [reinitialisation]), puis sans formule
+/// valable les offres ; sinon sa session s'ouvre, ou la connexion habituelle s'il était déjà configuré.
 Future<void> apresConnexionCompte(
   BuildContext context,
   WidgetRef ref, {
@@ -156,14 +155,13 @@ Future<void> apresConnexionCompte(
   required String motDePasse,
   bool reinitialisation = false,
 }) async {
+  final ouverte = await ref
+      .read(sessionProvider.notifier)
+      .apresCompteBens(nom: nom, motDePasse: motDePasse, reinitialisation: reinitialisation);
+  if (!context.mounted) return;
   if (!ref.read(licenceProvider).estActivee) {
     context.go(OffresPage.route);
     return;
   }
-  final session = ref.read(sessionProvider.notifier);
-  final ouverte = reinitialisation
-      ? await session.ouvrirAdminReinitialise(motDePasse)
-      : await session.ouvrirAdminInitial(nom: nom, motDePasse: motDePasse);
-  if (!context.mounted) return;
   context.go(ouverte ? routeAccueil : ConnexionPage.route);
 }

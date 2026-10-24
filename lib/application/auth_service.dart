@@ -1,5 +1,6 @@
 import 'package:sqflite_common/sqlite_api.dart';
 
+import '../core/db/migrations/v002_demarrage.dart';
 import '../core/db/migrations/v008_shell_ds.dart';
 import '../core/securite/mot_de_passe.dart';
 import '../data/historique_repository.dart';
@@ -110,37 +111,32 @@ class AuthService {
     return (await _utilisateurs.tous()).where((u) => u.estAdmin && u.actif).firstOrNull;
   }
 
-  /// Après l'inscription ou la connexion au compte BENS sur un poste neuf : l'administrateur local
-  /// prend le mot de passe du compte (et son nom) tant qu'il a encore celui d'origine (admin / admin),
-  /// puis sa session s'ouvre. Ailleurs (administrateur déjà configuré) : null, connexion habituelle.
-  Future<Session?> ouvrirAdminInitial({required String nom, required String motDePasse}) async {
-    final u = await _utilisateurs.parIdentifiant(MigrationV008ShellDs.identifiantAdmin);
-    final empreinte = u == null ? null : await _utilisateurs.empreinte(u.code);
-    if (u == null ||
-        !u.estAdmin ||
-        !u.actif ||
-        empreinte == null ||
-        !MotDePasse.verifier(MigrationV008ShellDs.motDePasseAdmin, empreinte)) {
-      return null;
-    }
+  /// Après l'inscription ou la connexion au compte BENS, que la licence soit déjà valable ou non (essai
+  /// refusé, paiement attendu, clé) : sur un poste neuf, l'administrateur n'a pas encore de mot de passe
+  /// et prend celui du compte (et son nom). Il se connecte ensuite avec ce compte (numéro ou `admin`).
+  /// Renvoie l'administrateur mis à jour ; null s'il était déjà configuré (rien ne change).
+  Future<Utilisateur?> adminPrendCompteBens({required String nom, required String motDePasse}) async {
+    final u = await _utilisateurs.parCode(MigrationV002Demarrage.codeAdmin);
+    if (u == null || !u.estAdmin || !u.actif || await _utilisateurs.empreinte(u.code) != null) return null;
     await _utilisateurs.mettreAJour(u.code, {
       'mot_de_passe': hachage.hacher(motDePasse),
       if (nom.trim().isNotEmpty) 'nom': nom.trim(),
     });
-    final mis = await _utilisateurs.parCode(u.code);
-    return _ouvrir(mis ?? u);
+    return _utilisateurs.parCode(u.code);
   }
 
   /// Après la réinitialisation du mot de passe du compte BENS (le code de BENS prouve que c'est le
-  /// gérant) : l'administrateur du compte prend le nouveau mot de passe, puis sa session s'ouvre.
+  /// gérant) : l'administrateur du compte prend le nouveau mot de passe, même déjà configuré.
   /// Null sans administrateur actif.
-  Future<Session?> ouvrirAdminReinitialise(String motDePasse) async {
+  Future<Utilisateur?> adminPrendMotDePasseReinitialise(String motDePasse) async {
     final u = await _administrateurDuCompte();
     if (u == null || !u.actif) return null;
     await _utilisateurs.mettreAJour(u.code, {'mot_de_passe': hachage.hacher(motDePasse)});
-    final mis = await _utilisateurs.parCode(u.code);
-    return _ouvrir(mis ?? u);
+    return _utilisateurs.parCode(u.code);
   }
+
+  /// Ouvre la session de [u] sans mot de passe : juste après qu'il a pris celui du compte BENS.
+  Future<Session> ouvrirSans(Utilisateur u) => _ouvrir(u);
 
   /// Journalise la déconnexion (§4.4).
   Future<void> deconnecter(String code) => db.transaction((txn) async {

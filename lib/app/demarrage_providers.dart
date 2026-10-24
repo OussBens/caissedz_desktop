@@ -155,24 +155,17 @@ class SessionNotifier extends Notifier<Session?> {
     return true;
   }
 
-  /// Juste après l'inscription ou la connexion au compte BENS sur un poste neuf : la session de
-  /// l'administrateur local, qui prend le mot de passe du compte. Faux s'il était déjà configuré
-  /// (l'écran de connexion habituel suit).
-  Future<bool> ouvrirAdminInitial({required String nom, required String motDePasse}) async {
-    if (!ref.read(licenceProvider).estActivee) return false;
-    final s = await ref.read(authServiceProvider).ouvrirAdminInitial(nom: nom, motDePasse: motDePasse);
-    if (s == null) return false;
-    await _ouvrir(s);
-    return true;
-  }
-
-  /// Après la réinitialisation du mot de passe du compte BENS (code donné par BENS) : l'administrateur
-  /// du compte prend le nouveau mot de passe et sa session s'ouvre. Faux sans administrateur actif.
-  Future<bool> ouvrirAdminReinitialise(String motDePasse) async {
-    if (!ref.read(licenceProvider).estActivee) return false;
-    final s = await ref.read(authServiceProvider).ouvrirAdminReinitialise(motDePasse);
-    if (s == null) return false;
-    await _ouvrir(s);
+  /// Juste après l'inscription, la connexion ou la réinitialisation du compte BENS : l'administrateur
+  /// prend le mot de passe du compte (poste neuf, ou toujours après une réinitialisation), même si la
+  /// licence n'est pas encore valable. Sa session s'ouvre si la licence le permet et que personne n'est
+  /// connecté. Faux sinon (les formules ou l'écran de connexion habituel suivent).
+  Future<bool> apresCompteBens({required String nom, required String motDePasse, bool reinitialisation = false}) async {
+    final auth = ref.read(authServiceProvider);
+    final admin = reinitialisation
+        ? await auth.adminPrendMotDePasseReinitialise(motDePasse)
+        : await auth.adminPrendCompteBens(nom: nom, motDePasse: motDePasse);
+    if (admin == null || state != null || !ref.read(licenceProvider).estActivee) return false;
+    await _ouvrir(await auth.ouvrirSans(admin));
     return true;
   }
 

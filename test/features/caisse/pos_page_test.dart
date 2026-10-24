@@ -489,7 +489,7 @@ void main() {
       );
       await tester.enterText(
         find.descendant(of: find.byKey(const ValueKey('prix_mdp')), matching: find.byType(TextField)),
-        'admin',
+        motDePasseAdmin,
       );
       await clic(tester, find.byKey(const ValueKey('prix_enregistrer')));
       expect(find.text('Prix inférieur au prix d\'achat : interdit par les paramètres.'), findsOneWidget);

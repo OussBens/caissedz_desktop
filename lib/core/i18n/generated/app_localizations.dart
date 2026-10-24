@@ -480,7 +480,7 @@ abstract class AppLocalizations {
   /// No description provided for @connexionErreurNonConfigure.
   ///
   /// In fr, this message translates to:
-  /// **'Ce compte n\'a pas encore de mot de passe : terminez la configuration initiale.'**
+  /// **'Ce compte n\'a pas encore de mot de passe : connectez-vous au compte BENS de ce poste.'**
   String get connexionErreurNonConfigure;
 
   /// No description provided for @connexionErreurDemo.
@@ -3332,6 +3332,12 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Compte BENS {telephone}'**
   String connexionCompteBens(String telephone);
+
+  /// No description provided for @connexionSansAdmin.
+  ///
+  /// In fr, this message translates to:
+  /// **'L\'administrateur se connecte avec le compte BENS de ce poste : créez-le, ou connectez-vous s\'il existe déjà. Son mot de passe devient celui de l\'administrateur.'**
+  String get connexionSansAdmin;
 
   /// No description provided for @connexionMotDePasseBens.
   ///

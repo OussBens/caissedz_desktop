@@ -211,7 +211,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get connexionErreurNonConfigure =>
-      'Ce compte n\'a pas encore de mot de passe : terminez la configuration initiale.';
+      'Ce compte n\'a pas encore de mot de passe : connectez-vous au compte BENS de ce poste.';
 
   @override
   String get connexionErreurDemo => 'Le compte demo/demo n\'est disponible qu\'en mode démo.';
@@ -1716,6 +1716,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String connexionCompteBens(String telephone) {
     return 'Compte BENS $telephone';
   }
+
+  @override
+  String get connexionSansAdmin =>
+      'L\'administrateur se connecte avec le compte BENS de ce poste : créez-le, ou connectez-vous s\'il existe déjà. Son mot de passe devient celui de l\'administrateur.';
 
   @override
   String get connexionMotDePasseBens => 'Par défaut : le mot de passe de votre compte BENS.';

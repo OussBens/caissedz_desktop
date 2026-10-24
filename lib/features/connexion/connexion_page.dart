@@ -319,6 +319,36 @@ class _ConnexionPageState extends ConsumerState<ConnexionPage> {
                     spacing: DsSpacing.s5,
                     children: [
                       ...etape,
+                      // Aucun administrateur n'a encore de mot de passe : il prend celui du compte BENS.
+                      if (lus.hasValue && !comptes.any((u) => u.estAdmin))
+                        _Encart(
+                          key: const ValueKey('encart_sans_admin'),
+                          icone: LucideIcons.userRoundCog,
+                          couleurIcone: c.warningFg,
+                          texte: l10n.connexionSansAdmin,
+                          action: Wrap(
+                            alignment: WrapAlignment.end,
+                            spacing: DsSpacing.s2,
+                            children: [
+                              DsButton(
+                                key: const ValueKey('connexion_creer_compte'),
+                                libelle: l10n.compteCreerTitre,
+                                icone: LucideIcons.userPlus,
+                                variante: DsButtonVariante.secondaire,
+                                taille: DsButtonTaille.sm,
+                                onPressed: () => context.push(InscriptionPage.route),
+                              ),
+                              DsButton(
+                                key: const ValueKey('connexion_compte_bens'),
+                                libelle: l10n.offresSeConnecter,
+                                icone: LucideIcons.logIn,
+                                variante: DsButtonVariante.fantome,
+                                taille: DsButtonTaille.sm,
+                                onPressed: () => context.push(ConnexionComptePage.route),
+                              ),
+                            ],
+                          ),
+                        ),
                       _Encart(icone: LucideIcons.shieldCheck, couleurIcone: c.success, texte: l10n.connexionHorsLigne),
                       if (licence.lectureSeule)
                         _Encart(

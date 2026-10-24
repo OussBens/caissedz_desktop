@@ -91,7 +91,7 @@
   "connexionBouton": "Se connecter",
   "connexionErreurIdentifiants": "Identifiant ou mot de passe incorrect.",
   "connexionErreurInactif": "Ce compte est désactivé.",
-  "connexionErreurNonConfigure": "Ce compte n'a pas encore de mot de passe : terminez la configuration initiale.",
+  "connexionErreurNonConfigure": "Ce compte n'a pas encore de mot de passe : connectez-vous au compte BENS de ce poste.",
   "connexionErreurDemo": "Le compte demo/demo n'est disponible qu'en mode démo.",
   "connexionDemoIndice": "Mode démo : nom d'utilisateur demo, mot de passe demo.",
   "connexionSaisirCle": "Saisir une clé d'activation",
@@ -858,6 +858,7 @@
   "connexionPasVous": "Ce n'est pas vous ? Changer de compte",
   "connexionVoirComptes": "Voir les comptes de ce poste",
   "connexionCompteBens": "Compte BENS {telephone}",
+  "connexionSansAdmin": "L'administrateur se connecte avec le compte BENS de ce poste : créez-le, ou connectez-vous s'il existe déjà. Son mot de passe devient celui de l'administrateur.",
   "@connexionCompteBens": {
     "placeholders": {
       "telephone": {
