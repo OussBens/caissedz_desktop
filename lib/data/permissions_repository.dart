@@ -42,14 +42,14 @@ class PermissionsRepository {
   /// Tous les rôles avec leurs droits et le nombre d'utilisateurs rattachés.
   Future<List<Role>> roles() async {
     final rows = await db.rawQuery('''
-      SELECT r.*, (SELECT COUNT(*) FROM utilisateur u WHERE u.role_code = r.code) nb FROM role r ORDER BY r.code
+      SELECT r.*, (SELECT COUNT(*) FROM utilisateur u WHERE u.role_code = r.code AND u.archive_le IS NULL) nb FROM role r ORDER BY r.code
     ''');
     return [for (final r in rows) await _role(r)];
   }
 
   Future<Role?> role(String code) async {
     final rows = await db.rawQuery(
-      'SELECT r.*, (SELECT COUNT(*) FROM utilisateur u WHERE u.role_code = r.code) nb FROM role r WHERE r.code = ?',
+      'SELECT r.*, (SELECT COUNT(*) FROM utilisateur u WHERE u.role_code = r.code AND u.archive_le IS NULL) nb FROM role r WHERE r.code = ?',
       [code],
     );
     return rows.isEmpty ? null : _role(rows.first);
@@ -71,6 +71,8 @@ class PermissionsRepository {
       creePar: r['cree_par'] as String?,
       modifieLe: date(r['modifie_le']),
       modifiePar: r['modifie_par'] as String?,
+      archiveLe: date(r['archive_le']),
+      archivePar: r['archive_par'] as String?,
     );
   }
 

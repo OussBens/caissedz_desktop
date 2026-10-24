@@ -42,7 +42,8 @@ class TiersService {
     final rows = await txn.query(
       table,
       columns: ['code'],
-      where: 'LOWER(nom) = LOWER(?)${sauf == null ? '' : ' AND code != ?'}',
+      // Un tiers archivé ne réserve plus son nom.
+      where: 'LOWER(nom) = LOWER(?) AND archive_le IS NULL${sauf == null ? '' : ' AND code != ?'}',
       whereArgs: [nom.trim(), ?sauf],
     );
     if (rows.isNotEmpty) throw const TiersException(ErreurTiers.nomExistant);

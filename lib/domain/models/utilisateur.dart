@@ -23,6 +23,8 @@ class Utilisateur {
     this.creePar,
     this.modifieLe,
     this.modifiePar,
+    this.archiveLe,
+    this.archivePar,
   });
 
   final String code;
@@ -48,6 +50,11 @@ class Utilisateur {
   final DateTime? modifieLe;
   final String? modifiePar;
 
+  /// Archivage (migration v43) : compte gardé pour l'historique, masqué des listes.
+  final DateTime? archiveLe;
+  final String? archivePar;
+  bool get archive => archiveLe != null;
+
   bool get estAdmin => roleCode == Roles.admin;
 
   /// Prénom + nom (ou le nom seul).
@@ -70,6 +77,8 @@ class Utilisateur {
     creePar: creePar,
     modifieLe: modifieLe,
     modifiePar: modifiePar,
+    archiveLe: archiveLe,
+    archivePar: archivePar,
   );
 
   static DateTime? _date(Object? v) => DateTime.tryParse((v as String?) ?? '')?.toLocal();
@@ -91,6 +100,8 @@ class Utilisateur {
     creePar: r['cree_par'] as String?,
     modifieLe: _date(r['modifie_le']),
     modifiePar: r['modifie_par'] as String?,
+    archiveLe: _date(r['archive_le']),
+    archivePar: r['archive_par'] as String?,
   );
 
   @override
@@ -125,6 +136,8 @@ class Role {
     this.creePar,
     this.modifieLe,
     this.modifiePar,
+    this.archiveLe,
+    this.archivePar,
   });
 
   final String code;
@@ -145,6 +158,11 @@ class Role {
   final String? creePar;
   final DateTime? modifieLe;
   final String? modifiePar;
+
+  /// Archivage (migration v43) : rôle gardé pour l'historique des comptes, masqué des listes.
+  final DateTime? archiveLe;
+  final String? archivePar;
+  bool get archive => archiveLe != null;
 
   bool get estAdmin => code == Roles.admin;
   bool aPermission(Permission p) => estAdmin || permissions.contains(p);

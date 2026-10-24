@@ -121,6 +121,7 @@ abstract final class ModulesHistorique {
     'Annulation': CategorieAction.annulation,
     'Suppression': CategorieAction.annulation,
     'Désactivation': CategorieAction.annulation,
+    'Archivage': CategorieAction.annulation,
     'Connexion': CategorieAction.connexion,
     'Déconnexion': CategorieAction.connexion,
     'Fermeture': CategorieAction.connexion,

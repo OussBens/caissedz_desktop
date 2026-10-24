@@ -222,9 +222,9 @@ class StockRepository {
   Future<void> mettreAJourMagasin(Magasin m) =>
       db.update('magasin', _ligneMagasin(m), where: 'code = ?', whereArgs: [m.code]);
 
-  /// Un autre magasin porte-t-il déjà ce nom (sans tenir compte de la casse) ?
+  /// Un autre magasin non archivé porte-t-il déjà ce nom (sans tenir compte de la casse) ?
   Future<bool> nomMagasinPris(String nom, {String? sauf}) async => (await db.rawQuery(
-    'SELECT 1 FROM magasin WHERE lower(nom) = lower(?) AND code != ? LIMIT 1',
+    'SELECT 1 FROM magasin WHERE lower(nom) = lower(?) AND code != ? AND archive_le IS NULL LIMIT 1',
     [nom.trim(), sauf ?? ''],
   )).isNotEmpty;
 

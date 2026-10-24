@@ -12,7 +12,8 @@ class UtilisateurRepository {
 
   static const String _select = '''
     SELECT u.code, u.identifiant, u.nom, u.prenom, u.telephone, u.role_code, r.nom role_nom, u.caisse_code,
-           u.observation, u.actif, u.systeme, u.dernier_acces, u.cree_le, u.cree_par, u.modifie_le, u.modifie_par
+           u.observation, u.actif, u.systeme, u.dernier_acces, u.cree_le, u.cree_par, u.modifie_le, u.modifie_par,
+           u.archive_le, u.archive_par
     FROM utilisateur u LEFT JOIN role r ON r.code = u.role_code''';
 
   Future<List<Utilisateur>> _lire(String? where, List<Object?> args) async => (await db.rawQuery(
