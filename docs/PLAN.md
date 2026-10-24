@@ -1258,3 +1258,35 @@ téléchargés et le code-barres inconnu est cherché dans le catalogue à la ca
   produits sur ce type ; un type consulté éteint le point rouge du tableau de bord. La cloche compte les deux
   (« 99+ » au-delà de 99) ; à la connexion, le dialog s'ouvre s'il y a des alertes de l'un ou l'autre type.
 - Téléphones appairés : un seul enregistrement par téléphone (v42, voir « Application mobile »).
+
+## Suppression ou archivage des fiches ✅ (2026-10-24)
+
+- Problème : un produit, client, fournisseur… déjà utilisé ne pouvait pas être supprimé (clés étrangères), seulement
+  désactivé ; il encombrait les listes.
+- **Règle** (`ArchivageService`, une transaction) : une fiche sans historique est **supprimée** (avec ses tables de
+  détail : photos, codes secondaires, colis, favoris, droits du rôle, magasins de l'utilisateur, téléphones) ; une
+  fiche référencée ailleurs est **archivée** : la ligne reste en base (`archive_le`, `archive_par`, `actif = 0`,
+  migration v43), donc les anciens documents, rapports, soldes, clôtures et le journal du stock ne bougent pas.
+- **Références** lues sur le schéma réel (`ArchivageRepository.references`) : clés étrangères vers la table et
+  colonnes nommées comme ses codes (`produit_code`, `client_code`, `cree_par`, `modifie_par`…), plus les
+  versements (`tiers_type` + `tiers_code`). Une table ajoutée plus tard est couverte sans changer ce code ; le
+  journal `historique` ne compte que pour les utilisateurs (auteurs des actions).
+- **Blocages** (ni supprimé ni archivé) : élément système ; produit avec stock non nul ou composant d'un pack non
+  archivé ; client / fournisseur au solde non nul ; magasin avec stock ou magasin principal d'un compte ; caisse
+  avec session ouverte ou solde non nul ; compte connecté ; rôle encore attribué à des comptes non archivés.
+- **Objets** : groupe 1 (produit, pack, client, fournisseur) et groupe 2 (magasin, caisse, utilisateur, rôle,
+  qui gardent aussi « Désactiver »). Catégories, sous-catégories et remises gardent la suppression réelle ; les
+  documents gardent l'annulation douce (`etat = 0` + motif).
+- **Écrans** : action « Supprimer » (dialog de lot : « Sera supprimé » / « Sera archivé (a un historique) », motifs
+  de blocage) ; bouton « Archives (n) » qui bascule sur la vue Archives (bandeau, colonnes Archivé le / par,
+  Détail, Restaurer). La restauration réactive la fiche et respecte la limite du palier (magasins, caisses,
+  caissiers).
+- **Lectures** : les fournisseurs de données (produits, clients, magasins…) gardent les archivés, car ils servent de
+  dictionnaire code → nom pour l'historique ; ils sont retirés des listes de gestion, du sélecteur commun, de
+  l'écran Stock, des besoins par état, de la recherche globale et de la synchronisation vers le catalogue BENS.
+  La caisse, la connexion, le mobile et les alertes filtrent déjà `actif = 1`. Un nom de client, fournisseur ou
+  magasin archivé peut être réutilisé (les codes ne le sont jamais).
+- Remplace `CatalogueService.supprimerProduits` / `supprimerPacks` (refus dès le premier mouvement ou la première
+  vente).
+- Tests : `archivage_service_test.dart` (les 8 objets : suppression, archivage, blocages, restauration, limite du
+  palier) ; `archives_test.dart` (écrans Produits et Clients).

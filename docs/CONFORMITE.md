@@ -168,6 +168,10 @@ Recopie de la checklist de la spec 06. `[x]` = fait et testé ; `[ ]` = manquant
 - [x] Schéma des 45 tables (§ 7) ou équivalent, migrations versionnées (v1 → v20), seed des éléments système
 - [x] Colonnes d'audit + annulation douce avec motif sur les opérations (migration v20 : créé / modifié le / par
       sur 17 tables, alimentés par triggers depuis l'utilisateur connecté)
+- [x] Fiches (produit, pack, client, fournisseur, magasin, caisse, utilisateur, rôle) : supprimées si elles n'ont
+      aucun historique, archivées sinon (migration v43 : `archive_le` / `archive_par`, `actif = 0`) ; l'archive garde
+      la ligne (documents, rapports, soldes et journal du stock intacts), masquée des listes et des sélecteurs,
+      restaurable dans la limite du palier
 - [x] Historique de toutes les actions, exports et sauvegardes / restaurations compris (détail avant / après non
       détaillé)
 - [x] Codification lisible par préfixes (§ 8.10)
