@@ -95,6 +95,12 @@ class CatalogueRepository {
     return rows.map(Produit.depuisLigne).toList();
   }
 
+  /// Désignations des produits non archivés, en minuscules et sans espaces autour (noms uniques).
+  Future<Set<String>> designationsPrises() async => {
+    for (final r in await db.query('produit', columns: ['designation'], where: 'archive_le IS NULL'))
+      (r['designation']! as String).trim().toLowerCase(),
+  };
+
   /// Les noms arabes renseignés des produits [codes] (tickets et documents en arabe).
   Future<Map<String, String>> nomsArabes(Iterable<String> codes) async {
     final liste = codes.toSet().toList();

@@ -1,8 +1,10 @@
 import 'package:sqflite_common/sqlite_api.dart';
 
+import '../data/archivage_repository.dart';
 import '../data/catalogue_repository.dart';
 import '../data/historique_repository.dart';
 import '../data/stock_repository.dart';
+import '../domain/archivage.dart';
 import '../domain/calculs_prix.dart';
 import '../domain/code_generator.dart';
 import '../domain/codes_barres.dart';
@@ -220,11 +222,22 @@ class CatalogueService {
 
   // ---------------- Produits ----------------
   /// Valide et complète un produit : marge ↔ prix de vente, code-barres.
+  /// Nom unique parmi les fiches non archivées ([ErreurCatalogue.nomDejaUtilise]). À la modification ([code]),
+  /// vérifié seulement si le nom change : des doublons antérieurs à la règle restent modifiables.
+  Future<void> _nomLibre(EntiteArchivable e, String nom, {String? code, String? ancien}) async {
+    if (ancien != null && ancien.trim().toLowerCase() == nom.trim().toLowerCase()) return;
+    if (await ArchivageRepository(db).ficheDuNom(e, nom, sauf: code) != null) {
+      throw const CatalogueException(ErreurCatalogue.nomDejaUtilise);
+    }
+  }
+
   Future<Produit> _preparer(Produit p, {required bool nouveau, double? margeDefautPct}) async {
     if (p.designation.trim().isEmpty) throw const CatalogueException(ErreurCatalogue.designationVide);
     if (p.prixAchat < 0 || p.prixVente < 0) throw const CatalogueException(ErreurCatalogue.prixInvalide);
     if (p.nombreParUnite <= 0) throw const CatalogueException(ErreurCatalogue.quantiteInvalide);
     var produit = p.copyWith(designation: p.designation.trim());
+    final ancien = nouveau ? null : await _repo.produitParCode(produit.code);
+    await _nomLibre(EntiteArchivable.produit, produit.designation, code: ancien?.code, ancien: ancien?.designation);
     // Prix de vente absent → calculé depuis la marge (produit ou marge par défaut).
     if (produit.prixVente <= 0 && produit.prixAchat > 0) {
       final marge = produit.margePct > 0 ? produit.margePct : (margeDefautPct ?? 0);
@@ -577,6 +590,7 @@ class CatalogueService {
     if (p.codeBarres != null && !await _repo.codeBarresDisponible(p.codeBarres!)) {
       throw const CatalogueException(ErreurCatalogue.codeBarresDejaUtilise);
     }
+    await _nomLibre(EntiteArchivable.pack, p.designation);
     return db.transaction((txn) async {
       final repo = CatalogueRepository(txn);
       final code = await repo.prochainCode('pack', CodeGenerator.pack);
@@ -595,7 +609,10 @@ class CatalogueService {
   }
 
   Future<void> modifierPack(Pack p) async {
+    if (p.designation.trim().isEmpty) throw const CatalogueException(ErreurCatalogue.designationVide);
     if (p.lignes.isEmpty) throw const CatalogueException(ErreurCatalogue.lignesVides);
+    final ancien = (await _repo.packs()).where((k) => k.code == p.code).firstOrNull;
+    await _nomLibre(EntiteArchivable.pack, p.designation, code: p.code, ancien: ancien?.designation);
     await db.transaction((txn) => CatalogueRepository(txn).mettreAJourPack(p));
   }
 

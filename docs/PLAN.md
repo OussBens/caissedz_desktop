@@ -1284,9 +1284,16 @@ téléchargés et le code-barres inconnu est cherché dans le catalogue à la ca
 - **Lectures** : les fournisseurs de données (produits, clients, magasins…) gardent les archivés, car ils servent de
   dictionnaire code → nom pour l'historique ; ils sont retirés des listes de gestion, du sélecteur commun, de
   l'écran Stock, des besoins par état, de la recherche globale et de la synchronisation vers le catalogue BENS.
-  La caisse, la connexion, le mobile et les alertes filtrent déjà `actif = 1`. Un nom de client, fournisseur ou
-  magasin archivé peut être réutilisé (les codes ne le sont jamais).
+  La caisse, la connexion, le mobile et les alertes filtrent déjà `actif = 1`.
+- **Noms uniques** (casse et espaces autour ignorés) parmi les fiches non archivées : client, fournisseur, magasin,
+  et désormais produit, pack et caisse (création et renommage ; un doublon antérieur reste modifiable tant que son
+  nom ne change pas). Une fiche archivée libère son nom (pas son code ni son code-barres) ; la **restaurer** est
+  bloqué tant qu'une fiche active porte ce nom (« renommez l'une des deux »), et deux archives du même nom ne
+  reviennent pas ensemble. Rôle (nom) et utilisateur (identifiant) restent uniques en base, archives comprises.
+  Import Excel : ligne « Nom déjà utilisé » ; catalogue BENS : un produit au nom déjà pris est ignoré (compté dans
+  « ignorés ») ; la synchro BENS ne renomme pas un produit vers un nom déjà pris.
 - Remplace `CatalogueService.supprimerProduits` / `supprimerPacks` (refus dès le premier mouvement ou la première
   vente).
 - Tests : `archivage_service_test.dart` (les 8 objets : suppression, archivage, blocages, restauration, limite du
-  palier) ; `archives_test.dart` (écrans Produits et Clients).
+  palier, noms uniques, import Excel) ; `catalogue_rayons_service_test.dart` (nom déjà pris ignoré) ;
+  `archives_test.dart` (écrans Produits et Clients).

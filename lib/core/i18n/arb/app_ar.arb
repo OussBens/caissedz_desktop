@@ -2891,5 +2891,8 @@
   "archBloqueRoleUtilise": "دور مسند إلى مستخدمين",
   "archBloqueLimite": "تم بلوغ حد الترخيص",
   "archBloqueEtat": "تمت معالجته",
-  "hiActArchivage": "أرشفة"
+  "hiActArchivage": "أرشفة",
+  "caisseErreurNomPris": "يوجد صندوق آخر بهذا الاسم.",
+  "archBloqueNomPris": "الاسم مستعمل في بطاقة نشطة: غيّر اسم إحداهما أولا",
+  "importErreurNomPris": "الاسم مستعمل"
 }

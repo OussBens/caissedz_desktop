@@ -188,7 +188,7 @@ class CatalogueRayonsService {
 /// Ajout de produits du catalogue dans une transaction : codes-barres déjà pris et prochain numéro `PRD`
 /// suivis d'un rayon à l'autre ; les produits déjà présents reçoivent le nom arabe qui leur manquait.
 class _Ajout {
-  _Ajout._(this.txn, this.pris, this.numero);
+  _Ajout._(this.txn, this.pris, this.nomsPris, this.numero);
 
   static Future<_Ajout> ouvrir(Transaction txn) async {
     final catalogue = CatalogueRepository(txn);
@@ -196,11 +196,19 @@ class _Ajout {
       await catalogue.prochainCode('produit', CodeGenerator.produit),
       CodeGenerator.produit,
     )!;
-    return _Ajout._(txn, await CatalogueRayonsRepository(txn).codesBarresUtilises(), numero);
+    return _Ajout._(
+      txn,
+      await CatalogueRayonsRepository(txn).codesBarresUtilises(),
+      await catalogue.designationsPrises(),
+      numero,
+    );
   }
 
   final Transaction txn;
   final Set<String> pris;
+
+  /// Désignations déjà prises (minuscules) : un produit du catalogue au nom déjà pris est ignoré (noms uniques).
+  final Set<String> nomsPris;
   int numero;
   int nomsAr = 0;
 
@@ -219,6 +227,10 @@ class _Ajout {
       if (p.codesBarres.any(pris.contains)) {
         deja++;
         if (p.nomAr != null) nomsDeja[p.codesBarres.first] = p.nomAr!;
+        continue;
+      }
+      if (!nomsPris.add(p.nom.trim().toLowerCase())) {
+        ignores++;
         continue;
       }
       final produit = Produit(

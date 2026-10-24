@@ -8734,4 +8734,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get hiActArchivage => 'Archiving';
+
+  @override
+  String get caisseErreurNomPris => 'Another cash register already has this name.';
+
+  @override
+  String get archBloqueNomPris => 'Name already used by an active item: rename one of them first';
+
+  @override
+  String get importErreurNomPris => 'Name already used';
 }

@@ -1,6 +1,9 @@
+import 'dart:typed_data';
+
 import 'package:caissedz_desktop/application/archivage_service.dart';
 import 'package:caissedz_desktop/application/caisse_service.dart';
 import 'package:caissedz_desktop/application/catalogue_service.dart';
+import 'package:caissedz_desktop/application/import_produits_service.dart';
 import 'package:caissedz_desktop/application/role_service.dart';
 import 'package:caissedz_desktop/application/session_caisse_service.dart';
 import 'package:caissedz_desktop/application/stock_service.dart';
@@ -11,6 +14,7 @@ import 'package:caissedz_desktop/data/catalogue_repository.dart';
 import 'package:caissedz_desktop/data/client_repository.dart';
 import 'package:caissedz_desktop/data/favoris_caisse_repository.dart';
 import 'package:caissedz_desktop/data/stock_repository.dart';
+import 'package:caissedz_desktop/data/tiers_repository.dart';
 import 'package:caissedz_desktop/data/utilisateur_repository.dart';
 import 'package:caissedz_desktop/data/vente_repository.dart';
 import 'package:caissedz_desktop/domain/archivage.dart';
@@ -18,6 +22,7 @@ import 'package:caissedz_desktop/domain/models/panier.dart';
 import 'package:caissedz_desktop/domain/models/parametres_vente.dart';
 import 'package:caissedz_desktop/domain/models/produit.dart';
 import 'package:caissedz_desktop/domain/models/tiers.dart';
+import 'package:excel/excel.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common/sqlite_api.dart';
 
@@ -282,5 +287,117 @@ void main() {
         expect(await db.query('role_module', where: 'role_code = ?', whereArgs: [libre.code]), isEmpty);
       },
     );
+  });
+
+  group('Noms uniques', () {
+    test("un nom archivé est libéré ; restaurer l'ancien est bloqué tant que le nom est pris", () async {
+      final base = await ouvrirBaseDeTest();
+      final db = base.db;
+      final tiers = TiersService(db, utilisateurCode: 'USR0000');
+      final s = ArchivageService(db, utilisateurCode: 'USR0000');
+      final ancien = await tiers.creerFournisseur(const Fournisseur(code: '', nom: 'Grossiste Atlas'));
+      // Un historique (fiche citée par un autre élément) : il sera archivé.
+      await db.insert('produit', {
+        'code': 'PRD9998',
+        'designation': 'Huile',
+        'categorie_code': 'CATE0000',
+        'sous_categorie_code': 'SC0000',
+        'fournisseur_code': ancien.code,
+      });
+      expect(await s.supprimer(EntiteArchivable.fournisseur, [ancien.code]), (supprimes: 0, archives: 1));
+      // Le nom est libre : un nouveau fournisseur le reprend (casse différente).
+      final nouveau = await tiers.creerFournisseur(const Fournisseur(code: '', nom: 'grossiste atlas'));
+      expect(await s.analyserRestauration(EntiteArchivable.fournisseur, [ancien.code]), {
+        ancien.code: BlocageArchivage.nomPris,
+      });
+      await expectLater(
+        s.restaurer(EntiteArchivable.fournisseur, [ancien.code]),
+        throwsA(isA<ArchivageException>().having((e) => e.blocage, 'blocage', BlocageArchivage.nomPris)),
+      );
+      // Le nouveau renommé : l'ancien revient.
+      await tiers.modifierFournisseur(
+        (await TiersRepository(db).fournisseur(nouveau.code))!.copyWith(nom: 'Grossiste Atlas 2'),
+      );
+      expect(await s.restaurer(EntiteArchivable.fournisseur, [ancien.code]), 1);
+    });
+
+    test('produits, packs et caisses : nom unique à la création et au renommage, et entre archives du lot', () async {
+      final base = await ouvrirBaseDeTest();
+      final db = base.db;
+      final cat = CatalogueService(db, utilisateurCode: 'USR0000');
+      final s = ArchivageService(db, utilisateurCode: 'USR0000');
+      final lait = await cat.creerProduit(_p('Lait 1 L'));
+      await expectLater(
+        cat.creerProduit(_p('  lait 1 l ')),
+        throwsA(isA<CatalogueException>().having((e) => e.erreur, 'e', ErreurCatalogue.nomDejaUtilise)),
+      );
+      final eau = await cat.creerProduit(_p('Eau'));
+      await expectLater(
+        cat.modifierProduit(eau.copyWith(designation: 'Lait 1 L')),
+        throwsA(isA<CatalogueException>().having((e) => e.erreur, 'e', ErreurCatalogue.nomDejaUtilise)),
+      );
+      // Doublon antérieur à la règle : modifiable tant que son nom ne change pas.
+      await db.insert('produit', {
+        'code': 'PRD9999',
+        'designation': 'Lait 1 L',
+        'categorie_code': 'CATE0000',
+        'sous_categorie_code': 'SC0000',
+      });
+      final doublon = (await CatalogueRepository(db).produitParCode('PRD9999'))!;
+      await cat.modifierProduit(doublon.copyWith(prixVente: 120));
+      // Deux archives du même nom ne reviennent pas ensemble.
+      final stock = StockService(db, utilisateurCode: 'USR0000');
+      for (final p in [lait.code, 'PRD9999']) {
+        await stock.entrerStock(produitCode: p, magasinCode: 'MAG0000', quantite: 1);
+        await stock.inventorier(produitCode: p, magasinCode: 'MAG0000', quantiteConstatee: 0);
+      }
+      await s.supprimer(EntiteArchivable.produit, [lait.code, 'PRD9999']);
+      expect(await s.analyserRestauration(EntiteArchivable.produit, [lait.code, 'PRD9999']), {
+        lait.code: null,
+        'PRD9999': BlocageArchivage.nomPris,
+      });
+
+      final pack = await cat.creerPack(
+        Pack(
+          code: '',
+          designation: 'Petit-déjeuner',
+          prixVente: 100,
+          lignes: [PackLigne(produitCode: eau.code, quantite: 1)],
+        ),
+      );
+      await expectLater(
+        cat.creerPack(Pack(code: '', designation: 'petit-déjeuner', prixVente: 1, lignes: pack.lignes)),
+        throwsA(isA<CatalogueException>().having((e) => e.erreur, 'e', ErreurCatalogue.nomDejaUtilise)),
+      );
+      await cat.modifierPack(pack);
+
+      final caisses = CaisseService(db, utilisateurCode: 'USR0000');
+      final comptoir = await caisses.creer(nom: 'Comptoir');
+      await expectLater(
+        caisses.creer(nom: 'comptoir'),
+        throwsA(isA<CaisseException>().having((e) => e.erreur, 'e', ErreurCaisse.nomPris)),
+      );
+      await caisses.modifier(comptoir.copyWith(soldeInitial: 500));
+      expect(await s.supprimer(EntiteArchivable.caisse, [comptoir.code]), (supprimes: 1, archives: 0));
+      expect((await caisses.creer(nom: 'Comptoir')).nom, 'Comptoir', reason: 'nom libéré');
+    });
+
+    test('import Excel : nom déjà pris en base ou plus haut dans le classeur', () async {
+      final base = await ouvrirBaseDeTest();
+      final cat = CatalogueService(base.db, utilisateurCode: 'USR0000');
+      await cat.creerProduit(_p('Sucre 1 kg'));
+      final classeur = Excel.createExcel();
+      final feuille = classeur[classeur.getDefaultSheet()!];
+      feuille.appendRow([TextCellValue('designation')]);
+      for (final nom in ['sucre 1 kg', 'Farine', 'farine', 'Riz']) {
+        feuille.appendRow([TextCellValue(nom)]);
+      }
+      final lignes = await ImportProduitsService(
+        base.db,
+        catalogue: cat,
+        margeDefautPct: 0,
+      ).analyser(Uint8List.fromList(classeur.save()!));
+      expect(lignes.map((l) => l.erreur), ['nom_deja_utilise', null, 'nom_deja_utilise', null]);
+    });
   });
 }

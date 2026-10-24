@@ -168,18 +168,24 @@ class ArchivageService {
     };
     final fiches = await repo.fiches(e, codes);
     final r = <String, BlocageArchivage?>{};
+    // Noms des fiches déjà retenues dans ce lot : deux archives du même nom ne reviennent pas ensemble.
+    final nomsDuLot = <String>{};
     for (final code in codes) {
       final f = fiches[code];
+      final nom = (f?[e.colonneNom] as String?)?.trim().toLowerCase() ?? '';
       if (f == null) {
         r[code] = BlocageArchivage.inconnu;
       } else if (f['archive_le'] == null) {
         r[code] = BlocageArchivage.etatInchange;
+      } else if (nomsDuLot.contains(nom) || await repo.ficheDuNom(e, nom, sauf: code) != null) {
+        r[code] = BlocageArchivage.nomPris;
       } else if (places != null && _comptePlace(e, f)) {
         r[code] = places > 0 ? null : BlocageArchivage.limiteLicence;
         places--;
       } else {
         r[code] = null;
       }
+      if (r[code] == null) nomsDuLot.add(nom);
     }
     return r;
   }

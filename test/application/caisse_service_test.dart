@@ -236,7 +236,7 @@ void main() {
         reason: 'versement, retrait, fond, contre-écriture',
       );
       // La clôture d'une caisse ne ferme pas la période d'une autre.
-      final coffre = await CaisseService(db, utilisateurCode: 'USR0000').creer(nom: 'Coffre');
+      final coffre = await CaisseService(db, utilisateurCode: 'USR0000').creer(nom: 'Caisse réserve');
       expect(await repo.periodeCloturee(ver.date, caisseCode: 'CIS0000'), isTrue);
       expect(await repo.periodeCloturee(ver.date, caisseCode: coffre.code), isFalse);
     });
@@ -252,7 +252,7 @@ void main() {
         s.creer(nom: 'X', soldeInitial: -1),
         throwsA(isA<CaisseException>().having((e) => e.erreur, 'e', ErreurCaisse.montantInvalide)),
       );
-      final coffre = await s.creer(nom: 'Coffre');
+      final coffre = await s.creer(nom: 'Caisse réserve');
       final relue = (await s.caisses()).firstWhere((c) => c.code == c1.code);
       expect(relue.soldeInitial, 3000);
       expect(relue.observation, 'Comptoir');

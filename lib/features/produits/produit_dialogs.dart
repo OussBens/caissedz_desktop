@@ -802,6 +802,7 @@ class _ImportDialogState extends ConsumerState<_ImportDialog> {
   String _libelleErreur(AppLocalizations l10n, String? e) => switch (e) {
     'designation_vide' => l10n.importErreurDesignationVide,
     'code_barres_deja_utilise' => l10n.importErreurCodeBarresPris,
+    'nom_deja_utilise' => l10n.importErreurNomPris,
     'prix_invalide' => l10n.importErreurPrix,
     _ => '',
   };

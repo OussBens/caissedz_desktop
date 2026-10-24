@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:caissedz_desktop/application/catalogue_rayons_service.dart';
+import 'package:caissedz_desktop/application/catalogue_service.dart';
 import 'package:caissedz_desktop/core/catalogue/catalogue_rayons_api.dart';
 import 'package:caissedz_desktop/core/licence/compte_bens_api.dart';
 import 'package:caissedz_desktop/data/alertes_repository.dart';
@@ -205,6 +206,34 @@ void main() {
       expect(await s.estPropose(), isTrue);
       final journal = await HistoriqueRepository(base.db).lire();
       expect(journal.where((h) => h.action == 'Téléchargement catalogue').length, 2);
+    });
+
+    test('noms uniques : un produit du catalogue au nom déjà pris est ignoré', () async {
+      final base = await ouvrirBaseDeTest();
+      await CatalogueService(base.db, utilisateurCode: 'USR0000').creerProduit(
+        const Produit(code: '', designation: 'cola 33CL', categorieCode: 'CATE0000', sousCategorieCode: 'SC0000'),
+      );
+      final catalogue = _Catalogue();
+      final s = CatalogueRayonsService(base.db, api: catalogue.api, utilisateurCode: 'USR0000');
+      final bilan = await s.telecharger(await s.rayons());
+      // Boissons : Selecto et Hamoud ajoutés ; Cola (nom pris) et le produit sans code-barres ignorés.
+      expect(bilan.rayons.first.telecharges, 2);
+      expect(bilan.rayons.first.ignores, 2);
+      expect(await CatalogueRepository(base.db).produitParCodeBarres('3000000000002'), isNull);
+    });
+
+    test('noms uniques : un produit du catalogue au nom déjà pris est ignoré', () async {
+      final base = await ouvrirBaseDeTest();
+      await CatalogueService(base.db, utilisateurCode: 'USR0000').creerProduit(
+        const Produit(code: '', designation: 'cola 33CL', categorieCode: 'CATE0000', sousCategorieCode: 'SC0000'),
+      );
+      final catalogue = _Catalogue();
+      final s = CatalogueRayonsService(base.db, api: catalogue.api, utilisateurCode: 'USR0000');
+      final bilan = await s.telecharger(await s.rayons());
+      // Boissons : Selecto et Hamoud ajoutés ; Cola (nom pris) et le produit sans code-barres ignorés.
+      expect(bilan.rayons.first.telecharges, 2);
+      expect(bilan.rayons.first.ignores, 2);
+      expect(await CatalogueRepository(base.db).produitParCodeBarres('3000000000002'), isNull);
     });
 
     test('un second téléchargement : même catégorie, seulement les nouveaux produits ; rien en double', () async {

@@ -131,6 +131,7 @@ String messageErreurCaisse(AppLocalizations l10n, ErreurCaisse e) => switch (e) 
   ErreurCaisse.periodeCloturee => l10n.gcErreurPeriodeCloturee,
   ErreurCaisse.limiteCaisses => l10n.limiteCaisses,
   ErreurCaisse.transfertsNonInclus => l10n.limiteTransfertsCaisse,
+  ErreurCaisse.nomPris => l10n.caisseErreurNomPris,
 };
 
 String messageErreurCloture(AppLocalizations l10n, ErreurCloture e) => switch (e) {

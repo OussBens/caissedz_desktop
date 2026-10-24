@@ -77,6 +77,17 @@ class ArchivageRepository {
         if (fk['table'] == e.table) (t, fk['from']! as String),
   };
 
+  /// Code d'une fiche non archivée de [e] qui porte déjà [nom] (casse et espaces autour ignorés), autre que
+  /// [sauf] ; `null` si le nom est libre. Une fiche archivée ne réserve pas son nom.
+  Future<String?> ficheDuNom(EntiteArchivable e, String nom, {String? sauf}) async {
+    final rows = await db.rawQuery(
+      'SELECT code FROM ${e.table} WHERE LOWER(TRIM(${e.colonneNom})) = LOWER(TRIM(?)) '
+      'AND archive_le IS NULL AND code <> ? LIMIT 1',
+      [nom, sauf ?? ''],
+    );
+    return rows.isEmpty ? null : rows.first['code']! as String;
+  }
+
   /// Archive la fiche : désactivée et horodatée ; elle reste en base pour l'historique.
   Future<int> archiver(EntiteArchivable e, String code, {required String par}) async {
     final n = await db.update(

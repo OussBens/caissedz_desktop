@@ -1,7 +1,9 @@
 import 'package:sqflite_common/sqlite_api.dart';
 
+import '../data/archivage_repository.dart';
 import '../data/caisse_repository.dart';
 import '../data/historique_repository.dart';
+import '../domain/archivage.dart';
 import '../domain/calculs_prix.dart';
 import '../domain/code_generator.dart';
 import '../domain/models/caisse.dart';
@@ -30,6 +32,9 @@ enum ErreurCaisse {
 
   /// Le palier n'a qu'une caisse : pas de transfert entre caisses.
   transfertsNonInclus,
+
+  /// Une autre caisse non archivée porte déjà ce nom.
+  nomPris,
 }
 
 class CaisseException implements Exception {
@@ -56,6 +61,13 @@ class CaisseService {
   bool get transfertsPermis => (maxCaisses ?? 2) > 1;
 
   CaisseRepository get _repo => CaisseRepository(db);
+
+  /// Nom unique parmi les caisses non archivées.
+  Future<void> _verifierNom(DatabaseExecutor txn, String nom, [String? sauf]) async {
+    if (await ArchivageRepository(txn).ficheDuNom(EntiteArchivable.caisse, nom, sauf: sauf) != null) {
+      throw const CaisseException(ErreurCaisse.nomPris);
+    }
+  }
 
   Future<void> _verifierPlace(DatabaseExecutor txn) async {
     final max = maxCaisses;
@@ -114,6 +126,7 @@ class CaisseService {
       final repo = CaisseRepository(txn);
       await _verifierPlace(txn);
       await _verifierMagasin(txn, magasinCode);
+      await _verifierNom(txn, nom);
       final code = await repo.prochainCode('caisse', CodeGenerator.caisse);
       final c = Caisse(
         code: code,
@@ -143,6 +156,7 @@ class CaisseService {
       }
       if (!existante.actif && c.actif && !existante.coffre) await _verifierPlace(txn);
       await _verifierMagasin(txn, c.magasinCode);
+      if (existante.nom.trim().toLowerCase() != c.nom.trim().toLowerCase()) await _verifierNom(txn, c.nom, c.code);
       final maj = c.copyWith(nom: c.nom.trim(), observation: () => _texte(c.observation));
       await repo.mettreAJourCaisse(maj);
       await HistoriqueRepository(txn)

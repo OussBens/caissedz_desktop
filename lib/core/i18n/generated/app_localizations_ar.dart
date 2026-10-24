@@ -8708,4 +8708,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get hiActArchivage => 'أرشفة';
+
+  @override
+  String get caisseErreurNomPris => 'يوجد صندوق آخر بهذا الاسم.';
+
+  @override
+  String get archBloqueNomPris => 'الاسم مستعمل في بطاقة نشطة: غيّر اسم إحداهما أولا';
+
+  @override
+  String get importErreurNomPris => 'الاسم مستعمل';
 }

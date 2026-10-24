@@ -8756,4 +8756,13 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get hiActArchivage => 'Archivage';
+
+  @override
+  String get caisseErreurNomPris => 'Une autre caisse porte déjà ce nom.';
+
+  @override
+  String get archBloqueNomPris => 'Nom déjà pris par une fiche active : renommez l\'une des deux d\'abord';
+
+  @override
+  String get importErreurNomPris => 'Nom déjà utilisé';
 }

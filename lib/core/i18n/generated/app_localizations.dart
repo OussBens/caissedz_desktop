@@ -16316,6 +16316,24 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Archivage'**
   String get hiActArchivage;
+
+  /// No description provided for @caisseErreurNomPris.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une autre caisse porte déjà ce nom.'**
+  String get caisseErreurNomPris;
+
+  /// No description provided for @archBloqueNomPris.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom déjà pris par une fiche active : renommez l\'une des deux d\'abord'**
+  String get archBloqueNomPris;
+
+  /// No description provided for @importErreurNomPris.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom déjà utilisé'**
+  String get importErreurNomPris;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

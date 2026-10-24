@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:sqflite_common/sqlite_api.dart';
 
+import '../data/archivage_repository.dart';
 import '../data/catalogue_repository.dart';
+import '../domain/archivage.dart';
 import '../domain/models/produit.dart';
 
 /// Résultat d'une synchronisation du catalogue avec le serveur CaisseDZ.
@@ -64,7 +66,13 @@ class SynchroCatalogueService {
           final designation = e['designation']?.toString();
           final image = e['image']?.toString();
           Produit p = local;
-          if (designation != null && designation.isNotEmpty) p = p.copyWith(designation: designation);
+          // Nom corrigé par le catalogue, sauf s'il est déjà pris par un autre produit (noms uniques).
+          if (designation != null &&
+              designation.isNotEmpty &&
+              await ArchivageRepository(txn).ficheDuNom(EntiteArchivable.produit, designation, sauf: local.code) ==
+                  null) {
+            p = p.copyWith(designation: designation);
+          }
           if (image != null) p = p.copyWith(image: image);
           await r2.mettreAJourProduit(p);
           maj++;

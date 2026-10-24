@@ -113,6 +113,8 @@ class ImportProduitsService {
     final repo = CatalogueRepository(db);
     final resultat = <LigneImport>[];
     final codesVus = <String>{};
+    // Noms uniques : ni un produit non archivé, ni une ligne précédente du classeur.
+    final nomsPris = await repo.designationsPrises();
     for (var n = 1; n < feuille.rows.length; n++) {
       final row = feuille.rows[n];
       String? cell(int? i) => (i == null || i >= row.length) ? null : row[i]?.value?.toString().trim();
@@ -125,6 +127,8 @@ class ImportProduitsService {
         erreur = 'designation_vide';
       } else if (cbNet != null && (codesVus.contains(cbNet) || !await repo.codeBarresDisponible(cbNet))) {
         erreur = 'code_barres_deja_utilise';
+      } else if (!nomsPris.add(designation.toLowerCase())) {
+        erreur = 'nom_deja_utilise';
       } else if ((nombre(iPa) ?? 0) < 0 || (nombre(iPv) ?? 0) < 0 || (nombre(iSt) ?? 0) < 0) {
         erreur = 'prix_invalide';
       }

@@ -39,6 +39,7 @@ String messageBlocageArchivage(AppLocalizations l10n, BlocageArchivage b) => swi
   BlocageArchivage.compteCourant => l10n.archBloqueCompteCourant,
   BlocageArchivage.utilisateursRattaches => l10n.archBloqueRoleUtilise,
   BlocageArchivage.limiteLicence => l10n.archBloqueLimite,
+  BlocageArchivage.nomPris => l10n.archBloqueNomPris,
   BlocageArchivage.etatInchange => l10n.archBloqueEtat,
 };
 

@@ -2891,5 +2891,8 @@
   "archBloqueRoleUtilise": "Role assigned to users",
   "archBloqueLimite": "Licence limit reached",
   "archBloqueEtat": "Already processed",
-  "hiActArchivage": "Archiving"
+  "hiActArchivage": "Archiving",
+  "caisseErreurNomPris": "Another cash register already has this name.",
+  "archBloqueNomPris": "Name already used by an active item: rename one of them first",
+  "importErreurNomPris": "Name already used"
 }
