@@ -369,7 +369,7 @@ Référence : `docs/design/CaisseDZ-DS-v2.2/CaisseDZ-DS-v2.2.html`, `bundle-v2.2
     ventes, retours ; Stock : produits, stock, entrées (badge IA), sorties, magasins, besoins ; Tiers : clients,
     fournisseurs ; Gestion : gestion caisse, utilisateurs, zakat, historique, paramètres) + pages rattachées
     (transferts → magasins, versements → clients, clôtures → gestion caisse, situation → tableau de bord), accès
-    via `idAcces`. Migration `v008_shell_ds` : compte admin / admin provisoire, `utilisateur.dernier_acces`,
+    via `idAcces`. Migration `v008_shell_ds` : `utilisateur.dernier_acces`,
     boutique NIS / article / message ticket / logo, renommage des anciens identifiants de modules (rôles,
     favoris). Services `ConfigurationInitialeService` (4 étapes, une transaction, journal) et `AlertesService`
     (§5.3, familles visibles selon l'accès au module, masquage du jour). Séquence de connexion (§4.4) : droits →
@@ -394,7 +394,8 @@ Référence : `docs/design/CaisseDZ-DS-v2.2/CaisseDZ-DS-v2.2.html`, `bundle-v2.2
     - Familles « Produits expirés » et « Bientôt expirés » branchées en phase D sur `produit.date_expiration`
       (migration v13) : date passée / dans au plus 30 jours, produits en stock seulement.
     - Logo de la boutique non demandé à la configuration (colonne prête, saisie en phase D dans Paramètres).
-    - Compte admin / admin provisoire en attendant la création de comptes par l'écran Utilisateurs (phase D).
+    - ~~Compte admin / admin provisoire~~ : supprimé le 2026-10-24 (l'administrateur prend le mot de passe du
+      compte BENS, voir « Plus de compte admin / admin »).
 - **Phase D — écrans ✅** (2026-10-15) : les 17 écrans et leurs dialogs d'après les kits du bundle, listes de `ref.js`,
   tests réécrits, suppression des alias.
   - ✅ Briques communes : `DsModuleTable`, `DsEntityDetailDialog`, `PageModule` (fil d'Ariane, favori, onglets),
@@ -1297,3 +1298,26 @@ téléchargés et le code-barres inconnu est cherché dans le catalogue à la ca
 - Tests : `archivage_service_test.dart` (les 8 objets : suppression, archivage, blocages, restauration, limite du
   palier, noms uniques, import Excel) ; `catalogue_rayons_service_test.dart` (nom déjà pris ignoré) ;
   `archives_test.dart` (écrans Produits et Clients).
+
+## Plus de compte admin / admin ✅ (2026-10-24)
+
+- **Constat** : l'administrateur (`USR0000`) recevait `admin` / `admin` à l'installation et ne prenait le mot de
+  passe du compte BENS que si la licence était déjà valable juste après l'inscription ou la connexion au compte.
+  Essai refusé (déjà utilisé sur ce poste ou avec ce numéro), clé renvoyée mais refusée, compte sans formule puis
+  « Actualiser » après paiement, ou activation par clé collée : à chaque fois, la connexion locale s'ouvrait avec
+  `admin` / `admin`.
+- **Règle** : quel que soit le chemin (essai de 14 jours, formule payée, clé), le client crée (ou connecte) son
+  compte BENS, et c'est avec ce compte qu'il se connecte : numéro ou `admin`, et le mot de passe du compte.
+- **Données** : la v008 ne pose plus de mot de passe ; la migration `v044_admin_sans_mot_de_passe` efface le mot
+  de passe `admin` d'origine sur les postes existants (un autre mot de passe est gardé).
+- **Service** : `AuthService.adminPrendCompteBens` (poste neuf : l'administrateur sans mot de passe prend celui du
+  compte et son nom) et `adminPrendMotDePasseReinitialise` (toujours, après le code de BENS). Ils sont appelés par
+  `SessionNotifier.apresCompteBens` juste après l'inscription, la connexion ou la réinitialisation, **même sans
+  licence valable** ; la session s'ouvre seulement si la licence le permet et que personne n'est connecté.
+- **Écrans** : l'activation par clé sans compte BENS mène à la création du compte (formule de la clé) ; la
+  connexion locale, quand aucun administrateur n'a de mot de passe, montre l'encart « Créer votre compte » /
+  « Se connecter ». Message `connexionErreurNonConfigure` reformulé (FR / AR / EN).
+- Tests : `demarrage_services_test.dart` (seed sans mot de passe, prise du mot de passe une seule fois,
+  réinitialisation, migration v44) ; `connexion_test.dart` (essai refusé puis formule payée, encart sans
+  administrateur) ; `activation_test.dart` (clé sans compte → création du compte). Les tests se connectent avec le
+  mot de passe du compte BENS de test (`donnerMotDePasseAdmin`).
