@@ -1429,7 +1429,10 @@ class _BesoinFormState extends ConsumerState<_BesoinForm> {
     final presents = {for (final l in _lignes) l.produit.code};
     final nouvelles = [
       for (final p in produits)
-        if (!p.service && !presents.contains(p.code) && etatStockProduit(p, stocks[p.code] ?? 0, seuilGlobal) == etat)
+        if (!p.service &&
+            !p.audit.archive &&
+            !presents.contains(p.code) &&
+            etatStockProduit(p, stocks[p.code] ?? 0, seuilGlobal) == etat)
           LigneDoc(
             produit: p,
             quantite: StockService.suggestion(

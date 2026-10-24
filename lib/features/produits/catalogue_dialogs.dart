@@ -1114,35 +1114,3 @@ Future<void> afficherDetailPack(BuildContext context, WidgetRef ref, Pack k, {Vo
     ),
   );
 }
-
-/// Suppression en lot de packs ; un pack déjà vendu est bloqué (ventes scellées).
-Future<void> supprimerPacks(BuildContext context, WidgetRef ref, List<Pack> choix, VoidCallback effacer) async {
-  final l10n = AppLocalizations.of(context);
-  final service = ref.read(catalogueServiceProvider);
-  final vendus = await service.packsVendus();
-  if (!context.mounted) return;
-  final ok = await afficherActionLot(
-    context,
-    action: DsActionLot.supprimer,
-    entite: l10n.prdEntitePack,
-    entitePluriel: l10n.prdEntitePacks,
-    elements: [
-      for (final k in choix)
-        DsElementLot(
-          id: k.code,
-          titre: k.designation,
-          sousTitre: k.code,
-          meta: l10n.prdNComposants(k.lignes.length),
-          motifBlocage: vendus.contains(k.code) ? l10n.prdPackVendu : null,
-        ),
-    ],
-  );
-  if (ok == null) return;
-  await service.supprimerPacks([
-    for (final k in choix)
-      if (!vendus.contains(k.code)) k.code,
-  ]);
-  rafraichirCatalogue(ref);
-  effacer();
-  if (context.mounted) afficherToast(context, titre: l10n.prdToastSuppression, ton: DsToastTon.succes);
-}

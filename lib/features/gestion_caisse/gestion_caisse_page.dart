@@ -5,10 +5,12 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../app/demarrage_providers.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
+import '../../domain/archivage.dart';
 import '../../domain/models/caisse.dart';
 import '../../domain/models/vente.dart';
 import '../../domain/permissions.dart';
 import '../caisse/caisse_dialogs.dart';
+import '../commun/archives.dart';
 import '../commun/chargement.dart';
 import '../commun/colonnes_audit.dart';
 import '../commun/export_module.dart';
@@ -43,6 +45,7 @@ class _GestionCaissePageState extends ConsumerState<GestionCaissePage> {
   String? _caisseMouvements;
   String? _sessionMouvements;
   String? _typeMouvements;
+  bool _archivesCaisses = false;
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +69,13 @@ class _GestionCaissePageState extends ConsumerState<GestionCaissePage> {
       l10n.gcOngletMouvements,
       l10n.gcOngletSessions,
     ];
-    final comptes = [caisses.length, transferts.length, clotures.length, mouvements.length, sessions.length];
+    final comptes = [
+      caisses.where((c) => !c.audit.archive).length,
+      transferts.length,
+      clotures.length,
+      mouvements.length,
+      sessions.length,
+    ];
     return PageModule(
       moduleId: 'gestion_caisse',
       onglets: [for (final i in visibles) libelles[i]],
@@ -107,7 +116,100 @@ class _GestionCaissePageState extends ConsumerState<GestionCaissePage> {
         if (s.estOuverte) s.caisseCode: s,
     };
     double solde(Caisse c) => soldes[c.code]?.total ?? 0;
-    final physiques = caisses.where((c) => c.actif && c.type == TypesCaisse.physique).toList();
+    // Les caisses archivées restent lues (noms des sessions, clôtures, mouvements) mais quittent la liste.
+    final gestion = [
+      for (final c in caisses)
+        if (!c.audit.archive) c,
+    ];
+    final archives = [
+      for (final c in caisses)
+        if (c.audit.archive) c,
+    ];
+    final physiques = gestion.where((c) => c.actif && c.type == TypesCaisse.physique).toList();
+    final colonnes = <DsColonne<Caisse>>[
+      DsColonne(id: 'code', libelle: l10n.produitsColCode, attenue: true, valeur: (c) => c.code),
+      DsColonne(id: 'nom', libelle: l10n.gcColCaisse, fort: true, flex: 2, valeur: (c) => c.nom),
+      DsColonne(
+        id: 'type',
+        libelle: l10n.caisseType,
+        valeur: (c) => c.type,
+        cellule: (_, c) => DsBadge(
+          libelle: libelleTypeCaisse(l10n, c.type),
+          ton: c.type == TypesCaisse.compte ? DsBadgeTon.accent : DsBadgeTon.neutre,
+        ),
+      ),
+      DsColonne(
+        id: 'initial',
+        libelle: l10n.gcColSoldeInitial,
+        numerique: true,
+        valeur: (c) => c.soldeInitial,
+        cellule: (_, c) => Text(formaterMontant(c.soldeInitial, devise)),
+      ),
+      DsColonne(
+        id: 'solde',
+        libelle: l10n.gcColSoldeActuel,
+        numerique: true,
+        fort: true,
+        valeur: solde,
+        cellule: (_, c) => Text(formaterMontant(solde(c), devise)),
+        total: (cs) => formaterMontant(cs.fold(0.0, (x, c) => x + solde(c)), devise),
+      ),
+      DsColonne(
+        id: 'session',
+        libelle: l10n.gcColSession,
+        valeur: (c) => ouvertes.containsKey(c.code) ? 'ouverte' : 'fermee',
+        cellule: (_, c) => BadgeStatut(ouvertes.containsKey(c.code) ? 'ouverte' : 'fermee'),
+      ),
+      DsColonne(
+        id: 'etat',
+        libelle: l10n.gcColEtat,
+        valeur: (c) => c.actif ? 'actif' : 'inactif',
+        cellule: (_, c) => BadgeStatut(c.actif ? 'actif' : 'inactif'),
+      ),
+      DsColonne(
+        id: 'magasin',
+        libelle: l10n.caisseMagasin,
+        visibleParDefaut: false,
+        valeur: (c) => c.magasinCode == null ? '—' : (magasins[c.magasinCode] ?? c.magasinCode!),
+      ),
+      DsColonne(
+        id: 'obs',
+        libelle: l10n.retoursObservation,
+        visibleParDefaut: false,
+        valeur: (c) => c.observation ?? '',
+      ),
+      ...colonnesAudit(context, ref, (Caisse x) => x.audit),
+    ];
+
+    void basculer(bool v) => setState(() => _archivesCaisses = v);
+    if (_archivesCaisses) {
+      return tableArchives<Caisse>(
+        context,
+        ref,
+        key: const ValueKey('gc_caisses_archives'),
+        entite: l10n.gcEntiteCaisses,
+        lignes: archives,
+        colonnes: colonnes,
+        cle: (c) => c.code,
+        texteRecherche: (c) => '${c.code} ${c.nom}',
+        archiveLe: (c) => c.audit.archiveLe,
+        archivePar: (c) => c.audit.archivePar,
+        onDetail: (c) => afficherDetailCaisse(context, ref, c),
+        onRestaurer: (choix, effacer) => restaurerArchives(
+          context,
+          ref,
+          entite: EntiteArchivable.caisse,
+          choix: choix,
+          code: (c) => c.code,
+          titre: (c) => c.nom,
+          libelleEntite: l10n.gcEntiteCaisse,
+          libelleEntites: l10n.gcEntiteCaisses,
+          effacer: effacer,
+          rafraichir: () => rafraichirCaisse(ref),
+        ),
+        bouton: boutonArchives(l10n, archives: true, nombre: archives.length, onChanged: basculer),
+      );
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       spacing: DsTailles.gridGap,
@@ -150,7 +252,7 @@ class _GestionCaissePageState extends ConsumerState<GestionCaissePage> {
         DsModuleTable<Caisse>(
           key: const ValueKey('gc_caisses'),
           entite: l10n.gcEntiteCaisses,
-          lignes: caisses,
+          lignes: gestion,
           chargement: enChargement(ref.watch(caissesListeProvider)),
           cle: (c) => c.code,
           afficherTotaux: true,
@@ -158,60 +260,7 @@ class _GestionCaissePageState extends ConsumerState<GestionCaissePage> {
           messageVide: l10n.caisseAucune,
           indiceRecherche: l10n.gcRechercheCaisses,
           texteRecherche: (c) => '${c.code} ${c.nom}',
-          colonnes: [
-            DsColonne(id: 'code', libelle: l10n.produitsColCode, attenue: true, valeur: (c) => c.code),
-            DsColonne(id: 'nom', libelle: l10n.gcColCaisse, fort: true, flex: 2, valeur: (c) => c.nom),
-            DsColonne(
-              id: 'type',
-              libelle: l10n.caisseType,
-              valeur: (c) => c.type,
-              cellule: (_, c) => DsBadge(
-                libelle: libelleTypeCaisse(l10n, c.type),
-                ton: c.type == TypesCaisse.compte ? DsBadgeTon.accent : DsBadgeTon.neutre,
-              ),
-            ),
-            DsColonne(
-              id: 'initial',
-              libelle: l10n.gcColSoldeInitial,
-              numerique: true,
-              valeur: (c) => c.soldeInitial,
-              cellule: (_, c) => Text(formaterMontant(c.soldeInitial, devise)),
-            ),
-            DsColonne(
-              id: 'solde',
-              libelle: l10n.gcColSoldeActuel,
-              numerique: true,
-              fort: true,
-              valeur: solde,
-              cellule: (_, c) => Text(formaterMontant(solde(c), devise)),
-              total: (cs) => formaterMontant(cs.fold(0.0, (x, c) => x + solde(c)), devise),
-            ),
-            DsColonne(
-              id: 'session',
-              libelle: l10n.gcColSession,
-              valeur: (c) => ouvertes.containsKey(c.code) ? 'ouverte' : 'fermee',
-              cellule: (_, c) => BadgeStatut(ouvertes.containsKey(c.code) ? 'ouverte' : 'fermee'),
-            ),
-            DsColonne(
-              id: 'etat',
-              libelle: l10n.gcColEtat,
-              valeur: (c) => c.actif ? 'actif' : 'inactif',
-              cellule: (_, c) => BadgeStatut(c.actif ? 'actif' : 'inactif'),
-            ),
-            DsColonne(
-              id: 'magasin',
-              libelle: l10n.caisseMagasin,
-              visibleParDefaut: false,
-              valeur: (c) => c.magasinCode == null ? '—' : (magasins[c.magasinCode] ?? c.magasinCode!),
-            ),
-            DsColonne(
-              id: 'obs',
-              libelle: l10n.retoursObservation,
-              visibleParDefaut: false,
-              valeur: (c) => c.observation ?? '',
-            ),
-            ...colonnesAudit(context, ref, (Caisse x) => x.audit),
-          ],
+          colonnes: colonnes,
           onOuvrir: (c) => afficherDetailCaisse(context, ref, c),
           actions: [
             DsActionModule(
@@ -236,7 +285,32 @@ class _GestionCaissePageState extends ConsumerState<GestionCaissePage> {
               danger: true,
               onPressed: (choix, effacer) => desactiverCaisses(context, ref, choix, effacer),
             ),
+            DsActionModule(
+              cle: const ValueKey('caisses_supprimer'),
+              libelle: l10n.communSupprimer,
+              icone: LucideIcons.trash2,
+              danger: true,
+              onPressed: (choix, effacer) => supprimerOuArchiver(
+                context,
+                ref,
+                entite: EntiteArchivable.caisse,
+                choix: choix,
+                code: (c) => c.code,
+                titre: (c) => c.nom,
+                libelleEntite: l10n.gcEntiteCaisse,
+                libelleEntites: l10n.gcEntiteCaisses,
+                effacer: effacer,
+                rafraichir: () => rafraichirCaisse(ref),
+              ),
+            ),
           ],
+          secondaire: boutonArchives(
+            l10n,
+            cle: const ValueKey('caisses_archives_bouton'),
+            archives: false,
+            nombre: archives.length,
+            onChanged: basculer,
+          ),
           // Basic : la caisse principale seulement, pas de nouvelle caisse.
           primaire: ref.watch(plusieursCaissesProvider)
               ? DsButton(

@@ -82,8 +82,8 @@ class RechercheGlobaleRepository {
 
     final resultats = <ResultatRecherche>[];
     for (final r in await q(
-      'SELECT code, designation, code_barres FROM produit '
-      'WHERE ${like(['code', 'designation', 'designation_ar', 'code_barres', 'marque'])} ORDER BY designation',
+      'SELECT code, designation, code_barres FROM produit WHERE archive_le IS NULL '
+      'AND ${like(['code', 'designation', 'designation_ar', 'code_barres', 'marque'])} ORDER BY designation',
       5,
     )) {
       resultats.add(

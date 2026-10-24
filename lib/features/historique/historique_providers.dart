@@ -76,6 +76,7 @@ String libelleAction(AppLocalizations l10n, String action) => switch (action) {
   'Désactivation' => l10n.hiActDesactivation,
   'Activation' => l10n.hiActActivation,
   'Suppression' => l10n.hiActSuppression,
+  'Archivage' => l10n.hiActArchivage,
   'Versement' => l10n.hiActVersement,
   'Transfert' => l10n.hiActTransfert,
   'Réinitialisation du mot de passe' => l10n.hiActReinitialisation,

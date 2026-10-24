@@ -4,9 +4,11 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
+import '../../domain/archivage.dart';
 import '../../domain/models/produit.dart';
 import '../../domain/models/stock.dart';
 import '../../domain/permissions.dart';
+import '../commun/archives.dart';
 import '../commun/chargement.dart';
 import '../commun/colonnes_audit.dart';
 import '../commun/export_module.dart';
@@ -35,6 +37,7 @@ class _MagasinsPageState extends ConsumerState<MagasinsPage> {
   String? _source;
   String? _destination;
   bool? _actif;
+  bool _archives = false;
 
   @override
   Widget build(BuildContext context) {
@@ -45,14 +48,23 @@ class _MagasinsPageState extends ConsumerState<MagasinsPage> {
       moduleId: 'magasins',
       actions: [DsBadge(libelle: l10n.stkPalierAvance, ton: DsBadgeTon.primaire, icone: LucideIcons.sparkles)],
       onglets: [l10n.stkOngletMagasins, l10n.stkOngletTransferts],
-      comptes: [magasins.length, transferts.length],
+      comptes: [magasins.where((m) => !m.audit.archive).length, transferts.length],
       ongletCourant: _onglet,
       onOnglet: (i) => setState(() => _onglet = i),
       child: _onglet == 0 ? _magasins(l10n, magasins, transferts) : _transferts(l10n, magasins, transferts),
     );
   }
 
-  Widget _magasins(AppLocalizations l10n, List<Magasin> magasins, List<TransfertStock> transferts) {
+  Widget _magasins(AppLocalizations l10n, List<Magasin> tous, List<TransfertStock> transferts) {
+    // Les magasins archivés restent lus (noms des transferts et mouvements) mais quittent la liste de gestion.
+    final magasins = [
+      for (final m in tous)
+        if (!m.audit.archive) m,
+    ];
+    final archives = [
+      for (final m in tous)
+        if (m.audit.archive) m,
+    ];
     final devise = ref.watch(deviseProvider);
     final produits = {for (final p in ref.watch(produitsProvider).value ?? const <Produit>[]) p.code: p};
     final stocks = ref.watch(stocksParMagasinProvider).value ?? const <String, Map<String, double>>{};
@@ -107,6 +119,35 @@ class _MagasinsPageState extends ConsumerState<MagasinsPage> {
       ...colonnesAudit(context, ref, (Magasin x) => x.audit),
     ];
     final achat = permissionsSession(ref).contains(Permission.voirPrixAchat.code);
+    void basculer(bool v) => setState(() => _archives = v);
+    if (_archives) {
+      return tableArchives<Magasin>(
+        context,
+        ref,
+        key: const ValueKey('magasins_archives'),
+        entite: l10n.stkEntiteMagasins,
+        lignes: archives,
+        colonnes: colonnes,
+        cle: (m) => m.code,
+        texteRecherche: (m) => '${m.code} ${m.nom} ${m.adresse}',
+        archiveLe: (m) => m.audit.archiveLe,
+        archivePar: (m) => m.audit.archivePar,
+        onDetail: (m) => afficherDetailMagasin(context, ref, m),
+        onRestaurer: (choix, effacer) => restaurerArchives(
+          context,
+          ref,
+          entite: EntiteArchivable.magasin,
+          choix: choix,
+          code: (m) => m.code,
+          titre: (m) => m.nom,
+          libelleEntite: l10n.stkEntiteMagasin,
+          libelleEntites: l10n.stkEntiteMagasins,
+          effacer: effacer,
+          rafraichir: () => rafraichirStock(ref),
+        ),
+        bouton: boutonArchives(l10n, archives: true, nombre: archives.length, onChanged: basculer),
+      );
+    }
     return DsModuleTable<Magasin>(
       key: const ValueKey('magasins'),
       entite: l10n.stkEntiteMagasins,
@@ -169,7 +210,32 @@ class _MagasinsPageState extends ConsumerState<MagasinsPage> {
           danger: true,
           onPressed: (choix, effacer) => desactiverMagasins(context, ref, choix, effacer),
         ),
+        DsActionModule(
+          cle: const ValueKey('magasins_supprimer'),
+          libelle: l10n.communSupprimer,
+          icone: LucideIcons.trash2,
+          danger: true,
+          onPressed: (choix, effacer) => supprimerOuArchiver(
+            context,
+            ref,
+            entite: EntiteArchivable.magasin,
+            choix: choix,
+            code: (m) => m.code,
+            titre: (m) => m.nom,
+            libelleEntite: l10n.stkEntiteMagasin,
+            libelleEntites: l10n.stkEntiteMagasins,
+            effacer: effacer,
+            rafraichir: () => rafraichirStock(ref),
+          ),
+        ),
       ],
+      secondaire: boutonArchives(
+        l10n,
+        cle: const ValueKey('magasins_archives_bouton'),
+        archives: false,
+        nombre: archives.length,
+        onChanged: basculer,
+      ),
       primaire: DsButton(
         key: const ValueKey('magasin_nouveau'),
         libelle: l10n.stkNouveauMagasin,

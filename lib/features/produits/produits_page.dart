@@ -4,9 +4,11 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
+import '../../domain/archivage.dart';
 import '../../domain/models/produit.dart';
 import '../../domain/permissions.dart';
 import '../../domain/referentiel/referentiel.dart';
+import '../commun/archives.dart';
 import '../commun/chargement.dart';
 import '../commun/colonnes_audit.dart';
 import '../commun/export_module.dart';
@@ -34,6 +36,10 @@ class ProduitsPage extends ConsumerStatefulWidget {
 
 class _ProduitsPageState extends ConsumerState<ProduitsPage> {
   late int _onglet = widget.ongletInitial;
+
+  // Vue Archives des onglets Produits et Packs.
+  bool _archivesProduits = false;
+  bool _archivesPacks = false;
 
   // Filtres de l'onglet Produits.
   String? _categorie;
@@ -68,11 +74,28 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final produits = ref.watch(produitsProvider).value ?? const <Produit>[];
+    // Les fiches archivées restent lues (noms des anciens documents) mais quittent les listes de gestion.
+    final tousProduits = ref.watch(produitsProvider).value ?? const <Produit>[];
+    final produits = [
+      for (final p in tousProduits)
+        if (!p.audit.archive) p,
+    ];
+    final produitsArchives = [
+      for (final p in tousProduits)
+        if (p.audit.archive) p,
+    ];
     final categories = ref.watch(categoriesProvider).value ?? const <Categorie>[];
     final sous = ref.watch(sousCategoriesProvider).value ?? const <SousCategorie>[];
     final remises = ref.watch(remisesProvider).value ?? const <Remise>[];
-    final packs = ref.watch(packsProvider).value ?? const <Pack>[];
+    final tousPacks = ref.watch(packsProvider).value ?? const <Pack>[];
+    final packs = [
+      for (final k in tousPacks)
+        if (!k.audit.archive) k,
+    ];
+    final packsArchives = [
+      for (final k in tousPacks)
+        if (k.audit.archive) k,
+    ];
     return PageModule(
       moduleId: 'produits',
       onglets: [
@@ -86,11 +109,11 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
       ongletCourant: _onglet,
       onOnglet: (i) => setState(() => _onglet = i),
       child: switch (_onglet) {
-        0 => _produits(l10n, produits, categories, sous, remises),
+        0 => _produits(l10n, produits, produitsArchives, categories, sous, remises),
         1 => _categories(l10n, produits, categories, sous),
         2 => _sousCategories(l10n, produits, categories, sous),
         3 => _remises(l10n, produits, remises),
-        _ => _packs(l10n, produits, packs),
+        _ => _packs(l10n, tousProduits, packs, packsArchives),
       },
     );
   }
@@ -99,6 +122,7 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
   Widget _produits(
     AppLocalizations l10n,
     List<Produit> tous,
+    List<Produit> archives,
     List<Categorie> categories,
     List<SousCategorie> sous,
     List<Remise> remises,
@@ -330,6 +354,36 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
     Future<void> detail(Produit p) =>
         afficherDetailProduit(context, ref, p, onModifier: () => modifier(p), onEtiquette: () => etiquette(p));
 
+    void basculer(bool v) => setState(() => _archivesProduits = v);
+    if (_archivesProduits) {
+      return tableArchives<Produit>(
+        context,
+        ref,
+        key: const ValueKey('produits_archives'),
+        entite: l10n.prdEntiteProduits,
+        lignes: archives,
+        colonnes: colonnes,
+        cle: (p) => p.code,
+        texteRecherche: (p) => '${p.code} ${p.designation} ${p.codeBarres ?? ''} ${p.marque ?? ''}',
+        archiveLe: (p) => p.audit.archiveLe,
+        archivePar: (p) => p.audit.archivePar,
+        onDetail: (p) => afficherDetailProduit(context, ref, p),
+        onRestaurer: (choix, effacer) => restaurerArchives(
+          context,
+          ref,
+          entite: EntiteArchivable.produit,
+          choix: choix,
+          code: (p) => p.code,
+          titre: (p) => p.designation,
+          libelleEntite: l10n.prdEntiteProduit,
+          libelleEntites: l10n.prdEntiteProduits,
+          effacer: effacer,
+          rafraichir: () => rafraichirCatalogue(ref),
+        ),
+        bouton: boutonArchives(l10n, archives: true, nombre: archives.length, onChanged: basculer),
+      );
+    }
+
     return DsModuleTable<Produit>(
       key: const ValueKey('produits_produits'),
       entite: l10n.prdEntiteProduits,
@@ -500,9 +554,27 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
           libelle: l10n.communSupprimer,
           icone: LucideIcons.trash2,
           danger: true,
-          onPressed: (choix, effacer) => supprimerProduits(context, ref, choix, effacer, stocks: stocks),
+          onPressed: (choix, effacer) => supprimerOuArchiver(
+            context,
+            ref,
+            entite: EntiteArchivable.produit,
+            choix: choix,
+            code: (p) => p.code,
+            titre: (p) => p.designation,
+            libelleEntite: l10n.prdEntiteProduit,
+            libelleEntites: l10n.prdEntiteProduits,
+            effacer: effacer,
+            rafraichir: () => rafraichirCatalogue(ref),
+          ),
         ),
       ],
+      secondaire: boutonArchives(
+        l10n,
+        cle: const ValueKey('produits_archives_bouton'),
+        archives: false,
+        nombre: archives.length,
+        onChanged: basculer,
+      ),
       primaire: DsButton(
         key: const ValueKey('produit_nouveau'),
         libelle: l10n.produitsNouveau,
@@ -790,7 +862,7 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
   }
 
   // ---------------------------------------------------------------- Packs
-  Widget _packs(AppLocalizations l10n, List<Produit> produits, List<Pack> packs) {
+  Widget _packs(AppLocalizations l10n, List<Produit> produits, List<Pack> packs, List<Pack> archives) {
     final devise = ref.watch(deviseProvider);
     String da(double v) => formaterMontant(v, devise);
     final stocks = ref.watch(stocksProduitsProvider).value ?? const <String, double>{};
@@ -843,6 +915,35 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
     ];
     Future<void> modifier(Pack k) => afficherFormulairePack(context, ref, pack: k);
     Future<void> detail(Pack k) => afficherDetailPack(context, ref, k, onModifier: () => modifier(k));
+    void basculer(bool v) => setState(() => _archivesPacks = v);
+    if (_archivesPacks) {
+      return tableArchives<Pack>(
+        context,
+        ref,
+        key: const ValueKey('packs_archives'),
+        entite: l10n.prdEntitePacks,
+        lignes: archives,
+        colonnes: colonnes,
+        cle: (k) => k.code,
+        texteRecherche: (k) => '${k.code} ${k.designation}',
+        archiveLe: (k) => k.audit.archiveLe,
+        archivePar: (k) => k.audit.archivePar,
+        onDetail: (k) => afficherDetailPack(context, ref, k),
+        onRestaurer: (choix, effacer) => restaurerArchives(
+          context,
+          ref,
+          entite: EntiteArchivable.pack,
+          choix: choix,
+          code: (k) => k.code,
+          titre: (k) => k.designation,
+          libelleEntite: l10n.prdEntitePack,
+          libelleEntites: l10n.prdEntitePacks,
+          effacer: effacer,
+          rafraichir: () => rafraichirCatalogue(ref),
+        ),
+        bouton: boutonArchives(l10n, archives: true, nombre: archives.length, onChanged: basculer),
+      );
+    }
     return DsModuleTable<Pack>(
       key: const ValueKey('produits_packs'),
       entite: l10n.prdEntitePacks,
@@ -874,9 +975,27 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
           libelle: l10n.communSupprimer,
           icone: LucideIcons.trash2,
           danger: true,
-          onPressed: (choix, effacer) => supprimerPacks(context, ref, choix, effacer),
+          onPressed: (choix, effacer) => supprimerOuArchiver(
+            context,
+            ref,
+            entite: EntiteArchivable.pack,
+            choix: choix,
+            code: (k) => k.code,
+            titre: (k) => k.designation,
+            libelleEntite: l10n.prdEntitePack,
+            libelleEntites: l10n.prdEntitePacks,
+            effacer: effacer,
+            rafraichir: () => rafraichirCatalogue(ref),
+          ),
         ),
       ],
+      secondaire: boutonArchives(
+        l10n,
+        cle: const ValueKey('packs_archives_bouton'),
+        archives: false,
+        nombre: archives.length,
+        onChanged: basculer,
+      ),
       primaire: DsButton(
         key: const ValueKey('pack_nouveau'),
         libelle: l10n.packNouveau,

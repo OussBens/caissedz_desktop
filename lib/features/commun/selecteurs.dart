@@ -180,7 +180,7 @@ Future<_Config> _charger(BuildContext context, WidgetRef ref, ListeMetier liste)
         ],
         filtres: [categorie, (cle: 'stock', libelle: l10n.selColStock, statut: true), etat],
         elements: [
-          for (final p in produits)
+          for (final p in produits.where((p) => !p.audit.archive))
             () {
               final stock = stocks[p.code] ?? 0;
               final etatStock = p.service ? 'disponible' : (stock <= 0 ? 'rupture' : 'disponible');
@@ -287,7 +287,7 @@ Future<_Config> _charger(BuildContext context, WidgetRef ref, ListeMetier liste)
         ],
         filtres: [etat],
         elements: [
-          for (final k in await ref.read(packsProvider.future))
+          for (final k in (await ref.read(packsProvider.future)).where((k) => !k.audit.archive))
             _Element(
               code: k.code,
               titre: k.designation,
@@ -310,7 +310,7 @@ Future<_Config> _charger(BuildContext context, WidgetRef ref, ListeMetier liste)
         ],
         filtres: [etat, (cle: 'credit', libelle: l10n.statutCredit, statut: false)],
         elements: [
-          for (final c in await ref.read(clientsProvider.future))
+          for (final c in (await ref.read(clientsProvider.future)).where((c) => !c.audit.archive))
             () {
               final du = stats[c.code]?.credit ?? 0;
               final nom = c.estDePassage ? l10n.posClientPassage : c.nom;
@@ -340,7 +340,7 @@ Future<_Config> _charger(BuildContext context, WidgetRef ref, ListeMetier liste)
         ],
         filtres: [etat],
         elements: [
-          for (final f in await ref.read(fournisseursProvider.future))
+          for (final f in (await ref.read(fournisseursProvider.future)).where((f) => !f.audit.archive))
             _Element(
               code: f.code,
               titre: f.nom,
@@ -359,7 +359,7 @@ Future<_Config> _charger(BuildContext context, WidgetRef ref, ListeMetier liste)
         colonnes: [(l10n.selColCode, 110), (l10n.selColNom, null), (l10n.selColAdresse, null)],
         filtres: [etat],
         elements: [
-          for (final m in await ref.read(magasinsProvider.future))
+          for (final m in (await ref.read(magasinsProvider.future)).where((m) => !m.audit.archive))
             _Element(
               code: m.code,
               titre: m.nom,
@@ -378,7 +378,7 @@ Future<_Config> _charger(BuildContext context, WidgetRef ref, ListeMetier liste)
         colonnes: [(l10n.selColCode, 110), (l10n.selColNom, null), (l10n.selColType, null), (l10n.selColMagasin, null)],
         filtres: [(cle: 'type', libelle: l10n.selColType, statut: false), etat],
         elements: [
-          for (final k in caisses)
+          for (final k in caisses.where((k) => !k.audit.archive))
             _Element(
               code: k.code,
               titre: k.nom,

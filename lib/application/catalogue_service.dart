@@ -18,7 +18,6 @@ enum ErreurCatalogue {
   categorieUtilisee,
   quantiteInvalide,
   lignesVides,
-  produitUtilise,
   nomDejaUtilise,
   tropDeColis,
 }
@@ -459,25 +458,6 @@ class CatalogueService {
   Future<List<String>> photos(String produitCode) => _repo.photos(produitCode);
   Future<List<String>> codesSecondaires(String produitCode) => _repo.codesSecondaires(produitCode);
 
-  /// Supprime des produits sans mouvement ni pack ; sinon [ErreurCatalogue.produitUtilise] (à désactiver).
-  Future<void> supprimerProduits(List<String> codes) async {
-    for (final c in codes) {
-      if (await _repo.nbUsagesProduit(c) > 0) throw const CatalogueException(ErreurCatalogue.produitUtilise);
-    }
-    try {
-      await db.transaction((txn) async {
-        final repo = CatalogueRepository(txn);
-        for (final c in codes) {
-          await repo.supprimerProduit(c);
-          await HistoriqueRepository(txn)
-              .journaliser(utilisateurCode: utilisateurCode, action: 'Suppression', entite: 'produit', entiteCode: c);
-        }
-      });
-    } on DatabaseException {
-      throw const CatalogueException(ErreurCatalogue.produitUtilise);
-    }
-  }
-
   /// Affecte des produits à une catégorie / sous-catégorie, à une remise ou à un pack (quantité 1).
   /// Sans [remplacer], seuls les produits sans affectation (catégorie système, sans remise, hors pack)
   /// sont modifiés.
@@ -617,25 +597,6 @@ class CatalogueService {
   Future<void> modifierPack(Pack p) async {
     if (p.lignes.isEmpty) throw const CatalogueException(ErreurCatalogue.lignesVides);
     await db.transaction((txn) => CatalogueRepository(txn).mettreAJourPack(p));
-  }
-
-  /// Packs déjà vendus : gardés pour l'historique des ventes (lignes scellées), donc non supprimables.
-  Future<Set<String>> packsVendus() async => {
-    for (final r in await db.rawQuery('SELECT DISTINCT pack_code FROM vente_ligne WHERE pack_code IS NOT NULL'))
-      r['pack_code']! as String,
-  };
-
-  /// Supprime des packs jamais vendus (leurs lignes partent avec eux) ; un pack vendu est refusé.
-  Future<void> supprimerPacks(List<String> codes) async {
-    final vendus = await packsVendus();
-    if (codes.any(vendus.contains)) throw const CatalogueException(ErreurCatalogue.produitUtilise);
-    await db.transaction((txn) async {
-      for (final code in codes) {
-        await txn.delete('pack', where: 'code = ?', whereArgs: [code]);
-        await HistoriqueRepository(txn)
-            .journaliser(utilisateurCode: utilisateurCode, action: 'Suppression', entite: 'pack', entiteCode: code);
-      }
-    });
   }
 
   Future<void> activerPack(String code, bool actif) async {

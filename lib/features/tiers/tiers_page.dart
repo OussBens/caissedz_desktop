@@ -4,10 +4,12 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
+import '../../domain/archivage.dart';
 import '../../domain/models/retour.dart';
 import '../../domain/models/tiers.dart';
 import '../../domain/referentiel/referentiel.dart';
 import '../../domain/referentiel/wilayas.dart';
+import '../commun/archives.dart';
 import '../commun/chargement.dart';
 import '../commun/colonnes_audit.dart';
 import '../commun/export_module.dart';
@@ -39,6 +41,7 @@ class _TiersPageState extends ConsumerState<TiersPage> {
   String? _typeTiers;
   String? _wilaya;
   DsIntervalle _credit = const DsIntervalle();
+  bool _archives = false;
 
   bool get _client => widget.type == TypesTiers.client;
 
@@ -60,23 +63,32 @@ class _TiersPageState extends ConsumerState<TiersPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    // Les tiers archivés restent lus (noms des anciens versements) mais quittent la liste de gestion.
     final tous = _lignes();
+    final gestion = [
+      for (final t in tous)
+        if (!t.audit.archive) t,
+    ];
+    final archives = [
+      for (final t in tous)
+        if (t.audit.archive) t,
+    ];
     final nbVersements = (ref.watch(versementsProvider).value ?? const <Versement>[])
         .where((v) => v.tiersType == widget.type && v.mode != 'Avoir')
         .length;
     return PageModule(
       moduleId: _client ? 'clients' : 'fournisseurs',
       onglets: [_client ? l10n.moduleClients : l10n.moduleFournisseurs, l10n.moduleVersements],
-      comptes: [tous.length, nbVersements],
+      comptes: [gestion.length, nbVersements],
       ongletCourant: _onglet,
       onOnglet: (i) => setState(() => _onglet = i),
       child: _onglet == 0
-          ? _tableauTiers(context, l10n, tous)
+          ? _tableauTiers(context, l10n, gestion, archives)
           : VersementsOnglet(key: ValueKey('versements_${widget.type}'), tiersType: widget.type, tiers: tous),
     );
   }
 
-  Widget _tableauTiers(BuildContext context, AppLocalizations l10n, List<LigneTiers> tous) {
+  Widget _tableauTiers(BuildContext context, AppLocalizations l10n, List<LigneTiers> tous, List<LigneTiers> archives) {
     final devise = ref.watch(deviseProvider);
     String da(double v) => formaterMontant(v, devise);
     final lignes = tous
@@ -231,6 +243,38 @@ class _TiersPageState extends ConsumerState<TiersPage> {
 
     Future<void> modifier(LigneTiers t) => afficherFormulaireTiers(context, ref, type: widget.type, tiers: t);
     Future<void> situation(LigneTiers t) => afficherSituationTiers(context, ref, t);
+    final entite = _client ? EntiteArchivable.client : EntiteArchivable.fournisseur;
+    final libelleEntite = _client ? l10n.tiersEntiteClient : l10n.tiersEntiteFournisseur;
+    final libelleEntites = _client ? l10n.tiersEntiteClients : l10n.tiersEntiteFournisseurs;
+    void basculer(bool v) => setState(() => _archives = v);
+    if (_archives) {
+      return tableArchives<LigneTiers>(
+        context,
+        ref,
+        key: ValueKey('tiers_archives_${widget.type}'),
+        entite: libelleEntites,
+        lignes: archives,
+        colonnes: colonnes,
+        cle: (t) => t.code,
+        texteRecherche: (t) => '${t.nom} ${t.code} ${t.telephone}',
+        archiveLe: (t) => t.audit.archiveLe,
+        archivePar: (t) => t.audit.archivePar,
+        onDetail: (t) => afficherDetailTiers(context, ref, t, onSituation: () => situation(t)),
+        onRestaurer: (choix, effacer) => restaurerArchives(
+          context,
+          ref,
+          entite: entite,
+          choix: choix,
+          code: (t) => t.code,
+          titre: (t) => t.nom,
+          libelleEntite: libelleEntite,
+          libelleEntites: libelleEntites,
+          effacer: effacer,
+          rafraichir: () => rafraichirCommerce(ref),
+        ),
+        bouton: boutonArchives(l10n, archives: true, nombre: archives.length, onChanged: basculer),
+      );
+    }
     Future<void> versement(LigneTiers t) =>
         afficherVersementTiers(context, ref, tiersType: widget.type, tiers: tous, beneficiaire: t);
 
@@ -351,7 +395,32 @@ class _TiersPageState extends ConsumerState<TiersPage> {
           danger: true,
           onPressed: (choix, effacer) => annulerTiers(context, ref, choix, effacer),
         ),
+        DsActionModule(
+          cle: ValueKey('tiers_supprimer_${widget.type}'),
+          libelle: l10n.communSupprimer,
+          icone: LucideIcons.trash2,
+          danger: true,
+          onPressed: (choix, effacer) => supprimerOuArchiver(
+            context,
+            ref,
+            entite: entite,
+            choix: choix,
+            code: (t) => t.code,
+            titre: (t) => t.nom,
+            libelleEntite: libelleEntite,
+            libelleEntites: libelleEntites,
+            effacer: effacer,
+            rafraichir: () => rafraichirCommerce(ref),
+          ),
+        ),
       ],
+      secondaire: boutonArchives(
+        l10n,
+        cle: ValueKey('tiers_archives_bouton_${widget.type}'),
+        archives: false,
+        nombre: archives.length,
+        onChanged: basculer,
+      ),
       primaire: DsButton(
         key: ValueKey(_client ? 'client_nouveau' : 'fournisseur_nouveau'),
         libelle: _client ? l10n.clientNouveau : l10n.fournisseurNouveau,

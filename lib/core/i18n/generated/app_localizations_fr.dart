@@ -3635,9 +3635,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get posFermerVenteOk => 'Fermer sans enregistrer';
 
   @override
-  String get produitErreurUtilise => 'Ce produit est utilisé (ventes, achats ou stock) : il ne peut pas être supprimé.';
-
-  @override
   String get catalogueErreurNomPris => 'Ce nom est déjà utilisé.';
 
   @override
@@ -4191,19 +4188,6 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String prdToastAffectationDesc(int n, String nom) {
     return '$n produit(s) · $nom';
-  }
-
-  @override
-  String get prdSuppressionBloquee => 'Stock ou mouvements liés — désactivez-le plutôt';
-
-  @override
-  String prdToastSupprimes(int n) {
-    return '$n produit(s) supprimé(s)';
-  }
-
-  @override
-  String prdToastRefuses(int n) {
-    return '$n refusé(s) : mouvements liés';
   }
 
   @override
@@ -6806,9 +6790,6 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get prdPackVendu => 'Déjà vendu : conservé pour l\'historique des ventes';
-
-  @override
   String stkNombreDispo(String quantite) {
     return 'Pièces : $quantite';
   }
@@ -8686,4 +8667,93 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get alpCritiques => 'À traiter';
+
+  @override
+  String get dsRestaurer => 'Restaurer';
+
+  @override
+  String get dsRestaures => 'restaurés';
+
+  @override
+  String archArchives(int nombre) {
+    return 'Archives ($nombre)';
+  }
+
+  @override
+  String get archRetourListe => 'Retour à la liste';
+
+  @override
+  String get archBandeau =>
+      'Éléments archivés : gardés pour l\'historique (anciens documents, rapports, soldes), absents des listes et des sélecteurs. Restaurez-les pour les réutiliser.';
+
+  @override
+  String get archAucune => 'Aucun élément archivé.';
+
+  @override
+  String get archDescription =>
+      'Les éléments qui ont un historique (ventes, achats, mouvements…) sont archivés au lieu d\'être supprimés : ils disparaissent des listes, l\'historique et les calculs restent intacts, et vous pourrez les restaurer.';
+
+  @override
+  String get archSeraSupprime => 'Sera supprimé';
+
+  @override
+  String get archSeraArchive => 'Sera archivé (a un historique)';
+
+  @override
+  String archToast(int supprimes, int archives) {
+    return '$supprimes supprimé(s), $archives archivé(s)';
+  }
+
+  @override
+  String archToastRestaures(int nombre) {
+    return '$nombre restauré(s)';
+  }
+
+  @override
+  String get archErreur => 'Opération impossible';
+
+  @override
+  String get archColArchiveLe => 'Archivé le';
+
+  @override
+  String get archColArchivePar => 'Archivé par';
+
+  @override
+  String get archBloqueSysteme => 'Élément système';
+
+  @override
+  String get archBloqueInconnu => 'Introuvable';
+
+  @override
+  String get archBloqueStock => 'Stock non nul : ramenez-le à zéro (inventaire) d\'abord';
+
+  @override
+  String get archBloqueDansPack => 'Composant d\'un pack : retirez-le du pack d\'abord';
+
+  @override
+  String get archBloqueSolde => 'Solde non nul : réglez le crédit ou l\'avance d\'abord';
+
+  @override
+  String get archBloqueMagasinPrincipal => 'Magasin principal d\'un utilisateur';
+
+  @override
+  String get archBloqueSession => 'Session de caisse ouverte';
+
+  @override
+  String get archBloqueSoldeCaisse => 'Solde de caisse non nul : transférez-le d\'abord';
+
+  @override
+  String get archBloqueCompteCourant => 'Compte connecté';
+
+  @override
+  String get archBloqueRoleUtilise => 'Rôle attribué à des utilisateurs';
+
+  @override
+  String get archBloqueLimite => 'Limite de la licence atteinte';
+
+  @override
+  String get archBloqueEtat => 'Déjà traité';
+
+  @override
+  String get hiActArchivage => 'Archivage';
 }

@@ -738,7 +738,7 @@ class DsElementLot {
 }
 
 /// Actions en lot (`BulkActionDialog.action`).
-enum DsActionLot { annuler, supprimer, activer, desactiver }
+enum DsActionLot { annuler, supprimer, activer, desactiver, restaurer }
 
 /// Dialog d'action en lot (`BulkActionDialog`) : liste des أ©lأ©ments, bloquأ©s signalأ©s, motif obligatoire.
 /// Retourne le motif saisi (chaأ®ne vide si non requis) ou `null` si fermأ©.
@@ -837,6 +837,13 @@ class _BulkActionDialogState extends State<_BulkActionDialog> {
         DsButtonVariante.primaire,
         l10n.dsDesactiver,
         l10n.dsDesactives,
+      ),
+      DsActionLot.restaurer => (
+        LucideIcons.archiveRestore,
+        DsDialogTon.succes,
+        DsButtonVariante.primaire,
+        l10n.dsRestaurer,
+        l10n.dsRestaures,
       ),
     };
     final bloques = widget.elements.where((e) => e.motifBlocage != null).toList();

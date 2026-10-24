@@ -6945,12 +6945,6 @@ abstract class AppLocalizations {
   /// **'Fermer sans enregistrer'**
   String get posFermerVenteOk;
 
-  /// No description provided for @produitErreurUtilise.
-  ///
-  /// In fr, this message translates to:
-  /// **'Ce produit est utilisé (ventes, achats ou stock) : il ne peut pas être supprimé.'**
-  String get produitErreurUtilise;
-
   /// No description provided for @catalogueErreurNomPris.
   ///
   /// In fr, this message translates to:
@@ -7982,24 +7976,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'{n} produit(s) · {nom}'**
   String prdToastAffectationDesc(int n, String nom);
-
-  /// No description provided for @prdSuppressionBloquee.
-  ///
-  /// In fr, this message translates to:
-  /// **'Stock ou mouvements liés — désactivez-le plutôt'**
-  String get prdSuppressionBloquee;
-
-  /// No description provided for @prdToastSupprimes.
-  ///
-  /// In fr, this message translates to:
-  /// **'{n} produit(s) supprimé(s)'**
-  String prdToastSupprimes(int n);
-
-  /// No description provided for @prdToastRefuses.
-  ///
-  /// In fr, this message translates to:
-  /// **'{n} refusé(s) : mouvements liés'**
-  String prdToastRefuses(int n);
 
   /// No description provided for @prdImportFichier.
   ///
@@ -12951,12 +12927,6 @@ abstract class AppLocalizations {
   /// **'{n} produit(s) → Sans catégorie'**
   String prdVersSansCategorie(int n);
 
-  /// No description provided for @prdPackVendu.
-  ///
-  /// In fr, this message translates to:
-  /// **'Déjà vendu : conservé pour l\'historique des ventes'**
-  String get prdPackVendu;
-
   /// No description provided for @stkNombreDispo.
   ///
   /// In fr, this message translates to:
@@ -16184,6 +16154,168 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'À traiter'**
   String get alpCritiques;
+
+  /// No description provided for @dsRestaurer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Restaurer'**
+  String get dsRestaurer;
+
+  /// No description provided for @dsRestaures.
+  ///
+  /// In fr, this message translates to:
+  /// **'restaurés'**
+  String get dsRestaures;
+
+  /// No description provided for @archArchives.
+  ///
+  /// In fr, this message translates to:
+  /// **'Archives ({nombre})'**
+  String archArchives(int nombre);
+
+  /// No description provided for @archRetourListe.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retour à la liste'**
+  String get archRetourListe;
+
+  /// No description provided for @archBandeau.
+  ///
+  /// In fr, this message translates to:
+  /// **'Éléments archivés : gardés pour l\'historique (anciens documents, rapports, soldes), absents des listes et des sélecteurs. Restaurez-les pour les réutiliser.'**
+  String get archBandeau;
+
+  /// No description provided for @archAucune.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun élément archivé.'**
+  String get archAucune;
+
+  /// No description provided for @archDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les éléments qui ont un historique (ventes, achats, mouvements…) sont archivés au lieu d\'être supprimés : ils disparaissent des listes, l\'historique et les calculs restent intacts, et vous pourrez les restaurer.'**
+  String get archDescription;
+
+  /// No description provided for @archSeraSupprime.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sera supprimé'**
+  String get archSeraSupprime;
+
+  /// No description provided for @archSeraArchive.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sera archivé (a un historique)'**
+  String get archSeraArchive;
+
+  /// No description provided for @archToast.
+  ///
+  /// In fr, this message translates to:
+  /// **'{supprimes} supprimé(s), {archives} archivé(s)'**
+  String archToast(int supprimes, int archives);
+
+  /// No description provided for @archToastRestaures.
+  ///
+  /// In fr, this message translates to:
+  /// **'{nombre} restauré(s)'**
+  String archToastRestaures(int nombre);
+
+  /// No description provided for @archErreur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Opération impossible'**
+  String get archErreur;
+
+  /// No description provided for @archColArchiveLe.
+  ///
+  /// In fr, this message translates to:
+  /// **'Archivé le'**
+  String get archColArchiveLe;
+
+  /// No description provided for @archColArchivePar.
+  ///
+  /// In fr, this message translates to:
+  /// **'Archivé par'**
+  String get archColArchivePar;
+
+  /// No description provided for @archBloqueSysteme.
+  ///
+  /// In fr, this message translates to:
+  /// **'Élément système'**
+  String get archBloqueSysteme;
+
+  /// No description provided for @archBloqueInconnu.
+  ///
+  /// In fr, this message translates to:
+  /// **'Introuvable'**
+  String get archBloqueInconnu;
+
+  /// No description provided for @archBloqueStock.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock non nul : ramenez-le à zéro (inventaire) d\'abord'**
+  String get archBloqueStock;
+
+  /// No description provided for @archBloqueDansPack.
+  ///
+  /// In fr, this message translates to:
+  /// **'Composant d\'un pack : retirez-le du pack d\'abord'**
+  String get archBloqueDansPack;
+
+  /// No description provided for @archBloqueSolde.
+  ///
+  /// In fr, this message translates to:
+  /// **'Solde non nul : réglez le crédit ou l\'avance d\'abord'**
+  String get archBloqueSolde;
+
+  /// No description provided for @archBloqueMagasinPrincipal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Magasin principal d\'un utilisateur'**
+  String get archBloqueMagasinPrincipal;
+
+  /// No description provided for @archBloqueSession.
+  ///
+  /// In fr, this message translates to:
+  /// **'Session de caisse ouverte'**
+  String get archBloqueSession;
+
+  /// No description provided for @archBloqueSoldeCaisse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Solde de caisse non nul : transférez-le d\'abord'**
+  String get archBloqueSoldeCaisse;
+
+  /// No description provided for @archBloqueCompteCourant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Compte connecté'**
+  String get archBloqueCompteCourant;
+
+  /// No description provided for @archBloqueRoleUtilise.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rôle attribué à des utilisateurs'**
+  String get archBloqueRoleUtilise;
+
+  /// No description provided for @archBloqueLimite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Limite de la licence atteinte'**
+  String get archBloqueLimite;
+
+  /// No description provided for @archBloqueEtat.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déjà traité'**
+  String get archBloqueEtat;
+
+  /// No description provided for @hiActArchivage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Archivage'**
+  String get hiActArchivage;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

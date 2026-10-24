@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:caissedz_desktop/application/archivage_service.dart';
 import 'package:caissedz_desktop/application/catalogue_ia_service.dart';
 import 'package:caissedz_desktop/application/catalogue_service.dart';
 import 'package:caissedz_desktop/application/import_produits_service.dart';
@@ -8,6 +9,7 @@ import 'package:caissedz_desktop/core/print/etiquettes_pdf.dart';
 import 'package:caissedz_desktop/data/catalogue_repository.dart';
 import 'package:caissedz_desktop/data/historique_repository.dart';
 import 'package:caissedz_desktop/data/utilisateur_repository.dart';
+import 'package:caissedz_desktop/domain/archivage.dart';
 import 'package:caissedz_desktop/domain/models/produit.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
@@ -160,8 +162,7 @@ void main() {
       final repo = CatalogueRepository(base.db);
       expect((await repo.produitParCode(eau.code))!.remiseCode, isNull);
       expect((await repo.remises()).any((x) => x.code == r.code), isFalse);
-      expect(await s.packsVendus(), isEmpty);
-      await s.supprimerPacks([pack.code]);
+      await ArchivageService(base.db, utilisateurCode: 'USR0000').supprimer(EntiteArchivable.pack, [pack.code]);
       expect(await repo.packs(), isEmpty);
       expect(await base.db.query('pack_ligne'), isEmpty);
     });
@@ -258,11 +259,12 @@ void main() {
       expect(await s.affecter([eau.code], remiseCode: rem.code), 1);
       expect((await repo.produitParCode(eau.code))!.remiseCode, rem.code);
       // Produit avec stock : suppression refusée ; produit sans mouvement : supprimé.
+      final archivage = ArchivageService(base.db, utilisateurCode: 'USR0000');
       await expectLater(
-        s.supprimerProduits([p.code]),
-        throwsA(isA<CatalogueException>().having((e) => e.erreur, 'e', ErreurCatalogue.produitUtilise)),
+        archivage.supprimer(EntiteArchivable.produit, [p.code]),
+        throwsA(isA<ArchivageException>().having((e) => e.blocage, 'b', BlocageArchivage.stockNonNul)),
       );
-      await s.supprimerProduits([eau.code]);
+      await archivage.supprimer(EntiteArchivable.produit, [eau.code]);
       expect(await repo.produitParCode(eau.code), isNull);
     });
   });

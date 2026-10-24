@@ -222,23 +222,6 @@ class CatalogueRepository {
     }
   }
 
-  /// Nombre de mouvements de stock et de compositions de packs qui référencent un produit.
-  Future<int> nbUsagesProduit(String code) async =>
-      (await db.rawQuery(
-            'SELECT (SELECT count(*) FROM mouvement_stock WHERE produit_code = ?) + '
-            '(SELECT count(*) FROM pack_ligne WHERE produit_code = ?) n',
-            [code, code],
-          )).first['n']
-          as int;
-
-  Future<void> supprimerProduit(String code) async {
-    await db.delete('produit_code_detail', where: 'produit_code = ?', whereArgs: [code]);
-    await db.delete('produit_photo', where: 'produit_code = ?', whereArgs: [code]);
-    await db.delete('colis', where: 'produit_code = ?', whereArgs: [code]);
-    await db.delete('favori_caisse', where: 'produit_code = ?', whereArgs: [code]);
-    await db.delete('produit', where: 'code = ?', whereArgs: [code]);
-  }
-
   Future<void> insererProduit(Produit p) => db.insert('produit', p.versLigne());
   Future<void> mettreAJourProduit(Produit p) => db.update(
     'produit',

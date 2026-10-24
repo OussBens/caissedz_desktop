@@ -3628,9 +3628,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get posFermerVenteOk => 'Close without saving';
 
   @override
-  String get produitErreurUtilise => 'This product is in use (sales, purchases or stock): it cannot be deleted.';
-
-  @override
   String get catalogueErreurNomPris => 'This name is already in use.';
 
   @override
@@ -4184,19 +4181,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String prdToastAffectationDesc(int n, String nom) {
     return '$n product(s) · $nom';
-  }
-
-  @override
-  String get prdSuppressionBloquee => 'Linked stock or movements — deactivate it instead';
-
-  @override
-  String prdToastSupprimes(int n) {
-    return '$n product(s) deleted';
-  }
-
-  @override
-  String prdToastRefuses(int n) {
-    return '$n refused: linked movements';
   }
 
   @override
@@ -6794,9 +6778,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get prdPackVendu => 'Already sold: kept for the sales history';
-
-  @override
   String stkNombreDispo(String quantite) {
     return 'Pieces: $quantite';
   }
@@ -8664,4 +8645,93 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get alpCritiques => 'To handle';
+
+  @override
+  String get dsRestaurer => 'Restore';
+
+  @override
+  String get dsRestaures => 'restored';
+
+  @override
+  String archArchives(int nombre) {
+    return 'Archives ($nombre)';
+  }
+
+  @override
+  String get archRetourListe => 'Back to the list';
+
+  @override
+  String get archBandeau =>
+      'Archived items: kept for history (past documents, reports, balances), hidden from lists and pickers. Restore them to use them again.';
+
+  @override
+  String get archAucune => 'No archived items.';
+
+  @override
+  String get archDescription =>
+      'Items with a history (sales, purchases, movements…) are archived instead of deleted: they leave the lists, history and figures stay intact, and you can restore them.';
+
+  @override
+  String get archSeraSupprime => 'Will be deleted';
+
+  @override
+  String get archSeraArchive => 'Will be archived (has a history)';
+
+  @override
+  String archToast(int supprimes, int archives) {
+    return '$supprimes deleted, $archives archived';
+  }
+
+  @override
+  String archToastRestaures(int nombre) {
+    return '$nombre restored';
+  }
+
+  @override
+  String get archErreur => 'Operation not possible';
+
+  @override
+  String get archColArchiveLe => 'Archived on';
+
+  @override
+  String get archColArchivePar => 'Archived by';
+
+  @override
+  String get archBloqueSysteme => 'System item';
+
+  @override
+  String get archBloqueInconnu => 'Not found';
+
+  @override
+  String get archBloqueStock => 'Stock not zero: bring it to zero (inventory) first';
+
+  @override
+  String get archBloqueDansPack => 'Part of a pack: remove it from the pack first';
+
+  @override
+  String get archBloqueSolde => 'Balance not zero: settle the credit or advance first';
+
+  @override
+  String get archBloqueMagasinPrincipal => 'Main store of a user';
+
+  @override
+  String get archBloqueSession => 'Cash session open';
+
+  @override
+  String get archBloqueSoldeCaisse => 'Cash balance not zero: transfer it first';
+
+  @override
+  String get archBloqueCompteCourant => 'Signed-in account';
+
+  @override
+  String get archBloqueRoleUtilise => 'Role assigned to users';
+
+  @override
+  String get archBloqueLimite => 'Licence limit reached';
+
+  @override
+  String get archBloqueEtat => 'Already processed';
+
+  @override
+  String get hiActArchivage => 'Archiving';
 }

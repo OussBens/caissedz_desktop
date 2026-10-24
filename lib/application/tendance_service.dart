@@ -84,7 +84,7 @@ class TendanceService {
              CASE WHEN c.systeme = 1 THEN NULL ELSE c.nom END AS categorie,
              COALESCE(p.modifie_le, p.cree_le, '') AS le
       FROM produit p LEFT JOIN categorie c ON c.code = p.categorie_code
-      WHERE p.code_barres IS NOT NULL AND p.service = 0
+      WHERE p.code_barres IS NOT NULL AND p.service = 0 AND p.archive_le IS NULL
         AND (p.source <> ? OR p.modifie_le > p.cree_le)
         ${apres == null ? '' : 'AND COALESCE(p.modifie_le, p.cree_le) > ?'}
       ORDER BY p.code_barres

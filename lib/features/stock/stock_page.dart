@@ -69,7 +69,9 @@ class _StockPageState extends ConsumerState<StockPage> {
       for (final m in magasins)
         if (m.actif && (tous || mes.contains(m.code))) m,
     ];
-    final produits = (ref.watch(produitsProvider).value ?? const <Produit>[]).where((p) => !p.service).toList();
+    final produits = (ref.watch(produitsProvider).value ?? const <Produit>[])
+        .where((p) => !p.service && !p.audit.archive)
+        .toList();
     final mouvements = ref.watch(mouvementsProvider).value ?? const <MouvementStock>[];
     return PageModule(
       moduleId: 'stock',

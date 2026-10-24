@@ -1,8 +1,9 @@
+import 'package:caissedz_desktop/application/archivage_service.dart';
 import 'package:caissedz_desktop/application/catalogue_service.dart';
 import 'package:caissedz_desktop/application/favoris_service.dart';
-import 'package:caissedz_desktop/data/catalogue_repository.dart';
 import 'package:caissedz_desktop/data/favoris_caisse_repository.dart';
 import 'package:caissedz_desktop/data/favoris_repository.dart';
+import 'package:caissedz_desktop/domain/archivage.dart';
 import 'package:caissedz_desktop/domain/models/produit.dart';
 import 'package:caissedz_desktop/domain/modules.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -59,7 +60,7 @@ void main() {
     expect(await repo.lire(), [eau, lait, pain]);
     await repo.retirer([lait]);
     expect(await repo.lire(), [eau, pain]);
-    await CatalogueRepository(base.db).supprimerProduit(eau);
+    await ArchivageService(base.db, utilisateurCode: 'USR0000').supprimer(EntiteArchivable.produit, [eau]);
     expect(await repo.lire(), [pain]);
   });
 }

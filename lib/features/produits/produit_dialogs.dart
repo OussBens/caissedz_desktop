@@ -35,7 +35,6 @@ String messageErreurCatalogue(AppLocalizations l10n, ErreurCatalogue e) => switc
   ErreurCatalogue.categorieSysteme => l10n.categorieErreurSysteme,
   ErreurCatalogue.categorieUtilisee => l10n.categorieErreurUtilisee,
   ErreurCatalogue.lignesVides => l10n.packErreurLignes,
-  ErreurCatalogue.produitUtilise => l10n.produitErreurUtilise,
   ErreurCatalogue.nomDejaUtilise => l10n.catalogueErreurNomPris,
   ErreurCatalogue.tropDeColis => l10n.produitErreurTropDeColis,
 };
@@ -691,56 +690,6 @@ class _AffecterDialogState extends ConsumerState<_AffecterDialog> {
       ),
     );
   }
-}
-
-// ============================================================ Suppression
-
-/// Suppression en lot (`BulkActionDialog delete`) : bloquée si stock ou mouvements liés (désactiver).
-Future<void> supprimerProduits(
-  BuildContext context,
-  WidgetRef ref,
-  List<Produit> choix,
-  VoidCallback effacer, {
-  required Map<String, double> stocks,
-}) async {
-  final l10n = AppLocalizations.of(context);
-  final ok = await afficherActionLot(
-    context,
-    action: DsActionLot.supprimer,
-    entite: l10n.prdEntiteProduit,
-    entitePluriel: l10n.prdEntiteProduits,
-    elements: [
-      for (final p in choix)
-        DsElementLot(
-          id: p.code,
-          titre: p.designation,
-          sousTitre: p.code,
-          meta: l10n.prdStockN(formaterNombre(stocks[p.code] ?? 0)),
-          motifBlocage: (stocks[p.code] ?? 0) != 0 ? l10n.prdSuppressionBloquee : null,
-        ),
-    ],
-  );
-  if (ok == null) return;
-  final service = ref.read(catalogueServiceProvider);
-  var supprimes = 0;
-  var refuses = 0;
-  for (final p in choix.where((p) => (stocks[p.code] ?? 0) == 0)) {
-    try {
-      await service.supprimerProduits([p.code]);
-      supprimes++;
-    } on CatalogueException {
-      refuses++;
-    }
-  }
-  rafraichirCatalogue(ref);
-  effacer();
-  if (!context.mounted) return;
-  afficherToast(
-    context,
-    titre: l10n.prdToastSupprimes(supprimes),
-    description: refuses > 0 ? l10n.prdToastRefuses(refuses) : null,
-    ton: refuses > 0 ? DsToastTon.avertissement : DsToastTon.succes,
-  );
 }
 
 // ============================================================ Import Excel

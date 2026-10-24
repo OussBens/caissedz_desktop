@@ -3624,9 +3624,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get posFermerVenteOk => 'إغلاق دون حفظ';
 
   @override
-  String get produitErreurUtilise => 'هذا المنتج مستخدم (مبيعات أو مشتريات أو مخزون): لا يمكن حذفه.';
-
-  @override
   String get catalogueErreurNomPris => 'هذا الاسم مستخدم بالفعل.';
 
   @override
@@ -4180,19 +4177,6 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String prdToastAffectationDesc(int n, String nom) {
     return '$n منتج(ات) · $nom';
-  }
-
-  @override
-  String get prdSuppressionBloquee => 'مخزون أو حركات مرتبطة — عطله بدلا من ذلك';
-
-  @override
-  String prdToastSupprimes(int n) {
-    return 'تم حذف $n منتج(ات)';
-  }
-
-  @override
-  String prdToastRefuses(int n) {
-    return '$n مرفوض(ة): حركات مرتبطة';
   }
 
   @override
@@ -6786,9 +6770,6 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get prdPackVendu => 'مُباع سابقًا: يُحتفظ به لسجل المبيعات';
-
-  @override
   String stkNombreDispo(String quantite) {
     return 'القطع: $quantite';
   }
@@ -8638,4 +8619,93 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get alpCritiques => 'للمعالجة';
+
+  @override
+  String get dsRestaurer => 'استعادة';
+
+  @override
+  String get dsRestaures => 'مستعادة';
+
+  @override
+  String archArchives(int nombre) {
+    return 'الأرشيف ($nombre)';
+  }
+
+  @override
+  String get archRetourListe => 'العودة إلى القائمة';
+
+  @override
+  String get archBandeau =>
+      'عناصر مؤرشفة: محفوظة للسجل (الوثائق القديمة، التقارير، الأرصدة)، غائبة عن القوائم وعن نوافذ الاختيار. استعدها لإعادة استعمالها.';
+
+  @override
+  String get archAucune => 'لا يوجد أي عنصر مؤرشف.';
+
+  @override
+  String get archDescription =>
+      'العناصر التي لها سجل (مبيعات، مشتريات، حركات…) تُؤرشف بدل حذفها: تختفي من القوائم، ويبقى السجل والحسابات كما هي، ويمكنك استعادتها.';
+
+  @override
+  String get archSeraSupprime => 'سيُحذف';
+
+  @override
+  String get archSeraArchive => 'سيُؤرشف (له سجل)';
+
+  @override
+  String archToast(int supprimes, int archives) {
+    return 'حُذف $supprimes، أُرشف $archives';
+  }
+
+  @override
+  String archToastRestaures(int nombre) {
+    return 'استُعيد $nombre';
+  }
+
+  @override
+  String get archErreur => 'العملية غير ممكنة';
+
+  @override
+  String get archColArchiveLe => 'أُرشف في';
+
+  @override
+  String get archColArchivePar => 'أرشفه';
+
+  @override
+  String get archBloqueSysteme => 'عنصر نظام';
+
+  @override
+  String get archBloqueInconnu => 'غير موجود';
+
+  @override
+  String get archBloqueStock => 'المخزون ليس صفرا: أرجعه إلى الصفر (جرد) أولا';
+
+  @override
+  String get archBloqueDansPack => 'مكوّن في حزمة: أزله من الحزمة أولا';
+
+  @override
+  String get archBloqueSolde => 'الرصيد ليس صفرا: سوّ الدين أو التسبيق أولا';
+
+  @override
+  String get archBloqueMagasinPrincipal => 'المخزن الرئيسي لمستخدم';
+
+  @override
+  String get archBloqueSession => 'جلسة صندوق مفتوحة';
+
+  @override
+  String get archBloqueSoldeCaisse => 'رصيد الصندوق ليس صفرا: حوّله أولا';
+
+  @override
+  String get archBloqueCompteCourant => 'الحساب المتصل';
+
+  @override
+  String get archBloqueRoleUtilise => 'دور مسند إلى مستخدمين';
+
+  @override
+  String get archBloqueLimite => 'تم بلوغ حد الترخيص';
+
+  @override
+  String get archBloqueEtat => 'تمت معالجته';
+
+  @override
+  String get hiActArchivage => 'أرشفة';
 }

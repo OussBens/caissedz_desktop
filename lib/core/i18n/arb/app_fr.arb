@@ -1886,7 +1886,6 @@
     }
   },
   "posFermerVenteOk": "Fermer sans enregistrer",
-  "produitErreurUtilise": "Ce produit est utilisé (ventes, achats ou stock) : il ne peut pas être supprimé.",
   "catalogueErreurNomPris": "Ce nom est déjà utilisé.",
   "prdOngletSousCategories": "Sous-catégories",
   "prdAchat": "Achat",
@@ -2199,23 +2198,6 @@
       },
       "nom": {
         "type": "String"
-      }
-    }
-  },
-  "prdSuppressionBloquee": "Stock ou mouvements liés — désactivez-le plutôt",
-  "prdToastSupprimes": "{n} produit(s) supprimé(s)",
-  "@prdToastSupprimes": {
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
-  },
-  "prdToastRefuses": "{n} refusé(s) : mouvements liés",
-  "@prdToastRefuses": {
-    "placeholders": {
-      "n": {
-        "type": "int"
       }
     }
   },
@@ -3467,7 +3449,6 @@
       }
     }
   },
-  "prdPackVendu": "Déjà vendu : conservé pour l'historique des ventes",
   "stkNombreDispo": "Pièces : {quantite}",
   "@stkNombreDispo": {
     "placeholders": {
@@ -4795,5 +4776,56 @@
       }
     }
   },
-  "alpCritiques": "À traiter"
+  "alpCritiques": "À traiter",
+  "dsRestaurer": "Restaurer",
+  "dsRestaures": "restaurés",
+  "archArchives": "Archives ({nombre})",
+  "@archArchives": {
+    "placeholders": {
+      "nombre": {
+        "type": "int"
+      }
+    }
+  },
+  "archRetourListe": "Retour à la liste",
+  "archBandeau": "Éléments archivés : gardés pour l'historique (anciens documents, rapports, soldes), absents des listes et des sélecteurs. Restaurez-les pour les réutiliser.",
+  "archAucune": "Aucun élément archivé.",
+  "archDescription": "Les éléments qui ont un historique (ventes, achats, mouvements…) sont archivés au lieu d'être supprimés : ils disparaissent des listes, l'historique et les calculs restent intacts, et vous pourrez les restaurer.",
+  "archSeraSupprime": "Sera supprimé",
+  "archSeraArchive": "Sera archivé (a un historique)",
+  "archToast": "{supprimes} supprimé(s), {archives} archivé(s)",
+  "@archToast": {
+    "placeholders": {
+      "supprimes": {
+        "type": "int"
+      },
+      "archives": {
+        "type": "int"
+      }
+    }
+  },
+  "archToastRestaures": "{nombre} restauré(s)",
+  "@archToastRestaures": {
+    "placeholders": {
+      "nombre": {
+        "type": "int"
+      }
+    }
+  },
+  "archErreur": "Opération impossible",
+  "archColArchiveLe": "Archivé le",
+  "archColArchivePar": "Archivé par",
+  "archBloqueSysteme": "Élément système",
+  "archBloqueInconnu": "Introuvable",
+  "archBloqueStock": "Stock non nul : ramenez-le à zéro (inventaire) d'abord",
+  "archBloqueDansPack": "Composant d'un pack : retirez-le du pack d'abord",
+  "archBloqueSolde": "Solde non nul : réglez le crédit ou l'avance d'abord",
+  "archBloqueMagasinPrincipal": "Magasin principal d'un utilisateur",
+  "archBloqueSession": "Session de caisse ouverte",
+  "archBloqueSoldeCaisse": "Solde de caisse non nul : transférez-le d'abord",
+  "archBloqueCompteCourant": "Compte connecté",
+  "archBloqueRoleUtilise": "Rôle attribué à des utilisateurs",
+  "archBloqueLimite": "Limite de la licence atteinte",
+  "archBloqueEtat": "Déjà traité",
+  "hiActArchivage": "Archivage"
 }
