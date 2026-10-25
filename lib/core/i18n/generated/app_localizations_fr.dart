@@ -2910,7 +2910,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get ventesClientScelle =>
-      'Client du ticket scellé : pour un autre client, faites un retour puis une nouvelle vente.';
+      'Pour changer de client, utilisez « Ajouter des produits » : la vente est rouverte dans la caisse.';
 
   @override
   String get ventesComplementIndice => 'Le complément sera enregistré comme versement imputé sur ce panier.';
@@ -8769,4 +8769,78 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get importErreurNomPris => 'Nom déjà utilisé';
+
+  @override
+  String get iaFicheTitre => 'Produit reconnu';
+
+  @override
+  String get iaFicheQuestion => 'Est-ce bien ce produit ? Votre réponse est envoyée au catalogue pour le confirmer.';
+
+  @override
+  String get iaFicheOui => 'C\'est ça';
+
+  @override
+  String get iaFicheNon => 'Ce n\'est pas ça';
+
+  @override
+  String get iaFicheMarque => 'Marque';
+
+  @override
+  String get iaFicheQuantite => 'Quantité';
+
+  @override
+  String get iaFicheCategorie => 'Catégorie';
+
+  @override
+  String get iaFichePrix => 'Prix de vente';
+
+  @override
+  String iaFicheAConfirmer(int score, int seuil) {
+    return 'Ajouté par une boutique, pas encore confirmé par les autres ($score sur $seuil).';
+  }
+
+  @override
+  String get posVenteAvecTva => 'Vente avec TVA';
+
+  @override
+  String get posLigneReprise => 'Ligne de la vente modifiée : elle ne peut être ni retirée ni modifiée';
+
+  @override
+  String get posLigneRepriseCourt => 'déjà vendu';
+
+  @override
+  String posModificationVente(String code, String paye) {
+    return 'Modification de la vente $code (déjà payé $paye) : changez le client ou ajoutez des produits. À l\'encaissement, elle est remplacée par un nouveau ticket.';
+  }
+
+  @override
+  String get posModificationAbandonner => 'Abandonner';
+
+  @override
+  String posModificationAbandonnerTitre(String code) {
+    return 'Abandonner la modification de $code ?';
+  }
+
+  @override
+  String get posModificationAbandonnerMsg => 'La vente reste telle qu\'elle a été enregistrée.';
+
+  @override
+  String posVenteModifiee(String code) {
+    return 'Modification $code';
+  }
+
+  @override
+  String get posInfoRemplace => 'Remplace';
+
+  @override
+  String get posInfoTotalTicket => 'Total du ticket';
+
+  @override
+  String get posInfoDejaPaye => 'Déjà payé';
+
+  @override
+  String get posVdjEditer => 'Éditer';
+
+  @override
+  String get ventesAjouterProduits => 'Ajouter des produits';
 }

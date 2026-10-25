@@ -61,7 +61,7 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
   bool _nombreActif = false;
   String _regime = RegimesFiscaux.reel;
   bool _timbre = true;
-  bool _tvaCaisse = true;
+  bool _tvaCaisse = false;
   bool _tvaDocuments = true;
   String _affichagePrix = ParametresVente.affichagePrixTous;
   String _typeMarge = ParametresVente.typeMargePourcentage;

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:caissedz_desktop/app/providers.dart';
+import 'package:caissedz_desktop/application/tendance_service.dart';
 import 'package:caissedz_desktop/core/design_system/design_system.dart';
 import 'package:caissedz_desktop/data/catalogue_repository.dart';
 import 'package:caissedz_desktop/data/parametre_repository.dart';
@@ -98,7 +99,17 @@ void main() {
       );
       await tester.enterText(_champ('produit_ia_code'), '6130000000015');
       await clic(tester, _cle('produit_ia_rechercher'));
+      // La fiche trouvée est montrée avant de remplir le formulaire : nom, marque, source.
+      expect(find.text('Eau minérale'), findsOneWidget);
+      expect(find.text('Ifri'), findsOneWidget);
+      expect(find.text('Fiche trouvée via Open Food Facts'), findsOneWidget);
+      await clic(tester, _cle('ia_fiche_oui'));
       expect(tester.widget<TextField>(_champ('produit_designation')).controller!.text, 'Eau minérale');
+      expect(
+        await ParametreRepository(c.read(appDatabaseProvider).db).lire(TendanceService.cleVotes),
+        isNull,
+        reason: 'pas de vote pour une fiche venue d’une autre source que le catalogue BENS',
+      );
       await tester.enterText(_champ('produit_achat'), '50');
       await tester.enterText(_champ('produit_marge'), '20');
       await tester.pump();
@@ -165,6 +176,11 @@ void main() {
       expect(appels.map((u) => u.host), [
         'catalog-api.bensds.com',
       ], reason: 'trouvé : les autres sources ne sont pas appelées');
+      expect(tester.widget<Text>(_cle('ia_fiche_nom')).data, 'Rouiba Orange');
+      await clic(tester, _cle('ia_fiche_oui'));
+      expect(jsonDecode((await ParametreRepository(c.read(appDatabaseProvider).db).lire(TendanceService.cleVotes))!), [
+        {'code_barres': '6130005000017', 'vote': 1},
+      ], reason: '« C’est ça » : vote de confirmation (gardé hors ligne)');
       expect(tester.widget<TextField>(_champ('produit_designation')).controller!.text, 'Rouiba Orange');
       expect(tester.widget<TextField>(_champ('produit_designation_ar')).controller!.text, 'رويبة برتقال');
       await tester.enterText(_champ('produit_achat'), '90');
@@ -173,6 +189,43 @@ void main() {
       final p = await CatalogueRepository(c.read(appDatabaseProvider).db).produitParCodeBarres('6130005000017');
       expect([p!.designation, p.taille, p.designationAr, p.marque], ['Rouiba Orange', '1 L', 'رويبة برتقال', 'Rouiba']);
       await tester.pump(const Duration(seconds: 5)); // fin du toast
+    });
+
+    testWidgets('mode IA : « Ce n’est pas ça » vote contre et ne remplit pas le formulaire', (tester) async {
+      final client = MockClient((req) async {
+        if (req.url.host == 'catalog-api.bensds.com' && req.url.path == '/products/barcode/6130005000017') {
+          return http.Response(
+            jsonEncode({
+              'success': true,
+              'data': {'nom': 'Rouiba Orange 1L', 'brand': 'Rouiba', 'a_confirmer': true, 'confirmation': 3},
+            }),
+            200,
+            headers: {'content-type': 'application/json; charset=utf-8'},
+          );
+        }
+        return http.Response('{"status":0}', 200);
+      });
+      final c = await pumpApp(
+        tester,
+        routeInitiale: '/produits',
+        taille: const Size(1600, 1000),
+        overrides: [httpClientProvider.overrideWithValue(client)],
+      );
+      await clic(tester, _cle('produit_nouveau'));
+      await clic(
+        tester,
+        find.descendant(of: find.byType(DsSegmentedControl<ModeFormulaireProduit>), matching: find.text('IA')),
+      );
+      await tester.enterText(_champ('produit_ia_code'), '6130005000017');
+      await clic(tester, _cle('produit_ia_rechercher'));
+      expect(_cle('ia_fiche_a_confirmer'), findsOneWidget, reason: 'produit d’une boutique, pas encore confirmé');
+      await clic(tester, _cle('ia_fiche_non'));
+      expect(jsonDecode((await ParametreRepository(c.read(appDatabaseProvider).db).lire(TendanceService.cleVotes))!), [
+        {'code_barres': '6130005000017', 'vote': -1},
+      ]);
+      expect(_cle('ia_fiche_nom'), findsNothing);
+      expect(_cle('produit_ia_code'), findsOneWidget, reason: 'le formulaire reste en mode IA, rien n’est rempli');
+      expect(find.text('Rouiba Orange'), findsNothing);
     });
 
     testWidgets('catégories : création d’une catégorie (sous-catégorie par défaut créée)', (tester) async {

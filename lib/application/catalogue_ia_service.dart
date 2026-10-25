@@ -113,6 +113,8 @@ class SourceBens implements SourceCatalogue {
     final nom = texte(p['nom']);
     if (nom == null) return null;
     final s = QuantiteProduit.separer(nom, quantite: texte(p['taille']));
+    // Catégorie du catalogue (« Beverages, Sodas ») : la plus précise, la dernière.
+    final categorie = texte(texte(p['category'])?.split(',').last);
     return FicheProduitIa(
       codeBarres: codeBarres,
       designation: s.nom,
@@ -120,6 +122,7 @@ class SourceBens implements SourceCatalogue {
       quantite: s.quantite,
       typeQuantite: s.type,
       marque: texte(p['brand']),
+      categorie: categorie == 'Sans Categorie' ? null : categorie,
       image: texte(p['photo']),
       source: nomSource,
       aConfirmer: p['a_confirmer'] == true || p['a_confirmer'] == 1,

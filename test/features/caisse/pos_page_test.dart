@@ -11,6 +11,7 @@ import 'package:caissedz_desktop/data/vente_repository.dart';
 import 'package:caissedz_desktop/domain/models/parametres_paiement.dart';
 import 'package:caissedz_desktop/domain/models/parametres_vente.dart';
 import 'package:caissedz_desktop/domain/models/produit.dart';
+import 'package:caissedz_desktop/features/caisse/pos_controller.dart';
 import 'package:caissedz_desktop/features/produits/produits_providers.dart';
 import 'package:caissedz_desktop/features/stock/stock_providers.dart';
 import 'package:flutter/material.dart';
@@ -129,6 +130,48 @@ void main() {
         findsNothing,
       );
       expect(find.text('Panier vide'), findsOneWidget);
+    });
+
+    testWidgets('ventes du jour → Éditer : la vente revient au panier, produit ajouté, ticket remplacé', (
+      tester,
+    ) async {
+      final c = await pumpApp(tester, routeInitiale: '/caisse', taille: const Size(1600, 1000));
+      await _donnees(c);
+      final db = c.read(appDatabaseProvider).db;
+      final ctrl = c.read(posControllerProvider.notifier);
+      await ctrl.ouvrirSession(caisseCode: 'CIS0000', fondInitial: 0);
+      final lait = (await c.read(produitsPosProvider.future)).firstWhere((p) => p.designation == 'Lait 1 L');
+      await ctrl.ajouter(lait);
+      await ctrl.encaisser(montantPaye: 100);
+      await tester.pumpAndSettle();
+      // Vente avec TVA : désactivée au départ.
+      expect(tester.widget<DsSwitch>(find.byType(DsSwitch)).valeur, isFalse);
+
+      await clic(tester, find.text('Ventes du jour'));
+      await clic(tester, find.byKey(const ValueKey('vdj_editer_VTE0001')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('vdj_editer_VTE0001')), findsNothing, reason: 'dialog fermé');
+      expect(find.byKey(const ValueKey('panier_modification')), findsOneWidget);
+      expect(find.textContaining('VTE0001'), findsWidgets);
+      // La ligne reprise est verrouillée : pas de bouton pour la retirer.
+      expect(
+        find.descendant(of: find.byKey(const ValueKey('ligne_0')), matching: find.byTooltip('Retirer')),
+        findsNothing,
+      );
+
+      await tester.tap(find.byKey(const ValueKey('tuile_PRD0001')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('ligne_1')), findsOneWidget);
+      await clic(tester, find.byKey(const ValueKey('caisse_encaisser')));
+      expect(find.text('Déjà payé'), findsOneWidget);
+      await clic(tester, find.byKey(const ValueKey('encaisser_valider')));
+      await clic(tester, find.text('Fermer').last);
+      await tester.pump(const Duration(seconds: 5));
+      final repo = VenteRepository(db);
+      expect((await repo.vente('VTE0001'))!.statut, 'Annulée');
+      final v2 = (await repo.vente('VTE0002'))!;
+      expect([v2.totalNet, v2.verse, v2.lignes.length], [200, 200, 2]);
+      expect(find.byKey(const ValueKey('panier_modification')), findsNothing);
     });
 
     testWidgets('quantité au clavier dans le dialog, raccourcis actifs hors du champ de scan', (tester) async {

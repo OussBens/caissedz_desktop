@@ -11,6 +11,7 @@ import '../../application/stock_service.dart';
 import '../../application/vente_service.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
+import '../../domain/fiscalite.dart';
 import '../../domain/models/caisse.dart';
 import '../../domain/models/panier.dart';
 import '../../domain/models/parametres_vente.dart';
@@ -25,6 +26,7 @@ import '../gestion_caisse/gestion_caisse_providers.dart';
 import '../produits/produit_form_dialog.dart';
 import '../produits/produits_donnees.dart';
 import '../produits/produits_providers.dart';
+import '../rapports/rapports_providers.dart';
 import '../stock/stock_providers.dart';
 import '../tiers/tiers_dialogs.dart';
 import '../tiers/tiers_providers.dart';
@@ -299,6 +301,7 @@ class _PosPageState extends ConsumerState<PosPage> {
         ? lignes.indexWhere(
             (l) =>
                 l.produit.code == r.produit.code &&
+                !l.verrouillee &&
                 l.colis == null &&
                 l.pack == null &&
                 !l.estMontant &&
@@ -434,17 +437,19 @@ class _PosPageState extends ConsumerState<PosPage> {
     final index = etat.paniers.indexWhere((p) => p.id == cle);
     if (index < 0) return;
     final p = etat.paniers[index];
+    final modifiee = p.remplacement?.code;
     if (p.lignes.isNotEmpty) {
       final ok = await afficherConfirmation(
         context,
-        titre: l10n.posFermerVenteTitre(p.id),
-        message: l10n.posFermerVenteMsg('${p.lignes.length}'),
-        libelleConfirmer: l10n.posFermerVenteOk,
+        titre: modifiee != null ? l10n.posModificationAbandonnerTitre(modifiee) : l10n.posFermerVenteTitre(p.id),
+        message: modifiee != null ? l10n.posModificationAbandonnerMsg : l10n.posFermerVenteMsg('${p.lignes.length}'),
+        libelleConfirmer: modifiee != null ? l10n.posModificationAbandonner : l10n.posFermerVenteOk,
         genre: DsConfirmGenre.avertissement,
       );
       if (!ok) return;
     }
     ctrl.fermerPanier(index);
+    if (mounted) setState(() => _ligneSelectionnee = null);
   }
 
   // ------------------------------------------------------------------ Encaissement
@@ -622,6 +627,11 @@ class _PosPageState extends ConsumerState<PosPage> {
     );
   }
 
+  Future<void> _changerTva(bool avecTva) async {
+    await ref.read(parametresServiceProvider).changerTvaCaisse(avecTva);
+    ref.invalidate(parametresVenteProvider);
+  }
+
   Widget _entete(PosEtat etat) {
     final t = context.ds.typo;
     final s = etat.session;
@@ -647,6 +657,20 @@ class _PosPageState extends ConsumerState<PosPage> {
               ? null
               : () => unawaited(afficherMouvementManuel(context, ref, caisseCode: s.caisseCode)),
         ),
+        // Vente avec TVA (désactivée par défaut, régime du réel seulement). Le prix d'une ligne est fixé à son
+        // ajout : l'interrupteur ne change que lorsqu'aucun panier n'a de ligne.
+        if (ref.watch(parametresVenteProvider).value case final pv? when pv.regimeFiscal == RegimesFiscaux.reel)
+          // Le libellé de l'interrupteur s'étend : largeur bornée à son contenu.
+          IntrinsicWidth(
+            child: DsSwitch(
+              cle: const ValueKey('caisse_tva'),
+              petit: true,
+              libelle: l10n.posVenteAvecTva,
+              valeur: pv.tvaCaisse,
+              actif: etat.paniers.every((p) => p.lignes.isEmpty),
+              onChanged: (v) => unawaited(_changerTva(v)),
+            ),
+          ),
         LayoutBuilder(
           builder: (context, _) => Row(
             mainAxisSize: MainAxisSize.min,
@@ -712,7 +736,9 @@ class _PosPageState extends ConsumerState<PosPage> {
           cle: p.id,
           libelle: l10n.posVente(p.id),
           compte: p.lignes.length,
-          meta: p.lignes.isNotEmpty
+          meta: p.remplacement != null
+              ? l10n.posVenteModifiee(p.remplacement!.code)
+              : p.lignes.isNotEmpty
               ? l10n.posVenteMeta(formaterNombre(p.pieces), _da(p.totalNet))
               : (p.clientCode != 'CLN0000' ? _nomClient(p.clientCode) : l10n.posVenteVide),
         ),
@@ -1080,6 +1106,8 @@ class _PosPageState extends ConsumerState<PosPage> {
       options: [null, for (final r in remises) r.code],
       libelle: (code) =>
           code == null ? l10n.posAucuneRemise : _libelleRemise(remises.firstWhere((r) => r.code == code)),
+      // Pas de remise globale sur une vente modifiée : ses lignes reprises ont déjà la leur.
+      actif: panier.remplacement == null,
       onChanged: (code) => ctrl.appliquerRemise(remises.where((r) => r.code == code).firstOrNull),
       onLookup: () => unawaited(_choisirRemise()),
       lookupTooltip: l10n.posChoisirRemise,
@@ -1103,9 +1131,27 @@ class _PosPageState extends ConsumerState<PosPage> {
       ],
     );
 
+    final remplacement = panier.remplacement;
     final lignes = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        if (remplacement != null)
+          Padding(
+            padding: const EdgeInsets.only(bottom: DsSpacing.s2),
+            child: DsNote(
+              key: const ValueKey('panier_modification'),
+              icone: LucideIcons.pencil,
+              ton: DsBadgeTon.avertissement,
+              texte: l10n.posModificationVente(remplacement.code, _da(panier.dejaPaye)),
+              action: DsButton(
+                key: const ValueKey('panier_modification_abandonner'),
+                libelle: l10n.posModificationAbandonner,
+                taille: DsButtonTaille.sm,
+                variante: DsButtonVariante.fantome,
+                onPressed: () => unawaited(_fermerVente(panier.id)),
+              ),
+            ),
+          ),
         if (panier.lignes.isNotEmpty) const DsCartLineHeader(),
         Expanded(
           child: panier.estVide
@@ -1120,6 +1166,8 @@ class _PosPageState extends ConsumerState<PosPage> {
                   itemBuilder: (_, i) {
                     final l = panier.lignes[i];
                     final montant = l.estMontant;
+                    // Ligne reprise d'une vente modifiée : ni retirée ni modifiée.
+                    final fixe = l.verrouillee;
                     // Ligne issue d'un pack : colonne colis « Pack », nom du pack sous le produit.
                     final colis = montant
                         ? l10n.posMontantColis
@@ -1128,10 +1176,12 @@ class _PosPageState extends ConsumerState<PosPage> {
                         : l.colis?.designation ??
                               (l.uniteVente == UniteVente.nombre ? l10n.posVendreNombre : l10n.posSelUnite);
                     return Tooltip(
-                      message: montant ? l10n.posMontantLigneAide : l10n.posLigneAide,
+                      message: fixe ? l10n.posLigneReprise : (montant ? l10n.posMontantLigneAide : l10n.posLigneAide),
                       waitDuration: const Duration(seconds: 1),
                       child: GestureDetector(
-                        onDoubleTap: montant
+                        onDoubleTap: fixe
+                            ? null
+                            : montant
                             ? () => unawaited(_saisirMontant(index: i))
                             : peutPrix
                             ? () => unawaited(_modifierPrix(i))
@@ -1139,7 +1189,11 @@ class _PosPageState extends ConsumerState<PosPage> {
                         child: DsCartLine(
                           key: ValueKey('ligne_$i'),
                           nom: montant ? l10n.posMontantTitre : l.designation,
-                          code: l.pack != null ? '${l.produit.code} · ${l.pack!.designation}' : l.produit.code,
+                          code: [
+                            l.produit.code,
+                            if (l.pack != null) l.pack!.designation,
+                            if (fixe) l10n.posLigneRepriseCourt,
+                          ].join(' · '),
                           prix: l.quantite == 0 ? l.prixUnitaire : l.total / l.quantite,
                           // Prix HT, TVA et / ou TTC selon Paramètres › Affichage des prix.
                           detailPrix: montant
@@ -1157,17 +1211,19 @@ class _PosPageState extends ConsumerState<PosPage> {
                           pieces: montant ? 0 : l.unitesStock + l.nombreStock,
                           selectionnee: _ligneSelectionnee == i,
                           onTap: () => setState(() => _ligneSelectionnee = i),
-                          onColis: l.pack == null && !montant ? () => unawaited(_modifierColis(i)) : null,
-                          onPlus: montant
+                          onColis: l.pack == null && !montant && !fixe ? () => unawaited(_modifierColis(i)) : null,
+                          onPlus: montant || fixe
                               ? null
                               : () => unawaited(_executer(() => ctrl.modifierQuantite(i, l.quantite + 1))),
-                          onMoins: montant
+                          onMoins: montant || fixe
                               ? null
                               : () => unawaited(_executer(() => ctrl.modifierQuantite(i, l.quantite - 1))),
-                          onRetirer: () {
-                            ctrl.retirerLigne(i);
-                            setState(() => _ligneSelectionnee = null);
-                          },
+                          onRetirer: fixe
+                              ? null
+                              : () {
+                                  ctrl.retirerLigne(i);
+                                  setState(() => _ligneSelectionnee = null);
+                                },
                         ),
                       ),
                     );

@@ -19,7 +19,7 @@ class ParametresVente {
     this.nombreActif = false,
     this.regimeFiscal = RegimesFiscaux.reel,
     this.timbreActif = true,
-    this.tvaCaisse = true,
+    this.tvaCaisse = false,
     this.tvaDocuments = true,
     this.affichagePrix = affichagePrixTous,
   });
@@ -105,7 +105,7 @@ class ParametresVente {
   /// Droit de timbre sur la part payée en espèces des factures.
   final bool timbreActif;
 
-  /// Vente en caisse avec TVA : prix TTC (HT + TVA du produit) ; sinon prix HT, sans TVA.
+  /// Vente en caisse avec TVA : prix TTC (HT + TVA du produit) ; sinon prix HT, sans TVA (par défaut).
   final bool tvaCaisse;
 
   /// Même choix pour les devis, proformas, commandes clients et leurs livraisons.
@@ -193,7 +193,7 @@ class ParametresVente {
     nombreActif: m[cleNombre] == '1',
     regimeFiscal: m[Fiscalite.cleRegime] == RegimesFiscaux.ifu ? RegimesFiscaux.ifu : RegimesFiscaux.reel,
     timbreActif: m[Fiscalite.cleTimbre] != '0',
-    tvaCaisse: m[Fiscalite.cleTvaCaisse] != '0',
+    tvaCaisse: m[Fiscalite.cleTvaCaisse] == '1',
     tvaDocuments: m[Fiscalite.cleTvaDocuments] != '0',
     affichagePrix: affichagesPrix.contains(m[cleAffichagePrix]) ? m[cleAffichagePrix]! : affichagePrixTous,
   );

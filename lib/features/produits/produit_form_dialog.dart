@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
+import '../../app/demarrage_providers.dart';
 import '../../application/catalogue_ia_service.dart';
 import '../../application/catalogue_service.dart';
 import '../../core/design_system/design_system.dart';
@@ -22,6 +25,7 @@ import '../commun/selecteurs.dart';
 import '../commun/statuts.dart';
 import '../stock/stock_providers.dart';
 import '../tiers/tiers_providers.dart';
+import 'fiche_ia_dialog.dart';
 import 'produit_dialogs.dart';
 import 'produits_donnees.dart';
 import 'produits_providers.dart';
@@ -395,15 +399,27 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
     }
     final f = await ref.read(catalogueIaServiceProvider).rechercher(code);
     if (!mounted) return;
-    setState(() {
-      _iaEnCours = false;
-      _iaCherche = true;
-      if (f != null) {
-        _appliquerFiche(f);
-        _mode = ModeFormulaireProduit.rapide;
-      } else {
+    if (f == null) {
+      setState(() {
+        _iaEnCours = false;
+        _iaCherche = true;
         _codeBarres.text = code;
-      }
+      });
+      return;
+    }
+    setState(() => _iaEnCours = false);
+    // Fiche trouvée : montrée au commerçant, qui confirme (« C'est ça ») ou non ; sa réponse est un vote de
+    // confirmation envoyé au catalogue BENS (gardé hors ligne). Confirmée, elle remplit le formulaire rapide.
+    final oui = await afficherFicheIa(context, f, devise: ref.read(deviseProvider));
+    if (!mounted || oui == null) return;
+    if (f.source == SourceBens.nomSource) {
+      unawaited(ref.read(tendanceServiceProvider).voter(f.codeBarres, oui ? 1 : -1));
+    }
+    if (!oui) return;
+    setState(() {
+      _iaCherche = true;
+      _appliquerFiche(f);
+      _mode = ModeFormulaireProduit.rapide;
     });
   }
 

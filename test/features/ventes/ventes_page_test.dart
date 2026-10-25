@@ -216,6 +216,17 @@ void main() {
       expect(find.text('Chaîne des factures intacte'), findsWidgets);
     });
 
+    testWidgets('modification : « Ajouter des produits » rouvre la vente dans la caisse', (tester) async {
+      await _ouvrir(tester);
+      await doubleClic(tester, find.text('VTE0002'));
+      await clic(tester, find.byKey(const ValueKey('detail_modifier')));
+      await clic(tester, find.byKey(const ValueKey('panier_modifier_produits')));
+      await tester.pumpAndSettle();
+      expect(find.text('Modifier le panier'), findsNothing);
+      expect(find.byKey(const ValueKey('panier_modification')), findsOneWidget, reason: 'écran caisse');
+      expect(find.text('Amina'), findsWidgets, reason: 'client de la vente repris');
+    });
+
     testWidgets('« Nouvelle vente » ouvre la caisse', (tester) async {
       await pumpApp(tester, routeInitiale: '/ventes', taille: const Size(1500, 1000));
       await clic(tester, find.byKey(const ValueKey('ventes_nouvelle')));

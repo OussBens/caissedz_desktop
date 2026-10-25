@@ -695,12 +695,14 @@ class _EncaisserDialog extends ConsumerStatefulWidget {
 
 class _EncaisserDialogState extends ConsumerState<_EncaisserDialog> {
   bool get _enregistrer => widget.nature == NatureEncaissement.enregistrer;
-  late String _paye = _enregistrer ? '0' : formaterNombre(widget.panier.totalNet, decimales: 2);
+  late String _paye = _enregistrer ? '0' : formaterNombre(widget.panier.aPayer, decimales: 2);
   late bool _complet = !_enregistrer;
   late String _mode = widget.panier.modePaiement;
 
   bool get _comptoir => widget.panier.clientCode == 'CLN0000';
-  double get _total => widget.panier.totalNet;
+
+  /// À encaisser : le net, moins ce qui est déjà payé sur une vente modifiée.
+  double get _total => widget.panier.aPayer;
   double get _payeN => _complet ? _total : DsPaymentPanel.lire(_paye);
   bool get _bloque =>
       (_comptoir && _payeN < _total - 1e-9 && !_enregistrer) || (!_complet && _payeN <= 0 && !_enregistrer);
@@ -769,8 +771,9 @@ class _EncaisserDialogState extends ConsumerState<_EncaisserDialog> {
               ),
             DsPaymentPanel(
               total: _total,
-              sousTotal: p.totalRemise > 0 ? p.totalBrut : null,
-              remise: p.totalRemise,
+              // Vente modifiée : le total est ce qui reste à payer, le détail est dans les infos.
+              sousTotal: p.totalRemise > 0 && p.remplacement == null ? p.totalBrut : null,
+              remise: p.remplacement == null ? p.totalRemise : 0,
               devise: ref.read(deviseProvider),
               paye: _paye,
               onPayeChanged: (v) => setState(() => _paye = v),
@@ -782,6 +785,11 @@ class _EncaisserDialogState extends ConsumerState<_EncaisserDialog> {
               creditAutorise: !_comptoir || _enregistrer,
               infos: [
                 DsInfoPaiement(l10n.posInfoVente, l10n.posVente(widget.numeroVente)),
+                if (p.remplacement case final r?) ...[
+                  DsInfoPaiement(l10n.posInfoRemplace, r.code),
+                  DsInfoPaiement(l10n.posInfoTotalTicket, _da(ref, p.totalNet)),
+                  DsInfoPaiement(l10n.posInfoDejaPaye, _da(ref, p.dejaPaye)),
+                ],
                 DsInfoPaiement(l10n.posClientLabel, widget.nomClient),
                 DsInfoPaiement(l10n.posInfoDate, formatDateHeure.format(DateTime.now())),
                 DsInfoPaiement(l10n.posInfoProduits, '${p.lignes.length}'),
@@ -1837,6 +1845,11 @@ class _VentesDuJourDialogState extends ConsumerState<_VentesDuJourDialog> {
   String _q = '';
   String? _mode;
 
+  /// Éditer : la vente passe dans un panier de la caisse (client modifiable, produits à ajouter).
+  Future<void> _editer(PanierResume p) async {
+    if (await chargerVenteEnCaisse(context, ref, p.vente.code) && mounted) Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -1893,6 +1906,24 @@ class _VentesDuJourDialogState extends ConsumerState<_VentesDuJourDialog> {
         libelle: l10n.retoursEtat,
         valeur: (p) => p.statut,
         cellule: (_, p) => BadgeStatut(p.statut),
+      ),
+      DsColonne(
+        id: 'editer',
+        libelle: '',
+        valeur: (_) => null,
+        triable: false,
+        masquable: false,
+        largeur: 104,
+        cellule: (_, p) => p.annule || p.nbRetours > 0
+            ? const SizedBox.shrink()
+            : DsButton(
+                key: ValueKey('vdj_editer_${p.vente.code}'),
+                libelle: l10n.posVdjEditer,
+                icone: LucideIcons.pencil,
+                taille: DsButtonTaille.sm,
+                variante: DsButtonVariante.secondaire,
+                onPressed: () => _editer(p),
+              ),
       ),
     ];
     return DsDialog(
@@ -1958,6 +1989,12 @@ class _VentesDuJourDialogState extends ConsumerState<_VentesDuJourDialog> {
                 libelle: l10n.tiersDetail,
                 icone: LucideIcons.eye,
                 onSelected: (p) => afficherDetailPanier(context, ref, p, nomsClients: noms),
+              ),
+              DsActionContextuelle(
+                libelle: l10n.posVdjEditer,
+                icone: LucideIcons.pencil,
+                visible: (p) => !p.annule && p.nbRetours == 0,
+                onSelected: _editer,
               ),
               DsActionContextuelle(
                 libelle: l10n.posReimprimer,

@@ -1321,3 +1321,35 @@ téléchargés et le code-barres inconnu est cherché dans le catalogue à la ca
   réinitialisation, migration v44) ; `connexion_test.dart` (essai refusé puis formule payée, encart sans
   administrateur) ; `activation_test.dart` (clé sans compte → création du compte). Les tests se connectent avec le
   mot de passe du compte BENS de test (`donnerMotDePasseAdmin`).
+
+## Reconnaissance IA confirmée, TVA de la caisse, modification d'une vente ✅ (2026-10-25)
+
+- **Reconnaissance IA** (formulaire produit, mode IA) : la fiche trouvée n'est plus appliquée d'office. Le dialog
+  `afficherFicheIa` la montre (photo, nom et nom arabe, code-barres, marque, quantité, catégorie, prix, source,
+  « à confirmer » pour un produit ajouté par une boutique) avec « C'est ça » / « Ce n'est pas ça ». Pour une fiche
+  du catalogue BENS, la réponse est un vote de confirmation (`TendanceService.voter`, +1 / −1, gardé hors ligne).
+  « C'est ça » remplit le formulaire rapide ; « Ce n'est pas ça » ne remplit rien. Le catalogue BENS donne aussi
+  sa catégorie (la plus précise, « Sans Categorie » ignorée).
+- **Vente avec TVA** en caisse : **désactivée par défaut** (`tva_caisse` absent = sans TVA ; les documents restent
+  avec TVA par défaut). Interrupteur « Vente avec TVA » dans l'en-tête de la caisse (régime du réel seulement),
+  en plus de Paramètres › Caisse et ventes (`ParametresService.changerTvaCaisse`). Le prix d'une ligne étant fixé à
+  son ajout, il ne change que lorsqu'aucun panier n'a de ligne.
+- **Modification d'une vente** : le ticket scellé ne peut pas changer (déclencheurs v30 / v31 sur les lignes, le
+  client et les totaux). Choix retenu : **annuler et remplacer**.
+  - Entrées : « Éditer » dans Ventes du jour (caisse) et « Ajouter des produits » dans Ventes › Modifier le panier.
+    `PosController.modifierVente` recharge la vente dans un panier (le courant s'il est vide, sinon un nouveau) :
+    ses lignes sont reprises **verrouillées** (`PanierLigne.reprise` : ni retirées, ni modifiées, prix / remise /
+    coût / unités / TVA du ticket d'origine, pas de réservation de stock), le client se change, des produits
+    s'ajoutent ; pas de remise globale. Bandeau « Modification de la vente … (déjà payé …) » + « Abandonner ».
+  - Contrôles (`VenteService.preparerModification`) : vente ni annulée, ni en période clôturée, sans retour lié.
+  - Encaissement (`VenteService.encaisser`, UNE transaction) : la vente d'origine est annulée (journal fiscal
+    `ANNULATION_VENTE` chaîné, motif « Remplacée par VTE… », stock rétabli puis ressorti à l'identique, points
+    rendus, avoir si elle était facturée, **pas** de sortie de caisse) ; le nouveau ticket scellé reprend ses
+    paiements (espèces nettes de la monnaie rendue) et, pour le même client, ses points et ses versements imputés
+    (imputations déplacées). Client changé : ses versements redeviennent une avance de l'ancien client. Seuls les
+    nouveaux paiements entrent au journal de caisse ; le dialog Encaisser demande la différence (« Déjà payé »).
+- `DsCartLine` : sans action, les boutons ± sont estompés et la corbeille disparaît.
+- Tests : `modification_vente_test.dart` (remplacement, caisse, journal fiscal, chaîne, crédit et versements, client
+  changé) ; `pos_controller_test.dart` (rechargement verrouillé, déjà chargée, abandon ; TVA désactivée par
+  défaut) ; `pos_page_test.dart` (Ventes du jour → Éditer → ajout → encaissement) ; `ventes_page_test.dart`
+  (« Ajouter des produits ») ; `produits_page_test.dart` (fiche IA : confirmée, refusée, votes).

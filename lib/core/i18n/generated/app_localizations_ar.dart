@@ -2900,7 +2900,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get ventesModifierTitre => 'تعديل السلة';
 
   @override
-  String get ventesClientScelle => 'زبون التذكرة المختومة: لزبون آخر، قم بإرجاع ثم بيع جديد.';
+  String get ventesClientScelle => 'لتغيير الزبون، استعمل «إضافة منتجات»: يُعاد فتح البيع في الصندوق.';
 
   @override
   String get ventesComplementIndice => 'سيسجل الفرق كدفعة مخصصة لهذه السلة.';
@@ -8721,4 +8721,78 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get importErreurNomPris => 'الاسم مستعمل';
+
+  @override
+  String get iaFicheTitre => 'منتج تم التعرف عليه';
+
+  @override
+  String get iaFicheQuestion => 'هل هذا هو المنتج؟ يُرسَل جوابك إلى الكتالوج لتأكيده.';
+
+  @override
+  String get iaFicheOui => 'نعم، هذا هو';
+
+  @override
+  String get iaFicheNon => 'ليس هذا';
+
+  @override
+  String get iaFicheMarque => 'العلامة التجارية';
+
+  @override
+  String get iaFicheQuantite => 'الكمية';
+
+  @override
+  String get iaFicheCategorie => 'الفئة';
+
+  @override
+  String get iaFichePrix => 'سعر البيع';
+
+  @override
+  String iaFicheAConfirmer(int score, int seuil) {
+    return 'أضافه متجر ولم تؤكده المتاجر الأخرى بعد ($score من $seuil).';
+  }
+
+  @override
+  String get posVenteAvecTva => 'البيع مع ر.ق.م';
+
+  @override
+  String get posLigneReprise => 'سطر من البيع المعدَّل: لا يمكن حذفه ولا تعديله';
+
+  @override
+  String get posLigneRepriseCourt => 'مُباع';
+
+  @override
+  String posModificationVente(String code, String paye) {
+    return 'تعديل البيع $code (المدفوع $paye): غيّر الزبون أو أضف منتجات. عند التحصيل، يُستبدل بتذكرة جديدة.';
+  }
+
+  @override
+  String get posModificationAbandonner => 'تراجع';
+
+  @override
+  String posModificationAbandonnerTitre(String code) {
+    return 'التراجع عن تعديل $code؟';
+  }
+
+  @override
+  String get posModificationAbandonnerMsg => 'يبقى البيع كما سُجِّل.';
+
+  @override
+  String posVenteModifiee(String code) {
+    return 'تعديل $code';
+  }
+
+  @override
+  String get posInfoRemplace => 'يستبدل';
+
+  @override
+  String get posInfoTotalTicket => 'مجموع التذكرة';
+
+  @override
+  String get posInfoDejaPaye => 'المدفوع مسبقًا';
+
+  @override
+  String get posVdjEditer => 'تعديل';
+
+  @override
+  String get ventesAjouterProduits => 'إضافة منتجات';
 }

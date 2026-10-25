@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 
 import '../calculs_prix.dart';
 import 'produit.dart';
+import 'vente.dart';
 
 /// Unité de vente d'une ligne : à l'unité ou au « nombre » (pièce).
 enum UniteVente { unite, nombre }
@@ -18,7 +19,20 @@ class PanierLigne {
     required this.prixUnitaire,
     this.remisePct = 0,
     this.nombreExige = false,
+    this.reprise,
   });
+
+  /// Ligne reprise d'une vente modifiée ([Panier.remplacement]) : verrouillée (ni retirée ni modifiée), son
+  /// montant, ses unités et sa TVA restent ceux du ticket d'origine.
+  factory PanierLigne.reprise(VenteLigne l, Produit produit, {Colis? colis, Pack? pack}) => PanierLigne(
+    produit: produit,
+    colis: colis,
+    pack: pack,
+    quantite: l.quantite,
+    uniteVente: l.uniteVente == 'Nombre' ? UniteVente.nombre : UniteVente.unite,
+    prixUnitaire: l.prixUnitaire,
+    reprise: l,
+  );
 
   final Produit produit;
 
@@ -38,25 +52,36 @@ class PanierLigne {
   /// (unités × `nombreParUnite`). ⚠️ PROVISOIRE : pièces déduites, pas de saisie séparée en caisse.
   final bool nombreExige;
 
+  /// Ligne du ticket d'origine, pour une ligne reprise d'une vente modifiée ; `null` pour une ligne ajoutée.
+  final VenteLigne? reprise;
+
+  /// Ligne reprise d'une vente modifiée : ni retirée, ni modifiée.
+  bool get verrouillee => reprise != null;
+
   /// Code du produit système « Vente au montant » (ligne de montant libre de la caisse).
   static const String codeMontant = 'PRD0000';
 
   /// Ligne de montant libre (balance, article non codifié) : quantité 1, le prix est le montant cumulé.
   bool get estMontant => produit.code == codeMontant;
 
-  String get designation => colis?.designation ?? produit.designation;
+  String get designation => reprise?.designation ?? colis?.designation ?? produit.designation;
 
-  /// Clé d'agrégation : même pack d'origine / produit / colis / unité ⇒ même ligne.
-  String get cle => '${pack == null ? '' : '${pack!.code}/'}${colis?.code ?? produit.code}|${uniteVente.name}';
+  /// Clé d'agrégation : même pack d'origine / produit / colis / unité ⇒ même ligne. Une ligne reprise reste à part.
+  String get cle => reprise != null
+      ? 'reprise/${reprise!.ordre}'
+      : '${pack == null ? '' : '${pack!.code}/'}${colis?.code ?? produit.code}|${uniteVente.name}';
 
   double get brut => CalculsPrix.arrondir(prixUnitaire * quantite);
-  double get remise => CalculsPrix.arrondir(brut * remisePct / 100);
-  double get total => CalculsPrix.arrondir(brut - remise);
+  double get remise =>
+      reprise != null ? CalculsPrix.arrondir(brut - reprise!.total) : CalculsPrix.arrondir(brut * remisePct / 100);
+  double get total => reprise?.total ?? CalculsPrix.arrondir(brut - remise);
 
   /// Unités de stock consommées par cette ligne.
-  double get unitesStock => uniteVente == UniteVente.nombre ? 0 : quantite * (colis?.quantite ?? 1);
+  double get unitesStock =>
+      reprise?.unites ?? (uniteVente == UniteVente.nombre ? 0 : quantite * (colis?.quantite ?? 1));
   double get nombreStock =>
-      uniteVente == UniteVente.nombre ? quantite : (nombreExige ? unitesStock * produit.nombreParUnite : 0);
+      reprise?.nombre ??
+      (uniteVente == UniteVente.nombre ? quantite : (nombreExige ? unitesStock * produit.nombreParUnite : 0));
 
   PanierLigne copyWith({double? quantite, double? prixUnitaire, double? remisePct}) => PanierLigne(
     produit: produit,
@@ -67,7 +92,41 @@ class PanierLigne {
     prixUnitaire: prixUnitaire ?? this.prixUnitaire,
     remisePct: remisePct ?? this.remisePct,
     nombreExige: nombreExige,
+    reprise: reprise,
   );
+}
+
+/// Vente modifiée dans un panier de la caisse (ajout de produits, changement de client) : le ticket scellé ne
+/// change pas ; à l'encaissement, il est annulé et remplacé par un nouveau ticket qui reprend ses lignes
+/// (verrouillées) et ce qui était déjà payé.
+@immutable
+class RemplacementVente {
+  const RemplacementVente({
+    required this.code,
+    required this.clientCode,
+    required this.paye,
+    this.points = 0,
+    this.impute = 0,
+  });
+
+  /// Code de la vente remplacée.
+  final String code;
+
+  /// Client de la vente remplacée : ses points et ses versements ne sont repris que s'il ne change pas.
+  final String clientCode;
+
+  /// Payé à l'encaissement de la vente d'origine, hors points (espèces nettes de la monnaie rendue).
+  final double paye;
+
+  /// Payé en points à l'encaissement de la vente d'origine (montant).
+  final double points;
+
+  /// Versements imputés depuis sur la vente d'origine.
+  final double impute;
+
+  /// Ce qui est repris si la vente passe au client [client] : les points et les versements restent au client
+  /// d'origine quand il change (rendus et libérés à l'annulation).
+  double reprisPour(String client) => CalculsPrix.arrondir(paye + (client == clientCode ? points + impute : 0));
 }
 
 /// Paiement d'une vente.
@@ -93,6 +152,7 @@ class Panier {
     this.commentaire,
     this.remiseCode,
     this.modePaiement = 'Espèces',
+    this.remplacement,
   });
 
   final int id;
@@ -107,6 +167,15 @@ class Panier {
 
   /// Mode de paiement choisi pour l'encaissement (valeur stockée FR).
   final String modePaiement;
+
+  /// Vente modifiée chargée dans ce panier (ses lignes reprises sont verrouillées), `null` pour une vente neuve.
+  final RemplacementVente? remplacement;
+
+  /// Déjà payé sur la vente modifiée et repris par ce panier (0 pour une vente neuve).
+  double get dejaPaye => remplacement?.reprisPour(clientCode) ?? 0;
+
+  /// Montant restant à encaisser : le net, moins ce qui est déjà payé sur une vente modifiée.
+  double get aPayer => CalculsPrix.arrondir((totalNet - dejaPaye).clamp(0, double.infinity));
 
   bool get estVide => lignes.isEmpty;
   double get totalBrut => CalculsPrix.arrondir(lignes.fold(0.0, (s, l) => s + l.brut));
@@ -145,6 +214,7 @@ class Panier {
     commentaire: commentaire ?? this.commentaire,
     remiseCode: effacerRemise ? null : (remiseCode ?? this.remiseCode),
     modePaiement: modePaiement ?? this.modePaiement,
+    remplacement: remplacement,
   );
 
   /// Ajoute une ligne (agrège sur la même clé).
@@ -157,6 +227,7 @@ class Panier {
   }
 
   Panier modifierQuantite(int index, double quantite) {
+    if (lignes[index].verrouillee) return this;
     if (quantite <= 0) return retirer(index);
     final copie = [...lignes];
     copie[index] = copie[index].copyWith(quantite: quantite);
@@ -164,19 +235,23 @@ class Panier {
   }
 
   Panier modifierLigne(int index, PanierLigne ligne) {
+    if (lignes[index].verrouillee) return this;
     final copie = [...lignes];
     copie[index] = ligne;
     return copyWith(lignes: copie);
   }
 
-  /// Retire la ligne ; une ligne issue d'un pack emporte tout le pack (ses produits vont ensemble).
+  /// Retire la ligne ; une ligne issue d'un pack emporte tout le pack (ses produits vont ensemble). Une ligne
+  /// reprise d'une vente modifiée ne se retire pas.
   Panier retirer(int index) {
-    final pack = lignes[index].pack;
+    final ligne = lignes[index];
+    if (ligne.verrouillee) return this;
+    final pack = ligne.pack;
     if (pack == null) return copyWith(lignes: [...lignes]..removeAt(index));
     return copyWith(
       lignes: [
         for (final l in lignes)
-          if (l.pack?.code != pack.code) l,
+          if (l.pack?.code != pack.code || l.verrouillee) l,
       ],
     );
   }
@@ -189,24 +264,32 @@ class Panier {
   /// (≤ 0 : le pack est retiré).
   Panier quantitePack(Pack pack, double nombre) {
     if (nombre <= 0) {
-      final i = lignes.indexWhere((l) => l.pack?.code == pack.code);
+      final i = lignes.indexWhere((l) => l.pack?.code == pack.code && !l.verrouillee);
       return i < 0 ? this : retirer(i);
     }
     return copyWith(
       lignes: [
         for (final l in lignes)
-          l.pack?.code == pack.code ? l.copyWith(quantite: quantiteDansPack(pack, l.produit.code) * nombre) : l,
+          l.pack?.code == pack.code && !l.verrouillee
+              ? l.copyWith(quantite: quantiteDansPack(pack, l.produit.code) * nombre)
+              : l,
       ],
     );
   }
 
-  /// Retire les lignes et les paiements ; client, remise et mode sont conservés.
+  /// Retire les lignes et les paiements ; client, remise et mode sont conservés. Une vente modifiée garde ses
+  /// lignes reprises.
   Panier vider() => Panier(
     id: id,
+    lignes: [
+      for (final l in lignes)
+        if (l.verrouillee) l,
+    ],
     clientCode: clientCode,
     remiseGlobalePct: remiseGlobalePct,
     remiseCode: remiseCode,
     modePaiement: modePaiement,
+    remplacement: remplacement,
   );
 
   /// Panier neuf (après encaissement) : client comptoir, sans remise, espèces.
@@ -221,12 +304,13 @@ class Panier {
   Panier ajouterPaiement(Paiement p) => copyWith(paiements: [...paiements, p]);
   Panier retirerPaiement(int index) => copyWith(paiements: [...paiements]..removeAt(index));
 
-  /// Quantité d'unités de stock réservées pour un produit (lignes directes, colis, lignes issues d'un pack).
+  /// Quantité d'unités de stock réservées pour un produit (lignes directes, colis, lignes issues d'un pack). Les
+  /// lignes reprises d'une vente modifiée sont déjà sorties du stock : elles ne réservent rien.
   double unitesReservees(String produitCode) =>
-      lignes.where((l) => l.produit.code == produitCode).fold(0.0, (s, l) => s + l.unitesStock);
+      lignes.where((l) => l.produit.code == produitCode && !l.verrouillee).fold(0.0, (s, l) => s + l.unitesStock);
 
   double nombreReserve(String produitCode) =>
-      lignes.where((l) => l.produit.code == produitCode).fold(0.0, (s, l) => s + l.nombreStock);
+      lignes.where((l) => l.produit.code == produitCode && !l.verrouillee).fold(0.0, (s, l) => s + l.nombreStock);
 
   /// Prix unitaire de chaque produit dans [pack] : le prix du pack est réparti au prorata du prix de vente des
   /// produits × leur quantité (à défaut, de la quantité), arrondi au centime ; le dernier produit absorbe l'arrondi

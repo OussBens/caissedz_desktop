@@ -11,6 +11,7 @@ import 'package:caissedz_desktop/domain/models/produit.dart';
 import 'package:caissedz_desktop/domain/permissions.dart';
 import 'package:caissedz_desktop/features/caisse/pos_controller.dart';
 import 'package:caissedz_desktop/features/produits/produits_providers.dart';
+import 'package:caissedz_desktop/features/tiers/tiers_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -76,6 +77,49 @@ void main() {
     await c.read(posControllerProvider.notifier).initialiser();
   });
 
+  test(
+    'modifier une vente : rechargée verrouillée, client changé, produit ajouté, seule la différence encaissée',
+    () async {
+      final ctrl = c.read(posControllerProvider.notifier);
+      await ctrl.ouvrirSession(caisseCode: 'CIS0000', fondInitial: 0);
+      await ctrl.ajouter(lait, quantite: 2);
+      final v1 = await ctrl.encaisser(montantPaye: 200);
+      // Un panier en cours n'est pas écrasé : la vente modifiée s'ouvre dans un nouveau panier.
+      await ctrl.ajouter(eau.copyWith(service: true));
+      await ctrl.modifierVente(v1.code);
+      var etat = c.read(posControllerProvider);
+      expect([etat.paniers.length, etat.courant], [2, 1]);
+      expect(etat.panier.remplacement!.code, v1.code);
+      expect(etat.panier.lignes.single.verrouillee, isTrue);
+      // Ligne reprise : ni retirée, ni modifiée ; pas de remise globale sur une vente modifiée.
+      ctrl.retirerLigne(0);
+      await ctrl.modifierQuantite(0, 9);
+      ctrl.prixLigne(0, 1);
+      ctrl.remiseGlobale(50);
+      ctrl.viderPanier();
+      etat = c.read(posControllerProvider);
+      expect((etat.panier.lignes.single.quantite, etat.panier.lignes.single.total), (2, 200));
+      expect(etat.panier.remiseGlobalePct, 0);
+      // Déjà chargée : son panier redevient le panier courant.
+      ctrl.selectionnerPanier(0);
+      await ctrl.modifierVente(v1.code);
+      expect(c.read(posControllerProvider).courant, 1);
+      // Le stock vendu n'est pas réservé une deuxième fois : 8 laits restent disponibles.
+      await ctrl.ajouter(lait, quantite: 8);
+      ctrl.choisirClient('CLN0000');
+      expect(c.read(posControllerProvider).panier.aPayer, 800);
+      final v2 = await ctrl.encaisser(montantPaye: 800);
+      expect([v2.totalNet, v2.verse, v2.reste], [1000, 1000, 0]);
+      etat = c.read(posControllerProvider);
+      expect(etat.panier.remplacement, isNull, reason: 'panier neuf après l’encaissement');
+      expect((await c.read(venteRepositoryProvider).vente(v1.code))!.statut, 'Annulée');
+      // Fermer un panier de vente modifiée abandonne la modification.
+      await ctrl.modifierVente(v2.code);
+      ctrl.fermerPanier(c.read(posControllerProvider).courant);
+      expect(c.read(posControllerProvider).paniers.every((p) => p.remplacement == null), isTrue);
+    },
+  );
+
   test('réservation de stock entre paniers : 5 paniers max, disponibilité = stock − réservé', () async {
     final ctrl = c.read(posControllerProvider.notifier);
     await ctrl.ajouter(lait, quantite: 6);
@@ -104,7 +148,7 @@ void main() {
     await expectLater(ctrl.ajouter(eau), throwsA(isA<PosException>()), reason: 'eau : stock 0');
   });
 
-  test('prix de vente HT : la caisse applique le TTC (HT + TVA), sans TVA au régime IFU', () async {
+  test('vente avec TVA désactivée par défaut, puis TTC (HT + TVA) une fois activée, sans TVA au régime IFU', () async {
     final db = c.read(appDatabaseProvider).db;
     final cafe = await CatalogueService(db, utilisateurCode: 'USR0000').creerProduit(
       const Produit(
@@ -117,8 +161,14 @@ void main() {
         service: true,
       ),
     );
-    await c.read(parametresVenteProvider.future);
+    expect((await c.read(parametresVenteProvider.future)).tvaCaisse, isFalse);
     final ctrl = c.read(posControllerProvider.notifier);
+    await ctrl.ajouter(cafe);
+    expect(c.read(posControllerProvider).panier.lignes.single.prixUnitaire, 100);
+    ctrl.retirerLigne(0);
+    await ParametreRepository(db).ecrire(Fiscalite.cleTvaCaisse, '1');
+    c.invalidate(parametresVenteProvider);
+    await c.read(parametresVenteProvider.future);
     await ctrl.ajouter(cafe);
     expect(c.read(posControllerProvider).panier.lignes.single.prixUnitaire, 119);
     ctrl.retirerLigne(0);

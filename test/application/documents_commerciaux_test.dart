@@ -162,7 +162,10 @@ void main() {
       magasinCode: 'MAG0000',
     )).lignes.single.tauxTva;
 
-    // Par défaut : avec TVA.
+    // Par défaut : caisse sans TVA.
+    expect(await tauxCaisse(), 0);
+    // Caisse avec TVA.
+    await ParametreRepository(db).ecrire(Fiscalite.cleTvaCaisse, '1');
     expect(await tauxCaisse(), 19);
     // Caisse sans TVA, documents avec TVA.
     await ParametreRepository(db).ecrire(Fiscalite.cleTvaCaisse, '0');

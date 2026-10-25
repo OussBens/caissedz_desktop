@@ -117,12 +117,16 @@ class _DsCartLineState extends State<DsCartLine> {
     final total = w.prix * w.qte;
     final num = t.bodySm.copyWith(fontFeatures: DsTypography.tabular);
 
+    // Sans action (ligne verrouillée, montant libre) : bouton estompé, comme un DsIconButton désactivé.
     Widget bouton(IconData icone, String tooltip, VoidCallback? onTap) => Tooltip(
       message: tooltip,
       child: InkWell(
         onTap: onTap,
         borderRadius: DsRadius.borderSm,
         child: Container(
+          foregroundDecoration: onTap == null
+              ? BoxDecoration(color: c.surfaceCard.withValues(alpha: 0.55), borderRadius: DsRadius.borderSm)
+              : null,
           width: 24,
           height: 24,
           decoration: BoxDecoration(
@@ -151,17 +155,20 @@ class _DsCartLineState extends State<DsCartLine> {
         bouton(LucideIcons.plus, l10n.dsPosPlus, w.onPlus),
       ],
     );
-    final corbeille = AnimatedOpacity(
-      opacity: _survol ? 1 : 0,
-      duration: DsMotion.fast,
-      child: Tooltip(
-        message: l10n.dsPosRetirer,
-        child: InkWell(
-          onTap: w.onRetirer,
-          child: Icon(LucideIcons.trash2, size: 15, color: c.iconMuted),
-        ),
-      ),
-    );
+    // Ligne qui ne se retire pas (vente modifiée) : pas de corbeille.
+    final corbeille = w.onRetirer == null
+        ? const SizedBox.shrink()
+        : AnimatedOpacity(
+            opacity: _survol ? 1 : 0,
+            duration: DsMotion.fast,
+            child: Tooltip(
+              message: l10n.dsPosRetirer,
+              child: InkWell(
+                onTap: w.onRetirer,
+                child: Icon(LucideIcons.trash2, size: 15, color: c.iconMuted),
+              ),
+            ),
+          );
     final sousTitre =
         '${w.code != null ? '${w.code} · ' : ''}${w.detailPrix ?? formaterMontant(w.prix, w.devise)}${w.uniteLibelle != null ? ' / ${w.uniteLibelle}' : ''}';
     final lignesSousTitre = w.detailPrix == null ? 1 : 2;

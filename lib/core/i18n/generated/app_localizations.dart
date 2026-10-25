@@ -5646,7 +5646,7 @@ abstract class AppLocalizations {
   /// No description provided for @ventesClientScelle.
   ///
   /// In fr, this message translates to:
-  /// **'Client du ticket scellé : pour un autre client, faites un retour puis une nouvelle vente.'**
+  /// **'Pour changer de client, utilisez « Ajouter des produits » : la vente est rouverte dans la caisse.'**
   String get ventesClientScelle;
 
   /// No description provided for @ventesComplementIndice.
@@ -16340,6 +16340,138 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Nom déjà utilisé'**
   String get importErreurNomPris;
+
+  /// No description provided for @iaFicheTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produit reconnu'**
+  String get iaFicheTitre;
+
+  /// No description provided for @iaFicheQuestion.
+  ///
+  /// In fr, this message translates to:
+  /// **'Est-ce bien ce produit ? Votre réponse est envoyée au catalogue pour le confirmer.'**
+  String get iaFicheQuestion;
+
+  /// No description provided for @iaFicheOui.
+  ///
+  /// In fr, this message translates to:
+  /// **'C\'est ça'**
+  String get iaFicheOui;
+
+  /// No description provided for @iaFicheNon.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce n\'est pas ça'**
+  String get iaFicheNon;
+
+  /// No description provided for @iaFicheMarque.
+  ///
+  /// In fr, this message translates to:
+  /// **'Marque'**
+  String get iaFicheMarque;
+
+  /// No description provided for @iaFicheQuantite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quantité'**
+  String get iaFicheQuantite;
+
+  /// No description provided for @iaFicheCategorie.
+  ///
+  /// In fr, this message translates to:
+  /// **'Catégorie'**
+  String get iaFicheCategorie;
+
+  /// No description provided for @iaFichePrix.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix de vente'**
+  String get iaFichePrix;
+
+  /// No description provided for @iaFicheAConfirmer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouté par une boutique, pas encore confirmé par les autres ({score} sur {seuil}).'**
+  String iaFicheAConfirmer(int score, int seuil);
+
+  /// No description provided for @posVenteAvecTva.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vente avec TVA'**
+  String get posVenteAvecTva;
+
+  /// No description provided for @posLigneReprise.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ligne de la vente modifiée : elle ne peut être ni retirée ni modifiée'**
+  String get posLigneReprise;
+
+  /// No description provided for @posLigneRepriseCourt.
+  ///
+  /// In fr, this message translates to:
+  /// **'déjà vendu'**
+  String get posLigneRepriseCourt;
+
+  /// No description provided for @posModificationVente.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modification de la vente {code} (déjà payé {paye}) : changez le client ou ajoutez des produits. À l\'encaissement, elle est remplacée par un nouveau ticket.'**
+  String posModificationVente(String code, String paye);
+
+  /// No description provided for @posModificationAbandonner.
+  ///
+  /// In fr, this message translates to:
+  /// **'Abandonner'**
+  String get posModificationAbandonner;
+
+  /// No description provided for @posModificationAbandonnerTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Abandonner la modification de {code} ?'**
+  String posModificationAbandonnerTitre(String code);
+
+  /// No description provided for @posModificationAbandonnerMsg.
+  ///
+  /// In fr, this message translates to:
+  /// **'La vente reste telle qu\'elle a été enregistrée.'**
+  String get posModificationAbandonnerMsg;
+
+  /// No description provided for @posVenteModifiee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modification {code}'**
+  String posVenteModifiee(String code);
+
+  /// No description provided for @posInfoRemplace.
+  ///
+  /// In fr, this message translates to:
+  /// **'Remplace'**
+  String get posInfoRemplace;
+
+  /// No description provided for @posInfoTotalTicket.
+  ///
+  /// In fr, this message translates to:
+  /// **'Total du ticket'**
+  String get posInfoTotalTicket;
+
+  /// No description provided for @posInfoDejaPaye.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déjà payé'**
+  String get posInfoDejaPaye;
+
+  /// No description provided for @posVdjEditer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Éditer'**
+  String get posVdjEditer;
+
+  /// No description provided for @ventesAjouterProduits.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter des produits'**
+  String get ventesAjouterProduits;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

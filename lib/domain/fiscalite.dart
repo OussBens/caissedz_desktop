@@ -15,7 +15,8 @@ abstract final class Fiscalite {
   static const String cleRegime = 'regime_fiscal';
   static const String cleTimbre = 'timbre_actif';
 
-  /// Vente avec TVA (`1`, défaut) ou en HT (`0`) : en caisse, et pour les devis / proformas / commandes.
+  /// Vente avec TVA (`1`) ou en HT (`0`) : en caisse (défaut : sans TVA), et pour les devis / proformas /
+  /// commandes (défaut : avec TVA).
   static const String cleTvaCaisse = 'tva_caisse';
   static const String cleTvaDocuments = 'tva_documents';
 

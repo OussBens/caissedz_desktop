@@ -61,6 +61,25 @@ String messageErreurVente(AppLocalizations l10n, VenteException e, String devise
   ErreurVente.monnaieSansEspeces => l10n.posErreurMonnaieSansEspeces,
 };
 
+/// Charge la vente [code] dans un panier de la caisse pour la modifier (ajout de produits, changement de
+/// client) ; `true` si elle est chargée, sinon l'erreur est affichée (vente annulée, période clôturée, retour lié…).
+Future<bool> chargerVenteEnCaisse(BuildContext context, WidgetRef ref, String code) async {
+  final l10n = AppLocalizations.of(context);
+  final String erreur;
+  try {
+    await ref.read(posControllerProvider.notifier).modifierVente(code);
+    return true;
+  } on VenteException catch (e) {
+    erreur = messageErreurVente(l10n, e, ref.read(deviseProvider));
+  } on PosException catch (e) {
+    erreur = e.erreur == ErreurPos.maxPaniers ? l10n.posMaxPaniers : l10n.posErreurProduitInconnu(e.detail ?? '');
+  }
+  if (context.mounted) {
+    await afficherResultat(context, type: DsResultatType.erreur, titre: l10n.ventesModifierTitre, message: erreur);
+  }
+  return false;
+}
+
 String libelleModePaiement(AppLocalizations l10n, String mode) => switch (mode) {
   'Espèces' => l10n.modePaiementEspeces,
   'Carte' => l10n.modePaiementCarte,
@@ -437,7 +456,9 @@ Future<bool> imprimerTicketDirect(BuildContext context, WidgetRef ref, Vente ven
   final boutique = await BoutiqueRepository(db).lire() ?? const Boutique(nom: 'CaisseDZ');
   final client = await ClientRepository(db).parCode(vente.clientCode);
   try {
-    final nomsAr = arabe ? await nomsArabes(ref, [for (final l in vente.lignes) l.produitCode]) : const <String, String>{};
+    final nomsAr = arabe
+        ? await nomsArabes(ref, [for (final l in vente.lignes) l.produitCode])
+        : const <String, String>{};
     await transport.envoyer(
       TicketEscPos(
         largeur: imprimante.largeur,

@@ -5,6 +5,7 @@ import '../data/boutique_repository.dart';
 import '../data/historique_repository.dart';
 import '../data/parametre_repository.dart';
 import '../domain/alertes_produits.dart';
+import '../domain/fiscalite.dart';
 import '../domain/models/boutique.dart';
 import '../domain/models/parametres_paiement.dart';
 import '../domain/models/parametres_vente.dart';
@@ -218,6 +219,14 @@ class ParametresService {
     _validerVente(p);
     await db.transaction((txn) async {
       await ParametreRepository(txn).ecrirePlusieurs(p.copyWith(devise: p.devise.trim()).versCles());
+      await _journal(txn, 'vente');
+    });
+  }
+
+  /// « Vente avec TVA » de la caisse (interrupteur de l'écran de caisse, comme Paramètres › Caisse et ventes).
+  Future<void> changerTvaCaisse(bool avecTva) async {
+    await db.transaction((txn) async {
+      await ParametreRepository(txn).ecrire(Fiscalite.cleTvaCaisse, avecTva ? '1' : '0');
       await _journal(txn, 'vente');
     });
   }

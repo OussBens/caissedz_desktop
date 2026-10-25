@@ -1374,7 +1374,7 @@
   "ventesMotifAnnulation": "Motif d'annulation",
   "ventesEmpreinte": "Empreinte fiscale",
   "ventesModifierTitre": "Modifier le panier",
-  "ventesClientScelle": "Client du ticket scellé : pour un autre client, faites un retour puis une nouvelle vente.",
+  "ventesClientScelle": "Pour changer de client, utilisez « Ajouter des produits » : la vente est rouverte dans la caisse.",
   "ventesComplementIndice": "Le complément sera enregistré comme versement imputé sur ce panier.",
   "ventesNoteInterne": "Note interne",
   "ventesModifie": "Panier modifié",
@@ -4831,5 +4831,61 @@
   "hiActArchivage": "Archivage",
   "caisseErreurNomPris": "Une autre caisse porte déjà ce nom.",
   "archBloqueNomPris": "Nom déjà pris par une fiche active : renommez l'une des deux d'abord",
-  "importErreurNomPris": "Nom déjà utilisé"
+  "importErreurNomPris": "Nom déjà utilisé",
+  "iaFicheTitre": "Produit reconnu",
+  "iaFicheQuestion": "Est-ce bien ce produit ? Votre réponse est envoyée au catalogue pour le confirmer.",
+  "iaFicheOui": "C'est ça",
+  "iaFicheNon": "Ce n'est pas ça",
+  "iaFicheMarque": "Marque",
+  "iaFicheQuantite": "Quantité",
+  "iaFicheCategorie": "Catégorie",
+  "iaFichePrix": "Prix de vente",
+  "iaFicheAConfirmer": "Ajouté par une boutique, pas encore confirmé par les autres ({score} sur {seuil}).",
+  "@iaFicheAConfirmer": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      },
+      "seuil": {
+        "type": "int"
+      }
+    }
+  },
+  "posVenteAvecTva": "Vente avec TVA",
+  "posLigneReprise": "Ligne de la vente modifiée : elle ne peut être ni retirée ni modifiée",
+  "posLigneRepriseCourt": "déjà vendu",
+  "posModificationVente": "Modification de la vente {code} (déjà payé {paye}) : changez le client ou ajoutez des produits. À l'encaissement, elle est remplacée par un nouveau ticket.",
+  "@posModificationVente": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "paye": {
+        "type": "String"
+      }
+    }
+  },
+  "posModificationAbandonner": "Abandonner",
+  "posModificationAbandonnerTitre": "Abandonner la modification de {code} ?",
+  "@posModificationAbandonnerTitre": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "posModificationAbandonnerMsg": "La vente reste telle qu'elle a été enregistrée.",
+  "posVenteModifiee": "Modification {code}",
+  "@posVenteModifiee": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "posInfoRemplace": "Remplace",
+  "posInfoTotalTicket": "Total du ticket",
+  "posInfoDejaPaye": "Déjà payé",
+  "posVdjEditer": "Éditer",
+  "ventesAjouterProduits": "Ajouter des produits"
 }

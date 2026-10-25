@@ -79,7 +79,9 @@
 ## Ventes, retours, tiers (lot 5)
 - [x] Ventes : liste, ticket, annulation (permission), vérification du scellement
 - [x] Ventes DS v2.2 : KPI, filtres, détail, modification (complément en versement imputé), annulation en lot
-      avec motif obligatoire, refusée si un retour est lié (phase D) — client non modifiable (ticket scellé)
+      avec motif obligatoire, refusée si un retour est lié (phase D) — le ticket scellé ne change jamais :
+      changer le client ou ajouter des produits rouvre la vente dans la caisse (lignes verrouillées), puis
+      annulation chaînée + nouveau ticket scellé dans UNE transaction (2026-10-25)
 - [x] Retours : stock restitué, avoir, remboursement
 - [x] Retours client / fournisseur depuis la pièce d'origine (panier / entrée), plafond de quantité, versement
       et mouvements liés, modification et annulation avec motif (phase D, migration v12)

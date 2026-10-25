@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../app/demarrage_providers.dart';
@@ -264,7 +265,8 @@ Future<void> afficherDetailPanier(
 }
 
 /// Modification d'un panier (`PanierModifDialog` du DS, 980 px) : montant payé (complément en versement
-/// imputé), mode de paiement et observation. Les lignes et le client du ticket scellé ne changent pas.
+/// imputé), mode de paiement et observation. Le ticket scellé ne change pas : « Ajouter des produits » ouvre la
+/// vente dans la caisse (client modifiable, produits ajoutés), où elle est remplacée par un nouveau ticket.
 Future<void> afficherModifPanier(
   BuildContext context,
   WidgetRef ref,
@@ -300,6 +302,14 @@ class _ModifPanierState extends ConsumerState<_ModifPanier> {
     _paye.dispose();
     _obs.dispose();
     super.dispose();
+  }
+
+  /// La vente passe dans un panier de la caisse : client modifiable, produits ajoutés (lignes du ticket verrouillées).
+  Future<void> _ouvrirEnCaisse() async {
+    final routeur = GoRouter.of(context);
+    if (!await chargerVenteEnCaisse(context, ref, widget.vente.code) || !mounted) return;
+    Navigator.of(context).pop();
+    routeur.go('/caisse');
   }
 
   Future<void> _enregistrer() async {
@@ -347,6 +357,14 @@ class _ModifPanierState extends ConsumerState<_ModifPanier> {
           variante: DsButtonVariante.secondaire,
           onPressed: () => Navigator.of(context).pop(),
         ),
+        if (widget.panier.nbRetours == 0)
+          DsButton(
+            key: const ValueKey('panier_modifier_produits'),
+            libelle: l10n.ventesAjouterProduits,
+            icone: LucideIcons.shoppingCart,
+            variante: DsButtonVariante.secondaire,
+            onPressed: _ouvrirEnCaisse,
+          ),
         DsButton(
           key: const ValueKey('panier_modifier_enregistrer'),
           libelle: l10n.communModifier,

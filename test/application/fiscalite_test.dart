@@ -65,6 +65,8 @@ void main() {
         tvaPct: tva,
       ),
     );
+    // Vente en caisse avec TVA (désactivée par défaut).
+    await ParametreRepository(db).ecrire(Fiscalite.cleTvaCaisse, '1');
     final cafe = await produit('Café', 19);
     final pain = await produit('Pain', 0);
     for (final p in [cafe, pain]) {

@@ -52,7 +52,7 @@ final prixTtcProvider = Provider<double Function(Produit p, [double? prixHt])>((
 final prixCaisseProvider = Provider<double Function(Produit p, [double? prixHt])>((ref) {
   final v = ref.watch(parametresVenteProvider).value;
   final regime = v?.regimeFiscal ?? RegimesFiscaux.reel;
-  final tva = v?.tvaCaisse ?? true;
+  final tva = v?.tvaCaisse ?? false;
   return (p, [prixHt]) => Fiscalite.ttc(prixHt ?? p.prixVente, Fiscalite.taux(p.tvaPct, regime, avecTva: tva));
 });
 
@@ -68,7 +68,7 @@ final prixDocumentsProvider = Provider<double Function(Produit p)>((ref) {
 final prixHtProvider = Provider<double Function(Produit p, double prixCaisse)>((ref) {
   final v = ref.watch(parametresVenteProvider).value;
   final regime = v?.regimeFiscal ?? RegimesFiscaux.reel;
-  final tva = v?.tvaCaisse ?? true;
+  final tva = v?.tvaCaisse ?? false;
   return (p, prix) => Fiscalite.ht(prix, Fiscalite.taux(p.tvaPct, regime, avecTva: tva));
 });
 
@@ -77,7 +77,7 @@ final tauxAppliqueProvider = Provider<double Function(Produit p, {bool documents
   final v = ref.watch(parametresVenteProvider).value;
   final regime = v?.regimeFiscal ?? RegimesFiscaux.reel;
   return (p, {documents = false}) =>
-      Fiscalite.taux(p.tvaPct, regime, avecTva: documents ? (v?.tvaDocuments ?? true) : (v?.tvaCaisse ?? true));
+      Fiscalite.taux(p.tvaPct, regime, avecTva: documents ? (v?.tvaDocuments ?? true) : (v?.tvaCaisse ?? false));
 });
 
 /// Colonnes de prix des devis, proformas et commandes clients : avec TVA (« documents avec TVA », hors IFU), puis
