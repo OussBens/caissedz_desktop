@@ -513,9 +513,17 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
         devise: devise,
         voirAchat: voirAchat,
         etatCarte: etatCarte,
+        onModifier: () => modifier(p),
       ),
       vueParDefaut: DsVueModule.grille,
       onOuvrir: detail,
+      actionSurvolListe: (context, p) => DsButton(
+        key: const ValueKey('ligne_produit_modifier'),
+        libelle: l10n.communModifier,
+        icone: LucideIcons.pencil,
+        taille: DsButtonTaille.sm,
+        onPressed: () => modifier(p),
+      ),
       actions: [
         DsActionModule(
           libelle: l10n.tiersDetail,
@@ -1014,7 +1022,7 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
 
 /// Carte produit de la vue grille (`ProduitCard`) : vignette teintée ou photo, état, code · catégorie,
 /// marque · taille, prix, stock, marge.
-class _CarteProduit extends StatelessWidget {
+class _CarteProduit extends StatefulWidget {
   const _CarteProduit({
     required this.produit,
     required this.categorie,
@@ -1023,6 +1031,7 @@ class _CarteProduit extends StatelessWidget {
     required this.devise,
     required this.voirAchat,
     required this.etatCarte,
+    this.onModifier,
   });
   final Produit produit;
   final String categorie;
@@ -1032,15 +1041,31 @@ class _CarteProduit extends StatelessWidget {
   final bool voirAchat;
   final DsEtatCarte etatCarte;
 
+  /// Modification rapide : bouton « Modifier » révélé au survol de la carte (comme le bouton « Entrée » du POS).
+  final VoidCallback? onModifier;
+
+  @override
+  State<_CarteProduit> createState() => _CarteProduitState();
+}
+
+class _CarteProduitState extends State<_CarteProduit> {
+  bool _survol = false;
+
   @override
   Widget build(BuildContext context) {
     final c = context.ds.colors;
     final t = context.ds.typo;
     final l10n = AppLocalizations.of(context);
+    final produit = widget.produit;
+    final categorie = widget.categorie;
+    final stock = widget.stock;
+    final etat = widget.etat;
+    final devise = widget.devise;
+    final voirAchat = widget.voirAchat;
     final teinte = teintePour(categorie);
     final photo = imageProduit(produit.image);
-    return DsGridCard(
-      etat: etatCarte,
+    final carte = DsGridCard(
+      etat: widget.etatCarte,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -1059,6 +1084,25 @@ class _CarteProduit extends StatelessWidget {
                 child: photo == null ? Icon(LucideIcons.package, size: 36, color: teinte) : null,
               ),
               PositionedDirectional(top: 10, end: 10, child: BadgeStatut(etat, petit: true)),
+              if (widget.onModifier != null)
+                PositionedDirectional(
+                  bottom: 8,
+                  end: 8,
+                  child: IgnorePointer(
+                    ignoring: !_survol,
+                    child: AnimatedOpacity(
+                      duration: DsMotion.fast,
+                      opacity: _survol ? 1 : 0,
+                      child: DsButton(
+                        key: const ValueKey('carte_produit_modifier'),
+                        libelle: l10n.communModifier,
+                        icone: LucideIcons.pencil,
+                        taille: DsButtonTaille.sm,
+                        onPressed: widget.onModifier,
+                      ),
+                    ),
+                  ),
+                ),
             ],
           ),
           Padding(
@@ -1156,6 +1200,12 @@ class _CarteProduit extends StatelessWidget {
           ),
         ],
       ),
+    );
+    if (widget.onModifier == null) return carte;
+    return MouseRegion(
+      onEnter: (_) => setState(() => _survol = true),
+      onExit: (_) => setState(() => _survol = false),
+      child: carte,
     );
   }
 }

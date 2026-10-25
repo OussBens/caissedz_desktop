@@ -40,6 +40,12 @@ void main() {
       await tester.enterText(_champ('usr_prenom'), 'Amina');
       await tester.enterText(_champ('usr_nom'), 'Kaci');
       await tester.enterText(_champ('usr_telephone'), '0661 20 30 40');
+      // Confirmation différente : enregistrement bloqué tant que les deux mots de passe ne concordent pas.
+      await tester.enterText(_champ('usr_mdp_confirme'), 'Amina2025');
+      await tester.pump();
+      expect(find.text('Les mots de passe ne correspondent pas'), findsOneWidget);
+      expect(tester.widget<DsButton>(_cle('usr_enregistrer')).onPressed, isNull, reason: 'confirmation différente');
+      await tester.enterText(_champ('usr_mdp_confirme'), 'Amina2026');
       await tester.pump();
       expect(find.text('Bon'), findsOneWidget);
       // Le rôle Admin n'est pas proposé (admin unique, non assignable).

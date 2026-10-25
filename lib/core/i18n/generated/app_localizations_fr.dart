@@ -3906,6 +3906,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get prdSousAchat => 'Inférieur au prix d\'achat';
 
   @override
+  String get prdPrixAchatNonNul => 'Le prix d\'achat doit être supérieur à 0';
+
+  @override
   String prdMargeUnitaire(String montant) {
     return 'Marge unitaire : $montant';
   }
@@ -5486,6 +5489,15 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get usrMdpVide => 'Laisser vide pour ne pas changer';
+
+  @override
+  String get usrConfirmerMotDePasse => 'Confirmer le mot de passe';
+
+  @override
+  String get usrMdpConfirmationIndice => 'Retapez le mot de passe';
+
+  @override
+  String get usrMdpDifferent => 'Les mots de passe ne correspondent pas';
 
   @override
   String get usrForce0 => 'Très faible';

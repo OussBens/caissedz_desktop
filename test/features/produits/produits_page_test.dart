@@ -28,12 +28,8 @@ void main() {
       await tester.enterText(_champ('produit_achat'), '80');
       await tester.enterText(_champ('produit_marge'), '25');
       await tester.pump();
-      expect(
-        find.byWidgetPredicate(
-          (w) => w.key is ValueKey<String> && (w.key! as ValueKey<String>).value.startsWith('produit_vente_100'),
-        ),
-        findsOneWidget,
-      );
+      // Le prix de vente est renseigné automatiquement depuis la marge (champ désormais modifiable).
+      expect(tester.widget<TextField>(_champ('produit_vente')).controller!.text, '100,00');
       await clic(tester, _cle('produit_enregistrer'));
       expect(find.text('Lait 1 L'), findsWidgets);
       final p = await CatalogueRepository(c.read(appDatabaseProvider).db).produitParCode('PRD0001');

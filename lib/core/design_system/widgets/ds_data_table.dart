@@ -121,6 +121,7 @@ class DsDataTable<T> extends StatefulWidget {
     this.selection,
     this.onSelectionChanged,
     this.actionsContextuelles = const [],
+    this.actionSurvol,
     this.onDoubleClic,
     this.onClic,
     this.taillePage = 25,
@@ -151,6 +152,9 @@ class DsDataTable<T> extends StatefulWidget {
   final Set<Object>? selection;
   final ValueChanged<Set<Object>>? onSelectionChanged;
   final List<DsActionContextuelle<T>> actionsContextuelles;
+
+  /// Action révélée au survol d'une ligne, alignée à la fin (comme le bouton « Entrée » des tuiles du POS).
+  final Widget Function(BuildContext context, T ligne)? actionSurvol;
   final void Function(T ligne)? onDoubleClic;
 
   /// Clic simple sur une ligne (sélection simple dans les pickers).
@@ -628,18 +632,42 @@ class DsDataTableState<T> extends State<DsDataTable<T>> {
             ),
         ],
       );
-      // Seul le fond suit le survol : les cellules ne sont pas reconstruites.
+      // Seul le fond (et l'action de survol) suit le survol : les cellules ne sont pas reconstruites.
       final contenu = ValueListenableBuilder<Object?>(
         valueListenable: _survol,
         child: rangee,
-        builder: (context, survol, enfant) => Container(
-          height: hauteurLigne,
-          decoration: BoxDecoration(
-            color: selectionnee ? c.surfaceActive : (survol == cle ? c.surfaceHover : DsColors.transparent),
-            border: Border(bottom: BorderSide(color: c.borderSubtle)),
-          ),
-          child: enfant,
-        ),
+        builder: (context, survol, enfant) {
+          final actif = survol == cle;
+          final fond = Container(
+            height: hauteurLigne,
+            decoration: BoxDecoration(
+              color: selectionnee ? c.surfaceActive : (actif ? c.surfaceHover : DsColors.transparent),
+              border: Border(bottom: BorderSide(color: c.borderSubtle)),
+            ),
+            child: enfant,
+          );
+          if (widget.actionSurvol == null) return fond;
+          return Stack(
+            children: [
+              fond,
+              PositionedDirectional(
+                top: 0,
+                bottom: 0,
+                end: 12,
+                child: Center(
+                  child: IgnorePointer(
+                    ignoring: !actif,
+                    child: AnimatedOpacity(
+                      duration: DsMotion.fast,
+                      opacity: actif ? 1 : 0,
+                      child: widget.actionSurvol!(context, ligne),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
       );
       return MouseRegion(
         cursor: cliquable ? SystemMouseCursors.click : SystemMouseCursors.basic,

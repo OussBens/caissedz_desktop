@@ -1862,9 +1862,14 @@ class _TuilePhotoState extends State<_TuilePhoto> {
     final c = context.ds.colors;
     final t = context.ds.typo;
     final p = widget.photo;
+    final chemin = p.chemin;
     final image = p.octets != null
         ? Image.memory(Uint8List.fromList(p.octets!), fit: BoxFit.cover)
-        : (p.chemin != null ? Image.file(File(p.chemin!), fit: BoxFit.cover) : null);
+        : (chemin == null
+              ? null
+              : (chemin.startsWith('http://') || chemin.startsWith('https://')
+                    ? Image.network(chemin, fit: BoxFit.cover)
+                    : Image.file(File(chemin), fit: BoxFit.cover)));
     return MouseRegion(
       onEnter: (_) => setState(() => _survol = true),
       onExit: (_) => setState(() => _survol = false),

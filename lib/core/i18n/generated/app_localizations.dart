@@ -7449,6 +7449,12 @@ abstract class AppLocalizations {
   /// **'Inférieur au prix d\'achat'**
   String get prdSousAchat;
 
+  /// No description provided for @prdPrixAchatNonNul.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le prix d\'achat doit être supérieur à 0'**
+  String get prdPrixAchatNonNul;
+
   /// No description provided for @prdMargeUnitaire.
   ///
   /// In fr, this message translates to:
@@ -10436,6 +10442,24 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Laisser vide pour ne pas changer'**
   String get usrMdpVide;
+
+  /// No description provided for @usrConfirmerMotDePasse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Confirmer le mot de passe'**
+  String get usrConfirmerMotDePasse;
+
+  /// No description provided for @usrMdpConfirmationIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retapez le mot de passe'**
+  String get usrMdpConfirmationIndice;
+
+  /// No description provided for @usrMdpDifferent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les mots de passe ne correspondent pas'**
+  String get usrMdpDifferent;
 
   /// No description provided for @usrForce0.
   ///

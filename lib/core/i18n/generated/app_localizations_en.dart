@@ -3900,6 +3900,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get prdSousAchat => 'Below the cost price';
 
   @override
+  String get prdPrixAchatNonNul => 'The cost price must be greater than 0';
+
+  @override
   String prdMargeUnitaire(String montant) {
     return 'Unit margin: $montant';
   }
@@ -5480,6 +5483,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get usrMdpVide => 'Leave empty to keep it';
+
+  @override
+  String get usrConfirmerMotDePasse => 'Confirm password';
+
+  @override
+  String get usrMdpConfirmationIndice => 'Re-enter the password';
+
+  @override
+  String get usrMdpDifferent => 'The passwords do not match';
 
   @override
   String get usrForce0 => 'Very weak';

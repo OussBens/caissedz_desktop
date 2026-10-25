@@ -104,6 +104,7 @@ class _UtilisateurFormState extends ConsumerState<_UtilisateurForm> {
   bool get _edition => _u != null;
   late final _identifiant = TextEditingController(text: _u?.identifiant ?? '');
   final _motDePasse = TextEditingController();
+  final _confirmation = TextEditingController();
   late final _prenom = TextEditingController(text: _u?.prenom ?? '');
   late final _nom = TextEditingController(text: _u?.nom ?? '');
   late final _telephone = TextEditingController(text: _u?.telephone ?? '');
@@ -132,7 +133,7 @@ class _UtilisateurFormState extends ConsumerState<_UtilisateurForm> {
 
   @override
   void dispose() {
-    for (final c in [_identifiant, _motDePasse, _prenom, _nom, _telephone, _observation]) {
+    for (final c in [_identifiant, _motDePasse, _confirmation, _prenom, _nom, _telephone, _observation]) {
       c.dispose();
     }
     super.dispose();
@@ -214,10 +215,14 @@ class _UtilisateurFormState extends ConsumerState<_UtilisateurForm> {
     final role = widget.roles.where((r) => r.code == _role).firstOrNull;
     final tel = _telephone.text.trim();
     final telErr = tel.isNotEmpty && !TiersService.telephoneValide(tel) ? l10n.tiersFormatTelephone : null;
+    // Le mot de passe et sa confirmation doivent être identiques (en modification, les deux peuvent rester vides).
+    final mdpConcorde = _motDePasse.text == _confirmation.text;
+    final mdpErreur = _confirmation.text.isNotEmpty && !mdpConcorde ? l10n.usrMdpDifferent : null;
     final valide =
         _identifiant.text.trim().isNotEmpty &&
         !_identifiantPris &&
         (_edition || force >= UtilisateurService.forceMinimale) &&
+        mdpConcorde &&
         _magasins.isNotEmpty &&
         telErr == null;
     const lw = 128.0;
@@ -242,13 +247,12 @@ class _UtilisateurFormState extends ConsumerState<_UtilisateurForm> {
       contenu: DsGrilleFormulaire(
         children: [
           DsSpan(child: DsSubHead(l10n.usrSectionCompte, icone: LucideIcons.user)),
-          if (_edition)
+          if (_edition) ...[
             DsFormRow(
               libelle: l10n.usrCode,
               largeurLibelle: lw,
               child: DsTextField(valeurInitiale: widget.code, actif: false),
             ),
-          if (_edition)
             DsFormRow(
               libelle: l10n.usrEtat,
               largeurLibelle: lw,
@@ -260,9 +264,9 @@ class _UtilisateurFormState extends ConsumerState<_UtilisateurForm> {
                 actif: !(_u!.estAdmin && _u!.systeme),
                 onChanged: (v) => setState(() => _actif = v),
               ),
-            )
-          else
-            const SizedBox.shrink(),
+            ),
+          ],
+          // Ligne 1 : identifiant + téléphone.
           DsFormRow(
             libelle: l10n.usrIdentifiant,
             obligatoire: true,
@@ -277,6 +281,22 @@ class _UtilisateurFormState extends ConsumerState<_UtilisateurForm> {
               onChanged: (_) => setState(() => _erreurs.remove('identifiant')),
             ),
           ),
+          DsFormRow(
+            libelle: l10n.usrTelephone,
+            obligatoire: true,
+            largeurLibelle: lw,
+            erreur: _erreurs['tel'] ?? telErr,
+            child: DsTextField(
+              key: const ValueKey('usr_telephone'),
+              controller: _telephone,
+              indice: '05xxxxxxxx',
+              typeClavier: TextInputType.phone,
+              // Mobile 05/06/07 : 10 chiffres ; fixe 02/03/04 : 9 chiffres.
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(10)],
+              onChanged: (_) => setState(() => _erreurs.remove('tel')),
+            ),
+          ),
+          // Ligne 2 : mot de passe + confirmation (identiques).
           DsFormRow(
             libelle: _edition ? l10n.usrNouveauMotDePasse : l10n.usrMotDePasse,
             obligatoire: !_edition,
@@ -300,31 +320,30 @@ class _UtilisateurFormState extends ConsumerState<_UtilisateurForm> {
             ),
           ),
           DsFormRow(
-            libelle: l10n.usrPrenom,
+            libelle: l10n.usrConfirmerMotDePasse,
+            obligatoire: !_edition,
             largeurLibelle: lw,
-            child: DsTextField(key: const ValueKey('usr_prenom'), controller: _prenom),
+            erreur: mdpErreur,
+            child: DsTextField(
+              key: const ValueKey('usr_mdp_confirme'),
+              controller: _confirmation,
+              obscur: true,
+              iconePrefixe: LucideIcons.keyRound,
+              indice: l10n.usrMdpConfirmationIndice,
+              onChanged: (_) => setState(() {}),
+            ),
           ),
+          // Ligne 3 : nom + prénom.
           DsFormRow(
             libelle: l10n.usrNom,
             largeurLibelle: lw,
             child: DsTextField(key: const ValueKey('usr_nom'), controller: _nom),
           ),
           DsFormRow(
-            libelle: l10n.usrTelephone,
-            obligatoire: true,
+            libelle: l10n.usrPrenom,
             largeurLibelle: lw,
-            erreur: _erreurs['tel'] ?? telErr,
-            child: DsTextField(
-              key: const ValueKey('usr_telephone'),
-              controller: _telephone,
-              indice: '05xxxxxxxx',
-              typeClavier: TextInputType.phone,
-              // Mobile 05/06/07 : 10 chiffres ; fixe 02/03/04 : 9 chiffres.
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(10)],
-              onChanged: (_) => setState(() => _erreurs.remove('tel')),
-            ),
+            child: DsTextField(key: const ValueKey('usr_prenom'), controller: _prenom),
           ),
-          const SizedBox.shrink(),
           DsSpan(child: DsSubHead(l10n.usrSectionAcces, icone: LucideIcons.shieldCheck)),
           DsFormRow(
             libelle: l10n.usrRole,

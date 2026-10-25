@@ -200,6 +200,7 @@ class DsModuleTable<T> extends StatefulWidget {
     this.largeurMinCarte = 220,
     this.onOuvrir,
     this.actionsContextuelles = const [],
+    this.actionSurvolListe,
     this.permissions = const {},
     this.messageVide,
     this.cleTable,
@@ -243,6 +244,9 @@ class DsModuleTable<T> extends StatefulWidget {
   /// Double-clic / détail (à défaut, l'action [DsActionModule.detail]).
   final void Function(T)? onOuvrir;
   final List<DsActionContextuelle<T>> actionsContextuelles;
+
+  /// Action révélée au survol d'une ligne en vue liste (ex. « Modifier »), pendant du bouton au survol des cartes.
+  final Widget Function(BuildContext context, T ligne)? actionSurvolListe;
   final Set<String> permissions;
   final String? messageVide;
   final Key? cleTable;
@@ -527,6 +531,7 @@ class _DsModuleTableState<T> extends State<DsModuleTable<T>> {
           onSelectionChanged: (s) => setState(() => _selection = s),
           onDoubleClic: ouvrir,
           actionsContextuelles: lectureSeule ? const [] : widget.actionsContextuelles,
+          actionSurvol: lectureSeule ? null : widget.actionSurvolListe,
           afficherTotaux: widget.afficherTotaux,
           permissions: widget.permissions,
           messageVide: widget.messageVide,

@@ -170,6 +170,7 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
   final _marque = TextEditingController();
   final _achat = TextEditingController();
   final _marge = TextEditingController();
+  final _venteCtrl = TextEditingController();
   final _stock = TextEditingController(text: '0');
   final _seuil = TextEditingController();
 
@@ -215,6 +216,7 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
       _marque.text = p.marque ?? '';
       _achat.text = _nb(p.prixAchat);
       _marge.text = p.prixAchat > 0 ? '${margeProduit(p).round()}' : _nb(marge);
+      _venteCtrl.text = _nb(p.prixVente);
       _seuil.text = p.seuilStock?.toString() ?? '';
       _description.text = p.description ?? '';
       _observation.text = p.observation ?? '';
@@ -255,6 +257,8 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
         _fournisseur = pr.fournisseurCode;
         if (pr.prixAchat != null && pr.prixAchat! > 0) _achat.text = _nb(pr.prixAchat!);
       }
+      // Prix de vente proposé depuis la marge par défaut dès qu'un prix d'achat est connu.
+      if (_a > 0) _venteCtrl.text = f2(_venteDepuisMarge);
     }
   }
 
@@ -280,9 +284,15 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
         for (var i = emb.length; i < 2; i++) _ColisSaisi(),
       ];
       _codes = codes;
-      _photos = [
-        for (final (i, c) in photos.indexed) DsPhoto(id: '$i', nom: c.split(RegExp(r'[\\/]')).last, chemin: c),
-      ];
+      // Produit importé (catalogue BENS) : sa photo est dans la colonne `image` (souvent une URL) et pas dans
+      // `produit_photo`. On l'affiche quand même pour qu'elle soit conservée à l'enregistrement (sinon une liste
+      // de photos vide efface l'image).
+      final imageExistante = widget.produit?.image;
+      _photos = photos.isEmpty && imageExistante != null && imageExistante.trim().isNotEmpty
+          ? [DsPhoto(id: 'image', nom: imageExistante.split(RegExp(r'[\\/]')).last, chemin: imageExistante)]
+          : [
+              for (final (i, c) in photos.indexed) DsPhoto(id: '$i', nom: c.split(RegExp(r'[\\/]')).last, chemin: c),
+            ];
     });
   }
 
@@ -318,6 +328,7 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
       _marque,
       _achat,
       _marge,
+      _venteCtrl,
       _stock,
       _seuil,
       _description,
@@ -342,8 +353,20 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
   double get _tauxTva =>
       Fiscalite.taux(_tva, ref.watch(parametresVenteProvider).value?.regimeFiscal ?? RegimesFiscaux.reel);
 
-  double get _vente =>
+  /// Prix de vente effectif : la valeur du champ, renseignée automatiquement depuis la marge mais modifiable.
+  double get _vente => _d(_venteCtrl.text);
+
+  /// Prix de vente calculé depuis le prix d'achat et la marge courante (% ou montant).
+  double get _venteDepuisMarge =>
       _modeMarge == '%' ? CalculsPrix.prixVenteDepuisMarge(_a, _m) : CalculsPrix.prixVenteDepuisMontant(_a, _m);
+
+  /// Renseigne le prix de vente depuis la marge (quand l'achat ou la marge change) ; vidé si l'achat est nul.
+  void _majVenteDepuisMarge() => _venteCtrl.text = _a > 0 ? f2(_venteDepuisMarge) : '';
+
+  /// Recalcule la marge affichée depuis le prix de vente saisi (quand l'utilisateur modifie le prix de vente).
+  void _majMargeDepuisVente() => _marge.text = _modeMarge == '%'
+      ? (_a > 0 ? '${((_vente - _a) / _a * 100).round()}' : _marge.text)
+      : '${(_vente - _a).round()}';
 
   /// Règle « vente sous achat » des Paramètres : `Interdire`, `Avertir` ou `Autoriser`.
   String get _regleSousAchat =>
@@ -367,7 +390,7 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
         if (_prixPiece(c.quantite, c.prix) case final piece? when _estSousAchat(piece)) piece,
   ];
 
-  bool get _ok1 => _designation.text.trim().isNotEmpty && _a > 0 && !(_interdit && _sousAchat);
+  bool get _ok1 => _designation.text.trim().isNotEmpty && _a > 0 && _vente > 0 && !(_interdit && _sousAchat);
   bool get _okEnregistrer => _ok1 && !(_interdit && _piecesSousAchat.isNotEmpty);
 
   void _changerModeMarge(String v) {
@@ -653,10 +676,10 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
                   _etape = 1;
                 }),
                 options: [
-                  DsOption(ModeFormulaireProduit.rapide, libelle: l10n.prdModeRapide, icone: LucideIcons.zap),
-                  DsOption(ModeFormulaireProduit.detaille, libelle: l10n.prdModeDetaille, icone: LucideIcons.listTree),
                   if (!_edition)
                     DsOption(ModeFormulaireProduit.ia, libelle: l10n.prdModeIa, icone: LucideIcons.sparkles),
+                  DsOption(ModeFormulaireProduit.rapide, libelle: l10n.prdModeRapide, icone: LucideIcons.zap),
+                  DsOption(ModeFormulaireProduit.detaille, libelle: l10n.prdModeDetaille, icone: LucideIcons.listTree),
                 ],
               ),
               if (det)
@@ -933,13 +956,14 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
           _champ(
             l10n.produitChampPrixAchat,
             obligatoire: true,
+            erreur: _achat.text.trim().isNotEmpty && _a <= 0 ? l10n.prdPrixAchatNonNul : null,
             DsTextField(
               key: const ValueKey('produit_achat'),
               controller: _achat,
               numerique: true,
               suffixeTexte: devise,
               indice: '0,00',
-              onChanged: (_) => setState(() {}),
+              onChanged: (_) => setState(_majVenteDepuisMarge),
             ),
           ),
           _champ(
@@ -953,7 +977,7 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
                     controller: _marge,
                     numerique: true,
                     suffixeTexte: _modeMarge == '%' ? '%' : devise,
-                    onChanged: (_) => setState(() {}),
+                    onChanged: (_) => setState(_majVenteDepuisMarge),
                   ),
                 ),
                 DsSegmentedControl<String>(
@@ -980,10 +1004,12 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
                 ? l10n.prdSousAchat
                 : l10n.prdMargeUnitaire(formaterMontant(_vente - _a, devise)),
             DsTextField(
-              key: ValueKey('produit_vente_${f2(_vente)}'),
-              valeurInitiale: f2(_vente),
+              key: const ValueKey('produit_vente'),
+              controller: _venteCtrl,
+              numerique: true,
               suffixeTexte: devise,
-              actif: false,
+              indice: '0,00',
+              onChanged: (_) => setState(_majMargeDepuisVente),
             ),
           ),
           if (det)

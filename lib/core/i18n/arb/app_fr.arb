@@ -2033,6 +2033,7 @@
   "prdGenererCodeBarres": "Générer un code-barres CDZ",
   "prdPrix": "Prix",
   "prdSousAchat": "Inférieur au prix d'achat",
+  "prdPrixAchatNonNul": "Le prix d'achat doit être supérieur à 0",
   "prdMargeUnitaire": "Marge unitaire : {montant}",
   "@prdMargeUnitaire": {
     "placeholders": {
@@ -2857,6 +2858,9 @@
   "usrNouveauMotDePasse": "Nouveau mot de passe",
   "usrMdpIndice": "8 caractères minimum",
   "usrMdpVide": "Laisser vide pour ne pas changer",
+  "usrConfirmerMotDePasse": "Confirmer le mot de passe",
+  "usrMdpConfirmationIndice": "Retapez le mot de passe",
+  "usrMdpDifferent": "Les mots de passe ne correspondent pas",
   "usrForce0": "Très faible",
   "usrForce1": "Faible",
   "usrForce2": "Moyen",

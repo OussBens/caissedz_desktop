@@ -29,8 +29,8 @@ class _FicheIaDialog extends StatelessWidget {
     final c = context.ds.colors;
     final t = context.ds.typo;
     final f = fiche;
-    final photo = imageProduit(f.image, largeur: 480);
-    const icone = DsIconBox(LucideIcons.package, taille: 168, tailleIcone: 56);
+    final photo = imageProduit(f.image, largeur: 672);
+    const icone = DsIconBox(LucideIcons.package, taille: 336, tailleIcone: 96);
     final quantite = f.quantite == null
         ? null
         : (f.typeQuantite == null
@@ -40,7 +40,7 @@ class _FicheIaDialog extends StatelessWidget {
       titre: l10n.iaFicheTitre,
       iconeData: LucideIcons.sparkles,
       ton: DsDialogTon.info,
-      largeur: 720,
+      largeur: 860,
       actions: [
         DsButton(
           key: const ValueKey('ia_fiche_non'),
@@ -71,8 +71,8 @@ class _FicheIaDialog extends StatelessWidget {
                   key: const ValueKey('ia_fiche_photo'),
                   borderRadius: DsRadius.borderMd,
                   child: Container(
-                    width: 168,
-                    height: 168,
+                    width: 336,
+                    height: 336,
                     color: c.surfaceSunken,
                     child: Image(image: photo, fit: BoxFit.contain, errorBuilder: (_, _, _) => icone),
                   ),
