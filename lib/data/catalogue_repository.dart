@@ -79,6 +79,43 @@ class CatalogueRepository {
   static const String produitMontant = PanierLigne.codeMontant;
 
   Future<List<Produit>> produits({String? recherche, bool actifsSeulement = false, String? categorieCode}) async {
+    final (where, args) = _filtreProduits(recherche, actifsSeulement, categorieCode);
+    final rows = await db.query('produit', where: where, whereArgs: args, orderBy: 'designation');
+    return rows.map(Produit.depuisLigne).toList();
+  }
+
+  /// Les mêmes produits que [produits], réduits au code, au service et au seuil : de quoi les compter et les
+  /// filtrer par stock avant de lire les fiches d'une seule page ([produitsParCodes]).
+  Future<List<({String code, bool service, int? seuil})>> apercusProduits({
+    String? recherche,
+    bool actifsSeulement = false,
+  }) async {
+    final (where, args) = _filtreProduits(recherche, actifsSeulement, null);
+    final rows = await db.query(
+      'produit',
+      columns: ['code', 'service', 'seuil_stock'],
+      where: where,
+      whereArgs: args,
+      orderBy: 'designation',
+    );
+    return [
+      for (final r in rows) (code: r['code']! as String, service: r['service'] == 1, seuil: r['seuil_stock'] as int?),
+    ];
+  }
+
+  /// Les produits [codes], dans cet ordre (ceux qui n'existent plus sont omis).
+  Future<List<Produit>> produitsParCodes(List<String> codes) async {
+    if (codes.isEmpty) return const [];
+    final rows = await db.query(
+      'produit',
+      where: 'code IN (${List.filled(codes.length, '?').join(',')})',
+      whereArgs: codes,
+    );
+    final parCode = {for (final r in rows) r['code']! as String: Produit.depuisLigne(r)};
+    return [for (final c in codes) ?parCode[c]];
+  }
+
+  (String, List<Object>) _filtreProduits(String? recherche, bool actifsSeulement, String? categorieCode) {
     final where = <String>['code <> ?'];
     final args = <Object>[produitMontant];
     if (recherche != null && recherche.trim().isNotEmpty) {
@@ -91,8 +128,7 @@ class CatalogueRepository {
       where.add('categorie_code = ?');
       args.add(categorieCode);
     }
-    final rows = await db.query('produit', where: where.join(' AND '), whereArgs: args, orderBy: 'designation');
-    return rows.map(Produit.depuisLigne).toList();
+    return (where.join(' AND '), args);
   }
 
   /// Désignations des produits non archivés, en minuscules et sans espaces autour (noms uniques).
