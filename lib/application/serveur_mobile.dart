@@ -801,6 +801,9 @@ class ServeurMobile {
     'seuil': pr.seuilStock ?? seuilGlobal,
   };
 
+  /// Les produits de la recherche `q`, avec `filtre` : `bas` (sous le seuil, épuisés compris) ou `rupture`
+  /// (épuisés) ; par page de `limite` produits à partir de `decalage` (sans `limite` : tous). `total` : les
+  /// produits du filtre ; `tous`, `bas` et `rupture` : les compteurs de la recherche (filtres du téléphone).
   Future<Map<String, Object?>> _produits(Session s, Map<String, String> q) async {
     final visibles = [for (final m in await _magasinsVisibles(s)) m.code];
     final magasin = q['magasin'];
@@ -808,8 +811,23 @@ class ServeurMobile {
     final stocks = await _stocks(magasins);
     final seuil = (await _parametresVente()).seuilStockGlobal;
     final produits = await CatalogueRepository(db).produits(recherche: q['q'], actifsSeulement: q['tous'] != '1');
+    double stock(Produit pr) => stocks[pr.code] ?? 0;
+    bool bas(Produit pr) => !pr.service && stock(pr) <= (pr.seuilStock ?? seuil);
+    bool rupture(Produit pr) => !pr.service && stock(pr) <= 0;
+    final filtres = switch (q['filtre']) {
+      'bas' => produits.where(bas).toList(),
+      'rupture' => produits.where(rupture).toList(),
+      _ => produits,
+    };
+    final decalage = max(0, int.tryParse(q['decalage'] ?? '') ?? 0);
+    final limite = int.tryParse(q['limite'] ?? '');
+    final page = filtres.skip(decalage).take(limite != null && limite > 0 ? limite : filtres.length);
     return {
-      'produits': [for (final pr in produits) _produitJson(s, pr, stocks[pr.code] ?? 0, seuil)],
+      'produits': [for (final pr in page) _produitJson(s, pr, stock(pr), seuil)],
+      'total': filtres.length,
+      'tous': produits.length,
+      'bas': produits.where(bas).length,
+      'rupture': produits.where(rupture).length,
     };
   }
 

@@ -384,6 +384,25 @@ void main() {
     expect(recues.single.utilisateur, isNotEmpty);
   });
 
+  test('produits par page, filtrés en stock bas ou en rupture, avec les compteurs de la recherche', () async {
+    final t = await connecter();
+    for (final (nom, stock) in [('Café', 0), ('Lait', 50), ('Sucre', 30)]) {
+      expect((await t.post('produits', {'designation': nom, 'prixVente': 100, 'stockInitial': stock})).$1, 200);
+    }
+    final (_, page1) = await t.get('produits?limite=2');
+    expect([for (final p in page1['produits'] as List) p['designation']], ['Café', 'Lait']);
+    expect(page1['total'], 3);
+    expect(page1['tous'], 3);
+    expect(page1['rupture'], 1);
+    final (_, page2) = await t.get('produits?limite=2&decalage=2');
+    expect([for (final p in page2['produits'] as List) p['designation']], ['Sucre']);
+    final (_, rupture) = await t.get('produits?filtre=rupture&limite=2');
+    expect([for (final p in rupture['produits'] as List) p['designation']], ['Café']);
+    expect(rupture['total'], 1);
+    // Sans limite, tous les produits (téléphones d'avant la pagination).
+    expect((await t.get('produits')).$2['produits'], hasLength(3));
+  });
+
   test('lecture seule : on consulte, on n’écrit plus ; sans licence, rien', () async {
     final t = await connecter();
     licence = const Licence(niveau: null, motif: MotifLicence.expiree);
