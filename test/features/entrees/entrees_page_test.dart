@@ -8,10 +8,12 @@ import 'package:caissedz_desktop/application/serveur_mobile.dart';
 import 'package:caissedz_desktop/application/stock_service.dart';
 import 'package:caissedz_desktop/application/tiers_service.dart';
 import 'package:caissedz_desktop/core/design_system/design_system.dart';
+import 'package:caissedz_desktop/data/catalogue_repository.dart';
 import 'package:caissedz_desktop/data/parametre_repository.dart';
 import 'package:caissedz_desktop/data/stock_repository.dart';
 import 'package:caissedz_desktop/data/tiers_repository.dart';
 import 'package:caissedz_desktop/domain/models/achat.dart';
+import 'package:caissedz_desktop/domain/models/parametres_vente.dart';
 import 'package:caissedz_desktop/domain/models/produit.dart';
 import 'package:caissedz_desktop/domain/models/tiers.dart';
 import 'package:caissedz_desktop/features/caisse/pos_controller.dart';
@@ -190,6 +192,50 @@ void main() {
       expect(a.statutPaiement, 'paye');
       expect((await StockRepository(c.read(appDatabaseProvider).db).niveau('PRD0001', 'MAG0000')).quantite, 5);
       await tester.pump(const Duration(seconds: 5));
+    });
+
+    testWidgets('entrée rapide : prix de vente proposé par la marge, modifiable, appliqué au produit', (tester) async {
+      final c = await pumpApp(tester, routeInitiale: '/entrees', taille: _taille);
+      await _donnees(tester, c);
+      await clic(tester, _cle('entree_rapide'));
+      await _choisir(tester, 'rapide_produit', 'Lait 1 L');
+      TextField vente() => tester.widget<TextField>(_champ('rapide_vente'));
+      expect(vente().controller!.text, '100', reason: 'prix de vente actuel du produit');
+      // Prix d'achat 120 avec la marge du produit (25 %) : 150.
+      await tester.enterText(_champ('rapide_prix'), '120');
+      await tester.pump();
+      expect(vente().controller!.text, '150');
+      // Saisi à la main, le prix de vente ne suit plus le prix d'achat.
+      await tester.enterText(_champ('rapide_vente'), '170');
+      await tester.pump();
+      await tester.enterText(_champ('rapide_prix'), '110');
+      await tester.pump();
+      expect(vente().controller!.text, '170');
+      await tester.enterText(_champ('rapide_quantite'), '2');
+      await tester.pump();
+      await clic(tester, _cle('rapide_enregistrer'));
+      final p = await CatalogueRepository(c.read(appDatabaseProvider).db).produitParCode('PRD0001');
+      expect(p!.prixAchat, 110);
+      expect(p.prixVente, 170);
+      await tester.pump(const Duration(seconds: 5));
+    });
+
+    testWidgets('entrée rapide : vente sous achat « Interdire » bloque l’enregistrement', (tester) async {
+      final c = await pumpApp(tester, routeInitiale: '/entrees', taille: _taille);
+      await _donnees(tester, c);
+      await ParametreRepository(c.read(appDatabaseProvider).db)
+          .ecrirePlusieurs({ParametresVente.cleVenteSousAchat: ParametresVente.venteSousAchatInterdire});
+      c.invalidate(parametresVenteProvider);
+      await tester.pumpAndSettle();
+      await clic(tester, _cle('entree_rapide'));
+      await _choisir(tester, 'rapide_produit', 'Lait 1 L');
+      await tester.enterText(_champ('rapide_vente'), '70');
+      await tester.pump();
+      expect(find.text("Prix inférieur au prix d'achat : interdit par les paramètres."), findsOneWidget);
+      expect(tester.widget<DsButton>(_cle('rapide_enregistrer')).onPressed, isNull);
+      await tester.enterText(_champ('rapide_vente'), '95');
+      await tester.pump();
+      expect(tester.widget<DsButton>(_cle('rapide_enregistrer')).onPressed, isNotNull);
     });
 
     testWidgets('entrée rapide : la répartition seulement en Ultra avec plusieurs magasins', (tester) async {

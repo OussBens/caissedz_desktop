@@ -8,10 +8,12 @@ import '../../app/demarrage_providers.dart';
 import '../../application/achat_service.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
+import '../../domain/calculs_prix.dart';
 import '../../domain/code_generator.dart';
 import '../../domain/models/achat.dart';
 import '../../domain/models/caisse.dart';
 import '../../domain/models/document_commercial.dart';
+import '../../domain/models/parametres_vente.dart';
 import '../../domain/models/produit.dart';
 import '../../domain/models/stock.dart';
 import '../../domain/models/tiers.dart';
@@ -907,29 +909,84 @@ class _EntreeRapideFormState extends ConsumerState<_EntreeRapideForm> {
   late Map<String, double> _repartition = widget.repartition.isNotEmpty
       ? widget.repartition
       : {widget.principal: lireNombre(_quantite.text) ?? 0};
+  final _vente = TextEditingController();
+
+  /// Le prix de vente suit le prix d'achat et la marge tant que l'utilisateur ne l'a pas saisi lui-même.
+  bool _venteSaisie = false;
   bool _occupe = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final p = _produitChoisi(ref.read(produitsProvider).value ?? const <Produit>[]);
+    // Prix d'achat inchangé : le prix de vente actuel du produit ; sinon, celui que donne la marge.
+    _vente.text = p != null && (p.prixAchat - _prixAchat).abs() < 0.005 && p.prixVente > 0
+        ? texteQuantite(p.prixVente)
+        : _venteDepuisMarge(p);
+  }
 
   @override
   void dispose() {
     _quantite.dispose();
     _prix.dispose();
     _nombre.dispose();
+    _vente.dispose();
     super.dispose();
   }
 
   double get _total => lireNombre(_quantite.text) ?? 0;
+  double get _prixAchat => lireNombre(_prix.text) ?? 0;
+  double get _prixVente => lireNombre(_vente.text) ?? 0;
+
+  Produit? _produitChoisi(List<Produit> produits) =>
+      widget.produit ?? produits.where((p) => p.code == _produit).firstOrNull;
+
+  /// Marge du produit (sa marge enregistrée, à défaut la marge par défaut des Paramètres).
+  double _marge(Produit? p) => p != null && p.margePct > 0
+      ? p.margePct
+      : (ref.read(parametresVenteProvider).value?.margeDefautPct ?? const ParametresVente().margeDefautPct);
+
+  /// Prix de vente calculé depuis le prix d'achat et la marge ; vide tant que le prix d'achat est nul.
+  String _venteDepuisMarge(Produit? p) =>
+      _prixAchat > 0 ? texteQuantite(CalculsPrix.prixVenteDepuisMarge(_prixAchat, _marge(p))) : '';
+
+  /// Recalcule le prix de vente (achat ou produit changé), sauf s'il a été saisi à la main.
+  void _majVente() {
+    if (_venteSaisie) return;
+    _vente.text = _venteDepuisMarge(_produitChoisi(ref.read(produitsProvider).value ?? const <Produit>[]));
+  }
+
+  /// Règle « vente sous achat » des Paramètres : `Interdire`, `Avertir` ou `Autoriser`.
+  String get _regleSousAchat =>
+      ref.read(parametresVenteProvider).value?.venteSousAchat ?? ParametresVente.venteSousAchatAvertir;
+  bool get _sousAchat => _prixAchat > 0 && _prixVente > 0 && _prixVente < _prixAchat - 0.004;
+  bool get _venteInterdite => _sousAchat && _regleSousAchat == ParametresVente.venteSousAchatInterdire;
 
   Future<void> _enregistrer() async {
     final l10n = AppLocalizations.of(context);
+    final prix = _prixAchat;
+    // « Avertir » : un prix de vente sous le prix d'achat est confirmé avant l'enregistrement (« Interdire »
+    // bloque déjà le bouton, « Autoriser » passe sans question).
+    if (_sousAchat && _regleSousAchat == ParametresVente.venteSousAchatAvertir) {
+      final devise = ref.read(deviseProvider);
+      final confirme = await afficherConfirmation(
+        context,
+        titre: l10n.posPrixSousAchatTitre,
+        message: l10n.posPrixSousAchatMsg(formaterMontant(prix, devise), formaterMontant(_prixVente, devise)),
+        libelleConfirmer: l10n.communEnregistrer,
+        genre: DsConfirmGenre.avertissement,
+      );
+      if (!confirme || !mounted) return;
+    }
     setState(() => _occupe = true);
     final s = ref.read(achatServiceProvider);
-    final prix = lireNombre(_prix.text) ?? 0;
     final lignes = [
       DemandeAchatLigne(
         produitCode: _produit!,
         quantite: _total,
         nombre: lireNombre(_nombre.text) ?? 0,
         prixAchat: prix,
+        nouveauPrixVente: _prixVente > 0 ? _prixVente : null,
         repartition: {
           for (final MapEntry(:key, :value) in _repartition.entries)
             if (value > 0) key: value,
@@ -1011,7 +1068,14 @@ class _EntreeRapideFormState extends ConsumerState<_EntreeRapideForm> {
           libelle: equilibre ? l10n.communEnregistrer : l10n.entRepartitionIncomplete,
           icone: LucideIcons.check,
           chargement: _occupe,
-          onPressed: _produit != null && total > 0 && equilibre && nombreOk && (lireNombre(_prix.text) ?? -1) >= 0
+          onPressed:
+              _produit != null &&
+                  total > 0 &&
+                  equilibre &&
+                  nombreOk &&
+                  (lireNombre(_prix.text) ?? -1) >= 0 &&
+                  _prixVente > 0 &&
+                  !_venteInterdite
               ? _enregistrer
               : null,
         ),
@@ -1034,7 +1098,12 @@ class _EntreeRapideFormState extends ConsumerState<_EntreeRapideForm> {
               onChanged: (v) => setState(() {
                 _produit = v;
                 final p = produits.where((p) => p.code == v).firstOrNull;
-                if (p != null) _prix.text = texteQuantite(p.prixAchat);
+                if (p != null) {
+                  _prix.text = texteQuantite(p.prixAchat);
+                  // Nouveau produit : son prix de vente actuel, recalculé ensuite si le prix d'achat change.
+                  _venteSaisie = false;
+                  _vente.text = p.prixVente > 0 ? texteQuantite(p.prixVente) : _venteDepuisMarge(p);
+                }
               }),
             ),
           ),
@@ -1061,7 +1130,7 @@ class _EntreeRapideFormState extends ConsumerState<_EntreeRapideForm> {
                   controller: _prix,
                   numerique: true,
                   suffixeTexte: devise,
-                  onChanged: (_) => setState(() {}),
+                  onChanged: (_) => setState(_majVente),
                 ),
               ),
               if (exigeNombre)
@@ -1075,7 +1144,29 @@ class _EntreeRapideFormState extends ConsumerState<_EntreeRapideForm> {
                     erreur: nombreOk ? null : l10n.stkNombreObligatoire,
                     onChanged: (_) => setState(() {}),
                   ),
+                )
+              else
+                const SizedBox.shrink(),
+              // Prix de vente : proposé depuis le prix d'achat et la marge, modifiable (règle « vente sous achat »).
+              DsFormRow(
+                libelle: l10n.produitChampPrixVente,
+                obligatoire: true,
+                largeurLibelle: 100,
+                erreur: _venteInterdite ? l10n.posPrixSousAchatInterdit : null,
+                aide: _prixAchat <= 0 || _prixVente <= 0 || _venteInterdite
+                    ? null
+                    : _sousAchat && _regleSousAchat == ParametresVente.venteSousAchatAvertir
+                    ? l10n.prdSousAchat
+                    : l10n.prdMargeUnitaire(formaterMontant(_prixVente - _prixAchat, devise)),
+                child: DsTextField(
+                  key: const ValueKey('rapide_vente'),
+                  controller: _vente,
+                  numerique: true,
+                  suffixeTexte: devise,
+                  indice: '0,00',
+                  onChanged: (v) => setState(() => _venteSaisie = v.trim().isNotEmpty),
                 ),
+              ),
             ],
           ),
           DsFormRow(
