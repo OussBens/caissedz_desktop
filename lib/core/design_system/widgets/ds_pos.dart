@@ -1175,8 +1175,8 @@ class _LignePaiement extends StatelessWidget {
   }
 }
 
-/// Tuile produit (`ProductTile`) : vignette teintée 72 px, nom, marque · taille, prix, stock ; bouton « Entrée »
-/// au survol. [enLigne] : rendu en rangée (liste). En rupture, la tuile garde son apparence normale (seul
+/// Tuile produit (`ProductTile`) : vignette teintée 72 px, nom, marque · taille, prix, stock ; boutons
+/// « Modifier » et « Entrée » au survol. [enLigne] : rendu en rangée (liste). En rupture, la tuile garde son apparence normale (seul
 /// « Rupture » est en rouge) ; un clic la fait clignoter deux fois en rouge, doucement.
 class DsProductTile extends StatefulWidget {
   const DsProductTile({
@@ -1191,6 +1191,7 @@ class DsProductTile extends StatefulWidget {
     this.devise = 'DA',
     this.onAjouter,
     this.onEntree,
+    this.onModifier,
     this.seuilBas = 5,
     this.enLigne = false,
     this.ruptureCliquable = false,
@@ -1207,6 +1208,9 @@ class DsProductTile extends StatefulWidget {
   final String devise;
   final VoidCallback? onAjouter;
   final VoidCallback? onEntree;
+
+  /// Modification du produit (formulaire produit), révélée au survol à côté de « Entrée ».
+  final VoidCallback? onModifier;
   final double seuilBas;
   final bool enLigne;
 
@@ -1228,6 +1232,9 @@ class _DsProductTileState extends State<DsProductTile> with SingleTickerProvider
   );
 
   bool get _rupture => widget.stock != null && widget.stock! <= 0;
+
+  /// Au moins une action révélée au survol (« Modifier », « Entrée »).
+  bool get _actionsSurvol => widget.onEntree != null || widget.onModifier != null;
 
   void _toucher() {
     if (_rupture) unawaited(_alerte.forward(from: 0));
@@ -1257,7 +1264,7 @@ class _DsProductTileState extends State<DsProductTile> with SingleTickerProvider
     },
   );
 
-  /// Bouton « Entrée » flottant au-dessus de la carte (grille) : il reste affiché un court instant après la
+  /// Boutons « Modifier » / « Entrée » flottant au-dessus de la carte (grille) : ils restent affichés un court instant après la
   /// sortie du pointeur pour pouvoir l'atteindre.
   final _lien = LayerLink();
   final _portail = OverlayPortalController();
@@ -1275,7 +1282,7 @@ class _DsProductTileState extends State<DsProductTile> with SingleTickerProvider
 
   void _entrerCarte() {
     _delai?.cancel();
-    if (widget.onEntree != null && !widget.enLigne && !_portail.isShowing) _portail.show();
+    if (_actionsSurvol && !widget.enLigne && !_portail.isShowing) _portail.show();
     setState(() => _survol = true);
   }
 
@@ -1346,18 +1353,29 @@ class _DsProductTileState extends State<DsProductTile> with SingleTickerProvider
       ),
       child: w.image == null ? Icon(LucideIcons.package, size: w.enLigne ? 18 : 36, color: teinte) : null,
     );
+    final cleTuile = w.key is ValueKey ? (w.key! as ValueKey).value : w.nom;
     final entree = w.onEntree == null
         ? null
         : Tooltip(
             message: l10n.dsPosEntreeRapide,
             child: DsButton(
+              key: ValueKey('${cleTuile}_entree_ligne'),
               libelle: l10n.dsPosEntree,
               icone: LucideIcons.packagePlus,
               taille: DsButtonTaille.sm,
               variante: DsButtonVariante.secondaire,
-              pleineLargeur: !w.enLigne,
               onPressed: w.onEntree,
             ),
+          );
+    final modifier = w.onModifier == null
+        ? null
+        : DsButton(
+            key: ValueKey('${cleTuile}_modifier_ligne'),
+            libelle: l10n.communModifier,
+            icone: LucideIcons.pencil,
+            taille: DsButtonTaille.sm,
+            variante: DsButtonVariante.secondaire,
+            onPressed: w.onModifier,
           );
 
     if (w.enLigne) {
@@ -1418,11 +1436,19 @@ class _DsProductTileState extends State<DsProductTile> with SingleTickerProvider
                     child: Align(alignment: AlignmentDirectional.centerEnd, child: prixTexte),
                   ),
                   SizedBox(
-                    width: 92,
-                    child: AnimatedOpacity(
-                      opacity: _survol ? 1 : 0,
-                      duration: DsMotion.base,
-                      child: Align(alignment: AlignmentDirectional.centerEnd, child: entree ?? const SizedBox.shrink()),
+                    width: (modifier != null ? 104 : 0) + (entree != null ? 92 : 0),
+                    child: IgnorePointer(
+                      ignoring: !_survol,
+                      child: AnimatedOpacity(
+                        opacity: _survol ? 1 : 0,
+                        duration: DsMotion.base,
+                        // Réduits (jamais coupés) si les libellés dépassent la colonne.
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          alignment: AlignmentDirectional.centerEnd,
+                          child: Row(mainAxisSize: MainAxisSize.min, spacing: 6, children: [?modifier, ?entree]),
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -1499,7 +1525,19 @@ class _DsProductTileState extends State<DsProductTile> with SingleTickerProvider
         ),
       ),
     );
-    if (w.onEntree == null) return carte;
+    if (!_actionsSurvol) return carte;
+    void declencher(VoidCallback action) {
+      _delai?.cancel();
+      _survolEntree = false;
+      if (_portail.isShowing) _portail.hide();
+      action();
+    }
+
+    Widget ombre(Widget bouton) => DecoratedBox(
+      decoration: BoxDecoration(borderRadius: DsRadius.borderMd, boxShadow: c.shadowMd),
+      child: bouton,
+    );
+
     return OverlayPortal(
       controller: _portail,
       overlayChildBuilder: (_) => Positioned(
@@ -1531,23 +1569,35 @@ class _DsProductTileState extends State<DsProductTile> with SingleTickerProvider
               ),
               child: Material(
                 type: MaterialType.transparency,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(borderRadius: DsRadius.borderMd, boxShadow: c.shadowMd),
-                  child: Tooltip(
-                    message: l10n.dsPosEntreeRapide,
-                    child: DsButton(
-                      key: ValueKey('${w.key is ValueKey ? (w.key! as ValueKey).value : w.nom}_entree'),
-                      libelle: l10n.dsPosEntree,
-                      icone: LucideIcons.packagePlus,
-                      taille: DsButtonTaille.sm,
-                      onPressed: () {
-                        _delai?.cancel();
-                        _survolEntree = false;
-                        if (_portail.isShowing) _portail.hide();
-                        w.onEntree!();
-                      },
-                    ),
-                  ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  spacing: 6,
+                  children: [
+                    if (w.onModifier != null)
+                      ombre(
+                        DsButton(
+                          key: ValueKey('${cleTuile}_modifier'),
+                          libelle: l10n.communModifier,
+                          icone: LucideIcons.pencil,
+                          taille: DsButtonTaille.sm,
+                          variante: DsButtonVariante.secondaire,
+                          onPressed: () => declencher(w.onModifier!),
+                        ),
+                      ),
+                    if (w.onEntree != null)
+                      ombre(
+                        Tooltip(
+                          message: l10n.dsPosEntreeRapide,
+                          child: DsButton(
+                            key: ValueKey('${cleTuile}_entree'),
+                            libelle: l10n.dsPosEntree,
+                            icone: LucideIcons.packagePlus,
+                            taille: DsButtonTaille.sm,
+                            onPressed: () => declencher(w.onEntree!),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
             ),

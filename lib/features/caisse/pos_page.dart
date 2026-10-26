@@ -346,6 +346,12 @@ class _PosPageState extends ConsumerState<PosPage> {
     ref.invalidate(produitsPosProvider);
   }
 
+  /// « Modifier » au survol d'une tuile : formulaire produit détaillé, catalogue de la caisse rafraîchi ensuite.
+  Future<void> _modifierProduit(Produit p) async {
+    await afficherFormulaireProduit(context, produit: p, detaille: true);
+    ref.invalidate(produitsPosProvider);
+  }
+
   /// Produit créé depuis un code-barres inconnu : rempli par le catalogue BENS s'il l'a trouvé ; enregistré
   /// avec un prix, il passe aussitôt au panier.
   Future<void> _creerProduitScanne(String code, FicheProduitIa? fiche) async {
@@ -866,6 +872,7 @@ class _PosPageState extends ConsumerState<PosPage> {
         ruptureCliquable: admin,
         onAjouter: () => unawaited(_choisirProduit(p)),
         onEntree: () => unawaited(_entreeRapide(p)),
+        onModifier: () => unawaited(_modifierProduit(p)),
       );
     }
 

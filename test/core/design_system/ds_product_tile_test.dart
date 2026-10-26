@@ -1,4 +1,5 @@
 import 'package:caissedz_desktop/core/design_system/design_system.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -87,10 +88,7 @@ void main() {
   testWidgets('sans marque ni taille : aucune ligne en liste', (tester) async {
     await pumpDs(
       tester,
-      const SizedBox(
-        width: 700,
-        child: DsProductTile(nom: 'Lait 1 L', prix: 100, stock: 4, enLigne: true),
-      ),
+      const SizedBox(width: 700, child: DsProductTile(nom: 'Lait 1 L', prix: 100, stock: 4, enLigne: true)),
     );
     expect(find.byKey(const ValueKey('tuile_sous_titre')), findsNothing);
   });
@@ -110,4 +108,47 @@ void main() {
     expect(rouge(tester), 0);
     expect(ajouts, 1);
   });
+
+  for (final enLigne in [false, true]) {
+    testWidgets('« Modifier » et « Entrée » au survol (${enLigne ? 'liste' : 'grille'})', (tester) async {
+      var modifs = 0;
+      var entrees = 0;
+      await pumpDs(
+        tester,
+        Center(
+          child: SizedBox(
+            width: enLigne ? 900 : 220,
+            child: DsProductTile(
+              key: const ValueKey('tuile_PRD0001'),
+              nom: 'Lait 1 L',
+              prix: 100,
+              stock: 4,
+              enLigne: enLigne,
+              onModifier: () => modifs++,
+              onEntree: () => entrees++,
+            ),
+          ),
+        ),
+      );
+      final souris = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await souris.addPointer(location: Offset.zero);
+      addTearDown(souris.removePointer);
+      await souris.moveTo(tester.getCenter(find.text('Lait 1 L')));
+      await tester.pumpAndSettle();
+      final suffixe = enLigne ? '_ligne' : '';
+      await tester.tap(find.byKey(ValueKey('tuile_PRD0001_modifier$suffixe')));
+      await tester.pumpAndSettle();
+      expect(modifs, 1);
+      if (!enLigne) {
+        // Le bouton cliqué referme la barre flottante : on ressort puis on revient sur la carte.
+        await souris.moveTo(Offset.zero);
+        await tester.pumpAndSettle();
+        await souris.moveTo(tester.getCenter(find.text('Lait 1 L')));
+        await tester.pumpAndSettle();
+      }
+      await tester.tap(find.byKey(ValueKey('tuile_PRD0001_entree$suffixe')));
+      await tester.pumpAndSettle();
+      expect(entrees, 1);
+    });
+  }
 }
