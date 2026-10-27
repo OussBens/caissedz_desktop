@@ -154,8 +154,44 @@ class DsRechercheInitiale extends InheritedWidget {
   bool updateShouldNotify(DsRechercheInitiale oldWidget) => texte != oldWidget.texte;
 }
 
+/// `true` si [date] remonte à moins de [jours] jours (raccourcis « Nouveaux », « Plus récents »…).
+bool depuisMoinsDe(DateTime? date, int jours) => date != null && DateTime.now().difference(date).inDays < jours;
+
+/// `true` si [date] est absente ou remonte à [jours] jours ou plus (raccourcis « Inactifs »…).
+bool sansDepuis(DateTime? date, int jours) => date == null || DateTime.now().difference(date).inDays >= jours;
+
+/// `true` si [date] est aujourd'hui.
+bool estAujourdhui(DateTime? date) {
+  if (date == null) return false;
+  final n = DateTime.now();
+  return date.year == n.year && date.month == n.month && date.day == n.day;
+}
+
 /// Mode d'affichage d'un [DsModuleTable] à cartes.
 enum DsVueModule { grille, liste }
+
+/// Raccourci de filtre d'un [DsModuleTable] : une puce, à gauche de « Réinitialiser ». Les puces actives se
+/// cumulent : [filtre] garde les lignes voulues, [tri] les ordonne (le dernier raccourci activé l'emporte),
+/// [periode] (clé de [DsPeriode.presets]) règle la période du module (active tant que la période est celle-là).
+@immutable
+class DsRaccourci<T> {
+  const DsRaccourci({required this.id, required this.libelle, this.icone, this.filtre, this.tri, this.periode});
+
+  /// Raccourci de période (« Aujourd'hui », « Cette semaine »…) : clé de [DsPeriode.presets].
+  factory DsRaccourci.periode(AppLocalizations l10n, String cle) => DsRaccourci(
+    id: 'periode_$cle',
+    libelle: libellesPeriodes(l10n)[cle] ?? cle,
+    icone: LucideIcons.calendarDays,
+    periode: cle,
+  );
+
+  final String id;
+  final String libelle;
+  final IconData? icone;
+  final bool Function(T ligne)? filtre;
+  final DsTri? tri;
+  final String? periode;
+}
 
 /// État d'une carte de grille : sélection, bascule, ouverture.
 class DsEtatCarte {
@@ -206,6 +242,7 @@ class DsModuleTable<T> extends StatefulWidget {
     this.cleTable,
     this.apresFiltres,
     this.chargement = false,
+    this.raccourcis = const [],
   });
 
   /// Nom pluriel des éléments (« produits »), affiché avec le compteur des totaux.
@@ -257,6 +294,9 @@ class DsModuleTable<T> extends StatefulWidget {
   /// Données en cours de lecture (fournisseur Riverpod en chargement) : lignes fantômes au lieu de « aucun ».
   final bool chargement;
 
+  /// Filtres prêts à l'emploi (5 à 7), en puces combinables dans le panneau de filtres.
+  final List<DsRaccourci<T>> raccourcis;
+
   @override
   State<DsModuleTable<T>> createState() => _DsModuleTableState<T>();
 }
@@ -281,6 +321,105 @@ class _DsModuleTableState<T> extends State<DsModuleTable<T>> {
 
   late DsVueModule _vue = widget.carte != null ? widget.vueParDefaut : DsVueModule.liste;
 
+  /// Tri commun aux deux vues : choisi au-dessus des cartes ou par un en-tête de la liste.
+  DsTri? _tri;
+
+  /// Raccourcis actifs (hors période), dans l'ordre d'activation.
+  final Set<String> _actifs = {};
+
+  /// Période du module à l'ouverture : rétablie quand on désactive un raccourci de période.
+  late final DsPeriode? _periodeInitiale = widget.periode;
+
+  // Lignes gardées par les raccourcis actifs, recalculées seulement quand la liste ou les raccourcis changent.
+  List<T>? _raccSource;
+  String? _raccCle;
+  List<T> _raccResultat = const [];
+
+  List<DsRaccourci<T>> get _filtresActifs => [
+    for (final r in widget.raccourcis)
+      if (_actifs.contains(r.id) && r.filtre != null) r,
+  ];
+
+  List<T> _appliquerRaccourcis() {
+    final actifs = _filtresActifs;
+    if (actifs.isEmpty) return widget.lignes;
+    final cle = actifs.map((r) => r.id).join('|');
+    if (identical(_raccSource, widget.lignes) && _raccCle == cle) return _raccResultat;
+    _raccSource = widget.lignes;
+    _raccCle = cle;
+    return _raccResultat = [
+      for (final l in widget.lignes)
+        if (actifs.every((r) => r.filtre!(l))) l,
+    ];
+  }
+
+  bool _raccourciActif(DsRaccourci<T> r) =>
+      r.periode != null ? widget.periode?.preset == r.periode : _actifs.contains(r.id);
+
+  void _basculerRaccourci(DsRaccourci<T> r) {
+    if (r.periode != null) {
+      final initiale = _periodeInitiale;
+      if (_raccourciActif(r)) {
+        if (initiale != null) {
+          widget.onPeriode?.call(initiale.preset == null ? initiale : DsPeriode.calculer(initiale.preset!));
+        }
+      } else {
+        widget.onPeriode?.call(DsPeriode.calculer(r.periode!));
+      }
+      setState(() => _pageGrille = 0);
+      return;
+    }
+    setState(() {
+      _pageGrille = 0;
+      if (_actifs.remove(r.id)) {
+        // Le tri du raccourci retiré : celui du dernier raccourci actif qui en a un, sinon l'ordre d'origine.
+        if (r.tri != null && _tri == r.tri) {
+          _tri = widget.raccourcis.lastWhere((x) => _actifs.contains(x.id) && x.tri != null, orElse: () => r).tri;
+          if (_tri == r.tri) _tri = null;
+        }
+      } else {
+        _actifs.add(r.id);
+        if (r.tri != null) _tri = r.tri;
+      }
+    });
+  }
+
+  /// « Réinitialiser » : les raccourcis sont retirés avec les filtres du module.
+  void _reinitialiserRaccourcis() {
+    final triRaccourci = widget.raccourcis.any((r) => r.tri != null && r.tri == _tri);
+    _actifs.clear();
+    if (triRaccourci) _tri = null;
+  }
+
+  int get _nbRaccourcisActifs => widget.raccourcis.where((r) => r.periode == null && _actifs.contains(r.id)).length;
+
+  Widget _puces() => DsChipGroup<String>(
+    key: const ValueKey('module_raccourcis'),
+    petit: true,
+    options: [for (final r in widget.raccourcis) DsOption(r.id, libelle: r.libelle, icone: r.icone)],
+    selection: {
+      for (final r in widget.raccourcis)
+        if (_raccourciActif(r)) r.id,
+    },
+    onChanged: (choix) {
+      for (final r in widget.raccourcis) {
+        if (choix.contains(r.id) != _raccourciActif(r)) _basculerRaccourci(r);
+      }
+    },
+  );
+  List<T>? _triSource;
+  DsTri? _triCle;
+  List<T> _triees = const [];
+
+  /// Cartes triées (calculées une fois par liste et par tri).
+  List<T> _trierCartes(List<T> donnees) {
+    if (_tri == null) return donnees;
+    if (identical(_triSource, donnees) && _triCle == _tri) return _triees;
+    _triSource = donnees;
+    _triCle = _tri;
+    return _triees = trierLignes(donnees, widget.colonnes, _tri);
+  }
+
   /// Vue grille : page courante (à partir de 0) et nombre de cartes par page.
   int _pageGrille = 0;
   int _tailleGrille = taillesGrille.first;
@@ -295,17 +434,18 @@ class _DsModuleTableState<T> extends State<DsModuleTable<T>> {
   List<T> _resultat = const [];
 
   List<T> _filtrer(String q) {
-    if (q.isEmpty) return widget.lignes;
-    if (identical(_resultatSource, widget.lignes) && _resultatTexte == q) return _resultat;
-    if (!identical(_indexSource, widget.lignes)) {
-      _indexSource = widget.lignes;
-      _index = [for (final l in widget.lignes) _texte(l).toLowerCase()];
+    final lignes = _appliquerRaccourcis();
+    if (q.isEmpty) return lignes;
+    if (identical(_resultatSource, lignes) && _resultatTexte == q) return _resultat;
+    if (!identical(_indexSource, lignes)) {
+      _indexSource = lignes;
+      _index = [for (final l in lignes) _texte(l).toLowerCase()];
     }
-    _resultatSource = widget.lignes;
+    _resultatSource = lignes;
     _resultatTexte = q;
     return _resultat = [
-      for (var i = 0; i < widget.lignes.length; i++)
-        if (_index[i].contains(q)) widget.lignes[i],
+      for (var i = 0; i < lignes.length; i++)
+        if (_index[i].contains(q)) lignes[i],
     ];
   }
 
@@ -374,6 +514,7 @@ class _DsModuleTableState<T> extends State<DsModuleTable<T>> {
 
     final autres = <Widget>[
       if (widget.filtres == null && widget.periode == null && export != null) export,
+      if (widget.carte != null && _vue == DsVueModule.grille) ..._controlesTri(l10n),
       if (widget.carte != null)
         DsSegmentedControl<DsVueModule>(
           key: const ValueKey('module_vue'),
@@ -389,11 +530,17 @@ class _DsModuleTableState<T> extends State<DsModuleTable<T>> {
 
     final enfants = <Widget>[
       if (widget.kpis != null && widget.kpis!.isNotEmpty) DsChiffresRepliables(cle: widget.entite, kpis: widget.kpis!),
-      if (widget.filtres != null || widget.periode != null)
+      if (widget.filtres != null || widget.periode != null || widget.raccourcis.isNotEmpty)
         DsFilterPanel(
           ouvertParDefaut: widget.filtresOuverts,
-          nbActifs: widget.nbFiltresActifs,
-          onReinitialiser: widget.onReinitialiser,
+          nbActifs: widget.nbFiltresActifs + _nbRaccourcisActifs,
+          raccourcis: widget.raccourcis.isEmpty ? null : _puces(),
+          onReinitialiser: widget.onReinitialiser == null && widget.raccourcis.isEmpty
+              ? null
+              : () {
+                  setState(_reinitialiserRaccourcis);
+                  widget.onReinitialiser?.call();
+                },
           onAppliquer: () {},
           colonnes: widget.colonnesFiltres,
           trailing: export,
@@ -445,7 +592,7 @@ class _DsModuleTableState<T> extends State<DsModuleTable<T>> {
           chargement: true,
           permissions: widget.permissions,
         )
-      else if (donnees.isEmpty && widget.lignes.isNotEmpty)
+      else if (donnees.isEmpty && (widget.lignes.isNotEmpty || _actifs.isNotEmpty))
         DsCard(
           child: DsVide(
             icone: LucideIcons.searchX,
@@ -457,7 +604,10 @@ class _DsModuleTableState<T> extends State<DsModuleTable<T>> {
               variante: DsButtonVariante.secondaire,
               onPressed: () {
                 _controleur.clear();
-                setState(() => _recherche = '');
+                setState(() {
+                  _recherche = '';
+                  _reinitialiserRaccourcis();
+                });
                 widget.onReinitialiser?.call();
               },
             ),
@@ -472,7 +622,8 @@ class _DsModuleTableState<T> extends State<DsModuleTable<T>> {
             final nbPages = (donnees.length / _tailleGrille).ceil().clamp(1, 1 << 30);
             final page = _pageGrille.clamp(0, nbPages - 1);
             final debut = page * _tailleGrille;
-            final cartes = donnees.sublist(debut, (debut + _tailleGrille).clamp(0, donnees.length));
+            final triees = _trierCartes(donnees);
+            final cartes = triees.sublist(debut, (debut + _tailleGrille).clamp(0, triees.length));
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               spacing: DsSpacing.s3,
@@ -527,6 +678,8 @@ class _DsModuleTableState<T> extends State<DsModuleTable<T>> {
           colonnes: widget.colonnes,
           lignes: donnees,
           cle: widget.cle,
+          triInitial: _tri,
+          onTriChanged: (t) => _tri = t,
           selection: _selection,
           onSelectionChanged: (s) => setState(() => _selection = s),
           onDoubleClic: ouvrir,
@@ -538,6 +691,38 @@ class _DsModuleTableState<T> extends State<DsModuleTable<T>> {
         ),
     ];
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, spacing: DsTailles.gridGap, children: enfants);
+  }
+
+  /// Vue cartes : colonne de tri (les colonnes triables autorisées, « Par défaut » = ordre du module) et sens.
+  List<Widget> _controlesTri(AppLocalizations l10n) {
+    final colonnes = [
+      for (final c in widget.colonnes)
+        if (c.triable && (c.permission == null || widget.permissions.contains(c.permission))) c,
+    ];
+    final libelles = {for (final c in colonnes) c.id: c.libelle};
+    final tri = _tri;
+    return [
+      DsSelect<String?>(
+        key: const ValueKey('module_tri'),
+        valeur: tri?.colonneId,
+        options: [null, ...libelles.keys],
+        libelle: (id) => id == null ? l10n.dsTriDefaut : l10n.dsTriPar(libelles[id] ?? id),
+        placeholder: l10n.dsTriDefaut,
+        icone: LucideIcons.arrowUpDown,
+        taille: DsTailles.controleSm,
+        largeur: 220,
+        onChanged: (id) => setState(() => _tri = id == null ? null : DsTri(id, ascendant: tri?.ascendant ?? true)),
+      ),
+      if (tri != null)
+        DsIconButton(
+          key: const ValueKey('module_tri_sens'),
+          icone: tri.ascendant ? LucideIcons.arrowUpNarrowWide : LucideIcons.arrowDownWideNarrow,
+          tooltip: tri.ascendant ? l10n.dsTriCroissant : l10n.dsTriDecroissant,
+          taille: DsTailles.controleSm,
+          contour: true,
+          onPressed: () => setState(() => _tri = DsTri(tri.colonneId, ascendant: !tri.ascendant)),
+        ),
+    ];
   }
 }
 

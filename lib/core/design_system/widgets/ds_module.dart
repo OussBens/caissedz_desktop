@@ -10,7 +10,8 @@ import 'ds_module_kit.dart' show DsFinLigne, DsSpan;
 import 'ds_page.dart';
 
 /// Panneau de filtres repliable (`FilterPanel`) : en-tête 52 px, compteur de filtres actifs,
-/// grille de champs, boutons « Réinitialiser » / « Filtrer ».
+/// grille de champs, boutons « Réinitialiser » / « Filtrer » ; [raccourcis] (filtres prêts à l'emploi) à
+/// l'extrême gauche de cette ligne.
 class DsFilterPanel extends StatefulWidget {
   const DsFilterPanel({
     super.key,
@@ -25,6 +26,7 @@ class DsFilterPanel extends StatefulWidget {
     this.libelleAppliquer,
     this.colonnes = 3,
     this.trailing,
+    this.raccourcis,
   });
   final List<Widget> children;
   final String? titre;
@@ -37,6 +39,9 @@ class DsFilterPanel extends StatefulWidget {
   final String? libelleAppliquer;
   final int colonnes;
   final Widget? trailing;
+
+  /// Puces de filtres prêts à l'emploi, sur la ligne des boutons (à gauche).
+  final Widget? raccourcis;
 
   @override
   State<DsFilterPanel> createState() => _DsFilterPanelState();
@@ -176,11 +181,12 @@ class _DsFilterPanelState extends State<DsFilterPanel> {
                             );
                           },
                         ),
-                        if (widget.onAppliquer != null || widget.onReinitialiser != null)
+                        if (widget.onAppliquer != null || widget.onReinitialiser != null || widget.raccourcis != null)
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             spacing: DsSpacing.s2,
                             children: [
+                              if (widget.raccourcis != null) Expanded(child: widget.raccourcis!),
                               if (widget.onReinitialiser != null)
                                 DsButton(
                                   libelle: l10n.dsReinitialiser,

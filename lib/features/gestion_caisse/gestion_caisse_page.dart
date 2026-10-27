@@ -253,6 +253,20 @@ class _GestionCaissePageState extends ConsumerState<GestionCaissePage> {
           key: const ValueKey('gc_caisses'),
           entite: l10n.gcEntiteCaisses,
           lignes: gestion,
+          raccourcis: [
+            DsRaccourci(
+              id: 'actives',
+              libelle: l10n.racActives,
+              icone: LucideIcons.circleCheck,
+              filtre: (c) => c.actif,
+            ),
+            DsRaccourci(
+              id: 'desactivees',
+              libelle: l10n.racDesactivees,
+              icone: LucideIcons.circleOff,
+              filtre: (c) => !c.actif,
+            ),
+          ],
           chargement: enChargement(ref.watch(caissesListeProvider)),
           cle: (c) => c.code,
           afficherTotaux: true,
@@ -644,6 +658,32 @@ class _GestionCaissePageState extends ConsumerState<GestionCaissePage> {
       messageVide: l10n.gcAucuneSession,
       periode: _periodeSessions,
       onPeriode: (p) => setState(() => _periodeSessions = p),
+      raccourcis: [
+        DsRaccourci(
+          id: 'ouvertes',
+          libelle: l10n.racSessionsOuvertes,
+          icone: LucideIcons.lockOpen,
+          filtre: (s) => s.estOuverte,
+        ),
+        DsRaccourci(
+          id: 'longues',
+          libelle: l10n.racOuvertesPlus24h,
+          icone: LucideIcons.alarmClock,
+          filtre: (s) => s.estOuverte && DateTime.now().difference(s.ouverteLe).inHours >= 24,
+        ),
+        DsRaccourci(
+          id: 'cloturees',
+          libelle: l10n.racClotureesAujourdhui,
+          icone: LucideIcons.lock,
+          filtre: (s) => !s.estOuverte && estAujourdhui(s.fermeeLe),
+        ),
+        DsRaccourci(
+          id: 'ecart',
+          libelle: l10n.racAvecEcart,
+          icone: LucideIcons.triangleAlert,
+          filtre: (s) => (s.ecart ?? 0).abs() > 0.004,
+        ),
+      ],
       indiceRecherche: l10n.gcRechercheSessions,
       texteRecherche: (s) => '${s.code} ${noms[s.caisseCode] ?? ''}',
       colonnes: [

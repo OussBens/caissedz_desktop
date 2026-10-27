@@ -131,6 +131,7 @@ class DsDataTable<T> extends StatefulWidget {
     this.colonnesMasquees,
     this.onColonnesMasqueesChanged,
     this.triInitial,
+    this.onTriChanged,
     this.messageVide,
     this.iconeVide = LucideIcons.inbox,
     this.hauteurLigne,
@@ -166,6 +167,9 @@ class DsDataTable<T> extends StatefulWidget {
   final Set<String>? colonnesMasquees;
   final ValueChanged<Set<String>>? onColonnesMasqueesChanged;
   final DsTri? triInitial;
+
+  /// Tri choisi en cliquant un en-tête (`null` : ordre d'origine).
+  final ValueChanged<DsTri?>? onTriChanged;
   final String? messageVide;
   final IconData iconeVide;
 
@@ -202,6 +206,31 @@ class DsDataTable<T> extends StatefulWidget {
 
   @override
   State<DsDataTable<T>> createState() => DsDataTableState<T>();
+}
+
+/// [lignes] triées selon [tri] (valeur brute de la colonne, vides en premier) ; sans tri ou colonne inconnue :
+/// [lignes] telles quelles.
+List<T> trierLignes<T>(List<T> lignes, List<DsColonne<T>> colonnes, DsTri? tri) {
+  if (tri == null) return lignes;
+  final colonne = colonnes.where((c) => c.id == tri.colonneId).firstOrNull;
+  if (colonne == null) return lignes;
+  final copie = [...lignes];
+  copie.sort((a, b) {
+    final va = colonne.valeur(a);
+    final vb = colonne.valeur(b);
+    int r;
+    if (va == null && vb == null) {
+      r = 0;
+    } else if (va == null) {
+      r = -1;
+    } else if (vb == null) {
+      r = 1;
+    } else {
+      r = va.compareTo(vb);
+    }
+    return tri.ascendant ? r : -r;
+  });
+  return copie;
 }
 
 /// État de tri : colonne + sens.
@@ -266,6 +295,8 @@ class DsDataTableState<T> extends State<DsDataTable<T>> {
     if (widget.lignes.length != oldWidget.lignes.length) {
       _page = _page.clamp(0, _nbPages(widget.lignes.length) - 1);
     }
+    // Tri imposé par le parent (raccourci de filtre) : suivi ; un clic d'en-tête le remplace ensuite.
+    if (widget.triInitial != oldWidget.triInitial && widget.triInitial != _tri) _tri = widget.triInitial;
   }
 
   int _nbPages(int n) => widget.pagine ? (n / _taillePage).ceil().clamp(1, 1 << 30) : 1;
@@ -288,24 +319,7 @@ class DsDataTableState<T> extends State<DsDataTable<T>> {
     if (identical(_triSource, widget.lignes) && identical(_triColonnes, widget.colonnes) && _triCle == tri) {
       return _triCache;
     }
-    final colonne = widget.colonnes.where((c) => c.id == tri.colonneId).firstOrNull;
-    if (colonne == null) return widget.lignes;
-    final copie = [...widget.lignes];
-    copie.sort((a, b) {
-      final va = colonne.valeur(a);
-      final vb = colonne.valeur(b);
-      int r;
-      if (va == null && vb == null) {
-        r = 0;
-      } else if (va == null) {
-        r = -1;
-      } else if (vb == null) {
-        r = 1;
-      } else {
-        r = va.compareTo(vb);
-      }
-      return tri.ascendant ? r : -r;
-    });
+    final copie = trierLignes(widget.lignes, widget.colonnes, tri);
     _triSource = widget.lignes;
     _triColonnes = widget.colonnes;
     _triCle = tri;
@@ -344,6 +358,7 @@ class DsDataTableState<T> extends State<DsDataTable<T>> {
         _tri = DsTri(colonne.id);
       }
     });
+    widget.onTriChanged?.call(_tri);
   }
 
   Future<void> _menuContextuel(BuildContext ctx, T ligne, Offset position) async {

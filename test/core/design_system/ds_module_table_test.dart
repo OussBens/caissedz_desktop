@@ -37,9 +37,8 @@ Widget _table(List<_L> lignes, {bool chargement = false, DsVueModule vue = DsVue
       ),
     );
 
-Finder _cartes() => find.byWidgetPredicate(
-  (w) => w.key is ValueKey<String> && (w.key! as ValueKey<String>).value.startsWith('carte_'),
-);
+Finder _cartes() =>
+    find.byWidgetPredicate((w) => w.key is ValueKey<String> && (w.key! as ValueKey<String>).value.startsWith('carte_'));
 
 void main() {
   group('DsModuleTable : grandes listes', () {
@@ -106,5 +105,83 @@ void main() {
       await tester.pumpAndSettle();
       expect(tester.getTopLeft(find.text('Abeille')).dy, lessThan(tester.getTopLeft(find.text('Ane')).dy));
     });
+  });
+
+  testWidgets('vue cartes : tri par colonne et sens, gardé en passant à la liste', (tester) async {
+    await pumpDs(tester, _table(_articles(100)), taille: const Size(1400, 900));
+    expect(find.byKey(const ValueKey('module_tri_sens')), findsNothing, reason: 'ordre par défaut');
+    await tester.tap(find.byKey(const ValueKey('module_tri')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Tri : Code').last);
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('carte_C0001')), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('module_tri_sens')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('carte_C0100')), findsOneWidget);
+    expect(find.byKey(const ValueKey('carte_C0001')), findsNothing);
+    // La liste reprend le tri choisi sur les cartes.
+    await tester.tap(find.byTooltip('Affichage liste'));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('module_tri')), findsNothing);
+    expect(find.text('C0100'), findsOneWidget);
+    expect(find.text('C0001'), findsNothing);
+  });
+
+  testWidgets('raccourcis : puces combinables, tri, période et « Réinitialiser »', (tester) async {
+    var periode = DsPeriode.calculer('month');
+    var reinitialise = 0;
+    await pumpDs(
+      tester,
+      StatefulBuilder(
+        builder: (context, setState) => SingleChildScrollView(
+          child: DsModuleTable<_L>(
+            entite: 'articles',
+            lignes: _articles(30),
+            colonnes: _colonnes,
+            cle: (l) => l.code,
+            filtresOuverts: true,
+            periode: periode,
+            onPeriode: (p) => setState(() => periode = p),
+            onReinitialiser: () => reinitialise++,
+            raccourcis: [
+              const DsRaccourci(id: 'today', libelle: "Aujourd'hui", periode: 'today'),
+              DsRaccourci(id: 'pairs', libelle: 'Pairs', filtre: (l) => l.qte.isEven),
+              DsRaccourci(id: 'zero', libelle: 'Zéro', filtre: (l) => l.qte == 0),
+              const DsRaccourci(id: 'gros', libelle: 'Plus gros', tri: DsTri('qte', ascendant: false)),
+            ],
+          ),
+        ),
+      ),
+      taille: const Size(1400, 1200),
+    );
+    Finder puce(String l) =>
+        find.descendant(of: find.byKey(const ValueKey('module_raccourcis')), matching: find.text(l));
+    // Pairs (qté 0, 2, 4, 6) puis Zéro : les deux filtres se cumulent.
+    await tester.tap(puce('Pairs'));
+    await tester.pumpAndSettle();
+    expect(find.text('Article 2'), findsOneWidget);
+    expect(find.text('Article 1'), findsNothing);
+    await tester.tap(puce('Zéro'));
+    await tester.pumpAndSettle();
+    expect(find.text('Article 2'), findsNothing);
+    expect(find.text('Article 7'), findsOneWidget);
+    expect(find.text('2 actif(s)'), findsOneWidget);
+    // Puce de période : elle règle la période du module, et la rétablit quand on la retire.
+    await tester.tap(puce("Aujourd'hui"));
+    await tester.pumpAndSettle();
+    expect(periode.preset, 'today');
+    await tester.tap(puce("Aujourd'hui"));
+    await tester.pumpAndSettle();
+    expect(periode.preset, 'month');
+    // « Réinitialiser » retire les puces et appelle celui du module.
+    await tester.tap(find.text('Réinitialiser'));
+    await tester.pumpAndSettle();
+    expect(reinitialise, 1);
+    expect(find.text('Article 1'), findsOneWidget);
+    // Tri : la plus grosse quantité (6) en tête.
+    await tester.tap(puce('Plus gros'));
+    await tester.pumpAndSettle();
+    final premiere = tester.getTopLeft(find.text('Article 6')).dy;
+    expect(premiere, lessThan(tester.getTopLeft(find.text('Article 1')).dy));
   });
 }

@@ -227,6 +227,28 @@ class _EntreesPageState extends ConsumerState<EntreesPage> {
       periode: _periode,
       onPeriode: (p) => setState(() => _periode = p),
       periodeSeule: true,
+      raccourcis: [
+        DsRaccourci.periode(l10n, 'today'),
+        DsRaccourci.periode(l10n, 'week'),
+        DsRaccourci(
+          id: 'non_soldees',
+          libelle: l10n.racNonSoldees,
+          icone: LucideIcons.handCoins,
+          filtre: (a) => a.statut != StatutsAchat.annule && a.reste > 0,
+        ),
+        DsRaccourci(
+          id: 'mobile_ia',
+          libelle: l10n.racMobileIa,
+          icone: LucideIcons.smartphone,
+          filtre: (a) => a.source == SourcesAchat.smartScan || a.source == SourcesAchat.ia,
+        ),
+        DsRaccourci(
+          id: 'gros',
+          libelle: l10n.racPlusGrosMontants,
+          icone: LucideIcons.arrowDownWideNarrow,
+          tri: const DsTri('montant', ascendant: false),
+        ),
+      ],
       indiceRecherche: l10n.entRecherche,
       texteRecherche: (a) => '${a.code} ${nomsFrn[a.fournisseurCode] ?? ''} ${a.reference ?? ''}',
       nbFiltresActifs: [_typeEntree, _fournisseur, _paiement, _magasin, _produit].where((f) => f != null).length,

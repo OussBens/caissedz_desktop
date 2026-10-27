@@ -178,6 +178,61 @@ class _OngletDocumentsState extends ConsumerState<_OngletDocuments> {
       messageVide: l10n.docAucun,
       periode: _periode,
       onPeriode: (p) => setState(() => _periode = p),
+      // Devis / proforma : attente, acceptés, à transformer, expirés ; commandes : en cours, partielles, livrées.
+      raccourcis: [
+        DsRaccourci.periode(l10n, 'week'),
+        if (_commande) ...[
+          DsRaccourci(
+            id: 'en_cours',
+            libelle: l10n.racEnCours,
+            icone: LucideIcons.clock,
+            filtre: (d) => d.statut == StatutsDocumentClient.enCours,
+          ),
+          DsRaccourci(
+            id: 'partielles',
+            libelle: l10n.racPartiellementLivrees,
+            icone: LucideIcons.truck,
+            filtre: (d) => d.statut == StatutsDocumentClient.partielle,
+          ),
+          DsRaccourci(
+            id: 'livrees',
+            libelle: l10n.racLivrees,
+            icone: LucideIcons.packageCheck,
+            filtre: (d) => d.statut == StatutsDocumentClient.livree,
+          ),
+        ] else ...[
+          DsRaccourci(
+            id: 'attente',
+            libelle: l10n.racEnAttente,
+            icone: LucideIcons.clock,
+            filtre: (d) => d.statut == StatutsDocumentClient.enCours,
+          ),
+          DsRaccourci(
+            id: 'acceptes',
+            libelle: l10n.racAcceptes,
+            icone: LucideIcons.circleCheck,
+            filtre: (d) => d.statut == StatutsDocumentClient.accepte,
+          ),
+          DsRaccourci(
+            id: 'a_transformer',
+            libelle: l10n.racATransformer,
+            icone: LucideIcons.arrowRightLeft,
+            filtre: (d) => d.statut == StatutsDocumentClient.enCours || d.statut == StatutsDocumentClient.accepte,
+          ),
+          DsRaccourci(
+            id: 'expires',
+            libelle: l10n.racExpires,
+            icone: LucideIcons.calendarX,
+            filtre: (d) => d.statut == StatutsDocumentClient.expire,
+          ),
+        ],
+        DsRaccourci(
+          id: 'gros',
+          libelle: l10n.racPlusGrosMontants,
+          icone: LucideIcons.arrowDownWideNarrow,
+          tri: const DsTri('ttc', ascendant: false),
+        ),
+      ],
       texteRecherche: (d) => '${d.code} ${noms[d.clientCode] ?? ''} ${d.origineCode ?? ''}',
       nbFiltresActifs: [_statut, _client].where((f) => f != null).length,
       onReinitialiser: () => setState(() {
@@ -1083,6 +1138,22 @@ class _OngletLivraisonsState extends ConsumerState<_OngletLivraisons> {
       periode: _periode,
       onPeriode: (p) => setState(() => _periode = p),
       periodeSeule: false,
+      raccourcis: [
+        DsRaccourci.periode(l10n, 'today'),
+        DsRaccourci.periode(l10n, 'week'),
+        DsRaccourci(
+          id: 'commande',
+          libelle: l10n.racLiesCommande,
+          icone: LucideIcons.clipboardList,
+          filtre: (b) => b.commandeCode != null,
+        ),
+        DsRaccourci(
+          id: 'gros',
+          libelle: l10n.racPlusGrosMontants,
+          icone: LucideIcons.arrowDownWideNarrow,
+          tri: const DsTri('total', ascendant: false),
+        ),
+      ],
       texteRecherche: (b) => '${b.code} ${b.venteCode} ${b.commandeCode ?? ''} ${noms[b.clientCode] ?? ''}',
       nbFiltresActifs: _client == null ? 0 : 1,
       onReinitialiser: () => setState(() {

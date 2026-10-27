@@ -346,7 +346,8 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
         valeur: (p) => p.dateExpiration,
         cellule: (_, p) => Text(dateOuTiret(p.dateExpiration)),
       ),
-      ...colonnesAudit(context, ref, (Produit x) => x.audit),
+      // Date de création parmi les colonnes initiales.
+      ...colonnesAudit(context, ref, (Produit x) => x.audit, creeLeVisible: true),
     ];
 
     Future<void> modifier(Produit p) => afficherFormulaireProduit(context, produit: p, detaille: true);
@@ -388,6 +389,54 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
       key: const ValueKey('produits_produits'),
       entite: l10n.prdEntiteProduits,
       lignes: lignes,
+      raccourcis: [
+        DsRaccourci(
+          id: 'recents',
+          libelle: l10n.racPlusRecents,
+          icone: LucideIcons.sparkles,
+          filtre: (p) => depuisMoinsDe(p.audit.creeLe, 30),
+          tri: const DsTri('audit_cree_le', ascendant: false),
+        ),
+        DsRaccourci(
+          id: 'chers',
+          libelle: l10n.racPlusChers,
+          icone: LucideIcons.trendingUp,
+          tri: const DsTri('vente', ascendant: false),
+        ),
+        DsRaccourci(
+          id: 'gros_stock',
+          libelle: l10n.racPlusGrosStock,
+          icone: LucideIcons.boxes,
+          filtre: (p) => !p.service,
+          tri: const DsTri('stock', ascendant: false),
+        ),
+        DsRaccourci(
+          id: 'rupture',
+          libelle: l10n.racEnRupture,
+          icone: LucideIcons.circleX,
+          filtre: (p) => !p.service && stock(p) <= 0,
+        ),
+        DsRaccourci(
+          id: 'seuil',
+          libelle: l10n.racSousSeuil,
+          icone: LucideIcons.triangleAlert,
+          filtre: (p) => etat(p) == 'seuil',
+        ),
+        if (voirAchat)
+          DsRaccourci(
+            id: 'marge_faible',
+            libelle: l10n.racMargeFaible,
+            icone: LucideIcons.trendingDown,
+            filtre: (p) => margeProduit(p) < 10,
+            tri: const DsTri('marge'),
+          ),
+        DsRaccourci(
+          id: 'incomplets',
+          libelle: l10n.racFicheIncomplete,
+          icone: LucideIcons.fileWarning,
+          filtre: (p) => (p.codeBarres ?? '').isEmpty || (p.image == null && (nbPhotos[p.code] ?? 0) == 0),
+        ),
+      ],
       chargement: enChargement(ref.watch(produitsProvider)),
       colonnes: colonnes,
       cle: (p) => p.code,

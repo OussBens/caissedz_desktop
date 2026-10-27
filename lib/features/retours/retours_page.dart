@@ -38,6 +38,15 @@ class _RetoursPageState extends ConsumerState<RetoursPage> {
 
   String get _type => _onglet == 0 ? TypesTiers.client : TypesTiers.fournisseur;
 
+  /// Tiers qui a le plus de retours (actifs) dans [retours].
+  static String? _plusFrequent(List<Retour> retours) {
+    final n = <String, int>{};
+    for (final r in retours) {
+      if (r.actif) n[r.tiersCode] = (n[r.tiersCode] ?? 0) + 1;
+    }
+    return n.entries.fold<MapEntry<String, int>?>(null, (m, e) => m == null || e.value > m.value ? e : m)?.key;
+  }
+
   void _reinitialiser() => setState(() {
     _periode = DsPeriode.calculer('month');
     _tiers = null;
@@ -211,6 +220,51 @@ class _RetoursPageState extends ConsumerState<RetoursPage> {
         ],
         periode: _periode,
         onPeriode: (p) => setState(() => _periode = p),
+        raccourcis: client
+            ? [
+                DsRaccourci.periode(l10n, 'today'),
+                DsRaccourci.periode(l10n, 'week'),
+                DsRaccourci(
+                  id: 'remis',
+                  libelle: l10n.racRemisEnStock,
+                  icone: LucideIcons.packageCheck,
+                  filtre: (r) => r.actif && r.remiseEnStock,
+                ),
+                DsRaccourci(
+                  id: 'defectueux',
+                  libelle: l10n.racNonRemisEnStock,
+                  icone: LucideIcons.packageX,
+                  filtre: (r) => r.actif && !r.remiseEnStock,
+                ),
+                DsRaccourci(
+                  id: 'gros',
+                  libelle: l10n.racPlusGrosMontants,
+                  icone: LucideIcons.arrowDownWideNarrow,
+                  tri: const DsTri('montant', ascendant: false),
+                ),
+              ]
+            : [
+                DsRaccourci.periode(l10n, 'today'),
+                DsRaccourci.periode(l10n, 'week'),
+                DsRaccourci(
+                  id: 'valides',
+                  libelle: l10n.racValides,
+                  icone: LucideIcons.circleCheck,
+                  filtre: (r) => r.actif,
+                ),
+                DsRaccourci(
+                  id: 'gros',
+                  libelle: l10n.racPlusGrosMontants,
+                  icone: LucideIcons.arrowDownWideNarrow,
+                  tri: const DsTri('montant', ascendant: false),
+                ),
+                DsRaccourci(
+                  id: 'frequent',
+                  libelle: l10n.racFournisseurFrequent,
+                  icone: LucideIcons.truck,
+                  filtre: (r) => r.tiersCode == _plusFrequent(duType),
+                ),
+              ],
         colonnesFiltres: 3,
         indiceRecherche: l10n.retoursRecherche,
         texteRecherche: (r) => '${r.code} ${tiers(r)} ${r.ligne?.designation ?? ''}',

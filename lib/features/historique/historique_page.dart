@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
+import '../../app/demarrage_providers.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
 import '../../domain/historique.dart';
@@ -109,6 +110,45 @@ class _HistoriquePageState extends ConsumerState<HistoriquePage> {
         ],
         periode: _periode,
         onPeriode: (p) => setState(() => _periode = p),
+        raccourcis: [
+          DsRaccourci.periode(l10n, 'today'),
+          DsRaccourci(
+            id: 'miennes',
+            libelle: l10n.racMesActions,
+            icone: LucideIcons.user,
+            filtre: (e) => e.utilisateurCode == ref.read(sessionProvider)?.utilisateur.code,
+          ),
+          DsRaccourci(
+            id: 'creations',
+            libelle: l10n.racCreations,
+            icone: LucideIcons.plus,
+            filtre: (e) => e.categorie == CategorieAction.creation,
+          ),
+          DsRaccourci(
+            id: 'modifications',
+            libelle: l10n.racModifications,
+            icone: LucideIcons.pencil,
+            filtre: (e) => e.categorie == CategorieAction.modification,
+          ),
+          DsRaccourci(
+            id: 'annulations',
+            libelle: l10n.racSuppressionsAnnulations,
+            icone: LucideIcons.trash2,
+            filtre: (e) => e.categorie == CategorieAction.annulation,
+          ),
+          DsRaccourci(
+            id: 'connexions',
+            libelle: l10n.racConnexions,
+            icone: LucideIcons.logIn,
+            filtre: (e) => e.module == ModulesHistorique.connexion,
+          ),
+          DsRaccourci(
+            id: 'ventes_caisse',
+            libelle: l10n.racVentesCaisse,
+            icone: LucideIcons.shoppingCart,
+            filtre: (e) => e.module == 'ventes' || e.module == 'gestion_caisse',
+          ),
+        ],
         indiceRecherche: l10n.hiRecherche,
         texteRecherche: (e) => '${e.entiteCode ?? ''} ${e.detail ?? ''} ${e.code}',
         nbFiltresActifs: [_module, _action, _utilisateur, _poste].where((f) => f != null).length,

@@ -249,6 +249,8 @@ class _StockPageState extends ConsumerState<StockPage> {
         valeur: (l) => l.produit.tvaPct,
         cellule: (_, l) => Text('${formaterNombre(l.produit.tvaPct)} %'),
       ),
+      // Date de création du produit parmi les colonnes initiales.
+      ...colonnesAudit(context, ref, (_LigneStock l) => l.produit.audit, creeLeVisible: true),
     ];
     final marques = {
       for (final p in produits)
@@ -260,6 +262,46 @@ class _StockPageState extends ConsumerState<StockPage> {
       key: const ValueKey('stock_produits'),
       entite: l10n.prdEntiteProduits,
       lignes: lignes,
+      raccourcis: [
+        DsRaccourci(
+          id: 'rupture',
+          libelle: l10n.racEnRupture,
+          icone: LucideIcons.circleX,
+          filtre: (l) => l.etat == 'rupture',
+        ),
+        DsRaccourci(
+          id: 'seuil',
+          libelle: l10n.racSousSeuil,
+          icone: LucideIcons.triangleAlert,
+          filtre: (l) => l.etat == 'seuil',
+        ),
+        DsRaccourci(
+          id: 'gros_stock',
+          libelle: l10n.racPlusGrosStock,
+          icone: LucideIcons.boxes,
+          tri: const DsTri('total', ascendant: false),
+        ),
+        DsRaccourci(
+          id: 'negatif',
+          libelle: l10n.racStockNegatif,
+          icone: LucideIcons.minusCircle,
+          filtre: (l) => l.total < 0,
+        ),
+        if (achat)
+          DsRaccourci(
+            id: 'valeur',
+            libelle: l10n.racPlusGrosseValeur,
+            icone: LucideIcons.wallet,
+            tri: const DsTri('val', ascendant: false),
+          ),
+        DsRaccourci(
+          id: 'recents',
+          libelle: l10n.racPlusRecents,
+          icone: LucideIcons.sparkles,
+          filtre: (l) => depuisMoinsDe(l.produit.audit.creeLe, 30),
+          tri: const DsTri('audit_cree_le', ascendant: false),
+        ),
+      ],
       chargement: enChargement(ref.watch(produitsProvider)),
       colonnes: colonnes,
       cle: (l) => l.produit.code,
@@ -480,6 +522,34 @@ class _StockPageState extends ConsumerState<StockPage> {
       messageVide: l10n.stockAucunMouvement,
       periode: _periode,
       onPeriode: (p) => setState(() => _periode = p),
+      raccourcis: [
+        DsRaccourci.periode(l10n, 'today'),
+        DsRaccourci.periode(l10n, 'week'),
+        DsRaccourci(
+          id: 'entrees',
+          libelle: l10n.racEntrees,
+          icone: LucideIcons.packagePlus,
+          filtre: (m) => m.type == TypesMouvement.entree,
+        ),
+        DsRaccourci(
+          id: 'sorties',
+          libelle: l10n.racSorties,
+          icone: LucideIcons.packageMinus,
+          filtre: (m) => m.type == TypesMouvement.sortie,
+        ),
+        DsRaccourci(
+          id: 'transferts',
+          libelle: l10n.racTransferts,
+          icone: LucideIcons.arrowLeftRight,
+          filtre: (m) => m.type == TypesMouvement.transfert,
+        ),
+        DsRaccourci(
+          id: 'inventaires',
+          libelle: l10n.racInventaires,
+          icone: LucideIcons.clipboardCheck,
+          filtre: (m) => m.type == TypesMouvement.inventaire,
+        ),
+      ],
       colonnesFiltres: 4,
       indiceRecherche: l10n.stkRechercheMouvement,
       texteRecherche: (m) => '${m.referenceCode ?? ''} ${nomProduit(m)}',

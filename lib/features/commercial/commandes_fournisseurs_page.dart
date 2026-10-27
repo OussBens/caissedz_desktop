@@ -128,6 +128,37 @@ class _CommandesFournisseursPageState extends ConsumerState<CommandesFournisseur
         messageVide: l10n.docAucun,
         periode: _periode,
         onPeriode: (p) => setState(() => _periode = p),
+        raccourcis: [
+          DsRaccourci(id: 'attendues', libelle: l10n.racAttendues, icone: LucideIcons.clock, filtre: (c) => c.ouverte),
+          DsRaccourci(
+            id: 'retard',
+            libelle: l10n.racEnRetard,
+            icone: LucideIcons.alarmClock,
+            filtre: (c) {
+              final prevue = c.dateLivraison;
+              final n = DateTime.now();
+              return c.ouverte && prevue != null && prevue.isBefore(DateTime(n.year, n.month, n.day));
+            },
+          ),
+          DsRaccourci(
+            id: 'partielles',
+            libelle: l10n.racPartiellementRecues,
+            icone: LucideIcons.packageOpen,
+            filtre: (c) => c.ouverte && c.dejaRecue,
+          ),
+          DsRaccourci(
+            id: 'recues',
+            libelle: l10n.racRecues,
+            icone: LucideIcons.packageCheck,
+            filtre: (c) => c.actif && c.toutRecu,
+          ),
+          DsRaccourci(
+            id: 'gros',
+            libelle: l10n.racPlusGrosMontants,
+            icone: LucideIcons.arrowDownWideNarrow,
+            tri: const DsTri('total', ascendant: false),
+          ),
+        ],
         texteRecherche: (c) => '${c.code} ${noms[c.fournisseurCode] ?? ''} ${c.receptions.join(' ')}',
         nbFiltresActifs: [_statut, _fournisseur].where((f) => f != null).length,
         onReinitialiser: () => setState(() {

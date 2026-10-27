@@ -148,6 +148,33 @@ class _SortiesPageState extends ConsumerState<SortiesPage> {
         periode: _periode,
         onPeriode: (p) => setState(() => _periode = p),
         periodeSeule: true,
+        raccourcis: [
+          DsRaccourci.periode(l10n, 'week'),
+          DsRaccourci(
+            id: 'casse',
+            libelle: l10n.racCassePerte,
+            icone: LucideIcons.hammer,
+            filtre: (s) => s.motif == 'Casse' || s.motif == 'Perte / vol',
+          ),
+          DsRaccourci(
+            id: 'perimes',
+            libelle: l10n.racPerimes,
+            icone: LucideIcons.calendarX,
+            filtre: (s) => s.motif == 'Périmé',
+          ),
+          DsRaccourci(
+            id: 'interne',
+            libelle: l10n.racConsommationInterne,
+            icone: LucideIcons.coffee,
+            filtre: (s) => s.motif == 'Consommation interne',
+          ),
+          DsRaccourci(
+            id: 'valeur',
+            libelle: l10n.racPlusGrosseValeurPerdue,
+            icone: LucideIcons.arrowDownWideNarrow,
+            tri: const DsTri('valeur', ascendant: false),
+          ),
+        ],
         texteRecherche: (s) => '${s.code} ${libelleMotif(l10n, s.motif)} ${noms[s.magasinCode] ?? ''}',
         nbFiltresActifs: [_type, _magasin, _produit].where((f) => f != null).length,
         onReinitialiser: () => setState(() {

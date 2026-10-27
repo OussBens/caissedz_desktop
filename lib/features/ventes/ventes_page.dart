@@ -277,6 +277,30 @@ class _VentesPageState extends ConsumerState<VentesPage> {
               ],
               periode: _periode,
               onPeriode: (p) => setState(() => _periode = p),
+              raccourcis: [
+                DsRaccourci.periode(l10n, 'today'),
+                DsRaccourci.periode(l10n, 'yesterday'),
+                DsRaccourci.periode(l10n, 'week'),
+                DsRaccourci(
+                  id: 'credit',
+                  libelle: l10n.racACredit,
+                  icone: LucideIcons.handCoins,
+                  filtre: (p) => !p.annule && p.resteActuel > 0,
+                ),
+                DsRaccourci(id: 'annulees', libelle: l10n.racAnnulees, icone: LucideIcons.ban, filtre: (p) => p.annule),
+                DsRaccourci(
+                  id: 'gros',
+                  libelle: l10n.racPlusGrosMontants,
+                  icone: LucideIcons.arrowDownWideNarrow,
+                  tri: const DsTri('montant', ascendant: false),
+                ),
+                DsRaccourci(
+                  id: 'miennes',
+                  libelle: l10n.racMesVentes,
+                  icone: LucideIcons.user,
+                  filtre: (p) => p.vente.utilisateurCode == ref.read(sessionProvider)?.utilisateur.code,
+                ),
+              ],
               indiceRecherche: l10n.ventesRechercheIndice,
               texteRecherche: (p) => '${p.code} ${client(p)}',
               nbFiltresActifs:

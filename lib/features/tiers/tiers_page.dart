@@ -282,6 +282,54 @@ class _TiersPageState extends ConsumerState<TiersPage> {
       key: ValueKey('tiers_${widget.type}'),
       entite: _client ? l10n.tiersEntiteClients : l10n.tiersEntiteFournisseurs,
       lignes: lignes,
+      raccourcis: [
+        DsRaccourci(
+          id: 'credit',
+          libelle: _client ? l10n.racAvecCredit : l10n.racOnLeurDoit,
+          icone: LucideIcons.handCoins,
+          filtre: (t) => t.stats.credit > 0.004,
+        ),
+        DsRaccourci(
+          id: 'gros_credit',
+          libelle: _client ? l10n.racPlusGrosCredits : l10n.racPlusGrossesDettes,
+          icone: LucideIcons.arrowDownWideNarrow,
+          filtre: (t) => t.stats.credit > 0.004,
+          tri: const DsTri('credit', ascendant: false),
+        ),
+        if (_client)
+          DsRaccourci(
+            id: 'points',
+            libelle: l10n.racPlusDePoints,
+            icone: LucideIcons.star,
+            filtre: (t) => t.points > 0,
+            tri: const DsTri('points', ascendant: false),
+          )
+        else
+          DsRaccourci(
+            id: 'volume',
+            libelle: l10n.racPlusGrosVolume,
+            icone: LucideIcons.trendingUp,
+            tri: const DsTri('achats', ascendant: false),
+          ),
+        DsRaccourci(
+          id: 'inactifs',
+          libelle: l10n.racInactifs,
+          icone: LucideIcons.moon,
+          filtre: (t) => t.actif && sansDepuis(t.stats.dernier, 90),
+        ),
+        DsRaccourci(
+          id: 'nouveaux',
+          libelle: l10n.racNouveaux,
+          icone: LucideIcons.sparkles,
+          filtre: (t) => depuisMoinsDe(t.audit.creeLe, 30),
+        ),
+        DsRaccourci(
+          id: 'desactives',
+          libelle: l10n.racDesactives,
+          icone: LucideIcons.circleOff,
+          filtre: (t) => !t.actif,
+        ),
+      ],
       chargement: enChargement(ref.watch(_client ? clientsProvider : fournisseursProvider)),
       colonnes: colonnes,
       cle: (t) => t.code,

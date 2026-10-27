@@ -174,6 +174,27 @@ class _BesoinsPageState extends ConsumerState<BesoinsPage> {
       periode: _periode,
       onPeriode: (p) => setState(() => _periode = p),
       periodeSeule: true,
+      raccourcis: [
+        DsRaccourci.periode(l10n, 'week'),
+        DsRaccourci(
+          id: 'attente',
+          libelle: l10n.racEnAttente,
+          icone: LucideIcons.clock,
+          filtre: (b) => b.actif && b.statut == StatutsBesoin.enAttente,
+        ),
+        DsRaccourci(
+          id: 'commandees',
+          libelle: l10n.racCommandees,
+          icone: LucideIcons.truck,
+          filtre: (b) => b.actif && b.statut == StatutsBesoin.commande,
+        ),
+        DsRaccourci(
+          id: 'gros',
+          libelle: l10n.racPlusGrosMontants,
+          icone: LucideIcons.arrowDownWideNarrow,
+          tri: const DsTri('montant', ascendant: false),
+        ),
+      ],
       texteRecherche: (b) => '${b.code} ${fournisseurs[b.fournisseurCode] ?? ''}',
       nbFiltresActifs: _statut == null ? 0 : 1,
       onReinitialiser: () => setState(() {
@@ -278,6 +299,28 @@ class _BesoinsPageState extends ConsumerState<BesoinsPage> {
       key: const ValueKey('besoins_ruptures'),
       entite: l10n.prdEntiteProduits,
       lignes: lignes,
+      raccourcis: [
+        DsRaccourci(id: 'rupture', libelle: l10n.racEnRupture, icone: LucideIcons.circleX, filtre: (r) => r.stock <= 0),
+        DsRaccourci(
+          id: 'seuil',
+          libelle: l10n.racSousSeuil,
+          icone: LucideIcons.triangleAlert,
+          filtre: (r) => r.stock > 0,
+        ),
+        DsRaccourci(
+          id: 'sans_frn',
+          libelle: l10n.racSansFournisseur,
+          icone: LucideIcons.truck,
+          filtre: (r) => r.produit.fournisseurCode == null,
+        ),
+        if (achat)
+          DsRaccourci(
+            id: 'cout',
+            libelle: l10n.racCoutReassort,
+            icone: LucideIcons.arrowDownWideNarrow,
+            tri: const DsTri('cout', ascendant: false),
+          ),
+      ],
       chargement: enChargement(ref.watch(produitsProvider)),
       cle: (r) => r.produit.code,
       permissions: permissionsSession(ref),
@@ -328,6 +371,15 @@ class _BesoinsPageState extends ConsumerState<BesoinsPage> {
           cellule: (_, r) => Text(formaterNombre(r.suggestion)),
         ),
         DsColonne(
+          id: 'cout',
+          libelle: l10n.stkKpiCoutReassort,
+          numerique: true,
+          visibleParDefaut: false,
+          permission: Permission.voirPrixAchat.code,
+          valeur: (r) => r.suggestion * r.produit.prixAchat,
+          cellule: (_, r) => Text(formaterMontant(r.suggestion * r.produit.prixAchat, devise)),
+        ),
+        DsColonne(
           id: 'etat',
           libelle: l10n.retoursEtat,
           valeur: (r) => r.stock <= 0 ? 0 : 1,
@@ -352,6 +404,26 @@ class _BesoinsPageState extends ConsumerState<BesoinsPage> {
     key: const ValueKey('besoins_expires'),
     entite: l10n.prdEntiteProduits,
     lignes: lignes,
+    raccourcis: [
+      DsRaccourci(
+        id: 'sept',
+        libelle: l10n.racExpirentSept,
+        icone: LucideIcons.calendarClock,
+        filtre: (e) => e.jours >= 0 && e.jours <= 7,
+      ),
+      DsRaccourci(
+        id: 'trente',
+        libelle: l10n.racExpirentTrente,
+        icone: LucideIcons.calendarRange,
+        filtre: (e) => e.jours >= 0 && e.jours <= 30,
+      ),
+      DsRaccourci(
+        id: 'expires',
+        libelle: l10n.racDejaExpires,
+        icone: LucideIcons.calendarX,
+        filtre: (e) => e.jours < 0,
+      ),
+    ],
     chargement: enChargement(ref.watch(produitsProvider)),
     cle: (e) => e.produit.code,
     permissions: permissionsSession(ref),

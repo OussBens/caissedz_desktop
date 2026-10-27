@@ -134,6 +134,29 @@ class _VersementsOngletState extends ConsumerState<VersementsOnglet> {
       afficherTotaux: true,
       periode: _periode,
       onPeriode: (p) => setState(() => _periode = p),
+      raccourcis: [
+        DsRaccourci.periode(l10n, 'today'),
+        DsRaccourci.periode(l10n, 'week'),
+        DsRaccourci(
+          id: 'especes',
+          libelle: l10n.racEspeces,
+          icone: LucideIcons.banknote,
+          filtre: (v) => v.mode == 'Espèces',
+        ),
+        DsRaccourci(
+          id: 'cheque',
+          libelle: l10n.racChequeVirement,
+          icone: LucideIcons.landmark,
+          filtre: (v) => v.mode.startsWith('Chèque') || v.mode.startsWith('Virement'),
+        ),
+        DsRaccourci(id: 'annules', libelle: l10n.racAnnules, icone: LucideIcons.ban, filtre: (v) => !v.actif),
+        DsRaccourci(
+          id: 'gros',
+          libelle: l10n.racPlusGrosMontants,
+          icone: LucideIcons.arrowDownWideNarrow,
+          tri: const DsTri('montant', ascendant: false),
+        ),
+      ],
       nbFiltresActifs: [_mode, _caisse, _tiers].where((f) => f != null).length,
       onReinitialiser: () => setState(() {
         _mode = null;

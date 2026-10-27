@@ -8,6 +8,7 @@ import '../../core/i18n/generated/app_localizations.dart';
 import '../../domain/archivage.dart';
 import '../../domain/models/audit.dart';
 import '../../domain/models/utilisateur.dart';
+import '../../domain/permissions.dart';
 import '../commun/archives.dart';
 import '../commun/carte_entite.dart';
 import '../commun/chargement.dart';
@@ -184,10 +185,48 @@ class _UtilisateursPageState extends ConsumerState<UtilisateursPage> {
         bouton: boutonArchives(l10n, archives: true, nombre: archives.length, onChanged: basculer),
       );
     }
+    // Rôles qui ouvrent l'application mobile (raccourci « Accès mobile »).
+    final rolesMobile = {
+      for (final r in tousRoles)
+        if (r.aPermission(Permission.utiliserMobile)) r.code,
+    };
     return DsModuleTable<LigneUtilisateur>(
       key: const ValueKey('utilisateurs'),
       entite: l10n.usrEntiteUtilisateurs,
       lignes: lignes,
+      raccourcis: [
+        DsRaccourci(id: 'actifs', libelle: l10n.racActifs, icone: LucideIcons.circleCheck, filtre: (l) => l.u.actif),
+        DsRaccourci(
+          id: 'desactives',
+          libelle: l10n.racDesactives,
+          icone: LucideIcons.circleOff,
+          filtre: (l) => !l.u.actif,
+        ),
+        DsRaccourci(
+          id: 'admins',
+          libelle: l10n.racAdministrateurs,
+          icone: LucideIcons.shieldCheck,
+          filtre: (l) => l.u.estAdmin,
+        ),
+        DsRaccourci(
+          id: 'jamais',
+          libelle: l10n.racJamaisConnectes,
+          icone: LucideIcons.userX,
+          filtre: (l) => l.u.dernierAcces == null,
+        ),
+        DsRaccourci(
+          id: 'absents',
+          libelle: l10n.racAbsents30,
+          icone: LucideIcons.moon,
+          filtre: (l) => l.u.actif && l.u.dernierAcces != null && sansDepuis(l.u.dernierAcces, 30),
+        ),
+        DsRaccourci(
+          id: 'mobile',
+          libelle: l10n.racAccesMobile,
+          icone: LucideIcons.smartphone,
+          filtre: (l) => l.u.actif && rolesMobile.contains(l.u.roleCode),
+        ),
+      ],
       chargement: enChargement(ref.watch(lignesUtilisateursProvider)),
       colonnes: colonnes,
       cle: (l) => l.u.code,
@@ -430,6 +469,33 @@ class _UtilisateursPageState extends ConsumerState<UtilisateursPage> {
       key: const ValueKey('roles'),
       entite: l10n.usrEntiteRoles,
       lignes: roles,
+      raccourcis: [
+        DsRaccourci(
+          id: 'avec',
+          libelle: l10n.racAvecUtilisateurs,
+          icone: LucideIcons.users,
+          filtre: (r) => r.nbUtilisateurs > 0,
+        ),
+        DsRaccourci(
+          id: 'sans',
+          libelle: l10n.racSansUtilisateur,
+          icone: LucideIcons.userX,
+          filtre: (r) => r.nbUtilisateurs == 0,
+        ),
+        DsRaccourci(
+          id: 'mobile',
+          libelle: l10n.racAccesMobile,
+          icone: LucideIcons.smartphone,
+          filtre: (r) => r.aPermission(Permission.utiliserMobile),
+        ),
+        DsRaccourci(
+          id: 'achat',
+          libelle: l10n.racVoitPrixAchat,
+          icone: LucideIcons.eye,
+          filtre: (r) => r.aPermission(Permission.voirPrixAchat),
+        ),
+        DsRaccourci(id: 'systeme', libelle: l10n.racRolesSysteme, icone: LucideIcons.lock, filtre: (r) => r.systeme),
+      ],
       chargement: enChargement(ref.watch(rolesProvider)),
       colonnes: colonnes,
       cle: (r) => r.code,

@@ -1,3 +1,4 @@
+import 'package:caissedz_desktop/core/design_system/design_system.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -14,8 +15,10 @@ void main() {
       await ouvrirChiffres(tester);
       await ouvrirFiltres(tester);
       expect(find.text('Actions (7 j)'), findsOneWidget);
-      expect(find.text('Créations'), findsOneWidget);
-      expect(find.text('Modifications'), findsOneWidget);
+      // Les KPI (les puces de raccourcis « Créations », « Modifications » portent les mêmes mots).
+      Finder kpi(String t) => find.descendant(of: find.byType(DsStatCard), matching: find.text(t));
+      expect(kpi('Créations'), findsOneWidget);
+      expect(kpi('Modifications'), findsOneWidget);
       expect(find.text('Annulations'), findsWidgets);
       expect(find.byKey(const ValueKey('filtre_poste_historique')), findsOneWidget);
     });

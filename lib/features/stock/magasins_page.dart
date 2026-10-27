@@ -72,9 +72,12 @@ class _MagasinsPageState extends ConsumerState<MagasinsPage> {
     final noms = ref.watch(nomsUtilisateursProvider).value ?? const <String, String>{};
     final nbProduits = <String, int>{};
     final valeurs = <String, double>{};
+    // Magasins où au moins un produit (déjà mouvementé) est à zéro ou en négatif.
+    final avecRupture = <String>{};
     for (final MapEntry(key: p, value: parMagasin) in stocks.entries) {
       for (final MapEntry(key: m, value: q) in parMagasin.entries) {
         if (q.abs() > 1e-9) nbProduits[m] = (nbProduits[m] ?? 0) + 1;
+        if (q <= 1e-9 && !(produits[p]?.service ?? true)) avecRupture.add(m);
         valeurs[m] = (valeurs[m] ?? 0) + q * (produits[p]?.prixAchat ?? 0);
       }
     }
@@ -152,6 +155,28 @@ class _MagasinsPageState extends ConsumerState<MagasinsPage> {
       key: const ValueKey('magasins'),
       entite: l10n.stkEntiteMagasins,
       lignes: magasins,
+      raccourcis: [
+        DsRaccourci(id: 'actifs', libelle: l10n.racActifs, icone: LucideIcons.circleCheck, filtre: (m) => m.actif),
+        DsRaccourci(
+          id: 'desactives',
+          libelle: l10n.racDesactives,
+          icone: LucideIcons.circleOff,
+          filtre: (m) => !m.actif,
+        ),
+        if (achat)
+          DsRaccourci(
+            id: 'valeur',
+            libelle: l10n.racPlusGrosseValeur,
+            icone: LucideIcons.wallet,
+            tri: const DsTri('valeur', ascendant: false),
+          ),
+        DsRaccourci(
+          id: 'rupture',
+          libelle: l10n.racAvecRupture,
+          icone: LucideIcons.circleX,
+          filtre: (m) => avecRupture.contains(m.code),
+        ),
+      ],
       chargement: enChargement(ref.watch(magasinsProvider)),
       colonnes: colonnes,
       cle: (m) => m.code,

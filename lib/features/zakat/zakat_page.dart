@@ -130,6 +130,38 @@ class ZakatPage extends ConsumerWidget {
         key: const ValueKey('zakat'),
         entite: l10n.zkEntite,
         lignes: calculs,
+        raccourcis: [
+          DsRaccourci(
+            id: 'annee',
+            libelle: l10n.racCetteAnnee,
+            icone: LucideIcons.calendarDays,
+            filtre: (z) => z.annee == DateTime.now().year,
+          ),
+          DsRaccourci(
+            id: 'annee_derniere',
+            libelle: l10n.racAnneeDerniere,
+            icone: LucideIcons.calendarMinus,
+            filtre: (z) => z.annee == DateTime.now().year - 1,
+          ),
+          DsRaccourci(
+            id: 'brouillons',
+            libelle: l10n.racBrouillons,
+            icone: LucideIcons.filePen,
+            filtre: (z) => z.actif && z.statut == StatutsZakat.brouillon,
+          ),
+          DsRaccourci(
+            id: 'validees',
+            libelle: l10n.racValidees,
+            icone: LucideIcons.circleCheck,
+            filtre: (z) => z.actif && z.statut != StatutsZakat.brouillon,
+          ),
+          DsRaccourci(
+            id: 'nissab',
+            libelle: l10n.racNissabAtteint,
+            icone: LucideIcons.scale,
+            filtre: (z) => z.actif && z.obligatoire,
+          ),
+        ],
         chargement: enChargement(ref.watch(calculsZakatProvider)),
         colonnes: colonnes,
         cle: (z) => z.code,

@@ -8,7 +8,12 @@ import '../historique/historique_providers.dart';
 import 'statuts.dart';
 
 /// Colonnes d'audit d'un tableau (créé le / par, modifié le / par), masquées par défaut.
-List<DsColonne<T>> colonnesAudit<T>(BuildContext context, WidgetRef ref, Audit Function(T ligne) audit) {
+List<DsColonne<T>> colonnesAudit<T>(
+  BuildContext context,
+  WidgetRef ref,
+  Audit Function(T ligne) audit, {
+  bool creeLeVisible = false,
+}) {
   final l10n = AppLocalizations.of(context);
   final noms = ref.watch(nomsUtilisateursProvider).value ?? const <String, String>{};
   String nom(String? code) => code == null ? '' : (noms[code] ?? code);
@@ -17,7 +22,7 @@ List<DsColonne<T>> colonnesAudit<T>(BuildContext context, WidgetRef ref, Audit F
     DsColonne<T>(
       id: 'audit_cree_le',
       libelle: l10n.auditCreeLe,
-      visibleParDefaut: false,
+      visibleParDefaut: creeLeVisible,
       attenue: true,
       valeur: (x) => audit(x).creeLe,
       cellule: (_, x) => Text(date(audit(x).creeLe)),
