@@ -13,6 +13,7 @@ import '../../domain/fiscalite.dart';
 import '../../domain/models/parametres_paiement.dart';
 import '../../domain/models/parametres_vente.dart';
 import '../../domain/models/produit.dart';
+import '../../domain/raccourcis_caisse.dart';
 
 final httpClientProvider = Provider<http.Client>((ref) {
   final c = http.Client();
@@ -33,6 +34,12 @@ final catalogueServiceProvider = Provider<CatalogueService>(
 final parametresVenteProvider = FutureProvider<ParametresVente>((ref) async {
   final repo = ParametreRepository(ref.watch(appDatabaseProvider).db);
   return ParametresVente.depuisCles(await repo.lirePlusieurs(ParametresVente.cles));
+});
+
+/// Raccourcis clavier de la caisse (Paramètres › Raccourcis clavier).
+final raccourcisCaisseProvider = FutureProvider<RaccourcisCaisse>((ref) async {
+  final repo = ParametreRepository(ref.watch(appDatabaseProvider).db);
+  return RaccourcisCaisse.depuisCles(await repo.lirePlusieurs(RaccourcisCaisse.cles));
 });
 
 /// Moyens de paiement visibles en caisse (Paramètres › Caisse et ventes).

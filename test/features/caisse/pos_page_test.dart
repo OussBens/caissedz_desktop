@@ -11,6 +11,7 @@ import 'package:caissedz_desktop/data/vente_repository.dart';
 import 'package:caissedz_desktop/domain/models/parametres_paiement.dart';
 import 'package:caissedz_desktop/domain/models/parametres_vente.dart';
 import 'package:caissedz_desktop/domain/models/produit.dart';
+import 'package:caissedz_desktop/domain/raccourcis_caisse.dart';
 import 'package:caissedz_desktop/features/caisse/pos_controller.dart';
 import 'package:caissedz_desktop/features/produits/produits_providers.dart';
 import 'package:caissedz_desktop/features/stock/stock_providers.dart';
@@ -673,6 +674,102 @@ void main() {
       await pumpApp(tester, routeInitiale: '/caisse', locale: const Locale('ar'));
       expect(find.text('تحصيل'), findsOneWidget);
       expect(Directionality.of(tester.element(find.text('تحصيل'))), TextDirection.rtl);
+    });
+
+    testWidgets('tri des produits : prix croissant puis décroissant, en grille comme en liste', (tester) async {
+      final c = await pumpApp(tester, routeInitiale: '/caisse', taille: const Size(1600, 1000));
+      await _donnees(c);
+      await tester.pumpAndSettle();
+      // PRD0001 = Lait (100 DA), PRD0002 = Eau (30 DA).
+      bool avant(String a, String b) {
+        final pa = tester.getTopLeft(find.byKey(ValueKey('tuile_$a')));
+        final pb = tester.getTopLeft(find.byKey(ValueKey('tuile_$b')));
+        return pa.dy < pb.dy || (pa.dy == pb.dy && pa.dx < pb.dx);
+      }
+
+      await tester.tap(find.byKey(const ValueKey('pos_tri')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Tri : Vente HT').last);
+      await tester.pumpAndSettle();
+      expect(avant('PRD0002', 'PRD0001'), isTrue, reason: 'Eau (30) avant Lait (100)');
+      await tester.tap(find.byKey(const ValueKey('pos_tri_sens')));
+      await tester.pumpAndSettle();
+      expect(avant('PRD0001', 'PRD0002'), isTrue, reason: 'décroissant');
+      await tester.tap(find.byTooltip('Affichage liste'));
+      await tester.pumpAndSettle();
+      expect(avant('PRD0001', 'PRD0002'), isTrue, reason: 'la liste garde le tri');
+    });
+
+    testWidgets('panier au clavier : la dernière ligne reste sélectionnée, ↑ / ↓, + / − et Suppr après un scan', (
+      tester,
+    ) async {
+      final c = await pumpApp(tester, routeInitiale: '/caisse', taille: const Size(1600, 1000));
+      await _donnees(c);
+      await tester.pumpAndSettle();
+      bool selectionnee(int i) => tester.widget<DsCartLine>(find.byKey(ValueKey('ligne_$i'))).selectionnee;
+      double qte(int i) => tester.widget<DsCartLine>(find.byKey(ValueKey('ligne_$i'))).qte;
+
+      // Scan : le produit arrive au panier, sa ligne est sélectionnée et le champ de scan garde le focus.
+      final champ = find.descendant(of: find.byType(DsSearchField), matching: find.byType(TextField)).first;
+      await tester.enterText(champ, '6130000000015');
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.pumpAndSettle();
+      expect(selectionnee(0), isTrue);
+      // Champ de scan vide : + agit sur la ligne (et n'est pas saisi dans le champ).
+      await _touche(tester, LogicalKeyboardKey.numpadAdd);
+      expect(qte(0), 2);
+      expect(tester.widget<TextField>(champ).controller!.text, isEmpty);
+
+      // Une 2ᵉ ligne (montant) : c'est elle qui est sélectionnée ; ↑ revient au produit.
+      await tester.tap(find.byKey(const ValueKey('montant_200')));
+      await tester.pumpAndSettle();
+      expect(selectionnee(1), isTrue);
+      expect(selectionnee(0), isFalse);
+      await _touche(tester, LogicalKeyboardKey.arrowUp);
+      expect(selectionnee(0), isTrue);
+      await _touche(tester, LogicalKeyboardKey.numpadSubtract);
+      expect(qte(0), 1);
+      await _touche(tester, LogicalKeyboardKey.arrowDown);
+      expect(selectionnee(1), isTrue);
+
+      // Suppr retire la ligne sélectionnée ; la sélection passe à la ligne restante.
+      await _touche(tester, LogicalKeyboardKey.delete);
+      expect(find.byKey(const ValueKey('ligne_1')), findsNothing);
+      expect(selectionnee(0), isTrue);
+    });
+
+    testWidgets('raccourcis personnalisés (Paramètres) : la nouvelle touche agit, l’ancienne plus, l’aide suit', (
+      tester,
+    ) async {
+      final c = await pumpApp(tester, routeInitiale: '/caisse', taille: const Size(1600, 1000));
+      await _donnees(c);
+      final touches = RaccourcisCaisse.defaut
+          .avec(ActionCaisse.vider, const ToucheRaccourci(LogicalKeyboardKey.f5))
+          .avec(ActionCaisse.quantitePlus, const ToucheRaccourci(LogicalKeyboardKey.asterisk));
+      await ParametreRepository(c.read(appDatabaseProvider).db).ecrirePlusieurs(touches.versCles());
+      c.invalidate(raccourcisCaisseProvider);
+      await tester.pumpAndSettle();
+      expect(find.descendant(of: find.byKey(const ValueKey('caisse_encaisser')), matching: find.text('F4')), findsOne);
+
+      final champ = find.descendant(of: find.byType(DsSearchField), matching: find.byType(TextField)).first;
+      await tester.enterText(champ, '6130000000015');
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.pumpAndSettle();
+      double qte() => tester.widget<DsCartLine>(find.byKey(const ValueKey('ligne_0'))).qte;
+      // * (pavé numérique) : quantité +1 ; + n'agit plus.
+      await _touche(tester, LogicalKeyboardKey.numpadMultiply);
+      expect(qte(), 2);
+      await _touche(tester, LogicalKeyboardKey.numpadAdd);
+      expect(qte(), 2);
+
+      await _touche(tester, LogicalKeyboardKey.f10);
+      expect(find.byKey(const ValueKey('ligne_0')), findsOneWidget, reason: 'F10 n’est plus « Vider »');
+      await _touche(tester, LogicalKeyboardKey.f1);
+      final aide = find.ancestor(of: find.text('Vider le panier'), matching: find.byType(Row)).first;
+      expect(find.descendant(of: aide, matching: find.text('F5')), findsOneWidget);
+      await clic(tester, find.text('Fermer'));
+      await _touche(tester, LogicalKeyboardKey.f5);
+      expect(find.byKey(const ValueKey('ligne_0')), findsNothing);
     });
   });
 }

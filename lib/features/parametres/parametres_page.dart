@@ -23,6 +23,7 @@ import '../../domain/models/parametres_paiement.dart';
 import '../../domain/models/parametres_vente.dart';
 import '../../domain/models/vente.dart';
 import '../../domain/permissions.dart';
+import '../../domain/raccourcis_caisse.dart';
 import '../../domain/referentiel/referentiel.dart';
 import '../activation/activation_page.dart';
 import '../caisse/pos_dialogs.dart';
@@ -36,9 +37,10 @@ import '../produits/produits_providers.dart';
 import '../rapports/rapports_providers.dart';
 import '../tableau_bord/alertes_produits_providers.dart';
 import '../tableau_bord/alertes_produits_ui.dart';
+import 'raccourcis_caisse_ui.dart';
 
 /// Groupes de la navigation latérale (`ParametresScreen` du DS v2.2).
-enum GroupeParametres { systeme, boutique, caisse, impression, alertes, sauvegarde, licence }
+enum GroupeParametres { systeme, boutique, caisse, raccourcis, impression, alertes, sauvegarde, licence }
 
 /// Écran Paramètres (§9.16, DS v2.2 + compléments `ParametresV22`) : navigation par groupe, barre
 /// d'enregistrement unique (une transaction), thème et langue appliqués immédiatement (préférences du poste).
@@ -91,6 +93,8 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
   bool _fidelite = false;
   final _pointsGain = TextEditingController();
   final _tranche = TextEditingController();
+  // Raccourcis clavier de la caisse
+  RaccourcisCaisse _raccourcis = RaccourcisCaisse.defaut;
   // Impression
   String _typeImprimante = TypesImprimante.normale;
   final _adresseImprimante = TextEditingController();
@@ -207,6 +211,7 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
       _message.text = b.messageTicket;
       _logo = b.logo;
       _paiements = p.paiements;
+      _raccourcis = p.raccourcis ?? RaccourcisCaisse.defaut;
       _typeImprimante = p.impression.type;
       _adresseImprimante.text = p.impression.adresse;
       _largeur = p.impression.largeur;
@@ -272,8 +277,12 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
         }, inactives: _alertesInactives),
       ),
       sauvegarde: _sauvegardeAuto,
+      // Seul l'administrateur modifie les raccourcis : pour les autres, ils ne sont pas réécrits.
+      raccourcis: _adminConnecte ? _raccourcis : null,
     );
   }
+
+  bool get _adminConnecte => ref.read(sessionProvider)?.estAdmin ?? false;
 
   Future<void> _enregistrer() async {
     final l10n = AppLocalizations.of(context);
@@ -295,7 +304,8 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
       ..invalidate(parametresVenteProvider)
       ..invalidate(parametresPaiementProvider)
       ..invalidate(serveurCaisseDzProvider)
-      ..invalidate(seuilsAlertesProduitsProvider);
+      ..invalidate(seuilsAlertesProduitsProvider)
+      ..invalidate(raccourcisCaisseProvider);
     unawaited(ref.read(alertesProduitsProvider.notifier).actualiser());
     await _charger();
     if (!mounted) return;
@@ -336,6 +346,13 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
                           GroupeParametres.systeme => _systeme(l10n),
                           GroupeParametres.boutique => _boutique(l10n),
                           GroupeParametres.caisse => _caisse(l10n),
+                          GroupeParametres.raccourcis => [
+                            CarteRaccourcisCaisse(
+                              valeur: _raccourcis,
+                              modifiable: ref.watch(sessionProvider)?.estAdmin ?? false,
+                              onChanged: (r) => _changer(() => _raccourcis = r),
+                            ),
+                          ],
                           GroupeParametres.impression => _impression(l10n),
                           GroupeParametres.alertes => _alertes(l10n),
                           GroupeParametres.sauvegarde => _sauvegarde(l10n),
@@ -377,6 +394,7 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
       (GroupeParametres.systeme, l10n.pmGrpSysteme, LucideIcons.settings2),
       (GroupeParametres.boutique, l10n.pmGrpBoutique, LucideIcons.store),
       (GroupeParametres.caisse, l10n.pmGrpCaisse, LucideIcons.monitorSmartphone),
+      (GroupeParametres.raccourcis, l10n.pmGrpRaccourcis, LucideIcons.keyboard),
       (GroupeParametres.impression, l10n.pmGrpImpression, LucideIcons.printer),
       (GroupeParametres.alertes, l10n.pmGrpAlertes, LucideIcons.bell),
       (GroupeParametres.sauvegarde, l10n.pmGrpSauvegarde, LucideIcons.databaseBackup),

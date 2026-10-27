@@ -73,6 +73,7 @@ String messageErreurParametres(AppLocalizations l10n, ErreurParametres e) => swi
   ErreurParametres.typeImprimanteInvalide => l10n.parametresErreurImprimanteType,
   ErreurParametres.adresseImprimanteRequise => l10n.parametresErreurImprimanteAdresse,
   ErreurParametres.sauvegardeIncomplete => l10n.pmSauvegardeIncomplete,
+  ErreurParametres.raccourciInvalide => l10n.pmRaccourciInvalide,
 };
 
 String messageErreurSauvegarde(AppLocalizations l10n, SauvegardeException e) => switch (e.erreur) {

@@ -50,7 +50,7 @@ double _hauteurTable(BuildContext context) => hauteurListeDialog(context, reserv
 String _qte(double v) => v == v.roundToDouble() ? v.toInt().toString() : formaterNombre(v, decimales: 2);
 
 // ---------------------------------------------------------------------------------------------------------------
-// 1 · Quantité et colis (ProduitSelectionDialog, 880 px) : ajout automatique après 3 s si rien n'est touché.
+// 1 · Quantité et colis (ProduitSelectionDialog, 980 px, photo 320 px) : ajout automatique après 3 s.
 // ---------------------------------------------------------------------------------------------------------------
 
 /// Choix rendu par [afficherSelectionProduit] : colis (`null` = à l'unité) et quantité.
@@ -344,7 +344,7 @@ class _SelectionProduitDialogState extends ConsumerState<_SelectionProduitDialog
         child: DsDialog(
           titre: widget.modification ? l10n.posSelTitreModif : l10n.posSelTitre,
           iconeData: widget.scanne ? LucideIcons.scanBarcode : LucideIcons.package,
-          largeur: 880,
+          largeur: 980,
           actions: [
             DsButton(
               libelle: l10n.dsAnnuler,
@@ -407,8 +407,8 @@ class _SelectionProduitDialogState extends ConsumerState<_SelectionProduitDialog
                             borderRadius: DsRadius.borderLg,
                             child: Image(
                               image: photo,
-                              width: 160,
-                              height: 160,
+                              width: 320,
+                              height: 320,
                               fit: BoxFit.cover,
                               gaplessPlayback: true,
                               errorBuilder: (_, _, _) => icone,
@@ -505,7 +505,7 @@ class _SelectionProduitDialogState extends ConsumerState<_SelectionProduitDialog
                       crossAxisAlignment: CrossAxisAlignment.start,
                       spacing: 20,
                       children: [
-                        SizedBox(width: 220, child: fiche),
+                        SizedBox(width: 320, child: fiche),
                         Expanded(child: choix),
                         SizedBox(width: 232, child: pave),
                       ],

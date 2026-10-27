@@ -9,6 +9,7 @@ import '../domain/fiscalite.dart';
 import '../domain/models/boutique.dart';
 import '../domain/models/parametres_paiement.dart';
 import '../domain/models/parametres_vente.dart';
+import '../domain/raccourcis_caisse.dart';
 import '../domain/zakat.dart';
 import 'alertes_service.dart';
 
@@ -18,6 +19,9 @@ enum ErreurParametres {
   typeImprimanteInvalide,
   adresseImprimanteRequise,
   sauvegardeIncomplete,
+
+  /// Raccourci clavier de caisse interdit ou touche utilisée par deux actions.
+  raccourciInvalide,
 }
 
 class ParametresException implements Exception {
@@ -175,6 +179,7 @@ class ParametresComplets {
     required this.zakat,
     required this.alertes,
     this.sauvegarde = const ParametresSauvegardeAuto(),
+    this.raccourcis,
   });
   final Boutique boutique;
   final ParametresVente vente;
@@ -184,6 +189,9 @@ class ParametresComplets {
   final ParametresZakat zakat;
   final ParametresAlertes alertes;
   final ParametresSauvegardeAuto sauvegarde;
+
+  /// Raccourcis clavier de la caisse (`null` : inchangés).
+  final RaccourcisCaisse? raccourcis;
 }
 
 /// Paramètres (lot 8) : boutique, vente, impression, serveurs, zakat. Chaque écriture = UNE transaction + historique.
@@ -349,6 +357,14 @@ class ParametresService {
     }
   }
 
+  /// Raccourcis clavier de la caisse (Paramètres › Raccourcis clavier).
+  Future<RaccourcisCaisse> lireRaccourcis() async =>
+      RaccourcisCaisse.depuisCles(await ParametreRepository(db).lirePlusieurs(RaccourcisCaisse.cles));
+
+  static void _validerRaccourcis(RaccourcisCaisse? r) {
+    if (r != null && !r.valide) throw const ParametresException(ErreurParametres.raccourciInvalide);
+  }
+
   /// Lecture de tout l'écran Paramètres.
   Future<ParametresComplets> lireTout() async => ParametresComplets(
     boutique: await lireBoutique() ?? const Boutique(nom: ''),
@@ -359,6 +375,7 @@ class ParametresService {
     zakat: await lireZakat(),
     alertes: await lireAlertes(),
     sauvegarde: await lireSauvegardeAuto(),
+    raccourcis: await lireRaccourcis(),
   );
 
   /// Barre d'enregistrement unique (§9.16) : tout est validé, puis écrit dans UNE transaction avec une ligne
@@ -370,6 +387,7 @@ class ParametresService {
     _validerServeur(p.serveur);
     _validerZakat(p.zakat);
     _validerSauvegarde(p.sauvegarde);
+    _validerRaccourcis(p.raccourcis);
     if (p.alertes.seuilCreditClient < 0) throw const ParametresException(ErreurParametres.valeurInvalide);
     await db.transaction((txn) async {
       await BoutiqueRepository(txn).ecrire(p.boutique.copyWith(nom: p.boutique.nom.trim()));
@@ -381,6 +399,7 @@ class ParametresService {
         ..._clesZakat(p.zakat),
         ...p.alertes.versCles(),
         ...p.sauvegarde.versCles(),
+        ...?p.raccourcis?.versCles(),
       });
       await _journal(txn, 'tout');
     });

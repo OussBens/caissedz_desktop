@@ -68,6 +68,7 @@ class DsCartLine extends StatefulWidget {
     required this.prix,
     this.code,
     this.detailPrix,
+    this.prixEnAlerte = false,
     this.qte = 1,
     this.devise = 'DA',
     this.colis,
@@ -86,6 +87,9 @@ class DsCartLine extends StatefulWidget {
 
   /// Prix détaillé (HT, TVA, TTC) affiché à la place du prix, sur deux lignes au plus.
   final String? detailPrix;
+
+  /// Prix à vérifier (prix de vente ou d'achat à zéro) : prix et montant en rouge.
+  final bool prixEnAlerte;
   final double qte;
   final String devise;
   final String? colis;
@@ -169,8 +173,18 @@ class _DsCartLineState extends State<DsCartLine> {
               ),
             ),
           );
-    final sousTitre =
-        '${w.code != null ? '${w.code} · ' : ''}${w.detailPrix ?? formaterMontant(w.prix, w.devise)}${w.uniteLibelle != null ? ' / ${w.uniteLibelle}' : ''}';
+    final couleurMontant = w.prixEnAlerte ? c.dangerFg : c.textPrimary;
+    // Code en atténué, prix (et unité) en rouge quand il est à vérifier.
+    final sousTitre = TextSpan(
+      children: [
+        if (w.code != null) TextSpan(text: '${w.code} · '),
+        TextSpan(
+          text:
+              '${w.detailPrix ?? formaterMontant(w.prix, w.devise)}${w.uniteLibelle != null ? ' / ${w.uniteLibelle}' : ''}',
+          style: w.prixEnAlerte ? TextStyle(color: c.dangerFg, fontWeight: FontWeight.w700) : null,
+        ),
+      ],
+    );
     final lignesSousTitre = w.detailPrix == null ? 1 : 2;
 
     Widget contenu;
@@ -190,7 +204,7 @@ class _DsCartLineState extends State<DsCartLine> {
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  Text(
+                  Text.rich(
                     sousTitre,
                     style: t.caption.copyWith(fontSize: 11.5, color: c.textMuted, fontFeatures: DsTypography.tabular),
                     maxLines: lignesSousTitre,
@@ -242,7 +256,7 @@ class _DsCartLineState extends State<DsCartLine> {
               child: Text(
                 formaterNombre(total, decimales: 2),
                 textAlign: TextAlign.end,
-                style: num.copyWith(fontWeight: FontWeight.w700, color: c.textPrimary),
+                style: num.copyWith(fontWeight: FontWeight.w700, color: couleurMontant),
                 maxLines: 1,
               ),
             ),
@@ -266,7 +280,7 @@ class _DsCartLineState extends State<DsCartLine> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  Text(
+                  Text.rich(
                     sousTitre,
                     style: t.caption.copyWith(color: c.textMuted, fontFeatures: DsTypography.tabular),
                     maxLines: lignesSousTitre,
@@ -281,7 +295,7 @@ class _DsCartLineState extends State<DsCartLine> {
               child: Text(
                 formaterMontant(total, w.devise),
                 textAlign: TextAlign.end,
-                style: num.copyWith(fontWeight: FontWeight.w700, color: c.textPrimary),
+                style: num.copyWith(fontWeight: FontWeight.w700, color: couleurMontant),
                 maxLines: 1,
               ),
             ),
@@ -1735,6 +1749,7 @@ class DsSaleTabs extends StatelessWidget {
     this.onAjouter,
     this.onFermer,
     this.max = 5,
+    this.raccourciAjouter,
   });
   final List<DsOngletVente> onglets;
   final Object? courant;
@@ -1742,6 +1757,9 @@ class DsSaleTabs extends StatelessWidget {
   final VoidCallback? onAjouter;
   final ValueChanged<Object>? onFermer;
   final int max;
+
+  /// Touche du bouton « + », affichée dans son infobulle (`Ctrl+N`).
+  final String? raccourciAjouter;
 
   @override
   Widget build(BuildContext context) {
@@ -1778,7 +1796,11 @@ class DsSaleTabs extends StatelessWidget {
             ),
           ),
           Tooltip(
-            message: plein ? l10n.dsPosMaxVentes(max) : '${l10n.dsPosNouvelleVente} (Ctrl+T)',
+            message: plein
+                ? l10n.dsPosMaxVentes(max)
+                : raccourciAjouter == null
+                ? l10n.dsPosNouvelleVente
+                : '${l10n.dsPosNouvelleVente} ($raccourciAjouter)',
             child: InkWell(
               key: const ValueKey('vente_ajouter'),
               onTap: plein ? null : onAjouter,

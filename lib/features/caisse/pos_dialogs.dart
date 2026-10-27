@@ -24,6 +24,7 @@ import '../../data/parametre_repository.dart';
 import '../../domain/models/boutique.dart';
 import '../../domain/models/tiers.dart';
 import '../../domain/models/vente.dart';
+import '../../domain/raccourcis_caisse.dart';
 import '../commun/apercu_document.dart';
 import '../commun/selecteurs.dart';
 import '../produits/produits_providers.dart';
@@ -122,26 +123,33 @@ Future<double?> afficherCalculatrice(BuildContext context) {
 }
 
 /// Aide des raccourcis clavier de la caisse.
-Future<void> afficherAideRaccourcis(BuildContext context) {
+/// Libellé de chaque action de caisse (aide F1, Paramètres › Raccourcis clavier).
+String libelleActionCaisse(AppLocalizations l10n, ActionCaisse a) => switch (a) {
+  ActionCaisse.aide => l10n.posRaccourciF1,
+  ActionCaisse.scanner => l10n.posRaccourciF2,
+  ActionCaisse.rechercheAvancee => l10n.posRaccourciF3,
+  ActionCaisse.encaisser => l10n.posRaccourciF4,
+  ActionCaisse.enregistrer => l10n.posRaccourciF6,
+  ActionCaisse.client => l10n.posRaccourciF7,
+  ActionCaisse.remise => l10n.posRaccourciF8,
+  ActionCaisse.calculatrice => l10n.posRaccourciF9,
+  ActionCaisse.vider => l10n.posRaccourciF10,
+  ActionCaisse.produits => l10n.posRaccourciF11,
+  ActionCaisse.ventesDuJour => l10n.posRaccourciF12,
+  ActionCaisse.nouveauPanier => l10n.posRaccourciCtrlN,
+  ActionCaisse.panierSuivant => l10n.posRaccourciCtrlTab,
+  ActionCaisse.entreeRapide => l10n.posRaccourciE,
+  ActionCaisse.retirerLigne => l10n.posRaccourciSuppr,
+  ActionCaisse.quantitePlus => l10n.posRaccourciPlus,
+  ActionCaisse.quantiteMoins => l10n.posRaccourciMoins,
+  ActionCaisse.lignePrecedente => l10n.posRaccourciHaut,
+  ActionCaisse.ligneSuivante => l10n.posRaccourciBas,
+};
+
+/// Aide des raccourcis (F1) : les touches configurées dans Paramètres › Raccourcis clavier.
+Future<void> afficherAideRaccourcis(BuildContext context, RaccourcisCaisse touches) {
   final l10n = AppLocalizations.of(context);
-  final raccourcis = [
-    ('F1', l10n.posRaccourciF1),
-    ('F2', l10n.posRaccourciF2),
-    ('F3', l10n.posRaccourciF3),
-    ('F4', l10n.posRaccourciF4),
-    ('F6', l10n.posRaccourciF6),
-    ('F7', l10n.posRaccourciF7),
-    ('F8', l10n.posRaccourciF8),
-    ('F9', l10n.posRaccourciF9),
-    ('F10', l10n.posRaccourciF10),
-    ('F11', l10n.posRaccourciF11),
-    ('F12', l10n.posRaccourciF12),
-    ('Ctrl+N', l10n.posRaccourciCtrlN),
-    ('Ctrl+Tab', l10n.posRaccourciCtrlTab),
-    ('Suppr', l10n.posRaccourciSuppr),
-    ('+ / −', l10n.posRaccourciPlusMoins),
-    ('E', l10n.posRaccourciE),
-  ];
+  final raccourcis = [for (final a in ActionCaisse.values) (touches.libelle(a), libelleActionCaisse(l10n, a))];
   return afficherDialog<void>(
     context,
     builder: (ctx) {
@@ -161,7 +169,7 @@ Future<void> afficherAideRaccourcis(BuildContext context) {
                   spacing: DsSpacing.s3,
                   children: [
                     SizedBox(
-                      width: 84,
+                      width: 96,
                       child: Align(alignment: AlignmentDirectional.centerStart, child: DsKbd(touche)),
                     ),
                     Expanded(

@@ -20,6 +20,7 @@ import '../../domain/models/retour.dart';
 import '../../domain/models/tiers.dart';
 import '../../domain/models/vente.dart';
 import '../../domain/permissions.dart';
+import '../../domain/raccourcis_caisse.dart';
 import '../commun/detail_prix.dart';
 import '../entrees/entree_dialogs.dart';
 import '../gestion_caisse/gestion_caisse_providers.dart';
@@ -45,6 +46,10 @@ class PosPage extends ConsumerStatefulWidget {
 
 enum _Vue { produits, favoris, packs }
 
+/// Tri des produits et des packs (grille comme liste) : `defaut` garde l'ordre du catalogue (des favoris : celui
+/// où ils ont été ajoutés).
+enum _TriCaisse { defaut, nom, prix, stock, creation, code }
+
 class _PosPageState extends ConsumerState<PosPage> {
   final _scan = TextEditingController();
   final _scanFocus = FocusNode();
@@ -52,12 +57,74 @@ class _PosPageState extends ConsumerState<PosPage> {
   String? _categorie;
   _Vue _vue = _Vue.produits;
   DsVueModule _disposition = DsVueModule.grille;
+  _TriCaisse _tri = _TriCaisse.defaut;
+  bool _triCroissant = true;
   // Produits par pages (comme la grille du module Produits) : jamais des milliers de tuiles d'un coup.
   int _page = 0;
   int _taillePage = _taillesPage.first;
   static const List<int> _taillesPage = [24, 48, 96];
   bool _afficherProduits = true;
   int? _ligneSelectionnee;
+
+  /// Clé de chaque ligne du panier affichée : la ligne sélectionnée est ramenée dans la vue.
+  final Map<int, GlobalKey> _clesLignes = {};
+  final ScrollController _defilementPanier = ScrollController();
+
+  /// La sélection suit le panier : la ligne ajoutée (ou dont la quantité vient de changer) est sélectionnée,
+  /// après un retrait la ligne suivante, sur un autre panier sa dernière ligne. Les touches Suppr, + / − et
+  /// ↑ / ↓ agissent donc toujours sur une ligne, sans passer par la souris.
+  void _suivreSelection(Panier? avant, Panier apres) {
+    final n = apres.lignes.length;
+    int? choix;
+    if (n == 0) {
+      choix = null;
+    } else if (avant == null || avant.id != apres.id || n > avant.lignes.length) {
+      choix = n - 1;
+    } else if (n < avant.lignes.length) {
+      choix = (_ligneSelectionnee ?? n - 1).clamp(0, n - 1);
+    } else {
+      final changees = [
+        for (var i = 0; i < n; i++)
+          if (!identical(avant.lignes[i], apres.lignes[i])) i,
+      ];
+      if (changees.length != 1) return;
+      choix = changees.single;
+    }
+    _selectionnerLigne(choix);
+  }
+
+  void _selectionnerLigne(int? i) {
+    // Vers le bas : la ligne est gardée visible en bas de la liste ; vers le haut, en haut.
+    final versLeBas = i != null && i >= (_ligneSelectionnee ?? -1);
+    if (i != _ligneSelectionnee) setState(() => _ligneSelectionnee = i);
+    if (i == null) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || _ligneSelectionnee != i) return;
+      final ctx = _clesLignes[i]?.currentContext;
+      if (ctx != null) {
+        unawaited(
+          Scrollable.ensureVisible(
+            ctx,
+            duration: DsMotion.fast,
+            alignmentPolicy: versLeBas
+                ? ScrollPositionAlignmentPolicy.keepVisibleAtEnd
+                : ScrollPositionAlignmentPolicy.keepVisibleAtStart,
+          ),
+        );
+      } else if (_defilementPanier.hasClients) {
+        // Ligne pas encore construite (hors de la vue) : vers le bout de la liste où elle se trouve.
+        final pos = _defilementPanier.position;
+        final n = ref.read(posControllerProvider).panier.lignes.length;
+        unawaited(
+          _defilementPanier.animateTo(
+            n <= 1 ? 0 : pos.maxScrollExtent * i / (n - 1),
+            duration: DsMotion.fast,
+            curve: DsMotion.standard,
+          ),
+        );
+      }
+    });
+  }
 
   @override
   void initState() {
@@ -73,6 +140,7 @@ class _PosPageState extends ConsumerState<PosPage> {
     HardwareKeyboard.instance.removeHandler(_clavierGlobal);
     _scan.dispose();
     _scanFocus.dispose();
+    _defilementPanier.dispose();
     super.dispose();
   }
 
@@ -255,7 +323,6 @@ class _PosPageState extends ConsumerState<PosPage> {
       await _executer(() => ctrl.ajouterMontant(v));
     } else {
       ctrl.modifierMontant(index, v);
-      if (v <= 0) setState(() => _ligneSelectionnee = null);
     }
   }
 
@@ -527,59 +594,80 @@ class _PosPageState extends ConsumerState<PosPage> {
     return ctx != null && (ctx.widget is EditableText || ctx.findAncestorStateOfType<EditableTextState>() != null);
   }
 
+  /// Raccourcis clavier de la caisse (Paramètres › Raccourcis clavier ; touches par défaut en attendant la lecture).
+  RaccourcisCaisse get _touches => ref.read(raccourcisCaisseProvider).value ?? RaccourcisCaisse.defaut;
+
   KeyEventResult _raccourci(KeyEvent e) {
     if (e is! KeyDownEvent) return KeyEventResult.ignored;
-    final ctrlPresse = HardwareKeyboard.instance.isControlPressed;
-    final k = e.logicalKey;
+    final clavier = HardwareKeyboard.instance;
+    final touches = _touches;
+    final action = touches.actionPour(
+      e.logicalKey,
+      ctrl: clavier.isControlPressed,
+      shift: clavier.isShiftPressed,
+      alt: clavier.isAltPressed,
+    );
+    if (action == null || !_toucheDisponible(touches.touche(action))) return KeyEventResult.ignored;
     final etat = ref.read(posControllerProvider);
-    final saisie = _saisieEnCours;
     final i = _ligneSelectionnee;
     final ligne = i != null && i < etat.panier.lignes.length ? etat.panier.lignes[i] : null;
-    if (k == LogicalKeyboardKey.f1) {
-      unawaited(afficherAideRaccourcis(context));
-    } else if (k == LogicalKeyboardKey.f2) {
-      _scanFocus.requestFocus();
-    } else if (k == LogicalKeyboardKey.f3) {
-      unawaited(_rechercheAvancee());
-    } else if (k == LogicalKeyboardKey.f4) {
-      unawaited(_encaisser(NatureEncaissement.ticket));
-    } else if (k == LogicalKeyboardKey.f6) {
-      unawaited(_encaisser(NatureEncaissement.enregistrer));
-    } else if (k == LogicalKeyboardKey.f7) {
-      unawaited(_choisirClient());
-    } else if (k == LogicalKeyboardKey.f8) {
-      unawaited(_choisirRemise());
-    } else if (k == LogicalKeyboardKey.f9) {
-      unawaited(afficherCalculatrice(context));
-    } else if (k == LogicalKeyboardKey.f10) {
-      _vider();
-    } else if (k == LogicalKeyboardKey.f11) {
-      setState(() => _afficherProduits = !_afficherProduits);
-    } else if (k == LogicalKeyboardKey.f12) {
-      unawaited(afficherVentesDuJour(context, ref, nomCaisse: _nomCaisse()));
-    } else if (ctrlPresse && k == LogicalKeyboardKey.keyN) {
-      unawaited(_executer(() async => ctrl.nouveauPanier()));
-    } else if (ctrlPresse && k == LogicalKeyboardKey.tab) {
-      ctrl.panierSuivant();
-    } else if (k == LogicalKeyboardKey.keyE && !ctrlPresse && !saisie) {
-      unawaited(_entreeRapide());
-    } else if (k == LogicalKeyboardKey.delete && ligne != null && !saisie) {
-      ctrl.retirerLigne(i!);
-      setState(() => _ligneSelectionnee = null);
-    } else if ((k == LogicalKeyboardKey.numpadAdd || k == LogicalKeyboardKey.add) &&
-        ligne != null &&
-        !ligne.estMontant &&
-        !saisie) {
-      unawaited(_executer(() => ctrl.modifierQuantite(i!, ligne.quantite + 1)));
-    } else if ((k == LogicalKeyboardKey.numpadSubtract || k == LogicalKeyboardKey.minus) &&
-        ligne != null &&
-        !ligne.estMontant &&
-        !saisie) {
-      unawaited(_executer(() => ctrl.modifierQuantite(i!, ligne.quantite - 1)));
-    } else {
-      return KeyEventResult.ignored;
+    final nbLignes = etat.panier.lignes.length;
+    switch (action) {
+      case ActionCaisse.aide:
+        unawaited(afficherAideRaccourcis(context, touches));
+      case ActionCaisse.scanner:
+        _scanFocus.requestFocus();
+      case ActionCaisse.rechercheAvancee:
+        unawaited(_rechercheAvancee());
+      case ActionCaisse.encaisser:
+        unawaited(_encaisser(NatureEncaissement.ticket));
+      case ActionCaisse.enregistrer:
+        unawaited(_encaisser(NatureEncaissement.enregistrer));
+      case ActionCaisse.client:
+        unawaited(_choisirClient());
+      case ActionCaisse.remise:
+        unawaited(_choisirRemise());
+      case ActionCaisse.calculatrice:
+        unawaited(afficherCalculatrice(context));
+      case ActionCaisse.vider:
+        _vider();
+      case ActionCaisse.produits:
+        setState(() => _afficherProduits = !_afficherProduits);
+      case ActionCaisse.ventesDuJour:
+        unawaited(afficherVentesDuJour(context, ref, nomCaisse: _nomCaisse()));
+      case ActionCaisse.nouveauPanier:
+        unawaited(_executer(() async => ctrl.nouveauPanier()));
+      case ActionCaisse.panierSuivant:
+        ctrl.panierSuivant();
+      case ActionCaisse.entreeRapide:
+        unawaited(_entreeRapide());
+      case ActionCaisse.retirerLigne:
+        if (ligne == null || ligne.verrouillee) return KeyEventResult.ignored;
+        ctrl.retirerLigne(i!);
+      case ActionCaisse.quantitePlus || ActionCaisse.quantiteMoins:
+        if (ligne == null || ligne.estMontant) return KeyEventResult.ignored;
+        final pas = action == ActionCaisse.quantitePlus ? 1 : -1;
+        unawaited(_executer(() => ctrl.modifierQuantite(i!, ligne.quantite + pas)));
+      case ActionCaisse.lignePrecedente:
+        if (nbLignes == 0) return KeyEventResult.ignored;
+        _selectionnerLigne(((i ?? nbLignes) - 1).clamp(0, nbLignes - 1));
+      case ActionCaisse.ligneSuivante:
+        if (nbLignes == 0) return KeyEventResult.ignored;
+        _selectionnerLigne(((i ?? -1) + 1).clamp(0, nbLignes - 1));
     }
     return KeyEventResult.handled;
+  }
+
+  /// La touche [t] revient-elle à la caisse plutôt qu'au champ de saisie qui a le focus ? Touches de fonction et
+  /// combinaisons Ctrl / Alt : toujours. Lettres et chiffres : jamais pendant une saisie (début d'un code). Symboles
+  /// (+, −…) et touches d'édition (Suppr…) : aussi dans le champ de scan vide, le cas après chaque scan ; ↑ / ↓ :
+  /// aussi quand il contient un code (il n'a qu'une ligne).
+  bool _toucheDisponible(ToucheRaccourci t) {
+    if (!_saisieEnCours || !(t.ecritCaractere || t.estEdition)) return true;
+    if (t.estAlphanumerique || !_scanFocus.hasFocus) return false;
+    final k = ToucheRaccourci.normaliser(t.touche);
+    if (k == LogicalKeyboardKey.arrowUp || k == LogicalKeyboardKey.arrowDown) return true;
+    return _scan.text.isEmpty;
   }
 
   // ------------------------------------------------------------------ Rendu
@@ -587,6 +675,8 @@ class _PosPageState extends ConsumerState<PosPage> {
   @override
   Widget build(BuildContext context) {
     final etat = ref.watch(posControllerProvider);
+    ref.watch(raccourcisCaisseProvider);
+    ref.listen(posControllerProvider, (avant, apres) => _suivreSelection(avant?.panier, apres.panier));
     ref
       ..watch(stocksCaisseProvider)
       ..watch(colisProvider)
@@ -701,7 +791,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                 tooltip: l10n.posAide,
                 taille: DsTailles.controleSm,
                 contour: true,
-                onPressed: () => unawaited(afficherAideRaccourcis(context)),
+                onPressed: () => unawaited(afficherAideRaccourcis(context, _touches)),
               ),
               DsIconButton(
                 icone: LucideIcons.calculator,
@@ -729,10 +819,10 @@ class _PosPageState extends ConsumerState<PosPage> {
 
   Widget _ongletsVentes(PosEtat etat) => DsSaleTabs(
     max: maxPaniers,
+    raccourciAjouter: _touches.libelle(ActionCaisse.nouveauPanier),
     courant: etat.panier.id,
     onChanged: (cle) {
       ctrl.selectionnerPanier(etat.paniers.indexWhere((p) => p.id == cle));
-      setState(() => _ligneSelectionnee = null);
     },
     onAjouter: () => unawaited(_executer(() async => ctrl.nouveauPanier())),
     onFermer: (cle) => unawaited(_fermerVente(cle)),
@@ -759,7 +849,7 @@ class _PosPageState extends ConsumerState<PosPage> {
           controller: _scan,
           focusNode: _scanFocus,
           grand: true,
-          kbd: 'F2',
+          kbd: _touches.libelle(ActionCaisse.scanner),
           autofocus: true,
           indice: l10n.posScanIndice,
           onChanged: (v) => setState(() {
@@ -772,7 +862,7 @@ class _PosPageState extends ConsumerState<PosPage> {
       DsButton(
         libelle: l10n.posRecherche,
         icone: LucideIcons.slidersHorizontal,
-        kbd: 'F3',
+        kbd: _touches.libelle(ActionCaisse.rechercheAvancee),
         taille: DsButtonTaille.lg,
         variante: DsButtonVariante.secondaire,
         onPressed: _rechercheAvancee,
@@ -835,6 +925,31 @@ class _PosPageState extends ConsumerState<PosPage> {
             p,
       ];
     }
+    if (_tri != _TriCaisse.defaut) {
+      int sens(int r) => _triCroissant ? r : -r;
+      int dates(DateTime? a, DateTime? b) => a == null ? (b == null ? 0 : -1) : (b == null ? 1 : a.compareTo(b));
+      // Seule la liste de la vue courante est triée (l'autre est la liste vide constante).
+      if (_vue != _Vue.packs) {
+        produitsVisibles.sort(
+          (a, b) => sens(switch (_tri) {
+            _TriCaisse.nom => a.nom(langue).toLowerCase().compareTo(b.nom(langue).toLowerCase()),
+            _TriCaisse.prix => a.prixVente.compareTo(b.prixVente),
+            _TriCaisse.stock => (stocks[a.code] ?? 0).compareTo(stocks[b.code] ?? 0),
+            _TriCaisse.creation => dates(a.audit.creeLe, b.audit.creeLe),
+            _TriCaisse.code || _TriCaisse.defaut => a.code.compareTo(b.code),
+          }),
+        );
+      } else {
+        packsVisibles.sort(
+          (a, b) => sens(switch (_tri) {
+            _TriCaisse.nom => a.designation.toLowerCase().compareTo(b.designation.toLowerCase()),
+            _TriCaisse.prix => a.prixVente.compareTo(b.prixVente),
+            _TriCaisse.creation => dates(a.audit.creeLe, b.audit.creeLe),
+            _ => a.code.compareTo(b.code),
+          }),
+        );
+      }
+    }
     final total = _vue == _Vue.packs ? packsVisibles.length : produitsVisibles.length;
     final nbPages = (total / _taillePage).ceil().clamp(1, 1 << 30);
     final page = _page.clamp(0, nbPages - 1);
@@ -888,6 +1003,22 @@ class _PosPageState extends ConsumerState<PosPage> {
             final etroit = contraintes.maxWidth < 600;
             DsOption<_Vue> option(_Vue v, String libelle, IconData icone) =>
                 DsOption(v, libelle: etroit ? null : libelle, icone: icone, tooltip: etroit ? libelle : null);
+            final optionsTri = [
+              for (final t in _TriCaisse.values)
+                if (_vue != _Vue.packs || t != _TriCaisse.stock) t,
+            ];
+            String libelleTri(_TriCaisse t) => switch (t) {
+              _TriCaisse.defaut => l10n.dsTriDefaut,
+              _TriCaisse.nom => l10n.dsTriPar(l10n.produitsColDesignation),
+              _TriCaisse.prix => l10n.dsTriPar(l10n.prdVente),
+              _TriCaisse.stock => l10n.dsTriPar(l10n.produitsColStock),
+              _TriCaisse.creation => l10n.dsTriPar(l10n.auditCreeLe),
+              _TriCaisse.code => l10n.dsTriPar(l10n.produitsColCode),
+            };
+            void choisirTri(_TriCaisse t) => setState(() {
+              _tri = t;
+              _page = 0;
+            });
             return Row(
               spacing: DsSpacing.s3,
               children: [
@@ -922,6 +1053,58 @@ class _PosPageState extends ConsumerState<PosPage> {
                   )
                 else
                   const Spacer(),
+                // Liste de tri (190 px) ; colonne étroite : un bouton-icône qui ouvre les mêmes choix.
+                if (contraintes.maxWidth >= 760)
+                  DsSelect<_TriCaisse>(
+                    key: const ValueKey('pos_tri'),
+                    valeur: _tri,
+                    options: optionsTri,
+                    libelle: libelleTri,
+                    icone: LucideIcons.arrowUpDown,
+                    taille: DsTailles.controleSm,
+                    largeur: 190,
+                    onChanged: (t) => choisirTri(t ?? _TriCaisse.defaut),
+                  )
+                else
+                  Builder(
+                    builder: (context) => DsIconButton(
+                      key: const ValueKey('pos_tri'),
+                      icone: LucideIcons.arrowUpDown,
+                      tooltip: libelleTri(_tri),
+                      taille: DsTailles.controleSm,
+                      contour: true,
+                      actif: _tri != _TriCaisse.defaut,
+                      onPressed: () {
+                        final boite = context.findRenderObject()! as RenderBox;
+                        unawaited(
+                          afficherMenuContextuel(
+                            context,
+                            position: boite.localToGlobal(Offset(0, boite.size.height)),
+                            items: [
+                              for (final t in optionsTri)
+                                DsMenuItem(
+                                  libelle: libelleTri(t),
+                                  icone: t == _tri ? LucideIcons.check : null,
+                                  onTap: () => choisirTri(t),
+                                ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                if (_tri != _TriCaisse.defaut)
+                  DsIconButton(
+                    key: const ValueKey('pos_tri_sens'),
+                    icone: _triCroissant ? LucideIcons.arrowUpNarrowWide : LucideIcons.arrowDownWideNarrow,
+                    tooltip: _triCroissant ? l10n.dsTriCroissant : l10n.dsTriDecroissant,
+                    taille: DsTailles.controleSm,
+                    contour: true,
+                    onPressed: () => setState(() {
+                      _triCroissant = !_triCroissant;
+                      _page = 0;
+                    }),
+                  ),
                 DsSegmentedControl<DsVueModule>(
                   valeur: _disposition,
                   onChanged: (v) => setState(() => _disposition = v),
@@ -1169,6 +1352,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                   description: l10n.posPanierVideDesc,
                 )
               : ListView.builder(
+                  controller: _defilementPanier,
                   itemCount: panier.lignes.length,
                   itemBuilder: (_, i) {
                     final l = panier.lignes[i];
@@ -1183,6 +1367,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                         : l.colis?.designation ??
                               (l.uniteVente == UniteVente.nombre ? l10n.posVendreNombre : l10n.posSelUnite);
                     return Tooltip(
+                      key: _clesLignes.putIfAbsent(i, GlobalKey.new),
                       message: fixe ? l10n.posLigneReprise : (montant ? l10n.posMontantLigneAide : l10n.posLigneAide),
                       waitDuration: const Duration(seconds: 1),
                       child: GestureDetector(
@@ -1212,6 +1397,8 @@ class _PosPageState extends ConsumerState<PosPage> {
                                   affichage: affichage,
                                   devise: devise,
                                 ),
+                          // Prix de vente ou d'achat à zéro : prix en rouge, pour que le caissier le remarque.
+                          prixEnAlerte: !montant && (l.prixUnitaire <= 0 || l.produit.prixAchat <= 0),
                           qte: l.quantite,
                           devise: devise,
                           colis: colis,
@@ -1225,12 +1412,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                           onMoins: montant || fixe
                               ? null
                               : () => unawaited(_executer(() => ctrl.modifierQuantite(i, l.quantite - 1))),
-                          onRetirer: fixe
-                              ? null
-                              : () {
-                                  ctrl.retirerLigne(i);
-                                  setState(() => _ligneSelectionnee = null);
-                                },
+                          onRetirer: fixe ? null : () => ctrl.retirerLigne(i),
                         ),
                       ),
                     );
@@ -1260,7 +1442,7 @@ class _PosPageState extends ConsumerState<PosPage> {
               key: const ValueKey('caisse_enregistrer'),
               libelle: l10n.posEnregistrer,
               icone: LucideIcons.save,
-              kbd: compact ? null : 'F6',
+              kbd: compact ? null : _touches.libelle(ActionCaisse.enregistrer),
               taille: DsButtonTaille.lg,
               pleineLargeur: compact,
               variante: DsButtonVariante.secondaire,
@@ -1270,7 +1452,7 @@ class _PosPageState extends ConsumerState<PosPage> {
               key: const ValueKey('caisse_encaisser'),
               libelle: l10n.posEncaisserBouton,
               icone: LucideIcons.receipt,
-              kbd: 'F4',
+              kbd: _touches.libelle(ActionCaisse.encaisser),
               taille: DsButtonTaille.lg,
               pleineLargeur: true,
               onPressed: panier.estVide ? null : () => _encaisser(NatureEncaissement.ticket),
