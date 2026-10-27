@@ -805,9 +805,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get posRaccourciSuppr => 'Retirer la ligne sélectionnée';
 
   @override
-  String get posRaccourciPlusMoins => 'Quantité +1 / −1 sur la ligne sélectionnée';
-
-  @override
   String get posVendreNombre => 'Vendre à la pièce';
 
   @override
@@ -2444,6 +2441,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get situationOnglet => 'Situation';
+
+  @override
+  String get notificationsOnglet => 'Notifications';
 
   @override
   String get tableauBordJour => 'Jour';
@@ -7979,11 +7979,11 @@ class AppLocalizationsFr extends AppLocalizations {
   String get mobileOuvrirSmartScan => 'Ouvrir Smart Scan';
 
   @override
-  String get mobileRevoquer => 'Révoquer';
+  String get mobileRevoquer => 'Déconnecter';
 
   @override
   String mobileRevoquerTitre(String nom) {
-    return 'Révoquer « $nom » ?';
+    return 'Déconnecter « $nom » ?';
   }
 
   @override
@@ -8855,4 +8855,336 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get ventesAjouterProduits => 'Ajouter des produits';
+
+  @override
+  String get dsTriDefaut => 'Tri : par défaut';
+
+  @override
+  String dsTriPar(String colonne) {
+    return 'Tri : $colonne';
+  }
+
+  @override
+  String get dsTriCroissant => 'Ordre croissant';
+
+  @override
+  String get dsTriDecroissant => 'Ordre décroissant';
+
+  @override
+  String get racACredit => 'À crédit';
+
+  @override
+  String get racATransformer => 'À transformer';
+
+  @override
+  String get racAbsents30 => 'Absents depuis 30 j';
+
+  @override
+  String get racAcceptes => 'Acceptés';
+
+  @override
+  String get racAccesMobile => 'Accès mobile';
+
+  @override
+  String get racActifs => 'Actifs';
+
+  @override
+  String get racActives => 'Actives';
+
+  @override
+  String get racAdministrateurs => 'Administrateurs';
+
+  @override
+  String get racAnneeDerniere => 'Année dernière';
+
+  @override
+  String get racAnnulees => 'Annulées';
+
+  @override
+  String get racAnnules => 'Annulés';
+
+  @override
+  String get racAttendues => 'Attendues';
+
+  @override
+  String get racAvecCredit => 'Avec crédit';
+
+  @override
+  String get racAvecEcart => 'Avec écart';
+
+  @override
+  String get racAvecRupture => 'Avec produits en rupture';
+
+  @override
+  String get racAvecUtilisateurs => 'Avec utilisateurs';
+
+  @override
+  String get racBrouillons => 'Brouillons';
+
+  @override
+  String get racCassePerte => 'Casse / perte';
+
+  @override
+  String get racCetteAnnee => 'Cette année';
+
+  @override
+  String get racChequeVirement => 'Chèque / virement';
+
+  @override
+  String get racClotureesAujourdhui => 'Clôturées aujourd\'hui';
+
+  @override
+  String get racCommandees => 'Commandées';
+
+  @override
+  String get racConnexions => 'Connexions';
+
+  @override
+  String get racConsommationInterne => 'Consommation interne';
+
+  @override
+  String get racCoutReassort => 'Plus gros réassort';
+
+  @override
+  String get racCreations => 'Créations';
+
+  @override
+  String get racDejaExpires => 'Déjà expirés';
+
+  @override
+  String get racDesactivees => 'Désactivées';
+
+  @override
+  String get racDesactives => 'Désactivés';
+
+  @override
+  String get racEnAttente => 'En attente';
+
+  @override
+  String get racEnCours => 'En cours';
+
+  @override
+  String get racEnRetard => 'En retard';
+
+  @override
+  String get racEnRupture => 'En rupture';
+
+  @override
+  String get racEntrees => 'Entrées';
+
+  @override
+  String get racEspeces => 'Espèces';
+
+  @override
+  String get racExpirentSept => 'Expirent sous 7 j';
+
+  @override
+  String get racExpirentTrente => 'Expirent sous 30 j';
+
+  @override
+  String get racExpires => 'Expirés';
+
+  @override
+  String get racFicheIncomplete => 'Sans code-barres ou photo';
+
+  @override
+  String get racFournisseurFrequent => 'Fournisseur le plus fréquent';
+
+  @override
+  String get racInactifs => 'Inactifs (90 j)';
+
+  @override
+  String get racInventaires => 'Ajustements / inventaires';
+
+  @override
+  String get racJamaisConnectes => 'Jamais connectés';
+
+  @override
+  String get racLiesCommande => 'Liés à une commande';
+
+  @override
+  String get racLivrees => 'Livrées';
+
+  @override
+  String get racMargeFaible => 'Marge faible (< 10 %)';
+
+  @override
+  String get racMesActions => 'Mes actions';
+
+  @override
+  String get racMesVentes => 'Mes ventes';
+
+  @override
+  String get racMobileIa => 'Mobile / IA';
+
+  @override
+  String get racModifications => 'Modifications';
+
+  @override
+  String get racNissabAtteint => 'Nissab atteint';
+
+  @override
+  String get racNonRemisEnStock => 'Non remis en stock';
+
+  @override
+  String get racNonSoldees => 'Non soldées';
+
+  @override
+  String get racNouveaux => 'Nouveaux (30 j)';
+
+  @override
+  String get racOnLeurDoit => 'On leur doit';
+
+  @override
+  String get racOuvertesPlus24h => 'Ouvertes depuis + 24 h';
+
+  @override
+  String get racPartiellementLivrees => 'Partiellement livrées';
+
+  @override
+  String get racPartiellementRecues => 'Partiellement reçues';
+
+  @override
+  String get racPerimes => 'Périmés';
+
+  @override
+  String get racPlusChers => 'Plus chers';
+
+  @override
+  String get racPlusDePoints => 'Plus de points';
+
+  @override
+  String get racPlusGrosCredits => 'Plus gros crédits';
+
+  @override
+  String get racPlusGrosMontants => 'Plus gros montants';
+
+  @override
+  String get racPlusGrosStock => 'Plus gros stock';
+
+  @override
+  String get racPlusGrosVolume => 'Plus gros volume d\'achat';
+
+  @override
+  String get racPlusGrosseValeur => 'Plus grosse valeur';
+
+  @override
+  String get racPlusGrosseValeurPerdue => 'Plus grosse valeur perdue';
+
+  @override
+  String get racPlusGrossesDettes => 'Plus grosses dettes';
+
+  @override
+  String get racPlusRecents => 'Plus récents';
+
+  @override
+  String get racRecues => 'Reçues';
+
+  @override
+  String get racRemisEnStock => 'Remis en stock';
+
+  @override
+  String get racRolesSysteme => 'Rôles système';
+
+  @override
+  String get racSansFournisseur => 'Sans fournisseur';
+
+  @override
+  String get racSansUtilisateur => 'Sans utilisateur';
+
+  @override
+  String get racSessionsOuvertes => 'Sessions ouvertes';
+
+  @override
+  String get racSorties => 'Sorties';
+
+  @override
+  String get racSousSeuil => 'Sous le seuil';
+
+  @override
+  String get racStockNegatif => 'Stock négatif';
+
+  @override
+  String get racSuppressionsAnnulations => 'Suppressions / annulations';
+
+  @override
+  String get racTransferts => 'Transferts';
+
+  @override
+  String get racValidees => 'Validées';
+
+  @override
+  String get racValides => 'Validés';
+
+  @override
+  String get racVentesCaisse => 'Ventes et caisse';
+
+  @override
+  String get racVoitPrixAchat => 'Voit les prix d\'achat';
+
+  @override
+  String get prdTailleSaisieLibre => 'Saisie libre';
+
+  @override
+  String get prdTailleIndice => 'Ex. 42, XL, 750 ml';
+
+  @override
+  String get posRaccourciPlus => 'Quantité +1 sur la ligne sélectionnée';
+
+  @override
+  String get posRaccourciMoins => 'Quantité −1 sur la ligne sélectionnée';
+
+  @override
+  String get posRaccourciHaut => 'Ligne précédente du panier';
+
+  @override
+  String get posRaccourciBas => 'Ligne suivante du panier';
+
+  @override
+  String get pmGrpRaccourcis => 'Raccourcis clavier';
+
+  @override
+  String get pmRaccourcisTitre => 'Raccourcis clavier de la caisse';
+
+  @override
+  String get pmRaccourcisInfo =>
+      'Une seule touche par action, et chaque touche ne sert qu’à une action. Cliquez sur une touche pour la changer.';
+
+  @override
+  String get pmRaccourcisAdminSeul => 'Seul l’administrateur peut modifier les raccourcis.';
+
+  @override
+  String get pmRaccourcisDefaut => 'Rétablir les touches par défaut';
+
+  @override
+  String pmRaccourciRetablir(String touche) {
+    return 'Touche par défaut : $touche';
+  }
+
+  @override
+  String get pmRaccourciChanger => 'Changer la touche';
+
+  @override
+  String get pmRaccourciCapture => 'Appuyez sur la nouvelle touche (avec Ctrl, Maj ou Alt si besoin).';
+
+  @override
+  String get pmRaccourciAttente => 'En attente d’une touche…';
+
+  @override
+  String get pmRaccourciInterdit =>
+      'Cette touche est réservée (saisie, validation ou Windows) : choisissez-en une autre.';
+
+  @override
+  String pmRaccourciDejaUtilise(String action) {
+    return 'Touche déjà utilisée par « $action ».';
+  }
+
+  @override
+  String get pmRaccourciEchanger => 'Échanger les touches';
+
+  @override
+  String get pmRaccourciInvalide => 'Raccourcis clavier : une touche est interdite ou utilisée par deux actions.';
+
+  @override
+  String get pmRaccourciLettres => 'Les lettres et chiffres seuls n’agissent que hors d’un champ de saisie.';
 }

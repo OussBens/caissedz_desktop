@@ -1611,12 +1611,6 @@ abstract class AppLocalizations {
   /// **'Retirer la ligne sélectionnée'**
   String get posRaccourciSuppr;
 
-  /// No description provided for @posRaccourciPlusMoins.
-  ///
-  /// In fr, this message translates to:
-  /// **'Quantité +1 / −1 sur la ligne sélectionnée'**
-  String get posRaccourciPlusMoins;
-
   /// No description provided for @posVendreNombre.
   ///
   /// In fr, this message translates to:
@@ -4736,6 +4730,12 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Situation'**
   String get situationOnglet;
+
+  /// No description provided for @notificationsOnglet.
+  ///
+  /// In fr, this message translates to:
+  /// **'Notifications'**
+  String get notificationsOnglet;
 
   /// No description provided for @tableauBordJour.
   ///
@@ -15012,13 +15012,13 @@ abstract class AppLocalizations {
   /// No description provided for @mobileRevoquer.
   ///
   /// In fr, this message translates to:
-  /// **'Révoquer'**
+  /// **'Déconnecter'**
   String get mobileRevoquer;
 
   /// No description provided for @mobileRevoquerTitre.
   ///
   /// In fr, this message translates to:
-  /// **'Révoquer « {nom} » ?'**
+  /// **'Déconnecter « {nom} » ?'**
   String mobileRevoquerTitre(String nom);
 
   /// No description provided for @mobileRevoquerMessage.
@@ -16496,6 +16496,654 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Ajouter des produits'**
   String get ventesAjouterProduits;
+
+  /// No description provided for @dsTriDefaut.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tri : par défaut'**
+  String get dsTriDefaut;
+
+  /// No description provided for @dsTriPar.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tri : {colonne}'**
+  String dsTriPar(String colonne);
+
+  /// No description provided for @dsTriCroissant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ordre croissant'**
+  String get dsTriCroissant;
+
+  /// No description provided for @dsTriDecroissant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ordre décroissant'**
+  String get dsTriDecroissant;
+
+  /// No description provided for @racACredit.
+  ///
+  /// In fr, this message translates to:
+  /// **'À crédit'**
+  String get racACredit;
+
+  /// No description provided for @racATransformer.
+  ///
+  /// In fr, this message translates to:
+  /// **'À transformer'**
+  String get racATransformer;
+
+  /// No description provided for @racAbsents30.
+  ///
+  /// In fr, this message translates to:
+  /// **'Absents depuis 30 j'**
+  String get racAbsents30;
+
+  /// No description provided for @racAcceptes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Acceptés'**
+  String get racAcceptes;
+
+  /// No description provided for @racAccesMobile.
+  ///
+  /// In fr, this message translates to:
+  /// **'Accès mobile'**
+  String get racAccesMobile;
+
+  /// No description provided for @racActifs.
+  ///
+  /// In fr, this message translates to:
+  /// **'Actifs'**
+  String get racActifs;
+
+  /// No description provided for @racActives.
+  ///
+  /// In fr, this message translates to:
+  /// **'Actives'**
+  String get racActives;
+
+  /// No description provided for @racAdministrateurs.
+  ///
+  /// In fr, this message translates to:
+  /// **'Administrateurs'**
+  String get racAdministrateurs;
+
+  /// No description provided for @racAnneeDerniere.
+  ///
+  /// In fr, this message translates to:
+  /// **'Année dernière'**
+  String get racAnneeDerniere;
+
+  /// No description provided for @racAnnulees.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annulées'**
+  String get racAnnulees;
+
+  /// No description provided for @racAnnules.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annulés'**
+  String get racAnnules;
+
+  /// No description provided for @racAttendues.
+  ///
+  /// In fr, this message translates to:
+  /// **'Attendues'**
+  String get racAttendues;
+
+  /// No description provided for @racAvecCredit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Avec crédit'**
+  String get racAvecCredit;
+
+  /// No description provided for @racAvecEcart.
+  ///
+  /// In fr, this message translates to:
+  /// **'Avec écart'**
+  String get racAvecEcart;
+
+  /// No description provided for @racAvecRupture.
+  ///
+  /// In fr, this message translates to:
+  /// **'Avec produits en rupture'**
+  String get racAvecRupture;
+
+  /// No description provided for @racAvecUtilisateurs.
+  ///
+  /// In fr, this message translates to:
+  /// **'Avec utilisateurs'**
+  String get racAvecUtilisateurs;
+
+  /// No description provided for @racBrouillons.
+  ///
+  /// In fr, this message translates to:
+  /// **'Brouillons'**
+  String get racBrouillons;
+
+  /// No description provided for @racCassePerte.
+  ///
+  /// In fr, this message translates to:
+  /// **'Casse / perte'**
+  String get racCassePerte;
+
+  /// No description provided for @racCetteAnnee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette année'**
+  String get racCetteAnnee;
+
+  /// No description provided for @racChequeVirement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chèque / virement'**
+  String get racChequeVirement;
+
+  /// No description provided for @racClotureesAujourdhui.
+  ///
+  /// In fr, this message translates to:
+  /// **'Clôturées aujourd\'hui'**
+  String get racClotureesAujourdhui;
+
+  /// No description provided for @racCommandees.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commandées'**
+  String get racCommandees;
+
+  /// No description provided for @racConnexions.
+  ///
+  /// In fr, this message translates to:
+  /// **'Connexions'**
+  String get racConnexions;
+
+  /// No description provided for @racConsommationInterne.
+  ///
+  /// In fr, this message translates to:
+  /// **'Consommation interne'**
+  String get racConsommationInterne;
+
+  /// No description provided for @racCoutReassort.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plus gros réassort'**
+  String get racCoutReassort;
+
+  /// No description provided for @racCreations.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créations'**
+  String get racCreations;
+
+  /// No description provided for @racDejaExpires.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déjà expirés'**
+  String get racDejaExpires;
+
+  /// No description provided for @racDesactivees.
+  ///
+  /// In fr, this message translates to:
+  /// **'Désactivées'**
+  String get racDesactivees;
+
+  /// No description provided for @racDesactives.
+  ///
+  /// In fr, this message translates to:
+  /// **'Désactivés'**
+  String get racDesactives;
+
+  /// No description provided for @racEnAttente.
+  ///
+  /// In fr, this message translates to:
+  /// **'En attente'**
+  String get racEnAttente;
+
+  /// No description provided for @racEnCours.
+  ///
+  /// In fr, this message translates to:
+  /// **'En cours'**
+  String get racEnCours;
+
+  /// No description provided for @racEnRetard.
+  ///
+  /// In fr, this message translates to:
+  /// **'En retard'**
+  String get racEnRetard;
+
+  /// No description provided for @racEnRupture.
+  ///
+  /// In fr, this message translates to:
+  /// **'En rupture'**
+  String get racEnRupture;
+
+  /// No description provided for @racEntrees.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrées'**
+  String get racEntrees;
+
+  /// No description provided for @racEspeces.
+  ///
+  /// In fr, this message translates to:
+  /// **'Espèces'**
+  String get racEspeces;
+
+  /// No description provided for @racExpirentSept.
+  ///
+  /// In fr, this message translates to:
+  /// **'Expirent sous 7 j'**
+  String get racExpirentSept;
+
+  /// No description provided for @racExpirentTrente.
+  ///
+  /// In fr, this message translates to:
+  /// **'Expirent sous 30 j'**
+  String get racExpirentTrente;
+
+  /// No description provided for @racExpires.
+  ///
+  /// In fr, this message translates to:
+  /// **'Expirés'**
+  String get racExpires;
+
+  /// No description provided for @racFicheIncomplete.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sans code-barres ou photo'**
+  String get racFicheIncomplete;
+
+  /// No description provided for @racFournisseurFrequent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fournisseur le plus fréquent'**
+  String get racFournisseurFrequent;
+
+  /// No description provided for @racInactifs.
+  ///
+  /// In fr, this message translates to:
+  /// **'Inactifs (90 j)'**
+  String get racInactifs;
+
+  /// No description provided for @racInventaires.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajustements / inventaires'**
+  String get racInventaires;
+
+  /// No description provided for @racJamaisConnectes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Jamais connectés'**
+  String get racJamaisConnectes;
+
+  /// No description provided for @racLiesCommande.
+  ///
+  /// In fr, this message translates to:
+  /// **'Liés à une commande'**
+  String get racLiesCommande;
+
+  /// No description provided for @racLivrees.
+  ///
+  /// In fr, this message translates to:
+  /// **'Livrées'**
+  String get racLivrees;
+
+  /// No description provided for @racMargeFaible.
+  ///
+  /// In fr, this message translates to:
+  /// **'Marge faible (< 10 %)'**
+  String get racMargeFaible;
+
+  /// No description provided for @racMesActions.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mes actions'**
+  String get racMesActions;
+
+  /// No description provided for @racMesVentes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mes ventes'**
+  String get racMesVentes;
+
+  /// No description provided for @racMobileIa.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mobile / IA'**
+  String get racMobileIa;
+
+  /// No description provided for @racModifications.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifications'**
+  String get racModifications;
+
+  /// No description provided for @racNissabAtteint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nissab atteint'**
+  String get racNissabAtteint;
+
+  /// No description provided for @racNonRemisEnStock.
+  ///
+  /// In fr, this message translates to:
+  /// **'Non remis en stock'**
+  String get racNonRemisEnStock;
+
+  /// No description provided for @racNonSoldees.
+  ///
+  /// In fr, this message translates to:
+  /// **'Non soldées'**
+  String get racNonSoldees;
+
+  /// No description provided for @racNouveaux.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveaux (30 j)'**
+  String get racNouveaux;
+
+  /// No description provided for @racOnLeurDoit.
+  ///
+  /// In fr, this message translates to:
+  /// **'On leur doit'**
+  String get racOnLeurDoit;
+
+  /// No description provided for @racOuvertesPlus24h.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouvertes depuis + 24 h'**
+  String get racOuvertesPlus24h;
+
+  /// No description provided for @racPartiellementLivrees.
+  ///
+  /// In fr, this message translates to:
+  /// **'Partiellement livrées'**
+  String get racPartiellementLivrees;
+
+  /// No description provided for @racPartiellementRecues.
+  ///
+  /// In fr, this message translates to:
+  /// **'Partiellement reçues'**
+  String get racPartiellementRecues;
+
+  /// No description provided for @racPerimes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Périmés'**
+  String get racPerimes;
+
+  /// No description provided for @racPlusChers.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plus chers'**
+  String get racPlusChers;
+
+  /// No description provided for @racPlusDePoints.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plus de points'**
+  String get racPlusDePoints;
+
+  /// No description provided for @racPlusGrosCredits.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plus gros crédits'**
+  String get racPlusGrosCredits;
+
+  /// No description provided for @racPlusGrosMontants.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plus gros montants'**
+  String get racPlusGrosMontants;
+
+  /// No description provided for @racPlusGrosStock.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plus gros stock'**
+  String get racPlusGrosStock;
+
+  /// No description provided for @racPlusGrosVolume.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plus gros volume d\'achat'**
+  String get racPlusGrosVolume;
+
+  /// No description provided for @racPlusGrosseValeur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plus grosse valeur'**
+  String get racPlusGrosseValeur;
+
+  /// No description provided for @racPlusGrosseValeurPerdue.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plus grosse valeur perdue'**
+  String get racPlusGrosseValeurPerdue;
+
+  /// No description provided for @racPlusGrossesDettes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plus grosses dettes'**
+  String get racPlusGrossesDettes;
+
+  /// No description provided for @racPlusRecents.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plus récents'**
+  String get racPlusRecents;
+
+  /// No description provided for @racRecues.
+  ///
+  /// In fr, this message translates to:
+  /// **'Reçues'**
+  String get racRecues;
+
+  /// No description provided for @racRemisEnStock.
+  ///
+  /// In fr, this message translates to:
+  /// **'Remis en stock'**
+  String get racRemisEnStock;
+
+  /// No description provided for @racRolesSysteme.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rôles système'**
+  String get racRolesSysteme;
+
+  /// No description provided for @racSansFournisseur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sans fournisseur'**
+  String get racSansFournisseur;
+
+  /// No description provided for @racSansUtilisateur.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sans utilisateur'**
+  String get racSansUtilisateur;
+
+  /// No description provided for @racSessionsOuvertes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sessions ouvertes'**
+  String get racSessionsOuvertes;
+
+  /// No description provided for @racSorties.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sorties'**
+  String get racSorties;
+
+  /// No description provided for @racSousSeuil.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sous le seuil'**
+  String get racSousSeuil;
+
+  /// No description provided for @racStockNegatif.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock négatif'**
+  String get racStockNegatif;
+
+  /// No description provided for @racSuppressionsAnnulations.
+  ///
+  /// In fr, this message translates to:
+  /// **'Suppressions / annulations'**
+  String get racSuppressionsAnnulations;
+
+  /// No description provided for @racTransferts.
+  ///
+  /// In fr, this message translates to:
+  /// **'Transferts'**
+  String get racTransferts;
+
+  /// No description provided for @racValidees.
+  ///
+  /// In fr, this message translates to:
+  /// **'Validées'**
+  String get racValidees;
+
+  /// No description provided for @racValides.
+  ///
+  /// In fr, this message translates to:
+  /// **'Validés'**
+  String get racValides;
+
+  /// No description provided for @racVentesCaisse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ventes et caisse'**
+  String get racVentesCaisse;
+
+  /// No description provided for @racVoitPrixAchat.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voit les prix d\'achat'**
+  String get racVoitPrixAchat;
+
+  /// No description provided for @prdTailleSaisieLibre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Saisie libre'**
+  String get prdTailleSaisieLibre;
+
+  /// No description provided for @prdTailleIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex. 42, XL, 750 ml'**
+  String get prdTailleIndice;
+
+  /// No description provided for @posRaccourciPlus.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quantité +1 sur la ligne sélectionnée'**
+  String get posRaccourciPlus;
+
+  /// No description provided for @posRaccourciMoins.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quantité −1 sur la ligne sélectionnée'**
+  String get posRaccourciMoins;
+
+  /// No description provided for @posRaccourciHaut.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ligne précédente du panier'**
+  String get posRaccourciHaut;
+
+  /// No description provided for @posRaccourciBas.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ligne suivante du panier'**
+  String get posRaccourciBas;
+
+  /// No description provided for @pmGrpRaccourcis.
+  ///
+  /// In fr, this message translates to:
+  /// **'Raccourcis clavier'**
+  String get pmGrpRaccourcis;
+
+  /// No description provided for @pmRaccourcisTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Raccourcis clavier de la caisse'**
+  String get pmRaccourcisTitre;
+
+  /// No description provided for @pmRaccourcisInfo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une seule touche par action, et chaque touche ne sert qu’à une action. Cliquez sur une touche pour la changer.'**
+  String get pmRaccourcisInfo;
+
+  /// No description provided for @pmRaccourcisAdminSeul.
+  ///
+  /// In fr, this message translates to:
+  /// **'Seul l’administrateur peut modifier les raccourcis.'**
+  String get pmRaccourcisAdminSeul;
+
+  /// No description provided for @pmRaccourcisDefaut.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rétablir les touches par défaut'**
+  String get pmRaccourcisDefaut;
+
+  /// No description provided for @pmRaccourciRetablir.
+  ///
+  /// In fr, this message translates to:
+  /// **'Touche par défaut : {touche}'**
+  String pmRaccourciRetablir(String touche);
+
+  /// No description provided for @pmRaccourciChanger.
+  ///
+  /// In fr, this message translates to:
+  /// **'Changer la touche'**
+  String get pmRaccourciChanger;
+
+  /// No description provided for @pmRaccourciCapture.
+  ///
+  /// In fr, this message translates to:
+  /// **'Appuyez sur la nouvelle touche (avec Ctrl, Maj ou Alt si besoin).'**
+  String get pmRaccourciCapture;
+
+  /// No description provided for @pmRaccourciAttente.
+  ///
+  /// In fr, this message translates to:
+  /// **'En attente d’une touche…'**
+  String get pmRaccourciAttente;
+
+  /// No description provided for @pmRaccourciInterdit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette touche est réservée (saisie, validation ou Windows) : choisissez-en une autre.'**
+  String get pmRaccourciInterdit;
+
+  /// No description provided for @pmRaccourciDejaUtilise.
+  ///
+  /// In fr, this message translates to:
+  /// **'Touche déjà utilisée par « {action} ».'**
+  String pmRaccourciDejaUtilise(String action);
+
+  /// No description provided for @pmRaccourciEchanger.
+  ///
+  /// In fr, this message translates to:
+  /// **'Échanger les touches'**
+  String get pmRaccourciEchanger;
+
+  /// No description provided for @pmRaccourciInvalide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Raccourcis clavier : une touche est interdite ou utilisée par deux actions.'**
+  String get pmRaccourciInvalide;
+
+  /// No description provided for @pmRaccourciLettres.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les lettres et chiffres seuls n’agissent que hors d’un champ de saisie.'**
+  String get pmRaccourciLettres;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

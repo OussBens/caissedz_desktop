@@ -802,9 +802,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get posRaccourciSuppr => 'إزالة السطر المحدد';
 
   @override
-  String get posRaccourciPlusMoins => 'الكمية +1 / −1 على السطر المحدد';
-
-  @override
   String get posVendreNombre => 'البيع بالقطعة';
 
   @override
@@ -2435,6 +2432,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get situationOnglet => 'الوضعية';
+
+  @override
+  String get notificationsOnglet => 'الإشعارات';
 
   @override
   String get tableauBordJour => 'يوم';
@@ -7941,11 +7941,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get mobileOuvrirSmartScan => 'فتح Smart Scan';
 
   @override
-  String get mobileRevoquer => 'إلغاء الاقتران';
+  String get mobileRevoquer => 'قطع الاتصال';
 
   @override
   String mobileRevoquerTitre(String nom) {
-    return 'إلغاء اقتران « $nom »؟';
+    return 'قطع اتصال « $nom »؟';
   }
 
   @override
@@ -8807,4 +8807,334 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get ventesAjouterProduits => 'إضافة منتجات';
+
+  @override
+  String get dsTriDefaut => 'الترتيب: افتراضي';
+
+  @override
+  String dsTriPar(String colonne) {
+    return 'الترتيب: $colonne';
+  }
+
+  @override
+  String get dsTriCroissant => 'ترتيب تصاعدي';
+
+  @override
+  String get dsTriDecroissant => 'ترتيب تنازلي';
+
+  @override
+  String get racACredit => 'بالدين';
+
+  @override
+  String get racATransformer => 'للتحويل';
+
+  @override
+  String get racAbsents30 => 'غائبون منذ 30 يوما';
+
+  @override
+  String get racAcceptes => 'مقبولة';
+
+  @override
+  String get racAccesMobile => 'الوصول بالهاتف';
+
+  @override
+  String get racActifs => 'نشطة';
+
+  @override
+  String get racActives => 'نشطة';
+
+  @override
+  String get racAdministrateurs => 'المدراء';
+
+  @override
+  String get racAnneeDerniere => 'السنة الماضية';
+
+  @override
+  String get racAnnulees => 'ملغاة';
+
+  @override
+  String get racAnnules => 'ملغاة';
+
+  @override
+  String get racAttendues => 'منتظرة';
+
+  @override
+  String get racAvecCredit => 'عليهم دين';
+
+  @override
+  String get racAvecEcart => 'بفارق';
+
+  @override
+  String get racAvecRupture => 'بها منتجات نافدة';
+
+  @override
+  String get racAvecUtilisateurs => 'بمستخدمين';
+
+  @override
+  String get racBrouillons => 'مسودات';
+
+  @override
+  String get racCassePerte => 'كسر / ضياع';
+
+  @override
+  String get racCetteAnnee => 'هذه السنة';
+
+  @override
+  String get racChequeVirement => 'صك / تحويل';
+
+  @override
+  String get racClotureesAujourdhui => 'مغلقة اليوم';
+
+  @override
+  String get racCommandees => 'مطلوبة';
+
+  @override
+  String get racConnexions => 'تسجيلات الدخول';
+
+  @override
+  String get racConsommationInterne => 'استهلاك داخلي';
+
+  @override
+  String get racCoutReassort => 'أكبر تكلفة تموين';
+
+  @override
+  String get racCreations => 'إنشاءات';
+
+  @override
+  String get racDejaExpires => 'منتهية الصلاحية';
+
+  @override
+  String get racDesactivees => 'معطلة';
+
+  @override
+  String get racDesactives => 'معطلة';
+
+  @override
+  String get racEnAttente => 'في الانتظار';
+
+  @override
+  String get racEnCours => 'قيد التنفيذ';
+
+  @override
+  String get racEnRetard => 'متأخرة';
+
+  @override
+  String get racEnRupture => 'نفاد المخزون';
+
+  @override
+  String get racEntrees => 'إدخالات';
+
+  @override
+  String get racEspeces => 'نقدا';
+
+  @override
+  String get racExpirentSept => 'تنتهي خلال 7 أيام';
+
+  @override
+  String get racExpirentTrente => 'تنتهي خلال 30 يوما';
+
+  @override
+  String get racExpires => 'منتهية';
+
+  @override
+  String get racFicheIncomplete => 'بدون باركود أو صورة';
+
+  @override
+  String get racFournisseurFrequent => 'المورد الأكثر تكرارا';
+
+  @override
+  String get racInactifs => 'غير نشطين (90 يوما)';
+
+  @override
+  String get racInventaires => 'تعديلات / جرد';
+
+  @override
+  String get racJamaisConnectes => 'لم يتصلوا أبدا';
+
+  @override
+  String get racLiesCommande => 'مرتبطة بطلبية';
+
+  @override
+  String get racLivrees => 'مسلّمة';
+
+  @override
+  String get racMargeFaible => 'هامش ضعيف (< 10 %)';
+
+  @override
+  String get racMesActions => 'عملياتي';
+
+  @override
+  String get racMesVentes => 'مبيعاتي';
+
+  @override
+  String get racMobileIa => 'الهاتف / الذكاء الاصطناعي';
+
+  @override
+  String get racModifications => 'تعديلات';
+
+  @override
+  String get racNissabAtteint => 'بلغ النصاب';
+
+  @override
+  String get racNonRemisEnStock => 'لم تُرجع للمخزون';
+
+  @override
+  String get racNonSoldees => 'غير مسددة';
+
+  @override
+  String get racNouveaux => 'جدد (30 يوما)';
+
+  @override
+  String get racOnLeurDoit => 'ندين لهم';
+
+  @override
+  String get racOuvertesPlus24h => 'مفتوحة منذ أكثر من 24 سا';
+
+  @override
+  String get racPartiellementLivrees => 'مسلّمة جزئيا';
+
+  @override
+  String get racPartiellementRecues => 'مستلمة جزئيا';
+
+  @override
+  String get racPerimes => 'منتهية الصلاحية';
+
+  @override
+  String get racPlusChers => 'الأغلى';
+
+  @override
+  String get racPlusDePoints => 'الأكثر نقاطا';
+
+  @override
+  String get racPlusGrosCredits => 'أكبر الديون';
+
+  @override
+  String get racPlusGrosMontants => 'أكبر المبالغ';
+
+  @override
+  String get racPlusGrosStock => 'أكبر مخزون';
+
+  @override
+  String get racPlusGrosVolume => 'أكبر حجم شراء';
+
+  @override
+  String get racPlusGrosseValeur => 'أكبر قيمة';
+
+  @override
+  String get racPlusGrosseValeurPerdue => 'أكبر قيمة ضائعة';
+
+  @override
+  String get racPlusGrossesDettes => 'أكبر الديون';
+
+  @override
+  String get racPlusRecents => 'الأحدث';
+
+  @override
+  String get racRecues => 'مستلمة';
+
+  @override
+  String get racRemisEnStock => 'أُرجعت للمخزون';
+
+  @override
+  String get racRolesSysteme => 'أدوار النظام';
+
+  @override
+  String get racSansFournisseur => 'بدون مورد';
+
+  @override
+  String get racSansUtilisateur => 'بدون مستخدم';
+
+  @override
+  String get racSessionsOuvertes => 'جلسات مفتوحة';
+
+  @override
+  String get racSorties => 'إخراجات';
+
+  @override
+  String get racSousSeuil => 'تحت الحد';
+
+  @override
+  String get racStockNegatif => 'مخزون سالب';
+
+  @override
+  String get racSuppressionsAnnulations => 'حذف / إلغاء';
+
+  @override
+  String get racTransferts => 'تحويلات';
+
+  @override
+  String get racValidees => 'مؤكدة';
+
+  @override
+  String get racValides => 'مؤكدة';
+
+  @override
+  String get racVentesCaisse => 'المبيعات والصندوق';
+
+  @override
+  String get racVoitPrixAchat => 'يرى أسعار الشراء';
+
+  @override
+  String get prdTailleSaisieLibre => 'إدخال حر';
+
+  @override
+  String get prdTailleIndice => 'مثال: 42، XL، 750 مل';
+
+  @override
+  String get posRaccourciPlus => 'الكمية +1 في السطر المحدد';
+
+  @override
+  String get posRaccourciMoins => 'الكمية −1 في السطر المحدد';
+
+  @override
+  String get posRaccourciHaut => 'السطر السابق في السلة';
+
+  @override
+  String get posRaccourciBas => 'السطر التالي في السلة';
+
+  @override
+  String get pmGrpRaccourcis => 'اختصارات لوحة المفاتيح';
+
+  @override
+  String get pmRaccourcisTitre => 'اختصارات لوحة المفاتيح في الصندوق';
+
+  @override
+  String get pmRaccourcisInfo => 'مفتاح واحد لكل إجراء، وكل مفتاح لإجراء واحد فقط. انقر على مفتاح لتغييره.';
+
+  @override
+  String get pmRaccourcisAdminSeul => 'المسؤول وحده يمكنه تعديل الاختصارات.';
+
+  @override
+  String get pmRaccourcisDefaut => 'استعادة المفاتيح الافتراضية';
+
+  @override
+  String pmRaccourciRetablir(String touche) {
+    return 'المفتاح الافتراضي: $touche';
+  }
+
+  @override
+  String get pmRaccourciChanger => 'تغيير المفتاح';
+
+  @override
+  String get pmRaccourciCapture => 'اضغط على المفتاح الجديد (مع Ctrl أو Shift أو Alt عند الحاجة).';
+
+  @override
+  String get pmRaccourciAttente => 'في انتظار مفتاح…';
+
+  @override
+  String get pmRaccourciInterdit => 'هذا المفتاح محجوز (الكتابة أو التأكيد أو Windows): اختر مفتاحًا آخر.';
+
+  @override
+  String pmRaccourciDejaUtilise(String action) {
+    return 'المفتاح مستخدم بالفعل في « $action ».';
+  }
+
+  @override
+  String get pmRaccourciEchanger => 'تبديل المفاتيح';
+
+  @override
+  String get pmRaccourciInvalide => 'اختصارات لوحة المفاتيح: مفتاح محظور أو مستخدم في إجراءين.';
+
+  @override
+  String get pmRaccourciLettres => 'الحروف والأرقام وحدها لا تعمل إلا خارج حقل الإدخال.';
 }

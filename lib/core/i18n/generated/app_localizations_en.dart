@@ -805,9 +805,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get posRaccourciSuppr => 'Remove selected line';
 
   @override
-  String get posRaccourciPlusMoins => 'Quantity +1 / −1 on the selected line';
-
-  @override
   String get posVendreNombre => 'Sell by piece';
 
   @override
@@ -2439,6 +2436,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get situationOnglet => 'Statements';
+
+  @override
+  String get notificationsOnglet => 'Notifications';
 
   @override
   String get tableauBordJour => 'Day';
@@ -7959,11 +7959,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mobileOuvrirSmartScan => 'Open Smart Scan';
 
   @override
-  String get mobileRevoquer => 'Revoke';
+  String get mobileRevoquer => 'Disconnect';
 
   @override
   String mobileRevoquerTitre(String nom) {
-    return 'Revoke “$nom”?';
+    return 'Disconnect “$nom”?';
   }
 
   @override
@@ -8834,4 +8834,335 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ventesAjouterProduits => 'Add products';
+
+  @override
+  String get dsTriDefaut => 'Sort: default';
+
+  @override
+  String dsTriPar(String colonne) {
+    return 'Sort: $colonne';
+  }
+
+  @override
+  String get dsTriCroissant => 'Ascending';
+
+  @override
+  String get dsTriDecroissant => 'Descending';
+
+  @override
+  String get racACredit => 'On credit';
+
+  @override
+  String get racATransformer => 'To convert';
+
+  @override
+  String get racAbsents30 => 'Away for 30 days';
+
+  @override
+  String get racAcceptes => 'Accepted';
+
+  @override
+  String get racAccesMobile => 'Mobile access';
+
+  @override
+  String get racActifs => 'Active';
+
+  @override
+  String get racActives => 'Active';
+
+  @override
+  String get racAdministrateurs => 'Administrators';
+
+  @override
+  String get racAnneeDerniere => 'Last year';
+
+  @override
+  String get racAnnulees => 'Cancelled';
+
+  @override
+  String get racAnnules => 'Cancelled';
+
+  @override
+  String get racAttendues => 'Expected';
+
+  @override
+  String get racAvecCredit => 'With credit';
+
+  @override
+  String get racAvecEcart => 'With discrepancy';
+
+  @override
+  String get racAvecRupture => 'With out-of-stock items';
+
+  @override
+  String get racAvecUtilisateurs => 'With users';
+
+  @override
+  String get racBrouillons => 'Drafts';
+
+  @override
+  String get racCassePerte => 'Breakage / loss';
+
+  @override
+  String get racCetteAnnee => 'This year';
+
+  @override
+  String get racChequeVirement => 'Cheque / transfer';
+
+  @override
+  String get racClotureesAujourdhui => 'Closed today';
+
+  @override
+  String get racCommandees => 'Ordered';
+
+  @override
+  String get racConnexions => 'Sign-ins';
+
+  @override
+  String get racConsommationInterne => 'Internal use';
+
+  @override
+  String get racCoutReassort => 'Largest restock cost';
+
+  @override
+  String get racCreations => 'Creations';
+
+  @override
+  String get racDejaExpires => 'Already expired';
+
+  @override
+  String get racDesactivees => 'Disabled';
+
+  @override
+  String get racDesactives => 'Disabled';
+
+  @override
+  String get racEnAttente => 'Pending';
+
+  @override
+  String get racEnCours => 'In progress';
+
+  @override
+  String get racEnRetard => 'Late';
+
+  @override
+  String get racEnRupture => 'Out of stock';
+
+  @override
+  String get racEntrees => 'Stock in';
+
+  @override
+  String get racEspeces => 'Cash';
+
+  @override
+  String get racExpirentSept => 'Expire within 7 days';
+
+  @override
+  String get racExpirentTrente => 'Expire within 30 days';
+
+  @override
+  String get racExpires => 'Expired';
+
+  @override
+  String get racFicheIncomplete => 'No barcode or photo';
+
+  @override
+  String get racFournisseurFrequent => 'Most frequent supplier';
+
+  @override
+  String get racInactifs => 'Inactive (90 days)';
+
+  @override
+  String get racInventaires => 'Adjustments / counts';
+
+  @override
+  String get racJamaisConnectes => 'Never signed in';
+
+  @override
+  String get racLiesCommande => 'Linked to an order';
+
+  @override
+  String get racLivrees => 'Delivered';
+
+  @override
+  String get racMargeFaible => 'Low margin (< 10%)';
+
+  @override
+  String get racMesActions => 'My actions';
+
+  @override
+  String get racMesVentes => 'My sales';
+
+  @override
+  String get racMobileIa => 'Mobile / AI';
+
+  @override
+  String get racModifications => 'Changes';
+
+  @override
+  String get racNissabAtteint => 'Nisab reached';
+
+  @override
+  String get racNonRemisEnStock => 'Not restocked';
+
+  @override
+  String get racNonSoldees => 'Unpaid';
+
+  @override
+  String get racNouveaux => 'New (30 days)';
+
+  @override
+  String get racOnLeurDoit => 'We owe them';
+
+  @override
+  String get racOuvertesPlus24h => 'Open for 24 h+';
+
+  @override
+  String get racPartiellementLivrees => 'Partly delivered';
+
+  @override
+  String get racPartiellementRecues => 'Partly received';
+
+  @override
+  String get racPerimes => 'Expired';
+
+  @override
+  String get racPlusChers => 'Most expensive';
+
+  @override
+  String get racPlusDePoints => 'Most points';
+
+  @override
+  String get racPlusGrosCredits => 'Largest credits';
+
+  @override
+  String get racPlusGrosMontants => 'Largest amounts';
+
+  @override
+  String get racPlusGrosStock => 'Largest stock';
+
+  @override
+  String get racPlusGrosVolume => 'Largest purchase volume';
+
+  @override
+  String get racPlusGrosseValeur => 'Highest value';
+
+  @override
+  String get racPlusGrosseValeurPerdue => 'Highest value lost';
+
+  @override
+  String get racPlusGrossesDettes => 'Largest debts';
+
+  @override
+  String get racPlusRecents => 'Most recent';
+
+  @override
+  String get racRecues => 'Received';
+
+  @override
+  String get racRemisEnStock => 'Restocked';
+
+  @override
+  String get racRolesSysteme => 'System roles';
+
+  @override
+  String get racSansFournisseur => 'No supplier';
+
+  @override
+  String get racSansUtilisateur => 'No users';
+
+  @override
+  String get racSessionsOuvertes => 'Open sessions';
+
+  @override
+  String get racSorties => 'Stock out';
+
+  @override
+  String get racSousSeuil => 'Below threshold';
+
+  @override
+  String get racStockNegatif => 'Negative stock';
+
+  @override
+  String get racSuppressionsAnnulations => 'Deletions / cancellations';
+
+  @override
+  String get racTransferts => 'Transfers';
+
+  @override
+  String get racValidees => 'Confirmed';
+
+  @override
+  String get racValides => 'Confirmed';
+
+  @override
+  String get racVentesCaisse => 'Sales and till';
+
+  @override
+  String get racVoitPrixAchat => 'Sees purchase prices';
+
+  @override
+  String get prdTailleSaisieLibre => 'Free entry';
+
+  @override
+  String get prdTailleIndice => 'E.g. 42, XL, 750 ml';
+
+  @override
+  String get posRaccourciPlus => 'Quantity +1 on the selected line';
+
+  @override
+  String get posRaccourciMoins => 'Quantity −1 on the selected line';
+
+  @override
+  String get posRaccourciHaut => 'Previous cart line';
+
+  @override
+  String get posRaccourciBas => 'Next cart line';
+
+  @override
+  String get pmGrpRaccourcis => 'Keyboard shortcuts';
+
+  @override
+  String get pmRaccourcisTitre => 'Checkout keyboard shortcuts';
+
+  @override
+  String get pmRaccourcisInfo =>
+      'One key per action, and each key is used by one action only. Click a key to change it.';
+
+  @override
+  String get pmRaccourcisAdminSeul => 'Only the administrator can change the shortcuts.';
+
+  @override
+  String get pmRaccourcisDefaut => 'Restore default keys';
+
+  @override
+  String pmRaccourciRetablir(String touche) {
+    return 'Default key: $touche';
+  }
+
+  @override
+  String get pmRaccourciChanger => 'Change the key';
+
+  @override
+  String get pmRaccourciCapture => 'Press the new key (with Ctrl, Shift or Alt if needed).';
+
+  @override
+  String get pmRaccourciAttente => 'Waiting for a key…';
+
+  @override
+  String get pmRaccourciInterdit => 'This key is reserved (typing, confirming or Windows): choose another one.';
+
+  @override
+  String pmRaccourciDejaUtilise(String action) {
+    return 'Key already used by “$action”.';
+  }
+
+  @override
+  String get pmRaccourciEchanger => 'Swap keys';
+
+  @override
+  String get pmRaccourciInvalide => 'Keyboard shortcuts: a key is forbidden or used by two actions.';
+
+  @override
+  String get pmRaccourciLettres => 'Letters and digits alone only work outside an input field.';
 }
