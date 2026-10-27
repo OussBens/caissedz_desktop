@@ -31,7 +31,12 @@ class _Serveur {
     return http.Response(
       jsonEncode({
         'success': true,
-        'data': {'ventes': (j['ventes'] as List).length, 'inconnus': 0, 'crees': (j['produits'] as List).length, 'completes': 0},
+        'data': {
+          'ventes': (j['ventes'] as List).length,
+          'inconnus': 0,
+          'crees': (j['produits'] as List).length,
+          'completes': 0,
+        },
       }),
       200,
     );
@@ -236,7 +241,11 @@ void main() {
       expect(serveur.corps(0).single['confirmations'], [
         {'code_barres': '6130007000015', 'vote': 1},
       ]);
-      expect(await ParametreRepository(base.db).lire(TendanceService.cleVotes), isNull, reason: 'reçu : plus en attente');
+      expect(
+        await ParametreRepository(base.db).lire(TendanceService.cleVotes),
+        isNull,
+        reason: 'reçu : plus en attente',
+      );
       expect(await s.voter('CDZ2610210001', 1), isFalse, reason: 'code interne');
       expect(await s.voter('6130007000015', 2), isFalse);
       expect(serveur.envois, hasLength(1));
@@ -253,7 +262,11 @@ void main() {
         {'code_barres': '6130009000013', 'vote': 1},
       ]);
       expect(await ParametreRepository(base.db).lire(TendanceService.cleVotes), isNull);
-      expect(await _service(base.db, serveur, cle: null).voter('6130007000015', 1), isFalse, reason: 'sans licence : gardé');
+      expect(
+        await _service(base.db, serveur, cle: null).voter('6130007000015', 1),
+        isFalse,
+        reason: 'sans licence : gardé',
+      );
       expect(await ParametreRepository(base.db).lire(TendanceService.cleVotes), isNotNull);
     });
 

@@ -259,7 +259,9 @@ class _CatalogueRayonsDialogState extends ConsumerState<CatalogueRayonsDialog> {
                       dejaTelecharge: _importes.containsKey(r.code),
                       onTap: r.produits == 0
                           ? null
-                          : () => setState(() => _choisis.contains(r.code) ? _choisis.remove(r.code) : _choisis.add(r.code)),
+                          : () => setState(
+                              () => _choisis.contains(r.code) ? _choisis.remove(r.code) : _choisis.add(r.code),
+                            ),
                     ),
                   ),
               ],
@@ -326,7 +328,10 @@ class _CatalogueRayonsDialogState extends ConsumerState<CatalogueRayonsDialog> {
                   child: Text(r.rayon.nom(langue), style: t.bodyStrong, maxLines: 1, overflow: TextOverflow.ellipsis),
                 ),
                 Expanded(
-                  child: DsProgressBar(valeur: r.telecharges.toDouble(), max: r.disponibles == 0 ? 1 : r.disponibles.toDouble()),
+                  child: DsProgressBar(
+                    valeur: r.telecharges.toDouble(),
+                    max: r.disponibles == 0 ? 1 : r.disponibles.toDouble(),
+                  ),
                 ),
                 SizedBox(
                   width: 150,
