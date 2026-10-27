@@ -24,6 +24,11 @@ import '../tableau_bord/alertes_produits_ui.dart';
 Future<void> afficherAlertes(BuildContext context) =>
     afficherDialog<void>(context, builder: (_) => const AlertesDialog());
 
+/// Ouvre une seule alerte produit (onglet Notifications du tableau de bord) : ses produits, leur détail et
+/// l'action proposée sur chaque ligne.
+Future<void> afficherAlerteProduit(BuildContext context, TypeAlerteProduit type) =>
+    afficherDialog<void>(context, builder: (_) => AlertesDialog(type: type));
+
 /// Présentation d'une famille d'alertes (libellés, icônes, actions du DS).
 class _Famille {
   const _Famille({
@@ -109,8 +114,11 @@ _Famille _famille(AppLocalizations l10n, FamilleAlerte f) => switch (f) {
 /// Prix, Qualité, Marché ; seuls les types qui ont des alertes), puis « À surveiller » (bientôt expirés, crédits,
 /// dettes) ; à droite les lignes de l'entrée choisie. Chaque alerte n'y figure qu'une fois : les ruptures sont
 /// l'alerte produit « Rupture sans commande ». « Ne plus afficher aujourd'hui » et lien vers Paramètres.
+/// Avec [type] : cette seule alerte produit, sans la navigation de gauche.
 class AlertesDialog extends ConsumerStatefulWidget {
-  const AlertesDialog({super.key});
+  const AlertesDialog({super.key, this.type});
+
+  final TypeAlerteProduit? type;
 
   @override
   ConsumerState<AlertesDialog> createState() => _AlertesDialogState();
@@ -152,6 +160,24 @@ class _AlertesDialogState extends ConsumerState<AlertesDialog> {
     final l10n = AppLocalizations.of(context);
     final alertes = ref.watch(alertesProvider);
     final produits = ref.watch(alertesProduitsProvider);
+    if (widget.type case final type?) {
+      return DsDialog(
+        key: ValueKey('dialog_alerte_${type.name}'),
+        titre: l10n.notificationsOnglet,
+        iconeData: LucideIcons.bellRing,
+        largeur: 820,
+        actions: [DsButton(libelle: l10n.communFermer, onPressed: _fermer)],
+        contenu: Container(
+          height: 480,
+          clipBehavior: Clip.antiAlias,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: c.borderDefault),
+          ),
+          child: _sectionProduit(context, produits, type),
+        ),
+      );
+    }
     final familles = alertes.familles.toList();
     final types = [
       for (final t in TypeAlerteProduit.values)

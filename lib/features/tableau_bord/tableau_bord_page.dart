@@ -22,6 +22,7 @@ import '../commun/statuts.dart';
 import '../gestion_caisse/gestion_caisse_providers.dart';
 import '../produits/produits_providers.dart';
 import '../rapports/rapports_providers.dart';
+import '../shell/alertes_dialog.dart';
 import '../stock/stock_providers.dart';
 import '../tiers/tiers_providers.dart';
 import 'alertes_produits_providers.dart';
@@ -108,11 +109,11 @@ final tableauBordProvider = FutureProvider.family<DonneesTableauBord, (DateTime,
 /// Mode de période du tableau de bord (`SegmentedControl` Jour / Semaine / Mois / Période).
 enum ModePeriode { jour, semaine, mois, periode }
 
-/// Tableau de bord (§9.14, `DashboardV22`) : onglets Tableau de bord / Situation.
+/// Tableau de bord (§9.14, `DashboardV22`) : onglets Tableau de bord / Situation / Notifications.
 class TableauBordPage extends ConsumerStatefulWidget {
   const TableauBordPage({super.key, this.ongletInitial = 0});
 
-  /// 0 = vue d'ensemble, 1 = Situation.
+  /// 0 = vue d'ensemble, 1 = Situation, 2 = Notifications (alertes produits).
   final int ongletInitial;
 
   @override
@@ -128,7 +129,7 @@ class _TableauBordPageState extends ConsumerState<TableauBordPage> {
   void initState() {
     super.initState();
     // Alertes produits recalculées à l'ouverture du tableau de bord (la Situation les recalcule elle-même).
-    if (widget.ongletInitial == 0) {
+    if (widget.ongletInitial != 1) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) unawaited(ref.read(alertesProduitsProvider.notifier).actualiser());
       });
@@ -194,14 +195,18 @@ class _TableauBordPageState extends ConsumerState<TableauBordPage> {
     final libellePeriode =
         '${DateFormat('dd MMM', locale).format(du)} – ${DateFormat('dd MMM yyyy', locale).format(au)}';
     final donnees = ref.watch(tableauBordProvider(cle)).value;
+    final session = ref.watch(sessionProvider);
+    // Notifications (alertes produits) : avec le module Produits, Stock ou Besoins.
+    final notifications = session != null && ['produits', 'stock', 'besoins'].any(session.peutAcceder);
+    final onglet = !notifications && _onglet == 2 ? 0 : _onglet;
     return PageModule(
       moduleId: 'tableau_bord',
-      onglets: [l10n.tableauBordOnglet, l10n.situationOnglet],
-      comptes: [null, SituationRepository.analyses.length],
-      pointsOnglets: {if (ref.watch(alertesProduitsNouvellesProvider).isNotEmpty) 1},
-      ongletCourant: _onglet,
+      onglets: [l10n.tableauBordOnglet, l10n.situationOnglet, if (notifications) l10n.notificationsOnglet],
+      comptes: [null, SituationRepository.analyses.length, if (notifications) null],
+      pointsOnglets: {if (notifications && ref.watch(alertesProduitsNouvellesProvider).isNotEmpty) 2},
+      ongletCourant: onglet,
       onOnglet: (i) => setState(() => _onglet = i),
-      actions: _onglet == 0
+      actions: onglet == 0
           ? [
               DsSegmentedControl<ModePeriode>(
                 valeur: _mode,
@@ -227,7 +232,11 @@ class _TableauBordPageState extends ConsumerState<TableauBordPage> {
                 ),
             ]
           : const [],
-      child: _onglet == 0 ? _VueEnsemble(donnees: donnees) : const SituationOnglet(),
+      child: switch (onglet) {
+        0 => _VueEnsemble(donnees: donnees),
+        1 => const SituationOnglet(),
+        _ => const _CarteAlertesProduits(),
+      },
     );
   }
 
@@ -250,7 +259,8 @@ class _TableauBordPageState extends ConsumerState<TableauBordPage> {
   );
 }
 
-/// Vue d'ensemble : 6 KPI, 5 graphiques, dernières ventes et ruptures.
+/// Vue d'ensemble : 6 KPI, 5 graphiques, dernières ventes et ruptures (les alertes produits sont dans l'onglet
+/// Notifications).
 class _VueEnsemble extends ConsumerWidget {
   const _VueEnsemble({required this.donnees});
   final DonneesTableauBord? donnees;
@@ -260,9 +270,6 @@ class _VueEnsemble extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final c = context.ds.colors;
     final devise = ref.watch(deviseProvider);
-    final session = ref.watch(sessionProvider);
-    // Alertes produits : avec le module Produits, Stock ou Besoins.
-    final alertesVisibles = session != null && ['produits', 'stock', 'besoins'].any(session.peutAcceder);
     final d = donnees;
     String v(double? x) => x == null ? '—' : f2(x);
     String k(double x) => '${formaterK(x)} $devise';
@@ -356,7 +363,6 @@ class _VueEnsemble extends ConsumerWidget {
                   children: [for (final kpi in kpis.skip(i).take(parLigne)) Expanded(child: kpi)],
                 ),
               ),
-            if (alertesVisibles) const _CarteAlertesProduits(),
             grille(
               [
                 DsCarteGraphique(
@@ -559,8 +565,9 @@ class _VueEnsemble extends ConsumerWidget {
       : enfant;
 }
 
-/// Carte « Alertes produits » : une tuile par type d'alerte (nombre, à traiter, point rouge des nouvelles) ; un
-/// clic ouvre Situation › Alertes produits sur ce type.
+/// Onglet Notifications, carte « Alertes produits » : une tuile par type d'alerte (nombre, à traiter, point rouge
+/// des nouvelles) ; un clic ouvre le dialog de cette alerte (produits, détail, action), « Toutes » ouvre
+/// Situation › Alertes produits.
 class _CarteAlertesProduits extends ConsumerWidget {
   const _CarteAlertesProduits();
 
@@ -591,7 +598,7 @@ class _CarteAlertesProduits extends ConsumerWidget {
         child: InkWell(
           key: ValueKey('carte_alerte_${ty.name}'),
           borderRadius: DsRadius.borderMd,
-          onTap: () => _ouvrir(context, ref, ty),
+          onTap: () => unawaited(afficherAlerteProduit(context, ty)),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: DsSpacing.s3, vertical: DsSpacing.s2),
             decoration: BoxDecoration(

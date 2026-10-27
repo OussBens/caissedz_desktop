@@ -6,6 +6,7 @@ import 'package:caissedz_desktop/data/parametre_repository.dart';
 import 'package:caissedz_desktop/domain/alertes_produits.dart';
 import 'package:caissedz_desktop/domain/models/produit.dart';
 import 'package:caissedz_desktop/features/tableau_bord/alertes_produits_providers.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -48,6 +49,9 @@ void main() {
     expect(_cle('point_/tableau-de-bord'), findsOneWidget);
 
     await clic(tester, find.text('Tableau de bord').first);
+    // La carte n'est plus sur la vue d'ensemble : elle est dans l'onglet Notifications.
+    expect(_cle('carte_alerte_ficheIncomplete'), findsNothing);
+    await clic(tester, find.text('Notifications'));
     final tuile = _cle('carte_alerte_ficheIncomplete');
     expect(tuile, findsOneWidget);
     expect(find.descendant(of: tuile, matching: find.text('Fiche produit incomplète')), findsOneWidget);
@@ -64,13 +68,17 @@ void main() {
       reason: 'nouvelle',
     );
 
-    // La tuile ouvre Situation › Alertes produits sur ce type : la ligne, son détail et son action.
+    // La tuile ouvre le dialog de cette alerte : la ligne, son détail et son action (au survol).
     await clic(tester, tuile);
+    expect(_cle('dialog_alerte_ficheIncomplete'), findsOneWidget);
     expect(find.text('Yaourt nature'), findsOneWidget);
-    expect(find.textContaining('sans code-barres'), findsOneWidget);
-    expect(find.textContaining('catégorie Divers'), findsOneWidget);
+    expect(find.text('sans code-barres · sans photo · catégorie Divers'), findsOneWidget);
     // Consultées : le point s'éteint.
     expect(c.read(alertesProduitsNouvellesProvider), isNot(contains(TypeAlerteProduit.ficheIncomplete)));
+    final souris = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await souris.addPointer(location: tester.getCenter(find.text('Yaourt nature')));
+    addTearDown(souris.removePointer);
+    await tester.pumpAndSettle();
     await clic(tester, find.text('Compléter la fiche'));
     expect(find.byKey(const ValueKey('produit_designation')), findsOneWidget, reason: 'fiche produit ouverte');
   });
