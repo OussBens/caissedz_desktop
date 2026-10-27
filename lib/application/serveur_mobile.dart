@@ -112,7 +112,8 @@ class _SessionMobile {
 ///    d'appareil (`X-CaisseDZ-Appareil: <code>.<jeton>`) lié à cet utilisateur, et sa première session. Le QR de
 ///    l'Admin ouvre sur le poste le choix de l'utilisateur du téléphone ([choisirUtilisateur]) : la réponse
 ///    attend ce choix ([dureeChoixUtilisateur] au plus). Le même téléphone appairé de nouveau (même
-///    `identifiant` d'installation, ou à défaut même utilisateur, nom et plateforme) remplace son ancien appairage.
+///    `identifiant` d'appareil ou `ancienIdentifiant` d'installation, ou à défaut même utilisateur, nom et
+///    plateforme) remplace son ancien appairage.
 /// 2. Connexion : le téléphone rouvre une session (`Authorization: Bearer`, en mémoire) pour son utilisateur
 ///    avec le seul jeton d'appareil — aucun mot de passe ne passe sur le réseau. L'Admin, ou l'utilisateur
 ///    lui-même, révoque le téléphone ; un compte désactivé ou privé de la permission n'entre plus.
@@ -534,6 +535,7 @@ class ServeurMobile {
     final appareil = 'APP${_jeton(6).toUpperCase().replaceAll(RegExp('[^A-Z0-9]'), '')}';
     final jeton = _jeton(32);
     final identifiant = texte('identifiant', 64);
+    final ancienIdentifiant = texte('ancienIdentifiant', 64);
     final nomAppareil = nom.isEmpty ? 'Téléphone' : nom;
     final plateforme = texte('plateforme', 20);
     // Le même téléphone appairé de nouveau (QR rescanné, autre utilisateur) : son ancien appairage est remplacé,
@@ -542,6 +544,7 @@ class ServeurMobile {
       final repo = MobileRepository(txn);
       final anciens = await repo.precedents(
         identifiant: identifiant.isEmpty ? null : identifiant,
+        ancienIdentifiant: ancienIdentifiant.isEmpty ? null : ancienIdentifiant,
         utilisateurCode: utilisateur,
         nom: nomAppareil,
         plateforme: plateforme,

@@ -62,22 +62,30 @@ class MobileRepository {
     whereArgs: [code],
   );
 
-  /// Appairages précédents du même téléphone, que son nouvel appairage remplace : même [identifiant]
-  /// d'installation ; sans identifiant (application plus ancienne), même utilisateur, nom et plateforme.
+  /// Appairages précédents du même téléphone, que son nouvel appairage remplace : même [identifiant] (ou
+  /// [ancienIdentifiant] : l'identifiant d'installation qu'il envoyait avant l'identifiant de l'appareil) ; sans
+  /// identifiant (application plus ancienne), même utilisateur, nom et plateforme.
   Future<List<String>> precedents({
     required String? identifiant,
+    String? ancienIdentifiant,
     required String utilisateurCode,
     required String nom,
     required String plateforme,
   }) async => [
-    for (final r in identifiant != null
-        ? await db.query('appareil_mobile', columns: ['code'], where: 'identifiant = ?', whereArgs: [identifiant])
-        : await db.query(
-            'appareil_mobile',
-            columns: ['code'],
-            where: 'identifiant IS NULL AND utilisateur_code = ? AND nom = ? AND plateforme = ?',
-            whereArgs: [utilisateurCode, nom, plateforme],
-          ))
+    for (final r
+        in identifiant != null
+            ? await db.query(
+                'appareil_mobile',
+                columns: ['code'],
+                where: 'identifiant IN (?, ?)',
+                whereArgs: [identifiant, ancienIdentifiant ?? identifiant],
+              )
+            : await db.query(
+                'appareil_mobile',
+                columns: ['code'],
+                where: 'identifiant IS NULL AND utilisateur_code = ? AND nom = ? AND plateforme = ?',
+                whereArgs: [utilisateurCode, nom, plateforme],
+              ))
       r['code']! as String,
   ];
 

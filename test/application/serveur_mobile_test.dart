@@ -55,8 +55,10 @@ void main() {
   setUp(() async {
     base = await ouvrirBaseDeTest();
     // Le compte BENS a été créé : l'administrateur a un mot de passe (sans quoi il n'est pas autorisé sur mobile).
-    await AuthService(base.db, hachage: const MotDePasse(iterations: 300))
-        .adminPrendCompteBens(nom: '', motDePasse: 'secret pass 1');
+    await AuthService(
+      base.db,
+      hachage: const MotDePasse(iterations: 300),
+    ).adminPrendCompteBens(nom: '', motDePasse: 'secret pass 1');
     factures = Directory.systemTemp.createTempSync('caissedz_factures_');
     addTearDown(() => factures.deleteSync(recursive: true));
     licence = const Licence(niveau: NiveauLicence.basic);
@@ -228,6 +230,19 @@ void main() {
     // Un autre téléphone du même modèle (autre identifiant) s'ajoute.
     await scanner(karim, {...samsung, 'identifiant': 'inst-2'});
     expect(await base.db.query('appareil_mobile'), hasLength(2));
+
+    // Passé à l'identifiant de l'appareil (survit à une réinstallation) : l'ancien identifiant d'installation
+    // désigne toujours le même téléphone.
+    final (_, aId) = await scanner(karim, {...samsung, 'identifiant': 'a:42', 'ancienIdentifiant': 'inst-2'});
+    expect(await base.db.query('appareil_mobile'), hasLength(2));
+    // Réinstallé (identifiant d'installation perdu) : reconnu par l'identifiant de l'appareil.
+    final (_, reinstalle) = await scanner(karim, {...samsung, 'identifiant': 'a:42', 'ancienIdentifiant': 'inst-9'});
+    expect((await base.db.query('appareil_mobile')).map((l) => l['code']), isNot(contains(aId)));
+    expect(await base.db.query('appareil_mobile'), hasLength(2));
+    expect(
+      (await base.db.query('appareil_mobile', where: 'code = ?', whereArgs: [reinstalle])).single['identifiant'],
+      'a:42',
+    );
 
     // Sans identifiant (application plus ancienne) : même utilisateur, nom et plateforme.
     await scanner('USR0000', {'nom': 'Pixel', 'plateforme': 'android'});
