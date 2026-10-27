@@ -180,6 +180,9 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
   final _observation = TextEditingController();
   final _codeIa = TextEditingController();
 
+  /// Taille saisie librement (aucun type de taille choisi) : « 42 », « XL », « 750 ml »…
+  final _tailleLibre = TextEditingController();
+
   String _categorie = CodeGenerator.systeme(CodeGenerator.categorie);
   String? _sousCategorie;
   String? _fournisseur;
@@ -236,6 +239,11 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
           ? null
           : taillesParType.entries.where((e) => _tailles.every(e.value.contains)).firstOrNull?.key ??
                 QuantiteProduit.typeCommun(_tailles);
+      // Taille hors des types (ou type inconnu) : elle reste visible et modifiable en saisie libre.
+      if (!taillesParType.containsKey(_typeTaille)) {
+        _typeTaille = null;
+        _tailleLibre.text = _tailles.join(', ');
+      }
       _chargerFiche(p.code);
     } else {
       // Marge par défaut des Paramètres : en pourcentage ou en montant fixe.
@@ -290,9 +298,7 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
       final imageExistante = widget.produit?.image;
       _photos = photos.isEmpty && imageExistante != null && imageExistante.trim().isNotEmpty
           ? [DsPhoto(id: 'image', nom: imageExistante.split(RegExp(r'[\\/]')).last, chemin: imageExistante)]
-          : [
-              for (final (i, c) in photos.indexed) DsPhoto(id: '$i', nom: c.split(RegExp(r'[\\/]')).last, chemin: c),
-            ];
+          : [for (final (i, c) in photos.indexed) DsPhoto(id: '$i', nom: c.split(RegExp(r'[\\/]')).last, chemin: c)];
     });
   }
 
@@ -302,8 +308,13 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
     if (f.designationAr != null && _designationAr.text.trim().isEmpty) _designationAr.text = f.designationAr!;
     // La quantité du catalogue, séparée du nom, devient la taille (contenance ou poids) du produit.
     if (f.quantite != null && f.typeQuantite != null) {
-      _typeTaille = f.typeQuantite;
-      _tailles = {f.quantite!};
+      if (taillesParType.containsKey(f.typeQuantite)) {
+        _typeTaille = f.typeQuantite;
+        _tailles = {f.quantite!};
+      } else {
+        _typeTaille = null;
+        _tailleLibre.text = f.quantite!;
+      }
     }
     _codeBarres.text = f.codeBarres;
     _marque.text = f.marque ?? _marque.text;
@@ -334,6 +345,7 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
       _description,
       _observation,
       _codeIa,
+      _tailleLibre,
     ]) {
       c.dispose();
     }
@@ -523,7 +535,9 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
       fournisseurCode: _fournisseur,
       dateExpiration: _expiration ? _dateExpiration : null,
       service: _service,
-      taille: _tailles.isEmpty ? null : _tailles.join(', '),
+      taille: _typeTaille == null
+          ? (_tailleLibre.text.trim().isEmpty ? null : _tailleLibre.text.trim())
+          : (_tailles.isEmpty ? null : _tailles.join(', ')),
       couleur: _couleurs.isEmpty ? null : _couleurs.join(', '),
       observation: _observation.text.trim().isEmpty ? null : _observation.text.trim(),
       suiviSerie: _serie,
@@ -713,8 +727,9 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
     );
   }
 
-  /// Bloc du formulaire : un titre sobre puis ses rangées de champs, sur une surface encadrée.
-  Widget _bloc(String titre, List<Widget> rangees) {
+  /// Bloc du formulaire : un titre sobre (et [aDroite] à l'extrême droite) puis ses rangées de champs, sur une
+  /// surface encadrée.
+  Widget _bloc(String titre, List<Widget> rangees, {Widget? aDroite}) {
     final c = context.ds.colors;
     final t = context.ds.typo;
     return Container(
@@ -728,9 +743,17 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         spacing: 14,
         children: [
-          Text(
-            titre,
-            style: t.label.copyWith(color: c.textPrimary, fontWeight: FontWeight.w600),
+          Row(
+            spacing: DsSpacing.s3,
+            children: [
+              Expanded(
+                child: Text(
+                  titre,
+                  style: t.label.copyWith(color: c.textPrimary, fontWeight: FontWeight.w600),
+                ),
+              ),
+              ?aDroite,
+            ],
           ),
           ...rangees,
         ],
@@ -923,6 +946,7 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
             onChanged: (v) => setState(() => _sousCategorie = v),
           ),
         ),
+        if (!det) _champTaille(l10n),
         if (det)
           _champ(
             l10n.prdFournisseur,
@@ -1160,7 +1184,7 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
         ]),
       ]),
       if (det)
-        _bloc(l10n.prdEmballages, [
+        _bloc(l10n.prdEmballages, aDroite: _rappelPrix(l10n, devise), [
           Text(
             l10n.prdColisAide(CatalogueService.maxColis),
             style: context.ds.typo.caption.copyWith(color: context.ds.colors.textMuted),
@@ -1183,6 +1207,74 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
     ];
   }
 
+  /// Type de taille (saisie détaillée et rapide) : sans type, la taille se saisit librement.
+  Widget _selectTypeTaille(AppLocalizations l10n) => DsSelect<String?>(
+    cle: const ValueKey('produit_type_taille'),
+    valeur: _typeTaille,
+    options: [null, ...taillesParType.keys],
+    libelle: (v) => v == null ? l10n.prdTailleSaisieLibre : libelleRef(context, Referentiel.typesTaille, v),
+    onChanged: (v) => setState(() {
+      _typeTaille = v;
+      _tailles = v == 'Taille unique' ? {'Taille unique'} : {};
+    }),
+  );
+
+  /// Taille en saisie rapide, à côté de la sous-catégorie : le type de taille puis une taille de ce type, ou,
+  /// sans type, une saisie libre.
+  Widget _champTaille(AppLocalizations l10n) {
+    final base = taillesParType[_typeTaille] ?? const <String>[];
+    final tailles = [...base, ..._tailles.where((x) => !base.contains(x))];
+    return _champ(
+      l10n.prdTaille,
+      Row(
+        spacing: 6,
+        children: [
+          Expanded(child: _selectTypeTaille(l10n)),
+          Expanded(
+            child: _typeTaille == null
+                ? DsTextField(
+                    key: const ValueKey('produit_taille_libre'),
+                    controller: _tailleLibre,
+                    indice: l10n.prdTailleIndice,
+                  )
+                : DsSelect<String?>(
+                    cle: const ValueKey('produit_taille'),
+                    valeur: _tailles.firstOrNull,
+                    options: [null, ...tailles],
+                    libelle: (v) => v ?? l10n.communAucune,
+                    actif: _typeTaille != 'Taille unique',
+                    onChanged: (v) => setState(() => _tailles = v == null ? {} : {v}),
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Prix d'achat et de vente de l'étape 1, rappelés en tête des emballages (pas besoin d'y revenir).
+  Widget _rappelPrix(AppLocalizations l10n, String devise) {
+    final c = context.ds.colors;
+    final t = context.ds.typo;
+    final valeur = t.bodySm.copyWith(
+      fontWeight: FontWeight.w700,
+      color: c.textPrimary,
+      fontFeatures: DsTypography.tabular,
+    );
+    return Text.rich(
+      key: const ValueKey('produit_emballages_prix'),
+      TextSpan(
+        style: t.bodySm.copyWith(color: c.textMuted),
+        children: [
+          TextSpan(text: '${l10n.prdAchat} : '),
+          TextSpan(text: formaterMontant(_a, devise), style: valeur),
+          const TextSpan(text: '   ·   '),
+          TextSpan(text: '${l10n.prdVente} : '),
+          TextSpan(text: formaterMontant(_vente, devise), style: valeur),
+        ],
+      ),
+    );
+  }
+
   List<Widget> _etape3(AppLocalizations l10n) {
     final c = context.ds.colors;
     final t = context.ds.typo;
@@ -1192,18 +1284,16 @@ class _ProduitFormDialogState extends ConsumerState<ProduitFormDialog> {
     return [
       _bloc(l10n.prdVariantes, [
         ..._grille(colonnes: 3, [
-          _champ(
-            l10n.prdTypeTaille,
-            DsSelect<String?>(
-              valeur: _typeTaille,
-              options: [null, ...taillesParType.keys],
-              libelle: (v) => v == null ? l10n.communAucune : libelleRef(context, Referentiel.typesTaille, v),
-              onChanged: (v) => setState(() {
-                _typeTaille = v;
-                _tailles = v == 'Taille unique' ? {'Taille unique'} : {};
-              }),
+          _champ(l10n.prdTypeTaille, _selectTypeTaille(l10n)),
+          if (_typeTaille == null)
+            _champ(
+              l10n.prdTaille,
+              DsTextField(
+                key: const ValueKey('produit_taille_libre'),
+                controller: _tailleLibre,
+                indice: l10n.prdTailleIndice,
+              ),
             ),
-          ),
         ]),
         if (tailles.isNotEmpty && _typeTaille != 'Taille unique')
           _champ(

@@ -38,6 +38,35 @@ void main() {
       await tester.pump(const Duration(seconds: 5)); // fin du toast
     });
 
+    testWidgets('saisie rapide : taille libre à côté de la sous-catégorie, ou taille d’un type', (tester) async {
+      final c = await pumpApp(tester, routeInitiale: '/produits', taille: const Size(1600, 1000));
+      final repo = CatalogueRepository(c.read(appDatabaseProvider).db);
+      await clic(tester, _cle('produit_nouveau'));
+      await tester.enterText(_champ('produit_designation'), 'Jus 75 cl');
+      await tester.enterText(_champ('produit_achat'), '80');
+      await tester.enterText(_champ('produit_marge'), '25');
+      // Sans type : saisie libre.
+      await tester.enterText(_champ('produit_taille_libre'), '75 cl');
+      await tester.pump();
+      await clic(tester, _cle('produit_enregistrer'));
+      expect((await repo.produitParCode('PRD0001'))!.taille, '75 cl');
+      await tester.pump(const Duration(seconds: 5));
+
+      // Avec un type : la taille se choisit dans la liste du type.
+      await clic(tester, _cle('produit_nouveau'));
+      await tester.enterText(_champ('produit_designation'), 'Basket');
+      await tester.enterText(_champ('produit_achat'), '2000');
+      await tester.enterText(_champ('produit_marge'), '25');
+      await clic(tester, _cle('produit_type_taille'));
+      await clic(tester, find.text('Pointure').last);
+      expect(_cle('produit_taille_libre'), findsNothing);
+      await clic(tester, _cle('produit_taille'));
+      await clic(tester, find.text('36').last);
+      await clic(tester, _cle('produit_enregistrer'));
+      expect((await repo.produitParCode('PRD0002'))!.taille, '36');
+      await tester.pump(const Duration(seconds: 5));
+    });
+
     testWidgets('fiche détaillée : code-barres CDZ généré, blocs Identification / Photos / Prix', (tester) async {
       final c = await pumpApp(tester, routeInitiale: '/produits', taille: const Size(1600, 1000));
       await clic(tester, _cle('produit_nouveau'));
@@ -55,12 +84,18 @@ void main() {
       await tester.pump();
       await clic(tester, _cle('produit_suivant'));
       expect(find.text('Emballages'), findsOneWidget);
+      // Prix d'achat et de vente de l'étape 1 rappelés à droite du titre des emballages.
+      final prix = tester.widget<Text>(_cle('produit_emballages_prix')).textSpan!.toPlainText();
+      expect(prix, contains('40,00'));
       await clic(tester, _cle('produit_suivant'));
       expect(find.text('Variantes'), findsNWidgets(2), reason: 'étape et bloc');
       expect(find.text('Options'), findsOneWidget);
+      // Sans type de taille : saisie libre aussi en détaillé.
+      await tester.enterText(_champ('produit_taille_libre'), '250 g');
       await clic(tester, _cle('produit_enregistrer'));
       final p = await CatalogueRepository(c.read(appDatabaseProvider).db).produitParCode('PRD0001');
       expect(p!.codeBarres, startsWith('CDZ'));
+      expect(p.taille, '250 g');
       await tester.pump(const Duration(seconds: 5)); // fin du toast
     });
 
