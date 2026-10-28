@@ -1353,3 +1353,32 @@ téléchargés et le code-barres inconnu est cherché dans le catalogue à la ca
   changé) ; `pos_controller_test.dart` (rechargement verrouillé, déjà chargée, abandon ; TVA désactivée par
   défaut) ; `pos_page_test.dart` (Ventes du jour → Éditer → ajout → encaissement) ; `ventes_page_test.dart`
   (« Ajouter des produits ») ; `produits_page_test.dart` (fiche IA : confirmée, refusée, votes).
+
+## Session partagée, transfert du manque pour un non-Admin, traçabilité des détails, détail des mouvements ✅ (2026-10-28)
+
+- **Session de caisse partagée** : un utilisateur rattaché à une caisse (`utilisateur.caisse_code`) dont la session
+  est déjà ouverte par un collègue **continue cette session** (ventes, versements, achats, retours, fermeture) au
+  lieu d'être bloqué. `VenteRepository.sessionAccessible` (la sienne d'abord, sinon celle de sa caisse attachée)
+  sert à `SessionCaisseService.courante` / `sessionOuverte` / `ouvrir` / `fermer`, à `VenteService` (complément
+  encaissé) et à `CaisseRepository.caisseParDefaut`. Sans caisse attachée, pas d'accès à la session d'un autre.
+  Après un changement d'utilisateur, la caisse reprend celle de la session (sinon la caisse attachée du non-Admin).
+- **Transfert du manque (caisse)** : n'est plus réservé à l'Admin. Un non-Admin qui a plusieurs magasins se voit
+  proposer le transfert (produit en rupture, quantité au-delà du stock) **depuis ses seuls magasins**
+  (`utilisateur_magasin`) ; l'Admin puise toujours dans tous les magasins. `PosController.depassementPermis`
+  autorise la quantité au-delà du stock dans « Quantité et colis » quand un transfert est possible (formule Ultra).
+- **Traçabilité dans tous les détails** : section commune « Traçabilité » (`sectionAudit` / `GrilleAudit`,
+  `features/commun/colonnes_audit.dart`), ouverte et toujours en dernier : créé le / par, modifié le / par,
+  archivé le / par, puis les compléments propres au document (validation, annulation, empreinte…). Elle remplace
+  les anciennes sections d'audit repliées. Ajoutée aux détails produit, catégorie, sous-catégorie, remise, pack,
+  stock, sortie, transfert, magasin, besoin, entrée, bon de réception, commande fournisseur, document client,
+  caisse, clôture, session, retour, panier, tiers, versement, utilisateur, rôle et zakat.
+- **Catégorie** : le détail liste ses **sous-catégories** (code, nom, nombre de produits, état) au lieu des
+  produits. **Sous-catégorie** : le détail liste ses **produits** (code, désignation, stock, prix de vente).
+- **Mouvements de stock** : chaque type a son détail (`features/stock/mouvement_dialogs.dart`). Double-clic : la
+  pièce d'origine (vente ou vente annulée, entrée, sortie, transfert, retour, **inventaire** — nouveau détail INV
+  avec théorique / compté / écart), sinon (stock initial, entrée manuelle) le **détail du mouvement** (quantité
+  signée, produit, magasin, référence, motif, observation, traçabilité, « Voir la pièce » s'il y en a une).
+  Actions « Détail du mouvement » et « Voir la pièce » dans l'onglet Mouvements.
+- Tests : `vente_service_test.dart` (session continuée par un collègue de la même caisse, refusée sans caisse
+  attachée) ; `pos_controller_test.dart` (transfert limité aux magasins du non-Admin) ; `stock_pages_test.dart`
+  (détail du stock initial, pièce d'inventaire).

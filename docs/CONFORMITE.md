@@ -152,6 +152,7 @@
 - [x] Sauvegarde automatique au démarrage (dossier, fréquence, mot de passe, 30 fichiers conservés) ; aperçu du
       ticket 58 / 80 mm latin / arabe (caisse et Paramètres)
 - [x] Colonnes d'audit `cree_le / cree_par / modifie_le / modifie_par` sur 17 tables (migration v20, triggers)
+- [x] Section « Traçabilité » (créé / modifié / archivé le / par) en bas de tous les dialogs de détail (2026-10-28)
 - [x] Sauvegarde / restauration ; exports Excel / PDF avec aperçu
 
 ## Recette (lot 9)
@@ -225,6 +226,7 @@ Recopie de la checklist de la spec 06. `[x]` = fait et testé ; `[ ]` = manquant
 - [x] Versements liés à un retour verrouillés
 - [x] Caisses (Physique / Compte), sessions (1 ouverte max par caisse), grand-livre (§ 8.6), mouvements manuels
 - [x] Session obligatoire pour vente / achat / retour / versement
+- [x] Session partagée : un utilisateur rattaché à la même caisse continue la session ouverte par un collègue
 - [x] Clôture de session (théorique / réel / écart), clôture Z scellée + PDF, export contrôle fiscal avec
       `journal_fiscal` distinct (ligne `CLOTURE_CAISSE`)
 - [x] Transferts d'argent entre caisses (permission dédiée)
