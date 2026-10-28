@@ -1,7 +1,7 @@
 name: caissedz_desktop
 description: "CaisseDZ Desktop — point de vente, gestion de stock et commerciale pour Windows."
 publish_to: 'none'
-version: 0.5.1+15
+version: 0.5.2+16
 
 environment:
   sdk: ^3.13.4
@@ -114,7 +114,7 @@ msix_config:
   display_name: CaisseDZ Desktop
   publisher_display_name: CaisseDZ
   identity_name: dz.caissedz.desktop
-  msix_version: 0.5.1.0
+  msix_version: 0.5.2.0
   languages: fr-fr, ar-dz, en-us
   capabilities: internetClient
   install_certificate: false
