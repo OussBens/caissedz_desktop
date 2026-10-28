@@ -112,7 +112,8 @@ class _SelectionProduitDialog extends ConsumerStatefulWidget {
   final double quantiteInitiale;
   final bool modification;
 
-  /// Admin : une quantité au-delà du stock reste validable (la caisse propose alors un transfert).
+  /// Admin, ou utilisateur ayant un autre magasin : une quantité au-delà du stock reste validable (la caisse
+  /// propose alors un transfert).
   final bool depassementPermis;
   final Duration auto;
 

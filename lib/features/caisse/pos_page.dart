@@ -170,10 +170,10 @@ class _PosPageState extends ConsumerState<PosPage> {
     }
   }
 
-  /// Admin seulement : le magasin de la caisse manque de stock mais un autre magasin en a assez → propose un
-  /// transfert du manque (document TRF) ; `true` si le transfert est fait (l'ajout est alors rejoué).
+  /// Le magasin de la caisse manque de stock mais un autre magasin en a assez (pour un non-Admin : un de SES
+  /// magasins) → propose un transfert du manque (document TRF) ; `true` si le transfert est fait (l'ajout est
+  /// alors rejoué).
   Future<bool> _proposerTransfert(ManqueStock manque) async {
-    if (!(ref.read(sessionProvider)?.estAdmin ?? false)) return false;
     final source = await ctrl.sourceTransfert(manque);
     if (source == null || !mounted) return false;
     final magasins = await ref.read(stockRepositoryProvider).magasins();
@@ -243,11 +243,11 @@ class _PosPageState extends ConsumerState<PosPage> {
 
   // ------------------------------------------------------------------ Produits
 
-  /// Produit épuisé dans ce magasin : « Produit en rupture » (entrée rapide ; pour l'admin, transfert si un autre
-  /// magasin en a). `true` : l'admin transfère, la quantité se choisit ensuite et le transfert du manque suit.
+  /// Produit épuisé dans ce magasin : « Produit en rupture » (entrée rapide ; transfert si un autre magasin en a,
+  /// parmi ceux de l'utilisateur s'il n'est pas Admin). `true` : l'utilisateur transfère, la quantité se choisit
+  /// ensuite et le transfert du manque suit.
   Future<bool> _rupture(Produit p) async {
-    final admin = ref.read(sessionProvider)?.estAdmin ?? false;
-    final source = admin ? await ctrl.sourceTransfert((produit: p, unites: 1, nombre: 0)) : null;
+    final source = await ctrl.sourceTransfert((produit: p, unites: 1, nombre: 0));
     if (!mounted) return false;
     final suite = await afficherProduitEnRupture(
       context,
@@ -265,6 +265,7 @@ class _PosPageState extends ConsumerState<PosPage> {
       if (mounted) _scanFocus.requestFocus();
       return;
     }
+    final depassement = await ctrl.depassementPermis();
     if (!mounted) return;
     String? scanSuivant;
     final choix = await afficherSelectionProduit(
@@ -272,7 +273,7 @@ class _PosPageState extends ConsumerState<PosPage> {
       produit: p,
       colis: _colisDe(p),
       stock: _disponible(p),
-      depassementPermis: ref.read(sessionProvider)?.estAdmin ?? false,
+      depassementPermis: depassement,
       scanne: scanne,
       // Scan pendant que le dialog est ouvert : même produit → + 1, autre code → traité après validation.
       estMemeProduit: (code) async {
@@ -295,12 +296,14 @@ class _PosPageState extends ConsumerState<PosPage> {
   Future<void> _modifierColis(int index) async {
     final l = ref.read(posControllerProvider).panier.lignes[index];
     if (l.pack != null || l.estMontant) return;
+    final depassement = await ctrl.depassementPermis();
+    if (!mounted) return;
     final choix = await afficherSelectionProduit(
       context,
       produit: l.produit,
       colis: _colisDe(l.produit),
       stock: _disponible(l.produit, sauf: l),
-      depassementPermis: ref.read(sessionProvider)?.estAdmin ?? false,
+      depassementPermis: depassement,
       colisInitial: l.colis,
       nombreInitial: l.uniteVente == UniteVente.nombre,
       quantiteInitiale: l.quantite,

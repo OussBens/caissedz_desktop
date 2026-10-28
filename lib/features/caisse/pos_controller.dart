@@ -113,18 +113,21 @@ class PosController extends Notifier<PosEtat> {
   @override
   PosEtat build() => PosEtat(paniers: [Panier(id: _prochainId++)]);
 
-  /// Charge la session ouverte, la caisse attachée (§5 : caisse courante d'un non-Admin) et le magasin principal
-  /// de l'utilisateur.
+  /// Charge la session ouverte (la sienne ou celle de sa caisse ouverte par un collègue, qu'il continue), la caisse
+  /// attachée (§5 : caisse courante d'un non-Admin) et le magasin principal de l'utilisateur.
   Future<void> initialiser() async {
     final code = ref.read(utilisateurCourantCodeProvider);
     final session = await ref.read(sessionCaisseServiceProvider).courante();
     final magasin = await ref.read(stockServiceProvider).magasinPrincipal(code);
-    final attachee = (await UtilisateurRepository(ref.read(appDatabaseProvider).db).parCode(code))?.caisseCode;
+    final u = await UtilisateurRepository(ref.read(appDatabaseProvider).db).parCode(code);
+    final attachee = u?.caisseCode;
+    // Après un changement d'utilisateur, un non-Admin reprend sa caisse attachée (pas celle du précédent).
+    final admin = u?.estAdmin ?? false;
     state = state.copyWith(
       session: session,
       effacerSession: session == null,
       magasinCode: magasin,
-      caisseCode: state.caisseCode ?? attachee,
+      caisseCode: session?.caisseCode ?? (admin ? state.caisseCode ?? attachee : attachee ?? state.caisseCode),
     );
   }
 
@@ -224,19 +227,32 @@ class PosController extends Notifier<PosEtat> {
     }
   }
 
-  /// Autre magasin actif pouvant couvrir [manque] (le mieux pourvu), ou `null`. Les transferts entre
+  /// Autre magasin actif pouvant couvrir [manque] (le mieux pourvu), ou `null`. L'Admin puise dans tous les
+  /// magasins ; un autre utilisateur seulement dans ses magasins (`utilisateur_magasin`). Les transferts entre
   /// magasins sont dans la formule Ultra seulement.
   Future<SourceTransfert?> sourceTransfert(ManqueStock manque) async {
     if (!ref.read(licenceProvider).couvre(NiveauLicence.ultra)) return null;
     final repo = StockRepository(ref.read(appDatabaseProvider).db);
+    final admin = ref.read(sessionProvider)?.estAdmin ?? false;
+    final siens = admin ? null : (await repo.magasinsUtilisateur(ref.read(utilisateurCourantCodeProvider))).toSet();
     SourceTransfert? meilleure;
     for (final m in await repo.magasins(actifsSeulement: true)) {
-      if (m.code == state.magasinCode) continue;
+      if (m.code == state.magasinCode || (siens != null && !siens.contains(m.code))) continue;
       final n = await repo.niveau(manque.produit.code, m.code);
       if (n.quantite + 1e-9 < manque.unites || n.nombre + 1e-9 < manque.nombre) continue;
       if (meilleure == null || n.quantite > meilleure.quantite) meilleure = (magasin: m, quantite: n.quantite);
     }
     return meilleure;
+  }
+
+  /// Une quantité au-delà du stock du magasin reste validable (le transfert du manque est proposé ensuite) :
+  /// toujours pour l'Admin ; pour un autre utilisateur, s'il a un autre magasin d'où transférer (formule Ultra).
+  Future<bool> depassementPermis() async {
+    if (ref.read(sessionProvider)?.estAdmin ?? false) return true;
+    if (!ref.read(licenceProvider).couvre(NiveauLicence.ultra)) return false;
+    final siens = await StockRepository(ref.read(appDatabaseProvider).db)
+        .magasinsUtilisateur(ref.read(utilisateurCourantCodeProvider));
+    return siens.any((m) => m != state.magasinCode);
   }
 
   /// Transfère [manque] de [source] vers le magasin de la caisse (document TRF, en UNE transaction).

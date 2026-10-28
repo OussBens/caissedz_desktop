@@ -2,6 +2,7 @@ import 'package:caissedz_desktop/app/demarrage_providers.dart';
 import 'package:caissedz_desktop/app/providers.dart';
 import 'package:caissedz_desktop/application/catalogue_service.dart';
 import 'package:caissedz_desktop/application/stock_service.dart';
+import 'package:caissedz_desktop/application/utilisateur_service.dart';
 import 'package:caissedz_desktop/application/vente_service.dart';
 import 'package:caissedz_desktop/core/design_system/design_system.dart';
 import 'package:caissedz_desktop/data/parametre_repository.dart';
@@ -375,6 +376,47 @@ void main() {
     await ctrl.ajouterMontant(300);
     ctrl.modifierMontant(0, 0);
     expect(c.read(posControllerProvider).panier.estVide, isTrue);
+  });
+
+  test('stock insuffisant : un non-Admin transfère seulement depuis ses propres magasins', () async {
+    final base = c.read(appDatabaseProvider);
+    final stock = StockService(base.db, utilisateurCode: 'USR0000');
+    final depot = await stock.creerMagasin('Dépôt');
+    final annexe = await stock.creerMagasin('Annexe');
+    await stock.entrerStock(produitCode: lait.code, magasinCode: depot.code, quantite: 5);
+    await stock.entrerStock(produitCode: lait.code, magasinCode: annexe.code, quantite: 50);
+    final ctrl = c.read(posControllerProvider.notifier);
+    const manque = 20.0;
+    // Admin : tous les magasins, le mieux pourvu d'abord.
+    expect((await ctrl.sourceTransfert((produit: lait, unites: manque, nombre: 0)))?.magasin.code, annexe.code);
+    expect(await ctrl.depassementPermis(), isTrue);
+
+    await UtilisateurService(base.db, utilisateurCode: 'USR0000', hachage: hachageTest).creer(
+      identifiant: 'nadia',
+      motDePasse: 'Nadia2026',
+      telephone: '0661 20 30 41',
+      roleCode: Roles.caissier,
+      caisseCode: 'CIS0000',
+      magasins: ['MAG0000', depot.code],
+    );
+    await c.read(sessionProvider.notifier).deconnecter();
+    await c.read(sessionProvider.notifier).connecter('nadia', 'Nadia2026');
+    await ctrl.initialiser();
+    expect(c.read(posControllerProvider).magasinCode, 'MAG0000');
+    expect(await ctrl.depassementPermis(), isTrue, reason: 'le Dépôt est un de ses magasins');
+    // L'Annexe (50) n'est pas à elle : seul le Dépôt peut couvrir un petit manque, rien pour 20.
+    expect(await ctrl.sourceTransfert((produit: lait, unites: manque, nombre: 0)), isNull);
+    expect((await ctrl.sourceTransfert((produit: lait, unites: 3, nombre: 0)))?.magasin.code, depot.code);
+    final trf = await ctrl.transfererManque((produit: lait, unites: 3, nombre: 0), depot.code);
+    expect(trf, startsWith('TRM'));
+    expect((await StockRepository(base.db).niveau(lait.code, 'MAG0000')).quantite, 13);
+
+    // Un seul magasin : aucun dépassement permis.
+    await StockService(
+      base.db,
+      utilisateurCode: 'USR0000',
+    ).definirMagasinsUtilisateur(c.read(sessionProvider)!.utilisateur.code, ['MAG0000']);
+    expect(await ctrl.depassementPermis(), isFalse);
   });
 
   test('calculatrice : évaluation', () {
