@@ -27,17 +27,20 @@ class SessionCaisseService {
 
   VenteRepository get _repo => VenteRepository(db);
 
-  /// §8.4 : aucun achat, retour ni versement n'est enregistré sans session `Ouverte` de l'utilisateur.
+  /// §8.4 : aucun achat, retour ni versement n'est enregistré sans session `Ouverte` accessible à l'utilisateur
+  /// (la sienne ou celle de sa caisse attachée, ouverte par un collègue).
   static Future<bool> sessionOuverte(DatabaseExecutor db, String utilisateurCode) async =>
-      await VenteRepository(db).sessionOuverte(utilisateurCode: utilisateurCode) != null;
+      await VenteRepository(db).sessionAccessible(utilisateurCode) != null;
 
-  Future<SessionCaisse?> courante() => _repo.sessionOuverte(utilisateurCode: utilisateurCode);
+  /// Session courante : celle de l'utilisateur, sinon celle de sa caisse attachée déjà ouverte par un autre
+  /// utilisateur, qu'il continue (ventes, versements et fermeture sur la même session).
+  Future<SessionCaisse?> courante() => _repo.sessionAccessible(utilisateurCode);
 
   Future<SessionCaisse> ouvrir({required String caisseCode, required double fondInitial}) async {
     if (fondInitial < 0) throw const SessionException(ErreurSession.montantInvalide);
     return db.transaction((txn) async {
       final repo = VenteRepository(txn);
-      if (await repo.sessionOuverte(utilisateurCode: utilisateurCode) != null) {
+      if (await repo.sessionAccessible(utilisateurCode) != null) {
         throw const SessionException(ErreurSession.dejaOuverte);
       }
       if (await repo.sessionOuverte(caisseCode: caisseCode) != null) {
@@ -100,7 +103,8 @@ class SessionCaisseService {
   /// Historique des sessions, plus récentes d'abord.
   Future<List<SessionCaisse>> sessions() => _repo.sessions();
 
-  /// Ferme la session ouverte de l'utilisateur, ou la session [sessionCode] (Gestion caisse).
+  /// Ferme la session courante de l'utilisateur (la sienne ou celle partagée de sa caisse), ou la session
+  /// [sessionCode] (Gestion caisse).
   /// Écart = compté − espèces attendues ([especesAttendues] : grand-livre Espèces de la caisse depuis la
   /// fermeture précédente).
   Future<SessionCaisse> fermer({required double montantCompte, String? sessionCode}) async {
@@ -108,7 +112,7 @@ class SessionCaisseService {
     return db.transaction((txn) async {
       final repo = VenteRepository(txn);
       final trouvee = sessionCode == null
-          ? await repo.sessionOuverte(utilisateurCode: utilisateurCode)
+          ? await repo.sessionAccessible(utilisateurCode)
           : await repo.session(sessionCode);
       final s = trouvee != null && trouvee.statut == StatutsSession.ouverte ? trouvee : null;
       if (s == null) throw const SessionException(ErreurSession.aucuneOuverte);

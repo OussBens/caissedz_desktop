@@ -39,12 +39,16 @@ class CaisseRepository {
 
   /// Caisse d'imputation par défaut : caisse de la session ouverte de l'utilisateur, sinon `CIS0000`.
   Future<String> caisseParDefaut(String utilisateurCode) async {
-    final rows = await db.query(
-      'session_caisse',
-      columns: ['caisse_code'],
-      where: 'statut = ? AND utilisateur_code = ?',
-      whereArgs: ['Ouverte', utilisateurCode],
-      limit: 1,
+    // Session de l'utilisateur, sinon celle de sa caisse attachée ouverte par un collègue (session partagée).
+    final rows = await db.rawQuery(
+      '''
+      SELECT caisse_code FROM session_caisse
+      WHERE statut = 'Ouverte'
+        AND (utilisateur_code = ?1 OR caisse_code = (SELECT caisse_code FROM utilisateur WHERE code = ?1))
+      ORDER BY utilisateur_code = ?1 DESC, ouverte_le DESC
+      LIMIT 1
+      ''',
+      [utilisateurCode],
     );
     return rows.isEmpty ? CodeGenerator.systeme(CodeGenerator.caisseSysteme) : rows.first['caisse_code'] as String;
   }

@@ -44,6 +44,22 @@ class VenteRepository {
     return rows.isEmpty ? null : SessionCaisse.depuisLigne(rows.first);
   }
 
+  /// Session ouverte utilisable par [utilisateurCode] : la sienne, sinon celle ouverte (par un autre utilisateur)
+  /// sur sa caisse attachée — plusieurs caissiers d'une même caisse continuent la même session.
+  Future<SessionCaisse?> sessionAccessible(String utilisateurCode) async {
+    final rows = await db.rawQuery(
+      '''
+      SELECT s.* FROM session_caisse s
+      WHERE s.statut = 'Ouverte'
+        AND (s.utilisateur_code = ?1 OR s.caisse_code = (SELECT caisse_code FROM utilisateur WHERE code = ?1))
+      ORDER BY s.utilisateur_code = ?1 DESC, s.ouverte_le DESC
+      LIMIT 1
+      ''',
+      [utilisateurCode],
+    );
+    return rows.isEmpty ? null : SessionCaisse.depuisLigne(rows.first);
+  }
+
   Future<SessionCaisse?> session(String code) async {
     final rows = await db.query('session_caisse', where: 'code = ?', whereArgs: [code]);
     return rows.isEmpty ? null : SessionCaisse.depuisLigne(rows.first);

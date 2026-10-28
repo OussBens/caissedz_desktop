@@ -91,6 +91,38 @@ void main() {
         throwsA(isA<SessionException>().having((e) => e.erreur, 'e', ErreurSession.aucuneOuverte)),
       );
     });
+
+    test('un utilisateur rattaché à la même caisse continue la session ouverte par un collègue', () async {
+      final base = await ouvrirBaseDeTest();
+      final db = base.db;
+      for (final (code, caisse) in [('USR0002', 'CIS0000'), ('USR0003', null)]) {
+        await db.insert('utilisateur', {
+          'code': code,
+          'identifiant': code.toLowerCase(),
+          'nom': code,
+          'role_code': 'ROL0000',
+          'caisse_code': caisse,
+        });
+      }
+      final ouverte = await SessionCaisseService(
+        db,
+        utilisateurCode: 'USR0000',
+      ).ouvrir(caisseCode: 'CIS0000', fondInitial: 100);
+      final collegue = SessionCaisseService(db, utilisateurCode: 'USR0002');
+      expect((await collegue.courante())?.code, ouverte.code);
+      expect(await SessionCaisseService.sessionOuverte(db, 'USR0002'), isTrue);
+      await expectLater(
+        collegue.ouvrir(caisseCode: 'CIS0000', fondInitial: 0),
+        throwsA(isA<SessionException>().having((e) => e.erreur, 'e', ErreurSession.dejaOuverte)),
+      );
+      // Sans caisse attachée : pas d'accès à la session d'un autre.
+      expect(await SessionCaisseService(db, utilisateurCode: 'USR0003').courante(), isNull);
+      expect(await SessionCaisseService.sessionOuverte(db, 'USR0003'), isFalse);
+      // Le collègue peut fermer la session partagée.
+      final fermee = await collegue.fermer(montantCompte: 100);
+      expect(fermee.code, ouverte.code);
+      expect(await SessionCaisseService(db, utilisateurCode: 'USR0000').courante(), isNull);
+    });
   });
 
   group('VenteService.encaisser', () {

@@ -409,7 +409,7 @@ class VenteService {
           throw const VenteException(ErreurVente.creditNonAutorise);
         }
         // Le complément encaissé est un versement : session de caisse ouverte exigée (§8.4, m10).
-        if (await repo.sessionOuverte(utilisateurCode: utilisateurCode) == null) {
+        if (await repo.sessionAccessible(utilisateurCode) == null) {
           throw const VenteException(ErreurVente.sessionRequise);
         }
         try {
