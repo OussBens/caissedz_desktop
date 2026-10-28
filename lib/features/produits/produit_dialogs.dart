@@ -18,6 +18,7 @@ import '../../domain/models/stock.dart';
 import '../../domain/permissions.dart';
 import '../../domain/referentiel/referentiel.dart';
 import '../caisse/pos_dialogs.dart';
+import '../commun/colonnes_audit.dart';
 import '../commun/export_module.dart';
 import '../commun/referentiel_ui.dart';
 import '../commun/selecteurs.dart';
@@ -325,6 +326,7 @@ class _DetailProduit extends ConsumerWidget {
               ],
             ),
           ),
+          DsDetailSection(titre: l10n.auditTitre, icone: LucideIcons.shieldCheck, child: GrilleAudit(p.audit)),
         ],
       ),
     );

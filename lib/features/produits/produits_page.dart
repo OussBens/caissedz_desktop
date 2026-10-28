@@ -749,9 +749,9 @@ class _ProduitsPageState extends ConsumerState<ProduitsPage> {
     Future<void> modifier(SousCategorie s) => afficherFormulaireSousCategorie(context, ref, sousCategorie: s);
     Future<void> detail(SousCategorie s) => afficherDetailSousCategorie(
       context,
+      ref,
       s,
       nomCategorie: nomsCat[s.categorieCode] ?? '',
-      nbProduits: nbProduits(s),
       onModifier: s.systeme ? null : () => modifier(s),
     );
     return DsModuleTable<SousCategorie>(

@@ -13,6 +13,7 @@ import '../../domain/models/retour.dart';
 import '../../domain/models/tiers.dart';
 import '../../domain/referentiel/referentiel.dart';
 import '../../domain/referentiel/wilayas.dart';
+import '../commun/colonnes_audit.dart';
 import '../commun/export_module.dart';
 import '../commun/referentiel_ui.dart';
 import '../commun/statuts.dart';
@@ -608,6 +609,7 @@ Future<void> afficherDetailTiers(
             ],
           ),
         ),
+        sectionAudit(context, t.audit),
       ],
     ),
   );

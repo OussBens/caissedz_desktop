@@ -804,11 +804,10 @@ Future<void> afficherDetailDocumentClient(BuildContext context, WidgetRef ref, D
                 ),
             ],
           ),
-        DsSectionDetail(
-          titre: l10n.stkAudit,
-          icone: LucideIcons.shieldCheck,
-          repliable: true,
-          items: [
+        sectionAudit(
+          context,
+          d.audit,
+          complements: [
             if (d.origineCode != null) DsKeyValue(l10n.docOrigine, d.origineCode),
             if (d.observation != null) DsKeyValue(l10n.retoursObservation, d.observation),
             if (d.annulation != null) DsKeyValue(l10n.auditMotif, d.annulation!.motif),

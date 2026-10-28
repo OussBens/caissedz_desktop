@@ -385,15 +385,15 @@ Future<void> afficherDetailVersement(BuildContext context, WidgetRef ref, Versem
               ],
             ),
           ),
-        DsSectionDetail(
-          titre: l10n.auditTitre,
-          icone: LucideIcons.shieldCheck,
-          repliable: true,
-          items: [
-            DsKeyValue(l10n.auditCreePar, v.utilisateurCode),
-            DsKeyValue(l10n.auditAnnulePar, v.annulePar),
-            DsKeyValue(l10n.auditAnnuleLe, v.annuleLe == null ? null : formatDateHeure.format(v.annuleLe!)),
-            DsKeyValue(l10n.auditMotif, v.motifAnnulation, span: 3),
+        sectionAudit(
+          context,
+          v.audit,
+          complements: [
+            if (v.annuleLe != null) ...[
+              DsKeyValue(l10n.auditAnnulePar, v.annulePar),
+              DsKeyValue(l10n.auditAnnuleLe, formatDateHeure.format(v.annuleLe!)),
+              DsKeyValue(l10n.auditMotif, v.motifAnnulation, span: 2),
+            ],
           ],
         ),
       ],

@@ -20,6 +20,7 @@ import '../../domain/models/rapport.dart';
 import '../../domain/models/vente.dart';
 import '../../domain/referentiel/referentiel.dart';
 import '../../domain/scellement.dart';
+import '../commun/colonnes_audit.dart';
 import '../commun/export_module.dart';
 import '../commun/referentiel_ui.dart';
 import '../commun/selecteurs.dart';
@@ -323,6 +324,7 @@ Future<void> afficherDetailCaisse(BuildContext context, WidgetRef ref, Caisse c)
             icone: LucideIcons.messageSquare,
             items: [DsKeyValue(l10n.retoursObservation, c.observation, span: 3)],
           ),
+        sectionAudit(context, c.audit),
       ],
     ),
   );
@@ -985,6 +987,7 @@ Future<void> afficherDetailCloture(BuildContext context, WidgetRef ref, Cloture 
             DsKeyValue(l10n.gcColCreeLe, formatDateHeure.format(z.date)),
           ],
         ),
+        sectionAudit(context, z.audit),
       ],
     ),
   );
@@ -1390,6 +1393,7 @@ Future<void> afficherMouvementsSession(BuildContext context, WidgetRef ref, Sess
             messageVide: l10n.mouvementAucun,
             colonnes: colonnes,
           ),
+          DsDetailSection(titre: l10n.auditTitre, icone: LucideIcons.shieldCheck, child: GrilleAudit(s.audit)),
         ],
       ),
     ),

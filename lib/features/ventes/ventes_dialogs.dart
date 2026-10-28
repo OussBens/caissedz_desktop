@@ -15,6 +15,7 @@ import '../../domain/permissions.dart';
 import '../../domain/referentiel/referentiel.dart';
 import '../caisse/pos_controller.dart';
 import '../caisse/pos_dialogs.dart';
+import '../commun/colonnes_audit.dart';
 import '../commun/referentiel_ui.dart';
 import '../commun/statuts.dart';
 import '../produits/produits_providers.dart';
@@ -244,18 +245,15 @@ Future<void> afficherDetailPanier(
           nbLignes: vente.lignes.length,
           tableau: _tableauLignes(l10n, devise, vente.lignes, detail: true, reserveEcran: 360),
         ),
-        DsSectionDetail(
-          titre: l10n.ventesAudit,
-          icone: LucideIcons.shieldCheck,
-          repliable: true,
-          items: [
-            DsKeyValue(l10n.ventesCreePar, p.caissier),
-            DsKeyValue(l10n.ventesCreeLe, date),
-            DsKeyValue(l10n.communModifiePar, p.modifiePar),
-            DsKeyValue(l10n.communModifieLe, p.modifieLe == null ? null : formatDateHeure.format(p.modifieLe!)),
-            DsKeyValue(l10n.ventesAnnulePar, p.annuleePar),
-            DsKeyValue(l10n.ventesAnnuleLe, p.annuleeLe == null ? null : formatDateHeure.format(p.annuleeLe!)),
-            DsKeyValue(l10n.ventesMotifAnnulation, p.motifAnnulation),
+        sectionAudit(
+          context,
+          vente.audit,
+          complements: [
+            if (p.annuleeLe != null) ...[
+              DsKeyValue(l10n.ventesAnnulePar, p.annuleePar),
+              DsKeyValue(l10n.ventesAnnuleLe, formatDateHeure.format(p.annuleeLe!)),
+              DsKeyValue(l10n.ventesMotifAnnulation, p.motifAnnulation, span: 2),
+            ],
             DsKeyValue(l10n.ventesEmpreinte, empreinte, mono: true),
           ],
         ),

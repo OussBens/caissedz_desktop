@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import '../permissions.dart';
+import 'audit.dart';
 
 /// Utilisateur de l'application (table `utilisateur`, §9.12) : compte, rôle (par code), caisse attachée.
 /// Les magasins ordonnés sont dans `utilisateur_magasin` (le premier est le magasin par défaut).
@@ -56,6 +57,16 @@ class Utilisateur {
   bool get archive => archiveLe != null;
 
   bool get estAdmin => roleCode == Roles.admin;
+
+  /// Champs d'audit regroupés (section « Traçabilité » des détails).
+  Audit get audit => Audit(
+    creeLe: creeLe,
+    creePar: creePar,
+    modifieLe: modifieLe,
+    modifiePar: modifiePar,
+    archiveLe: archiveLe,
+    archivePar: archivePar,
+  );
 
   /// Prénom + nom (ou le nom seul).
   String get nomComplet => [prenom.trim(), nom.trim()].where((s) => s.isNotEmpty).join(' ');
@@ -165,6 +176,16 @@ class Role {
   bool get archive => archiveLe != null;
 
   bool get estAdmin => code == Roles.admin;
+
+  /// Champs d'audit regroupés (section « Traçabilité » des détails).
+  Audit get audit => Audit(
+    creeLe: creeLe,
+    creePar: creePar,
+    modifieLe: modifieLe,
+    modifiePar: modifiePar,
+    archiveLe: archiveLe,
+    archivePar: archivePar,
+  );
   bool aPermission(Permission p) => estAdmin || permissions.contains(p);
   bool aModule(String id) => estAdmin || modules.contains(id);
 }

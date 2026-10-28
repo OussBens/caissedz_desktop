@@ -15,6 +15,7 @@ import '../../domain/models/tiers.dart';
 import '../../domain/models/vente.dart';
 import '../../domain/permissions.dart';
 import '../caisse/caisse_dialogs.dart';
+import '../commun/colonnes_audit.dart';
 import '../commun/selecteurs.dart';
 import '../commun/statuts.dart';
 import '../entrees/entrees_providers.dart';
@@ -742,16 +743,15 @@ Future<void> afficherDetailRetour(
           icone: LucideIcons.messageSquareText,
           contenu: Text(r.motif ?? '—'),
         ),
-        DsSectionDetail(
-          titre: l10n.ventesAudit,
-          icone: LucideIcons.shieldCheck,
-          repliable: true,
-          items: [
-            DsKeyValue(l10n.ventesCreePar, r.utilisateurCode),
-            DsKeyValue(l10n.ventesCreeLe, formatDateHeure.format(r.date)),
-            DsKeyValue(l10n.ventesAnnulePar, r.annulePar),
-            DsKeyValue(l10n.ventesAnnuleLe, r.annuleLe == null ? null : formatDateHeure.format(r.annuleLe!)),
-            DsKeyValue(l10n.ventesMotifAnnulation, r.motifAnnulation),
+        sectionAudit(
+          context,
+          r.audit,
+          complements: [
+            if (r.annuleLe != null) ...[
+              DsKeyValue(l10n.ventesAnnulePar, r.annulePar),
+              DsKeyValue(l10n.ventesAnnuleLe, formatDateHeure.format(r.annuleLe!)),
+              DsKeyValue(l10n.ventesMotifAnnulation, r.motifAnnulation, span: 2),
+            ],
           ],
         ),
       ],

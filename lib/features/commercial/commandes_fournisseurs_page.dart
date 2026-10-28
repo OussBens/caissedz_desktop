@@ -618,11 +618,10 @@ Future<void> afficherDetailCommandeFournisseur(BuildContext context, WidgetRef r
             ],
           ),
         ),
-        DsSectionDetail(
-          titre: l10n.stkAudit,
-          icone: LucideIcons.shieldCheck,
-          repliable: true,
-          items: [
+        sectionAudit(
+          context,
+          c.audit,
+          complements: [
             DsKeyValue(l10n.cmdfReceptions, c.receptions.isEmpty ? '—' : c.receptions.join(', ')),
             if (c.besoinCode != null) DsKeyValue(l10n.entListeBesoins, c.besoinCode),
             if (c.observation != null) DsKeyValue(l10n.retoursObservation, c.observation),

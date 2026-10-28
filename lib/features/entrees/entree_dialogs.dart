@@ -20,6 +20,7 @@ import '../../domain/models/tiers.dart';
 import '../../domain/permissions.dart';
 import '../caisse/caisse_dialogs.dart';
 import '../caisse/pos_dialogs.dart';
+import '../commun/colonnes_audit.dart';
 import '../commun/doc_form.dart';
 import '../commun/export_module.dart';
 import '../commun/liste_produits_dialog.dart';
@@ -1338,12 +1339,10 @@ Future<void> afficherDetailEntree(BuildContext context, WidgetRef ref, Achat a) 
             colonnes: colonnes,
           ),
         ),
-        DsSectionDetail(
-          titre: l10n.stkAudit,
-          icone: LucideIcons.shieldCheck,
-          repliable: true,
-          items: [
-            DsKeyValue(l10n.ventesCreePar, utilisateurs[a.utilisateurCode] ?? a.utilisateurCode),
+        sectionAudit(
+          context,
+          a.audit,
+          complements: [
             DsKeyValue(l10n.stkValideLe, formatDateHeure.format(a.date)),
             if (a.annulation != null) ...[
               DsKeyValue(l10n.ventesAnnulePar, utilisateurs[a.annulation!.par] ?? a.annulation!.par),

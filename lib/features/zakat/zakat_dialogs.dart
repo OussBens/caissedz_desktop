@@ -12,6 +12,7 @@ import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
 import '../../domain/referentiel/referentiel.dart';
 import '../../domain/zakat.dart';
+import '../commun/colonnes_audit.dart';
 import '../commun/referentiel_ui.dart';
 import '../commun/statuts.dart';
 import '../historique/historique_providers.dart';
@@ -403,7 +404,8 @@ class _ZakatFormState extends ConsumerState<_ZakatForm> {
 Future<void> afficherDetailZakat(BuildContext context, WidgetRef ref, Zakat z) async {
   final l10n = AppLocalizations.of(context);
   final devise = ref.read(deviseProvider);
-  final noms = await ref.read(nomsUtilisateursProvider.future);
+  // Noms préchargés : la section « Traçabilité » les affiche dès l'ouverture.
+  await ref.read(nomsUtilisateursProvider.future);
   if (!context.mounted) return;
   final postes = [
     (l10n.zkValeurStock, z.stock),
@@ -456,12 +458,10 @@ Future<void> afficherDetailZakat(BuildContext context, WidgetRef ref, Zakat z) a
             ],
           ),
         ),
-        DsSectionDetail(
-          titre: l10n.zkAudit,
-          icone: LucideIcons.shieldCheck,
-          repliable: true,
-          items: [
-            DsKeyValue(l10n.zkColCreePar, z.creePar == null ? '—' : (noms[z.creePar] ?? z.creePar!)),
+        sectionAudit(
+          context,
+          z.audit,
+          complements: [
             DsKeyValue(l10n.zkColPayee, z.datePaiement == null ? '—' : formatJour.format(z.datePaiement!)),
             DsKeyValue(l10n.zkColObservation, z.observation.isEmpty ? '—' : z.observation),
             if (!z.actif) DsKeyValue(l10n.zkMotif, z.motifAnnulation ?? '—'),

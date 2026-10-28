@@ -19,6 +19,7 @@ import '../../domain/models/produit.dart';
 import '../../domain/models/stock.dart';
 import '../../domain/models/tiers.dart';
 import '../caisse/caisse_dialogs.dart';
+import '../commun/colonnes_audit.dart';
 import '../commun/doc_form.dart';
 import '../commun/selecteurs.dart';
 import '../commun/statuts.dart';
@@ -887,11 +888,10 @@ Future<void> afficherBon(BuildContext context, WidgetRef ref, BonReception b) as
               ],
             ),
           ),
-        DsSectionDetail(
-          titre: l10n.stkAudit,
-          icone: LucideIcons.shieldCheck,
-          repliable: true,
-          items: [
+        sectionAudit(
+          context,
+          b.audit,
+          complements: [
             DsKeyValue(l10n.entIaRecuPar, utilisateurs[b.utilisateurCode] ?? b.utilisateurCode),
             if (b.traitePar != null) DsKeyValue(l10n.entIaTraitePar, utilisateurs[b.traitePar] ?? b.traitePar),
             if (b.commentaire != null) DsKeyValue(l10n.retoursObservation, b.commentaire),

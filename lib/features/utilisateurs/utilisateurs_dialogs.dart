@@ -18,6 +18,7 @@ import '../../domain/models/caisse.dart';
 import '../../domain/models/stock.dart';
 import '../../domain/models/utilisateur.dart';
 import '../../domain/permissions.dart';
+import '../commun/colonnes_audit.dart';
 import '../commun/selecteurs.dart';
 import '../commun/statuts.dart';
 import '../gestion_caisse/gestion_caisse_providers.dart';
@@ -467,7 +468,8 @@ Future<void> afficherDetailUtilisateur(BuildContext context, WidgetRef ref, Lign
   final roles = await ref.read(rolesProvider.future);
   final caisses = {for (final c in await ref.read(caissesListeProvider.future)) c.code: c.nom};
   final magasins = {for (final m in await ref.read(magasinsProvider.future)) m.code: m.nom};
-  final noms = await ref.read(nomsUtilisateursProvider.future);
+  // Noms préchargés : la section « Traçabilité » les affiche dès l'ouverture.
+  await ref.read(nomsUtilisateursProvider.future);
   if (!context.mounted) return;
   final u = l.u;
   final role = roles.where((r) => r.code == u.roleCode).firstOrNull;
@@ -531,17 +533,7 @@ Future<void> afficherDetailUtilisateur(BuildContext context, WidgetRef ref, Lign
               valeur: valeursRole(role, l10n),
             ),
           ),
-        DsSectionDetail(
-          titre: l10n.usrAudit,
-          icone: LucideIcons.shieldCheck,
-          repliable: true,
-          items: [
-            DsKeyValue(l10n.usrCreePar, u.creePar == null ? '—' : (noms[u.creePar] ?? u.creePar!)),
-            DsKeyValue(l10n.usrCreeLe, _date(u.creeLe)),
-            DsKeyValue(l10n.usrModifiePar, u.modifiePar == null ? '—' : (noms[u.modifiePar] ?? u.modifiePar!)),
-            DsKeyValue(l10n.usrModifieLe, _date(u.modifieLe)),
-          ],
-        ),
+        sectionAudit(context, l.u.audit),
       ],
     ),
   );
@@ -846,7 +838,8 @@ class _RoleAssistantState extends ConsumerState<_RoleAssistant> {
 
 Future<void> afficherDetailRole(BuildContext context, WidgetRef ref, Role r) async {
   final l10n = AppLocalizations.of(context);
-  final noms = await ref.read(nomsUtilisateursProvider.future);
+  // Noms préchargés : la section « Traçabilité » les affiche dès l'ouverture.
+  await ref.read(nomsUtilisateursProvider.future);
   if (!context.mounted) return;
   return afficherDetailEntite(
     context,
@@ -888,16 +881,7 @@ Future<void> afficherDetailRole(BuildContext context, WidgetRef ref, Role r) asy
           icone: LucideIcons.messageSquareText,
           contenu: Text(r.observation.isEmpty ? '—' : r.observation, style: context.ds.typo.body),
         ),
-        DsSectionDetail(
-          titre: l10n.usrAudit,
-          icone: LucideIcons.shieldCheck,
-          repliable: true,
-          items: [
-            DsKeyValue(l10n.usrCreePar, r.creePar == null ? '—' : (noms[r.creePar] ?? r.creePar!)),
-            DsKeyValue(l10n.usrCreeLe, _date(r.creeLe)),
-            DsKeyValue(l10n.usrModifiePar, r.modifiePar == null ? '—' : (noms[r.modifiePar] ?? r.modifiePar!)),
-          ],
-        ),
+        sectionAudit(context, r.audit),
       ],
     ),
   );

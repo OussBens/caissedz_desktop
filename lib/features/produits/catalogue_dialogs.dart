@@ -7,6 +7,7 @@ import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
 import '../../domain/models/produit.dart';
 import '../../domain/referentiel/referentiel.dart';
+import '../commun/colonnes_audit.dart';
 import '../commun/doc_form.dart';
 import '../commun/referentiel_ui.dart';
 import '../commun/selecteurs.dart';
@@ -203,7 +204,7 @@ class _CategorieFormState extends ConsumerState<_CategorieForm> {
   }
 }
 
-/// Détail d'une catégorie (`EntityDetailDialog` 900 px) : stats et produits.
+/// Détail d'une catégorie (`EntityDetailDialog` 900 px) : stats, sous-catégories et traçabilité.
 Future<void> afficherDetailCategorie(
   BuildContext context,
   WidgetRef ref,
@@ -213,13 +214,14 @@ Future<void> afficherDetailCategorie(
   final l10n = AppLocalizations.of(context);
   final devise = ref.read(deviseProvider);
   final produits = (await ref.read(produitsProvider.future)).where((p) => p.categorieCode == c.code).toList();
-  final sous = (await ref.read(sousCategoriesProvider.future)).where((s) => s.categorieCode == c.code).length;
+  final sous = (await ref.read(sousCategoriesProvider.future)).where((s) => s.categorieCode == c.code).toList();
   final stocks = await ref.read(stocksProduitsProvider.future);
   if (!context.mounted) return;
   final valeur = produits.fold(
     0.0,
     (s, p) => s + ((stocks[p.code] ?? 0) > 0 ? (stocks[p.code] ?? 0) * p.prixAchat : 0),
   );
+  int nbProduits(SousCategorie s) => produits.where((p) => p.sousCategorieCode == s.code).length;
   return afficherDetailEntite(
     context,
     DsEntityDetailDialog(
@@ -230,17 +232,43 @@ Future<void> afficherDetailCategorie(
       onModifier: onModifier,
       badges: [BadgeStatut(c.actif ? 'actif' : 'inactif')],
       stats: [
-        DsStatItem(libelle: l10n.prdOngletSousCategories, valeur: '$sous', icone: LucideIcons.folderTree),
+        DsStatItem(libelle: l10n.prdOngletSousCategories, valeur: '${sous.length}', icone: LucideIcons.folderTree),
         DsStatItem(libelle: l10n.produitsOngletProduits, valeur: '${produits.length}', icone: LucideIcons.package),
         DsStatItem(libelle: l10n.prdKpiValeurStock, valeur: f2(valeur), suffixe: devise, icone: LucideIcons.wallet),
       ],
       sections: [
+        if ((c.description ?? '').isNotEmpty)
+          DsSectionDetail(
+            titre: l10n.prdInformations,
+            icone: LucideIcons.info,
+            items: [DsKeyValue(l10n.retoursObservation, c.description, span: 3)],
+          ),
         DsSectionDetail(
-          titre: l10n.produitsOngletProduits,
-          icone: LucideIcons.package,
-          nbLignes: produits.length,
-          tableau: _tableProduits(l10n, produits, stocks, devise),
+          titre: l10n.prdOngletSousCategories,
+          icone: LucideIcons.folderTree,
+          nbLignes: sous.length,
+          tableau: DsDataTable<SousCategorie>(
+            dense: true,
+            encadre: false,
+            pagine: false,
+            reserveEcran: 360,
+            cle: (s) => s.code,
+            lignes: sous,
+            messageVide: l10n.dsAucunElement,
+            colonnes: [
+              DsColonne(id: 'code', libelle: l10n.produitsColCode, valeur: (s) => s.code, attenue: true),
+              DsColonne(id: 'nom', libelle: l10n.produitChampSousCategorie, valeur: (s) => s.nom, fort: true, flex: 3),
+              DsColonne(id: 'produits', libelle: l10n.produitsOngletProduits, numerique: true, valeur: nbProduits),
+              DsColonne(
+                id: 'etat',
+                libelle: l10n.retoursEtat,
+                valeur: (s) => s.actif ? 1 : 0,
+                cellule: (_, s) => BadgeStatut(s.actif ? 'actif' : 'inactif'),
+              ),
+            ],
+          ),
         ),
+        sectionAudit(context, c.audit),
       ],
     ),
   );
@@ -275,23 +303,28 @@ Widget _tableProduits(AppLocalizations l10n, List<Produit> produits, Map<String,
       ],
     );
 
-/// Détail d'une sous-catégorie (`EntityDetailDialog` 800 px).
+/// Détail d'une sous-catégorie (`EntityDetailDialog` 900 px) : informations, produits et traçabilité.
 Future<void> afficherDetailSousCategorie(
   BuildContext context,
+  WidgetRef ref,
   SousCategorie s, {
   required String nomCategorie,
-  required int nbProduits,
   VoidCallback? onModifier,
-}) {
+}) async {
   final l10n = AppLocalizations.of(context);
+  final devise = ref.read(deviseProvider);
+  final produits = (await ref.read(produitsProvider.future)).where((p) => p.sousCategorieCode == s.code).toList();
+  final stocks = await ref.read(stocksProduitsProvider.future);
+  if (!context.mounted) return;
   return afficherDetailEntite(
     context,
     DsEntityDetailDialog(
-      largeur: 800,
+      largeur: 900,
       icone: LucideIcons.folderTree,
       titre: s.nom,
       description: '${s.code} · $nomCategorie',
       onModifier: onModifier,
+      badges: [BadgeStatut(s.actif ? 'actif' : 'inactif')],
       sections: [
         DsSectionDetail(
           titre: l10n.prdInformations,
@@ -299,10 +332,17 @@ Future<void> afficherDetailSousCategorie(
           items: [
             DsKeyValue(l10n.produitsColCode, s.code, mono: true),
             DsKeyValue(l10n.produitsColCategorie, nomCategorie),
-            DsKeyValue(l10n.produitsOngletProduits, '$nbProduits'),
+            DsKeyValue(l10n.produitsOngletProduits, '${produits.length}'),
             DsKeyValue(l10n.retoursObservation, s.description, span: 3),
           ],
         ),
+        DsSectionDetail(
+          titre: l10n.produitsOngletProduits,
+          icone: LucideIcons.package,
+          nbLignes: produits.length,
+          tableau: _tableProduits(l10n, produits, stocks, devise),
+        ),
+        sectionAudit(context, s.audit),
       ],
     ),
   );
@@ -751,6 +791,7 @@ Future<void> afficherDetailRemise(BuildContext context, WidgetRef ref, Remise r,
               DsKeyValue(l10n.retoursObservation, r.observation, span: 3),
             ],
           ),
+        sectionAudit(context, r.audit),
       ],
     ),
   );
@@ -1110,6 +1151,7 @@ Future<void> afficherDetailPack(BuildContext context, WidgetRef ref, Pack k, {Vo
             ],
           ),
         ),
+        sectionAudit(context, k.audit),
       ],
     ),
   );

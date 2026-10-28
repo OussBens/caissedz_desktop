@@ -13,6 +13,7 @@ import '../../domain/models/stock.dart';
 import '../../domain/models/tiers.dart';
 import '../../domain/permissions.dart';
 import '../../domain/referentiel/referentiel.dart';
+import '../commun/colonnes_audit.dart';
 import '../commun/doc_form.dart';
 import '../commun/export_module.dart';
 import '../commun/liste_produits_dialog.dart';
@@ -199,6 +200,7 @@ Future<void> afficherDetailStock(BuildContext context, WidgetRef ref, Produit p)
             ],
           ),
         ),
+        sectionAudit(context, p.audit),
       ],
     ),
   );
@@ -618,25 +620,19 @@ Future<void> afficherDetailSortie(BuildContext context, WidgetRef ref, SortieSto
           icone: LucideIcons.messageSquareText,
           contenu: Text(s.commentaire ?? '—', style: context.ds.typo.body),
         ),
-        DsSectionDetail(
-          titre: l10n.stkAudit,
-          icone: LucideIcons.shieldCheck,
-          repliable: true,
-          items: _audit(l10n, s.utilisateurCode, s.date, s.annulation, utilisateurs),
-        ),
+        sectionAudit(context, s.audit, complements: _audit(l10n, s.date, s.annulation, utilisateurs)),
       ],
     ),
   );
 }
 
+/// Compléments de la section « Traçabilité » d'un document de stock : validation et annulation.
 List<DsKeyValue> _audit(
   AppLocalizations l10n,
-  String creePar,
   DateTime date,
   Annulation? annulation,
   Map<String, String> utilisateurs,
 ) => [
-  DsKeyValue(l10n.ventesCreePar, utilisateurs[creePar] ?? creePar),
   DsKeyValue(l10n.stkValideLe, formatDateHeure.format(date)),
   if (annulation != null) ...[
     DsKeyValue(l10n.ventesAnnulePar, utilisateurs[annulation.par] ?? annulation.par),
@@ -960,12 +956,7 @@ Future<void> afficherDetailTransfert(BuildContext context, WidgetRef ref, Transf
           nbLignes: lignes.length,
           tableau: _tableLignes(l10n, lignes, produits, devise, prix: achat),
         ),
-        DsSectionDetail(
-          titre: l10n.stkAudit,
-          icone: LucideIcons.shieldCheck,
-          repliable: true,
-          items: _audit(l10n, t.utilisateurCode, t.date, t.annulation, utilisateurs),
-        ),
+        sectionAudit(context, t.audit, complements: _audit(l10n, t.date, t.annulation, utilisateurs)),
       ],
     ),
   );
@@ -1254,6 +1245,7 @@ Future<void> afficherDetailMagasin(BuildContext context, WidgetRef ref, Magasin 
             DsKeyValue(l10n.stkCaisses, caisses.isEmpty ? '—' : caisses.join(', ')),
           ],
         ),
+        sectionAudit(context, m.audit),
       ],
     ),
   );
@@ -1644,12 +1636,11 @@ Future<void> afficherDetailBesoin(BuildContext context, WidgetRef ref, Besoin b)
             libellePrix: l10n.stkPrixEstime,
           ),
         ),
-        DsSectionDetail(
-          titre: l10n.stkAudit,
-          icone: LucideIcons.shieldCheck,
-          repliable: true,
-          items: [
-            ..._audit(l10n, b.utilisateurCode, b.date, b.annulation, utilisateurs),
+        sectionAudit(
+          context,
+          b.audit,
+          complements: [
+            ..._audit(l10n, b.date, b.annulation, utilisateurs),
             if (b.observation != null) DsKeyValue(l10n.retoursObservation, b.observation),
           ],
         ),
