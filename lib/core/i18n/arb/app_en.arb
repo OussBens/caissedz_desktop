@@ -3029,5 +3029,9 @@
   "pmRaccourciDejaUtilise": "Key already used by “{action}”.",
   "pmRaccourciEchanger": "Swap keys",
   "pmRaccourciInvalide": "Keyboard shortcuts: a key is forbidden or used by two actions.",
-  "pmRaccourciLettres": "Letters and digits alone only work outside an input field."
+  "pmRaccourciLettres": "Letters and digits alone only work outside an input field.",
+  "stkMouvementTitre": "Stock movement · {type}",
+  "stkInventaireTitre": "Inventory {code}",
+  "stkDebutComptage": "Count started",
+  "stkDetailMouvement": "Movement details"
 }

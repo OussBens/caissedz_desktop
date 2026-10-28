@@ -17144,6 +17144,30 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Les lettres et chiffres seuls n’agissent que hors d’un champ de saisie.'**
   String get pmRaccourciLettres;
+
+  /// No description provided for @stkMouvementTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mouvement de stock · {type}'**
+  String stkMouvementTitre(String type);
+
+  /// No description provided for @stkInventaireTitre.
+  ///
+  /// In fr, this message translates to:
+  /// **'Inventaire {code}'**
+  String stkInventaireTitre(String code);
+
+  /// No description provided for @stkDebutComptage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Début du comptage'**
+  String get stkDebutComptage;
+
+  /// No description provided for @stkDetailMouvement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Détail du mouvement'**
+  String get stkDetailMouvement;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

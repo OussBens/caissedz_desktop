@@ -9187,4 +9187,20 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get pmRaccourciLettres => 'Les lettres et chiffres seuls n’agissent que hors d’un champ de saisie.';
+
+  @override
+  String stkMouvementTitre(String type) {
+    return 'Mouvement de stock · $type';
+  }
+
+  @override
+  String stkInventaireTitre(String code) {
+    return 'Inventaire $code';
+  }
+
+  @override
+  String get stkDebutComptage => 'Début du comptage';
+
+  @override
+  String get stkDetailMouvement => 'Détail du mouvement';
 }

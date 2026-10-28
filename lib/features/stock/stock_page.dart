@@ -19,9 +19,7 @@ import '../commun/statuts.dart';
 import '../historique/historique_providers.dart';
 import '../produits/produits_donnees.dart';
 import '../produits/produits_providers.dart';
-import '../retours/retours_dialogs.dart';
-import '../tiers/tiers_providers.dart';
-import '../ventes/ventes_dialogs.dart';
+import 'mouvement_dialogs.dart';
 import 'stock_dialogs.dart';
 import 'stock_providers.dart';
 
@@ -627,51 +625,25 @@ class _StockPageState extends ConsumerState<StockPage> {
               format: format,
             )
           : null,
-      onOuvrir: _voirPiece,
+      // Double-clic : la pièce d'origine (vente, entrée, sortie, transfert, retour, inventaire) ou, sans pièce
+      // (stock initial…), le détail du mouvement.
+      onOuvrir: (m) => afficherPieceMouvement(context, ref, m),
       actions: [
         DsActionModule(
-          libelle: l10n.stkVoirPiece,
+          libelle: l10n.stkDetailMouvement,
           icone: LucideIcons.eye,
           regle: DsRegleSelection.une,
           detail: true,
-          desactive: (choix) => choix.isNotEmpty && choix.first.referenceCode == null,
-          onPressed: (choix, _) => _voirPiece(choix.first),
+          onPressed: (choix, _) => afficherDetailMouvement(context, ref, choix.first),
+        ),
+        DsActionModule(
+          libelle: l10n.stkVoirPiece,
+          icone: LucideIcons.fileText,
+          regle: DsRegleSelection.une,
+          desactive: (choix) => choix.isNotEmpty && !aPieceMouvement(choix.first),
+          onPressed: (choix, _) => afficherPieceMouvement(context, ref, choix.first),
         ),
       ],
     );
-  }
-
-  /// Ouvre le détail de la pièce d'origine d'un mouvement (vente, retour, sortie, transfert).
-  Future<void> _voirPiece(MouvementStock m) async {
-    final code = m.referenceCode;
-    if (code == null) return;
-    final repo = ref.read(stockRepositoryProvider);
-    switch (m.referenceType) {
-      case 'sortie':
-        final s = await repo.sortie(code);
-        if (s != null && mounted) await afficherDetailSortie(context, ref, s);
-      case 'transfert':
-        final t = await repo.transfert(code);
-        if (t != null && mounted) await afficherDetailTransfert(context, ref, t);
-      case 'vente':
-        final d = m.date;
-        final paniers = await ref
-            .read(venteRepositoryProvider)
-            .paniers(depuis: d.subtract(const Duration(days: 366)), jusqua: DateTime(d.year, d.month, d.day + 1));
-        final p = paniers.where((x) => x.vente.code == code).firstOrNull;
-        final clients = {for (final c in await ref.read(clientsProvider.future)) c.code: c.nom};
-        if (p != null && mounted) await afficherDetailPanier(context, ref, p, nomsClients: clients);
-      case 'retour':
-        final r = await ref.read(tiersRepositoryProvider).retour(code);
-        if (r == null) return;
-        final noms = r.estClient
-            ? {for (final c in await ref.read(clientsProvider.future)) c.code: c.nom}
-            : {for (final f in await ref.read(fournisseursProvider.future)) f.code: f.nom};
-        if (mounted) await afficherDetailRetour(context, ref, r, nomsTiers: noms);
-      default:
-        if (mounted) {
-          afficherToast(context, titre: code, description: libelleTypeMouvement(AppLocalizations.of(context), m.type));
-        }
-    }
   }
 }

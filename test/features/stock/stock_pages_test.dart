@@ -75,6 +75,29 @@ void main() {
       expect(find.text(isolerLtr('+12')), findsOneWidget);
     });
 
+    testWidgets('mouvements : détail du stock initial, puis pièce d’inventaire au double-clic', (tester) async {
+      final c = await pumpApp(tester, routeInitiale: '/stock', taille: _taille);
+      final (lait, _) = await _donnees(c);
+      await StockService(
+        c.read(appDatabaseProvider).db,
+        utilisateurCode: 'USR0000',
+      ).inventorierLot(magasinCode: 'MAG0000', quantitesConstatees: {lait.code: 10}, commentaire: 'Comptage');
+      await _rafraichir(tester, c);
+      await clic(tester, _cle('stock_voir_mouvements'));
+      // Stock initial : pas de pièce, le double-clic ouvre le détail du mouvement avec sa traçabilité.
+      await doubleClic(tester, find.text('Stock initial').last);
+      expect(find.text('Mouvement de stock · Stock initial'), findsOneWidget);
+      expect(find.text('Traçabilité'), findsOneWidget);
+      expect(find.text('Créé le'), findsOneWidget);
+      expect(_cle('mouvement_voir_piece'), findsNothing);
+      await clic(tester, find.text('Fermer').last);
+      // Inventaire : la pièce INV s'ouvre (théorique 12, compté 10, écart −2).
+      await doubleClic(tester, find.text('Inventaire').last);
+      expect(find.textContaining('Inventaire INV'), findsOneWidget);
+      expect(find.text('Comptage'), findsOneWidget);
+      expect(find.text('Traçabilité'), findsOneWidget);
+    });
+
     testWidgets('sortie : quantité plafonnée au stock, puis enregistrée', (tester) async {
       final c = await pumpApp(tester, routeInitiale: '/sorties', taille: _taille);
       await _donnees(c);

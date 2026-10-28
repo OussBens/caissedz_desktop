@@ -5020,5 +5020,23 @@
   },
   "pmRaccourciEchanger": "Échanger les touches",
   "pmRaccourciInvalide": "Raccourcis clavier : une touche est interdite ou utilisée par deux actions.",
-  "pmRaccourciLettres": "Les lettres et chiffres seuls n’agissent que hors d’un champ de saisie."
+  "pmRaccourciLettres": "Les lettres et chiffres seuls n’agissent que hors d’un champ de saisie.",
+  "stkMouvementTitre": "Mouvement de stock · {type}",
+  "@stkMouvementTitre": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "stkInventaireTitre": "Inventaire {code}",
+  "@stkInventaireTitre": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "stkDebutComptage": "Début du comptage",
+  "stkDetailMouvement": "Détail du mouvement"
 }

@@ -9165,4 +9165,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pmRaccourciLettres => 'Letters and digits alone only work outside an input field.';
+
+  @override
+  String stkMouvementTitre(String type) {
+    return 'Stock movement · $type';
+  }
+
+  @override
+  String stkInventaireTitre(String code) {
+    return 'Inventory $code';
+  }
+
+  @override
+  String get stkDebutComptage => 'Count started';
+
+  @override
+  String get stkDetailMouvement => 'Movement details';
 }

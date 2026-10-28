@@ -9137,4 +9137,20 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get pmRaccourciLettres => 'الحروف والأرقام وحدها لا تعمل إلا خارج حقل الإدخال.';
+
+  @override
+  String stkMouvementTitre(String type) {
+    return 'حركة مخزون · $type';
+  }
+
+  @override
+  String stkInventaireTitre(String code) {
+    return 'جرد $code';
+  }
+
+  @override
+  String get stkDebutComptage => 'بداية العدّ';
+
+  @override
+  String get stkDetailMouvement => 'تفاصيل الحركة';
 }

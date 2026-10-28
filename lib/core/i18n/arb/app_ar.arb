@@ -3029,5 +3029,9 @@
   "pmRaccourciDejaUtilise": "المفتاح مستخدم بالفعل في « {action} ».",
   "pmRaccourciEchanger": "تبديل المفاتيح",
   "pmRaccourciInvalide": "اختصارات لوحة المفاتيح: مفتاح محظور أو مستخدم في إجراءين.",
-  "pmRaccourciLettres": "الحروف والأرقام وحدها لا تعمل إلا خارج حقل الإدخال."
+  "pmRaccourciLettres": "الحروف والأرقام وحدها لا تعمل إلا خارج حقل الإدخال.",
+  "stkMouvementTitre": "حركة مخزون · {type}",
+  "stkInventaireTitre": "جرد {code}",
+  "stkDebutComptage": "بداية العدّ",
+  "stkDetailMouvement": "تفاصيل الحركة"
 }
