@@ -1382,3 +1382,36 @@ téléchargés et le code-barres inconnu est cherché dans le catalogue à la ca
 - Tests : `vente_service_test.dart` (session continuée par un collègue de la même caisse, refusée sans caisse
   attachée) ; `pos_controller_test.dart` (transfert limité aux magasins du non-Admin) ; `stock_pages_test.dart`
   (détail du stock initial, pièce d'inventaire).
+
+## Plusieurs caisses par utilisateur ✅ (2026-10-30)
+
+- **Caisses d'un compte** (migration v46) : table `utilisateur_caisse` (ordonnée, la première est la caisse par
+  défaut), sur le modèle de `utilisateur_magasin`. Le formulaire Utilisateur remplace « Caisse attachée » par une
+  liste ordonnée « Caisses » (`DsOrderedMultiSelect`, obligatoire hors Admin, erreur `caissesObligatoires`) ;
+  la liste, la carte et le détail affichent les caisses (« Toutes (admin) » pour l'Admin). Seules les caisses
+  actives hors coffre sont proposées.
+- **Caisses accessibles** (`SessionCaisseService.caissesAccessibles`) : l'Admin et la permission
+  `changerCaisseMagasin` ont toutes les caisses (les siennes d'abord), les autres seulement les leurs.
+- **Caisse courante** (table `caisse_courante`, à part de la fiche pour ne pas toucher sa traçabilité) : caisse
+  choisie dans l'écran Caisse (Paramètres de la caisse) parmi ses caisses ; à défaut, la caisse par défaut. Elle
+  désigne la **session partagée** que l'utilisateur continue (`VenteRepository.sessionAccessible`) et la caisse
+  d'imputation par défaut (`CaisseRepository.caisseParDefaut` : achats, versements, retours, factures). Choisir
+  une caisse ouverte par un collègue reprend sa session ; une caisse fermée attend son ouverture. Sa propre
+  session ouverte le garde sur sa caisse (`dejaOuverte`) jusqu'à sa fermeture.
+- **Ouverture de session** : seules ses caisses sans session ouverte sont proposées ; le service refuse une caisse
+  hors de ses caisses (`ErreurSession.caisseNonAutorisee`), et l'ouverture fixe la caisse courante. Une session
+  continuée chez un collègue n'empêche plus d'ouvrir la sienne sur une autre caisse.
+- **Magasin du poste** : un non-Admin sans `changerCaisseMagasin` choisit désormais parmi ses magasins (au lieu
+  d'un choix verrouillé) ; l'ancienne exception « caisse libre » disparaît.
+- **Reprise** : la caisse attachée devient la seule caisse du compte et sa caisse courante ; un compte « libre »
+  reçoit toutes les caisses actives hors coffre ; l'Admin n'a pas de liste. `utilisateur.caisse_code` n'est plus
+  lue ni écrite (colonne à clé étrangère, que SQLite ne supprime pas ; valeurs gardées pour ne pas horodater une
+  modification des comptes).
+- **Archivage / désactivation** : une caisse par défaut d'un compte non archivé ne s'archive ni ne se désactive
+  (`BlocageArchivage.caissePrincipale`, `ErreurCaisse.caissePrincipale`) ; `utilisateur_caisse` et
+  `caisse_courante` sont possédées par la caisse et par l'utilisateur.
+- **Téléphone** : la liste des caisses à ouvrir et le contrôle de l'ouverture suivent les caisses accessibles.
+- Tests : `vente_service_test.dart` (session continuée sur la caisse courante, changement de caisse, refus hors
+  de ses caisses, Admin sur toutes les caisses) ; `utilisateur_service_test.dart` (caisses obligatoires, caisse
+  par défaut, Admin sans liste) ; `app_database_test.dart` (reprise v46) ; `utilisateurs_page_test.dart`.
+
