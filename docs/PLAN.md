@@ -1415,3 +1415,20 @@ téléchargés et le code-barres inconnu est cherché dans le catalogue à la ca
   de ses caisses, Admin sur toutes les caisses) ; `utilisateur_service_test.dart` (caisses obligatoires, caisse
   par défaut, Admin sans liste) ; `app_database_test.dart` (reprise v46) ; `utilisateurs_page_test.dart`.
 
+## Basic : une seule caisse partout ✅ (2026-10-30)
+
+- **Une seule caisse en Basic** (palier `caisses: 1`) : la caisse système `CIS0000`, comme le magasin système.
+  Aucun champ ni filtre Caisse dans les dialogs de création, de modification ou de filtre (déjà masqués par
+  `plusieursCaissesProvider`), et plus de colonne Caisse dans les tableaux : ventes, versements, sessions, clôtures
+  Z, mouvements de caisse, utilisateurs (colonne, carte et section « Caisses attribuées » du détail).
+- **Gestion caisse en Basic** : ni onglet Caisses ni onglet Transferts ; le module s'ouvre sur les clôtures Z.
+  L'ouverture et la clôture de session restent dans l'onglet Sessions et dans l'écran Caisse, le mouvement manuel
+  dans l'onglet Mouvements.
+- **Pas de coffre en Basic** (`NiveauLicence.avecCoffre`, `SessionCaisseService.avecCoffre`) : le fond de caisse est
+  un apport et les espèces comptées à la fermeture sont retirées de la caisse, sans mouvement du coffre `CIS0001`
+  (desktop et téléphone).
+- **Un seul magasin** (Basic, Advanced) : plus de colonne Magasin dans les entrées, les sorties et les mouvements de
+  stock ; ni colonne Magasins ni section « Magasins attribués » chez les utilisateurs.
+- Tests : `vente_service_test.dart` (session sans coffre) ; `gestion_caisse_page_test.dart` (Basic : ni Caisses ni
+  Transferts ni colonne Caisse).
+

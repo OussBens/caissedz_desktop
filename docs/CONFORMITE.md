@@ -229,6 +229,8 @@ Recopie de la checklist de la spec 06. `[x]` = fait et testé ; `[ ]` = manquant
 - [x] Session partagée : un utilisateur rattaché à la même caisse continue la session ouverte par un collègue
 - [x] Plusieurs caisses par utilisateur (`utilisateur_caisse`, la première par défaut ; l'Admin les a toutes) :
       dans l'écran Caisse, l'utilisateur choisit parmi ses caisses celle où il encaisse et décaisse (2026-10-30)
+- [x] Basic : une seule caisse (caisse système) partout, sans coffre ; ni champ, ni filtre, ni colonne Caisse ;
+      Gestion caisse sans onglets Caisses et Transferts (2026-10-30)
 - [x] Clôture de session (théorique / réel / écart), clôture Z scellée + PDF, export contrôle fiscal avec
       `journal_fiscal` distinct (ligne `CLOTURE_CAISSE`)
 - [x] Transferts d'argent entre caisses (permission dédiée)
