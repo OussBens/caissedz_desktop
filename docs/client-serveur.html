@@ -30,7 +30,7 @@ body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 system-ui,-ap
 main{max-width:1080px;margin:0 auto;padding:32px 16px 72px}
 h1{font-size:28px;margin:0 0 4px;letter-spacing:-.01em}
 h2{font-size:20px;margin:48px 0 14px;padding-bottom:6px;border-bottom:1px solid var(--line)}
-h2 .n{display:inline-block;min-width:28px;color:var(--accent)}
+h2 .n{display:inline-block;min-width:30px;color:var(--accent)}
 h3{font-size:16px;margin:0 0 8px}
 p{margin:0 0 10px}
 ul{margin:0 0 10px;padding-left:20px}
@@ -40,10 +40,13 @@ code{font:13px ui-monospace,SFMono-Regular,Consolas,monospace;background:var(--s
 .meta{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 0}
 .chip{font-size:13px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px 10px;color:var(--muted)}
 .chip b{color:var(--text)}
+.toc{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px;margin:18px 0 0}
+.toc a{color:var(--accent);text-decoration:none}
+.toc a:hover{text-decoration:underline}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px}
 .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-@media (max-width:820px){.grid3{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}}
+@media (max-width:820px){.grid3,.grid2{grid-template-columns:1fr}}
 .resume{border-left:4px solid var(--accent);background:var(--accent-soft)}
 .resume ul{margin:8px 0 0}
 .offre h3{display:flex;align-items:center;gap:8px}
@@ -69,19 +72,22 @@ figure{margin:0}
 .schema figcaption{font-size:13px;color:var(--muted);margin-top:6px}
 /* Calendrier */
 .gantt{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
-.g-row{display:grid;grid-template-columns:230px 1fr 70px;gap:10px;align-items:center;padding:5px 0}
+.g-row{display:grid;grid-template-columns:240px 1fr 76px;gap:10px;align-items:center;padding:5px 0}
 .g-row + .g-row{border-top:1px dashed var(--line)}
 .g-name{font-size:14px}
 .g-name small{display:block;color:var(--muted);font-size:12px}
 .g-track{position:relative;height:18px;background:var(--surface-2);border-radius:5px}
 .g-bar{position:absolute;top:0;bottom:0;border-radius:5px;background:var(--adv)}
 .g-bar.fait{background:var(--ok)}
-.g-bar.durc{background:var(--max)}
+.g-bar.lic{background:var(--max)}
 .g-bar.test{background:var(--warn)}
 .g-dur{font-size:13px;color:var(--muted);text-align:right;white-space:nowrap}
-.g-axis{display:grid;grid-template-columns:230px 1fr 70px;gap:10px;font-size:12px;color:var(--muted);margin-top:6px}
-.g-ticks{display:flex;justify-content:space-between}
-@media (max-width:700px){.g-row,.g-axis{grid-template-columns:1fr}.g-dur{text-align:left}.g-axis>span:first-child,.g-axis>span:last-child{display:none}}
+.g-axis{display:grid;grid-template-columns:240px 1fr 76px;gap:10px;font-size:12px;color:var(--muted);margin-top:6px}
+.g-ticks{position:relative;height:16px}
+.g-ticks span{position:absolute;transform:translateX(-50%)}
+.g-ticks span:first-child{transform:none}
+.g-ticks span:last-child{transform:translateX(-100%)}
+@media (max-width:700px){.g-row,.g-axis{grid-template-columns:1fr}.g-dur{text-align:left}.g-axis>span{display:none}}
 /* Phases */
 .phase{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0}
 .phase-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 12px;margin-bottom:8px}
@@ -97,427 +103,451 @@ figure{margin:0}
 <main>
 
   <h1>Passage en client-serveur</h1>
-  <p class="sub">CaisseDZ Desktop sur plusieurs PC d'un même réseau local (LAN) : plan d'action, temps et modifications.
-    Document de travail : les changements de plan se font ici (voir le <a href="#journal">journal</a> en bas).</p>
+  <p class="sub">CaisseDZ Desktop en architecture client-serveur <b>illimitée</b> : un serveur CaisseDZ et sa base
+    PostgreSQL, des postes clients légers, les mêmes trois offres. Ce qu'on a déjà, ce qu'on va faire, les temps et
+    les modifications. Document de travail : les changements de plan se font ici (voir le <a href="#journal">journal</a>).</p>
   <div class="meta">
-    <span class="chip">Version du document : <b>3</b> · 30/10/2026</span>
+    <span class="chip">Version du document : <b>4</b> · 30/10/2026</span>
     <span class="chip">Application : <b>CaisseDZ Desktop 0.5.3</b></span>
-    <span class="chip">Durée estimée : <b>≈ 9 semaines</b> (première version utilisable ≈ 6,5)</span>
+    <span class="chip">Durée estimée : <b>≈ 22 semaines</b> (≈ 5 mois, un développeur)</span>
   </div>
+  <nav class="toc">
+    <a href="#resume">En bref</a><a href="#offres">Offres</a><a href="#acquis">Ce qu'on a déjà</a>
+    <a href="#architecture">Architecture</a><a href="#base">Base de données</a><a href="#licence">Licence et Smart Scan</a>
+    <a href="#caisses">Caisses et postes</a><a href="#installation">Installation</a><a href="#calendrier">Calendrier</a>
+    <a href="#phases">Phases</a><a href="#code">Code</a><a href="#risques">Vigilance</a><a href="#decisions">Décisions</a>
+  </nav>
 
   <!-- ——————————————————————————————————————————————— 0. Résumé -->
   <h2 id="resume"><span class="n">0</span>En bref</h2>
   <div class="card resume">
-    <p><b>Un PC devient le « poste principal » : c'est lui le serveur.</b> Les autres PC du magasin s'y connectent
-      sur le réseau local et travaillent en même temps sur les mêmes données (stock, ventes, clients, caisses).</p>
+    <p><b>Un serveur CaisseDZ tient les données et toute la logique ; les PC de caisse sont des postes clients qui lui
+      parlent par le réseau.</b> Le nombre de caisses n'a plus de limite technique : seule l'offre achetée en fixe une.</p>
     <ul>
-      <li><b>Pas de XAMPP, pas de MySQL, rien d'autre à installer.</b> Le serveur est déjà dans CaisseDZ : la base reste le
-        fichier SQLite chiffré du poste principal, et le petit serveur réseau qui sert aujourd'hui les téléphones
-        (CaisseDZ Scan, port 8787) sert aussi les autres PC.</li>
-      <li><b>Un seul installeur pour tous les PC.</b> Au premier lancement : « Ce PC est le poste principal » ou
-        « Rejoindre le poste principal » (trouvé tout seul sur le réseau).</li>
-      <li><b>Le code de l'application change peu</b> : tout le SQL passe déjà par les repositories. Sur un poste client,
-        ces repositories parlent à la base du poste principal au lieu d'une base locale.</li>
-      <li><b>Basic ne change pas</b> (un PC seul). Le réseau concerne <b>Advanced</b> et <b>Max</b>.</li>
+      <li><b>Serveur</b> : un service Windows « CaisseDZ Serveur », sans écran, sur le PC principal ou un petit PC dédié.
+        Il exécute les 32 services (encaisser, stock, clôtures…) et vérifie les droits.</li>
+      <li><b>Base</b> : PostgreSQL, installé et réglé <b>automatiquement</b> par notre installeur. Pas de XAMPP, rien à
+        configurer.</li>
+      <li><b>Postes clients</b> : l'application CaisseDZ actuelle (mêmes écrans), qui appelle le serveur au lieu d'écrire
+        en base. Elle garde une copie locale du catalogue et des clients pour une recherche et un scan instantanés.</li>
+      <li><b>Les trois offres ne changent pas</b> ; leurs limites (postes, caisses, magasins) sont appliquées par le
+        serveur, et les Smart Scans sont comptés pour toute la licence.</li>
+      <li><b>Environ 22 semaines</b>, en 9 phases, avec une version intermédiaire testable vers la semaine 15.</li>
     </ul>
   </div>
 
   <!-- ——————————————————————————————————————————————— 1. Offres -->
-  <h2 id="offres"><span class="n">1</span>Les trois offres et le réseau</h2>
+  <h2 id="offres"><span class="n">1</span>Les trois offres</h2>
   <div class="grid3">
     <div class="card offre">
       <h3><span class="dot" style="background:var(--basic)"></span>Basic</h3>
-      <p class="big">1 magasin · 1 caisse · 1 PC</p>
-      <p>Comme aujourd'hui : un PC autonome, sa propre base. La caisse système et le magasin système sont fixes ; pas de
-        coffre, pas de poste client.</p>
+      <p class="big">1 poste · 1 caisse · 1 magasin</p>
+      <p>Serveur et poste sur le même PC, installés ensemble. La caisse système et le magasin système sont fixes ;
+        pas de coffre, pas de champ caisse ni magasin.</p>
     </div>
     <div class="card offre">
       <h3><span class="dot" style="background:var(--adv)"></span>Advanced</h3>
-      <p class="big">1 magasin · jusqu'à 5 caisses · jusqu'à 5 PC</p>
-      <p>Le poste principal + jusqu'à 4 postes clients dans le même magasin. Chaque PC est une caisse ; tous vendent en
-        même temps sur le même stock.</p>
+      <p class="big">plusieurs postes · plusieurs caisses · 1 magasin</p>
+      <p>Plusieurs PC de caisse dans le même magasin, qui vendent en même temps sur le même stock. Coffre et
+        transferts entre caisses.</p>
     </div>
     <div class="card offre">
       <h3><span class="dot" style="background:var(--max)"></span>Max</h3>
-      <p class="big">jusqu'à 15 magasins · 15 caisses · 15 PC</p>
-      <p>Plusieurs magasins et plusieurs caisses, transferts entre magasins et entre caisses. Tous les PC sur le même
-        réseau (voir la <a href="#decisions">décision D1</a> pour des magasins éloignés).</p>
+      <p class="big">plusieurs postes · plusieurs caisses · plusieurs magasins</p>
+      <p>Tout Advanced, plus plusieurs magasins et les transferts entre magasins. Magasins éloignés : serveur en
+        ligne ou VPN (<a href="#decisions">D1</a>).</p>
     </div>
   </div>
   <div class="table-wrap" style="margin-top:12px"><table>
     <thead><tr><th></th><th class="c">Basic</th><th class="c">Advanced</th><th class="c">Max</th></tr></thead>
     <tbody>
-      <tr><td>Magasins actifs</td><td class="c">1</td><td class="c">1</td><td class="c">15</td></tr>
-      <tr><td>Caisses actives (hors coffre)</td><td class="c">1</td><td class="c">5</td><td class="c">15</td></tr>
-      <tr><td>Postes clients (en plus du poste principal)</td><td class="c">0</td><td class="c">4</td><td class="c">14</td></tr>
-      <tr><td>PC au total (poste principal compris)</td><td class="c">1</td><td class="c">5</td><td class="c">15</td></tr>
-      <tr><td>Mode</td><td class="c">Autonome</td><td class="c">Principal + clients</td><td class="c">Principal + clients</td></tr>
+      <tr><td>Postes (PC)</td><td class="c">1</td><td class="c">plusieurs</td><td class="c">plusieurs</td></tr>
+      <tr><td>Caisses incluses (hors coffre)</td><td class="c">1</td><td class="c">5</td><td class="c">15</td></tr>
+      <tr><td>Caisses supplémentaires (option payante)</td><td class="c">—</td><td class="c">✓</td><td class="c">✓</td></tr>
+      <tr><td>Magasins</td><td class="c">1</td><td class="c">1</td><td class="c">15</td></tr>
       <tr><td>Coffre, transferts entre caisses</td><td class="c">—</td><td class="c">✓</td><td class="c">✓</td></tr>
       <tr><td>Transferts entre magasins</td><td class="c">—</td><td class="c">—</td><td class="c">✓</td></tr>
+      <tr><td>Smart Scans</td><td class="c" colspan="3">comptés pour toute la licence (tous les postes et téléphones)</td></tr>
     </tbody>
   </table></div>
-  <p class="sub" style="margin-top:8px">Les limites de PC suivent celles des caisses : un PC = une caisse. Le palier
-    « Ultra » est renommé <b>Max</b> dans l'application (fait le 30/10/2026) ; les codes d'offre de bens_ds
-    (<code>DSK-ULTRA</code>…) ne changent pas.</p>
+  <p class="sub" style="margin-top:8px">Une caisse peut s'ouvrir sur n'importe quel PC : le nombre de postes suit le
+    nombre de caisses (on ne peut pas encaisser à plus de PC qu'il n'y a de caisses). Le prix des caisses
+    supplémentaires reste à fixer (<a href="#decisions">D3</a>).</p>
 
-  <!-- ——————————————————————————————————————————————— 2. XAMPP -->
-  <h2 id="xampp"><span class="n">2</span>Éviter XAMPP : les options comparées</h2>
+  <!-- ——————————————————————————————————————————————— 2. Acquis -->
+  <h2 id="acquis"><span class="n">2</span>Ce qu'on a déjà</h2>
+  <p>Une bonne partie de l'architecture illimitée existe déjà dans l'application actuelle et se garde.</p>
   <div class="table-wrap"><table>
-    <thead><tr><th>Option</th><th>Ce que le client installe</th><th>Avantages</th><th>Inconvénients</th><th>Avis</th></tr></thead>
+    <thead><tr><th>Acquis</th><th>Où</th><th>Ce qu'il devient</th><th>État</th></tr></thead>
     <tbody>
-      <tr>
-        <td><b>XAMPP / MySQL</b></td>
-        <td>XAMPP, démarrer MySQL, créer la base, ouvrir le port</td>
-        <td>Serveur SQL connu</td>
-        <td>Installation et réglages à la main, service à surveiller, réécrire tout le SQL (SQLite → MySQL), chiffrement à refaire</td>
-        <td><span class="tag bad">Non</span></td>
-      </tr>
-      <tr>
-        <td><b>PostgreSQL embarqué</b></td>
-        <td>Rien (installé par notre installeur)</td>
-        <td>Vrai serveur multi-utilisateurs</td>
-        <td>+150 Mo, un service Windows à gérer, migration de toutes les requêtes et des 46 migrations, perte de SQLCipher</td>
-        <td><span class="tag warn">Trop lourd</span></td>
-      </tr>
-      <tr>
-        <td><b>Base SQLite sur un dossier partagé</b></td>
-        <td>Un partage Windows</td>
-        <td>Aucun code serveur</td>
-        <td>SQLite sur un partage réseau corrompt la base ; clé de chiffrement liée au PC</td>
-        <td><span class="tag bad">Dangereux</span></td>
-      </tr>
-      <tr class="reco">
-        <td><b>Serveur CaisseDZ intégré</b> (recommandé)</td>
-        <td><b>Rien</b> : le même installeur sur chaque PC</td>
-        <td>Base SQLCipher inchangée, serveur réseau déjà présent (téléphones), même code, mises à jour par le poste principal</td>
-        <td>Le poste principal doit rester allumé pendant le travail</td>
-        <td><span class="tag ok">Oui</span></td>
-      </tr>
+      <tr><td>Un service par cas d'usage, chaque écriture en UNE transaction (32 services)</td><td><code>lib/application/</code></td><td>Le cœur du serveur, exécuté tel quel côté serveur</td><td><span class="tag ok">Réutilisé</span></td></tr>
+      <tr><td>Tout le SQL dans 28 repositories</td><td><code>lib/data/</code></td><td>Le seul endroit à porter vers PostgreSQL</td><td><span class="tag warn">À porter</span></td></tr>
+      <tr><td>Modèles immuables, référentiel, codes §8.10, calculs, scellement SHA-256</td><td><code>lib/domain/</code></td><td>Partagés par le serveur et les postes</td><td><span class="tag ok">Réutilisé</span></td></tr>
+      <tr><td>Serveur HTTP sur le réseau local, appairage, jetons d'appareil, <code>/api/v1</code></td><td><code>lib/application/serveur_mobile.dart</code></td><td>Point de départ de l'API du serveur (téléphones et postes)</td><td><span class="tag ok">Réutilisé</span></td></tr>
+      <tr><td>Compteurs de version des écrans (rafraîchir après écriture)</td><td>providers <code>…VersionProvider</code></td><td>Branchés sur les annonces de changement du serveur</td><td><span class="tag ok">Réutilisé</span></td></tr>
+      <tr><td>Licence signée Ed25519 vérifiée hors ligne, check-in BENS</td><td><code>lib/application/licence_service.dart</code></td><td>Tenue par le serveur, transmise aux postes</td><td><span class="tag ok">Réutilisé</span></td></tr>
+      <tr><td>Paliers et limites (magasins, caisses, caissiers) appliqués par les services</td><td><code>lib/domain/permissions.dart</code></td><td>+ postes et caisses supplémentaires</td><td><span class="tag ok">Réutilisé</span></td></tr>
+      <tr><td>Smart Scans comptés par compte BENS</td><td><code>lib/application/smart_scan_service.dart</code></td><td>Appelé par le serveur seulement</td><td><span class="tag ok">Réutilisé</span></td></tr>
+      <tr><td>Caisses attribuées par utilisateur, caisse courante, session partagée</td><td>0.5.3 (migration v046)</td><td>Base du choix de la caisse sur n'importe quel PC</td><td><span class="tag ok">Fait</span></td></tr>
+      <tr><td>Basic à une seule caisse, sans coffre ni champ caisse</td><td>0.5.3</td><td>Gardé</td><td><span class="tag ok">Fait</span></td></tr>
+      <tr><td>Palier Ultra renommé Max</td><td>30/10/2026</td><td>Gardé</td><td><span class="tag ok">Fait</span></td></tr>
+      <tr><td>21 écrans qui lisent encore la base directement</td><td><code>lib/features/</code></td><td>À faire passer par les services</td><td><span class="tag warn">À reprendre</span></td></tr>
+      <tr><td>Réglages d'imprimante dans la base partagée</td><td><code>parametre</code> (<code>imprimante_*</code>)</td><td>Réglages du poste, dans un fichier local du PC</td><td><span class="tag warn">À reprendre</span></td></tr>
     </tbody>
   </table></div>
 
   <!-- ——————————————————————————————————————————————— 3. Architecture -->
-  <h2 id="architecture"><span class="n">3</span>L'architecture cible</h2>
+  <h2 id="architecture"><span class="n">3</span>L'architecture illimitée</h2>
   <figure class="schema">
-    <svg viewBox="0 0 900 330" role="img" aria-label="Poste principal relié aux postes clients et aux téléphones par le réseau local">
+    <svg viewBox="0 0 900 380" role="img" aria-label="Serveur CaisseDZ et PostgreSQL reliés aux postes clients, aux téléphones et aux services BENS">
       <defs>
         <marker id="fl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
           <path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/>
         </marker>
       </defs>
-      <!-- Poste principal -->
-      <rect x="300" y="20" width="300" height="150" rx="12" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/>
-      <text x="450" y="46" text-anchor="middle" font-size="16" font-weight="700" fill="var(--text)">Poste principal (serveur)</text>
-      <text x="450" y="70" text-anchor="middle" font-size="13" fill="var(--text)">CaisseDZ + caisse 1</text>
-      <rect x="325" y="84" width="120" height="70" rx="8" fill="var(--surface)" stroke="var(--line)"/>
-      <text x="385" y="110" text-anchor="middle" font-size="12" fill="var(--text)">Base SQLCipher</text>
-      <text x="385" y="128" text-anchor="middle" font-size="12" fill="var(--muted)">caissedz.db</text>
-      <text x="385" y="144" text-anchor="middle" font-size="12" fill="var(--muted)">une seule copie</text>
-      <rect x="455" y="84" width="120" height="70" rx="8" fill="var(--surface)" stroke="var(--line)"/>
-      <text x="515" y="110" text-anchor="middle" font-size="12" fill="var(--text)">Serveur réseau</text>
-      <text x="515" y="128" text-anchor="middle" font-size="12" fill="var(--muted)">port 8787</text>
-      <text x="515" y="144" text-anchor="middle" font-size="12" fill="var(--muted)">PC + téléphones</text>
+      <!-- BENS -->
+      <rect x="690" y="20" width="190" height="64" rx="10" fill="var(--surface-2)" stroke="var(--line)"/>
+      <text x="785" y="46" text-anchor="middle" font-size="14" font-weight="600" fill="var(--text)">Services BENS</text>
+      <text x="785" y="66" text-anchor="middle" font-size="12" fill="var(--muted)">licence · catalogue · Smart Scan</text>
+      <!-- Serveur -->
+      <rect x="250" y="20" width="400" height="170" rx="12" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/>
+      <text x="450" y="46" text-anchor="middle" font-size="16" font-weight="700" fill="var(--text)">PC serveur</text>
+      <rect x="272" y="62" width="170" height="110" rx="8" fill="var(--surface)" stroke="var(--line)"/>
+      <text x="357" y="88" text-anchor="middle" font-size="13" font-weight="600" fill="var(--text)">CaisseDZ Serveur</text>
+      <text x="357" y="108" text-anchor="middle" font-size="12" fill="var(--muted)">service Windows</text>
+      <text x="357" y="126" text-anchor="middle" font-size="12" fill="var(--muted)">32 services · droits</text>
+      <text x="357" y="144" text-anchor="middle" font-size="12" fill="var(--muted)">API + annonces</text>
+      <text x="357" y="162" text-anchor="middle" font-size="12" fill="var(--muted)">licence · sauvegardes</text>
+      <rect x="458" y="62" width="170" height="110" rx="8" fill="var(--surface)" stroke="var(--line)"/>
+      <text x="543" y="88" text-anchor="middle" font-size="13" font-weight="600" fill="var(--text)">PostgreSQL</text>
+      <text x="543" y="108" text-anchor="middle" font-size="12" fill="var(--muted)">installé tout seul</text>
+      <text x="543" y="126" text-anchor="middle" font-size="12" fill="var(--muted)">une seule base</text>
+      <text x="543" y="144" text-anchor="middle" font-size="12" fill="var(--muted)">écritures simultanées</text>
+      <line x1="442" y1="117" x2="458" y2="117" stroke="var(--muted)" stroke-width="2"/>
+      <line x1="650" y1="52" x2="688" y2="52" stroke="var(--muted)" stroke-width="2" marker-end="url(#fl)"/>
       <!-- Réseau -->
-      <line x1="60" y1="215" x2="840" y2="215" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 5"/>
-      <text x="840" y="207" text-anchor="end" font-size="12" fill="var(--muted)">réseau local (Wi-Fi ou câble)</text>
-      <line x1="450" y1="170" x2="450" y2="215" stroke="var(--muted)" stroke-width="2"/>
-      <!-- Clients -->
+      <line x1="40" y1="245" x2="860" y2="245" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 5"/>
+      <text x="860" y="237" text-anchor="end" font-size="12" fill="var(--muted)">réseau local (ou internet / VPN pour Max multi-sites)</text>
+      <line x1="450" y1="190" x2="450" y2="245" stroke="var(--muted)" stroke-width="2"/>
+      <!-- Postes -->
       <g>
-        <line x1="150" y1="215" x2="150" y2="245" stroke="var(--muted)" stroke-width="2" marker-end="url(#fl)"/>
-        <rect x="60" y="248" width="180" height="62" rx="10" fill="var(--surface)" stroke="var(--adv)" stroke-width="2"/>
-        <text x="150" y="273" text-anchor="middle" font-size="14" font-weight="600" fill="var(--text)">Poste client · caisse 2</text>
-        <text x="150" y="294" text-anchor="middle" font-size="12" fill="var(--muted)">imprimante et tiroir locaux</text>
+        <line x1="135" y1="245" x2="135" y2="275" stroke="var(--muted)" stroke-width="2" marker-end="url(#fl)"/>
+        <rect x="40" y="278" width="190" height="80" rx="10" fill="var(--surface)" stroke="var(--adv)" stroke-width="2"/>
+        <text x="135" y="302" text-anchor="middle" font-size="14" font-weight="600" fill="var(--text)">Poste client 1</text>
+        <text x="135" y="322" text-anchor="middle" font-size="12" fill="var(--muted)">écrans CaisseDZ</text>
+        <text x="135" y="340" text-anchor="middle" font-size="12" fill="var(--muted)">copie du catalogue</text>
       </g>
       <g>
-        <line x1="380" y1="215" x2="380" y2="245" stroke="var(--muted)" stroke-width="2" marker-end="url(#fl)"/>
-        <rect x="290" y="248" width="180" height="62" rx="10" fill="var(--surface)" stroke="var(--adv)" stroke-width="2"/>
-        <text x="380" y="273" text-anchor="middle" font-size="14" font-weight="600" fill="var(--text)">Poste client · caisse 3</text>
-        <text x="380" y="294" text-anchor="middle" font-size="12" fill="var(--muted)">même stock, même clients</text>
+        <line x1="355" y1="245" x2="355" y2="275" stroke="var(--muted)" stroke-width="2" marker-end="url(#fl)"/>
+        <rect x="260" y="278" width="190" height="80" rx="10" fill="var(--surface)" stroke="var(--adv)" stroke-width="2"/>
+        <text x="355" y="302" text-anchor="middle" font-size="14" font-weight="600" fill="var(--text)">Poste client 2</text>
+        <text x="355" y="322" text-anchor="middle" font-size="12" fill="var(--muted)">imprimante, tiroir</text>
+        <text x="355" y="340" text-anchor="middle" font-size="12" fill="var(--muted)">et douchette locaux</text>
       </g>
       <g>
-        <line x1="610" y1="215" x2="610" y2="245" stroke="var(--muted)" stroke-width="2" marker-end="url(#fl)"/>
-        <rect x="520" y="248" width="180" height="62" rx="10" fill="var(--surface)" stroke="var(--max)" stroke-width="2"/>
-        <text x="610" y="273" text-anchor="middle" font-size="14" font-weight="600" fill="var(--text)">Poste client · dépôt</text>
-        <text x="610" y="294" text-anchor="middle" font-size="12" fill="var(--muted)">Max : autre magasin</text>
+        <line x1="575" y1="245" x2="575" y2="275" stroke="var(--muted)" stroke-width="2" marker-end="url(#fl)"/>
+        <rect x="480" y="278" width="190" height="80" rx="10" fill="var(--surface)" stroke="var(--max)" stroke-width="2"/>
+        <text x="575" y="302" text-anchor="middle" font-size="14" font-weight="600" fill="var(--text)">Poste client N</text>
+        <text x="575" y="322" text-anchor="middle" font-size="12" fill="var(--muted)">Max : autre magasin</text>
+        <text x="575" y="340" text-anchor="middle" font-size="12" fill="var(--muted)">même serveur</text>
       </g>
       <g>
-        <line x1="790" y1="215" x2="790" y2="245" stroke="var(--muted)" stroke-width="2" marker-end="url(#fl)"/>
-        <rect x="730" y="248" width="120" height="62" rx="10" fill="var(--surface)" stroke="var(--line)" stroke-width="2"/>
-        <text x="790" y="273" text-anchor="middle" font-size="14" font-weight="600" fill="var(--text)">Téléphones</text>
-        <text x="790" y="294" text-anchor="middle" font-size="12" fill="var(--muted)">CaisseDZ Scan</text>
+        <line x1="775" y1="245" x2="775" y2="275" stroke="var(--muted)" stroke-width="2" marker-end="url(#fl)"/>
+        <rect x="700" y="278" width="150" height="80" rx="10" fill="var(--surface)" stroke="var(--line)" stroke-width="2"/>
+        <text x="775" y="302" text-anchor="middle" font-size="14" font-weight="600" fill="var(--text)">Téléphones</text>
+        <text x="775" y="322" text-anchor="middle" font-size="12" fill="var(--muted)">CaisseDZ Scan</text>
       </g>
     </svg>
-    <figcaption>Une seule base, sur le poste principal. Les postes clients n'ont pas de copie des données : ils lisent et
-      écrivent à travers le serveur réseau, et reçoivent un signal à chaque changement pour rafraîchir leurs écrans.</figcaption>
+    <figcaption>Les postes clients et les téléphones ne parlent qu'au serveur CaisseDZ ; seul le serveur parle à la base
+      et aux services BENS. En Basic, serveur et poste sont sur le même PC.</figcaption>
   </figure>
 
-  <div class="grid2" style="margin-top:12px">
+  <div class="grid3" style="margin-top:12px">
     <div class="card">
-      <h3>Ce qui reste sur le poste principal</h3>
+      <h3>Sur le serveur</h3>
       <ul>
-        <li>La base chiffrée, les sauvegardes, la restauration.</li>
-        <li>La licence BENS et le check-in (les postes clients la reçoivent du principal).</li>
-        <li>Le catalogue BENS, la tendance, Smart Scan, les téléphones.</li>
-        <li>L'heure de référence (dates des ventes, clôtures Z scellées).</li>
+        <li>La base PostgreSQL, les sauvegardes.</li>
+        <li>Les 32 services et le contrôle des droits.</li>
+        <li>La licence, le check-in, les limites des offres.</li>
+        <li>Catalogue BENS, tendance, Smart Scan.</li>
+        <li>L'heure de référence (ventes, clôtures Z).</li>
       </ul>
     </div>
     <div class="card">
-      <h3>Ce qui reste sur chaque PC</h3>
+      <h3>Sur chaque poste client</h3>
       <ul>
-        <li>L'écran, les paniers en cours, la caisse du poste.</li>
-        <li>L'imprimante de tickets, le tiroir, la douchette, le format du ticket.</li>
-        <li>Les exports Excel / PDF enregistrés sur ce PC.</li>
-        <li>La langue et le thème de l’écran.</li>
+        <li>Les écrans actuels, les paniers en cours.</li>
+        <li>Une copie locale du catalogue, des clients et des réglages, mise à jour par les annonces du serveur.</li>
+        <li>L'imprimante, le tiroir, la douchette.</li>
+        <li>Les exports enregistrés sur ce PC.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Entre les deux</h3>
+      <ul>
+        <li>Une API (HTTPS sur le réseau local, certificat reconnu à l'appairage).</li>
+        <li>Un canal d'annonces (WebSocket) : « le stock a changé », « une vente a été encaissée »…</li>
+        <li>Une version commune : serveur et postes doivent être à la même version.</li>
       </ul>
     </div>
   </div>
+  <div class="callout info"><b>Fluidité.</b> Le scan d'un code-barres et la recherche d'un produit se font sur la copie
+    locale du poste : instantanés, comme aujourd'hui. Seuls l'encaissement et les autres écritures passent par le
+    serveur, en une seule demande (quelques millisecondes sur un réseau local). Deux caisses qui vendent le dernier
+    article : le serveur vérifie le stock dans la transaction ; la seconde reçoit « Stock insuffisant ».</div>
 
-  <!-- ——————————————————————————————————————————————— 4. Fonctionnement -->
-  <h2 id="fonctionnement"><span class="n">4</span>Comment un poste client parle au poste principal</h2>
-  <p>Aujourd'hui, tout le SQL est dans 28 repositories (<code>lib/data/</code>) qui reçoivent une base SQLite ; les 33
-    services (<code>lib/application/</code>) écrivent en une transaction. Réécrire ces quelque 330 accès en API REST
-    prendrait des mois. Le plan garde ce code tel quel, en deux temps :</p>
+  <!-- ——————————————————————————————————————————————— 4. Base -->
+  <h2 id="base"><span class="n">4</span>La base de données : PostgreSQL sans XAMPP</h2>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Option</th><th>Ce que le client installe</th><th>Limite</th><th>Avis</th></tr></thead>
+    <tbody>
+      <tr><td><b>XAMPP / MySQL</b></td><td>XAMPP, démarrer MySQL, créer la base, ouvrir le port</td><td>Réglages à la main, service à surveiller</td><td><span class="tag bad">Non</span></td></tr>
+      <tr><td><b>Garder SQLite sur le serveur</b></td><td>Rien</td><td>Une écriture à la fois : très bien jusqu'à ~15–30 caisses, pas illimité</td><td><span class="tag warn">Trop juste</span></td></tr>
+      <tr class="reco"><td><b>PostgreSQL embarqué</b> (recommandé)</td><td><b>Rien</b> : notre installeur pose PostgreSQL, crée la base, un mot de passe aléatoire et le service Windows</td><td>Des centaines de caisses ; serveur en ligne possible pour Max multi-sites</td><td><span class="tag ok">Oui</span></td></tr>
+    </tbody>
+  </table></div>
+  <ul style="margin-top:10px">
+    <li><b>Schéma</b> : les 46 migrations SQLite deviennent un schéma PostgreSQL de départ (v1), puis des migrations
+      PostgreSQL. Les déclencheurs d'intégrité fiscale (journal de caisse et ventes immuables, clôtures scellées)
+      sont réécrits en PL/pgSQL.</li>
+    <li><b>Requêtes</b> : les 28 repositories passent à la syntaxe PostgreSQL (paramètres <code>$1</code>,
+      <code>ON CONFLICT</code>, dates <code>timestamptz</code>, textes insensibles à la casse…).</li>
+    <li><b>Chiffrement</b> : SQLCipher disparaît ; la base est protégée par le compte de service, un mot de passe
+      aléatoire gardé par Windows (DPAPI) et le chiffrement du disque (BitLocker) conseillé. Le scellement SHA-256
+      des clôtures et des ventes ne change pas.</li>
+    <li><b>Sauvegardes</b> : <code>pg_dump</code> automatique chaque jour dans un dossier choisi (clé USB, disque externe),
+      30 fichiers gardés, comme aujourd'hui ; restauration depuis Paramètres du serveur.</li>
+  </ul>
+
+  <!-- ——————————————————————————————————————————————— 5. Licence -->
+  <h2 id="licence"><span class="n">5</span>Licence, offres et Smart Scan</h2>
   <div class="grid2">
     <div class="card">
-      <h3>Étape A · la base à distance</h3>
-      <p>Un objet <code>BaseDistante</code> se comporte comme la base SQLite (<code>query</code>, <code>insert</code>,
-        <code>update</code>, <code>transaction</code>…) mais envoie chaque requête au poste principal par une connexion
-        WebSocket. Le poste principal l'exécute sur la vraie base et renvoie le résultat.</p>
+      <h3>Une licence pour toute la boutique</h3>
       <ul>
-        <li>Une transaction d'un poste client est tenue par le principal jusqu'au <i>commit</i> (rollback automatique
-          si le PC se déconnecte ou après 10 s).</li>
-        <li>Après chaque écriture, le principal annonce les tables touchées à tous les postes, qui rafraîchissent
-          leurs écrans.</li>
-        <li>Sur un réseau local, une requête prend environ 1 ms : un encaissement reste instantané.</li>
+        <li>La licence BENS est liée au <b>serveur</b> (son code machine), pas aux postes.</li>
+        <li>Elle porte le palier et le <b>nombre de caisses</b> (incluses + supplémentaires achetées), signés par bens_ds.</li>
+        <li>Le serveur applique les limites : caisses actives, sessions ouvertes, magasins, postes appairés.</li>
+        <li>Caisse supplémentaire achetée : au check-in suivant, la licence passe à N + 1 caisses, sans changer de clé.</li>
       </ul>
     </div>
     <div class="card">
-      <h3>Étape B · les écritures sensibles sur le principal</h3>
-      <p>Les opérations qui comptent le plus sont exécutées entièrement par le poste principal, en une seule demande :
-        le poste client envoie « encaisser ce panier » et reçoit la vente.</p>
+      <h3>Smart Scan compté pour la licence</h3>
       <ul>
-        <li><code>VenteService.encaisser</code>, annulation et modification de vente, retours.</li>
-        <li>Ouverture et clôture de session, clôture Z (scellement SHA-256).</li>
-        <li>Achats, versements, transferts.</li>
+        <li>Les postes clients et les téléphones envoient la photo de la facture au <b>serveur</b> ; seul le serveur
+          appelle Smart Scan, avec sa licence.</li>
+        <li>bens_ds décompte sur le compte unique (déjà le cas aujourd'hui) : inclus d'abord, puis les packs.</li>
+        <li>Le serveur relaie le solde et les dates de fin : tous les postes affichent le même chiffre.</li>
+        <li>Un pack acheté profite à toute la boutique.</li>
       </ul>
-      <p>Moins d'allers-retours, aucune transaction ouverte à distance pour ces cas, et un contrôle des droits fait
-        par le serveur.</p>
     </div>
   </div>
-  <div class="callout info"><b>Stock juste entre caisses.</b> Deux caisses qui vendent le dernier article en même temps :
-    la vérification du stock et l'écriture se font dans la même transaction sur la seule base. La seconde vente
-    trouve le stock à zéro et reçoit « Stock insuffisant ». Pas de double vente.</div>
+  <p class="sub" style="margin-top:8px">À faire côté bens_ds (autre dépôt) : offre « Caisse supplémentaire » vendue à
+    la quantité, nombre de caisses dans la licence signée, champ « caisses » dans le tableau de bord, libellé « Max ».
+    Les codes <code>DSK-ULTRA…</code> restent.</p>
 
-  <!-- ——————————————————————————————————————————————— 5. Installation -->
-  <h2 id="installation"><span class="n">5</span>Installation sans configuration</h2>
+  <!-- ——————————————————————————————————————————————— 6. Caisses -->
+  <h2 id="caisses"><span class="n">6</span>Caisses, postes et utilisateurs</h2>
+  <ul>
+    <li><b>Connexion</b> : sur chaque PC, l'utilisateur se connecte avec son compte. Les comptes, rôles, caisses et
+      magasins attribués sont sur le serveur.</li>
+    <li><b>N'importe quelle caisse sur n'importe quel PC</b> : il ouvre une de ses caisses attribuées (l'Admin :
+      n'importe laquelle). Le PC propose la dernière caisse utilisée sur ce poste.</li>
+    <li><b>Une caisse ouverte reste sur son PC</b> jusqu'à la clôture de sa session ; ailleurs elle apparaît « En cours
+      sur PC-2 ». Clôturée, elle redevient libre.</li>
+    <li><b>PC en panne</b> avec une caisse ouverte : l'Admin clôture la session depuis Gestion caisse, sur n'importe quel PC.</li>
+    <li><b>Postes</b> : chaque PC appairé a un code <code>PST…</code>, un nom et un jeton ; écran « Postes » sur le
+      serveur (nom, dernière connexion, caisse ouverte, Déconnecter).</li>
+  </ul>
+
+  <!-- ——————————————————————————————————————————————— 7. Installation -->
+  <h2 id="installation"><span class="n">7</span>Installation sans configuration</h2>
   <div class="table-wrap"><table>
     <thead><tr><th>Étape</th><th>Ce que voit l'utilisateur</th><th>Ce que fait CaisseDZ</th></tr></thead>
     <tbody>
-      <tr><td>1. Installer</td><td>Le même <code>CaisseDZ-Desktop-x.y.z-setup.exe</code> sur chaque PC</td>
-        <td>Ajoute la règle du pare-feu Windows pour le port 8787 (réseau privé), une seule fois, avec la confirmation
-          administrateur de Windows</td></tr>
-      <tr><td>2. Premier lancement du PC principal</td><td>« Ce PC est le poste principal » → activation de la licence
-          BENS, configuration de la boutique (comme aujourd'hui)</td>
-        <td>Crée la base, démarre le serveur réseau, s'annonce sur le réseau</td></tr>
-      <tr><td>3. Premier lancement d'un autre PC</td><td>« Rejoindre le poste principal » : le principal apparaît dans
-          la liste ; saisir le code à 6 chiffres affiché sur le principal</td>
-        <td>Découverte automatique sur le réseau (annonce UDP), appairage par code comme les téléphones ; aucune
-          adresse IP à taper</td></tr>
-      <tr><td>4. Choisir la caisse du poste</td><td>Le poste client prend une caisse libre (ou en crée une si la formule
-          le permet)</td><td>Enregistre le poste et sa caisse sur le principal</td></tr>
-      <tr><td>5. Tous les jours</td><td>Allumer le PC principal, puis les autres</td>
-        <td>Le principal démarre avec Windows dans la zone de notification ; les postes se reconnectent seuls, même
-          si l'adresse IP du principal a changé</td></tr>
-      <tr><td>6. Mise à jour</td><td>Installer la nouvelle version sur le principal</td>
-        <td>Les postes clients voient « Mise à jour disponible », la téléchargent depuis le principal et
-          s'installent ; un poste d'une autre version est refusé tant qu'il n'est pas à jour</td></tr>
+      <tr><td>1. Installer le serveur</td><td>Le même installeur ; choix « Serveur et caisse » (Basic : choix automatique)</td>
+        <td>Pose PostgreSQL et CaisseDZ Serveur comme services Windows, crée la base, ouvre le pare-feu sur le réseau
+          privé, démarre avec Windows</td></tr>
+      <tr><td>2. Activer</td><td>Licence BENS et configuration de la boutique, comme aujourd'hui</td><td>La licence est liée au PC serveur</td></tr>
+      <tr><td>3. Installer un poste client</td><td>Le même installeur ; choix « Poste de caisse »</td><td>Installe seulement l'application, sans base ni serveur</td></tr>
+      <tr><td>4. Rejoindre</td><td>Le serveur apparaît dans la liste ; saisir le code à 6 chiffres affiché sur le serveur</td>
+        <td>Découverte automatique sur le réseau, appairage, téléchargement du catalogue</td></tr>
+      <tr><td>5. Tous les jours</td><td>Allumer le PC serveur, puis les postes</td><td>Le serveur démarre seul ; les postes se reconnectent seuls, même si l'adresse IP a changé</td></tr>
+      <tr><td>6. Mise à jour</td><td>Installer la nouvelle version sur le serveur</td><td>Les postes la reçoivent du serveur et s'installent ; un poste d'une autre version attend sa mise à jour</td></tr>
+      <tr><td>Clients actuels (0.5.x)</td><td>Installer la nouvelle version</td><td>Reprise automatique de la base SQLite vers PostgreSQL, chaîne fiscale vérifiée avant et après</td></tr>
     </tbody>
   </table></div>
 
-  <!-- ——————————————————————————————————————————————— 6. Calendrier -->
-  <h2 id="calendrier"><span class="n">6</span>Le calendrier</h2>
+  <!-- ——————————————————————————————————————————————— 8. Calendrier -->
+  <h2 id="calendrier"><span class="n">8</span>Le calendrier</h2>
   <div class="gantt">
-    <div class="g-row"><div class="g-name">P0 · Renommer Ultra en Max<small>fait</small></div>
-      <div class="g-track"><div class="g-bar fait" style="left:0;width:1%"></div></div><div class="g-dur">½ jour</div></div>
-    <div class="g-row"><div class="g-name">P1 · Fondations<small>poste, horloge, réglages locaux</small></div>
-      <div class="g-track"><div class="g-bar" style="left:0;width:11.1%"></div></div><div class="g-dur">1 sem.</div></div>
-    <div class="g-row"><div class="g-name">P2 · Serveur de données<small>sur le poste principal</small></div>
-      <div class="g-track"><div class="g-bar" style="left:11.1%;width:16.7%"></div></div><div class="g-dur">1,5 sem.</div></div>
-    <div class="g-row"><div class="g-name">P3 · Poste client<small>base à distance, rafraîchissement</small></div>
-      <div class="g-track"><div class="g-bar" style="left:27.8%;width:22.2%"></div></div><div class="g-dur">2 sem.</div></div>
-    <div class="g-row"><div class="g-name">P4 · Postes, caisses, licence<small>limites Advanced / Max</small></div>
-      <div class="g-track"><div class="g-bar" style="left:50%;width:11.1%"></div></div><div class="g-dur">1 sem.</div></div>
-    <div class="g-row"><div class="g-name">P5 · Installation automatique<small>pare-feu, découverte, mises à jour</small></div>
-      <div class="g-track"><div class="g-bar" style="left:61.1%;width:11.1%"></div></div><div class="g-dur">1 sem.</div></div>
-    <div class="g-row"><div class="g-name">P6 · Écritures sensibles<small>étape B</small></div>
-      <div class="g-track"><div class="g-bar durc" style="left:72.2%;width:16.7%"></div></div><div class="g-dur">1,5 sem.</div></div>
-    <div class="g-row"><div class="g-name">P7 · Tests et recette<small>3 PC réels</small></div>
-      <div class="g-track"><div class="g-bar test" style="left:88.9%;width:11.1%"></div></div><div class="g-dur">1 sem.</div></div>
-    <div class="g-axis"><span></span><div class="g-ticks"><span>sem. 0</span><span>2</span><span>4</span><span>6</span><span>8</span><span>9</span></div><span></span></div>
+    <div class="g-row"><div class="g-name">P0 · Ultra → Max, caisses par utilisateur, Basic<small>fait</small></div>
+      <div class="g-track"><div class="g-bar fait" style="left:0;width:1%"></div></div><div class="g-dur">fait</div></div>
+    <div class="g-row"><div class="g-name">P1 · Socle<small>projets, horloge, réglages du poste</small></div>
+      <div class="g-track"><div class="g-bar" style="left:0;width:8.9%"></div></div><div class="g-dur">2 sem.</div></div>
+    <div class="g-row"><div class="g-name">P2 · PostgreSQL<small>schéma, déclencheurs, 28 repositories</small></div>
+      <div class="g-track"><div class="g-bar" style="left:8.9%;width:22.2%"></div></div><div class="g-dur">5 sem.</div></div>
+    <div class="g-row"><div class="g-name">P3 · Serveur et API<small>32 services, droits, annonces</small></div>
+      <div class="g-track"><div class="g-bar" style="left:31.1%;width:17.8%"></div></div><div class="g-dur">4 sem.</div></div>
+    <div class="g-row"><div class="g-name">P4 · Poste client<small>appels API, copie locale</small></div>
+      <div class="g-track"><div class="g-bar" style="left:48.9%;width:17.8%"></div></div><div class="g-dur">4 sem.</div></div>
+    <div class="g-row"><div class="g-name">P5 · Licence, offres, Smart Scan<small>limites, caisses en option</small></div>
+      <div class="g-track"><div class="g-bar lic" style="left:66.7%;width:6.7%"></div></div><div class="g-dur">1,5 sem.</div></div>
+    <div class="g-row"><div class="g-name">P6 · Installation automatique<small>PostgreSQL, services, pare-feu</small></div>
+      <div class="g-track"><div class="g-bar" style="left:73.3%;width:11.1%"></div></div><div class="g-dur">2,5 sem.</div></div>
+    <div class="g-row"><div class="g-name">P7 · Reprise des clients actuels<small>SQLite → PostgreSQL</small></div>
+      <div class="g-track"><div class="g-bar" style="left:84.4%;width:6.7%"></div></div><div class="g-dur">1,5 sem.</div></div>
+    <div class="g-row"><div class="g-name">P8 · Tests de charge et recette<small>20+ caisses, coupures</small></div>
+      <div class="g-track"><div class="g-bar test" style="left:91.1%;width:8.9%"></div></div><div class="g-dur">2 sem.</div></div>
+    <div class="g-axis"><span></span>
+      <div class="g-ticks"><span style="left:0">sem. 0</span><span style="left:22.2%">5</span><span style="left:44.4%">10</span><span style="left:66.7%">15</span><span style="left:88.9%">20</span><span style="left:100%">22,5</span></div>
+      <span></span></div>
   </div>
-  <p class="sub" style="margin-top:8px">Estimations pour un développeur, tests compris. Une première version utilisable
-    en magasin (P1 à P5 + une recette courte) arrive vers la semaine 6,5 ; P6 la rend plus robuste.</p>
+  <p class="sub" style="margin-top:8px">Estimations pour un développeur, tests compris ; le travail sur bens_ds se fait
+    en parallèle. Version intermédiaire testable sur 2 PC vers la semaine 15 (fin de P4).</p>
 
-  <!-- ——————————————————————————————————————————————— 7. Phases -->
-  <h2 id="phases"><span class="n">7</span>Le détail des phases</h2>
+  <!-- ——————————————————————————————————————————————— 9. Phases -->
+  <h2 id="phases"><span class="n">9</span>Le détail des phases</h2>
 
   <div class="phase">
-    <div class="phase-h"><h3>P0 · Renommer Ultra en Max</h3><span class="tag ok">Fait</span><span class="dur">½ jour</span></div>
+    <div class="phase-h"><h3>P0 · Déjà fait</h3><span class="tag ok">Fait</span></div>
     <ul>
-      <li>Palier <code>NiveauLicence.max</code>, libellés FR / AR / EN « Max », tests et documentation.</li>
-      <li>À faire côté bens_ds (autre dépôt) : renommer l'offre affichée « Ultra » en « Max » dans le tableau de bord
-        et la page des offres ; les codes <code>DSK-ULTRA…</code> restent.</li>
+      <li>Palier Ultra renommé <b>Max</b> (libellés FR / AR / EN, code, tests, documentation).</li>
+      <li>Plusieurs caisses par utilisateur, caisse courante, session partagée (0.5.3, migration v046).</li>
+      <li>Basic à une seule caisse : ni champ, ni filtre, ni colonne caisse ; pas de coffre.</li>
     </ul>
   </div>
 
   <div class="phase">
-    <div class="phase-h"><h3>P1 · Fondations</h3><span class="tag warn">En cours</span><span class="dur">1 semaine</span></div>
+    <div class="phase-h"><h3>P1 · Socle</h3><span class="tag todo">À faire</span><span class="dur">2 semaines</span></div>
     <ul>
-      <li><b>Accès aux données par une interface</b> : <code>appDatabaseProvider</code> fournit soit la base locale,
-        soit (plus tard) la base distante ; aucun repository ne change.</li>
-      <li><b>Réglages du poste</b> : l'imprimante (<code>imprimante_type</code>, <code>imprimante_adresse</code>,
-        <code>imprimante_largeur</code>), la douchette et le format du ticket quittent la table <code>parametre</code>
-        partagée pour un fichier local du PC. Les réglages de la boutique restent en base.</li>
-      <li><b>Horloge</b> : une <code>Horloge</code> unique remplace <code>DateTime.now()</code> dans les services ; sur
-        un poste client elle suit l'heure du principal (ventes, sessions, clôtures).</li>
-      <li><b>Base prête pour plusieurs écrivains</b> : WAL (déjà actif) + <code>busy_timeout</code>.</li>
-      <li><b>Identité du poste</b> : code <code>PST…</code> tiré du code machine (déjà utilisé par la licence).</li>
+      <li><b>Découper le code</b> en trois : un paquet commun (<code>domain/</code>, <code>application/</code>,
+        <code>data/</code>), l'application de caisse (Flutter), le serveur (Dart sans écran, compilé en exécutable).</li>
+      <li><b>Écrans sans accès direct à la base</b> : les 21 écrans qui lisent la base passent par un service.</li>
+      <li><b>Horloge</b> unique à la place de <code>DateTime.now()</code> dans les services (l'heure du serveur fait foi).</li>
+      <li><b>Réglages du poste</b> : imprimante, douchette, format du ticket dans un fichier local du PC.</li>
     </ul>
-    <p class="livrable"><b>Livrable :</b> l'application fonctionne exactement comme avant, prête à être branchée sur le réseau.</p>
-    <p class="files">Fichiers : <code>lib/core/db/app_database.dart</code>, <code>lib/app/providers.dart</code>,
-      <code>lib/application/parametres_service.dart</code>, <code>lib/core/print/</code>, services qui datent les opérations.</p>
+    <p class="livrable"><b>Livrable :</b> l'application marche comme avant, prête à séparer serveur et poste.</p>
   </div>
 
   <div class="phase">
-    <div class="phase-h"><h3>P2 · Serveur de données (poste principal)</h3><span class="tag todo">À faire</span><span class="dur">1,5 semaine</span></div>
+    <div class="phase-h"><h3>P2 · PostgreSQL</h3><span class="tag todo">À faire</span><span class="dur">5 semaines</span></div>
     <ul>
-      <li>Étendre le serveur réseau existant (<code>lib/application/serveur_mobile.dart</code>, port 8787) d'une route
-        WebSocket <code>/api/v1/donnees</code> réservée aux postes appairés.</li>
-      <li>Messages : requête, écriture, début / validation / annulation de transaction, lot ; une transaction distante
-        à la fois sur la base, file d'attente pour les autres, annulation après 10 s ou à la déconnexion.</li>
-      <li>Annonce des changements : après chaque validation, les tables touchées sont envoyées à tous les postes.</li>
-      <li>Contrôle de version : un poste d'une autre version de l'application ou du schéma est refusé.</li>
-      <li>Table <code>poste</code> (code, nom, caisse, jeton haché, dernière connexion), comme <code>appareil_mobile</code>.</li>
+      <li>Schéma PostgreSQL v1 tiré des 46 migrations ; migrations PostgreSQL ensuite.</li>
+      <li>Déclencheurs d'intégrité fiscale et d'audit (créé / modifié le / par) en PL/pgSQL.</li>
+      <li>Les 28 repositories en syntaxe PostgreSQL, transactions et verrous (stock, numérotation des codes).</li>
+      <li>Tests des services sur une vraie base PostgreSQL de test.</li>
     </ul>
-    <p class="livrable"><b>Livrable :</b> le poste principal accepte des postes clients authentifiés et exécute leurs requêtes.</p>
-    <p class="files">Nouveaux : <code>lib/application/serveur_donnees.dart</code>, migration v047 (table <code>poste</code>).</p>
+    <p class="livrable"><b>Livrable :</b> tous les tests des services passent sur PostgreSQL.</p>
   </div>
 
   <div class="phase">
-    <div class="phase-h"><h3>P3 · Poste client</h3><span class="tag todo">À faire</span><span class="dur">2 semaines</span></div>
+    <div class="phase-h"><h3>P3 · Serveur et API</h3><span class="tag todo">À faire</span><span class="dur">4 semaines</span></div>
     <ul>
-      <li><code>BaseDistante</code> : la même interface que la base SQLite, au-dessus de la connexion WebSocket.</li>
-      <li>Rafraîchissement : chaque annonce de changement incrémente les compteurs de version des écrans concernés
-        (<code>stockVersionProvider</code>, <code>caisseVersionProvider</code>…, déjà présents).</li>
-      <li>Écran « Connexion au poste principal » : liste des principaux trouvés, code d'appairage.</li>
-      <li>Bandeau « Poste principal injoignable », reconnexion automatique ; les paniers en cours sont gardés, rien
-        n'est encaissé tant que le principal ne répond pas.</li>
-      <li>Désactiver sur un poste client ce qui n'a de sens que sur le principal : sauvegarde, restauration,
-        compte BENS, téléphones.</li>
+      <li>CaisseDZ Serveur : service Windows, à partir du serveur HTTP actuel des téléphones.</li>
+      <li>API des 32 services (lectures et cas d'usage), sessions utilisateur, droits et paliers vérifiés par le serveur.</li>
+      <li>Canal d'annonces (WebSocket) : tables et documents modifiés, solde Smart Scan, licence.</li>
+      <li>Postes : table <code>poste</code>, appairage par code, jetons, contrôle de version.</li>
+      <li>Les téléphones CaisseDZ Scan basculent sur ce serveur (même API <code>/api/v1</code>).</li>
     </ul>
-    <p class="livrable"><b>Livrable :</b> deux PC vendent en même temps sur le même stock.</p>
-    <p class="files">Nouveaux : <code>lib/core/reseau/base_distante.dart</code>, <code>lib/features/connexion_poste/</code>.</p>
+    <p class="livrable"><b>Livrable :</b> un serveur qui fait tout ce que fait l'application, sans écran.</p>
   </div>
 
   <div class="phase">
-    <div class="phase-h"><h3>P4 · Postes, caisses et licence</h3><span class="tag todo">À faire</span><span class="dur">1 semaine</span></div>
+    <div class="phase-h"><h3>P4 · Poste client</h3><span class="tag todo">À faire</span><span class="dur">4 semaines</span></div>
     <ul>
-      <li><b>Connexion sur chaque PC</b> : l'utilisateur se connecte avec son propre compte (identifiant et mot de passe),
-        sur n'importe quel PC. Les comptes, rôles, caisses et magasins attribués sont sur le poste principal.</li>
-      <li><b>N'importe quelle caisse sur n'importe quel PC</b> : une caisse n'est pas attachée à un PC. L'utilisateur
-        ouvre une de ses caisses attribuées (l'Admin : n'importe laquelle) sur le PC où il se trouve.</li>
-      <li><b>Une caisse ouverte reste sur son PC</b> jusqu'à la clôture de sa session : ailleurs elle apparaît « En cours
-        sur PC-2 » et ne s'ouvre pas (un tiroir, un comptage). Clôturée, elle redevient libre pour tous les PC.</li>
-      <li>Le PC propose la dernière caisse utilisée sur ce poste ; l'utilisateur en choisit une autre parmi les siennes.</li>
-      <li>Le matériel (imprimante, tiroir, douchette) suit le PC, pas la caisse.</li>
-      <li>PC en panne avec une caisse ouverte : l'Admin clôture la session depuis Gestion caisse, sur n'importe quel PC.</li>
-      <li><b>Limite de postes clients</b> : Basic 0 ; Advanced 4 (5 PC avec le principal) ; Max 14 (15 PC). Un poste
-        client de trop est refusé à l'appairage ; les téléphones CaisseDZ Scan ne comptent pas.</li>
-      <li>La licence est vérifiée sur le principal et transmise aux postes (lecture seule, fin d'essai, palier).</li>
-      <li>Écran « Postes connectés » dans Paramètres : nom, caisse, état, dernière connexion, Déconnecter.</li>
+      <li>Les providers des écrans appellent l'API au lieu des services locaux (mêmes écrans).</li>
+      <li>Copie locale du catalogue, des clients et des réglages (SQLite en lecture), mise à jour par les annonces :
+        scan et recherche instantanés.</li>
+      <li>Écran « Rejoindre le serveur », bandeau « Serveur injoignable », reconnexion ; les paniers en cours sont gardés.</li>
+      <li>Choix de la caisse sur n'importe quel PC, caisse ouverte réservée à son PC.</li>
     </ul>
-    <p class="livrable"><b>Livrable :</b> les limites des offres s'appliquent aux PC.</p>
+    <p class="livrable"><b>Livrable :</b> deux PC vendent en même temps sur le même stock (version intermédiaire).</p>
   </div>
 
   <div class="phase">
-    <div class="phase-h"><h3>P5 · Installation automatique</h3><span class="tag todo">À faire</span><span class="dur">1 semaine</span></div>
+    <div class="phase-h"><h3>P5 · Licence, offres et Smart Scan</h3><span class="tag todo">À faire</span><span class="dur">1,5 semaine</span></div>
     <ul>
-      <li>Installeur Inno Setup : règle du pare-feu (<code>netsh advfirewall</code>, réseau privé), lancement au
-        démarrage de Windows pour le poste principal.</li>
-      <li>Annonce et découverte du principal sur le réseau (UDP), sans adresse IP à saisir.</li>
-      <li>Assistant du premier lancement : poste principal ou poste client.</li>
-      <li>Icône dans la zone de notification : le serveur continue quand la fenêtre est fermée.</li>
-      <li>Mise à jour des postes clients depuis le poste principal.</li>
+      <li>Licence liée au serveur ; nombre de caisses lu dans la licence ; limites appliquées par le serveur.</li>
+      <li>Option « Caisse supplémentaire » sur l'écran des offres ; achat par bens_ds.</li>
+      <li>Smart Scan relayé par le serveur pour les postes et les téléphones ; solde unique.</li>
     </ul>
-    <p class="livrable"><b>Livrable :</b> installer et cliquer suffisent, sur chaque PC.</p>
-    <p class="files">Fichiers : <code>installer/caissedz.iss</code>, <code>lib/features/configuration/</code>, <code>windows/runner/</code>.</p>
   </div>
 
   <div class="phase">
-    <div class="phase-h"><h3>P6 · Écritures sensibles sur le principal (étape B)</h3><span class="tag todo">À faire</span><span class="dur">1,5 semaine</span></div>
+    <div class="phase-h"><h3>P6 · Installation automatique</h3><span class="tag todo">À faire</span><span class="dur">2,5 semaines</span></div>
     <ul>
-      <li>Appels de service distants : encaisser, annuler, modifier une vente ; retour ; ouvrir / clôturer une session ;
-        clôture Z ; achat ; versement ; transferts.</li>
-      <li>Droits vérifiés par le serveur (utilisateur, rôle, palier).</li>
-      <li>Limiter l'accès SQL direct des postes aux lectures et aux écritures simples.</li>
+      <li>Installeur unique : « Serveur et caisse » ou « Poste de caisse ».</li>
+      <li>PostgreSQL silencieux (binaires embarqués, base, mot de passe aléatoire, service), CaisseDZ Serveur en
+        service, pare-feu, démarrage avec Windows.</li>
+      <li>Découverte du serveur sur le réseau, mises à jour des postes depuis le serveur, sauvegardes automatiques.</li>
     </ul>
-    <p class="livrable"><b>Livrable :</b> les opérations d'argent et de stock ne dépendent plus du réseau pendant leur transaction.</p>
+    <p class="files">Fichiers : <code>installer/caissedz.iss</code>, nouveau dossier <code>installer/postgresql/</code>.</p>
   </div>
 
   <div class="phase">
-    <div class="phase-h"><h3>P7 · Tests et recette</h3><span class="tag todo">À faire</span><span class="dur">1 semaine</span></div>
+    <div class="phase-h"><h3>P7 · Reprise des clients actuels</h3><span class="tag todo">À faire</span><span class="dur">1,5 semaine</span></div>
     <ul>
-      <li>Tests automatiques : deux postes simulés vendent le même produit, coupure au milieu d'une transaction,
-        reconnexion, version différente refusée.</li>
-      <li>Recette sur 3 PC réels (un principal, deux clients), Wi-Fi et câble, imprimantes différentes.</li>
-      <li>Mesures : temps d'un encaissement, d'une recherche produit, d'une liste de 5 000 produits.</li>
+      <li>À la mise à jour : copie de la base SQLite chiffrée vers PostgreSQL, table par table, dans une transaction.</li>
+      <li>Vérification de la chaîne fiscale (scellements des ventes et des clôtures) avant et après ; retour arrière
+        possible si un contrôle échoue.</li>
     </ul>
   </div>
 
-  <!-- ——————————————————————————————————————————————— 8. Code -->
-  <h2 id="code"><span class="n">8</span>Les modifications du code, par zone</h2>
+  <div class="phase">
+    <div class="phase-h"><h3>P8 · Tests de charge et recette</h3><span class="tag todo">À faire</span><span class="dur">2 semaines</span></div>
+    <ul>
+      <li>20 à 50 caisses simulées qui encaissent en même temps ; mesures de temps d'encaissement et de recherche.</li>
+      <li>Coupures réseau, serveur redémarré, versions différentes, licence expirée.</li>
+      <li>Recette sur PC réels : 1 serveur + 3 postes, Wi-Fi et câble ; Max avec un magasin distant par VPN.</li>
+    </ul>
+  </div>
+
+  <!-- ——————————————————————————————————————————————— 10. Code -->
+  <h2 id="code"><span class="n">10</span>Les modifications du code, par zone</h2>
   <div class="table-wrap"><table>
     <thead><tr><th>Zone</th><th>Aujourd'hui</th><th>Après</th><th>Ampleur</th></tr></thead>
     <tbody>
-      <tr><td><code>lib/data/</code> (28 repositories)</td><td>SQL sur la base locale</td><td>Inchangé : la base est locale ou distante</td><td><span class="tag ok">Aucune</span></td></tr>
-      <tr><td><code>lib/application/</code> (33 services)</td><td>Transactions locales, <code>DateTime.now()</code></td><td>Horloge commune ; P6 : 10 services appelables à distance</td><td><span class="tag warn">Moyenne</span></td></tr>
-      <tr><td><code>lib/core/db/</code></td><td>Ouvre la base chiffrée locale</td><td>Base locale ou <code>BaseDistante</code> ; <code>busy_timeout</code></td><td><span class="tag warn">Moyenne</span></td></tr>
-      <tr><td><code>lib/application/serveur_mobile.dart</code></td><td>Serveur des téléphones</td><td>+ postes clients, annonces, version</td><td><span class="tag warn">Moyenne</span></td></tr>
-      <tr><td><code>lib/core/reseau/</code> (nouveau)</td><td>—</td><td>Connexion, découverte, appairage, reconnexion</td><td><span class="tag bad">Nouveau</span></td></tr>
-      <tr><td>Paramètres</td><td>Imprimante dans la base partagée</td><td>Réglages du poste dans un fichier local</td><td><span class="tag ok">Petite</span></td></tr>
-      <tr><td>Licence</td><td>Liée au PC</td><td>Liée au poste principal, transmise aux postes</td><td><span class="tag ok">Petite</span></td></tr>
-      <tr><td><code>lib/features/</code> (écrans)</td><td>—</td><td>Assistant de démarrage, « Postes connectés », bandeau réseau</td><td><span class="tag ok">Petite</span></td></tr>
-      <tr><td>Installeur</td><td>Copie des fichiers</td><td>Pare-feu, démarrage avec Windows</td><td><span class="tag ok">Petite</span></td></tr>
+      <tr><td><code>lib/domain/</code></td><td>Modèles, calculs, scellement</td><td>Paquet commun, inchangé</td><td><span class="tag ok">Aucune</span></td></tr>
+      <tr><td><code>lib/application/</code> (32 services)</td><td>Exécutés dans l'application</td><td>Exécutés par le serveur ; horloge commune</td><td><span class="tag warn">Moyenne</span></td></tr>
+      <tr><td><code>lib/data/</code> (28 repositories)</td><td>SQL SQLite</td><td>SQL PostgreSQL</td><td><span class="tag bad">Grande</span></td></tr>
+      <tr><td><code>lib/core/db/</code> (46 migrations)</td><td>SQLite chiffré SQLCipher</td><td>Schéma PostgreSQL, déclencheurs PL/pgSQL</td><td><span class="tag bad">Grande</span></td></tr>
+      <tr><td>Serveur (nouveau)</td><td>Serveur des téléphones</td><td>CaisseDZ Serveur : API, annonces, postes, licence</td><td><span class="tag bad">Grande</span></td></tr>
+      <tr><td><code>lib/features/</code> (écrans)</td><td>Appellent les services ; 21 lisent la base</td><td>Appellent l'API ; copie locale du catalogue</td><td><span class="tag warn">Moyenne</span></td></tr>
+      <tr><td>Licence et offres</td><td>Palier fixe, lié au PC</td><td>Lié au serveur, nombre de caisses signé</td><td><span class="tag ok">Petite</span></td></tr>
+      <tr><td>Installeur</td><td>Copie des fichiers</td><td>PostgreSQL, services, pare-feu, choix serveur / poste</td><td><span class="tag warn">Moyenne</span></td></tr>
+      <tr><td>bens_ds (autre dépôt)</td><td>Paliers, scans par compte</td><td>Caisses supplémentaires, nombre de caisses signé, libellé Max</td><td><span class="tag ok">Petite</span></td></tr>
     </tbody>
   </table></div>
 
-  <!-- ——————————————————————————————————————————————— 9. Risques -->
-  <h2 id="risques"><span class="n">9</span>Points de vigilance</h2>
+  <!-- ——————————————————————————————————————————————— 11. Risques -->
+  <h2 id="risques"><span class="n">11</span>Points de vigilance</h2>
   <div class="table-wrap"><table>
     <thead><tr><th>Situation</th><th>Réponse prévue</th></tr></thead>
     <tbody>
-      <tr><td>Le poste principal est éteint ou planté</td><td>Les postes clients affichent « Poste principal injoignable » et ne vendent pas ; à étudier : vente hors ligne limitée (<a href="#decisions">D2</a>)</td></tr>
-      <tr><td>Coupure réseau pendant un encaissement</td><td>La transaction est annulée sur le principal (rien d'écrit à moitié) ; le panier reste sur le poste, à encaisser de nouveau</td></tr>
-      <tr><td>Heures différentes entre les PC</td><td>Toutes les dates viennent du poste principal (P1)</td></tr>
-      <tr><td>Versions différentes</td><td>Poste refusé tant qu'il n'est pas à jour ; mise à jour depuis le principal (P5)</td></tr>
-      <tr><td>Un PC inconnu sur le réseau</td><td>Appairage par code affiché sur le principal, jeton par poste, déconnexion possible ; trafic limité au réseau privé</td></tr>
-      <tr><td>Sauvegardes</td><td>Uniquement sur le principal ; conseiller une clé USB ou un disque externe</td></tr>
-      <tr><td>Antivirus / pare-feu tiers</td><td>Message clair si le port 8787 est bloqué, avec la marche à suivre</td></tr>
+      <tr><td>Le PC serveur est éteint ou en panne</td><td>Les postes affichent « Serveur injoignable » et ne vendent pas ; sauvegardes quotidiennes ; vente hors ligne à étudier (<a href="#decisions">D4</a>)</td></tr>
+      <tr><td>Coupure réseau pendant un encaissement</td><td>L'encaissement est une seule demande au serveur : écrit en entier ou pas du tout ; le panier reste sur le poste</td></tr>
+      <tr><td>Heures différentes entre les PC</td><td>Toutes les dates viennent du serveur</td></tr>
+      <tr><td>Reprise des données d'un client existant</td><td>Contrôle de la chaîne fiscale avant / après, retour arrière automatique</td></tr>
+      <tr><td>Taille de l'installeur (PostgreSQL ≈ +100 Mo)</td><td>Le poste client ne l'installe pas ; seul le serveur le pose</td></tr>
+      <tr><td>Un PC inconnu sur le réseau</td><td>Appairage par code, jeton par poste, HTTPS, réseau privé seulement</td></tr>
+      <tr><td>Antivirus / pare-feu tiers</td><td>Message clair si le port est bloqué, avec la marche à suivre</td></tr>
     </tbody>
   </table></div>
 
-  <!-- ——————————————————————————————————————————————— 10. Décisions -->
-  <h2 id="decisions"><span class="n">10</span>Décisions à prendre</h2>
+  <!-- ——————————————————————————————————————————————— 12. Décisions -->
+  <h2 id="decisions"><span class="n">12</span>Décisions</h2>
   <div class="table-wrap"><table>
-    <thead><tr><th>N°</th><th>Question</th><th>Proposition</th><th>État</th></tr></thead>
+    <thead><tr><th>N°</th><th>Question</th><th>Proposition / décision</th><th>État</th></tr></thead>
     <tbody>
-      <tr><td>D1</td><td>Max : des magasins dans des villes différentes (pas le même réseau) ?</td><td>Hors de ce plan : réseau local seulement. Plus tard : VPN entre sites, ou serveur en ligne</td><td><span class="tag warn">À décider</span></td></tr>
-      <tr><td>D2</td><td>Vendre sur un poste client quand le principal est éteint ?</td><td>Non dans la première version (pas de risque de double vente). À revoir après la recette</td><td><span class="tag warn">À décider</span></td></tr>
-      <tr><td>D3</td><td>Le poste principal sert-il aussi de caisse ?</td><td>Oui : c'est la caisse 1</td><td><span class="tag warn">À décider</span></td></tr>
-      <tr><td>D4</td><td>Combien de postes clients par offre ?</td><td>Basic 0 ; Advanced 4 (5 PC) ; Max 14 (15 PC), comme les caisses</td><td><span class="tag ok">Décidé</span></td></tr>
-      <tr><td>D5</td><td>Le poste principal peut-il tourner sans fenêtre (service Windows) ?</td><td>Zone de notification d'abord ; service Windows plus tard si besoin</td><td><span class="tag warn">À décider</span></td></tr>
-      <tr><td>D6</td><td>Sur un poste client, quelle caisse l'utilisateur utilise-t-il ?</td><td>N'importe laquelle de ses caisses
-        attribuées, sur n'importe quel PC ; une caisse ouverte reste sur son PC jusqu'à sa clôture</td><td><span class="tag ok">Décidé</span></td></tr>
+      <tr><td>D1</td><td>Max : magasins dans des villes différentes ?</td><td>Serveur en ligne (VPS) ou VPN entre sites ; même application</td><td><span class="tag warn">À décider</span></td></tr>
+      <tr><td>D2</td><td>Basic : serveur + PostgreSQL sur le PC, ou garder SQLite ?</td><td>Même chemin pour les trois offres (serveur et poste sur le même PC) : un seul code à maintenir, passage à Advanced sans réinstaller</td><td><span class="tag warn">À décider</span></td></tr>
+      <tr><td>D3</td><td>Prix des caisses supplémentaires</td><td>Clé 30 000 DA + 3 000 DA par caisse de plus ; 3 caisses = 36 000 DA (clé avec 1 caisse) ou 39 000 DA (clé sans caisse)</td><td><span class="tag warn">À décider</span></td></tr>
+      <tr><td>D4</td><td>Vendre sur un poste quand le serveur est éteint ?</td><td>Non dans la première version (pas de double vente) ; à revoir après la recette</td><td><span class="tag warn">À décider</span></td></tr>
+      <tr><td>D5</td><td>Les trois offres</td><td>Basic 1 poste / 1 caisse / 1 magasin ; Advanced plusieurs postes et caisses, 1 magasin ; Max plusieurs postes, caisses et magasins</td><td><span class="tag ok">Décidé</span></td></tr>
+      <tr><td>D6</td><td>Quelle caisse sur un poste ?</td><td>N'importe laquelle de ses caisses attribuées, sur n'importe quel PC ; une caisse ouverte reste sur son PC jusqu'à sa clôture</td><td><span class="tag ok">Décidé</span></td></tr>
+      <tr><td>D7</td><td>Smart Scan</td><td>Compté pour toute la licence ; seul le serveur appelle Smart Scan</td><td><span class="tag ok">Décidé</span></td></tr>
+      <tr><td>D8</td><td>Architecture</td><td>Client-serveur illimité : CaisseDZ Serveur + PostgreSQL embarqué, postes clients légers</td><td><span class="tag ok">Décidé</span></td></tr>
     </tbody>
   </table></div>
 
@@ -526,9 +556,10 @@ figure{margin:0}
   <div class="table-wrap"><table class="journal">
     <thead><tr><th>Date</th><th>Version</th><th>Changement</th></tr></thead>
     <tbody>
-      <tr><td>30/10/2026</td><td>3</td><td>N'importe quelle caisse sur n'importe quel PC (D6) ; limite de postes clients : Basic 0, Advanced 4, Max 14 (D4) ; début de P1.</td></tr>
-      <tr><td>30/10/2026</td><td>2</td><td>Connexion des utilisateurs sur les postes clients et choix de la caisse parmi leurs caisses attribuées (P4, D6).</td></tr>
-      <tr><td>30/10/2026</td><td>1</td><td>Première version du plan ; palier Ultra renommé Max (P0 fait).</td></tr>
+      <tr><td>30/10/2026</td><td>4</td><td>Réécriture pour l'architecture illimitée : CaisseDZ Serveur + PostgreSQL embarqué, postes clients légers avec copie locale du catalogue, licence au nombre de caisses, Smart Scan pour toute la licence, ce qu'on a déjà, nouveau calendrier (≈ 22 semaines).</td></tr>
+      <tr><td>30/10/2026</td><td>3</td><td>N'importe quelle caisse sur n'importe quel PC ; limite de postes clients par offre.</td></tr>
+      <tr><td>30/10/2026</td><td>2</td><td>Connexion des utilisateurs sur les postes clients et choix de la caisse parmi leurs caisses attribuées.</td></tr>
+      <tr><td>30/10/2026</td><td>1</td><td>Première version (réseau local, serveur intégré sur SQLite, ≈ 9 semaines) ; palier Ultra renommé Max.</td></tr>
     </tbody>
   </table></div>
 
