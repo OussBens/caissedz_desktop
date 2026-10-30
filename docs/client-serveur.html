@@ -107,7 +107,7 @@ figure{margin:0}
     PostgreSQL, des postes clients légers, les mêmes trois offres. Ce qu'on a déjà, ce qu'on va faire, les temps et
     les modifications. Document de travail : les changements de plan se font ici (voir le <a href="#journal">journal</a>).</p>
   <div class="meta">
-    <span class="chip">Version du document : <b>4</b> · 30/10/2026</span>
+    <span class="chip">Version du document : <b>5</b> · 30/10/2026</span>
     <span class="chip">Application : <b>CaisseDZ Desktop 0.5.3</b></span>
     <span class="chip">Durée estimée : <b>≈ 22 semaines</b> (≈ 5 mois, un développeur)</span>
   </div>
@@ -154,16 +154,15 @@ figure{margin:0}
     <div class="card offre">
       <h3><span class="dot" style="background:var(--max)"></span>Max</h3>
       <p class="big">plusieurs postes · plusieurs caisses · plusieurs magasins</p>
-      <p>Tout Advanced, plus plusieurs magasins et les transferts entre magasins. Magasins éloignés : serveur en
-        ligne ou VPN (<a href="#decisions">D1</a>).</p>
+      <p>Tout Advanced, plus plusieurs magasins et les transferts entre magasins, sur le même réseau local. Magasins
+        dans d'autres villes : quatrième version « Petra » (<a href="#decisions">D1</a>).</p>
     </div>
   </div>
   <div class="table-wrap" style="margin-top:12px"><table>
     <thead><tr><th></th><th class="c">Basic</th><th class="c">Advanced</th><th class="c">Max</th></tr></thead>
     <tbody>
       <tr><td>Postes (PC)</td><td class="c">1</td><td class="c">plusieurs</td><td class="c">plusieurs</td></tr>
-      <tr><td>Caisses incluses (hors coffre)</td><td class="c">1</td><td class="c">5</td><td class="c">15</td></tr>
-      <tr><td>Caisses supplémentaires (option payante)</td><td class="c">—</td><td class="c">✓</td><td class="c">✓</td></tr>
+      <tr><td>Caisses (hors coffre)</td><td class="c">1</td><td class="c" colspan="2">achetées à l'unité : 3 000 DA par caisse</td></tr>
       <tr><td>Magasins</td><td class="c">1</td><td class="c">1</td><td class="c">15</td></tr>
       <tr><td>Coffre, transferts entre caisses</td><td class="c">—</td><td class="c">✓</td><td class="c">✓</td></tr>
       <tr><td>Transferts entre magasins</td><td class="c">—</td><td class="c">—</td><td class="c">✓</td></tr>
@@ -171,8 +170,9 @@ figure{margin:0}
     </tbody>
   </table></div>
   <p class="sub" style="margin-top:8px">Une caisse peut s'ouvrir sur n'importe quel PC : le nombre de postes suit le
-    nombre de caisses (on ne peut pas encaisser à plus de PC qu'il n'y a de caisses). Le prix des caisses
-    supplémentaires reste à fixer (<a href="#decisions">D3</a>).</p>
+    nombre de caisses (on ne peut pas encaisser à plus de PC qu'il n'y a de caisses). Prix : clé 30 000 DA + 3 000 DA
+    par caisse ; une clé et 3 caisses = 39 000 DA (<a href="#decisions">D3</a>). Des magasins dans des villes
+    différentes relèveront d'une quatrième version, « Petra » (<a href="#decisions">D1</a>).</p>
 
   <!-- ——————————————————————————————————————————————— 2. Acquis -->
   <h2 id="acquis"><span class="n">2</span>Ce qu'on a déjà</h2>
@@ -186,7 +186,7 @@ figure{margin:0}
       <tr><td>Serveur HTTP sur le réseau local, appairage, jetons d'appareil, <code>/api/v1</code></td><td><code>lib/application/serveur_mobile.dart</code></td><td>Point de départ de l'API du serveur (téléphones et postes)</td><td><span class="tag ok">Réutilisé</span></td></tr>
       <tr><td>Compteurs de version des écrans (rafraîchir après écriture)</td><td>providers <code>…VersionProvider</code></td><td>Branchés sur les annonces de changement du serveur</td><td><span class="tag ok">Réutilisé</span></td></tr>
       <tr><td>Licence signée Ed25519 vérifiée hors ligne, check-in BENS</td><td><code>lib/application/licence_service.dart</code></td><td>Tenue par le serveur, transmise aux postes</td><td><span class="tag ok">Réutilisé</span></td></tr>
-      <tr><td>Paliers et limites (magasins, caisses, caissiers) appliqués par les services</td><td><code>lib/domain/permissions.dart</code></td><td>+ postes et caisses supplémentaires</td><td><span class="tag ok">Réutilisé</span></td></tr>
+      <tr><td>Paliers et limites (magasins, caisses, caissiers) appliqués par les services</td><td><code>lib/domain/permissions.dart</code></td><td>+ postes et nombre de caisses achetées</td><td><span class="tag ok">Réutilisé</span></td></tr>
       <tr><td>Smart Scans comptés par compte BENS</td><td><code>lib/application/smart_scan_service.dart</code></td><td>Appelé par le serveur seulement</td><td><span class="tag ok">Réutilisé</span></td></tr>
       <tr><td>Caisses attribuées par utilisateur, caisse courante, session partagée</td><td>0.5.3 (migration v046)</td><td>Base du choix de la caisse sur n'importe quel PC</td><td><span class="tag ok">Fait</span></td></tr>
       <tr><td>Basic à une seule caisse, sans coffre ni champ caisse</td><td>0.5.3</td><td>Gardé</td><td><span class="tag ok">Fait</span></td></tr>
@@ -227,7 +227,7 @@ figure{margin:0}
       <line x1="650" y1="52" x2="688" y2="52" stroke="var(--muted)" stroke-width="2" marker-end="url(#fl)"/>
       <!-- Réseau -->
       <line x1="40" y1="245" x2="860" y2="245" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 5"/>
-      <text x="860" y="237" text-anchor="end" font-size="12" fill="var(--muted)">réseau local (ou internet / VPN pour Max multi-sites)</text>
+      <text x="860" y="237" text-anchor="end" font-size="12" fill="var(--muted)">réseau local (Wi-Fi ou câble)</text>
       <line x1="450" y1="190" x2="450" y2="245" stroke="var(--muted)" stroke-width="2"/>
       <!-- Postes -->
       <g>
@@ -303,7 +303,7 @@ figure{margin:0}
     <tbody>
       <tr><td><b>XAMPP / MySQL</b></td><td>XAMPP, démarrer MySQL, créer la base, ouvrir le port</td><td>Réglages à la main, service à surveiller</td><td><span class="tag bad">Non</span></td></tr>
       <tr><td><b>Garder SQLite sur le serveur</b></td><td>Rien</td><td>Une écriture à la fois : très bien jusqu'à ~15–30 caisses, pas illimité</td><td><span class="tag warn">Trop juste</span></td></tr>
-      <tr class="reco"><td><b>PostgreSQL embarqué</b> (recommandé)</td><td><b>Rien</b> : notre installeur pose PostgreSQL, crée la base, un mot de passe aléatoire et le service Windows</td><td>Des centaines de caisses ; serveur en ligne possible pour Max multi-sites</td><td><span class="tag ok">Oui</span></td></tr>
+      <tr class="reco"><td><b>PostgreSQL embarqué</b> (recommandé)</td><td><b>Rien</b> : notre installeur pose PostgreSQL, crée la base, un mot de passe aléatoire et le service Windows</td><td>Des centaines de caisses ; prépare aussi la quatrième version « Petra » (serveur en ligne)</td><td><span class="tag ok">Oui</span></td></tr>
     </tbody>
   </table></div>
   <ul style="margin-top:10px">
@@ -326,9 +326,9 @@ figure{margin:0}
       <h3>Une licence pour toute la boutique</h3>
       <ul>
         <li>La licence BENS est liée au <b>serveur</b> (son code machine), pas aux postes.</li>
-        <li>Elle porte le palier et le <b>nombre de caisses</b> (incluses + supplémentaires achetées), signés par bens_ds.</li>
+        <li>Elle porte le palier et le <b>nombre de caisses achetées</b> (3 000 DA chacune), signés par bens_ds.</li>
         <li>Le serveur applique les limites : caisses actives, sessions ouvertes, magasins, postes appairés.</li>
-        <li>Caisse supplémentaire achetée : au check-in suivant, la licence passe à N + 1 caisses, sans changer de clé.</li>
+        <li>Une caisse de plus achetée : au check-in suivant, la licence passe à N + 1 caisses, sans changer de clé.</li>
       </ul>
     </div>
     <div class="card">
@@ -342,7 +342,7 @@ figure{margin:0}
       </ul>
     </div>
   </div>
-  <p class="sub" style="margin-top:8px">À faire côté bens_ds (autre dépôt) : offre « Caisse supplémentaire » vendue à
+  <p class="sub" style="margin-top:8px">À faire côté bens_ds (autre dépôt) : offre « Caisse » à 3 000 DA vendue à
     la quantité, nombre de caisses dans la licence signée, champ « caisses » dans le tableau de bord, libellé « Max ».
     Les codes <code>DSK-ULTRA…</code> restent.</p>
 
@@ -469,7 +469,7 @@ figure{margin:0}
     <div class="phase-h"><h3>P5 · Licence, offres et Smart Scan</h3><span class="tag todo">À faire</span><span class="dur">1,5 semaine</span></div>
     <ul>
       <li>Licence liée au serveur ; nombre de caisses lu dans la licence ; limites appliquées par le serveur.</li>
-      <li>Option « Caisse supplémentaire » sur l'écran des offres ; achat par bens_ds.</li>
+      <li>Bouton « Ajouter une caisse » (3 000 DA) sur l'écran des offres ; achat par bens_ds.</li>
       <li>Smart Scan relayé par le serveur pour les postes et les téléphones ; solde unique.</li>
     </ul>
   </div>
@@ -499,7 +499,8 @@ figure{margin:0}
     <ul>
       <li>20 à 50 caisses simulées qui encaissent en même temps ; mesures de temps d'encaissement et de recherche.</li>
       <li>Coupures réseau, serveur redémarré, versions différentes, licence expirée.</li>
-      <li>Recette sur PC réels : 1 serveur + 3 postes, Wi-Fi et câble ; Max avec un magasin distant par VPN.</li>
+      <li>Recette sur PC réels : 1 serveur + 3 postes, Wi-Fi et câble ; Max avec deux magasins sur le même réseau.</li>
+      <li>Serveur arrêté pendant le travail : les postes s'arrêtent proprement et reprennent seuls à son retour.</li>
     </ul>
   </div>
 
@@ -516,7 +517,7 @@ figure{margin:0}
       <tr><td><code>lib/features/</code> (écrans)</td><td>Appellent les services ; 21 lisent la base</td><td>Appellent l'API ; copie locale du catalogue</td><td><span class="tag warn">Moyenne</span></td></tr>
       <tr><td>Licence et offres</td><td>Palier fixe, lié au PC</td><td>Lié au serveur, nombre de caisses signé</td><td><span class="tag ok">Petite</span></td></tr>
       <tr><td>Installeur</td><td>Copie des fichiers</td><td>PostgreSQL, services, pare-feu, choix serveur / poste</td><td><span class="tag warn">Moyenne</span></td></tr>
-      <tr><td>bens_ds (autre dépôt)</td><td>Paliers, scans par compte</td><td>Caisses supplémentaires, nombre de caisses signé, libellé Max</td><td><span class="tag ok">Petite</span></td></tr>
+      <tr><td>bens_ds (autre dépôt)</td><td>Paliers, scans par compte</td><td>Caisse à 3 000 DA vendue à la quantité, nombre de caisses signé, libellé Max</td><td><span class="tag ok">Petite</span></td></tr>
     </tbody>
   </table></div>
 
@@ -525,7 +526,7 @@ figure{margin:0}
   <div class="table-wrap"><table>
     <thead><tr><th>Situation</th><th>Réponse prévue</th></tr></thead>
     <tbody>
-      <tr><td>Le PC serveur est éteint ou en panne</td><td>Les postes affichent « Serveur injoignable » et ne vendent pas ; sauvegardes quotidiennes ; vente hors ligne à étudier (<a href="#decisions">D4</a>)</td></tr>
+      <tr><td>Le PC serveur est éteint ou en panne</td><td>L'application s'arrête sur les postes (« Serveur injoignable ») et reprend seule au retour du serveur ; les paniers en cours sont gardés ; pas de vente hors ligne (<a href="#decisions">D4</a>) ; sauvegardes quotidiennes</td></tr>
       <tr><td>Coupure réseau pendant un encaissement</td><td>L'encaissement est une seule demande au serveur : écrit en entier ou pas du tout ; le panier reste sur le poste</td></tr>
       <tr><td>Heures différentes entre les PC</td><td>Toutes les dates viennent du serveur</td></tr>
       <tr><td>Reprise des données d'un client existant</td><td>Contrôle de la chaîne fiscale avant / après, retour arrière automatique</td></tr>
@@ -540,10 +541,10 @@ figure{margin:0}
   <div class="table-wrap"><table>
     <thead><tr><th>N°</th><th>Question</th><th>Proposition / décision</th><th>État</th></tr></thead>
     <tbody>
-      <tr><td>D1</td><td>Max : magasins dans des villes différentes ?</td><td>Serveur en ligne (VPS) ou VPN entre sites ; même application</td><td><span class="tag warn">À décider</span></td></tr>
-      <tr><td>D2</td><td>Basic : serveur + PostgreSQL sur le PC, ou garder SQLite ?</td><td>Même chemin pour les trois offres (serveur et poste sur le même PC) : un seul code à maintenir, passage à Advanced sans réinstaller</td><td><span class="tag warn">À décider</span></td></tr>
-      <tr><td>D3</td><td>Prix des caisses supplémentaires</td><td>Clé 30 000 DA + 3 000 DA par caisse de plus ; 3 caisses = 36 000 DA (clé avec 1 caisse) ou 39 000 DA (clé sans caisse)</td><td><span class="tag warn">À décider</span></td></tr>
-      <tr><td>D4</td><td>Vendre sur un poste quand le serveur est éteint ?</td><td>Non dans la première version (pas de double vente) ; à revoir après la recette</td><td><span class="tag warn">À décider</span></td></tr>
+      <tr><td>D1</td><td>Max : magasins dans des villes différentes ?</td><td>Hors de ce plan : ce sera une quatrième version (« Petra »), étudiée à part. Ici, tous les PC sont sur le même réseau local</td><td><span class="tag todo">Reporté</span></td></tr>
+      <tr><td>D2</td><td>Basic : serveur + PostgreSQL sur le PC, ou garder SQLite ?</td><td>PostgreSQL pour les trois offres : en Basic, serveur et poste sur le même PC. Un seul code à maintenir, passage à Advanced sans réinstaller</td><td><span class="tag ok">Décidé</span></td></tr>
+      <tr><td>D3</td><td>Prix des caisses</td><td>Clé 30 000 DA + 3 000 DA par caisse. Exemple : une clé et 3 caisses = 30 000 + 3 × 3 000 = 39 000 DA</td><td><span class="tag ok">Décidé</span></td></tr>
+      <tr><td>D4</td><td>Vendre sur un poste quand le serveur est éteint ?</td><td>Non : quand le serveur s'arrête, l'application s'arrête sur les postes (« Serveur injoignable ») jusqu'à son retour ; pas de vente hors ligne, donc pas de double vente</td><td><span class="tag ok">Décidé</span></td></tr>
       <tr><td>D5</td><td>Les trois offres</td><td>Basic 1 poste / 1 caisse / 1 magasin ; Advanced plusieurs postes et caisses, 1 magasin ; Max plusieurs postes, caisses et magasins</td><td><span class="tag ok">Décidé</span></td></tr>
       <tr><td>D6</td><td>Quelle caisse sur un poste ?</td><td>N'importe laquelle de ses caisses attribuées, sur n'importe quel PC ; une caisse ouverte reste sur son PC jusqu'à sa clôture</td><td><span class="tag ok">Décidé</span></td></tr>
       <tr><td>D7</td><td>Smart Scan</td><td>Compté pour toute la licence ; seul le serveur appelle Smart Scan</td><td><span class="tag ok">Décidé</span></td></tr>
@@ -556,6 +557,7 @@ figure{margin:0}
   <div class="table-wrap"><table class="journal">
     <thead><tr><th>Date</th><th>Version</th><th>Changement</th></tr></thead>
     <tbody>
+      <tr><td>30/10/2026</td><td>5</td><td>Décisions : magasins dans d'autres villes reportés à une quatrième version « Petra » (D1) ; PostgreSQL pour les trois offres (D2) ; clé 30 000 DA + 3 000 DA par caisse (D3) ; serveur arrêté = application arrêtée sur les postes (D4).</td></tr>
       <tr><td>30/10/2026</td><td>4</td><td>Réécriture pour l'architecture illimitée : CaisseDZ Serveur + PostgreSQL embarqué, postes clients légers avec copie locale du catalogue, licence au nombre de caisses, Smart Scan pour toute la licence, ce qu'on a déjà, nouveau calendrier (≈ 22 semaines).</td></tr>
       <tr><td>30/10/2026</td><td>3</td><td>N'importe quelle caisse sur n'importe quel PC ; limite de postes clients par offre.</td></tr>
       <tr><td>30/10/2026</td><td>2</td><td>Connexion des utilisateurs sur les postes clients et choix de la caisse parmi leurs caisses attribuées.</td></tr>
