@@ -936,6 +936,14 @@ class ServeurMobile {
 
   static String? _texte(Object? v) => v is String && v.trim().isNotEmpty ? v.trim() : null;
 
+  /// L'identifiant d'un panier du téléphone : 16 à 64 lettres, chiffres, `-` ou `_` (absent : null).
+  static String? _idVente(Object? v) {
+    final id = _texte(v);
+    if (id == null) return null;
+    if (!RegExp(r'^[A-Za-z0-9_-]{16,64}$').hasMatch(id)) throw const FormatException('idVente');
+    return id;
+  }
+
   Future<Map<String, Object?>> _creerProduit(Session s, Map<String, Object?> c) async {
     final vente = await _parametresVente();
     var categorie = _texte(c['categorieCode']) ?? CodeGenerator.systeme(CodeGenerator.categorie);
@@ -1010,7 +1018,8 @@ class ServeurMobile {
     return {'article': a.versJson()};
   }
 
-  /// Encaisse le panier du téléphone : lignes (`type`, `code`, `quantite`), client, un paiement (`mode`, `montant`).
+  /// Encaisse le panier du téléphone : lignes (`type`, `code`, `quantite`), client, un paiement (`mode`, `montant`),
+  /// `idVente` (le même panier renvoyé n'est encaissé qu'une fois).
   Future<Map<String, Object?>> _vendre(Session s, Map<String, Object?> c) async {
     final brutes = c['lignes'];
     final lignes = <LigneMobile>[
@@ -1027,6 +1036,7 @@ class ServeurMobile {
       clientCode: _texte(c['clientCode']) ?? CodeGenerator.systeme(CodeGenerator.client),
       mode: _texte(c['mode']) ?? 'Espèces',
       montant: _nombre(c['montant']) ?? 0,
+      identifiant: _idVente(c['idVente']),
     );
     return {
       'vente': {

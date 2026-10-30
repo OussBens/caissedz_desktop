@@ -138,6 +138,25 @@ class VenteRepository {
     return _charger(rows.first);
   }
 
+  // ---- Ventes du téléphone (v46) ----
+  /// La vente déjà enregistrée pour l'[identifiant] d'un panier du téléphone, null sinon.
+  Future<Vente?> venteMobile(String identifiant) async {
+    final rows = await db.query(
+      'vente_mobile',
+      columns: ['vente_code'],
+      where: 'identifiant = ?',
+      whereArgs: [identifiant],
+    );
+    return rows.isEmpty ? null : vente(rows.first['vente_code']! as String);
+  }
+
+  /// Relie l'[identifiant] d'un panier du téléphone à sa vente. Déjà relié : erreur de contrainte d'unicité.
+  Future<void> lierVenteMobile(String identifiant, String venteCode) => db.insert('vente_mobile', {
+    'identifiant': identifiant,
+    'vente_code': venteCode,
+    'cree_le': DateTime.now().toUtc().toIso8601String(),
+  });
+
   Future<Vente> _charger(Map<String, Object?> r) async {
     final code = r['code'] as String;
     final lignes = (await db.query(

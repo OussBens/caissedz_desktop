@@ -3,6 +3,7 @@ import 'package:sqflite_common/sqlite_api.dart';
 import '../data/catalogue_repository.dart';
 import '../data/parametre_repository.dart';
 import '../data/stock_repository.dart';
+import '../data/vente_repository.dart';
 import '../domain/calculs_prix.dart';
 import '../domain/codes_barres.dart';
 import '../domain/fiscalite.dart';
@@ -201,12 +202,20 @@ class VenteMobileService {
 
   /// Encaisse les [lignes] : un paiement [mode] de [montant] (des espèces au-delà du total sont la monnaie rendue ;
   /// un autre mode est ramené au total). Sans crédit : un montant insuffisant est refusé.
+  ///
+  /// [identifiant] : celui du panier du téléphone. Un panier déjà encaissé (renvoyé faute de réponse à temps)
+  /// n'est pas encaissé de nouveau : sa vente est renvoyée.
   Future<Vente> vendre({
     required List<LigneMobile> lignes,
     String clientCode = 'CLN0000',
     required String mode,
     required double montant,
+    String? identifiant,
   }) async {
+    if (identifiant != null) {
+      final deja = await VenteRepository(db).venteMobile(identifiant);
+      if (deja != null) return deja;
+    }
     if (!(await modesPaiement()).contains(mode)) throw const VenteException(ErreurVente.modePaiementInvalide);
     final session = await SessionCaisseService(db, utilisateurCode: utilisateurCode).courante();
     if (session == null) throw const VenteException(ErreurVente.sessionRequise);
@@ -217,15 +226,25 @@ class VenteMobileService {
       modePaiement: mode,
       paiements: [if (m > 0) Paiement(mode: mode, montant: CalculsPrix.arrondir(m))],
     );
-    return VenteService(
+    final ventes = VenteService(
       db,
       utilisateurCode: utilisateurCode,
       parametres: p,
       periodeCloturee: ClotureService.periodeCloturee,
-    ).encaisser(
-      panier,
-      session: session,
-      magasinCode: await StockService(db, utilisateurCode: utilisateurCode).magasinPrincipal(utilisateurCode),
     );
+    final magasin = await StockService(db, utilisateurCode: utilisateurCode).magasinPrincipal(utilisateurCode);
+    if (identifiant == null) return ventes.encaisser(panier, session: session, magasinCode: magasin);
+    try {
+      // La vente et son identifiant ensemble : un identifiant déjà pris annule tout l'encaissement.
+      return await db.transaction((txn) async {
+        final v = await ventes.encaisser(panier, session: session, magasinCode: magasin, txn: txn);
+        await VenteRepository(txn).lierVenteMobile(identifiant, v.code);
+        return v;
+      });
+    } on DatabaseException catch (e) {
+      // Le même panier renvoyé pendant son encaissement : l'autre envoi l'a enregistré.
+      if (!e.isUniqueConstraintError()) rethrow;
+      return (await VenteRepository(db).venteMobile(identifiant))!;
+    }
   }
 }

@@ -1003,6 +1003,10 @@ au premier démarrage (réseaux privés).
   le même téléphone remplace son ancien appairage (ancien jeton et sessions fermés) au lieu d'ajouter une ligne.
   Sans identifiant (ancienne version de l'app) : même utilisateur, nom et plateforme. La migration garde le
   plus récent des doublons existants et ajoute `modele`.
+- Vente du téléphone enregistrée une seule fois (v46, 2026-10-30) : CaisseDZ Scan envoie avec le panier un
+  `idVente` (gardé tant que le panier ne change pas) ; `vente_mobile` le relie à sa vente, dans la transaction
+  de l'encaissement. Un panier renvoyé faute de réponse à temps, ou pendant son encaissement, reçoit la vente
+  déjà enregistrée au lieu d'en créer une seconde. Sans `idVente` (ancienne version de l'app) : comme avant.
 
 ## Retours utilisateur — caisse, sous-textes, Entrées et vente sur téléphone ✅ (2026-10-20)
 

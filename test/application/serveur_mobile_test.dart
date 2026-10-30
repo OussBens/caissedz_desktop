@@ -383,6 +383,23 @@ void main() {
     expect((await t.get('produits/$code')).$2['produit']['stock'], 7);
     expect(modifications, containsAll([DomaineMobile.stock, DomaineMobile.commerce]));
     expect((await t.get('ventes')).$2['ventes'], hasLength(1));
+
+    // Renvoyé faute de réponse à temps : la vente déjà enregistrée, pas une seconde.
+    final unique = {...panier, 'idVente': '0f1e2d3c4b5a69788796a5b4c3d2e1f0'};
+    final (_, r1) = await t.post('ventes', unique);
+    final (deux, r2) = await t.post('ventes', unique);
+    expect(deux, 200, reason: '$r2');
+    expect((r2['vente'] as Map)['code'], (r1['vente'] as Map)['code']);
+    expect((await t.get('produits/$code')).$2['produit']['stock'], 4);
+    // Renvoyé pendant son encaissement : une seule vente aussi.
+    final ensemble = {...panier, 'idVente': 'ffeeddccbbaa99887766554433221100'};
+    final (a1, a2) = await (t.post('ventes', ensemble), t.post('ventes', ensemble)).wait;
+    expect((a1.$1, a2.$1), (200, 200), reason: '$a1 $a2');
+    expect((a2.$2['vente'] as Map)['code'], (a1.$2['vente'] as Map)['code']);
+    expect((await t.get('produits/$code')).$2['produit']['stock'], 1);
+    expect((await t.get('ventes')).$2['ventes'], hasLength(3));
+    expect((await t.post('ventes', {...panier, 'idVente': "x'; --"})).$1, 400);
+    expect((await t.get('ventes')).$2['ventes'], hasLength(3));
   });
 
   test('facture photographiée : rangée et déposée dans la file Smart Scan', () async {
