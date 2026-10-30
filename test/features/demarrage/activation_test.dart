@@ -38,7 +38,7 @@ void main() {
       await clic(tester, find.byKey(const ValueKey('choisir_DSK-ULTRA')));
       expect(find.byType(InscriptionPage), findsOneWidget);
       final formule = find.byKey(const ValueKey('inscription_formule'));
-      expect(find.descendant(of: formule, matching: find.text('Formule Ultra')), findsOneWidget);
+      expect(find.descendant(of: formule, matching: find.text('Formule Max')), findsOneWidget);
       expect(find.descendant(of: formule, matching: find.text('14 jours d\'essai gratuit')), findsOneWidget);
       await tester.enterText(find.byKey(const ValueKey('inscription_nom')), 'Karim Haddad');
       await tester.enterText(find.byKey(const ValueKey('inscription_telephone')), '12');
@@ -73,7 +73,7 @@ void main() {
       Finder dans(String code, String texte) =>
           find.descendant(of: find.byKey(ValueKey('formule_$code')), matching: find.text(texte));
 
-      // Basic : le socle, 1 magasin, 1 caisse ; rien d'Advanced ni d'Ultra.
+      // Basic : le socle, 1 magasin, 1 caisse ; rien d'Advanced ni de Max.
       expect(dans('DSK-BASIC', 'Caisse : ventes, scan, tickets, multi-paniers'), findsOneWidget);
       expect(dans('DSK-BASIC', 'Gestion de caisse, clôtures et coffre'), findsOneWidget);
       expect(dans('DSK-BASIC', '1 magasin'), findsOneWidget);
@@ -95,7 +95,7 @@ void main() {
       }
       expect(dans('DSK-ADV', 'Multi-magasin (stock par magasin)'), findsNothing);
 
-      // Ultra : « Tout Advanced, plus : » multi-magasin, transferts, tous les modules ; 15 / 15.
+      // Max : « Tout Advanced, plus : » multi-magasin, transferts, tous les modules ; 15 / 15.
       expect(dans('DSK-ULTRA', 'Tout Avancé, plus :'), findsOneWidget);
       for (final a in [
         'Multi-magasin (stock par magasin)',
@@ -116,7 +116,7 @@ void main() {
       expect(permissionIncluse(Permission.changerCaisseMagasin, NiveauLicence.basic), isFalse);
       expect(permissionIncluse(Permission.changerCaisseMagasin, NiveauLicence.avance), isTrue);
       expect(permissionIncluse(Permission.voirStockTousMagasins, NiveauLicence.avance), isFalse);
-      expect(permissionIncluse(Permission.voirStockTousMagasins, NiveauLicence.ultra), isTrue);
+      expect(permissionIncluse(Permission.voirStockTousMagasins, NiveauLicence.max), isTrue);
       expect(permissionIncluse(Permission.voirMarge, NiveauLicence.basic), isTrue);
     });
 

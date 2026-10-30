@@ -3861,7 +3861,7 @@
   "offresAtoutMultiMagasin": "Multi-magasin (stock par magasin)",
   "offresIdealBasic": "Petit commerce, une seule caisse",
   "offresIdealAvance": "Commerce qui fait des devis et passe des commandes",
-  "offresIdealUltra": "Plusieurs magasins, gestion complète",
+  "offresIdealMax": "Plusieurs magasins, gestion complète",
   "offresTout": "Tous les modules",
   "offresEssayer": "Essayer {jours} jours",
   "@offresEssayer": {
@@ -4009,7 +4009,7 @@
   "activationErrDate": "La date du poste semble incorrecte. Corrigez la date et l'heure.",
   "activationPoste": "Code de ce poste",
   "activationRetourOffres": "Retour aux formules",
-  "licenceUltra": "Ultra",
+  "licenceMax": "Max",
   "licenceEssai": "Essai {palier}",
   "@licenceEssai": {
     "placeholders": {
@@ -4030,8 +4030,8 @@
     }
   },
   "shellVoirFormules": "Choisir une formule",
-  "pmPalierUltra": "Palier Ultra",
-  "pmPalierUltraDesc": "Jusqu'à 15 magasins et 15 caissiers, transferts, tous les modules.",
+  "pmPalierMax": "Palier Max",
+  "pmPalierMaxDesc": "Jusqu'à 15 magasins et 15 caissiers, transferts, tous les modules.",
   "pmPalierEssai": "Essai {palier}",
   "@pmPalierEssai": {
     "placeholders": {
@@ -4100,9 +4100,9 @@
     }
   },
   "limiteCaissiers": "Votre formule ne permet pas d'autre caissier. Passez à la formule supérieure (Paramètres › Licence).",
-  "limiteMagasins": "Votre formule ne permet pas d'autre magasin : le multi-magasin est dans la formule Ultra.",
+  "limiteMagasins": "Votre formule ne permet pas d'autre magasin : le multi-magasin est dans la formule Max.",
   "limiteCaisses": "Votre formule ne permet pas d'autre caisse. Passez à la formule supérieure (Paramètres › Licence).",
-  "limiteTransfertsCaisse": "Votre formule n'a qu'une caisse : les transferts entre caisses sont dans les formules Advanced et Ultra.",
+  "limiteTransfertsCaisse": "Votre formule n'a qu'une caisse : les transferts entre caisses sont dans les formules Advanced et Max.",
   "smartScanErreurLicence": "La licence de ce poste n'est pas reconnue par Smart Scan. Vérifiez votre formule (Paramètres › Licence).",
   "smartScanPacksTitre": "Acheter un pack Smart Scan",
   "smartScanPackLigne": "{nom} · {scans} scans · {prix}",

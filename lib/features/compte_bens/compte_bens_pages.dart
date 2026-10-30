@@ -634,7 +634,7 @@ class _MotDePasseOubliePageState extends ConsumerState<MotDePasseOubliePage> {
   }
 }
 
-/// Le palier d'une licence pour l'affichage : « Essai Avancé » ou « Licence Ultra ».
+/// Le palier d'une licence pour l'affichage : « Essai Avancé » ou « Licence Max ».
 String libelleLicence(AppLocalizations l10n, Licence l) {
   final n = l.niveau;
   if (n == null) return l.lectureSeule ? l10n.lectureSeuleTitre : l10n.connexionNonActivee;

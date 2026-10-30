@@ -7,7 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../helpers/bases.dart';
 
-/// Desktop — Plans & Pricing : magasins et caissiers par palier (Basic et Advanced 1 / 5, Ultra 15 / 15).
+/// Desktop — Plans & Pricing : magasins et caissiers par palier (Basic et Advanced 1 / 5, Max 15 / 15).
 void main() {
   const hachage = MotDePasse(iterations: 300);
 
@@ -59,7 +59,7 @@ void main() {
     );
   });
 
-  test('magasins : le magasin principal compte ; en Ultra jusqu’à 15', () async {
+  test('magasins : le magasin principal compte ; en Max jusqu’à 15', () async {
     final base = await ouvrirBaseDeTest();
     final plein = throwsA(isA<StockException>().having((e) => e.erreur, 'erreur', ErreurStock.limiteMagasins));
     await expectLater(
@@ -70,14 +70,14 @@ void main() {
       ).creerMagasin('Dépôt'),
       plein,
     );
-    final ultra = StockService(base.db, utilisateurCode: 'USR0000', maxMagasins: 3);
-    final depot = await ultra.creerMagasin('Dépôt');
-    await ultra.creerMagasin('Annexe');
-    await expectLater(ultra.creerMagasin('Troisième'), plein);
-    await ultra.changerEtatMagasins([depot.code], actif: false);
-    await ultra.creerMagasin('Troisième');
+    final palierMax = StockService(base.db, utilisateurCode: 'USR0000', maxMagasins: 3);
+    final depot = await palierMax.creerMagasin('Dépôt');
+    await palierMax.creerMagasin('Annexe');
+    await expectLater(palierMax.creerMagasin('Troisième'), plein);
+    await palierMax.changerEtatMagasins([depot.code], actif: false);
+    await palierMax.creerMagasin('Troisième');
     await expectLater(
-      ultra.changerEtatMagasins([depot.code], actif: true),
+      palierMax.changerEtatMagasins([depot.code], actif: true),
       plein,
       reason: 'réactiver reprend une place',
     );

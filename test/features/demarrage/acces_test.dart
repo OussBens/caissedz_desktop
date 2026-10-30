@@ -23,11 +23,11 @@ void main() {
       expect(find.byKey(accesRefuse), findsOneWidget);
     });
 
-    testWidgets('licence Basic : Magasins et Transferts verrouillés (palier Ultra), devis (palier Avancé)', (
+    testWidgets('licence Basic : Magasins et Transferts verrouillés (palier Max), devis (palier Avancé)', (
       tester,
     ) async {
       await pumpApp(tester, etat: EtatApp.connecteeAdminBasic, routeInitiale: '/magasins');
-      expect(find.text('Disponible avec le palier Ultra'), findsOneWidget);
+      expect(find.text('Disponible avec le palier Max'), findsOneWidget);
       expect(find.byType(LicenceGate), findsWidgets);
     });
 

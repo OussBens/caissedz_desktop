@@ -1043,7 +1043,7 @@ class _EntreeRapideFormState extends ConsumerState<_EntreeRapideForm> {
         .toList();
     final magasins = (ref.watch(magasinsProvider).value ?? const <Magasin>[]).where((m) => m.actif).toList();
     // Basic et Advanced (un seul magasin) : ni magasin ni répartition, tout va au magasin principal.
-    final multiMagasin = ref.watch(licenceProvider).couvre(NiveauLicence.ultra) && magasins.length > 1;
+    final multiMagasin = ref.watch(licenceProvider).couvre(NiveauLicence.max) && magasins.length > 1;
     final stocks = ref.watch(stocksParMagasinProvider).value ?? const {};
     final fixe =
         widget.produit ?? (widget.achat != null ? produits.where((p) => p.code == _produit).firstOrNull : null);

@@ -7518,7 +7518,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get offresIdealAvance => 'Business that issues quotes and places orders';
 
   @override
-  String get offresIdealUltra => 'Multiple stores, full management';
+  String get offresIdealMax => 'Multiple stores, full management';
 
   @override
   String get offresTout => 'All modules';
@@ -7764,7 +7764,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get activationRetourOffres => 'Back to the plans';
 
   @override
-  String get licenceUltra => 'Ultra';
+  String get licenceMax => 'Max';
 
   @override
   String licenceEssai(String palier) {
@@ -7781,10 +7781,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shellVoirFormules => 'Choose a plan';
 
   @override
-  String get pmPalierUltra => 'Ultra tier';
+  String get pmPalierMax => 'Max tier';
 
   @override
-  String get pmPalierUltraDesc => 'Up to 15 shops and 15 cashiers, transfers, every module.';
+  String get pmPalierMaxDesc => 'Up to 15 shops and 15 cashiers, transfers, every module.';
 
   @override
   String pmPalierEssai(String palier) {
@@ -7860,14 +7860,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get limiteCaissiers => 'Your plan allows no more cashiers. Upgrade your plan (Settings › Licence).';
 
   @override
-  String get limiteMagasins => 'Your plan allows no more shops: multi-shop comes with the Ultra plan.';
+  String get limiteMagasins => 'Your plan allows no more shops: multi-shop comes with the Max plan.';
 
   @override
   String get limiteCaisses => 'Your plan allows no more cash registers. Upgrade your plan (Settings › Licence).';
 
   @override
   String get limiteTransfertsCaisse =>
-      'Your plan has a single cash register: transfers between registers come with the Advanced and Ultra plans.';
+      'Your plan has a single cash register: transfers between registers come with the Advanced and Max plans.';
 
   @override
   String get smartScanErreurLicence =>

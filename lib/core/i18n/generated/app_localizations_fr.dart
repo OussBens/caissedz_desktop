@@ -7528,7 +7528,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get offresIdealAvance => 'Commerce qui fait des devis et passe des commandes';
 
   @override
-  String get offresIdealUltra => 'Plusieurs magasins, gestion complète';
+  String get offresIdealMax => 'Plusieurs magasins, gestion complète';
 
   @override
   String get offresTout => 'Tous les modules';
@@ -7774,7 +7774,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get activationRetourOffres => 'Retour aux formules';
 
   @override
-  String get licenceUltra => 'Ultra';
+  String get licenceMax => 'Max';
 
   @override
   String licenceEssai(String palier) {
@@ -7796,10 +7796,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get shellVoirFormules => 'Choisir une formule';
 
   @override
-  String get pmPalierUltra => 'Palier Ultra';
+  String get pmPalierMax => 'Palier Max';
 
   @override
-  String get pmPalierUltraDesc => 'Jusqu\'à 15 magasins et 15 caissiers, transferts, tous les modules.';
+  String get pmPalierMaxDesc => 'Jusqu\'à 15 magasins et 15 caissiers, transferts, tous les modules.';
 
   @override
   String pmPalierEssai(String palier) {
@@ -7877,7 +7877,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get limiteMagasins =>
-      'Votre formule ne permet pas d\'autre magasin : le multi-magasin est dans la formule Ultra.';
+      'Votre formule ne permet pas d\'autre magasin : le multi-magasin est dans la formule Max.';
 
   @override
   String get limiteCaisses =>
@@ -7885,7 +7885,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get limiteTransfertsCaisse =>
-      'Votre formule n\'a qu\'une caisse : les transferts entre caisses sont dans les formules Advanced et Ultra.';
+      'Votre formule n\'a qu\'une caisse : les transferts entre caisses sont dans les formules Advanced et Max.';
 
   @override
   String get smartScanErreurLicence =>

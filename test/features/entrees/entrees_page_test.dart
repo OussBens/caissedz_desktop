@@ -238,7 +238,7 @@ void main() {
       expect(tester.widget<DsButton>(_cle('rapide_enregistrer')).onPressed, isNotNull);
     });
 
-    testWidgets('entrée rapide : la répartition seulement en Ultra avec plusieurs magasins', (tester) async {
+    testWidgets('entrée rapide : la répartition seulement en Max avec plusieurs magasins', (tester) async {
       final c = await pumpApp(tester, routeInitiale: '/entrees', taille: _taille);
       await _donnees(tester, c);
       await StockService(c.read(appDatabaseProvider).db, utilisateurCode: 'USR0000').creerMagasin('Dépôt');

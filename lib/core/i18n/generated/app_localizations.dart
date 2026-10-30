@@ -14277,11 +14277,11 @@ abstract class AppLocalizations {
   /// **'Commerce qui fait des devis et passe des commandes'**
   String get offresIdealAvance;
 
-  /// No description provided for @offresIdealUltra.
+  /// No description provided for @offresIdealMax.
   ///
   /// In fr, this message translates to:
   /// **'Plusieurs magasins, gestion complète'**
-  String get offresIdealUltra;
+  String get offresIdealMax;
 
   /// No description provided for @offresTout.
   ///
@@ -14715,11 +14715,11 @@ abstract class AppLocalizations {
   /// **'Retour aux formules'**
   String get activationRetourOffres;
 
-  /// No description provided for @licenceUltra.
+  /// No description provided for @licenceMax.
   ///
   /// In fr, this message translates to:
-  /// **'Ultra'**
-  String get licenceUltra;
+  /// **'Max'**
+  String get licenceMax;
 
   /// No description provided for @licenceEssai.
   ///
@@ -14739,17 +14739,17 @@ abstract class AppLocalizations {
   /// **'Choisir une formule'**
   String get shellVoirFormules;
 
-  /// No description provided for @pmPalierUltra.
+  /// No description provided for @pmPalierMax.
   ///
   /// In fr, this message translates to:
-  /// **'Palier Ultra'**
-  String get pmPalierUltra;
+  /// **'Palier Max'**
+  String get pmPalierMax;
 
-  /// No description provided for @pmPalierUltraDesc.
+  /// No description provided for @pmPalierMaxDesc.
   ///
   /// In fr, this message translates to:
   /// **'Jusqu\'à 15 magasins et 15 caissiers, transferts, tous les modules.'**
-  String get pmPalierUltraDesc;
+  String get pmPalierMaxDesc;
 
   /// No description provided for @pmPalierEssai.
   ///
@@ -14868,7 +14868,7 @@ abstract class AppLocalizations {
   /// No description provided for @limiteMagasins.
   ///
   /// In fr, this message translates to:
-  /// **'Votre formule ne permet pas d\'autre magasin : le multi-magasin est dans la formule Ultra.'**
+  /// **'Votre formule ne permet pas d\'autre magasin : le multi-magasin est dans la formule Max.'**
   String get limiteMagasins;
 
   /// No description provided for @limiteCaisses.
@@ -14880,7 +14880,7 @@ abstract class AppLocalizations {
   /// No description provided for @limiteTransfertsCaisse.
   ///
   /// In fr, this message translates to:
-  /// **'Votre formule n\'a qu\'une caisse : les transferts entre caisses sont dans les formules Advanced et Ultra.'**
+  /// **'Votre formule n\'a qu\'une caisse : les transferts entre caisses sont dans les formules Advanced et Max.'**
   String get limiteTransfertsCaisse;
 
   /// No description provided for @smartScanErreurLicence.

@@ -239,9 +239,9 @@ class PosController extends Notifier<PosEtat> {
 
   /// Autre magasin actif pouvant couvrir [manque] (le mieux pourvu), ou `null`. L'Admin puise dans tous les
   /// magasins ; un autre utilisateur seulement dans ses magasins (`utilisateur_magasin`). Les transferts entre
-  /// magasins sont dans la formule Ultra seulement.
+  /// magasins sont dans la formule Max seulement.
   Future<SourceTransfert?> sourceTransfert(ManqueStock manque) async {
-    if (!ref.read(licenceProvider).couvre(NiveauLicence.ultra)) return null;
+    if (!ref.read(licenceProvider).couvre(NiveauLicence.max)) return null;
     final repo = StockRepository(ref.read(appDatabaseProvider).db);
     final admin = ref.read(sessionProvider)?.estAdmin ?? false;
     final siens = admin ? null : (await repo.magasinsUtilisateur(ref.read(utilisateurCourantCodeProvider))).toSet();
@@ -256,10 +256,10 @@ class PosController extends Notifier<PosEtat> {
   }
 
   /// Une quantité au-delà du stock du magasin reste validable (le transfert du manque est proposé ensuite) :
-  /// toujours pour l'Admin ; pour un autre utilisateur, s'il a un autre magasin d'où transférer (formule Ultra).
+  /// toujours pour l'Admin ; pour un autre utilisateur, s'il a un autre magasin d'où transférer (formule Max).
   Future<bool> depassementPermis() async {
     if (ref.read(sessionProvider)?.estAdmin ?? false) return true;
-    if (!ref.read(licenceProvider).couvre(NiveauLicence.ultra)) return false;
+    if (!ref.read(licenceProvider).couvre(NiveauLicence.max)) return false;
     final siens = await StockRepository(ref.read(appDatabaseProvider).db)
         .magasinsUtilisateur(ref.read(utilisateurCourantCodeProvider));
     return siens.any((m) => m != state.magasinCode);

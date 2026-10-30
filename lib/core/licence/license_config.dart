@@ -1,7 +1,7 @@
 /// CaisseDZ Desktop dans le tableau de bord BENS (Licence products → Copy app setup) : valeurs
 /// publiques. Tant que [licensePublicKey] est vide, toute clé est refusée : créer le produit
 /// (id `caissedz-desktop`, préfixe `CD`, Windows, « A PC, with an account », paliers
-/// `Basic, Advanced, Ultra`) puis coller ici sa configuration. Jamais la clé d'un tableau de bord
+/// `Basic, Advanced, Max`) puis coller ici sa configuration. Jamais la clé d'un tableau de bord
 /// local dans une version publiée (bens_ds docs/caissedz-desktop-licence.md).
 library;
 

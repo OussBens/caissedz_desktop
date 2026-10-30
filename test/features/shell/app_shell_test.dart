@@ -265,7 +265,7 @@ void main() {
 
     testWidgets('palier Basic : devis et multi-magasin verrouillés, avec leur palier', (tester) async {
       await pumpApp(tester, etat: EtatApp.connecteeAdminBasic, routeInitiale: '/magasins');
-      expect(find.text('Disponible avec le palier Ultra'), findsOneWidget);
+      expect(find.text('Disponible avec le palier Max'), findsOneWidget);
     });
 
     testWidgets('essai terminé : lecture seule, la caisse en pause, la consultation ouverte', (tester) async {

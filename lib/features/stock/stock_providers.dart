@@ -45,7 +45,7 @@ Future<List<String>?> magasinsDeLaSession(Ref ref) async {
   return ref.read(mesMagasinsProvider.future);
 }
 
-/// Le palier a-t-il plusieurs magasins (Ultra) ? Basic et Avancé : un seul magasin, aucun choix de magasin
+/// Le palier a-t-il plusieurs magasins (Max) ? Basic et Avancé : un seul magasin, aucun choix de magasin
 /// dans les formulaires ni les filtres (tout va au magasin principal).
 final plusieursMagasinsProvider = Provider<bool>((ref) => (ref.watch(licenceProvider).niveau?.magasins ?? 2) > 1);
 

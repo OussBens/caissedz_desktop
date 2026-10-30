@@ -177,8 +177,8 @@ class OffreBens {
   /// La mise à niveau d'un palier acheté vers un autre (la différence de prix, sans nouveaux scans).
   static String? codeMiseANiveau(NiveauLicence de, NiveauLicence vers) => switch ((de, vers)) {
     (NiveauLicence.basic, NiveauLicence.avance) => 'DSK-UP-ADV',
-    (NiveauLicence.avance, NiveauLicence.ultra) => 'DSK-UP-ULTRA',
-    (NiveauLicence.basic, NiveauLicence.ultra) => 'DSK-UP-BASIC-ULTRA',
+    (NiveauLicence.avance, NiveauLicence.max) => 'DSK-UP-ULTRA',
+    (NiveauLicence.basic, NiveauLicence.max) => 'DSK-UP-BASIC-ULTRA',
     _ => null,
   };
 
@@ -186,7 +186,7 @@ class OffreBens {
   static const List<OffreBens> parDefaut = [
     OffreBens(code: 'DSK-BASIC', nom: 'Basic', prixDzd: 20000, niveau: NiveauLicence.basic, scans: 90, mois: 3),
     OffreBens(code: 'DSK-ADV', nom: 'Advanced', prixDzd: 30000, niveau: NiveauLicence.avance, scans: 180, mois: 3),
-    OffreBens(code: 'DSK-ULTRA', nom: 'Ultra', prixDzd: 36000, niveau: NiveauLicence.ultra, scans: 360, mois: 3),
+    OffreBens(code: 'DSK-ULTRA', nom: 'Max', prixDzd: 36000, niveau: NiveauLicence.max, scans: 360, mois: 3),
   ];
 }
 
@@ -199,7 +199,7 @@ class OffresBens {
   final int joursEssai;
   final bool enLigne;
 
-  /// Les trois paliers proposés, dans l'ordre (Basic, Advanced, Ultra).
+  /// Les trois paliers proposés, dans l'ordre (Basic, Advanced, Max).
   List<OffreBens> get paliers =>
       [...offres.where((o) => o.estPalier)]..sort((a, b) => a.niveau!.index.compareTo(b.niveau!.index));
 

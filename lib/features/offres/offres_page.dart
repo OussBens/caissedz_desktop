@@ -18,11 +18,11 @@ import '../compte_bens/ecran_compte.dart';
 import '../connexion/connexion_page.dart';
 import '../shell/controles_fenetre.dart';
 
-/// Libellé d'un palier (Basic, Avancé, Ultra).
+/// Libellé d'un palier (Basic, Avancé, Max).
 String libellePalier(AppLocalizations l10n, NiveauLicence n) => switch (n) {
   NiveauLicence.basic => l10n.licenceBasic,
   NiveauLicence.avance => l10n.licenceAvance,
-  NiveauLicence.ultra => l10n.licenceUltra,
+  NiveauLicence.max => l10n.licenceMax,
 };
 
 /// La formule choisie sur l'écran des offres (code `DSK-…`) : gardée en revenant de l'inscription
@@ -250,7 +250,7 @@ class _CarteFormule extends ConsumerWidget {
         : offre.code;
     final prix = offres.offre(code)?.prixDzd ?? offre.prixDzd;
     // Desktop — Plans & Pricing : chaque formule ne montre que ce qu'elle a. Basic : le socle ; Advanced et
-    // Ultra : « Tout <palier précédent>, plus : » et ce qu'ils ajoutent. Puis les limites et les scans.
+    // Max : « Tout <palier précédent>, plus : » et ce qu'ils ajoutent. Puis les limites et les scans.
     final precedent = niveau == NiveauLicence.basic ? null : NiveauLicence.values[niveau.index - 1];
     final atouts = [
       ...switch (niveau) {
@@ -268,7 +268,7 @@ class _CarteFormule extends ConsumerWidget {
           l10n.offresAtoutAchats,
           l10n.offresAtoutBesoins,
         ],
-        NiveauLicence.ultra => [l10n.offresAtoutMultiMagasin, l10n.offresAtoutTransferts, l10n.offresTout],
+        NiveauLicence.max => [l10n.offresAtoutMultiMagasin, l10n.offresAtoutTransferts, l10n.offresTout],
       },
       l10n.offresMagasins(niveau.magasins),
       l10n.offresCaisses(niveau.caisses),
@@ -277,7 +277,7 @@ class _CarteFormule extends ConsumerWidget {
     final ideal = switch (niveau) {
       NiveauLicence.basic => l10n.offresIdealBasic,
       NiveauLicence.avance => l10n.offresIdealAvance,
-      NiveauLicence.ultra => l10n.offresIdealUltra,
+      NiveauLicence.max => l10n.offresIdealMax,
     };
     void choisir() => ref.read(offreChoisieProvider.notifier).choisir(offre.code);
 
@@ -319,7 +319,7 @@ class _CarteFormule extends ConsumerWidget {
                             mainAxisSize: MainAxisSize.min,
                             spacing: 6,
                             children: [
-                              if (niveau == NiveauLicence.ultra)
+                              if (niveau == NiveauLicence.max)
                                 Icon(LucideIcons.sparkles, size: 16, color: c.iconActive),
                               Text(nom, style: t.heading.copyWith(fontWeight: FontWeight.w700)),
                             ],

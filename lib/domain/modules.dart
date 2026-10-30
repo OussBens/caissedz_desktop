@@ -30,7 +30,7 @@ class ModuleApp {
   final String Function(AppLocalizations l10n) libelle;
 
   /// Palier nécessaire (Desktop — Plans & Pricing) : devis, commandes, commandes fournisseurs et besoins
-  /// à partir d'Advanced ; multi-magasin et transferts en Ultra ; le reste dans tous les paliers.
+  /// à partir d'Advanced ; multi-magasin et transferts en Max ; le reste dans tous les paliers.
   final NiveauLicence niveauRequis;
 
   /// Page rattachée à un module : l'accès du rôle est celui du module parent.
@@ -139,7 +139,7 @@ class Modules {
       icone: LucideIcons.store,
       route: '/magasins',
       libelle: (l) => l.moduleMagasins,
-      niveauRequis: NiveauLicence.ultra,
+      niveauRequis: NiveauLicence.max,
     ),
     ModuleApp(
       id: 'besoins',
@@ -212,7 +212,7 @@ class Modules {
       icone: LucideIcons.arrowLeftRight,
       route: '/transferts',
       libelle: (l) => l.moduleTransferts,
-      niveauRequis: NiveauLicence.ultra,
+      niveauRequis: NiveauLicence.max,
     ),
     ModuleApp(
       id: 'versements',

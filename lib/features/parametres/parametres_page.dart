@@ -1625,7 +1625,7 @@ class _ParametresPageState extends ConsumerState<ParametresPage> {
         l10n.pmPalierEssai(libellePalier(l10n, n)),
         l10n.pmPalierEssaiDesc(licence.expireLe == null ? '—' : date.format(licence.expireLe!)),
       ),
-      Licence(niveau: NiveauLicence.ultra) => (l10n.pmPalierUltra, l10n.pmPalierUltraDesc),
+      Licence(niveau: NiveauLicence.max) => (l10n.pmPalierMax, l10n.pmPalierMaxDesc),
       Licence(niveau: NiveauLicence.avance) => (l10n.pmPalierAvance, l10n.pmPalierAvanceDesc),
       Licence(niveau: NiveauLicence.basic) => (l10n.pmPalierBasic, l10n.pmPalierBasicDesc),
       _ => (l10n.pmPalierAucun, l10n.pmPalierAucunDesc),

@@ -150,8 +150,8 @@ Future<ProviderContainer> pumpApp(
       await licence.activer(await cleTest(NiveauLicence.basic));
       await config.terminer(configurationTest());
     case EtatApp.connecteeAdmin:
-      // Ultra : tous les modules (multi-magasin compris).
-      await licence.activer(await cleTest(NiveauLicence.ultra));
+      // Max : tous les modules (multi-magasin compris).
+      await licence.activer(await cleTest(NiveauLicence.max));
       await config.terminer(configurationTest());
       await session.connecter(identifiantAdmin, motDePasseAdmin);
     case EtatApp.connecteeAdminBasic:
@@ -169,7 +169,7 @@ Future<ProviderContainer> pumpApp(
       await config.terminer(configurationTest());
       await session.connecter(identifiantAdmin, motDePasseAdmin);
     case EtatApp.connecteeMagasinier:
-      await licence.activer(await cleTest(NiveauLicence.ultra));
+      await licence.activer(await cleTest(NiveauLicence.max));
       await config.terminer(configurationTest());
       await UtilisateurRepository(base.db).inserer(
         const Utilisateur(code: 'USR0003', identifiant: 'yacine', nom: 'Yacine', roleCode: Roles.magasinier),

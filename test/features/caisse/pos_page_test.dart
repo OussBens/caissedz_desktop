@@ -655,7 +655,7 @@ void main() {
       expect(find.descendant(of: pagination, matching: find.textContaining('1–24')), findsOneWidget);
     });
 
-    testWidgets('paramètres de la caisse : bouton à côté de la calculatrice (Avancé, Ultra)', (tester) async {
+    testWidgets('paramètres de la caisse : bouton à côté de la calculatrice (Avancé, Max)', (tester) async {
       await pumpApp(tester, routeInitiale: '/caisse', taille: const Size(1600, 1000));
       expect(find.byKey(const ValueKey('caisse_parametres')), findsOneWidget);
     });

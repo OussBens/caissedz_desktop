@@ -38,11 +38,11 @@ void main() {
       final s = await licenceServiceTest(base);
       expect((await s.lire()).estActivee, isFalse);
       expect(await s.codePoste(), codePosteTest());
-      final l = await s.activer(await cleTest(NiveauLicence.ultra));
-      expect(l.niveau, NiveauLicence.ultra);
+      final l = await s.activer(await cleTest(NiveauLicence.max));
+      expect(l.niveau, NiveauLicence.max);
       expect(l.expireLe, isNull);
       final relu = await (await licenceServiceTest(base)).lire();
-      expect(relu.niveau, NiveauLicence.ultra);
+      expect(relu.niveau, NiveauLicence.max);
     });
 
     test('refus : vide, autre poste, autre produit, expirée, ancienne clé SHA-256', () async {
@@ -154,7 +154,7 @@ void main() {
 
     test('connexion : identifiants faux, puis bons ; déconnecté par le serveur : compte et clé oubliés', () async {
       final base = await ouvrirBaseDeTest();
-      final cle = await cleTest(NiveauLicence.ultra);
+      final cle = await cleTest(NiveauLicence.max);
       var deplace = false;
       final serveur = _Serveur((r) async {
         final b = jsonDecode(r.body) as Map;
@@ -188,7 +188,7 @@ void main() {
         throwsA(isA<CompteBensException>().having((e) => e.erreur, 'erreur', ErreurCompteBens.identifiants)),
       );
       final l = await s.connecter(telephone: '+213555112233', motDePasse: 'bon mot de passe');
-      expect((l.niveau, l.essai, l.compte?.telephone), (NiveauLicence.ultra, false, '+213555112233'));
+      expect((l.niveau, l.essai, l.compte?.telephone), (NiveauLicence.max, false, '+213555112233'));
 
       // Le compte s'est connecté sur un autre poste : ce poste est déconnecté, sa clé retirée.
       deplace = true;
@@ -199,7 +199,7 @@ void main() {
 
     test('une licence du serveur refusée ici : le pourquoi est gardé, puis effacé par une bonne', () async {
       final base = await ouvrirBaseDeTest();
-      String? cle = await cleTest(NiveauLicence.ultra, produit: 2);
+      String? cle = await cleTest(NiveauLicence.max, produit: 2);
       final serveur = _Serveur((r) async {
         final reponse = {
           'key': cle,
@@ -215,12 +215,12 @@ void main() {
       expect((l.estActivee, l.compte != null, l.refusServeur), (false, true, MotifLicence.invalide));
       expect((await (await licenceServiceTest(base, api: serveur.api)).lire()).refusServeur, MotifLicence.invalide);
       // Un autre PC.
-      cle = await cleTest(NiveauLicence.ultra, poste: 'AUTRE-PC');
+      cle = await cleTest(NiveauLicence.max, poste: 'AUTRE-PC');
       expect((await s.synchroniser()).refusServeur, MotifLicence.autrePoste);
       // La bonne : activée, plus de refus.
-      cle = await cleTest(NiveauLicence.ultra);
+      cle = await cleTest(NiveauLicence.max);
       l = await s.synchroniser();
-      expect((l.niveau, l.refusServeur), (NiveauLicence.ultra, null));
+      expect((l.niveau, l.refusServeur), (NiveauLicence.max, null));
     });
 
     test('révocation : aucune clé et pas d’app active au check-in retire la clé gardée', () async {

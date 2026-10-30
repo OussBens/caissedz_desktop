@@ -92,7 +92,7 @@ class _StockPageState extends ConsumerState<StockPage> {
     };
     final remises = {for (final r in ref.watch(remisesProvider).value ?? const <Remise>[]) r.code: r.designation};
     final licence = ref.watch(licenceProvider);
-    final multiMagasin = licence.couvre(NiveauLicence.ultra);
+    final multiMagasin = licence.couvre(NiveauLicence.max);
     final colonnesMagasins = _magasin == null ? consultables : consultables.where((m) => m.code == _magasin).toList();
     final toutes = [
       for (final p in produits)

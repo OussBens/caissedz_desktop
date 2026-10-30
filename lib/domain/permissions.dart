@@ -31,12 +31,12 @@ class Roles {
 }
 
 /// Paliers de licence (Desktop — Plans & Pricing). Le palier signé dans la licence BENS est
-/// l'index : 0 Basic, 1 Advanced, 2 Ultra (les paliers du produit `caissedz-desktop`, dans cet ordre).
+/// l'index : 0 Basic, 1 Advanced, 2 Max (les paliers du produit `caissedz-desktop`, dans cet ordre).
 /// L'essai de 14 jours est le palier choisi à l'inscription, jusqu'à sa date de fin.
 enum NiveauLicence {
   basic('Basic', 'DSK-BASIC', magasins: 1, caisses: 1, caissiers: 5),
   avance('Avancé', 'DSK-ADV', magasins: 1, caisses: 5, caissiers: 5),
-  ultra('Ultra', 'DSK-ULTRA', magasins: 15, caisses: 15, caissiers: 15);
+  max('Max', 'DSK-ULTRA', magasins: 15, caisses: 15, caissiers: 15);
 
   const NiveauLicence(
     this.stocke,
@@ -53,7 +53,7 @@ enum NiveauLicence {
 
   /// Magasins, caisses (points de vente actifs, coffre non compté) et comptes caissiers du palier
   /// (l'essai a ceux du palier choisi). Desktop — Plans & Pricing : Basic 1 / 1, Advanced 1 / 5,
-  /// Ultra 15 / 15 (magasins / caisses).
+  /// Max 15 / 15 (magasins / caisses).
   final int magasins;
   final int caisses;
   final int caissiers;

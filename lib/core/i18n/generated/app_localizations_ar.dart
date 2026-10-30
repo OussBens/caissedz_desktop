@@ -7501,7 +7501,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get offresIdealAvance => 'تجارة تُصدر عروض أسعار وتطلب سلعًا';
 
   @override
-  String get offresIdealUltra => 'عدة متاجر، تسيير كامل';
+  String get offresIdealMax => 'عدة متاجر، تسيير كامل';
 
   @override
   String get offresTout => 'كل الوحدات';
@@ -7745,7 +7745,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get activationRetourOffres => 'العودة إلى الباقات';
 
   @override
-  String get licenceUltra => 'ألترا';
+  String get licenceMax => 'ماكس';
 
   @override
   String licenceEssai(String palier) {
@@ -7762,10 +7762,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get shellVoirFormules => 'اختر باقة';
 
   @override
-  String get pmPalierUltra => 'باقة ألترا';
+  String get pmPalierMax => 'باقة ماكس';
 
   @override
-  String get pmPalierUltraDesc => 'حتى 15 متجرًا و15 أمين صندوق، التحويلات، كل الوحدات.';
+  String get pmPalierMaxDesc => 'حتى 15 متجرًا و15 أمين صندوق، التحويلات، كل الوحدات.';
 
   @override
   String pmPalierEssai(String palier) {
@@ -7841,14 +7841,14 @@ class AppLocalizationsAr extends AppLocalizations {
   String get limiteCaissiers => 'باقتك لا تسمح بأمين صندوق إضافي. انتقل إلى الباقة الأعلى (الإعدادات › الترخيص).';
 
   @override
-  String get limiteMagasins => 'باقتك لا تسمح بمتجر إضافي: تعدد المتاجر متوفر في باقة ألترا.';
+  String get limiteMagasins => 'باقتك لا تسمح بمتجر إضافي: تعدد المتاجر متوفر في باقة ماكس.';
 
   @override
   String get limiteCaisses => 'باقتك لا تسمح بصندوق إضافي. انتقل إلى الباقة الأعلى (الإعدادات › الترخيص).';
 
   @override
   String get limiteTransfertsCaisse =>
-      'باقتك تضم صندوقًا واحدًا: التحويلات بين الصناديق متوفرة في باقتي المتقدم وألترا.';
+      'باقتك تضم صندوقًا واحدًا: التحويلات بين الصناديق متوفرة في باقتي المتقدم وماكس.';
 
   @override
   String get smartScanErreurLicence =>

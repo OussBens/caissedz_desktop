@@ -36,7 +36,7 @@ void main() {
     );
     addTearDown(c.dispose);
     await donnerMotDePasseAdmin(base);
-    await c.read(licenceProvider.notifier).activer(await cleTest(NiveauLicence.ultra));
+    await c.read(licenceProvider.notifier).activer(await cleTest(NiveauLicence.max));
     await c.read(configurationTermineeProvider.notifier).terminer(configurationTest());
     await c.read(sessionProvider.notifier).connecter(identifiantAdmin, motDePasseAdmin);
     final cat = CatalogueService(base.db, utilisateurCode: 'USR0000');

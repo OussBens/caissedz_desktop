@@ -133,7 +133,7 @@ void main() {
       expect(_cle('usr_magasins'), findsNothing);
     });
 
-    testWidgets('Ultra : caisses et magasins à choisir (plusieurs, le premier par défaut)', (tester) async {
+    testWidgets('Max : caisses et magasins à choisir (plusieurs, le premier par défaut)', (tester) async {
       await pumpApp(tester, routeInitiale: '/utilisateurs', taille: _taille);
       await clic(tester, _cle('usr_nouveau'));
       expect(_cle('usr_caisses'), findsOneWidget);
