@@ -45,6 +45,7 @@ import 'v043_archivage.dart';
 import 'v044_admin_sans_mot_de_passe.dart';
 import 'v045_index_stock.dart';
 import 'v046_caisses_utilisateur.dart';
+import 'v047_vente_mobile.dart';
 
 export 'migration.dart';
 
@@ -96,4 +97,5 @@ const List<Migration> toutesLesMigrations = [
   MigrationV044AdminSansMotDePasse(),
   MigrationV045IndexStock(),
   MigrationV046CaissesUtilisateur(),
+  MigrationV047VenteMobile(),
 ];
