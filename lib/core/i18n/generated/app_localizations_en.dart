@@ -5434,6 +5434,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get usrColCaisses => 'Tills';
 
   @override
+  String get usrCaissesAttribuees => 'Assigned tills';
+
+  @override
+  String get usrMagasinsAttribues => 'Assigned stores';
+
+  @override
   String get usrColVentes => 'Sales';
 
   @override

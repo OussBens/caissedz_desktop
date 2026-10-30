@@ -2841,6 +2841,8 @@
   "usrColCaisse": "Caisse",
   "usrColMagasins": "Magasins",
   "usrColCaisses": "Caisses",
+  "usrCaissesAttribuees": "Caisses attribuées",
+  "usrMagasinsAttribues": "Magasins attribués",
   "usrColVentes": "Ventes",
   "usrColDernierAcces": "Dernier accès",
   "usrTelephone": "Téléphone",

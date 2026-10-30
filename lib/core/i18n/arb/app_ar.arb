@@ -1896,6 +1896,8 @@
   "usrColCaisse": "الصندوق",
   "usrColMagasins": "المخازن",
   "usrColCaisses": "الصناديق",
+  "usrCaissesAttribuees": "الصناديق المخصصة",
+  "usrMagasinsAttribues": "المخازن المخصصة",
   "usrColVentes": "المبيعات",
   "usrColDernierAcces": "آخر دخول",
   "usrTelephone": "الهاتف",

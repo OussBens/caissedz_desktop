@@ -67,6 +67,10 @@ void main() {
       await doubleClic(tester, find.text('Amina Kaci').first);
       expect(find.text('@amina · USR0002'), findsOneWidget);
       expect(find.text('Permissions du rôle'), findsOneWidget);
+      // Caisses et magasins attribués, le premier de chaque liste par défaut.
+      expect(find.text('Caisses attribuées'), findsOneWidget);
+      expect(find.text('Magasins attribués'), findsOneWidget);
+      expect(find.text('Par défaut'), findsNWidgets(2));
       await clic(tester, find.text('Fermer').last);
       await tester.pump(const Duration(seconds: 5));
     });

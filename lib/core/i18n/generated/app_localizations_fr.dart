@@ -5440,6 +5440,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get usrColCaisses => 'Caisses';
 
   @override
+  String get usrCaissesAttribuees => 'Caisses attribuées';
+
+  @override
+  String get usrMagasinsAttribues => 'Magasins attribués';
+
+  @override
   String get usrColVentes => 'Ventes';
 
   @override

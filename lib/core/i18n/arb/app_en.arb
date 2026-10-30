@@ -1896,6 +1896,8 @@
   "usrColCaisse": "Till",
   "usrColMagasins": "Stores",
   "usrColCaisses": "Tills",
+  "usrCaissesAttribuees": "Assigned tills",
+  "usrMagasinsAttribues": "Assigned stores",
   "usrColVentes": "Sales",
   "usrColDernierAcces": "Last access",
   "usrTelephone": "Phone",

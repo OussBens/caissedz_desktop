@@ -5429,6 +5429,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get usrColCaisses => 'الصناديق';
 
   @override
+  String get usrCaissesAttribuees => 'الصناديق المخصصة';
+
+  @override
+  String get usrMagasinsAttribues => 'المخازن المخصصة';
+
+  @override
   String get usrColVentes => 'المبيعات';
 
   @override

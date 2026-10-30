@@ -479,19 +479,21 @@ Future<void> afficherDetailUtilisateur(BuildContext context, WidgetRef ref, Lign
   final l10n = AppLocalizations.of(context);
   final devise = ref.read(deviseProvider);
   final roles = await ref.read(rolesProvider.future);
-  final caisses = {for (final c in await ref.read(caissesListeProvider.future)) c.code: c.nom};
-  final magasins = {for (final m in await ref.read(magasinsProvider.future)) m.code: m.nom};
+  final caisses = {for (final c in await ref.read(caissesListeProvider.future)) c.code: c};
+  final magasins = {for (final m in await ref.read(magasinsProvider.future)) m.code: m};
   // Noms préchargés : la section « Traçabilité » les affiche dès l'ouverture.
   await ref.read(nomsUtilisateursProvider.future);
   if (!context.mounted) return;
   final u = l.u;
   final role = roles.where((r) => r.code == u.roleCode).firstOrNull;
-  final nomsMagasins = [
-    for (final (i, m) in l.magasins.indexed) '${magasins[m] ?? m}${i == 0 ? ' ${l10n.usrDefaut}' : ''}',
-  ].join(', ');
-  final nomsCaisses = u.estAdmin
-      ? l10n.usrToutesCaisses
-      : [for (final (i, c) in l.caisses.indexed) '${caisses[c] ?? c}${i == 0 ? ' ${l10n.usrDefaut}' : ''}'].join(', ');
+  // Caisses attribuées, la première par défaut ; l'Admin a toutes les caisses actives hors coffre.
+  final caissesAttribuees = u.estAdmin
+      ? [
+          for (final c in caisses.values)
+            if (c.actif && !c.coffre) c,
+        ]
+      : [for (final code in l.caisses) ?caisses[code]];
+  final magasinsAttribues = [for (final code in l.magasins) ?magasins[code]];
   return afficherDetailEntite(
     context,
     DsEntityDetailDialog(
@@ -527,10 +529,78 @@ Future<void> afficherDetailUtilisateur(BuildContext context, WidgetRef ref, Lign
             DsKeyValue(l10n.usrIdentifiant, u.identifiant, mono: true),
             DsKeyValue(l10n.usrTelephone, u.telephone.isEmpty ? '—' : u.telephone),
             DsKeyValue(l10n.usrRole, libelleRole(context, u.roleNom)),
-            DsKeyValue(l10n.usrColCaisses, nomsCaisses.isEmpty ? '—' : nomsCaisses, span: 3),
-            DsKeyValue(l10n.usrColMagasins, nomsMagasins.isEmpty ? '—' : nomsMagasins, span: 3),
             if (u.observation.isNotEmpty) DsKeyValue(l10n.usrObservation, u.observation, span: 3),
           ],
+        ),
+        DsSectionDetail(
+          titre: u.estAdmin ? '${l10n.usrCaissesAttribuees} · ${l10n.usrToutesCaisses}' : l10n.usrCaissesAttribuees,
+          icone: LucideIcons.monitor,
+          flex: 3,
+          nbLignes: caissesAttribuees.length,
+          tableau: DsDataTable<Caisse>(
+            dense: true,
+            encadre: false,
+            pagine: false,
+            reserveEcran: 360,
+            cle: (c) => c.code,
+            lignes: caissesAttribuees,
+            messageVide: l10n.dsAucunElement,
+            colonnes: [
+              DsColonne(id: 'code', libelle: l10n.produitsColCode, attenue: true, valeur: (c) => c.code),
+              DsColonne(
+                id: 'nom',
+                libelle: l10n.gcColCaisse,
+                fort: true,
+                flex: 2,
+                valeur: (c) => c.nom,
+                cellule: (_, c) => _nomParDefaut(l10n, c.nom, defaut: !u.estAdmin && c.code == l.caisses.firstOrNull),
+              ),
+              DsColonne(id: 'type', libelle: l10n.caisseType, valeur: (c) => libelleTypeCaisse(l10n, c.type)),
+              DsColonne(
+                id: 'magasin',
+                libelle: l10n.caisseMagasin,
+                valeur: (c) => c.magasinCode == null ? '—' : (magasins[c.magasinCode]?.nom ?? c.magasinCode!),
+              ),
+              DsColonne(
+                id: 'etat',
+                libelle: l10n.gcColEtat,
+                valeur: (c) => c.actif ? 1 : 0,
+                cellule: (_, c) => BadgeStatut(c.actif ? 'actif' : 'inactif'),
+              ),
+            ],
+          ),
+        ),
+        DsSectionDetail(
+          titre: l10n.usrMagasinsAttribues,
+          icone: LucideIcons.store,
+          flex: 2,
+          nbLignes: magasinsAttribues.length,
+          tableau: DsDataTable<Magasin>(
+            dense: true,
+            encadre: false,
+            pagine: false,
+            reserveEcran: 360,
+            cle: (m) => m.code,
+            lignes: magasinsAttribues,
+            messageVide: l10n.dsAucunElement,
+            colonnes: [
+              DsColonne(id: 'code', libelle: l10n.produitsColCode, attenue: true, valeur: (m) => m.code),
+              DsColonne(
+                id: 'nom',
+                libelle: l10n.caisseMagasin,
+                fort: true,
+                flex: 2,
+                valeur: (m) => m.nom,
+                cellule: (_, m) => _nomParDefaut(l10n, m.nom, defaut: m.code == l.magasins.firstOrNull),
+              ),
+              DsColonne(
+                id: 'etat',
+                libelle: l10n.gcColEtat,
+                valeur: (m) => m.actif ? 1 : 0,
+                cellule: (_, m) => BadgeStatut(m.actif ? 'actif' : 'inactif'),
+              ),
+            ],
+          ),
         ),
         if (role != null)
           DsSectionDetail(
@@ -551,6 +621,15 @@ Future<void> afficherDetailUtilisateur(BuildContext context, WidgetRef ref, Lign
     ),
   );
 }
+
+/// Nom d'une caisse ou d'un magasin attribué, suivi du badge « Par défaut » pour le premier de la liste.
+Widget _nomParDefaut(AppLocalizations l10n, String nom, {required bool defaut}) => Row(
+  spacing: DsSpacing.s2,
+  children: [
+    Flexible(child: Text(nom, overflow: TextOverflow.ellipsis)),
+    if (defaut) DsBadge(libelle: l10n.dsParDefaut, ton: DsBadgeTon.primaire),
+  ],
+);
 
 /// Réinitialise le mot de passe et affiche le mot de passe temporaire à communiquer.
 Future<void> reinitialiserMotDePasse(BuildContext context, WidgetRef ref, Utilisateur u) async {

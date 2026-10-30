@@ -10341,6 +10341,18 @@ abstract class AppLocalizations {
   /// **'Caisses'**
   String get usrColCaisses;
 
+  /// No description provided for @usrCaissesAttribuees.
+  ///
+  /// In fr, this message translates to:
+  /// **'Caisses attribuées'**
+  String get usrCaissesAttribuees;
+
+  /// No description provided for @usrMagasinsAttribues.
+  ///
+  /// In fr, this message translates to:
+  /// **'Magasins attribués'**
+  String get usrMagasinsAttribues;
+
   /// No description provided for @usrColVentes.
   ///
   /// In fr, this message translates to:
