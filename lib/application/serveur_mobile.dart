@@ -9,6 +9,7 @@ import 'package:crypto/crypto.dart';
 import 'package:path/path.dart' as p;
 import 'package:sqflite_common/sqlite_api.dart';
 
+import '../core/securite/certificat_mobile.dart';
 import '../data/boutique_repository.dart';
 import '../data/caisse_repository.dart';
 import '../data/catalogue_repository.dart';
@@ -163,7 +164,13 @@ class ServeurMobile {
   static const int tailleMaxFacture = 15 * 1024 * 1024;
   static const String enteteAppareil = 'x-caissedz-appareil';
 
+  /// Certificat TLS du poste et sa clé (paramètres, base chiffrée) : créés au premier démarrage, gardés ensuite (un
+  /// nouveau certificat obligerait chaque téléphone à scanner un nouveau QR code).
+  static const String cleCertificat = 'mobile_certificat';
+  static const String cleClePrivee = 'mobile_cle_privee';
+
   HttpServer? _serveur;
+  CertificatMobile? _certificat;
 
   /// Codes d'appairage en cours, un par utilisateur.
   final Map<String, CodeAppairage> _codes = {};
@@ -174,25 +181,40 @@ class ServeurMobile {
   bool get demarre => _serveur != null;
   int? get port => _serveur?.port;
 
+  /// Empreinte du certificat, pour le QR code (null tant que le serveur n'a pas démarré).
+  String? get empreinte => _serveur == null ? null : _certificat?.empreinte;
+
   MobileRepository get _repo => MobileRepository(db);
 
-  /// Démarre l'écoute sur toutes les interfaces IPv4 ([portPrefere], sinon les 10 suivants, sinon un port libre).
+  /// Démarre l'écoute HTTPS sur toutes les interfaces IPv4 ([portPrefere], sinon les 10 suivants, sinon un port
+  /// libre), avec le certificat du poste.
   Future<int> demarrer({InternetAddress? adresse}) async {
     if (_serveur != null) return _serveur!.port;
     final hote = adresse ?? InternetAddress.anyIPv4;
+    final contexte = (_certificat ??= await _chargerCertificat()).contexte();
     HttpServer? s;
     for (var port = portPrefere; port <= portPrefere + 10 && s == null; port++) {
       try {
-        s = await HttpServer.bind(hote, port);
+        s = await HttpServer.bindSecure(hote, port, contexte);
       } on SocketException {
         continue;
       }
     }
-    s ??= await HttpServer.bind(hote, 0);
+    s ??= await HttpServer.bindSecure(hote, 0, contexte);
     _serveur = s;
     s.listen((r) => unawaited(_traiter(r)));
     developer.log('Serveur mobile démarré sur le port ${s.port}', name: 'caissedz.mobile');
     return s.port;
+  }
+
+  Future<CertificatMobile> _chargerCertificat() async {
+    final parametres = ParametreRepository(db);
+    final pem = await parametres.lire(cleCertificat);
+    final cle = await parametres.lire(cleClePrivee);
+    if (pem != null && cle != null) return CertificatMobile(certificatPem: pem, clePem: cle);
+    final nouveau = CertificatMobile.generer();
+    await parametres.ecrirePlusieurs({cleCertificat: nouveau.certificatPem, cleClePrivee: nouveau.clePem});
+    return nouveau;
   }
 
   Future<void> arreter() async {
@@ -252,19 +274,22 @@ class ServeurMobile {
     return {for (final (_, _, adresse) in retenues) adresse}.toList();
   }
 
-  /// Contenu du QR code d'appairage de l'utilisateur [utilisateur] (son nom, affiché par le téléphone).
+  /// Contenu du QR code d'appairage de l'utilisateur [utilisateur] (son nom, affiché par le téléphone) ;
+  /// [empreinte] : celle du certificat, le seul que le téléphone acceptera.
   static String contenuQr({
     required List<String> adresses,
     required int port,
     required String code,
     required String boutique,
     required String utilisateur,
+    required String empreinte,
   }) => jsonEncode({
     't': 'caissedz-scan',
     'v': versionApi,
     'h': adresses,
     'p': port,
     'c': code,
+    'f': empreinte,
     'n': boutique,
     'u': utilisateur,
   });

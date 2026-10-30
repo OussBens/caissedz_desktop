@@ -6,22 +6,31 @@ import 'package:caissedz_desktop/application/role_service.dart';
 import 'package:caissedz_desktop/application/serveur_mobile.dart';
 import 'package:caissedz_desktop/application/utilisateur_service.dart';
 import 'package:caissedz_desktop/core/db/app_database.dart';
+import 'package:caissedz_desktop/core/securite/certificat_mobile.dart';
 import 'package:caissedz_desktop/core/securite/mot_de_passe.dart';
 import 'package:caissedz_desktop/domain/models/licence.dart';
 import 'package:caissedz_desktop/domain/permissions.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/io_client.dart';
 
 import '../helpers/bases.dart';
 
+/// Client HTTPS qui n'accepte que le certificat d'[empreinte], comme CaisseDZ Scan après avoir lu le QR code.
+http.Client clientEpingle(String empreinte) => IOClient(
+  HttpClient(context: SecurityContext(withTrustedRoots: false))
+    ..badCertificateCallback = (c, _, _) => CertificatMobile.empreinteDe(c.der) == empreinte,
+);
+
 /// Le téléphone vu par les tests : appairé, puis connecté.
 class _Telephone {
-  _Telephone(this.port);
+  _Telephone(ServeurMobile serveur) : port = serveur.port!, _client = clientEpingle(serveur.empreinte!);
   final int port;
+  final http.Client _client;
   String? appareil;
   String? jeton;
 
-  Uri _uri(String chemin) => Uri.parse('http://127.0.0.1:$port/api/v1/$chemin');
+  Uri _uri(String chemin) => Uri.parse('https://127.0.0.1:$port/api/v1/$chemin');
 
   Map<String, String> get _entetes => {
     'content-type': 'application/json',
@@ -30,12 +39,12 @@ class _Telephone {
   };
 
   Future<(int, Map<String, dynamic>)> get(String chemin) async {
-    final r = await http.get(_uri(chemin), headers: _entetes);
+    final r = await _client.get(_uri(chemin), headers: _entetes);
     return (r.statusCode, jsonDecode(r.body) as Map<String, dynamic>);
   }
 
   Future<(int, Map<String, dynamic>)> post(String chemin, [Object? corps]) async {
-    final r = await http.post(
+    final r = await _client.post(
       _uri(chemin),
       headers: _entetes,
       body: corps is List<int> ? corps : jsonEncode(corps ?? const {}),
@@ -78,7 +87,7 @@ void main() {
 
   /// Le téléphone scanne le QR personnel de [utilisateur] : il est appairé et connecté avec ce compte.
   Future<_Telephone> appairer({String utilisateur = 'USR0000'}) async {
-    final t = _Telephone(serveur.port!);
+    final t = _Telephone(serveur);
     final code = serveur.nouveauCodeAppairage(utilisateur).code;
     final (statut, r) = await t.post('appairer', {'code': code, 'nom': 'Pixel', 'plateforme': 'android'});
     expect(statut, 200, reason: '$r');
@@ -120,8 +129,35 @@ void main() {
     );
   });
 
+  test('HTTPS seulement, avec le certificat du poste : son empreinte est dans le QR, gardée au redémarrage', () async {
+    final empreinte = serveur.empreinte!;
+    final qr = jsonDecode(
+      ServeurMobile.contenuQr(
+        adresses: const ['192.168.1.5'],
+        port: serveur.port!,
+        code: 'c',
+        boutique: 'B',
+        utilisateur: 'U',
+        empreinte: empreinte,
+      ),
+    ) as Map<String, dynamic>;
+    expect(qr['f'], empreinte);
+    final info = Uri.parse('https://127.0.0.1:${serveur.port}/api/v1/info');
+    expect((await clientEpingle(empreinte).get(info)).statusCode, 200);
+    // En clair : rien ne répond.
+    await expectLater(http.get(info.replace(scheme: 'http')), throwsA(anything));
+    // Un autre certificat (un autre appareil qui se ferait passer pour le poste) : refusé par le téléphone.
+    await expectLater(clientEpingle(CertificatMobile.generer().empreinte).get(info), throwsA(anything));
+    // Le même certificat après un redémarrage du poste : les téléphones appairés le reconnaissent.
+    await serveur.arreter();
+    final relance = ServeurMobile(base.db, licence: () => licence, dossierFactures: factures.path, portPrefere: 0);
+    await relance.demarrer(adresse: InternetAddress.loopbackIPv4);
+    addTearDown(relance.arreter);
+    expect(relance.empreinte, empreinte);
+  });
+
   test('appairage : le QR personnel connecte le téléphone avec ce compte, une seule fois', () async {
-    final t = _Telephone(serveur.port!);
+    final t = _Telephone(serveur);
     expect((await t.post('appairer', {'code': 'faux'})).$1, 403);
     expect((await t.post('connexion')).$1, 401);
 
@@ -141,7 +177,7 @@ void main() {
     expect(serveur.appareilsConnectes(delai: Duration.zero), isEmpty);
 
     // Usage unique : un second téléphone ne peut pas réutiliser le même QR.
-    expect((await _Telephone(serveur.port!).post('appairer', {'code': code})).$2['erreur'], 'codeInvalide');
+    expect((await _Telephone(serveur).post('appairer', {'code': code})).$2['erreur'], 'codeInvalide');
   });
 
   test('chaque utilisateur a son QR ; un nouveau QR remplace le précédent, la déconnexion l’annule', () async {
@@ -149,7 +185,7 @@ void main() {
     final admin1 = serveur.nouveauCodeAppairage('USR0000').code;
     final codeKarim = serveur.nouveauCodeAppairage(karim).code;
     final admin2 = serveur.nouveauCodeAppairage('USR0000').code;
-    final t = _Telephone(serveur.port!);
+    final t = _Telephone(serveur);
     expect((await t.post('appairer', {'code': admin1})).$2['erreur'], 'codeInvalide');
     final (_, r) = await t.post('appairer', {'code': codeKarim});
     expect(r['session']['utilisateur']['code'], karim);
@@ -173,7 +209,7 @@ void main() {
     );
     await avecChoix.demarrer(adresse: InternetAddress.loopbackIPv4);
     addTearDown(avecChoix.arreter);
-    final t = _Telephone(avecChoix.port!);
+    final t = _Telephone(avecChoix);
     final (statut, r) = await t.post('appairer', {
       'code': avecChoix.nouveauCodeAppairage('USR0000').code,
       'nom': 'Samsung SM-A515F',
@@ -191,13 +227,13 @@ void main() {
 
     // Refusé par l’Admin : aucun appareil de plus.
     reponse = null;
-    final refus = await _Telephone(avecChoix.port!)
+    final refus = await _Telephone(avecChoix)
         .post('appairer', {'code': avecChoix.nouveauCodeAppairage('USR0000').code, 'nom': 'Pixel'});
     expect((refus.$1, refus.$2['erreur']), (403, 'appairageRefuse'));
     expect(await base.db.query('appareil_mobile'), hasLength(1));
 
     // Le QR d’un autre utilisateur : le téléphone s’ouvre avec ce compte, sans rien demander.
-    final (_, r2) = await _Telephone(avecChoix.port!)
+    final (_, r2) = await _Telephone(avecChoix)
         .post('appairer', {'code': avecChoix.nouveauCodeAppairage(karim).code, 'nom': 'iPhone'});
     expect(r2['session']['utilisateur']['code'], karim);
     expect(demandes, hasLength(2));
@@ -206,7 +242,7 @@ void main() {
   test('le même téléphone appairé de nouveau remplace son ancien appairage (une ligne par téléphone)', () async {
     final karim = await creerKarim(permissions: {Permission.utiliserMobile});
     Future<(_Telephone, String)> scanner(String utilisateur, Map<String, Object?> telephone) async {
-      final t = _Telephone(serveur.port!);
+      final t = _Telephone(serveur);
       final (statut, r) = await t.post('appairer', {
         'code': serveur.nouveauCodeAppairage(utilisateur).code,
         ...telephone,
@@ -267,7 +303,7 @@ void main() {
 
   test('un rôle sans la permission « Application mobile » est refusé, avec elle il entre', () async {
     final karim = await creerKarim();
-    final refus = _Telephone(serveur.port!);
+    final refus = _Telephone(serveur);
     final (statut, r) = await refus.post('appairer', {'code': serveur.nouveauCodeAppairage(karim).code});
     expect(statut, 403);
     expect(r['erreur'], 'nonAutorise');

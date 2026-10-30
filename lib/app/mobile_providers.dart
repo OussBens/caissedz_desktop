@@ -126,6 +126,7 @@ class MobileNotifier extends Notifier<EtatMobile> {
         code: code.code,
         boutique: boutique,
         utilisateur: utilisateur.nomComplet.isEmpty ? utilisateur.identifiant : utilisateur.nomComplet,
+        empreinte: _serveur.empreinte!,
       ),
       qrUtilisateur: utilisateur.code,
       expireLe: code.expireLe,

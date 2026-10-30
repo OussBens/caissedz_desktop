@@ -57,6 +57,7 @@ dependencies:
   # Licences BENS signées (copie de bens_ds packages/bens_license : lib, pubspec.yaml, FORMAT.md)
   bens_license:
     path: packages/bens_license
+  basic_utils: ^5.7.0
 
 dev_dependencies:
   flutter_test:

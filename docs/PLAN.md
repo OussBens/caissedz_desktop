@@ -1007,6 +1007,12 @@ au premier démarrage (réseaux privés).
   `idVente` (gardé tant que le panier ne change pas) ; `vente_mobile` le relie à sa vente, dans la transaction
   de l'encaissement. Un panier renvoyé faute de réponse à temps, ou pendant son encaissement, reçoit la vente
   déjà enregistrée au lieu d'en créer une seconde. Sans `idVente` (ancienne version de l'app) : comme avant.
+- Connexion chiffrée avec le téléphone (2026-10-30) : le serveur mobile n'écoute plus qu'en HTTPS
+  (`HttpServer.bindSecure`). Au premier démarrage, il crée son certificat auto-signé (clé EC P-256, 30 ans,
+  `core/securite/certificat_mobile.dart`, `basic_utils`) et le garde dans les paramètres (`mobile_certificat`,
+  `mobile_cle_privee`, base chiffrée et sauvegardes). Le QR code porte son empreinte SHA-256 (`f`, base64url) ;
+  CaisseDZ Scan n'accepte que ce certificat, sans autorité de certification. Une ancienne version de l'app (HTTP)
+  ne se connecte plus : mettre à jour le téléphone et scanner un nouveau QR code.
 
 ## Retours utilisateur — caisse, sous-textes, Entrées et vente sur téléphone ✅ (2026-10-20)
 
