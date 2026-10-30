@@ -100,7 +100,7 @@ figure{margin:0}
   <p class="sub">CaisseDZ Desktop sur plusieurs PC d'un même réseau local (LAN) : plan d'action, temps et modifications.
     Document de travail : les changements de plan se font ici (voir le <a href="#journal">journal</a> en bas).</p>
   <div class="meta">
-    <span class="chip">Version du document : <b>1</b> · 30/10/2026</span>
+    <span class="chip">Version du document : <b>2</b> · 30/10/2026</span>
     <span class="chip">Application : <b>CaisseDZ Desktop 0.5.3</b></span>
     <span class="chip">Durée estimée : <b>≈ 9 semaines</b> (première version utilisable ≈ 6,5)</span>
   </div>
@@ -421,7 +421,15 @@ figure{margin:0}
   <div class="phase">
     <div class="phase-h"><h3>P4 · Postes, caisses et licence</h3><span class="tag todo">À faire</span><span class="dur">1 semaine</span></div>
     <ul>
-      <li>Un poste = une caisse par défaut ; l'utilisateur garde le choix parmi ses caisses (fait en 0.5.3).</li>
+      <li><b>Connexion sur chaque PC</b> : l'utilisateur se connecte avec son propre compte (identifiant et mot de passe),
+        sur n'importe quel PC. Les comptes, rôles, caisses et magasins attribués sont sur le poste principal.</li>
+      <li><b>Caisse du poste</b> : chaque PC a une caisse par défaut (son tiroir et son imprimante). À la connexion, elle
+        est proposée si elle fait partie des caisses de l'utilisateur.</li>
+      <li><b>Choix parmi ses caisses</b> (fait en 0.5.3) : l'utilisateur peut prendre une autre de ses caisses attribuées,
+        sauf une caisse déjà utilisée sur un autre PC. L'Admin peut prendre n'importe quelle caisse libre.</li>
+      <li>Si la caisse du PC n'est pas à lui : message « Cette caisse n'est pas attribuée à votre compte » et choix
+        parmi ses caisses libres ; s'il n'en a aucune, il ne peut pas encaisser sur ce PC (le reste de l'application
+        reste ouvert selon son rôle).</li>
       <li>Limites : Basic refuse tout poste client ; Advanced jusqu'à 5 PC ; Max jusqu'à 15 PC (comme les caisses).</li>
       <li>La licence est vérifiée sur le principal et transmise aux postes (lecture seule, fin d'essai, palier).</li>
       <li>Écran « Postes connectés » dans Paramètres : nom, caisse, état, dernière connexion, Déconnecter.</li>
@@ -505,6 +513,9 @@ figure{margin:0}
       <tr><td>D2</td><td>Vendre sur un poste client quand le principal est éteint ?</td><td>Non dans la première version (pas de risque de double vente). À revoir après la recette</td><td><span class="tag warn">À décider</span></td></tr>
       <tr><td>D3</td><td>Le poste principal sert-il aussi de caisse ?</td><td>Oui : c'est la caisse 1</td><td><span class="tag warn">À décider</span></td></tr>
       <tr><td>D4</td><td>Nombre de PC = nombre de caisses de l'offre ?</td><td>Oui : Advanced 5, Max 15</td><td><span class="tag warn">À décider</span></td></tr>
+      <tr><td>D6</td><td>Sur un poste client, quelle caisse l'utilisateur utilise-t-il ?</td><td>Il se connecte avec son compte ;
+        la caisse du PC est proposée si elle est à lui, sinon il choisit parmi ses caisses attribuées qui ne sont pas
+        utilisées sur un autre PC. Une caisse = un seul PC à la fois (un tiroir physique)</td><td><span class="tag warn">À décider</span></td></tr>
       <tr><td>D5</td><td>Le poste principal peut-il tourner sans fenêtre (service Windows) ?</td><td>Zone de notification d'abord ; service Windows plus tard si besoin</td><td><span class="tag warn">À décider</span></td></tr>
     </tbody>
   </table></div>
@@ -514,6 +525,7 @@ figure{margin:0}
   <div class="table-wrap"><table class="journal">
     <thead><tr><th>Date</th><th>Version</th><th>Changement</th></tr></thead>
     <tbody>
+      <tr><td>30/10/2026</td><td>2</td><td>Connexion des utilisateurs sur les postes clients et choix de la caisse parmi leurs caisses attribuées (P4, D6).</td></tr>
       <tr><td>30/10/2026</td><td>1</td><td>Première version du plan ; palier Ultra renommé Max (P0 fait).</td></tr>
     </tbody>
   </table></div>
