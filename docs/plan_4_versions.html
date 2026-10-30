@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plan des 4 offres</title>
+<style>
+:root{
+  --bg:#f6f7f9; --surface:#ffffff; --surface-2:#f0f2f5; --text:#1b1f24; --muted:#5b6470; --line:#dde1e6;
+  --accent:#0f6e5c; --accent-soft:#e3f2ee;
+  --c1:#5b6470; --c2:#1f6fb2; --c3:#7a4bc2; --c4:#c2410c;
+  --ok:#1a7f37; --todo:#b45309; --new:#1f6fb2;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#111418; --surface:#181c21; --surface-2:#20252c; --text:#e6e9ed; --muted:#9aa4b0; --line:#2c333b;
+    --accent:#4cc3a6; --accent-soft:#16302a;
+    --c1:#9aa4b0; --c2:#5aa9e6; --c3:#a98be0; --c4:#f0884f;
+    --ok:#4ac26b; --todo:#e3a03b; --new:#5aa9e6;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#111418; --surface:#181c21; --surface-2:#20252c; --text:#e6e9ed; --muted:#9aa4b0; --line:#2c333b;
+  --accent:#4cc3a6; --accent-soft:#16302a;
+  --c1:#9aa4b0; --c2:#5aa9e6; --c3:#a98be0; --c4:#f0884f;
+  --ok:#4ac26b; --todo:#e3a03b; --new:#5aa9e6;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:1080px;margin:0 auto;padding:32px 16px 64px}
+h1{font-size:28px;margin:0 0 4px}
+h2{font-size:20px;margin:44px 0 14px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+h3{font-size:16px;margin:0 0 8px}
+p{margin:0 0 10px}
+.sub{color:var(--muted);margin-bottom:20px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media (max-width:860px){.grid4{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:560px){.grid4,.grid2{grid-template-columns:1fr}}
+.offre{border-top:4px solid var(--c)}
+.offre .tag{display:inline-block;font-size:12px;font-weight:600;color:var(--c);text-transform:uppercase;letter-spacing:.04em}
+.offre ul{margin:8px 0 0;padding-left:18px}
+.offre li{margin:2px 0}
+.net{margin-top:10px;font-size:13px;padding:6px 8px;border-radius:6px;background:var(--surface-2)}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:640px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--surface-2);font-size:13px;color:var(--muted);font-weight:600}
+tr:last-child td{border-bottom:0}
+td.c{text-align:center}
+.yes{color:var(--ok);font-weight:600}.no{color:var(--muted)}
+.pill{display:inline-block;font-size:12px;font-weight:600;padding:1px 8px;border-radius:99px;border:1px solid currentColor;white-space:nowrap}
+.p-ok{color:var(--ok)}.p-todo{color:var(--todo)}.p-new{color:var(--new)}
+code{font:13px/1.4 ui-monospace,Consolas,monospace;background:var(--surface-2);padding:1px 5px;border-radius:4px}
+.lot{display:grid;grid-template-columns:56px 1fr;gap:14px;margin-bottom:12px}
+.lot .num{width:44px;height:44px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:17px}
+.lot ul{margin:6px 0 0;padding-left:18px}
+.lot li{margin:3px 0}
+.lot .meta{font-size:13px;color:var(--muted);margin-top:6px}
+.diagram{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px;overflow-x:auto}
+.diagram svg{display:block;width:100%;min-width:720px;height:auto}
+svg text{fill:var(--text);font-family:system-ui,"Segoe UI",sans-serif}
+svg .m{fill:var(--muted)}
+svg .box{fill:var(--surface-2);stroke:var(--line)}
+svg .srv{fill:var(--accent-soft);stroke:var(--accent)}
+svg .ln{stroke:var(--muted);stroke-width:1.5;fill:none}
+svg .dash{stroke-dasharray:5 4}
+.steps{counter-reset:s;list-style:none;padding:0;margin:0}
+.steps li{counter-increment:s;position:relative;padding:10px 12px 10px 48px;border-bottom:1px solid var(--line)}
+.steps li:last-child{border-bottom:0}
+.steps li::before{content:counter(s);position:absolute;left:12px;top:10px;width:24px;height:24px;border-radius:50%;background:var(--accent);color:var(--surface);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.note{border-left:4px solid var(--todo);background:var(--surface);padding:12px 14px;border-radius:0 8px 8px 0;margin-top:12px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin:0 0 10px}
+</style>
+</head>
+<body>
+<main>
+<h1>CaisseDZ Desktop : plan des 4 offres</h1>
+<p class="sub">Comment passer de la version actuelle (0.5.2) aux offres Basique, Avancé, Max et Cloud : changements, nouveautés, migration. Document de travail, 30/10/2026.</p>
+
+<h2>1. Les 4 offres visées</h2>
+<div class="grid4">
+  <div class="card offre" style="--c:var(--c1)">
+    <span class="tag">1 · Basique</span>
+    <h3>Un poste, tout figé</h3>
+    <ul>
+      <li>1 magasin système <code>MAG0000</code></li>
+      <li>1 caisse système <code>CIS0000</code></li>
+      <li>Pas de création de caisse ni de magasin</li>
+      <li>Aucun transfert</li>
+    </ul>
+    <div class="net">Réseau : aucun (poste autonome)</div>
+  </div>
+  <div class="card offre" style="--c:var(--c2)">
+    <span class="tag">2 · Avancé</span>
+    <h3>Plusieurs caisses</h3>
+    <ul>
+      <li>1 magasin figé <code>MAG0000</code></li>
+      <li>Création de plusieurs caisses</li>
+      <li>Transferts entre caisses</li>
+      <li>Plusieurs postes</li>
+    </ul>
+    <div class="net">Réseau : LAN client-serveur</div>
+  </div>
+  <div class="card offre" style="--c:var(--c3)">
+    <span class="tag">3 · Max</span>
+    <h3>Plusieurs magasins</h3>
+    <ul>
+      <li>Tout l'Avancé</li>
+      <li>Création de plusieurs magasins</li>
+      <li>Transferts entre magasins et entre caisses</li>
+    </ul>
+    <div class="net">Réseau : LAN client-serveur, sans Internet</div>
+  </div>
+  <div class="card offre" style="--c:var(--c4)">
+    <span class="tag">4 · Cloud</span>
+    <h3>Gestion à distance</h3>
+    <ul>
+      <li>Tout le Max</li>
+      <li>Base de données dans le cloud</li>
+      <li>Connexion depuis n'importe où</li>
+      <li>Magasins sur des sites différents</li>
+    </ul>
+    <div class="net">Réseau : Internet (WAN)</div>
+  </div>
+</div>
+
+<h2>2. Comparatif</h2>
+<div class="tbl-wrap"><table>
+<thead><tr><th></th><th>Basique</th><th>Avancé</th><th>Max</th><th>Cloud</th></tr></thead>
+<tbody>
+<tr><td>Magasins</td><td class="c">1 figé</td><td class="c">1 figé</td><td class="c">plusieurs</td><td class="c">plusieurs</td></tr>
+<tr><td>Caisses</td><td class="c">1 figée</td><td class="c">plusieurs</td><td class="c">plusieurs</td><td class="c">plusieurs</td></tr>
+<tr><td>Transfert entre caisses</td><td class="c no">—</td><td class="c yes">oui</td><td class="c yes">oui</td><td class="c yes">oui</td></tr>
+<tr><td>Transfert entre magasins</td><td class="c no">—</td><td class="c no">—</td><td class="c yes">oui</td><td class="c yes">oui</td></tr>
+<tr><td>Postes PC</td><td class="c">1</td><td class="c">1 serveur + N clients</td><td class="c">1 serveur + N clients</td><td class="c">N clients, partout</td></tr>
+<tr><td>Où est la base</td><td class="c">sur le PC</td><td class="c">PC serveur</td><td class="c">PC serveur</td><td class="c">serveur en ligne</td></tr>
+<tr><td>Internet nécessaire</td><td class="c no">non</td><td class="c no">non</td><td class="c no">non</td><td class="c yes">oui</td></tr>
+<tr><td>Palier dans le code aujourd'hui</td><td class="c"><code>basic</code></td><td class="c"><code>avance</code></td><td class="c"><code>ultra</code></td><td class="c">à créer</td></tr>
+</tbody></table></div>
+
+<h2>3. Ce qui existe déjà dans CaisseDZ Desktop</h2>
+<div class="legend"><span><span class="pill p-ok">fait</span> déjà dans le code</span><span><span class="pill p-todo">à adapter</span></span><span><span class="pill p-new">nouveau</span> à créer</span></div>
+<div class="tbl-wrap"><table>
+<thead><tr><th>Élément</th><th>État</th><th>Où / remarque</th></tr></thead>
+<tbody>
+<tr><td>3 paliers avec limites magasins / caisses</td><td><span class="pill p-ok">fait</span></td><td><code>NiveauLicence</code> dans <code>lib/domain/permissions.dart</code> : Basic 1/1, Avancé 1/5, Ultra 15/15</td></tr>
+<tr><td>Magasin et caisse système</td><td><span class="pill p-ok">fait</span></td><td>Seed <code>MAG0000</code>, <code>CIS0000</code></td></tr>
+<tr><td>Transferts entre caisses (TRF)</td><td><span class="pill p-ok">fait</span></td><td><code>CaisseService</code>, réservé aux paliers à plusieurs caisses</td></tr>
+<tr><td>Multi-magasins, transferts TRM</td><td><span class="pill p-ok">fait</span></td><td>Réservé au palier Ultra (stock, entrées, caisse)</td></tr>
+<tr><td>Licence signée BENS liée au poste</td><td><span class="pill p-todo">à adapter</span></td><td>Ajouter un 4ᵉ palier (index 3) côté produit <code>caissedz-desktop</code></td></tr>
+<tr><td>Contrôle des droits par offre</td><td><span class="pill p-todo">à adapter</span></td><td>Appels <code>couvre(...)</code> dispersés dans les écrans : à regrouper et à appliquer aussi dans les services</td></tr>
+<tr><td>Serveur HTTP local + appairage + sessions</td><td><span class="pill p-todo">à adapter</span></td><td><code>serveur_mobile.dart</code> sert déjà l'appli mobile : base de l'API des postes</td></tr>
+<tr><td>Base locale chiffrée + migrations</td><td><span class="pill p-ok">fait</span></td><td>SQLCipher, <code>PRAGMA user_version</code> : la migration vers la nouvelle version passe par là</td></tr>
+<tr><td>Mode Serveur / Client sur le desktop</td><td><span class="pill p-new">nouveau</span></td><td>Les écrans lisent la base en direct : il faut une couche distante</td></tr>
+<tr><td>Hébergement cloud, comptes en ligne</td><td><span class="pill p-new">nouveau</span></td><td>Peut s'appuyer sur l'infrastructure bensds (comme catalog-api)</td></tr>
+<tr><td>Dossier de données <code>com.example</code></td><td><span class="pill p-todo">à corriger</span></td><td>Remplacer par CaisseDZ avant la diffusion, avec copie automatique</td></tr>
+</tbody></table></div>
+
+<h2>4. Architecture cible</h2>
+<p>Le <b>même logiciel</b> fonctionne dans 3 modes. Le code métier (<code>application/</code>, <code>data/</code>) ne s'exécute qu'à un seul endroit : là où se trouve la base.</p>
+<div class="diagram">
+<svg viewBox="0 0 960 330" role="img" aria-label="Trois modes : autonome, serveur LAN, cloud">
+  <!-- Autonome -->
+  <text x="130" y="24" text-anchor="middle" font-size="15" font-weight="700">Basique : autonome</text>
+  <rect class="srv" x="40" y="50" width="180" height="120" rx="10"/>
+  <text x="130" y="80" text-anchor="middle" font-size="14" font-weight="600">PC unique</text>
+  <text x="130" y="104" text-anchor="middle" font-size="12" class="m">écrans + services</text>
+  <text x="130" y="124" text-anchor="middle" font-size="12" class="m">caissedz.db (local)</text>
+  <text x="130" y="152" text-anchor="middle" font-size="12" class="m">aucun réseau</text>
+
+  <!-- LAN -->
+  <text x="480" y="24" text-anchor="middle" font-size="15" font-weight="700">Avancé et Max : réseau local</text>
+  <rect class="srv" x="390" y="50" width="180" height="90" rx="10"/>
+  <text x="480" y="78" text-anchor="middle" font-size="14" font-weight="600">PC Serveur</text>
+  <text x="480" y="100" text-anchor="middle" font-size="12" class="m">API + services</text>
+  <text x="480" y="120" text-anchor="middle" font-size="12" class="m">caissedz.db</text>
+  <path class="ln" d="M480 140 V180 M340 180 H620 M340 180 V210 M480 180 V210 M620 180 V210"/>
+  <text x="630" y="172" font-size="11" class="m">Wi-Fi / câble</text>
+  <rect class="box" x="290" y="210" width="100" height="56" rx="8"/>
+  <text x="340" y="234" text-anchor="middle" font-size="13">Caisse 2</text>
+  <text x="340" y="252" text-anchor="middle" font-size="11" class="m">client</text>
+  <rect class="box" x="430" y="210" width="100" height="56" rx="8"/>
+  <text x="480" y="234" text-anchor="middle" font-size="13">Caisse 3</text>
+  <text x="480" y="252" text-anchor="middle" font-size="11" class="m">client</text>
+  <rect class="box" x="570" y="210" width="100" height="56" rx="8"/>
+  <text x="620" y="234" text-anchor="middle" font-size="13">Téléphone</text>
+  <text x="620" y="252" text-anchor="middle" font-size="11" class="m">appli mobile</text>
+  <text x="480" y="300" text-anchor="middle" font-size="12" class="m">Max : chaque poste est rattaché à un magasin</text>
+
+  <!-- Cloud -->
+  <text x="840" y="24" text-anchor="middle" font-size="15" font-weight="700">Cloud : Internet</text>
+  <rect class="srv" x="750" y="50" width="180" height="90" rx="10"/>
+  <text x="840" y="78" text-anchor="middle" font-size="14" font-weight="600">Serveur en ligne</text>
+  <text x="840" y="100" text-anchor="middle" font-size="12" class="m">même API, HTTPS</text>
+  <text x="840" y="120" text-anchor="middle" font-size="12" class="m">1 base par client</text>
+  <path class="ln dash" d="M840 140 V180 M770 180 H910 M770 180 V210 M910 180 V210"/>
+  <text x="850" y="172" font-size="11" class="m">Internet</text>
+  <rect class="box" x="720" y="210" width="100" height="56" rx="8"/>
+  <text x="770" y="234" text-anchor="middle" font-size="13">Magasin A</text>
+  <text x="770" y="252" text-anchor="middle" font-size="11" class="m">postes clients</text>
+  <rect class="box" x="860" y="210" width="90" height="56" rx="8"/>
+  <text x="905" y="234" text-anchor="middle" font-size="13">Gérant</text>
+  <text x="905" y="252" text-anchor="middle" font-size="11" class="m">n'importe où</text>
+</svg>
+</div>
+<div class="grid2" style="margin-top:12px">
+  <div class="card"><h3>Poste client</h3><p>Écrans identiques à aujourd'hui. Les lectures et écritures passent par l'API au lieu du SQL. L'imprimante, le tiroir et le scanner restent branchés en local.</p></div>
+  <div class="card"><h3>Serveur</h3><p>Seul endroit qui écrit dans la base : numéros de ticket, stock, scellement SHA-256, une transaction par opération. Il prévient les postes des changements par WebSocket.</p></div>
+</div>
+
+<h2>5. Plan d'action par lots</h2>
+
+<div class="lot"><div class="num">0</div><div class="card">
+  <h3>Préparer les offres (sans réseau)</h3>
+  <ul>
+    <li>Renommer le palier <code>ultra</code> en <b>Max</b>, ajouter le palier <b>Cloud</b> (index 3) dans <code>NiveauLicence</code> et dans le produit de licence signée.</li>
+    <li>Regrouper les droits en un seul endroit : peut créer une caisse ou un magasin, transferts caisse / magasin, type de réseau (aucun / LAN / cloud).</li>
+    <li>Appliquer ces droits <b>dans les services</b> et pas seulement en masquant les boutons. Exemple : en Basique, la création de caisse est refusée même si on la demande par l'API.</li>
+    <li>Basique : <code>CIS0000</code> et <code>MAG0000</code> verrouillés. Avancé : magasin verrouillé, caisses libres dans la limite.</li>
+    <li>Corriger le dossier <code>com.example</code>, avec copie automatique des données existantes.</li>
+  </ul>
+  <div class="meta">Livrable : version 0.6, toujours sur un seul poste, offres conformes.</div>
+</div></div>
+
+<div class="lot"><div class="num">1</div><div class="card">
+  <h3>Socle client-serveur</h3>
+  <ul>
+    <li>Une couche d'accès à double implémentation : <b>locale</b> (SQL actuel) et <b>distante</b> (appels API). Les écrans ne changent pas.</li>
+    <li>Choix du mode au premier lancement : Autonome, Serveur ou Client. Le choix proposé dépend de l'offre.</li>
+    <li>Migration de la base : table <code>poste</code> (nom, magasin, jeton, dernier contact) et code du poste sur les ventes et sessions de caisse.</li>
+  </ul>
+  <div class="meta">Livrable : l'application marche comme avant en mode Autonome ; le socle est prêt.</div>
+</div></div>
+
+<div class="lot"><div class="num">2</div><div class="card">
+  <h3>Serveur LAN (Avancé et Max)</h3>
+  <ul>
+    <li>Étendre <code>serveur_mobile.dart</code> en API complète versionnée (<code>/api/v1</code>) : ventes, stock, achats, tiers, caisses, documents, paramètres.</li>
+    <li>Notifications en temps réel (WebSocket) à partir de l'existant <code>DomaineMobile</code>.</li>
+    <li>Démarrage automatique du serveur, règle de pare-feu ajoutée par l'installateur, IP fixe conseillée.</li>
+    <li>Écran « Postes connectés » : appairer, renommer, révoquer. Le nombre de postes est fixé par la licence (une seule licence, sur le serveur).</li>
+    <li>Sauvegarde automatique faite sur le serveur uniquement.</li>
+  </ul>
+  <div class="meta">Livrable : un PC serveur auquel l'appli mobile se connecte toujours.</div>
+</div></div>
+
+<div class="lot"><div class="num">3</div><div class="card">
+  <h3>Poste client desktop</h3>
+  <ul>
+    <li>Découverte automatique du serveur sur le réseau, appairage par QR code ou par code.</li>
+    <li>Tous les écrans branchés sur l'API ; une session de caisse ouverte par poste.</li>
+    <li>Impression ticket et tiroir sur le poste client.</li>
+    <li>Serveur injoignable : bandeau d'alerte, vente bloquée, consultation possible, reconnexion automatique.</li>
+  </ul>
+  <div class="meta">Livrable : offre <b>Avancé</b> client-serveur complète.</div>
+</div></div>
+
+<div class="lot"><div class="num">4</div><div class="card">
+  <h3>Max multi-magasins en LAN</h3>
+  <ul>
+    <li>Chaque poste rattaché à un magasin ; chaque utilisateur limité à ses magasins autorisés.</li>
+    <li>Transferts entre magasins (TRM) depuis n'importe quel poste, avec un stock juste partout.</li>
+    <li>Rapports consolidés tous magasins pour l'administrateur.</li>
+  </ul>
+  <div class="meta">Livrable : offre <b>Max</b>. Recette à 3 PC minimum, coupure réseau, redémarrage du serveur.</div>
+</div></div>
+
+<div class="lot"><div class="num">5</div><div class="card">
+  <h3>Cloud</h3>
+  <ul>
+    <li>Le même serveur déployé en ligne (infrastructure bensds), HTTPS obligatoire.</li>
+    <li>Une base par client. Pour la V1, une base SQLite par compte : on réutilise tout le SQL existant. On pourra passer à PostgreSQL plus tard si le volume l'exige.</li>
+    <li>Comptes en ligne liés à la licence : connexion par identifiant + mot de passe, appareils approuvés, révocation à distance.</li>
+    <li>Sauvegardes quotidiennes chiffrées, journal des connexions.</li>
+  </ul>
+  <div class="meta">Livrable : offre <b>Cloud</b>, connexion depuis n'importe où.</div>
+</div></div>
+
+<div class="lot"><div class="num">6</div><div class="card">
+  <h3>Hors ligne et synchronisation (surtout Cloud)</h3>
+  <ul>
+    <li>Avec les coupures d'Internet, un magasin doit pouvoir continuer à vendre.</li>
+    <li>Numéros de ticket réservés par poste (exemple <code>TK-P02-000123</code>) pour éviter les doublons.</li>
+    <li>File d'attente des ventes sur le poste, envoi automatique au retour du réseau, alerte si le stock devient négatif.</li>
+  </ul>
+  <div class="meta">Livrable : Cloud utilisable en conditions réelles. Option possible pour le LAN.</div>
+</div></div>
+
+<h2>6. Migration depuis la version actuelle</h2>
+<div class="card" style="padding:0">
+<ol class="steps">
+  <li><b>Licences existantes conservées</b> : Basic → Basique, Avancé → Avancé, Ultra → Max (même numéro de palier, aucune nouvelle clé).</li>
+  <li><b>Mise à jour par-dessus</b> : l'installateur remplace le programme ; la base <code>caissedz.db</code> reste en place.</li>
+  <li><b>Sauvegarde automatique avant migration</b>, puis migrations SQL au démarrage (nouvelles tables <code>poste</code>…). Aucune donnée perdue.</li>
+  <li><b>Dossier de données</b> : copie automatique de <code>com.example\caissedz_desktop</code> vers le nouveau dossier CaisseDZ.</li>
+  <li><b>Avancé / Max</b> : un assistant détecte « ce PC a déjà des données » et propose d'en faire le <b>Serveur</b>. Les autres PC sont installés en mode Client.</li>
+  <li><b>Autres PC qui avaient déjà leur propre base</b> : pas de fusion automatique (risque de doublons de tickets et de stock). Import ciblé des produits et clients, ou archivage de l'ancienne base.</li>
+  <li><b>Passage au Cloud</b> : bouton « Envoyer ma base vers le cloud ». La base est déchiffrée avec la clé du PC, re-chiffrée avec la clé du compte, puis envoyée ; le PC devient un poste client.</li>
+  <li><b>Appli mobile</b> : reste compatible (même appairage, API <code>/api/v1</code>).</li>
+</ol>
+</div>
+
+<h2>7. Décisions à prendre</h2>
+<div class="tbl-wrap"><table>
+<thead><tr><th>Question</th><th>Proposition</th></tr></thead>
+<tbody>
+<tr><td>Nombre de caisses et de postes par offre</td><td>Garder Avancé 5 caisses, Max 15 magasins / 15 caisses ; fixer le nombre de postes PC par offre.</td></tr>
+<tr><td>Coupure réseau en LAN</td><td>V1 : bloquer la vente sur le poste client (simple et sûr) ; file d'attente plus tard.</td></tr>
+<tr><td>Base du Cloud</td><td>SQLite par client en V1 (réutilise tout), PostgreSQL si besoin plus tard.</td></tr>
+<tr><td>Numérotation des tickets</td><td>Numéro attribué par le serveur ; préfixe par poste seulement avec le hors ligne (lot 6).</td></tr>
+<tr><td>Vente du Cloud</td><td>Abonnement mensuel ou annuel (coût d'hébergement), contrairement aux offres locales.</td></tr>
+</tbody></table></div>
+
+<div class="note"><b>Ordre conseillé :</b> lots 0 → 4 d'abord (Basique, Avancé et Max couvrent le besoin immédiat sans Internet), puis 5 et 6 pour le Cloud, en réutilisant le même serveur.</div>
+</main>
+</body>
+</html>
