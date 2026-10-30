@@ -99,6 +99,7 @@ void main() {
       nom: 'Karim',
       telephone: '0661112233',
       roleCode: role.code,
+      caisses: const ['CIS0000'],
       magasins: const ['MAG0000'],
       motDePasse: 'Karim2026',
     );

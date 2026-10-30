@@ -11,8 +11,8 @@ class UtilisateurRepository {
   static const String prefixe = CodeGenerator.utilisateur;
 
   static const String _select = '''
-    SELECT u.code, u.identifiant, u.nom, u.prenom, u.telephone, u.role_code, r.nom role_nom, u.caisse_code,
-           u.observation, u.actif, u.systeme, u.dernier_acces, u.cree_le, u.cree_par, u.modifie_le, u.modifie_par,
+    SELECT u.code, u.identifiant, u.nom, u.prenom, u.telephone, u.role_code, r.nom role_nom, u.observation,
+           u.actif, u.systeme, u.dernier_acces, u.cree_le, u.cree_par, u.modifie_le, u.modifie_par,
            u.archive_le, u.archive_par
     FROM utilisateur u LEFT JOIN role r ON r.code = u.role_code''';
 
@@ -77,7 +77,6 @@ class UtilisateurRepository {
       'prenom': u.prenom,
       'telephone': u.telephone,
       'role_code': u.roleCode,
-      'caisse_code': u.caisseCode,
       'observation': u.observation,
       'mot_de_passe': empreinte,
       'actif': u.actif ? 1 : 0,

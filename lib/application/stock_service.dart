@@ -162,6 +162,9 @@ class StockService {
     return liste.isEmpty ? CodeGenerator.systeme(CodeGenerator.magasin) : liste.first;
   }
 
+  /// Magasins d'un utilisateur, dans l'ordre (le premier est son magasin principal).
+  Future<List<String>> magasinsUtilisateur(String utilisateur) => _repo.magasinsUtilisateur(utilisateur);
+
   Future<void> definirMagasinsUtilisateur(String utilisateur, List<String> codes) =>
       db.transaction((txn) => StockRepository(txn).definirMagasinsUtilisateur(utilisateur, codes));
 

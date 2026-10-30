@@ -680,6 +680,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get posErreurCaisse => 'Unknown or inactive register.';
 
   @override
+  String get posErreurCaisseNonAutorisee => 'This till is not one of your tills.';
+
+  @override
   String get posErreurMontant => 'Invalid amount.';
 
   @override
@@ -5428,6 +5431,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get usrColMagasins => 'Stores';
 
   @override
+  String get usrColCaisses => 'Tills';
+
+  @override
   String get usrColVentes => 'Sales';
 
   @override
@@ -5538,6 +5544,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get usrMagasinsIndice => 'The first one is the default store at login';
 
   @override
+  String get usrCaissesIndice =>
+      'The first one is the default till; on the Till screen, the user picks among their tills';
+
+  @override
   String get usrObservation => 'Note';
 
   @override
@@ -5557,6 +5567,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get usrErrMagasins => 'Pick at least one store';
+
+  @override
+  String get usrErrCaisses => 'Pick at least one till';
 
   @override
   String get usrErrInconnu => 'User not found';
@@ -5584,6 +5597,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get usrLibreAdmin => 'Free (admin)';
+
+  @override
+  String get usrToutesCaisses => 'All (admin)';
 
   @override
   String get usrDefaut => '(default)';
@@ -8730,6 +8746,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get archBloqueMagasinPrincipal => 'Main store of a user';
+
+  @override
+  String get archBloqueCaissePrincipale => 'Default till of a user';
 
   @override
   String get archBloqueSession => 'Cash session open';

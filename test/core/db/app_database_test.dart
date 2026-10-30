@@ -524,6 +524,44 @@ void main() {
     });
   });
 
+  group('Migration v46 (plusieurs caisses par utilisateur)', () {
+    test('caisse attachée reprise, compte libre sur toutes les caisses, admin sans liste', () async {
+      final base = await AppDatabase.ouvrirEnMemoire(
+        cleHex: cleTestHex,
+        migrations: toutesLesMigrations.sublist(0, 45),
+      );
+      addTearDown(base.fermer);
+      final db = base.db;
+      await db.insert('caisse', {'code': 'CIS0002', 'nom': 'Caisse 2'});
+      await db.insert('caisse', {'code': 'CIS0003', 'nom': 'Ancienne', 'actif': 0});
+      for (final (code, caisse) in [('USR0002', 'CIS0002'), ('USR0003', null)]) {
+        await db.insert('utilisateur', {
+          'code': code,
+          'identifiant': code.toLowerCase(),
+          'nom': code,
+          'role_code': 'ROL0001',
+          'caisse_code': caisse,
+        });
+      }
+      expect(await const MigrationRunner(toutesLesMigrations).executer(db), _depuis(46));
+      Future<List<String>> caisses(String u) async => [
+        for (final r in await db.query(
+          'utilisateur_caisse',
+          where: 'utilisateur_code = ?',
+          whereArgs: [u],
+          orderBy: 'ordre',
+        ))
+          r['caisse_code']! as String,
+      ];
+      expect(await caisses('USR0002'), ['CIS0002']);
+      expect(await caisses('USR0003'), ['CIS0000', 'CIS0002'], reason: 'actives, hors coffre');
+      expect(await caisses('USR0000'), isEmpty, reason: 'l’admin a toutes les caisses');
+      final courantes = await db.query('caisse_courante');
+      expect(courantes.map((r) => '${r['utilisateur_code']}:${r['caisse_code']}'), ['USR0002:CIS0002']);
+      expect(await db.rawQuery('PRAGMA foreign_key_check'), isEmpty);
+    });
+  });
+
   group('MigrationRunner', () {
     test('refuse des versions non contiguës', () {
       const runner = MigrationRunner([_MigrationFausse(2)]);

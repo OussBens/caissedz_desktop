@@ -37,14 +37,50 @@ class CaisseRepository {
   Future<void> mettreAJourCaisse(Caisse c) =>
       db.update('caisse', c.versLigne()..remove('code'), where: 'code = ?', whereArgs: [c.code]);
 
+  /// Caisses d'un utilisateur, dans l'ordre ; la première est sa caisse par défaut (l'Admin n'en a aucune : il a
+  /// toutes les caisses).
+  Future<List<String>> caissesUtilisateur(String utilisateurCode) async => (await db.query(
+    'utilisateur_caisse',
+    columns: ['caisse_code'],
+    where: 'utilisateur_code = ?',
+    whereArgs: [utilisateurCode],
+    orderBy: 'ordre',
+  )).map((r) => r['caisse_code']! as String).toList();
+
+  Future<void> definirCaissesUtilisateur(String utilisateurCode, List<String> codes) async {
+    await db.delete('utilisateur_caisse', where: 'utilisateur_code = ?', whereArgs: [utilisateurCode]);
+    for (final (i, c) in codes.indexed) {
+      await db.insert('utilisateur_caisse', {'utilisateur_code': utilisateurCode, 'caisse_code': c, 'ordre': i});
+    }
+  }
+
+  /// Caisse choisie par l'utilisateur dans l'écran Caisse, ou `null`.
+  Future<String?> caisseCourante(String utilisateurCode) async {
+    final rows = await db.query(
+      'caisse_courante',
+      columns: ['caisse_code'],
+      where: 'utilisateur_code = ?',
+      whereArgs: [utilisateurCode],
+    );
+    return rows.isEmpty ? null : rows.first['caisse_code']! as String;
+  }
+
+  /// Fixe (ou efface, si [caisseCode] est `null`) la caisse courante de l'utilisateur.
+  Future<void> definirCaisseCourante(String utilisateurCode, String? caisseCode) async {
+    await db.delete('caisse_courante', where: 'utilisateur_code = ?', whereArgs: [utilisateurCode]);
+    if (caisseCode != null) {
+      await db.insert('caisse_courante', {'utilisateur_code': utilisateurCode, 'caisse_code': caisseCode});
+    }
+  }
+
   /// Caisse d'imputation par défaut : caisse de la session ouverte de l'utilisateur, sinon `CIS0000`.
   Future<String> caisseParDefaut(String utilisateurCode) async {
-    // Session de l'utilisateur, sinon celle de sa caisse attachée ouverte par un collègue (session partagée).
+    // Session de l'utilisateur, sinon celle de sa caisse courante ouverte par un collègue (session partagée).
     final rows = await db.rawQuery(
       '''
       SELECT caisse_code FROM session_caisse
       WHERE statut = 'Ouverte'
-        AND (utilisateur_code = ?1 OR caisse_code = (SELECT caisse_code FROM utilisateur WHERE code = ?1))
+        AND (utilisateur_code = ?1 OR caisse_code = (SELECT caisse_code FROM caisse_courante WHERE utilisateur_code = ?1))
       ORDER BY utilisateur_code = ?1 DESC, ouverte_le DESC
       LIMIT 1
       ''',

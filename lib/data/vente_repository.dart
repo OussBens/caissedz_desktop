@@ -45,13 +45,15 @@ class VenteRepository {
   }
 
   /// Session ouverte utilisable par [utilisateurCode] : la sienne, sinon celle ouverte (par un autre utilisateur)
-  /// sur sa caisse attachée — plusieurs caissiers d'une même caisse continuent la même session.
+  /// sur sa caisse courante (`caisse_courante`, choisie dans l'écran Caisse parmi ses caisses) — plusieurs
+  /// caissiers d'une même caisse continuent la même session.
   Future<SessionCaisse?> sessionAccessible(String utilisateurCode) async {
     final rows = await db.rawQuery(
       '''
       SELECT s.* FROM session_caisse s
       WHERE s.statut = 'Ouverte'
-        AND (s.utilisateur_code = ?1 OR s.caisse_code = (SELECT caisse_code FROM utilisateur WHERE code = ?1))
+        AND (s.utilisateur_code = ?1
+             OR s.caisse_code = (SELECT caisse_code FROM caisse_courante WHERE utilisateur_code = ?1))
       ORDER BY s.utilisateur_code = ?1 DESC, s.ouverte_le DESC
       LIMIT 1
       ''',

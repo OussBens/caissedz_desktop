@@ -4,6 +4,7 @@ import 'package:caissedz_desktop/application/auth_service.dart';
 import 'package:caissedz_desktop/application/role_service.dart';
 import 'package:caissedz_desktop/application/utilisateur_service.dart';
 import 'package:caissedz_desktop/core/securite/mot_de_passe.dart';
+import 'package:caissedz_desktop/data/caisse_repository.dart';
 import 'package:caissedz_desktop/data/permissions_repository.dart';
 import 'package:caissedz_desktop/data/stock_repository.dart';
 import 'package:caissedz_desktop/data/utilisateur_repository.dart';
@@ -40,6 +41,7 @@ void main() {
         String motDePasse = 'Amina2026',
         String telephone = '0661 20 30 40',
         String role = Roles.caissier,
+        List<String> caisses = const ['CIS0000'],
         List<String> magasins = const ['MAG0000'],
       }) => s.creer(
         identifiant: identifiant,
@@ -48,7 +50,7 @@ void main() {
         nom: 'Kaci',
         telephone: telephone,
         roleCode: role,
-        caisseCode: 'CIS0000',
+        caisses: caisses,
         magasins: magasins,
       );
       await expectLater(creer(identifiant: 'a'), _erreurU(ErreurUtilisateur.identifiantInvalide));
@@ -59,11 +61,13 @@ void main() {
       await expectLater(creer(telephone: '0852112233'), _erreurU(ErreurUtilisateur.telephoneInvalide));
       await expectLater(creer(role: Roles.admin), _erreurU(ErreurUtilisateur.roleInvalide), reason: 'admin unique');
       await expectLater(creer(magasins: []), _erreurU(ErreurUtilisateur.magasinsObligatoires));
+      await expectLater(creer(caisses: []), _erreurU(ErreurUtilisateur.caissesObligatoires));
       await creer();
       final u = (await UtilisateurRepository(base.db).parCode('USR0002'))!;
       expect(u.nomComplet, 'Amina Kaci');
       expect(u.roleNom, 'Caissier');
-      expect(u.caisseCode, 'CIS0000');
+      expect(await s.caisses('USR0002'), ['CIS0000']);
+      expect(await CaisseRepository(base.db).caisseCourante('USR0002'), 'CIS0000', reason: 'caisse par défaut');
       expect(u.creePar, 'USR0000');
       expect(await StockRepository(base.db).magasinsUtilisateur('USR0002'), ['MAG0000']);
       final historique = await base.db.query('historique', where: "entite = 'utilisateur' AND action = 'Création'");
@@ -85,6 +89,7 @@ void main() {
         motDePasse: 'Karim2026',
         telephone: '0552112233',
         roleCode: Roles.magasinier,
+        caisses: const ['CIS0000'],
         magasins: const ['MAG0000'],
       );
       final m = await s.modifier(
@@ -95,7 +100,7 @@ void main() {
         nom: 'Saadi',
         telephone: '0552 77 88 99',
         roleCode: Roles.caissier,
-        caisseCode: 'CIS0000',
+        caisses: const ['CIS0000'],
         magasins: const ['MAG0000'],
       );
       expect(m.identifiant, 'karim.s');
@@ -108,6 +113,7 @@ void main() {
           identifiant: 'admin',
           telephone: '0550112233',
           roleCode: Roles.caissier,
+          caisses: const ['CIS0000'],
           magasins: const ['MAG0000'],
         ),
         _erreurU(ErreurUtilisateur.roleInvalide),
@@ -117,10 +123,11 @@ void main() {
         identifiant: 'admin',
         telephone: '0550112233',
         roleCode: Roles.admin,
-        caisseCode: 'CIS0000',
+        caisses: const ['CIS0000'],
         magasins: const ['MAG0000'],
       );
-      expect(admin.caisseCode, isNull, reason: 'l’admin choisit sa caisse librement');
+      expect(admin.roleCode, Roles.admin);
+      expect(await s.caisses('USR0000'), isEmpty, reason: 'l’admin a toutes les caisses');
     });
 
     test('désactivation bloquée (admin principal, compte courant), mot de passe temporaire', () async {
@@ -131,6 +138,7 @@ void main() {
         motDePasse: 'Nadia2026',
         telephone: '0663112233',
         roleCode: Roles.caissier,
+        caisses: const ['CIS0000'],
         magasins: const ['MAG0000'],
       );
       final repo = UtilisateurRepository(base.db);
@@ -187,6 +195,7 @@ void main() {
         motDePasse: 'Amina2026',
         telephone: '0661112233',
         roleCode: Roles.caissier,
+        caisses: const ['CIS0000'],
         magasins: const ['MAG0000'],
       );
       final roles = {for (final r in await s.roles()) r.code: r};
@@ -203,6 +212,7 @@ void main() {
           motDePasse: 'Karim2026',
           telephone: '0552112233',
           roleCode: Roles.magasinier,
+          caisses: const ['CIS0000'],
           magasins: const ['MAG0000'],
         ),
         _erreurU(ErreurUtilisateur.roleInvalide),

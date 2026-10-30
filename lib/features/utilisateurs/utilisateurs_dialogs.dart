@@ -19,7 +19,6 @@ import '../../domain/models/stock.dart';
 import '../../domain/models/utilisateur.dart';
 import '../../domain/permissions.dart';
 import '../commun/colonnes_audit.dart';
-import '../commun/selecteurs.dart';
 import '../commun/statuts.dart';
 import '../gestion_caisse/gestion_caisse_providers.dart';
 import '../historique/historique_providers.dart';
@@ -61,7 +60,8 @@ Future<bool> executerUtilisateurs(
 Future<void> afficherFormulaireUtilisateur(BuildContext context, WidgetRef ref, {LigneUtilisateur? ligne}) async {
   final db = ref.read(appDatabaseProvider).db;
   final roles = await ref.read(rolesProvider.future);
-  final caisses = (await ref.read(caissesListeProvider.future)).where((c) => c.actif).toList();
+  // Caisses où l'on encaisse : actives, hors coffre.
+  final caisses = (await ref.read(caissesListeProvider.future)).where((c) => c.actif && !c.coffre).toList();
   final magasins = (await ref.read(magasinsProvider.future)).where((m) => m.actif).toList();
   final pris = {for (final u in await UtilisateurRepository(db).tous()) u.identifiant.toLowerCase(): u.code};
   final code = ligne?.u.code ?? await ref.read(utilisateurServiceProvider).prochainCode();
@@ -111,7 +111,9 @@ class _UtilisateurFormState extends ConsumerState<_UtilisateurForm> {
   late final _telephone = TextEditingController(text: _u?.telephone ?? '');
   late final _observation = TextEditingController(text: _u?.observation ?? '');
   late String _role = _u?.roleCode ?? _roleParDefaut();
-  late String? _caisse = _edition ? _u!.caisseCode : widget.caisses.firstOrNull?.code;
+  late List<String> _caisses = _edition
+      ? [...widget.ligne!.caisses]
+      : [if (widget.caisses.isNotEmpty) widget.caisses.first.code];
   late List<String> _magasins = _edition
       ? [...widget.ligne!.magasins]
       : [if (widget.magasins.isNotEmpty) widget.magasins.first.code];
@@ -163,7 +165,7 @@ class _UtilisateurFormState extends ConsumerState<_UtilisateurForm> {
           nom: _nom.text,
           telephone: _telephone.text,
           roleCode: _role,
-          caisseCode: _admin ? null : _caisse,
+          caisses: _admin ? const [] : _caisses,
           magasins: _magasins,
           observation: _observation.text,
           actif: _actif,
@@ -176,7 +178,7 @@ class _UtilisateurFormState extends ConsumerState<_UtilisateurForm> {
           nom: _nom.text,
           telephone: _telephone.text,
           roleCode: _role,
-          caisseCode: _admin ? null : _caisse,
+          caisses: _admin ? const [] : _caisses,
           magasins: _magasins,
           observation: _observation.text,
         );
@@ -200,6 +202,7 @@ class _UtilisateurFormState extends ConsumerState<_UtilisateurForm> {
         ErreurUtilisateur.telephoneObligatoire || ErreurUtilisateur.telephoneInvalide => 'tel',
         ErreurUtilisateur.roleInvalide => 'role',
         ErreurUtilisateur.magasinsObligatoires => 'magasins',
+        ErreurUtilisateur.caissesObligatoires => 'caisses',
         _ => 'etat',
       };
       setState(() {
@@ -225,6 +228,7 @@ class _UtilisateurFormState extends ConsumerState<_UtilisateurForm> {
         (_edition || force >= UtilisateurService.forceMinimale) &&
         mdpConcorde &&
         _magasins.isNotEmpty &&
+        (_admin || _caisses.isNotEmpty) &&
         telErr == null;
     const lw = 128.0;
     return DsDialog(
@@ -366,18 +370,27 @@ class _UtilisateurFormState extends ConsumerState<_UtilisateurForm> {
             ),
           ),
           if (ref.watch(plusieursCaissesProvider))
-            DsFormRow(
-              libelle: l10n.usrCaisseAttachee,
-              largeurLibelle: lw,
-              aide: _admin ? l10n.usrCaisseAdmin : l10n.usrCaisseIndice,
-              child: DsSelect<String?>(
-                cle: const ValueKey('usr_caisse'),
-                valeur: _admin ? null : _caisse,
-                options: [null, for (final c in widget.caisses) c.code],
-                libelle: (c) => c == null ? l10n.usrAucune : widget.caisses.firstWhere((x) => x.code == c).nom,
-                actif: !_admin,
-                recherche: rechercheListe(context, ref, ListeMetier.caisse),
-                onChanged: (v) => setState(() => _caisse = v),
+            DsSpan(
+              child: DsFormRow(
+                libelle: l10n.usrColCaisses,
+                obligatoire: !_admin,
+                largeurLibelle: lw,
+                alignerDebut: !_admin,
+                aide: _admin ? l10n.usrCaisseAdmin : l10n.usrCaissesIndice,
+                erreur: _erreurs['caisses'],
+                // L'Admin a toutes les caisses : rien à choisir.
+                child: _admin
+                    ? DsTextField(valeurInitiale: l10n.usrToutesCaisses, actif: false)
+                    : DsOrderedMultiSelect<String>(
+                        key: const ValueKey('usr_caisses'),
+                        options: [for (final c in widget.caisses) DsOption(c.code, libelle: c.nom)],
+                        valeur: _caisses,
+                        libellePremier: l10n.usrDefaut,
+                        onChanged: (v) => setState(() {
+                          _caisses = v;
+                          _erreurs.remove('caisses');
+                        }),
+                      ),
               ),
             ),
           if (ref.watch(plusieursMagasinsProvider))
@@ -476,6 +489,9 @@ Future<void> afficherDetailUtilisateur(BuildContext context, WidgetRef ref, Lign
   final nomsMagasins = [
     for (final (i, m) in l.magasins.indexed) '${magasins[m] ?? m}${i == 0 ? ' ${l10n.usrDefaut}' : ''}',
   ].join(', ');
+  final nomsCaisses = u.estAdmin
+      ? l10n.usrToutesCaisses
+      : [for (final (i, c) in l.caisses.indexed) '${caisses[c] ?? c}${i == 0 ? ' ${l10n.usrDefaut}' : ''}'].join(', ');
   return afficherDetailEntite(
     context,
     DsEntityDetailDialog(
@@ -511,11 +527,8 @@ Future<void> afficherDetailUtilisateur(BuildContext context, WidgetRef ref, Lign
             DsKeyValue(l10n.usrIdentifiant, u.identifiant, mono: true),
             DsKeyValue(l10n.usrTelephone, u.telephone.isEmpty ? '—' : u.telephone),
             DsKeyValue(l10n.usrRole, libelleRole(context, u.roleNom)),
-            DsKeyValue(
-              l10n.usrCaisseAttachee,
-              u.caisseCode == null ? (u.estAdmin ? l10n.usrLibreAdmin : l10n.usrLibre) : caisses[u.caisseCode] ?? '',
-            ),
-            DsKeyValue(l10n.usrColMagasins, nomsMagasins.isEmpty ? '—' : nomsMagasins, span: 2),
+            DsKeyValue(l10n.usrColCaisses, nomsCaisses.isEmpty ? '—' : nomsCaisses, span: 3),
+            DsKeyValue(l10n.usrColMagasins, nomsMagasins.isEmpty ? '—' : nomsMagasins, span: 3),
             if (u.observation.isNotEmpty) DsKeyValue(l10n.usrObservation, u.observation, span: 3),
           ],
         ),

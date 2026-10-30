@@ -1,3 +1,4 @@
+import 'package:caissedz_desktop/application/caisse_service.dart';
 import 'package:caissedz_desktop/application/catalogue_service.dart';
 import 'package:caissedz_desktop/application/session_caisse_service.dart';
 import 'package:caissedz_desktop/application/stock_service.dart';
@@ -5,6 +6,7 @@ import 'package:caissedz_desktop/application/vente_service.dart';
 import 'package:caissedz_desktop/core/print/documents_pdf.dart';
 import 'package:caissedz_desktop/core/print/imprimante.dart';
 import 'package:caissedz_desktop/core/print/ticket_escpos.dart';
+import 'package:caissedz_desktop/data/caisse_repository.dart';
 import 'package:caissedz_desktop/data/stock_repository.dart';
 import 'package:caissedz_desktop/data/vente_repository.dart';
 import 'package:caissedz_desktop/domain/models/boutique.dart';
@@ -92,36 +94,86 @@ void main() {
       );
     });
 
-    test('un utilisateur rattaché à la même caisse continue la session ouverte par un collègue', () async {
+    test('un utilisateur continue la session ouverte par un collègue sur sa caisse courante', () async {
       final base = await ouvrirBaseDeTest();
       final db = base.db;
-      for (final (code, caisse) in [('USR0002', 'CIS0000'), ('USR0003', null)]) {
+      final deux = await CaisseService(db, utilisateurCode: 'USR0000').creer(nom: 'Caisse 2');
+      for (final (code, caisses) in [
+        ('USR0002', ['CIS0000', deux.code]),
+        ('USR0003', [deux.code]),
+      ]) {
         await db.insert('utilisateur', {
           'code': code,
           'identifiant': code.toLowerCase(),
           'nom': code,
-          'role_code': 'ROL0000',
-          'caisse_code': caisse,
+          'role_code': 'ROL0001',
         });
+        await CaisseRepository(db).definirCaissesUtilisateur(code, caisses);
       }
       final ouverte = await SessionCaisseService(
         db,
         utilisateurCode: 'USR0000',
       ).ouvrir(caisseCode: 'CIS0000', fondInitial: 100);
       final collegue = SessionCaisseService(db, utilisateurCode: 'USR0002');
-      expect((await collegue.courante())?.code, ouverte.code);
+      expect(await collegue.caisses(), ['CIS0000', deux.code], reason: 'ses caisses, la première par défaut');
+      expect(await collegue.caisseCourante(), 'CIS0000');
+      expect(await collegue.courante(), isNull, reason: 'aucune caisse encore choisie');
+      expect((await collegue.choisirCaisse('CIS0000'))?.code, ouverte.code);
       expect(await SessionCaisseService.sessionOuverte(db, 'USR0002'), isTrue);
       await expectLater(
         collegue.ouvrir(caisseCode: 'CIS0000', fondInitial: 0),
         throwsA(isA<SessionException>().having((e) => e.erreur, 'e', ErreurSession.dejaOuverte)),
       );
-      // Sans caisse attachée : pas d'accès à la session d'un autre.
-      expect(await SessionCaisseService(db, utilisateurCode: 'USR0003').courante(), isNull);
-      expect(await SessionCaisseService.sessionOuverte(db, 'USR0003'), isFalse);
-      // Le collègue peut fermer la session partagée.
+      // Une autre de ses caisses : pas de session à continuer, il ouvre la sienne.
+      expect(await collegue.choisirCaisse(deux.code), isNull);
+      expect(await SessionCaisseService.sessionOuverte(db, 'USR0002'), isFalse);
+      final sienne = await collegue.ouvrir(caisseCode: deux.code, fondInitial: 0);
+      expect((await collegue.courante())?.code, sienne.code);
+      expect(await CaisseRepository(db).caisseParDefaut('USR0002'), deux.code);
+      // Sa propre session ouverte le garde sur sa caisse.
+      await expectLater(
+        collegue.choisirCaisse('CIS0000'),
+        throwsA(isA<SessionException>().having((e) => e.erreur, 'e', ErreurSession.dejaOuverte)),
+      );
+      // Hors de ses caisses : ni choix, ni ouverture, ni session partagée.
+      final autre = SessionCaisseService(db, utilisateurCode: 'USR0003');
+      expect(await autre.caisses(), [deux.code]);
+      await expectLater(
+        autre.choisirCaisse('CIS0000'),
+        throwsA(isA<SessionException>().having((e) => e.erreur, 'e', ErreurSession.caisseNonAutorisee)),
+      );
+      await expectLater(
+        autre.ouvrir(caisseCode: 'CIS0000', fondInitial: 0),
+        throwsA(isA<SessionException>().having((e) => e.erreur, 'e', ErreurSession.caisseNonAutorisee)),
+      );
+      expect(await autre.courante(), isNull);
+      // Le collègue peut fermer la session partagée (celle de sa caisse courante, une fois la sienne fermée).
+      await collegue.fermer(montantCompte: 0);
+      await collegue.choisirCaisse('CIS0000');
       final fermee = await collegue.fermer(montantCompte: 100);
       expect(fermee.code, ouverte.code);
       expect(await SessionCaisseService(db, utilisateurCode: 'USR0000').courante(), isNull);
+    });
+
+    test('l’Admin a toutes les caisses et continue la session de n’importe laquelle', () async {
+      final base = await ouvrirBaseDeTest();
+      final db = base.db;
+      final deux = await CaisseService(db, utilisateurCode: 'USR0000').creer(nom: 'Caisse 2');
+      await db.insert('utilisateur', {
+        'code': 'USR0002',
+        'identifiant': 'amina',
+        'nom': 'Amina',
+        'role_code': 'ROL0001',
+      });
+      await CaisseRepository(db).definirCaissesUtilisateur('USR0002', [deux.code]);
+      final ouverte = await SessionCaisseService(
+        db,
+        utilisateurCode: 'USR0002',
+      ).ouvrir(caisseCode: deux.code, fondInitial: 0);
+      final admin = SessionCaisseService(db, utilisateurCode: 'USR0000');
+      expect(await admin.caisses(), ['CIS0000', deux.code], reason: 'actives, hors coffre');
+      expect((await admin.choisirCaisse(deux.code))?.code, ouverte.code);
+      expect(await CaisseRepository(db).caisseParDefaut('USR0000'), deux.code);
     });
   });
 

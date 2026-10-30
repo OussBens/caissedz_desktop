@@ -396,7 +396,7 @@ void main() {
       motDePasse: 'Nadia2026',
       telephone: '0661 20 30 41',
       roleCode: Roles.caissier,
-      caisseCode: 'CIS0000',
+      caisses: const ['CIS0000'],
       magasins: ['MAG0000', depot.code],
     );
     await c.read(sessionProvider.notifier).deconnecter();

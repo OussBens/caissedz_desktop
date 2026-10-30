@@ -35,6 +35,7 @@ String messageErreurSession(AppLocalizations l10n, ErreurSession e) => switch (e
   ErreurSession.aucuneOuverte => l10n.posErreurSessionAucune,
   ErreurSession.caisseInconnue => l10n.posErreurCaisse,
   ErreurSession.montantInvalide => l10n.posErreurMontant,
+  ErreurSession.caisseNonAutorisee => l10n.posErreurCaisseNonAutorisee,
 };
 
 String messageErreurVente(AppLocalizations l10n, VenteException e, String devise) => switch (e.erreur) {

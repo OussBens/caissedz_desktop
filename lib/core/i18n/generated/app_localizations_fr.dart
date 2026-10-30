@@ -680,6 +680,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get posErreurCaisse => 'Caisse inconnue ou inactive.';
 
   @override
+  String get posErreurCaisseNonAutorisee => 'Cette caisse ne fait pas partie de vos caisses.';
+
+  @override
   String get posErreurMontant => 'Montant invalide.';
 
   @override
@@ -5434,6 +5437,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get usrColMagasins => 'Magasins';
 
   @override
+  String get usrColCaisses => 'Caisses';
+
+  @override
   String get usrColVentes => 'Ventes';
 
   @override
@@ -5544,6 +5550,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get usrMagasinsIndice => 'Le premier est le magasin par défaut à la connexion';
 
   @override
+  String get usrCaissesIndice =>
+      'La première est la caisse par défaut ; dans l\'écran Caisse, l\'utilisateur choisit parmi ses caisses';
+
+  @override
   String get usrObservation => 'Observation';
 
   @override
@@ -5563,6 +5573,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get usrErrMagasins => 'Choisissez au moins un magasin';
+
+  @override
+  String get usrErrCaisses => 'Choisissez au moins une caisse';
 
   @override
   String get usrErrInconnu => 'Utilisateur introuvable';
@@ -5590,6 +5603,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get usrLibreAdmin => 'Libre (admin)';
+
+  @override
+  String get usrToutesCaisses => 'Toutes (admin)';
 
   @override
   String get usrDefaut => '(défaut)';
@@ -8751,6 +8767,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get archBloqueMagasinPrincipal => 'Magasin principal d\'un utilisateur';
+
+  @override
+  String get archBloqueCaissePrincipale => 'Caisse par défaut d\'un utilisateur';
 
   @override
   String get archBloqueSession => 'Session de caisse ouverte';

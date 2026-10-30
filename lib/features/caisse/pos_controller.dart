@@ -9,7 +9,6 @@ import '../../application/session_caisse_service.dart';
 import '../../application/vente_service.dart';
 import '../../data/catalogue_repository.dart';
 import '../../data/stock_repository.dart';
-import '../../data/utilisateur_repository.dart';
 import '../../domain/calculs_prix.dart';
 import '../../domain/codes_barres.dart';
 import '../../domain/models/panier.dart';
@@ -57,7 +56,7 @@ class PosEtat {
   final SessionCaisse? session;
   final String magasinCode;
 
-  /// Caisse de ce poste (Paramètres de la caisse), proposée à l'ouverture de session.
+  /// Caisse courante de l'utilisateur (choisie parmi les siennes), proposée à l'ouverture de session.
   final String? caisseCode;
   final Vente? derniereVente;
 
@@ -113,28 +112,38 @@ class PosController extends Notifier<PosEtat> {
   @override
   PosEtat build() => PosEtat(paniers: [Panier(id: _prochainId++)]);
 
-  /// Charge la session ouverte (la sienne ou celle de sa caisse ouverte par un collègue, qu'il continue), la caisse
-  /// attachée (§5 : caisse courante d'un non-Admin) et le magasin principal de l'utilisateur.
+  /// Charge la caisse courante de l'utilisateur (la dernière choisie parmi les siennes, sinon sa caisse par défaut),
+  /// la session ouverte (la sienne ou celle de sa caisse courante ouverte par un collègue, qu'il continue) et son
+  /// magasin principal.
   Future<void> initialiser() async {
     final code = ref.read(utilisateurCourantCodeProvider);
-    final session = await ref.read(sessionCaisseServiceProvider).courante();
+    final service = ref.read(sessionCaisseServiceProvider);
+    var session = await service.courante();
     final magasin = await ref.read(stockServiceProvider).magasinPrincipal(code);
-    final u = await UtilisateurRepository(ref.read(appDatabaseProvider).db).parCode(code);
-    final attachee = u?.caisseCode;
-    // Après un changement d'utilisateur, un non-Admin reprend sa caisse attachée (pas celle du précédent).
-    final admin = u?.estAdmin ?? false;
-    state = state.copyWith(
+    final caisse = session?.caisseCode ?? await service.caisseCourante();
+    // Caisse retenue enregistrée : la session partagée et les imputations par défaut la suivent.
+    if (session == null && caisse != null) session = await service.choisirCaisse(caisse);
+    state = PosEtat(
+      paniers: state.paniers,
+      courant: state.courant,
       session: session,
-      effacerSession: session == null,
       magasinCode: magasin,
-      caisseCode: session?.caisseCode ?? (admin ? state.caisseCode ?? attachee : attachee ?? state.caisseCode),
+      caisseCode: caisse,
+      derniereVente: state.derniereVente,
     );
+  }
+
+  /// Change la caisse où l'utilisateur encaisse et décaisse (parmi les siennes) : il continue la session qu'un
+  /// collègue y a ouverte, sinon la caisse est fermée jusqu'à son ouverture.
+  Future<void> choisirCaisse(String caisseCode) async {
+    final session = await ref.read(sessionCaisseServiceProvider).choisirCaisse(caisseCode);
+    state = state.copyWith(caisseCode: caisseCode, session: session, effacerSession: session == null);
   }
 
   // ---------------- Sessions ----------------
   Future<SessionCaisse> ouvrirSession({required String caisseCode, required double fondInitial}) async {
     final s = await ref.read(sessionCaisseServiceProvider).ouvrir(caisseCode: caisseCode, fondInitial: fondInitial);
-    state = state.copyWith(session: s);
+    state = state.copyWith(session: s, caisseCode: caisseCode);
     return s;
   }
 
@@ -494,9 +503,12 @@ class PosController extends Notifier<PosEtat> {
 
   void choisirModePaiement(String mode) => state = state.remplacerPanier(state.panier.copyWith(modePaiement: mode));
 
-  /// Paramètres du poste (caisse, magasin) jusqu'à la déconnexion.
-  void parametrer({String? caisseCode, String? magasinCode}) =>
-      state = state.copyWith(caisseCode: caisseCode, magasinCode: magasinCode);
+  /// Paramètres du poste (caisse, magasin) : la caisse est enregistrée ([choisirCaisse]), le magasin vaut
+  /// jusqu'à la déconnexion.
+  Future<void> parametrer({String? caisseCode, String? magasinCode}) async {
+    if (caisseCode != null && caisseCode != state.caisseCode) await choisirCaisse(caisseCode);
+    state = state.copyWith(magasinCode: magasinCode);
+  }
 
   /// Remplace une ligne (changement de colis ou de quantité depuis le dialog) ; la ligne est restaurée
   /// si le stock ne suffit pas.

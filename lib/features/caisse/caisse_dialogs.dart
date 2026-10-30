@@ -1446,11 +1446,24 @@ Future<void> _erreurSession(BuildContext context, String titre, SessionException
 }
 
 /// Ouvre une session (OuvertureCaisseDialog, 560 px) sur [caisseCode] ou la caisse du poste ; le fond est
-/// pré-rempli par le solde initial de la caisse (§9.13). Retourne `true` si la session est ouverte.
+/// pré-rempli par le solde initial de la caisse (§9.13). Seules les caisses de l'utilisateur sans session ouverte
+/// sont proposées (l'Admin les a toutes). Retourne `true` si la session est ouverte.
 Future<bool> afficherOuvertureCaisse(BuildContext context, WidgetRef ref, {String? caisseCode}) async {
   final l10n = AppLocalizations.of(context);
-  final caisses = (await ref.read(caissesListeProvider.future)).where((c) => c.actif).toList();
-  if (!context.mounted || caisses.isEmpty) return false;
+  final toutes = await ref.read(caissesListeProvider.future);
+  final ouvertes = {
+    for (final s in await ref.read(sessionsCaisseProvider.future))
+      if (s.estOuverte) s.caisseCode,
+  };
+  final caisses = [
+    for (final code in await ref.read(sessionCaisseServiceProvider).caisses())
+      if (!ouvertes.contains(code)) ...toutes.where((c) => c.code == code),
+  ];
+  if (!context.mounted) return false;
+  if (caisses.isEmpty || (caisseCode != null && !caisses.any((c) => c.code == caisseCode))) {
+    await _erreurSession(context, l10n.posOuvertureOk, const SessionException(ErreurSession.caisseNonAutorisee));
+    return false;
+  }
   final preferee = caisseCode ?? ref.read(posControllerProvider).caisseCode;
   var caisse = caisses.where((c) => c.code == preferee).firstOrNull ?? caisses.first;
   final fond = TextEditingController(text: formaterNombre(caisse.soldeInitial, decimales: 2));
@@ -1487,6 +1500,7 @@ Future<bool> afficherOuvertureCaisse(BuildContext context, WidgetRef ref, {Strin
                 child: DsSelect<Caisse>(
                   valeur: caisse,
                   options: caisses,
+                  actif: caisseCode == null && caisses.length > 1,
                   libelle: (c) => c.nom,
                   recherche: (options, valeur) async {
                     final code = await choisirDansListe(
@@ -2152,18 +2166,26 @@ class _RecetteProduitDialogState extends ConsumerState<_RecetteProduitDialog> {
 
 Future<void> afficherParametresCaisse(BuildContext context, WidgetRef ref) async {
   final l10n = AppLocalizations.of(context);
-  final caisses = (await ref.read(caissesListeProvider.future)).where((c) => c.actif).toList();
-  final magasins = (await ref.read(magasinsProvider.future)).where((m) => m.actif).toList();
+  final toutes = await ref.read(caissesListeProvider.future);
+  // Caisses de l'utilisateur (toutes pour l'Admin), sa caisse par défaut en premier.
+  final caisses = [
+    for (final code in await ref.read(sessionCaisseServiceProvider).caisses()) ...toutes.where((c) => c.code == code),
+  ];
+  final session = ref.read(sessionProvider);
+  // §6.2 : un non-Admin travaille dans ses magasins, sauf permission `changerCaisseMagasin`.
+  final libre = session == null || session.estAdmin || session.a(Permission.changerCaisseMagasin);
+  final siens = libre ? null : await ref.read(stockServiceProvider).magasinsUtilisateur(session.utilisateur.code);
+  final magasins = [
+    for (final m in await ref.read(magasinsProvider.future))
+      if (m.actif && (siens == null || siens.contains(m.code))) m,
+  ];
   if (!context.mounted || caisses.isEmpty || magasins.isEmpty) return;
   final etat = ref.read(posControllerProvider);
-  final session = ref.read(sessionProvider);
-  // §6.2 : un non-Admin travaille sur sa caisse attachée et ses magasins, sauf permission `changerCaisseMagasin`.
-  final libre =
-      session == null ||
-      session.estAdmin ||
-      session.a(Permission.changerCaisseMagasin) ||
-      session.utilisateur.caisseCode == null;
-  var caisse = etat.session?.caisseCode ?? etat.caisseCode ?? caisses.first.code;
+  // Sa propre session ouverte le garde sur sa caisse ; une session partagée (ouverte par un collègue) non.
+  final sessionPropre = etat.session != null && etat.session!.utilisateurCode == session?.utilisateur.code;
+  var caisse = caisses.any((c) => c.code == (etat.session?.caisseCode ?? etat.caisseCode))
+      ? (etat.session?.caisseCode ?? etat.caisseCode)!
+      : caisses.first.code;
   var magasin = magasins.any((m) => m.code == etat.magasinCode) ? etat.magasinCode : magasins.first.code;
   final ok = await afficherDialog<bool>(
     context,
@@ -2195,7 +2217,7 @@ Future<void> afficherParametresCaisse(BuildContext context, WidgetRef ref) async
                 valeur: caisse,
                 options: [for (final c in caisses) c.code],
                 libelle: (c) => caisses.firstWhere((x) => x.code == c).nom,
-                actif: etat.session == null && libre,
+                actif: !sessionPropre && caisses.length > 1,
                 recherche: rechercheListe(context, ref, ListeMetier.caisse),
                 onChanged: (v) => setState(() => caisse = v ?? caisse),
               ),
@@ -2207,7 +2229,7 @@ Future<void> afficherParametresCaisse(BuildContext context, WidgetRef ref) async
                   valeur: magasin,
                   options: [for (final m in magasins) m.code],
                   libelle: (c) => magasins.firstWhere((x) => x.code == c).nom,
-                  actif: libre,
+                  actif: magasins.length > 1,
                   recherche: rechercheListe(context, ref, ListeMetier.magasin),
                   onChanged: (v) => setState(() => magasin = v ?? magasin),
                 ),
@@ -2218,7 +2240,14 @@ Future<void> afficherParametresCaisse(BuildContext context, WidgetRef ref) async
     ),
   );
   if (ok != true || !context.mounted) return;
-  ref.read(posControllerProvider.notifier).parametrer(caisseCode: caisse, magasinCode: magasin);
+  try {
+    await ref.read(posControllerProvider.notifier).parametrer(caisseCode: caisse, magasinCode: magasin);
+  } on SessionException catch (e) {
+    if (context.mounted) await _erreurSession(context, l10n.posParametres, e);
+    return;
+  }
+  rafraichirCaisse(ref);
+  if (!context.mounted) return;
   afficherToast(
     context,
     titre: l10n.posParamFait,

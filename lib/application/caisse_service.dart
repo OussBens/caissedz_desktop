@@ -22,6 +22,9 @@ enum ErreurCaisse {
   soldeInsuffisant,
   sessionOuverte,
   soldeNonNul,
+
+  /// Caisse par défaut (première de la liste) d'un utilisateur.
+  caissePrincipale,
   transfertInconnu,
   dejaAnnule,
   motifObligatoire,
@@ -165,12 +168,14 @@ class CaisseService {
     });
   }
 
-  /// Raison empêchant de désactiver [c] : caisse système, session ouverte, ou solde non nul (à transférer).
+  /// Raison empêchant de désactiver [c] : caisse système, caisse par défaut d'un utilisateur, session ouverte, ou
+  /// solde non nul (à transférer).
   Future<ErreurCaisse?> blocageDesactivation(Caisse c) => _blocageDesactivation(db, c);
 
   Future<ErreurCaisse?> _blocageDesactivation(DatabaseExecutor ex, Caisse c) async {
     if (c.systeme) return ErreurCaisse.caisseSysteme;
     if (!c.actif) return ErreurCaisse.caisseInactive;
+    if (await ArchivageRepository(ex).caissePrincipale(c.code)) return ErreurCaisse.caissePrincipale;
     final ouvertes = await ex.query(
       'session_caisse',
       columns: ['code'],

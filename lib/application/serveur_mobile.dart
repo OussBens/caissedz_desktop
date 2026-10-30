@@ -893,8 +893,11 @@ class ServeurMobile {
   }
 
   Future<Map<String, Object?>> _sessionCaisse(Session s) async {
-    final courante = await SessionCaisseService(db, utilisateurCode: s.utilisateur.code).courante();
-    final caisses = await CaisseRepository(db).caisses(actives: true);
+    final service = SessionCaisseService(db, utilisateurCode: s.utilisateur.code);
+    final courante = await service.courante();
+    // Caisses de l'utilisateur (toutes pour l'Admin), sa caisse par défaut en premier.
+    final accessibles = await service.caisses();
+    final caisses = {for (final c in await CaisseRepository(db).caisses(actives: true)) c.code: c};
     return {
       'ouverte': courante != null,
       'session': courante == null
@@ -905,9 +908,8 @@ class ServeurMobile {
               'ouverteLe': courante.ouverteLe.toUtc().toIso8601String(),
             },
       'caisses': [
-        for (final c in caisses)
-          if (!c.coffre && (s.estAdmin || s.utilisateur.caisseCode == null || s.utilisateur.caisseCode == c.code))
-            {'code': c.code, 'nom': c.nom, 'soldeInitial': c.soldeInitial},
+        for (final code in accessibles)
+          if (caisses[code] case final c?) {'code': c.code, 'nom': c.nom, 'soldeInitial': c.soldeInitial},
       ],
     };
   }
@@ -981,7 +983,7 @@ class ServeurMobile {
   Future<Map<String, Object?>> _ouvrirSessionCaisse(Session s, Map<String, Object?> c) async {
     final caisse = _texte(c['caisseCode']);
     if (caisse == null) throw const ErreurApiMobile(422, 'caisseInconnue');
-    if (!s.estAdmin && s.utilisateur.caisseCode != null && s.utilisateur.caisseCode != caisse) {
+    if (!(await SessionCaisseService.caissesAccessibles(db, s.utilisateur.code)).contains(caisse)) {
       throw const ErreurApiMobile(403, 'caisseInconnue');
     }
     await SessionCaisseService(

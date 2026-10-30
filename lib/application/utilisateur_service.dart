@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:sqflite_common/sqlite_api.dart';
 
 import '../core/securite/mot_de_passe.dart';
+import '../data/caisse_repository.dart';
 import '../data/historique_repository.dart';
 import '../data/permissions_repository.dart';
 import '../data/stock_repository.dart';
@@ -10,6 +11,7 @@ import '../data/utilisateur_repository.dart';
 import '../domain/models/utilisateur.dart';
 import '../domain/permissions.dart';
 import 'auth_service.dart';
+import 'session_caisse_service.dart';
 import 'tiers_service.dart';
 
 enum ErreurUtilisateur {
@@ -21,6 +23,9 @@ enum ErreurUtilisateur {
   telephoneInvalide,
   roleInvalide,
   magasinsObligatoires,
+
+  /// Un compte autre que l'Admin a au moins une caisse.
+  caissesObligatoires,
   compteAdministrateur,
   compteCourant,
   dejaInactif,
@@ -37,7 +42,7 @@ class UtilisateurException implements Exception {
 }
 
 /// Comptes utilisateurs (§9.12) : identifiant unique, mot de passe haché, rôle assignable (jamais Admin),
-/// caisse attachée (sauf Admin), magasins ordonnés (le premier est le magasin par défaut).
+/// caisses ordonnées (sauf Admin, qui les a toutes) et magasins ordonnés (le premier est celui par défaut).
 class UtilisateurService {
   const UtilisateurService(
     this.db, {
@@ -89,6 +94,8 @@ class UtilisateurService {
 
   Future<List<String>> magasins(String code) => StockRepository(db).magasinsUtilisateur(code);
 
+  Future<List<String>> caisses(String code) => CaisseRepository(db).caissesUtilisateur(code);
+
   Future<Utilisateur> creer({
     required String identifiant,
     required String motDePasse,
@@ -96,12 +103,19 @@ class UtilisateurService {
     String nom = '',
     required String telephone,
     required String roleCode,
-    String? caisseCode,
+    required List<String> caisses,
     required List<String> magasins,
     String observation = '',
   }) => db.transaction((txn) async {
     final repo = UtilisateurRepository(txn);
-    await _valider(txn, identifiant: identifiant, telephone: telephone, magasins: magasins);
+    await _valider(
+      txn,
+      identifiant: identifiant,
+      telephone: telephone,
+      admin: roleCode == Roles.admin,
+      caisses: caisses,
+      magasins: magasins,
+    );
     if (!motDePasseAcceptable(motDePasse)) throw const UtilisateurException(ErreurUtilisateur.motDePasseFaible);
     await _validerRole(txn, roleCode, actuel: null);
     await _verifierPlace(txn);
@@ -114,13 +128,13 @@ class UtilisateurService {
         prenom: prenom.trim(),
         telephone: telephone.trim(),
         roleCode: roleCode,
-        caisseCode: caisseCode,
         observation: observation.trim(),
         creePar: utilisateurCode,
       ),
       hachage.hacher(motDePasse),
     );
     await StockRepository(txn).definirMagasinsUtilisateur(code, magasins);
+    await _definirCaisses(txn, code, roleCode, caisses);
     await HistoriqueRepository(txn).journaliser(
       utilisateurCode: utilisateurCode,
       action: 'Création',
@@ -140,7 +154,7 @@ class UtilisateurService {
     String nom = '',
     required String telephone,
     required String roleCode,
-    String? caisseCode,
+    required List<String> caisses,
     required List<String> magasins,
     String observation = '',
     bool actif = true,
@@ -148,7 +162,15 @@ class UtilisateurService {
     final repo = UtilisateurRepository(txn);
     final u = await repo.parCode(code);
     if (u == null) throw const UtilisateurException(ErreurUtilisateur.utilisateurInconnu);
-    await _valider(txn, identifiant: identifiant, telephone: telephone, magasins: magasins, saufCode: code);
+    await _valider(
+      txn,
+      identifiant: identifiant,
+      telephone: telephone,
+      admin: roleCode == Roles.admin,
+      caisses: caisses,
+      magasins: magasins,
+      saufCode: code,
+    );
     await _validerRole(txn, roleCode, actuel: u);
     // Réactiver un compte reprend une place du palier.
     if (actif && !u.actif && !u.estAdmin) await _verifierPlace(txn);
@@ -166,13 +188,13 @@ class UtilisateurService {
       'nom': nom.trim(),
       'telephone': telephone.trim(),
       'role_code': roleCode,
-      'caisse_code': roleCode == Roles.admin ? null : caisseCode,
       'observation': observation.trim(),
       'actif': actif ? 1 : 0,
       'modifie_par': utilisateurCode,
       if (mdp.isNotEmpty) 'mot_de_passe': hachage.hacher(mdp),
     });
     await StockRepository(txn).definirMagasinsUtilisateur(code, magasins);
+    await _definirCaisses(txn, code, roleCode, caisses);
     await HistoriqueRepository(txn).journaliser(
       utilisateurCode: utilisateurCode,
       action: 'Modification',
@@ -237,6 +259,8 @@ class UtilisateurService {
     DatabaseExecutor txn, {
     required String identifiant,
     required String telephone,
+    required bool admin,
+    required List<String> caisses,
     required List<String> magasins,
     String? saufCode,
   }) async {
@@ -250,7 +274,19 @@ class UtilisateurService {
     if (!TiersService.telephoneValide(telephone.trim())) {
       throw const UtilisateurException(ErreurUtilisateur.telephoneInvalide);
     }
+    if (!admin && caisses.isEmpty) throw const UtilisateurException(ErreurUtilisateur.caissesObligatoires);
     if (magasins.isEmpty) throw const UtilisateurException(ErreurUtilisateur.magasinsObligatoires);
+  }
+
+  /// Caisses ordonnées du compte (aucune pour l'Admin, qui les a toutes). Sa caisse courante reste l'une de ses
+  /// caisses accessibles, sinon elle devient sa caisse par défaut.
+  Future<void> _definirCaisses(DatabaseExecutor txn, String code, String roleCode, List<String> caisses) async {
+    final repo = CaisseRepository(txn);
+    await repo.definirCaissesUtilisateur(code, roleCode == Roles.admin ? const [] : caisses);
+    final accessibles = await SessionCaisseService.caissesAccessibles(txn, code);
+    if (!accessibles.contains(await repo.caisseCourante(code))) {
+      await repo.definirCaisseCourante(code, accessibles.firstOrNull);
+    }
   }
 
   /// Rôle actif ; Admin seulement s'il est déjà celui du compte (admin unique, non assignable).

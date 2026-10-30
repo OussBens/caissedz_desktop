@@ -2,14 +2,25 @@ import 'package:sqflite_common/sqlite_api.dart';
 
 import '../data/caisse_repository.dart';
 import '../data/historique_repository.dart';
+import '../data/permissions_repository.dart';
+import '../data/utilisateur_repository.dart';
 import '../data/vente_repository.dart';
 import '../domain/calculs_prix.dart';
 import '../domain/code_generator.dart';
 import '../domain/models/caisse.dart';
 import '../domain/models/vente.dart';
+import '../domain/permissions.dart';
 import 'caisse_service.dart';
 
-enum ErreurSession { dejaOuverte, aucuneOuverte, caisseInconnue, montantInvalide }
+enum ErreurSession {
+  dejaOuverte,
+  aucuneOuverte,
+  caisseInconnue,
+  montantInvalide,
+
+  /// La caisse n'est pas parmi celles de l'utilisateur (`utilisateur_caisse`).
+  caisseNonAutorisee,
+}
 
 class SessionException implements Exception {
   const SessionException(this.erreur);
@@ -28,26 +39,80 @@ class SessionCaisseService {
   VenteRepository get _repo => VenteRepository(db);
 
   /// §8.4 : aucun achat, retour ni versement n'est enregistré sans session `Ouverte` accessible à l'utilisateur
-  /// (la sienne ou celle de sa caisse attachée, ouverte par un collègue).
+  /// (la sienne ou celle de sa caisse courante, ouverte par un collègue).
   static Future<bool> sessionOuverte(DatabaseExecutor db, String utilisateurCode) async =>
       await VenteRepository(db).sessionAccessible(utilisateurCode) != null;
 
-  /// Session courante : celle de l'utilisateur, sinon celle de sa caisse attachée déjà ouverte par un autre
+  /// Session courante : celle de l'utilisateur, sinon celle de sa caisse courante déjà ouverte par un autre
   /// utilisateur, qu'il continue (ventes, versements et fermeture sur la même session).
   Future<SessionCaisse?> courante() => _repo.sessionAccessible(utilisateurCode);
 
+  /// Caisses où [utilisateurCode] peut encaisser (actives, hors coffre), sa caisse par défaut en premier : toutes
+  /// pour l'Admin et la permission `changerCaisseMagasin` (les siennes d'abord), sinon les siennes
+  /// (`utilisateur_caisse`).
+  static Future<List<String>> caissesAccessibles(DatabaseExecutor db, String utilisateurCode) async {
+    final u = await UtilisateurRepository(db).parCode(utilisateurCode);
+    if (u == null) return const [];
+    final caisses = CaisseRepository(db);
+    final actives = [
+      for (final c in await caisses.caisses(actives: true))
+        if (!c.coffre) c.code,
+    ];
+    final siennes = [
+      for (final c in await caisses.caissesUtilisateur(utilisateurCode))
+        if (actives.contains(c)) c,
+    ];
+    final role = await PermissionsRepository(db).role(u.roleCode);
+    if (!u.estAdmin && !(role?.aPermission(Permission.changerCaisseMagasin) ?? false)) return siennes;
+    return [
+      ...siennes,
+      for (final c in actives)
+        if (!siennes.contains(c)) c,
+    ];
+  }
+
+  Future<List<String>> caisses() => caissesAccessibles(db, utilisateurCode);
+
+  /// Caisse choisie dans l'écran Caisse (la dernière choisie si elle est toujours accessible, sinon la caisse par
+  /// défaut), ou `null` sans caisse accessible.
+  Future<String?> caisseCourante() async {
+    final accessibles = await caisses();
+    final courante = await CaisseRepository(db).caisseCourante(utilisateurCode);
+    return accessibles.contains(courante) ? courante : accessibles.firstOrNull;
+  }
+
+  /// Choisit la caisse où l'utilisateur encaisse et décaisse, parmi les siennes : il continue la session qu'un
+  /// collègue y a ouverte, sinon il l'ouvrira. Impossible tant que sa propre session est ouverte sur une autre
+  /// caisse. Retourne la session désormais courante.
+  Future<SessionCaisse?> choisirCaisse(String caisseCode) => db.transaction((txn) async {
+    if (!(await caissesAccessibles(txn, utilisateurCode)).contains(caisseCode)) {
+      throw const SessionException(ErreurSession.caisseNonAutorisee);
+    }
+    final repo = VenteRepository(txn);
+    final sienne = await repo.sessionOuverte(utilisateurCode: utilisateurCode);
+    if (sienne != null && sienne.caisseCode != caisseCode) throw const SessionException(ErreurSession.dejaOuverte);
+    await CaisseRepository(txn).definirCaisseCourante(utilisateurCode, caisseCode);
+    return repo.sessionAccessible(utilisateurCode);
+  });
+
+  /// Ouvre une session sur [caisseCode], qui devient la caisse courante de l'utilisateur. Une seule session
+  /// ouverte par utilisateur et par caisse ; la caisse doit être parmi les siennes ([caissesAccessibles]).
   Future<SessionCaisse> ouvrir({required String caisseCode, required double fondInitial}) async {
     if (fondInitial < 0) throw const SessionException(ErreurSession.montantInvalide);
     return db.transaction((txn) async {
       final repo = VenteRepository(txn);
-      if (await repo.sessionAccessible(utilisateurCode) != null) {
+      final caisse = await txn.query('caisse', where: 'code = ? AND actif = 1 AND coffre = 0', whereArgs: [caisseCode]);
+      if (caisse.isEmpty) throw const SessionException(ErreurSession.caisseInconnue);
+      if (!(await caissesAccessibles(txn, utilisateurCode)).contains(caisseCode)) {
+        throw const SessionException(ErreurSession.caisseNonAutorisee);
+      }
+      if (await repo.sessionOuverte(utilisateurCode: utilisateurCode) != null) {
         throw const SessionException(ErreurSession.dejaOuverte);
       }
       if (await repo.sessionOuverte(caisseCode: caisseCode) != null) {
         throw const SessionException(ErreurSession.dejaOuverte);
       }
-      final caisse = await txn.query('caisse', where: 'code = ? AND actif = 1 AND coffre = 0', whereArgs: [caisseCode]);
-      if (caisse.isEmpty) throw const SessionException(ErreurSession.caisseInconnue);
+      await CaisseRepository(txn).definirCaisseCourante(utilisateurCode, caisseCode);
       final code = await repo.prochainCode('session_caisse', CodeGenerator.sessionCaisse);
       final s = SessionCaisse(
         code: code,

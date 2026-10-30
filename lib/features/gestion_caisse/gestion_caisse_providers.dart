@@ -125,6 +125,7 @@ String messageErreurCaisse(AppLocalizations l10n, ErreurCaisse e) => switch (e) 
   ErreurCaisse.soldeInsuffisant => l10n.caisseErreurSolde,
   ErreurCaisse.sessionOuverte => l10n.caisseErreurSessionOuverte,
   ErreurCaisse.soldeNonNul => l10n.gcErreurSoldeNonNul,
+  ErreurCaisse.caissePrincipale => l10n.archBloqueCaissePrincipale,
   ErreurCaisse.transfertInconnu => l10n.gcErreurTransfertInconnu,
   ErreurCaisse.dejaAnnule => l10n.gcErreurDejaAnnule,
   ErreurCaisse.motifObligatoire => l10n.entErreurMotif,

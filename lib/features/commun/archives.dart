@@ -34,6 +34,7 @@ String messageBlocageArchivage(AppLocalizations l10n, BlocageArchivage b) => swi
   BlocageArchivage.dansPack => l10n.archBloqueDansPack,
   BlocageArchivage.soldeNonNul => l10n.archBloqueSolde,
   BlocageArchivage.magasinPrincipal => l10n.archBloqueMagasinPrincipal,
+  BlocageArchivage.caissePrincipale => l10n.archBloqueCaissePrincipale,
   BlocageArchivage.sessionOuverte => l10n.archBloqueSession,
   BlocageArchivage.soldeCaisse => l10n.archBloqueSoldeCaisse,
   BlocageArchivage.compteCourant => l10n.archBloqueCompteCourant,

@@ -140,6 +140,7 @@ class ArchivageService {
         if (await repo.magasinPrincipal(code)) return BlocageArchivage.magasinPrincipal;
         if (await repo.magasinAvecStock(code)) return BlocageArchivage.stockNonNul;
       case EntiteArchivable.caisse:
+        if (await repo.caissePrincipale(code)) return BlocageArchivage.caissePrincipale;
         if (await repo.sessionOuverte(code)) return BlocageArchivage.sessionOuverte;
         if ((await CaisseRepository(ex).solde(code)).total.abs() >= 0.005) return BlocageArchivage.soldeCaisse;
       case EntiteArchivable.utilisateur:

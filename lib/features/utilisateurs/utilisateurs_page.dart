@@ -59,6 +59,9 @@ class _UtilisateursPageState extends ConsumerState<UtilisateursPage> {
   Widget _utilisateurs(AppLocalizations l10n, List<LigneUtilisateur> tous, List<Role> tousRoles) {
     final devise = ref.watch(deviseProvider);
     final caisses = {for (final c in ref.watch(caissesListeProvider).value ?? const []) c.code: c.nom};
+    // Caisses du compte, la première (par défaut) d'abord ; l'Admin les a toutes.
+    String nomCaisses(LigneUtilisateur l) =>
+        l.u.estAdmin ? l10n.usrToutesCaisses : [for (final c in l.caisses) caisses[c] ?? c].join(', ');
     // Les comptes archivés restent lus (auteurs des anciennes opérations) mais quittent la liste de gestion.
     final toutes = [
       for (final l in tous)
@@ -119,11 +122,11 @@ class _UtilisateursPageState extends ConsumerState<UtilisateursPage> {
       ),
       DsColonne(
         id: 'caisse',
-        libelle: l10n.usrColCaisse,
-        valeur: (l) => l.u.caisseCode == null ? '' : (caisses[l.u.caisseCode] ?? l.u.caisseCode!),
-        cellule: (context, l) => l.u.caisseCode == null
-            ? Text(l10n.usrLibre, style: TextStyle(color: context.ds.colors.textMuted))
-            : Text(caisses[l.u.caisseCode] ?? l.u.caisseCode!),
+        libelle: l10n.usrColCaisses,
+        valeur: nomCaisses,
+        cellule: (context, l) => l.u.estAdmin
+            ? Text(l10n.usrToutesCaisses, style: TextStyle(color: context.ds.colors.textMuted))
+            : Text(nomCaisses(l), overflow: TextOverflow.ellipsis),
       ),
       DsColonne(id: 'magasins', libelle: l10n.usrColMagasins, numerique: true, valeur: (l) => l.magasins.length),
       DsColonne(id: 'ventes', libelle: l10n.usrColVentes, numerique: true, valeur: (l) => l.nbVentes),
@@ -305,7 +308,7 @@ class _UtilisateursPageState extends ConsumerState<UtilisateursPage> {
         montant: formaterMontant(l.totalVendu, devise),
         libelleMontant: l10n.usrColVentes,
         lignes: [
-          (LucideIcons.monitor, l.u.caisseCode == null ? l10n.usrLibre : (caisses[l.u.caisseCode] ?? l.u.caisseCode!)),
+          (LucideIcons.monitor, nomCaisses(l)),
           (LucideIcons.clock, l.u.dernierAcces == null ? '—' : formatAcces.format(l.u.dernierAcces!)),
         ],
       ),

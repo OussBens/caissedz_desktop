@@ -3,8 +3,9 @@ import 'package:flutter/foundation.dart';
 import '../permissions.dart';
 import 'audit.dart';
 
-/// Utilisateur de l'application (table `utilisateur`, §9.12) : compte, rôle (par code), caisse attachée.
-/// Les magasins ordonnés sont dans `utilisateur_magasin` (le premier est le magasin par défaut).
+/// Utilisateur de l'application (table `utilisateur`, §9.12) : compte et rôle (par code).
+/// Les magasins ordonnés sont dans `utilisateur_magasin` et les caisses dans `utilisateur_caisse` (le premier est
+/// celui par défaut) ; l'Admin a toutes les caisses.
 @immutable
 class Utilisateur {
   const Utilisateur({
@@ -15,7 +16,6 @@ class Utilisateur {
     this.roleNom,
     this.prenom = '',
     this.telephone = '',
-    this.caisseCode,
     this.observation = '',
     this.actif = true,
     this.systeme = false,
@@ -38,8 +38,6 @@ class Utilisateur {
   final String roleCode;
   final String? roleNom;
 
-  /// Caisse attachée : verrouille la caisse de l'écran Caisse (l'Admin choisit librement).
-  final String? caisseCode;
   final String observation;
   final bool actif;
   final bool systeme;
@@ -79,7 +77,6 @@ class Utilisateur {
     roleNom: roleCode == null ? roleNom : null,
     prenom: prenom,
     telephone: telephone,
-    caisseCode: caisseCode,
     observation: observation,
     actif: actif ?? this.actif,
     systeme: systeme,
@@ -102,7 +99,6 @@ class Utilisateur {
     telephone: (r['telephone'] as String?) ?? '',
     roleCode: r['role_code'] as String,
     roleNom: r['role_nom'] as String?,
-    caisseCode: r['caisse_code'] as String?,
     observation: (r['observation'] as String?) ?? '',
     actif: (r['actif'] as int) == 1,
     systeme: (r['systeme'] as int) == 1,
@@ -124,11 +120,10 @@ class Utilisateur {
       other.prenom == prenom &&
       other.telephone == telephone &&
       other.roleCode == roleCode &&
-      other.caisseCode == caisseCode &&
       other.actif == actif &&
       other.systeme == systeme;
   @override
-  int get hashCode => Object.hash(code, identifiant, nom, prenom, telephone, roleCode, caisseCode, actif, systeme);
+  int get hashCode => Object.hash(code, identifiant, nom, prenom, telephone, roleCode, actif, systeme);
 }
 
 /// Rôle (table `role` + permissions `role_permission` / `role_module`, §6.2).

@@ -23,7 +23,7 @@ void main() {
       motDePasse: 'Amina2026',
       telephone: '0661 20 30 40',
       roleCode: Roles.caissier,
-      caisseCode: 'CIS0000',
+      caisses: const ['CIS0000'],
       magasins: const ['MAG0000'],
     );
     await creer('amina');
@@ -43,7 +43,7 @@ void main() {
         identifiant: 'yacine',
         telephone: '0661 20 30 40',
         roleCode: Roles.caissier,
-        caisseCode: 'CIS0000',
+        caisses: const ['CIS0000'],
         magasins: const ['MAG0000'],
       ),
       plein,
@@ -54,7 +54,7 @@ void main() {
       motDePasse: 'Nadia2026',
       telephone: '0661 20 30 41',
       roleCode: Roles.caissier,
-      caisseCode: 'CIS0000',
+      caisses: const ['CIS0000'],
       magasins: const ['MAG0000'],
     );
   });

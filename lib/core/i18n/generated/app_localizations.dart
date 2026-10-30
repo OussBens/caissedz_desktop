@@ -1389,6 +1389,12 @@ abstract class AppLocalizations {
   /// **'Caisse inconnue ou inactive.'**
   String get posErreurCaisse;
 
+  /// No description provided for @posErreurCaisseNonAutorisee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette caisse ne fait pas partie de vos caisses.'**
+  String get posErreurCaisseNonAutorisee;
+
   /// No description provided for @posErreurMontant.
   ///
   /// In fr, this message translates to:
@@ -10329,6 +10335,12 @@ abstract class AppLocalizations {
   /// **'Magasins'**
   String get usrColMagasins;
 
+  /// No description provided for @usrColCaisses.
+  ///
+  /// In fr, this message translates to:
+  /// **'Caisses'**
+  String get usrColCaisses;
+
   /// No description provided for @usrColVentes.
   ///
   /// In fr, this message translates to:
@@ -10545,6 +10557,12 @@ abstract class AppLocalizations {
   /// **'Le premier est le magasin par défaut à la connexion'**
   String get usrMagasinsIndice;
 
+  /// No description provided for @usrCaissesIndice.
+  ///
+  /// In fr, this message translates to:
+  /// **'La première est la caisse par défaut ; dans l\'écran Caisse, l\'utilisateur choisit parmi ses caisses'**
+  String get usrCaissesIndice;
+
   /// No description provided for @usrObservation.
   ///
   /// In fr, this message translates to:
@@ -10586,6 +10604,12 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Choisissez au moins un magasin'**
   String get usrErrMagasins;
+
+  /// No description provided for @usrErrCaisses.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisissez au moins une caisse'**
+  String get usrErrCaisses;
 
   /// No description provided for @usrErrInconnu.
   ///
@@ -10640,6 +10664,12 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Libre (admin)'**
   String get usrLibreAdmin;
+
+  /// No description provided for @usrToutesCaisses.
+  ///
+  /// In fr, this message translates to:
+  /// **'Toutes (admin)'**
+  String get usrToutesCaisses;
 
   /// No description provided for @usrDefaut.
   ///
@@ -16304,6 +16334,12 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Magasin principal d\'un utilisateur'**
   String get archBloqueMagasinPrincipal;
+
+  /// No description provided for @archBloqueCaissePrincipale.
+  ///
+  /// In fr, this message translates to:
+  /// **'Caisse par défaut d\'un utilisateur'**
+  String get archBloqueCaissePrincipale;
 
   /// No description provided for @archBloqueSession.
   ///

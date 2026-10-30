@@ -8,6 +8,7 @@ import '../../application/role_service.dart';
 import '../../application/utilisateur_service.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/i18n/generated/app_localizations.dart';
+import '../../data/caisse_repository.dart';
 import '../../data/stock_repository.dart';
 import '../../data/utilisateur_repository.dart';
 import '../../domain/models/utilisateur.dart';
@@ -34,11 +35,20 @@ final utilisateursVersionProvider = NotifierProvider<VersionNotifier, int>(Versi
 
 void rafraichirUtilisateurs(WidgetRef ref) => ref.read(utilisateursVersionProvider.notifier).incrementer();
 
-/// Ligne de l'onglet Utilisateurs : compte, magasins ordonnés et ventes des 30 derniers jours.
+/// Ligne de l'onglet Utilisateurs : compte, caisses et magasins ordonnés, ventes des 30 derniers jours.
 class LigneUtilisateur {
-  const LigneUtilisateur({required this.u, required this.magasins, this.nbVentes = 0, this.totalVendu = 0});
+  const LigneUtilisateur({
+    required this.u,
+    required this.magasins,
+    this.caisses = const [],
+    this.nbVentes = 0,
+    this.totalVendu = 0,
+  });
   final Utilisateur u;
   final List<String> magasins;
+
+  /// Caisses du compte, la première par défaut (vide pour l'Admin, qui les a toutes).
+  final List<String> caisses;
   final int nbVentes;
   final double totalVendu;
 
@@ -52,6 +62,7 @@ final lignesUtilisateursProvider = FutureProvider<List<LigneUtilisateur>>((ref) 
   final repo = UtilisateurRepository(db);
   final ventes = await repo.ventesParUtilisateur(DateTime.now().subtract(const Duration(days: 30)));
   final stock = StockRepository(db);
+  final caisses = CaisseRepository(db);
   return [
     for (final u in await repo.tous())
       // Le compte de démonstration système n'est pas un compte gérable.
@@ -59,6 +70,7 @@ final lignesUtilisateursProvider = FutureProvider<List<LigneUtilisateur>>((ref) 
         LigneUtilisateur(
           u: u,
           magasins: await stock.magasinsUtilisateur(u.code),
+          caisses: await caisses.caissesUtilisateur(u.code),
           nbVentes: ventes[u.code]?.nb ?? 0,
           totalVendu: ventes[u.code]?.total ?? 0,
         ),
@@ -137,6 +149,7 @@ String messageErreurUtilisateur(AppLocalizations l10n, ErreurUtilisateur e) => s
   ErreurUtilisateur.telephoneInvalide => l10n.tiersFormatTelephone,
   ErreurUtilisateur.roleInvalide => l10n.usrErrRole,
   ErreurUtilisateur.magasinsObligatoires => l10n.usrErrMagasins,
+  ErreurUtilisateur.caissesObligatoires => l10n.usrErrCaisses,
   ErreurUtilisateur.compteAdministrateur => l10n.usrBloqueAdmin,
   ErreurUtilisateur.compteCourant => l10n.usrBloqueCourant,
   ErreurUtilisateur.dejaInactif => l10n.usrBloqueInactif,

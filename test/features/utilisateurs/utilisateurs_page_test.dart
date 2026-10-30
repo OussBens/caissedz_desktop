@@ -1,5 +1,6 @@
 import 'package:caissedz_desktop/app/providers.dart';
 import 'package:caissedz_desktop/core/design_system/design_system.dart';
+import 'package:caissedz_desktop/data/caisse_repository.dart';
 import 'package:caissedz_desktop/data/permissions_repository.dart';
 import 'package:caissedz_desktop/data/stock_repository.dart';
 import 'package:caissedz_desktop/data/utilisateur_repository.dart';
@@ -58,7 +59,9 @@ void main() {
       final db = c.read(appDatabaseProvider).db;
       final u = (await UtilisateurRepository(db).parCode('USR0002'))!;
       expect(u.roleCode, Roles.caissier);
-      expect(u.caisseCode, 'CIS0000');
+      expect(await CaisseRepository(db).caissesUtilisateur('USR0002'), [
+        'CIS0000',
+      ], reason: 'première caisse par défaut');
       expect(await StockRepository(db).magasinsUtilisateur('USR0002'), ['MAG0000']);
       // Détail : informations, permissions du rôle.
       await doubleClic(tester, find.text('Amina Kaci').first);
@@ -119,17 +122,17 @@ void main() {
       await tester.pump(const Duration(seconds: 5));
     });
 
-    testWidgets('offre Basic : ni caisse attachée ni magasins à choisir (une caisse, un magasin)', (tester) async {
+    testWidgets('offre Basic : ni caisses ni magasins à choisir (une caisse, un magasin)', (tester) async {
       await pumpApp(tester, etat: EtatApp.connecteeAdminBasic, routeInitiale: '/utilisateurs', taille: _taille);
       await clic(tester, _cle('usr_nouveau'));
-      expect(_cle('usr_caisse'), findsNothing);
+      expect(_cle('usr_caisses'), findsNothing);
       expect(_cle('usr_magasins'), findsNothing);
     });
 
-    testWidgets('Ultra : caisse attachée et magasins à choisir', (tester) async {
+    testWidgets('Ultra : caisses et magasins à choisir (plusieurs, le premier par défaut)', (tester) async {
       await pumpApp(tester, routeInitiale: '/utilisateurs', taille: _taille);
       await clic(tester, _cle('usr_nouveau'));
-      expect(_cle('usr_caisse'), findsOneWidget);
+      expect(_cle('usr_caisses'), findsOneWidget);
       expect(_cle('usr_magasins'), findsOneWidget);
     });
 

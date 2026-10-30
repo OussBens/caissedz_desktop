@@ -169,6 +169,17 @@ class ArchivageRepository {
     [code],
   )).isNotEmpty;
 
+  /// La caisse est-elle la caisse par défaut (première de la liste) d'un compte non archivé ?
+  Future<bool> caissePrincipale(String code) async => (await db.rawQuery(
+    '''
+    SELECT 1 FROM utilisateur_caisse uc JOIN utilisateur u ON u.code = uc.utilisateur_code
+    WHERE uc.caisse_code = ? AND u.archive_le IS NULL AND uc.ordre = (
+      SELECT MIN(x.ordre) FROM utilisateur_caisse x WHERE x.utilisateur_code = uc.utilisateur_code)
+    LIMIT 1
+    ''',
+    [code],
+  )).isNotEmpty;
+
   Future<bool> sessionOuverte(String caisseCode) async => (await db.query(
     'session_caisse',
     columns: ['code'],

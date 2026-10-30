@@ -16,7 +16,12 @@ enum EntiteArchivable {
   client('client', 'nom', {'client_code'}),
   fournisseur('fournisseur', 'nom', {'fournisseur_code'}),
   magasin('magasin', 'nom', {'magasin_code', 'magasin_source', 'magasin_destination'}, {'utilisateur_magasin'}),
-  caisse('caisse', 'nom', {'caisse_code', 'caisse_source', 'caisse_destination'}),
+  caisse(
+    'caisse',
+    'nom',
+    {'caisse_code', 'caisse_source', 'caisse_destination'},
+    {'utilisateur_caisse', 'caisse_courante'},
+  ),
   utilisateur(
     'utilisateur',
     'identifiant',
@@ -30,7 +35,7 @@ enum EntiteArchivable {
       'responsable_code',
       'dernier_utilisateur',
     },
-    {'utilisateur_magasin', 'appareil_mobile', 'audit_contexte'},
+    {'utilisateur_magasin', 'utilisateur_caisse', 'caisse_courante', 'appareil_mobile', 'audit_contexte'},
   ),
   role('role', 'nom', {'role_code'}, {'role_permission', 'role_module'});
 
@@ -59,6 +64,9 @@ enum BlocageArchivage {
 
   /// Magasin : magasin principal d'un utilisateur.
   magasinPrincipal,
+
+  /// Caisse : caisse par défaut (première de la liste) d'un utilisateur.
+  caissePrincipale,
 
   /// Caisse : session ouverte.
   sessionOuverte,

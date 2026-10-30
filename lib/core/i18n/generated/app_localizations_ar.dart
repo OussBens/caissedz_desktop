@@ -677,6 +677,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get posErreurCaisse => 'صندوق غير معروف أو معطّل.';
 
   @override
+  String get posErreurCaisseNonAutorisee => 'هذا الصندوق ليس من صناديقك.';
+
+  @override
   String get posErreurMontant => 'مبلغ غير صالح.';
 
   @override
@@ -5423,6 +5426,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get usrColMagasins => 'المخازن';
 
   @override
+  String get usrColCaisses => 'الصناديق';
+
+  @override
   String get usrColVentes => 'المبيعات';
 
   @override
@@ -5533,6 +5539,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get usrMagasinsIndice => 'الأول هو المخزن الافتراضي عند الدخول';
 
   @override
+  String get usrCaissesIndice => 'الأول هو الصندوق الافتراضي؛ في شاشة الصندوق يختار المستخدم من بين صناديقه';
+
+  @override
   String get usrObservation => 'ملاحظة';
 
   @override
@@ -5552,6 +5561,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get usrErrMagasins => 'اختر مخزنًا واحدًا على الأقل';
+
+  @override
+  String get usrErrCaisses => 'اختر صندوقًا واحدًا على الأقل';
 
   @override
   String get usrErrInconnu => 'المستخدم غير موجود';
@@ -5579,6 +5591,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get usrLibreAdmin => 'حر (مدير)';
+
+  @override
+  String get usrToutesCaisses => 'الكل (مدير)';
 
   @override
   String get usrDefaut => '(افتراضي)';
@@ -8703,6 +8718,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get archBloqueMagasinPrincipal => 'المخزن الرئيسي لمستخدم';
+
+  @override
+  String get archBloqueCaissePrincipale => 'الصندوق الافتراضي لمستخدم';
 
   @override
   String get archBloqueSession => 'جلسة صندوق مفتوحة';

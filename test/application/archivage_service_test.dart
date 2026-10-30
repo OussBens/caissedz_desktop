@@ -248,6 +248,7 @@ void main() {
           nom: identifiant,
           telephone: '0555123456',
           roleCode: vendeur.code,
+          caisses: const ['CIS0000'],
           magasins: const ['MAG0000'],
         )).code;
         final nouveau = await compte('nouveau');
