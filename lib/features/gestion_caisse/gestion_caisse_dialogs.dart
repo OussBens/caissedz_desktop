@@ -1250,10 +1250,11 @@ List<DsColonne<Cloture>> colonnesClotures(
   AppLocalizations l10n,
   String devise,
   Map<String, String> caisses,
-  Map<String, String> utilisateurs,
-) => [
+  Map<String, String> utilisateurs, {
+  bool avecCaisse = true,
+}) => [
   DsColonne(id: 'code', libelle: l10n.produitsColCode, fort: true, valeur: (z) => z.code),
-  DsColonne(id: 'caisse', libelle: l10n.gcColCaisse, valeur: (z) => nomCaisseCloture(l10n, z, caisses)),
+  if (avecCaisse) DsColonne(id: 'caisse', libelle: l10n.gcColCaisse, valeur: (z) => nomCaisseCloture(l10n, z, caisses)),
   DsColonne(
     id: 'du',
     libelle: l10n.dsDu,

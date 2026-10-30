@@ -141,7 +141,8 @@ class _EntreesPageState extends ConsumerState<EntreesPage> {
             : const Text('—'),
         total: (as) => da(somme(as.where((a) => a.actif), (a) => a.reste)),
       ),
-      DsColonne(id: 'mag', libelle: l10n.stockColMagasin, valeur: (a) => nomsMag[a.magasinCode] ?? a.magasinCode),
+      if (ref.watch(plusieursMagasinsProvider))
+        DsColonne(id: 'mag', libelle: l10n.stockColMagasin, valeur: (a) => nomsMag[a.magasinCode] ?? a.magasinCode),
       DsColonne(
         id: 'statut',
         libelle: l10n.achatColStatut,

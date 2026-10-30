@@ -532,76 +532,80 @@ Future<void> afficherDetailUtilisateur(BuildContext context, WidgetRef ref, Lign
             if (u.observation.isNotEmpty) DsKeyValue(l10n.usrObservation, u.observation, span: 3),
           ],
         ),
-        DsSectionDetail(
-          titre: u.estAdmin ? '${l10n.usrCaissesAttribuees} · ${l10n.usrToutesCaisses}' : l10n.usrCaissesAttribuees,
-          icone: LucideIcons.monitor,
-          flex: 3,
-          nbLignes: caissesAttribuees.length,
-          tableau: DsDataTable<Caisse>(
-            dense: true,
-            encadre: false,
-            pagine: false,
-            reserveEcran: 360,
-            cle: (c) => c.code,
-            lignes: caissesAttribuees,
-            messageVide: l10n.dsAucunElement,
-            colonnes: [
-              DsColonne(id: 'code', libelle: l10n.produitsColCode, attenue: true, valeur: (c) => c.code),
-              DsColonne(
-                id: 'nom',
-                libelle: l10n.gcColCaisse,
-                fort: true,
-                flex: 2,
-                valeur: (c) => c.nom,
-                cellule: (_, c) => _nomParDefaut(l10n, c.nom, defaut: !u.estAdmin && c.code == l.caisses.firstOrNull),
-              ),
-              DsColonne(id: 'type', libelle: l10n.caisseType, valeur: (c) => libelleTypeCaisse(l10n, c.type)),
-              DsColonne(
-                id: 'magasin',
-                libelle: l10n.caisseMagasin,
-                valeur: (c) => c.magasinCode == null ? '—' : (magasins[c.magasinCode]?.nom ?? c.magasinCode!),
-              ),
-              DsColonne(
-                id: 'etat',
-                libelle: l10n.gcColEtat,
-                valeur: (c) => c.actif ? 1 : 0,
-                cellule: (_, c) => BadgeStatut(c.actif ? 'actif' : 'inactif'),
-              ),
-            ],
+        // Une seule caisse (Basic) ou un seul magasin : rien d'attribué à montrer, c'est la caisse ou le magasin
+        // système.
+        if (ref.read(plusieursCaissesProvider))
+          DsSectionDetail(
+            titre: u.estAdmin ? '${l10n.usrCaissesAttribuees} · ${l10n.usrToutesCaisses}' : l10n.usrCaissesAttribuees,
+            icone: LucideIcons.monitor,
+            flex: 3,
+            nbLignes: caissesAttribuees.length,
+            tableau: DsDataTable<Caisse>(
+              dense: true,
+              encadre: false,
+              pagine: false,
+              reserveEcran: 360,
+              cle: (c) => c.code,
+              lignes: caissesAttribuees,
+              messageVide: l10n.dsAucunElement,
+              colonnes: [
+                DsColonne(id: 'code', libelle: l10n.produitsColCode, attenue: true, valeur: (c) => c.code),
+                DsColonne(
+                  id: 'nom',
+                  libelle: l10n.gcColCaisse,
+                  fort: true,
+                  flex: 2,
+                  valeur: (c) => c.nom,
+                  cellule: (_, c) => _nomParDefaut(l10n, c.nom, defaut: !u.estAdmin && c.code == l.caisses.firstOrNull),
+                ),
+                DsColonne(id: 'type', libelle: l10n.caisseType, valeur: (c) => libelleTypeCaisse(l10n, c.type)),
+                DsColonne(
+                  id: 'magasin',
+                  libelle: l10n.caisseMagasin,
+                  valeur: (c) => c.magasinCode == null ? '—' : (magasins[c.magasinCode]?.nom ?? c.magasinCode!),
+                ),
+                DsColonne(
+                  id: 'etat',
+                  libelle: l10n.gcColEtat,
+                  valeur: (c) => c.actif ? 1 : 0,
+                  cellule: (_, c) => BadgeStatut(c.actif ? 'actif' : 'inactif'),
+                ),
+              ],
+            ),
           ),
-        ),
-        DsSectionDetail(
-          titre: l10n.usrMagasinsAttribues,
-          icone: LucideIcons.store,
-          flex: 2,
-          nbLignes: magasinsAttribues.length,
-          tableau: DsDataTable<Magasin>(
-            dense: true,
-            encadre: false,
-            pagine: false,
-            reserveEcran: 360,
-            cle: (m) => m.code,
-            lignes: magasinsAttribues,
-            messageVide: l10n.dsAucunElement,
-            colonnes: [
-              DsColonne(id: 'code', libelle: l10n.produitsColCode, attenue: true, valeur: (m) => m.code),
-              DsColonne(
-                id: 'nom',
-                libelle: l10n.caisseMagasin,
-                fort: true,
-                flex: 2,
-                valeur: (m) => m.nom,
-                cellule: (_, m) => _nomParDefaut(l10n, m.nom, defaut: m.code == l.magasins.firstOrNull),
-              ),
-              DsColonne(
-                id: 'etat',
-                libelle: l10n.gcColEtat,
-                valeur: (m) => m.actif ? 1 : 0,
-                cellule: (_, m) => BadgeStatut(m.actif ? 'actif' : 'inactif'),
-              ),
-            ],
+        if (ref.read(plusieursMagasinsProvider))
+          DsSectionDetail(
+            titre: l10n.usrMagasinsAttribues,
+            icone: LucideIcons.store,
+            flex: 2,
+            nbLignes: magasinsAttribues.length,
+            tableau: DsDataTable<Magasin>(
+              dense: true,
+              encadre: false,
+              pagine: false,
+              reserveEcran: 360,
+              cle: (m) => m.code,
+              lignes: magasinsAttribues,
+              messageVide: l10n.dsAucunElement,
+              colonnes: [
+                DsColonne(id: 'code', libelle: l10n.produitsColCode, attenue: true, valeur: (m) => m.code),
+                DsColonne(
+                  id: 'nom',
+                  libelle: l10n.caisseMagasin,
+                  fort: true,
+                  flex: 2,
+                  valeur: (m) => m.nom,
+                  cellule: (_, m) => _nomParDefaut(l10n, m.nom, defaut: m.code == l.magasins.firstOrNull),
+                ),
+                DsColonne(
+                  id: 'etat',
+                  libelle: l10n.gcColEtat,
+                  valeur: (m) => m.actif ? 1 : 0,
+                  cellule: (_, m) => BadgeStatut(m.actif ? 'actif' : 'inactif'),
+                ),
+              ],
+            ),
           ),
-        ),
         if (role != null)
           DsSectionDetail(
             titre: l10n.usrPermissionsRole,

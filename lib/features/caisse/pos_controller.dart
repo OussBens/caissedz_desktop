@@ -94,6 +94,7 @@ final sessionCaisseServiceProvider = Provider<SessionCaisseService>(
   (ref) => SessionCaisseService(
     ref.watch(appDatabaseProvider).db,
     utilisateurCode: ref.watch(utilisateurCourantCodeProvider),
+    avecCoffre: ref.watch(licenceProvider).niveau?.avecCoffre ?? true,
   ),
 );
 

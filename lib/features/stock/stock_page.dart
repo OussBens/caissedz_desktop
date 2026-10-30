@@ -464,7 +464,13 @@ class _StockPageState extends ConsumerState<StockPage> {
       DsColonne(id: 't', libelle: l10n.stockColType, valeur: (m) => libelleTypeMouvement(l10n, m.type)),
       DsColonne(id: 'r', libelle: l10n.stkReference, attenue: true, valeur: (m) => m.referenceCode ?? ''),
       DsColonne(id: 'nom', libelle: l10n.dsPosProduit, fort: true, flex: 3, valeur: nomProduit),
-      DsColonne(id: 'mag', libelle: l10n.stockColMagasin, flex: 2, valeur: (m) => noms[m.magasinCode] ?? m.magasinCode),
+      if (ref.watch(plusieursMagasinsProvider))
+        DsColonne(
+          id: 'mag',
+          libelle: l10n.stockColMagasin,
+          flex: 2,
+          valeur: (m) => noms[m.magasinCode] ?? m.magasinCode,
+        ),
       DsColonne(
         id: 'q',
         libelle: l10n.stockColQuantite,

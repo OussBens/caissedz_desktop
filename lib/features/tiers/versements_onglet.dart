@@ -101,7 +101,8 @@ class _VersementsOngletState extends ConsumerState<VersementsOnglet> {
         libelle: l10n.versementMode,
         valeur: (v) => libelleRef(context, Referentiel.modesPaiement, v.mode),
       ),
-      DsColonne(id: 'caisse', libelle: l10n.versementCaisse, valeur: (v) => nomCaisse(v.caisseCode)),
+      if (ref.watch(plusieursCaissesProvider))
+        DsColonne(id: 'caisse', libelle: l10n.versementCaisse, valeur: (v) => nomCaisse(v.caisseCode)),
       DsColonne(
         id: 'etat',
         libelle: l10n.tiersEtat,

@@ -989,6 +989,7 @@ class ServeurMobile {
     await SessionCaisseService(
       db,
       utilisateurCode: s.utilisateur.code,
+      avecCoffre: licence().niveau?.avecCoffre ?? true,
     ).ouvrir(caisseCode: caisse, fondInitial: _nombre(c['fond']) ?? 0);
     return _sessionCaisse(s);
   }

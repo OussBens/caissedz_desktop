@@ -257,14 +257,18 @@ void main() {
       }
     });
 
-    testWidgets('Basic (une seule caisse) : ni « Nouvelle caisse » ni onglet Transferts', (tester) async {
+    testWidgets('Basic (une seule caisse) : ni onglet Caisses ni onglet Transferts, pas de colonne Caisse', (
+      tester,
+    ) async {
       await pumpApp(tester, etat: EtatApp.connecteeAdminBasic, routeInitiale: '/gestion-caisse', taille: _taille);
-      expect(_cle('gc_caisses'), findsOneWidget);
+      // La caisse système est la seule : le module s'ouvre sur les clôtures Z.
+      expect(_cle('gc_caisses'), findsNothing);
       expect(_cle('caisse_nouvelle'), findsNothing);
       expect(find.text('Transferts'), findsNothing);
-      // Les onglets suivants gardent leur place : Clôtures Z s'ouvre toujours.
-      await clic(tester, find.text('Clôtures Z'));
       expect(_cle('gc_clotures'), findsOneWidget);
+      expect(find.text('Caisse'), findsNothing, reason: 'ni colonne ni filtre Caisse');
+      await clic(tester, find.text('Mouvements'));
+      expect(find.text('Caisse'), findsNothing);
     });
 
     testWidgets('Basic : la route des clôtures ouvre bien l’onglet Clôtures Z', (tester) async {

@@ -61,6 +61,10 @@ enum NiveauLicence {
   /// Transferts entre caisses : seulement avec plusieurs caisses (pas en Basic, une seule caisse).
   bool get transfertsCaisse => caisses > 1;
 
+  /// Coffre (fond pris à l'ouverture, espèces déposées à la fermeture) : seulement avec plusieurs caisses. En Basic,
+  /// l'application n'a qu'une caisse, la caisse système.
+  bool get avecCoffre => caisses > 1;
+
   static NiveauLicence? parValeur(String? v) => values.where((n) => n.stocke == v).firstOrNull;
 
   /// Le palier d'une licence signée (son numéro), ou null s'il est inconnu.

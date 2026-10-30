@@ -175,12 +175,13 @@ class _VentesPageState extends ConsumerState<VentesPage> {
         valeur: (p) => p.marge,
         cellule: (_, p) => Text(da(p.marge)),
       ),
-      DsColonne(
-        id: 'caisse',
-        libelle: l10n.ventesCaisse,
-        visibleParDefaut: false,
-        valeur: (p) => nomCaisse(p.vente.caisseCode),
-      ),
+      if (ref.watch(plusieursCaissesProvider))
+        DsColonne(
+          id: 'caisse',
+          libelle: l10n.ventesCaisse,
+          visibleParDefaut: false,
+          valeur: (p) => nomCaisse(p.vente.caisseCode),
+        ),
       DsColonne(
         id: 'session',
         libelle: l10n.ventesSession,

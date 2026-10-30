@@ -31,10 +31,14 @@ class SessionException implements Exception {
 
 /// Sessions de caisse : ouverture (fond initial) et fermeture (montant compté, écart).
 class SessionCaisseService {
-  const SessionCaisseService(this.db, {required this.utilisateurCode});
+  const SessionCaisseService(this.db, {required this.utilisateurCode, this.avecCoffre = true});
 
   final Database db;
   final String utilisateurCode;
+
+  /// Le coffre fournit le fond et reçoit les espèces de la fermeture ; sans coffre (Basic, une seule caisse), le
+  /// fond est un apport et les espèces retirées quittent la caisse ([NiveauLicence.avecCoffre]).
+  final bool avecCoffre;
 
   VenteRepository get _repo => VenteRepository(db);
 
@@ -135,7 +139,7 @@ class SessionCaisseService {
       );
       // Le fond de caisse est pris au coffre, dans la limite de ses espèces (le surplus est un apport externe).
       final caisses = CaisseRepository(txn);
-      final coffre = await caisses.coffre();
+      final coffre = avecCoffre ? await caisses.coffre() : null;
       if (coffre != null && fondInitial > 0) {
         final dispo = (await caisses.solde(coffre)).parMode['Espèces'] ?? 0;
         final pris = CalculsPrix.arrondir(fondInitial < dispo ? fondInitial : (dispo > 0 ? dispo : 0));
@@ -209,7 +213,7 @@ class SessionCaisseService {
         date: fermeeLe,
       );
       // Les espèces retirées vont au coffre (remise en banque ensuite par transfert vers une caisse Compte).
-      final coffre = await CaisseRepository(txn).coffre();
+      final coffre = avecCoffre ? await CaisseRepository(txn).coffre() : null;
       if (coffre != null && coffre != s.caisseCode && montantCompte > 0) {
         await CaisseService.journaliser(
           txn,

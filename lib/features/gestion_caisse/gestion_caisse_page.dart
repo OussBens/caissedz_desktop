@@ -57,11 +57,12 @@ class _GestionCaissePageState extends ConsumerState<GestionCaissePage> {
     final sessions = ref.watch(sessionsCaisseProvider).value ?? const <SessionCaisse>[];
     final noms = {for (final c in caisses) c.code: c.nom};
     final utilisateurs = ref.watch(nomsUtilisateursProvider).value ?? const <String, String>{};
-    // Basic (une seule caisse) : pas d'onglet Transferts. Les onglets gardent leur numéro (0…4, celui des
-    // routes) ; seul l'affichage saute les transferts.
+    // Basic (une seule caisse, la caisse système) : ni onglet Caisses ni onglet Transferts. Les onglets gardent
+    // leur numéro (0…4, celui des routes) ; seul l'affichage les saute.
+    final plusieurs = ref.watch(plusieursCaissesProvider);
     final avecTransferts = ref.watch(transfertsCaissePermisProvider);
-    final visibles = [0, if (avecTransferts) 1, 2, 3, 4];
-    final onglet = visibles.contains(_onglet) ? _onglet : 0;
+    final visibles = [if (plusieurs) 0, if (avecTransferts) 1, 2, 3, 4];
+    final onglet = visibles.contains(_onglet) ? _onglet : visibles.first;
     final libelles = [
       l10n.gcOngletCaisses,
       l10n.gcOngletTransferts,
@@ -449,7 +450,7 @@ class _GestionCaissePageState extends ConsumerState<GestionCaissePage> {
         )
         .toList();
     final colonnes = [
-      ...colonnesClotures(l10n, devise, noms, utilisateurs),
+      ...colonnesClotures(l10n, devise, noms, utilisateurs, avecCaisse: ref.watch(plusieursCaissesProvider)),
       ...colonnesAudit(context, ref, (Cloture x) => x.audit),
     ];
     return DsModuleTable<Cloture>(
@@ -550,7 +551,14 @@ class _GestionCaissePageState extends ConsumerState<GestionCaissePage> {
         )
         .toList();
     final colonnes = [
-      ...colonnesMouvements(l10n, devise, noms, utilisateurs, session: (m) => sessionsDe[m]),
+      ...colonnesMouvements(
+        l10n,
+        devise,
+        noms,
+        utilisateurs,
+        avecCaisse: ref.watch(plusieursCaissesProvider),
+        session: (m) => sessionsDe[m],
+      ),
       ...colonnesAudit(context, ref, (MouvementCaisse x) => x.audit),
     ];
     return DsModuleTable<MouvementCaisse>(
@@ -688,7 +696,8 @@ class _GestionCaissePageState extends ConsumerState<GestionCaissePage> {
       texteRecherche: (s) => '${s.code} ${noms[s.caisseCode] ?? ''}',
       colonnes: [
         DsColonne(id: 'code', libelle: l10n.gcColSession, fort: true, valeur: (s) => s.code),
-        DsColonne(id: 'caisse', libelle: l10n.gcColCaisse, valeur: (s) => noms[s.caisseCode] ?? s.caisseCode),
+        if (ref.watch(plusieursCaissesProvider))
+          DsColonne(id: 'caisse', libelle: l10n.gcColCaisse, valeur: (s) => noms[s.caisseCode] ?? s.caisseCode),
         DsColonne(
           id: 'ouv',
           libelle: l10n.gcColOuverture,

@@ -10,6 +10,7 @@ import 'package:caissedz_desktop/data/caisse_repository.dart';
 import 'package:caissedz_desktop/data/stock_repository.dart';
 import 'package:caissedz_desktop/data/vente_repository.dart';
 import 'package:caissedz_desktop/domain/models/boutique.dart';
+import 'package:caissedz_desktop/domain/models/caisse.dart';
 import 'package:caissedz_desktop/domain/models/panier.dart';
 import 'package:caissedz_desktop/domain/models/parametres_vente.dart';
 import 'package:caissedz_desktop/domain/models/produit.dart';
@@ -153,6 +154,17 @@ void main() {
       final fermee = await collegue.fermer(montantCompte: 100);
       expect(fermee.code, ouverte.code);
       expect(await SessionCaisseService(db, utilisateurCode: 'USR0000').courante(), isNull);
+    });
+
+    test('sans coffre (Basic, une seule caisse) : fond en apport, espèces retirées sans dépôt au coffre', () async {
+      final base = await ouvrirBaseDeTest();
+      final db = base.db;
+      final s = SessionCaisseService(db, utilisateurCode: 'USR0000', avecCoffre: false);
+      await s.ouvrir(caisseCode: 'CIS0000', fondInitial: 500);
+      await s.fermer(montantCompte: 500);
+      expect(await db.query('mouvement_caisse', where: "caisse_code = 'CIS0001'"), isEmpty, reason: 'coffre intact');
+      final types = [for (final m in await db.query('mouvement_caisse', orderBy: 'id')) m['type']];
+      expect(types, [TypesMouvementCaisse.fondInitial, TypesMouvementCaisse.retrait]);
     });
 
     test('l’Admin a toutes les caisses et continue la session de n’importe laquelle', () async {

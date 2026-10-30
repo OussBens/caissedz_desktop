@@ -18,6 +18,7 @@ import '../commun/page_module.dart';
 import '../commun/statuts.dart';
 import '../gestion_caisse/gestion_caisse_providers.dart';
 import '../produits/produits_providers.dart';
+import '../stock/stock_providers.dart';
 import 'utilisateurs_dialogs.dart';
 import 'utilisateurs_providers.dart';
 
@@ -120,15 +121,17 @@ class _UtilisateursPageState extends ConsumerState<UtilisateursPage> {
           ),
         ),
       ),
-      DsColonne(
-        id: 'caisse',
-        libelle: l10n.usrColCaisses,
-        valeur: nomCaisses,
-        cellule: (context, l) => l.u.estAdmin
-            ? Text(l10n.usrToutesCaisses, style: TextStyle(color: context.ds.colors.textMuted))
-            : Text(nomCaisses(l), overflow: TextOverflow.ellipsis),
-      ),
-      DsColonne(id: 'magasins', libelle: l10n.usrColMagasins, numerique: true, valeur: (l) => l.magasins.length),
+      if (ref.watch(plusieursCaissesProvider))
+        DsColonne(
+          id: 'caisse',
+          libelle: l10n.usrColCaisses,
+          valeur: nomCaisses,
+          cellule: (context, l) => l.u.estAdmin
+              ? Text(l10n.usrToutesCaisses, style: TextStyle(color: context.ds.colors.textMuted))
+              : Text(nomCaisses(l), overflow: TextOverflow.ellipsis),
+        ),
+      if (ref.watch(plusieursMagasinsProvider))
+        DsColonne(id: 'magasins', libelle: l10n.usrColMagasins, numerique: true, valeur: (l) => l.magasins.length),
       DsColonne(id: 'ventes', libelle: l10n.usrColVentes, numerique: true, valeur: (l) => l.nbVentes),
       DsColonne(
         id: 'acces',
@@ -308,7 +311,7 @@ class _UtilisateursPageState extends ConsumerState<UtilisateursPage> {
         montant: formaterMontant(l.totalVendu, devise),
         libelleMontant: l10n.usrColVentes,
         lignes: [
-          (LucideIcons.monitor, nomCaisses(l)),
+          if (ref.watch(plusieursCaissesProvider)) (LucideIcons.monitor, nomCaisses(l)),
           (LucideIcons.clock, l.u.dernierAcces == null ? '—' : formatAcces.format(l.u.dernierAcces!)),
         ],
       ),
