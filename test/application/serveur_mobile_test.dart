@@ -8,6 +8,7 @@ import 'package:caissedz_desktop/application/utilisateur_service.dart';
 import 'package:caissedz_desktop/core/db/app_database.dart';
 import 'package:caissedz_desktop/core/securite/certificat_mobile.dart';
 import 'package:caissedz_desktop/core/securite/mot_de_passe.dart';
+import 'package:caissedz_desktop/data/catalogue_repository.dart';
 import 'package:caissedz_desktop/domain/models/licence.dart';
 import 'package:caissedz_desktop/domain/permissions.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -77,6 +78,7 @@ void main() {
       base.db,
       licence: () => licence,
       dossierFactures: factures.path,
+      dossierPhotos: '${factures.path}/photos',
       surModification: modifications.addAll,
       surFacture: recues.add,
       portPrefere: 0,
@@ -451,6 +453,30 @@ void main() {
     // Le poste l'annonce (pop-up avec accès à Smart Scan).
     expect(recues.single.bon, bon.first['code']);
     expect(recues.single.utilisateur, isNotEmpty);
+  });
+
+  test('photo d’un produit prise sur le téléphone : elle devient son image, en tête de ses photos', () async {
+    final t = await connecter();
+    final (_, cree) = await t.post('produits', {'designation': 'Lait 1L', 'prixVente': 100});
+    final code = (cree['produit'] as Map<String, dynamic>)['code'] as String;
+    expect((await t.get('produits/$code')).$2['produit']['photo'], isFalse);
+    modifications.clear();
+
+    final (statut, r) = await t.post('produits/$code/photo', List<int>.filled(1024, 7));
+    expect(statut, 200, reason: '$r');
+    final photos = await CatalogueRepository(base.db).photos(code);
+    expect(photos, hasLength(1));
+    expect(File(photos.single).lengthSync(), 1024);
+    expect((await CatalogueRepository(base.db).produitParCode(code))!.image, photos.single);
+    expect((await t.get('produits/$code')).$2['produit']['photo'], isTrue);
+    expect(modifications, contains(DomaineMobile.catalogue));
+
+    // La suivante passe devant.
+    await t.post('produits/$code/photo', List<int>.filled(512, 7));
+    final ensuite = await CatalogueRepository(base.db).photos(code);
+    expect((ensuite.length, ensuite[1]), (2, photos.single));
+    expect((await t.post('produits/INCONNU/photo', List<int>.filled(8, 7))).$2['erreur'], 'produitInconnu');
+    expect((await t.post('produits/$code/photo', <int>[])).$2['erreur'], 'fichierInvalide');
   });
 
   test('produits par page, filtrés en stock bas ou en rupture, avec les compteurs de la recherche', () async {

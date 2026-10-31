@@ -11,6 +11,7 @@ import '../data/mobile_repository.dart';
 import '../data/utilisateur_repository.dart';
 import '../domain/models/appareil_mobile.dart';
 import '../domain/models/utilisateur.dart';
+import '../features/produits/produits_donnees.dart';
 import '../features/produits/produits_providers.dart';
 import '../features/stock/stock_providers.dart';
 import '../features/tiers/tiers_providers.dart';
@@ -24,6 +25,7 @@ final serveurMobileProvider = Provider<ServeurMobile>((ref) {
     base.db,
     licence: () => ref.read(licenceProvider),
     dossierFactures: p.join(p.dirname(base.chemin), 'factures_mobile'),
+    dossierPhotos: ref.read(dossierPhotosProvider),
     catalogueIa: () => ref.read(catalogueIaServiceProvider),
     utilisateurPoste: () => ref.read(sessionProvider)?.utilisateur.code,
     surModification: (domaines) {

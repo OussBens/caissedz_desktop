@@ -1,0 +1,10 @@
+[tools]
+flutter = "3.47.9"
+
+[tasks.dev]
+description = "Lance l'application sous Linux (hot reload : r / R / q)"
+run = "flutter run -d linux"
+
+[tasks.check]
+description = "flutter analyze + flutter test"
+run = ["flutter analyze", "flutter test"]

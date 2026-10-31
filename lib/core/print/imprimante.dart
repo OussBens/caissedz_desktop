@@ -8,7 +8,7 @@ import 'package:ffi/ffi.dart';
 class TypesImprimante {
   const TypesImprimante._();
   static const String normale = 'Normale'; // via le dialogue d'impression système (PDF)
-  static const String usb = 'USB'; // spouleur Windows (brut ESC/POS)
+  static const String usb = 'USB'; // spouleur Windows / CUPS sous Linux (brut ESC/POS)
   static const String reseau = 'Réseau'; // IP:port
   static const String bluetooth = 'Bluetooth';
   static const List<String> tous = [normale, usb, reseau, bluetooth];
@@ -51,12 +51,16 @@ class ImprimanteReseau implements ImprimanteEscPos {
 }
 
 /// Imprimante USB via le spouleur Windows (données brutes « RAW », winspool.drv).
+///
+/// Sous Linux : un chemin de périphérique (`/dev/usb/lp0`) est écrit directement,
+/// sinon le nom désigne une file CUPS alimentée en brut (`lp -d <nom> -o raw`).
 class ImprimanteUsbSpouleur implements ImprimanteEscPos {
   const ImprimanteUsbSpouleur(this.nomImprimante);
   final String nomImprimante;
 
   @override
   Future<void> envoyer(Uint8List donnees) async {
+    if (Platform.isLinux) return _envoyerLinux(donnees);
     if (!Platform.isWindows) throw const ImpressionException('Spouleur Windows indisponible sur cette plateforme');
     final spool = DynamicLibrary.open('winspool.drv');
     final openPrinter = spool
@@ -104,6 +108,28 @@ class ImprimanteUsbSpouleur implements ImprimanteEscPos {
         close(h);
       }
     });
+  }
+
+  Future<void> _envoyerLinux(Uint8List donnees) async {
+    if (nomImprimante.startsWith('/')) {
+      try {
+        await File(nomImprimante).writeAsBytes(donnees, mode: FileMode.writeOnlyAppend, flush: true);
+      } on FileSystemException catch (e) {
+        throw ImpressionException('Périphérique « $nomImprimante » inaccessible (${e.osError?.message ?? e.message})');
+      }
+      return;
+    }
+    final Process lp;
+    try {
+      lp = await Process.start('lp', ['-d', nomImprimante, '-o', 'raw', '-t', 'CaisseDZ ticket']);
+    } on ProcessException {
+      throw const ImpressionException('Commande « lp » introuvable (CUPS non installé)');
+    }
+    lp.stdin.add(donnees);
+    await lp.stdin.close();
+    final erreur = await lp.stderr.transform(const SystemEncoding().decoder).join();
+    await lp.stdout.drain<void>();
+    if (await lp.exitCode != 0) throw ImpressionException('Imprimante « $nomImprimante » : ${erreur.trim()}');
   }
 }
 

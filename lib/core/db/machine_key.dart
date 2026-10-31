@@ -9,7 +9,7 @@ abstract class MachineIdentifiant {
 }
 
 /// Identifiant Windows : `MachineGuid` du registre (HKLM\SOFTWARE\Microsoft\Cryptography),
-/// complété du nom de machine. Sur les autres plateformes (tests, CI) : nom d'hôte.
+/// complété du nom de machine. Sous Linux : `/etc/machine-id`. Ailleurs (tests, CI) : nom d'hôte.
 class MachineIdentifiantSysteme implements MachineIdentifiant {
   const MachineIdentifiantSysteme();
 
@@ -23,6 +23,18 @@ class MachineIdentifiantSysteme implements MachineIdentifiant {
         if (m != null) morceaux.add(m.group(1)!);
       } on ProcessException {
         // Registre inaccessible : on se contente du nom d'hôte.
+      }
+    } else if (Platform.isLinux) {
+      for (final chemin in ['/etc/machine-id', '/var/lib/dbus/machine-id']) {
+        try {
+          final id = (await File(chemin).readAsString()).trim();
+          if (id.isNotEmpty) {
+            morceaux.add(id);
+            break;
+          }
+        } on FileSystemException {
+          // Fichier absent : on essaie le suivant, à défaut le nom d'hôte seul.
+        }
       }
     }
     return morceaux.join('|');

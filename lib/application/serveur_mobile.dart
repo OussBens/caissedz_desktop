@@ -125,13 +125,14 @@ class ServeurMobile {
     this.db, {
     required this.licence,
     required this.dossierFactures,
+    String? dossierPhotos,
     this.catalogueIa,
     this.utilisateurPoste,
     this.surModification,
     this.surFacture,
     this.choisirUtilisateur,
     this.portPrefere = portParDefaut,
-  });
+  }) : dossierPhotos = dossierPhotos ?? p.join(p.dirname(dossierFactures), 'photos');
 
   final Database db;
 
@@ -140,6 +141,9 @@ class ServeurMobile {
 
   /// Dossier où sont rangées les factures photographiées sur le téléphone.
   final String dossierFactures;
+
+  /// Dossier des photos produit (celui des fiches produit, à côté de la base).
+  final String dossierPhotos;
   final CatalogueIaService Function()? catalogueIa;
 
   /// Utilisateur connecté sur le poste : contexte d'audit rétabli après une écriture du téléphone.
@@ -397,6 +401,9 @@ class ServeurMobile {
       case ('POST', 'produits', 1):
         _module(s, 'produits');
         return _ecrire(s, () async => _creerProduit(s, await _json(r)), {DomaineMobile.catalogue, DomaineMobile.stock});
+      case ('POST', 'produits', 3) when chemin[2] == 'photo':
+        _module(s, 'produits');
+        return _ecrire(s, () => _photoProduit(s, chemin[1], r), {DomaineMobile.catalogue});
       case ('GET', 'catalogue-ia', 2):
         _module(s, 'produits');
         return _rechercherIa(chemin[1]);
@@ -876,9 +883,12 @@ class ServeurMobile {
     final repartition = {for (final n in await StockRepository(db).repartition(pr.code)) n.magasinCode: n.quantite};
     final seuil = (await _parametresVente()).seuilStockGlobal;
     final total = visibles.fold<double>(0, (t, m) => t + (repartition[m.code] ?? 0));
+    final photos = await CatalogueRepository(db).photos(pr.code);
     return {
       'produit': {
         ..._produitJson(s, pr, total, seuil),
+        // Une photo sur le poste (fichier local que le téléphone ne voit pas) : il ne propose pas d'en ajouter une.
+        'photo': photos.isNotEmpty || (pr.image ?? '').trim().isNotEmpty,
         'repartition': [
           for (final m in visibles) {'magasin': m.code, 'nom': m.nom, 'quantite': repartition[m.code] ?? 0},
         ],
@@ -1109,6 +1119,43 @@ class ServeurMobile {
     );
     return {
       'entree': {'code': achat.code, 'total': quantite * prix, 'magasin': magasin},
+    };
+  }
+
+  /// Photo d'un produit prise sur le téléphone : rangée dans [dossierPhotos] et mise en tête de ses photos (elle
+  /// devient son image), comme une photo ajoutée depuis sa fiche.
+  Future<Map<String, Object?>> _photoProduit(Session s, String code, HttpRequest r) async {
+    final repo = CatalogueRepository(db);
+    final pr = await repo.produitParCode(code);
+    if (pr == null) throw const ErreurApiMobile(404, 'produitInconnu');
+    final octets = BytesBuilder(copy: false);
+    await for (final morceau in r) {
+      octets.add(morceau);
+      if (octets.length > tailleMaxFacture) throw const ErreurApiMobile(413, 'fichierTropGrand');
+    }
+    if (octets.isEmpty) throw const ErreurApiMobile(422, 'fichierInvalide');
+    final ext = switch (p.extension(r.headers.value('x-nom-fichier') ?? '').toLowerCase()) {
+      '.png' => '.png',
+      '.webp' => '.webp',
+      _ => '.jpg',
+    };
+    final dossier = Directory(dossierPhotos);
+    await dossier.create(recursive: true);
+    final fichier = File(p.join(dossier.path, '${DateTime.now().microsecondsSinceEpoch}$ext'));
+    await fichier.writeAsBytes(octets.takeBytes(), flush: true);
+    // Un produit du catalogue BENS n'a que son URL dans `image` : elle reste, après la nouvelle.
+    final anciennes = await repo.photos(pr.code);
+    final image = pr.image?.trim();
+    await CatalogueService(db, utilisateurCode: s.utilisateur.code).modifierProduit(
+      pr,
+      photos: [
+        fichier.path,
+        if (anciennes.isEmpty && image != null && image.isNotEmpty) image,
+        ...anciennes,
+      ],
+    );
+    return {
+      'photo': {'produit': pr.code},
     };
   }
 
